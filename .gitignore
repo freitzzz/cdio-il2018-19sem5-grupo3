@@ -1,4 +1,8 @@
 
+###Coverlet Test Coverage ###
+## Ignore coverlet test coverage files
+*/lcov.info
+
 # Created by https://www.gitignore.io/api/rider,aspnetcore,visualstudio,visualstudiocode
 
 ### ASPNETCore ###
