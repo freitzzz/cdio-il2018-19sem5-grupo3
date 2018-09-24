@@ -1,4 +1,5 @@
-using framework.domain.ddd.AggregateRoot;
+using framework.domain.ddd;
+using System;
 namespace framework.domain.ddd{
     /// <summary>
     /// Generic Interface for marking up repositories of domain aggregate roots
@@ -8,7 +9,9 @@ namespace framework.domain.ddd{
     /// <typeparam name="E">Generic-Type of the aggregate root which repository is held</typeparam>
     /// <typeparam name="I">Generic-Type of the domain entitiy identifier</typeparam>
     /// <typeparam name="ID">Generic-Type of the entity persistence identifier</typeparam>
-    public interface Repository<E,ID> where E:AggregateRoot<I>,ID{
+    //TODO: We have a problem on generic identifiers
+    //C# doesn't have an "anonymous generic tag" so we can't do stuff like AggregateRoot<?>
+    public interface Repository<E,ID> where E:AggregateRoot<object>,ID{
         /// <summary>
         /// Saves an entity on the repository
         /// </summary>
@@ -29,14 +32,7 @@ namespace framework.domain.ddd{
         /// <param name="entity">E with the entity being removed from the repository</param>
         /// <returns>E with the removed entity</returns>
         E remove(E entity);
-
-        /// <summary>
-        /// Finds an entity based on his entity identifier
-        /// </summary>
-        /// <param name="entityID">I with the entity identifier</param>
-        /// <returns>E with the entity which is represented by a certain identifier</returns>
-        E find(I entityID);
-
+        
         /// <summary>
         /// Finds an entity based on persistence identifier
         /// </summary>

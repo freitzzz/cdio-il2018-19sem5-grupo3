@@ -7,6 +7,6 @@ namespace framework.dto{
         /// Returns a DTO of the current object
         /// </summary>
         /// <returns>DTO with the DTO of the current object</returns>
-        public DTO toDTO();
+        DTO toDTO();
     }
 }

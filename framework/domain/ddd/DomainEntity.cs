@@ -1,4 +1,4 @@
-using framework.domain.Identifiable;
+using framework.domain;
 namespace framework.domain.ddd{
     /// <summary>
     /// Generic interface for marking domain entities

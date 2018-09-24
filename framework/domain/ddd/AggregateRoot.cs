@@ -1,4 +1,4 @@
-using framework.domain.ddd.DomainEntity;
+using framework.domain.ddd;
 
 namespace framework.domain.ddd{
     /// <summary>

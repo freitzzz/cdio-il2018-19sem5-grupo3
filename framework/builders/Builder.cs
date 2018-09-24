@@ -8,6 +8,6 @@ namespace framework.builders{
         /// Builds the entity
         /// </summary>
         /// <returns>B with the built entity</returns>
-        public B build();
+        B build();
     }
 }

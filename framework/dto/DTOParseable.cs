@@ -9,6 +9,6 @@ namespace framework.dto{
         /// Parses a DTO into its original object
         /// </summary>
         /// <returns>T with the original object which created the DTO</returns>
-        public T valueOf();
+        T valueOf();
     }
 }

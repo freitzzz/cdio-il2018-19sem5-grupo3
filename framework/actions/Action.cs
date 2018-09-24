@@ -7,6 +7,6 @@ namespace framework.actions{
         /// Executes an action
         /// </summary>
         /// <returns>boolean true if the action execution was succesful, false if not</returns>
-        public bool execute();
+        bool execute();
     }
 }
