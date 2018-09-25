@@ -1,4 +1,4 @@
-namespace framework.actions{
+namespace support.actions{
     /// <summary>
     /// Functional Interface which represents an Action
     /// </summary>

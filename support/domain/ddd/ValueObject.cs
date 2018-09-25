@@ -1,5 +1,5 @@
 
-namespace framework.domain.ddd{
+namespace support.domain.ddd{
     ///
     ///<summary>Markup interface for Value Objects</summary>
     ///

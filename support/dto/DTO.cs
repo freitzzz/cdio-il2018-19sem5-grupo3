@@ -1,4 +1,4 @@
-namespace framework.dto{
+namespace support.dto{
     public interface DTO{
         /// <summary>
         /// Puts an object into the DTO with a certain key which is mapping it

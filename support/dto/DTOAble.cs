@@ -1,4 +1,4 @@
-namespace framework.dto{
+namespace support.dto{
     /// <summary>
     /// Functional interface which allows the creation of a DTO
     /// </summary>

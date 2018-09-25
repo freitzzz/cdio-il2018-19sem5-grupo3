@@ -1,4 +1,4 @@
-namespace framework.domain{
+namespace support.domain{
     /// <summary>
     /// Generic Interface for marking a domain entity identity
     /// </summary>

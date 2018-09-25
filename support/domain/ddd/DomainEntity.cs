@@ -1,5 +1,5 @@
-using framework.domain;
-namespace framework.domain.ddd{
+using support.domain;
+namespace support.domain.ddd{
     /// <summary>
     /// Generic interface for marking domain entities
     /// </summary>

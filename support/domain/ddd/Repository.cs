@@ -1,6 +1,6 @@
-using framework.domain.ddd;
+using support.domain.ddd;
 using System;
-namespace framework.domain.ddd{
+namespace support.domain.ddd{
     /// <summary>
     /// Generic Interface for marking up repositories of domain aggregate roots
     /// Only Aggregate Roots can have a domain entity repository since 

@@ -1,4 +1,4 @@
-namespace framework.builders{
+namespace support.builders{
     /// <summary>
     /// Interface for marking builded entities
     /// </summary>

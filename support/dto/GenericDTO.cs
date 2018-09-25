@@ -1,8 +1,8 @@
-using framework.dto;
+using support.dto;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-namespace framework.dto{
+namespace support.dto{
     /// <summary>
     /// Represents a Generic DTO implementation for a certain context
     /// </summary>

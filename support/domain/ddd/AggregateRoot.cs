@@ -1,6 +1,6 @@
-using framework.domain.ddd;
+using support.domain.ddd;
 
-namespace framework.domain.ddd{
+namespace support.domain.ddd{
     /// <summary>
     /// Generic Interface for marking an entity which is the root of aggregated entities
     /// </summary>

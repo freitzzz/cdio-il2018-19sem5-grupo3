@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "core\core.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core_tests", "core_tests\core_tests.csproj", "{DEE35C24-928F-452A-8AEF-88E50D0EF01D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "support", "support\support.csproj", "{5A159ADD-BAEA-435E-82D1-A3A79C7474C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,17 @@ Global
 		{1B37689B-40DA-4304-9A59-BD17E88D8051}.Release|x64.Build.0 = Release|Any CPU
 		{1B37689B-40DA-4304-9A59-BD17E88D8051}.Release|x86.ActiveCfg = Release|Any CPU
 		{1B37689B-40DA-4304-9A59-BD17E88D8051}.Release|x86.Build.0 = Release|Any CPU
+		{5A159ADD-BAEA-435E-82D1-A3A79C7474C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A159ADD-BAEA-435E-82D1-A3A79C7474C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A159ADD-BAEA-435E-82D1-A3A79C7474C2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5A159ADD-BAEA-435E-82D1-A3A79C7474C2}.Debug|x64.Build.0 = Debug|Any CPU
+		{5A159ADD-BAEA-435E-82D1-A3A79C7474C2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5A159ADD-BAEA-435E-82D1-A3A79C7474C2}.Debug|x86.Build.0 = Debug|Any CPU
+		{5A159ADD-BAEA-435E-82D1-A3A79C7474C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A159ADD-BAEA-435E-82D1-A3A79C7474C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A159ADD-BAEA-435E-82D1-A3A79C7474C2}.Release|x64.ActiveCfg = Release|Any CPU
+		{5A159ADD-BAEA-435E-82D1-A3A79C7474C2}.Release|x64.Build.0 = Release|Any CPU
+		{5A159ADD-BAEA-435E-82D1-A3A79C7474C2}.Release|x86.ActiveCfg = Release|Any CPU
+		{5A159ADD-BAEA-435E-82D1-A3A79C7474C2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

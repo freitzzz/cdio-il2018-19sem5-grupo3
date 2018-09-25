@@ -1,4 +1,4 @@
-namespace framework.dto{
+namespace support.dto{
     /// <summary>
     /// Functional Interface which allow the parse of a DTO into its original object
     /// Its useful for concrete implementations of DTO

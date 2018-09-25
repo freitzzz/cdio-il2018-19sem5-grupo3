@@ -1,4 +1,4 @@
-namespace framework.persistence.repositories{
+namespace support.persistence.repositories{
     /// <summary>
     /// Generic Interface for CRUD functionalities on a data repository
     /// </summary>
@@ -32,6 +32,5 @@ namespace framework.persistence.repositories{
         /// <param name="entityPersistenceID">ID with the entity persistence identifier</param>
         /// <returns>E with the entity which is represented by a certain persistence identifier</returns>
         E find(ID entityPersistenceID);
-        
     }
 }

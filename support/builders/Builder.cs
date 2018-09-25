@@ -1,4 +1,4 @@
-namespace framework.builders{
+namespace support.builders{
     /// <summary>
     /// Generic Functional Interface which represents a builder
     /// </summary>
