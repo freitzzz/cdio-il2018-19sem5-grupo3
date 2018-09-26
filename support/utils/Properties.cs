@@ -43,7 +43,7 @@ namespace support.system{
         /// Loads a set of properties from an input stream
         /// </summary>
         /// <param name="inputStream">StreamReader with the input stream</param>
-        public void load(StreamReader inputStream){
+        public void load(Stream inputStream){
             List<string> streamContent=Streams.readAllLines(inputStream);
             streamContent.ForEach(line =>{
                 string[] keyValue=line.Split(PROPERTIES_SEPARATOR);

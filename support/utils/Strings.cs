@@ -1,6 +1,6 @@
 using System;
 
-namespace support.system{
+namespace support.utils{
     /// <summary>
     /// Utility class for Strings
     /// </summary>
