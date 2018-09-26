@@ -1,5 +1,6 @@
 using support.domain;
 using support.domain.ddd;
+using support.dto;
 using support.utils;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +13,7 @@ namespace core.domain{
     /// <br>Product is an aggregate root
     /// </summary>
     /// <typeparam name="string">Generic-Type of the Product entity identifier</typeparam>
-    public class Product:AggregateRoot<string>{
+    public class Product:AggregateRoot<string>,DTOAble{
         /// <summary>
         /// Constant that represents the messange that ocurres if the product reference is invalid
         /// </summary>
@@ -91,6 +92,17 @@ namespace core.domain{
         public bool sameAs(string comparingEntity){return id().Equals(comparingEntity);}
         
         /// <summary>
+        /// Returns the current product as a DTO
+        /// </summary>
+        /// <returns>DTO with the current DTO representation of the product</returns>
+        public DTO toDTO(){
+            GenericDTO dto=new GenericDTO(Product.Properties.CONTEXT);
+            dto.put(Properties.DESIGNATION_PROPERTY,designation);
+            dto.put(Properties.REFERENCE_PROPERTY,reference);
+            return dto;
+        }
+
+        /// <summary>
         /// Represents the textual information of the Product
         /// </summary>
         /// <returns>String with the textual representation of the product</returns>
@@ -161,6 +173,24 @@ namespace core.domain{
                 }
                 complementedProduct=complementedProductsEnumerator.Current;
             }
+        }
+
+        /// <summary>
+        /// Inner static class which represents the Product properties used to map on data holders (e.g. DTO)
+        /// </summary>
+        public static class Properties{
+            /// <summary>
+            /// Constant that represents the context of the properties
+            /// </summary>
+            public const string CONTEXT="Product";
+            /// <summary>
+            /// Constant that represents the name of the property which maps the product designation
+            /// </summary>
+            public const string DESIGNATION_PROPERTY="designation";
+            /// <summary>
+            /// Constant that represents the name of the property which maps the product reference
+            /// </summary>
+            public const string REFERENCE_PROPERTY="reference";
         }
     }
 }
