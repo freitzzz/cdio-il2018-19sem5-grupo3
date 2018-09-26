@@ -15,17 +15,17 @@ namespace core.domain
         /// <summary>
         /// String with the color name.
         /// </summary>
-        public String Name { get; }
+        public String Name { get; set; }
 
         /// <summary>
         /// Respective RGBA coordinates.
         /// </summary>
-        public int Red { get; }
-        public int Green { get; }
-        public int Blue { get; }
-        public int Alpha { get; }
+        public int Red { get; set; }
+        public int Green { get; set; }
+        public int Blue { get; set; }
+        public int Alpha { get; set; }
 
-        private Color() { }
+        public Color() { }
 
         /// <summary>
         /// Checks if a certain color is the same as the current color.
