@@ -1,6 +1,6 @@
-using support.system;
 using support.domain;
 using support.domain.ddd;
+using support.utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
@@ -142,7 +142,7 @@ namespace core.domain{
         /// </summary>
         /// <param name="complementedProducts">IEnumerable with the complemented products</param>
         private void checkProductComplementedProducts(IEnumerable<Product> complementedProducts){
-            if(complementedProducts==null||!complementedProducts.GetEnumerator().MoveNext())
+            if(Collections.isEnumerableNullOrEmpty(complementedProducts))
                 throw new ArgumentException(INVALID_PRODUCT_COMPLEMENTED_PRODUCTS);
             checkDuplicatedComplementedProducts(complementedProducts);
         }
