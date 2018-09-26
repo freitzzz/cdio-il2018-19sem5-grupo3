@@ -12,7 +12,7 @@ namespace core{
         /// Returns the current application settings
         /// </summary>
         /// <returns>ApplicationSettings with the current application settings</returns>
-        public ApplicationSettings settings(){return applicationSettings;}
+        public static ApplicationSettings settings(){return applicationSettings;}
 
         /// <summary>
         /// Hides default constructor
