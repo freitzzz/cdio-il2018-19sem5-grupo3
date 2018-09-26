@@ -1,0 +1,8 @@
+<!--The .targets files in the solution directory are used to allow solution-wide dotnet test command to run. 
+Otherwise dotnet test would run for all the projects within the solution, including those which are not test projects,
+resulting in compilation errors-->
+<Project>
+  <Target Name="VSTestIfTestProject">
+    <CallTarget Targets="VSTest" Condition="'$(IsTestProject)' == 'true'" />
+  </Target>
+</Project>
