@@ -162,7 +162,7 @@ namespace core.domain{
         /// <returns>boolean true if the complemented product is valid for addition, false if not</returns>
         private bool isComplementedProductValidForAddition(Product complementedProduct){
             if(complementedProduct==null||complementedProduct.Equals(this))return false;
-            return complementedProducts.Contains(complementedProduct);
+            return !complementedProducts.Contains(complementedProduct);
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace core.domain{
         /// <param name="productMaterial">Material with the product material being validated</param>
         /// <returns>boolean true if the product material is valid for addition, false if not</returns>
         private bool isProductMaterialValidForAddition(Material productMaterial){
-            return productMaterial!=null && materials.Contains(productMaterial);
+            return productMaterial!=null && !materials.Contains(productMaterial);
         }
 
         /// <summary>
@@ -213,10 +213,10 @@ namespace core.domain{
             IEnumerator<Product> complementedProductsEnumerator=complementedProducts.GetEnumerator();
             Product complementedProduct=complementedProductsEnumerator.Current;
             while(complementedProductsEnumerator.MoveNext()){
+                complementedProduct=complementedProductsEnumerator.Current;
                 if(!complementedProductsRefereces.Add(complementedProduct.id())){
                     throw new ArgumentException(INVALID_PRODUCT_COMPLEMENTED_PRODUCTS);
                 }
-                complementedProduct=complementedProductsEnumerator.Current;
             }
         }
         
@@ -229,10 +229,10 @@ namespace core.domain{
             IEnumerator<Material> productMaterialsEnumerator=productMaterials.GetEnumerator();
             Material productMaterial=productMaterialsEnumerator.Current;
             while(productMaterialsEnumerator.MoveNext()){
+                productMaterial=productMaterialsEnumerator.Current;
                 if(!productMaterialsReferences.Add(productMaterial.id())){
                     throw new ArgumentException(INVALID_PRODUCT_MATERIALS);
                 }
-                productMaterial=productMaterialsEnumerator.Current;
             }
         }
 
