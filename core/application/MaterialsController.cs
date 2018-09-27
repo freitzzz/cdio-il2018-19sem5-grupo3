@@ -1,9 +1,8 @@
-using core.persistence;
-using core.domain;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using support.dto;
+using core.domain;
+using core.persistence;
 
 namespace core.application
 {
@@ -11,7 +10,7 @@ namespace core.application
     /// <summary>
     /// Core MaterialsController class.
     /// </summary>
-    public class MaterialsController : Controller
+    public class MaterialsController
     {
 
         /// <summary>
@@ -40,5 +39,38 @@ namespace core.application
         {
             return PersistenceContext.repositories().createMaterialRepository().find(materialID).toDTO();
         }
+
+        /// <summary>
+        /// Removes a Material from the MaterialRepository given its ID.
+        /// </summary>
+        /// <param name="materialID">the Material's ID</param>
+        /// <returns>DTO that represents the Material</returns>
+        public DTO removeMaterial(string materialID)
+        {
+            Material material = PersistenceContext.repositories().createMaterialRepository().find(materialID);
+            return PersistenceContext.repositories().createMaterialRepository().remove(material).toDTO();
+        }
+
+        /// <summary>
+        /// Adds a Material to the MaterialRepository given its ID.
+        /// </summary>
+        /// <param name="materialDTO">DTO that holds all info about the Material</param>
+        /// <returns>DTO that represents the Material</returns>
+        //public DTO addMaterial(DTO materialDTO)
+        //{
+            //TODO Extract data from DTO and add new Material to Database
+            //return PersistenceContext.repositories().createMaterialRepository().save(material).toDTO();
+        //}
+
+        /// <summary>
+        /// Updates the Material on the MaterialRepository given its data.
+        /// </summary>
+        /// <param name="materialDTO">DTO that holds all info about the Material</param>
+        /// <returns>DTO that represents the updated Material</returns>
+        //public DTO updateMaterial(DTO materialDTO){
+            //TODO Extract Database ID and new data from DTO
+            //return PersistenceContext.repositories().createMaterialRepository().update(material).toDTO();
+        //}
+
     }
 }
