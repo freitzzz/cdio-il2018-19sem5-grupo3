@@ -9,6 +9,52 @@ namespace core.domain
     public class ContinuousDimensionInterval : Restriction, ValueObject
     {
         /// <summary>
+        /// Constant that represents the message that occurs if the min value is NaN
+        /// </summary>
+        private static readonly string MIN_VALUE_NAN_REFERENCE = "Minimum value has to be a number";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the max value is NaN
+        /// </summary>
+        private static readonly string MAX_VALUE_NAN_REFERENCE = "Maximum value has to be a number";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the increment value is NaN
+        /// </summary>
+        private static readonly string INCREMENT_NAN_REFERENCE = "Increment value has to be a number";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the min value is infinity
+        /// </summary>
+        private static readonly string MIN_VALUE_INFINITY_REFERENCE = "Minimum value can't be infinity";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the max value is infinity
+        /// </summary>
+        private static readonly string MAX_VALUE_INFINITY_REFERENCE = "Maximum value can't be infinity";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the increment value is infinity
+        /// </summary>
+        private static readonly string INCREMENT_INFINITY_REFERENCE = "Increment value can't be infinity";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if one of the values is negative
+        /// </summary>
+        private static readonly string NEGATIVE_VALUES_REFERENCE = "All values have to be positive";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the min value is greater than the max value
+        /// </summary>
+        private static readonly string MIN_VALUE_GREATER_THAN_MAX_REFERENCE = "Minimum value can't be greater than maximum value";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the increment value is greater than the
+        /// difference between the max and min values
+        /// </summary>
+        private static readonly string INCREMENT_GREATER_THAN_MAX_MIN_DIFFERENCE_REFERENCE = "Increment can't be greater than the difference between the max and min values";
+
+        /// <summary>
         /// Minimum value of the interval
         /// </summary>
         private double minValue;
@@ -21,6 +67,13 @@ namespace core.domain
         /// </summary>
         private double increment;
 
+        /// <summary>
+        /// Returns a new ContinuousDimensionInterval instance
+        /// </summary>
+        /// <param name="minValue">minimum value of the interval</param>
+        /// <param name="maxValue">maximum value of the interval</param>
+        /// <param name="increment">increment value of the interval</param>
+        /// <returns>ContinuousDimensionInterval instance</returns>
         public static ContinuousDimensionInterval valueOf(double minValue, double maxValue, double increment)
         {
             return new ContinuousDimensionInterval(minValue, maxValue, increment);
@@ -31,55 +84,54 @@ namespace core.domain
         /// Builds a ContinuousDimensionInterval instance with a minimum value, a maximum value 
         /// and an increment value
         /// </summary>
-        /// <param name="minValue"></param>
-        /// <param name="maxValue"></param>
-        /// <param name="increment"></param>
+        /// <param name="minValue">minimum value of the interval</param>
+        /// <param name="maxValue">maximum value of the interval</param>
+        /// <param name="increment">increment value of the interval</param>
         private ContinuousDimensionInterval(double minValue, double maxValue, double increment)
         {
             if (Double.IsNaN(minValue))
             {
-                throw new ArgumentException("Minimum value has to be a number");
+                throw new ArgumentException(MIN_VALUE_NAN_REFERENCE);
             }
 
             if (Double.IsNaN(maxValue))
             {
-                throw new ArgumentException("Maximum value has to be a number");
+                throw new ArgumentException(MAX_VALUE_NAN_REFERENCE);
             }
 
             if (Double.IsNaN(increment))
             {
-                throw new ArgumentException("Increment value has to be a number");
+                throw new ArgumentException(INCREMENT_NAN_REFERENCE);
             }
 
             if (Double.IsInfinity(minValue))
             {
-                throw new ArgumentException("Minimum value can't be infinity");
+                throw new ArgumentException(MIN_VALUE_INFINITY_REFERENCE);
             }
 
             if (Double.IsInfinity(maxValue))
             {
-                throw new ArgumentException("Maximum value can't be infinity");
+                throw new ArgumentException(MAX_VALUE_INFINITY_REFERENCE);
             }
 
             if (Double.IsInfinity(increment))
             {
-                throw new ArgumentException("Increment can't be infinity");
+                throw new ArgumentException(INCREMENT_INFINITY_REFERENCE);
             }
 
             if (minValue < 0 || maxValue < 0 || increment < 0)
             {
-                throw new ArgumentException("All values have to be positive");
+                throw new ArgumentException(NEGATIVE_VALUES_REFERENCE);
             }
 
             if (minValue > maxValue)
             {
-                throw new ArgumentException("Minimum value can't be greater than maximum value");
+                throw new ArgumentException(MIN_VALUE_GREATER_THAN_MAX_REFERENCE);
             }
 
             if (increment > (maxValue - minValue))
             {
-                throw new ArgumentException("Increment can't be greater than the difference between the " +
-                "max and min value");
+                throw new ArgumentException(INCREMENT_GREATER_THAN_MAX_MIN_DIFFERENCE_REFERENCE);
             }
 
             this.minValue = minValue;
@@ -125,9 +177,8 @@ namespace core.domain
         /// <returns>minimum, maximum and increment values of the interval</returns>
         public override string ToString()
         {
-            return "Minimum Value: " + minValue.ToString() +
-                    "\nMaximum Value: " + maxValue.ToString() +
-                    "\nIncrement: " + increment.ToString();
+            return string.Format("Minimum Value: {0}\nMaximum Value: {1}\nIncrement Value: {2}",
+            minValue,maxValue,increment);
         }
     }
 }
