@@ -8,9 +8,8 @@ namespace core.domain
     /**
     <summary>
         Class that represents a finish of the material.
-        <br>Finish is a value object;
+        <br>Finish is a value object.
     </summary>
-    <typeparam name="string">Generic-Type of the Material entity identifier</typeparam>
     */
     public class Finish : ValueObject
     {
