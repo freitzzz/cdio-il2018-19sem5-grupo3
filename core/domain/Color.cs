@@ -25,18 +25,59 @@ namespace core.domain
         public int Blue { get; set; }
         public int Alpha { get; set; }
 
+        /// <summary>
+        /// Minimum for the coordinate color (R/G/B/A).
+        /// </summary>
+        private static int MIN_VALUE = 0;
+        /// <summary>
+        /// Maximum for the coordinate color (R/G/B/A).
+        /// </summary>
+        private static int MAX_VALUE = 255;
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the coordinate is bigger than the interval
+        /// </summary>
+        private static readonly string COORDINATE_BIGGER_THAN_INTERVAL = "The inserted value is bigger than" + MAX_VALUE;
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the coordinate is bigger than the interval
+        /// </summary>"
+        private static readonly string COORDINATE_LOWER_THAN_INTERVAL = "The inserted value is less than" + MIN_VALUE;
+
+        /// <summary>
+        /// Returns a new ContinuousDimensionInterval instance
+        /// </summary>
+        /// <param name="minValue">minimum value of the interval</param>
+        /// <param name="maxValue">maximum value of the interval</param>
+        /// <param name="increment">increment value of the interval</param>
+        /// <returns>ContinuousDimensionInterval instance</returns>
+        public static Color valueOf(String name, int red, int green, int blue, int alpha)
+        {
+            return new Color(name,red,green,blue,alpha);
+        }
+
         public Color() { }
 
         /// <summary>
         /// Checks if a certain color is the same as the current color.
         /// </summary>
-        public Color(String name, int red, int green, int blue, int alpha)
+        private Color(String name, int red, int green, int blue, int alpha)
         {
-            Name = name;
-            Red = red;
-            Green = green;
-            Blue = blue;
-            Alpha = alpha;
+            if (red > MAX_VALUE || green > MAX_VALUE || blue > MAX_VALUE || alpha > MAX_VALUE)
+            {
+                throw new ArgumentException(COORDINATE_BIGGER_THAN_INTERVAL);
+            }
+
+            if (red < MIN_VALUE || green < MIN_VALUE || blue < MIN_VALUE || alpha < MIN_VALUE)
+            {
+                throw new ArgumentException(COORDINATE_LOWER_THAN_INTERVAL);
+            }
+
+            this.Name = name;
+            this.Red = red;
+            this.Green = green;
+            this.Blue = blue;
+            this.Alpha = alpha;
         }
 
         /// <summary>
@@ -59,13 +100,35 @@ namespace core.domain
                 return hashCode;
             }
         }
+        
+         /// <summary>
+        /// Equals method of Color.null 
+        /// Two objects are the same if the name and RGBA coordinates are the same.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>true if the objects are equal, false if otherwise</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
 
+            Color other = (Color)obj;
+
+            if (!(this.Red == other.Red) || !(this.Blue== other.Blue)||!(this.Green == other.Green)||!(this.Alpha == other.Alpha))
+            {
+                return false;
+            }
+
+            return String.Equals(this.Name, other.Name);
+        }
         /// <summary>
         /// toString override method
         /// </summary>
         public override String ToString()
         {
-            return "Name: " + Name + " R:" + Red + " G:" + Green + " B:" + Blue + " Alpha:" + Alpha + ".\n";
+            return "Name: " + Name + " R:" + Red + " G:" + Green + " B:" + Blue + " A:" + Alpha + ".\n";
         }
     }
 }
