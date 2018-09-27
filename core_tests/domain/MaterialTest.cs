@@ -120,9 +120,8 @@ namespace core_tests.domain
         public void testDifferentTypesAreNotEqual()
         {
             Material moon = new Material("1160912", "No");
-            Product stars = new Product("1160907", "Yes");
 
-            Assert.NotEqual(moon.Equals(stars), true);
+            Assert.NotEqual(moon.Equals("stars"), true);
         }
 
         /**
