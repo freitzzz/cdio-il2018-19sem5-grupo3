@@ -11,7 +11,7 @@ namespace support.domain.ddd{
     /// <typeparam name="ID">Generic-Type of the entity persistence identifier</typeparam>
     //TODO: We have a problem on generic identifiers
     //C# doesn't have an "anonymous generic tag" so we can't do stuff like AggregateRoot<?>
-    public interface Repository<E,ID> where E:AggregateRoot<object>,ID{
+    public interface Repository<E,ID,EID> where E:AggregateRoot<EID>{
         /// <summary>
         /// Saves an entity on the repository
         /// </summary>
@@ -39,5 +39,12 @@ namespace support.domain.ddd{
         /// <param name="entityPersistenceID">ID with the entity persistence identifier</param>
         /// <returns>E with the entity which is represented by a certain persistence identifier</returns>
         E find(ID entityPersistenceID);
+
+        /// <summary>
+        /// Finds an entity based on its identitifer
+        /// </summary>
+        /// <param name="entityID">EID with the entity identifier</param>
+        /// <returns>E with the entity which is represend by a certain entity identifier</returns>
+        E find(EID entityID);
     }
 }
