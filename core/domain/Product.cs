@@ -31,6 +31,11 @@ namespace core.domain{
         /// </summary>
         private const string INVALID_PRODUCT_MATERIALS="The materials which the product can be made of are invalid";
         /// <summary>
+        /// Constant that represents the messange that ocurres if the product restrinctions are invalid
+        /// </summary>
+        private const string INVALID_PRODUCT_RESTRICTIONS="The product restrinctions are invalid";
+        
+        /// <summary>
         /// String with the product reference
         /// </summary>
         [Key]
@@ -50,18 +55,42 @@ namespace core.domain{
         //TODO: Should product materials be a list or a set?
         private readonly List<Material> materials;
         /// <summary>
+        /// List with the product heigth restrictions
+        /// </summary>
+        //TODO: Should product restrictions be a list or a set
+        private readonly List<Restriction> heightRestrictions;
+        /// <summary>
+        /// List with the product width restrictions
+        /// </summary>
+        //TODO: Should product restrinctions be a list or a set
+        private readonly List<Restriction> widthRestrictions;
+        /// <summary>
+        /// List with the product depth restrictions
+        /// </summary>
+        //TODO: Should product restrinctions be a list or a set
+        private readonly List<Restriction> depthRestrictions;
+        /// <summary>
         /// Builds a new product with its reference, designation and materials which it can be made of
         /// </summary>
         /// <param name="reference">String with the product reference</param>
         /// <param name="designation">String with the product designation</param>
         /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
-        public Product(string reference,string designation,IEnumerable<Material> materials){
+        public Product(string reference,string designation,IEnumerable<Material> materials,
+                        IEnumerable<Restriction> heightRestrictions,
+                        IEnumerable<Restriction> widthRestrictions,
+                        IEnumerable<Restriction> depthRestrictions){
             checkProductProperties(reference,designation);
             checkProductMaterials(materials);
+            checkProductRestrictions(heightRestrictions);
+            checkProductRestrictions(widthRestrictions);
+            checkProductRestrictions(depthRestrictions);
             this.reference=reference;
             this.designation=designation;
             this.materials=new List<Material>(materials);
             this.complementedProducts=new List<Product>();
+            this.heightRestrictions=new List<Restriction>(heightRestrictions);
+            this.widthRestrictions=new List<Restriction>(widthRestrictions);
+            this.depthRestrictions=new List<Restriction>(depthRestrictions);
         }
 
         /// <summary>
@@ -70,14 +99,23 @@ namespace core.domain{
         /// <param name="reference">String with the product reference</param>
         /// <param name="designation">String with the product designation</param>
         /// <param name="complementedProducts">IEnumerable with the product complemented products</param>
-        public Product(string reference,string designation,IEnumerable<Material> materials,IEnumerable<Product> complementedProducts){
+        public Product(string reference,string designation,IEnumerable<Material> materials,IEnumerable<Product> complementedProducts,
+                        IEnumerable<Restriction> heightRestrictions,
+                        IEnumerable<Restriction> widthRestrictions,
+                        IEnumerable<Restriction> depthRestrictions){
             checkProductComplementedProducts(complementedProducts);
             checkProductMaterials(materials);
             checkProductProperties(reference,designation);
+            checkProductRestrictions(heightRestrictions);
+            checkProductRestrictions(widthRestrictions);
+            checkProductRestrictions(depthRestrictions);
             this.reference=reference;
             this.designation=designation;
             this.materials=new List<Material>(materials);
             this.complementedProducts=new List<Product>(complementedProducts);
+            this.heightRestrictions=new List<Restriction>(heightRestrictions);
+            this.widthRestrictions=new List<Restriction>(widthRestrictions);
+            this.depthRestrictions=new List<Restriction>(depthRestrictions);
         }
 
         /// <summary>
@@ -101,6 +139,42 @@ namespace core.domain{
             if(!isProductMaterialValidForAddition(productMaterial))
                 return false;
             materials.Add(productMaterial);
+            return true;
+        }
+
+        /// <summary>
+        /// Adds a new height restriction to the product
+        /// </summary>
+        /// <param name="restriction">Restriction with the height restriction</param>
+        /// <returns>boolean true if the restriction was added with success, false if not</returns>
+        public bool addHeightRestriction(Restriction restriction){
+            if(!isProductRestrictionValidForAddition(restriction,heightRestrictions))
+                return false;
+            heightRestrictions.Add(restriction);
+            return true;
+        }
+
+        /// <summary>
+        /// Adds a new width restriction to the product
+        /// </summary>
+        /// <param name="restriction">Restriction with the width restriction</param>
+        /// <returns>boolean true if the restriction was added with success, false if not</returns>
+        public bool addWidthRestriction(Restriction restriction){
+            if(!isProductRestrictionValidForAddition(restriction,widthRestrictions))
+                return false;
+            widthRestrictions.Add(restriction);
+            return true;
+        }
+
+        /// <summary>
+        /// Adds a new depth restriction to the product
+        /// </summary>
+        /// <param name="restriction">Restriction with the depth restriction</param>
+        /// <returns>boolean true if the restriction was added with success, false if not</returns>
+        public bool addDepthRestriction(Restriction restriction){
+            if(!isProductRestrictionValidForAddition(restriction,depthRestrictions))
+                return false;
+            depthRestrictions.Add(restriction);
             return true;
         }
 
@@ -175,6 +249,16 @@ namespace core.domain{
         }
 
         /// <summary>
+        /// Checks if a product restriction is valid for addition on the current product
+        /// </summary>
+        /// <param name="productRestriction">Restriction with the restriction being validated</param>
+        /// <param name="productRestrictions">ICollection with the product restrictions</param>
+        /// <returns>boolean true if the restriction is valid for addition, false if not</returns>
+        private bool isProductRestrictionValidForAddition(Restriction productRestriction,ICollection<Restriction> productRestrictions){
+            return productRestriction!=null && !productRestrictions.Contains(productRestriction);
+        }
+        
+        /// <summary>
         /// Checks if the product properties are valid
         /// </summary>
         /// <param name="reference">String with the product reference</param>
@@ -205,6 +289,16 @@ namespace core.domain{
         }
 
         /// <summary>
+        /// Checks if the product restrinctions are valid
+        /// </summary>
+        /// <param name="productRestrictions">IEnumerable with the product restrictions</param>
+        private void checkProductRestrictions(IEnumerable<Restriction> productRestrictions){
+            if(Collections.isEnumerableNullOrEmpty(productRestrictions))
+                throw new ArgumentException(INVALID_PRODUCT_RESTRICTIONS);
+            checkDuplicatedRestrictions(productRestrictions);
+        }
+
+        /// <summary>
         /// Checks if a enumerable of products has duplicates
         /// </summary>
         /// <param name="complementedProducts">IEnumerable with the complemented products</param>
@@ -223,7 +317,7 @@ namespace core.domain{
         /// <summary>
         /// Checks if an enumerable of materials has duplicates
         /// </summary>
-        /// <param name="productMaterials"></param>
+        /// <param name="productMaterials">IEnumerable with the product materials</param>
         private void checkDuplicatedMaterials(IEnumerable<Material> productMaterials){
             HashSet<string> productMaterialsReferences=new HashSet<string>();
             IEnumerator<Material> productMaterialsEnumerator=productMaterials.GetEnumerator();
@@ -232,6 +326,22 @@ namespace core.domain{
                 productMaterial=productMaterialsEnumerator.Current;
                 if(!productMaterialsReferences.Add(productMaterial.id())){
                     throw new ArgumentException(INVALID_PRODUCT_MATERIALS);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks if an enumerable of restrictions has duplicates
+        /// </summary>
+        /// <param name="productRestrictions">IEnumerable with product restrictions</param>
+        private void checkDuplicatedRestrictions(IEnumerable<Restriction> productRestrictions){
+            HashSet<int> productRestrictionsHashCodes=new HashSet<int>();
+            IEnumerator<Restriction> productRestrictionsEnumerator=productRestrictions.GetEnumerator();
+            Restriction nextRestriction=productRestrictionsEnumerator.Current;
+            while(productRestrictionsEnumerator.MoveNext()){
+                nextRestriction=productRestrictionsEnumerator.Current;
+                if(!productRestrictionsHashCodes.Add(nextRestriction.GetHashCode())){
+                    throw new ArgumentException(INVALID_PRODUCT_RESTRICTIONS);
                 }
             }
         }
