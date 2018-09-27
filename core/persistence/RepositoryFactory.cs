@@ -8,5 +8,13 @@ namespace core.persistence{
         /// </summary>
         /// <returns>ProductRepository with the repository for product entities</returns>
         ProductRepository createProductRepository();
+
+        /**
+        <summary>
+            Creates a MaterialRepository.
+        </summary>
+        <returns>MaterialRepository with the repository for Material entities</returns>
+         */
+        MaterialRepository createMaterialRepository();   
     }
 }

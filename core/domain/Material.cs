@@ -1,5 +1,6 @@
 using support.domain.ddd;
 using support.utils;
+using support.dto;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +15,7 @@ namespace core.domain
     </summary>
     <typeparam name = "string">Generic-Type of the Material entity identifier</typeparam>
     */
-    public class Material : AggregateRoot<string>
+    public class Material : AggregateRoot<string>, DTOAble
     {
         /**
         <summary>
@@ -155,8 +156,9 @@ namespace core.domain
         <param name = "color">Color to check</param>
         <returns>True if the color exists, false if not</returns>
         */
-        public bool hasColor(Color color){
-            if(color == null) return false;
+        public bool hasColor(Color color)
+        {
+            if (color == null) return false;
             return colors.Contains(color);
         }
 
@@ -194,8 +196,9 @@ namespace core.domain
         <param name = "color">Finish to check</param>
         <returns>True if the finish exists, false if not</returns>
         */
-        public bool hasFinish(Finish finish){
-            if(finish == null) return false;
+        public bool hasFinish(Finish finish)
+        {
+            if (finish == null) return false;
             return finishes.Contains(finish);
         }
 
@@ -210,6 +213,34 @@ namespace core.domain
         public bool sameAs(string comparingEntity)
         {
             return id().Equals(comparingEntity);
+        }
+
+        /** <summary>
+            Returns the current Material as a DTO.
+        </summary>
+        <returns>DTO with the current DTO representation of the Material</returns>
+        */
+        public DTO toDTO()
+        {
+            GenericDTO dto = new GenericDTO(Properties.CONTEXT);
+            
+            dto.put(Properties.REFERENCE_PROPERTY, reference);
+            dto.put(Properties.DESIGNATION_PROPERTY, designation);
+
+            List<String> dtoColors = new List<String>();
+            foreach (Color color in colors)
+            {
+                dtoColors.Add(color.ToString());
+            }
+            dto.put(Properties.COLORS_PROPERTY, dtoColors);
+
+            List<String> dtoFinishes = new List<String>();
+            foreach(Finish finish in finishes){
+                dtoFinishes.Add(finish.ToString());
+            }
+            dto.put(Properties.FINISHES_PROPERTY, dtoFinishes);            
+
+            return dto;
         }
 
         /**
@@ -250,6 +281,49 @@ namespace core.domain
                 Material material = (Material)obj;
                 return reference.Equals(material.reference);
             }
+        }
+
+        /**
+        <summary>
+            Inner static class which represents the Material's properties used to map on data holders (e.g. DTO)
+        </summary>
+         */
+        public static class Properties
+        {
+            /**
+           <summary>
+                Constant that represents the context of the Properties.
+            </summary>
+            */
+            public const string CONTEXT = "Material";
+
+            /**
+            <summary>
+                Constant that represents the name of the Property which maps the Material's reference.
+            </summary>
+             */
+            public const string REFERENCE_PROPERTY = "reference";
+
+            /**
+            <summary>
+                Constant that represents the name of the Property which maps the Material's designation.
+            </summary>
+             */
+            public const string DESIGNATION_PROPERTY = "designation";
+
+            /**
+            <summary>
+                Constant that represents the name of the Property which maps the Material's colors.
+            </summary>
+             */
+            public const string COLORS_PROPERTY = "colors";
+
+            /**
+            <summary>
+                Constant that represents the name of the Property which maps the Material's finishes.
+            </summary>
+             */
+            public const string FINISHES_PROPERTY = "finishes";
         }
     }
 }
