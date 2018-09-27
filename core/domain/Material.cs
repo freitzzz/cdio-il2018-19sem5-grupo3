@@ -1,6 +1,7 @@
 using support.domain.ddd;
 using support.utils;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace core.domain
@@ -11,13 +12,41 @@ namespace core.domain
         <br>Material is an entity;
         <br>Material is an aggregate root.
     </summary>
-    <typeparam name="string">Generic-Type of the Material entity identifier</typeparam>
+    <typeparam name = "string">Generic-Type of the Material entity identifier</typeparam>
     */
     public class Material : AggregateRoot<string>
     {
         /**
         <summary>
-            String with the Material's reference
+            Constant that represents the message that ocurrs if the Material's reference is not valid.
+        </summary>
+        */
+        private const string INVALID_MATERIAL_REFERENCE = "The Material's reference is not valid!";
+
+        /**
+        <summary>
+            Constant that represents the message that ocurrs if the Material's designation is not valid.
+        </summary>
+        */
+        private const string INVALID_MATERIAL_DESIGNATION = "The Material's designation is not valid!";
+
+        /**
+        <summary>
+            Constant that represents the message that ocurrs if the Material's colors are not valid.
+        </summary>
+         */
+        private const string INVALID_MATERIAL_COLORS = "The Material's colors are not valid!";
+
+        /**
+        <summary>
+            Constant that represents the message that ocurrs if the Material's finishes are not valid.
+        </summary>
+         */
+        private const string INVALID_FINISHES_COLORS = "The Material's finishes are not valid!";
+
+        /**
+        <summary>
+            String with the Material's reference.
         </summary>
         */
         [Key]
@@ -25,25 +54,24 @@ namespace core.domain
 
         /** 
         <summary>
-            String with the Material's designation
+            String with the Material's designation.
         </summary>
         */
         private readonly string designation;
 
         /**
         <summary>
-            Constant that represents the message that ocurrs if the Material's reference is not valid.
+            List with all the Material's colors.
         </summary>
-        */
-        private static readonly string INVALID_MATERIAL_REFERENCE = "The Material's reference is not valid!";
+         */
+        private readonly List<Color> colors = new List<Color>();
 
         /**
-        <summary>
-            Constant that represents the message that ocurrs if the Material's designation is not valid.
-        </summary>
-        */
-        private static readonly string INVALID_MATERIAL_DESIGNATION = "The Material's designation is not valid!";
-
+         <summary>
+             List with all the Material's finishes.
+         </summary>
+          */
+        private readonly List<Finish> finishes = new List<Finish>();
 
         /**
         <summary>
@@ -51,25 +79,35 @@ namespace core.domain
         </summary>
         <param name = "reference">string with the new Material's reference</param>
         <param name = "designation">string with the new Material's designation</param>
+        <param name = "colors">List with the new Material's colors</param>
+        <param name = "finishes">List with the new Material's finishes</param>
          */
-        public Material(string reference, string designation)
+        public Material(string reference, string designation,
+        List<Color> colors, List<Finish> finishes)
         {
-            checkMaterialProperties(reference, designation);
+            checkMaterialProperties(reference, designation, colors, finishes);
             this.reference = reference;
             this.designation = designation;
+            this.colors.AddRange(colors);
+            this.finishes.AddRange(finishes);
         }
 
         /**
         <summary>
-            Checks if the Material's reference and designation are valid.
+            Checks if the Material's properties are valid.
         </summary>
         <param name = "reference">String with the Material's reference</param>
         <param name = "designation">String with the Material's designation</param>
+        <param name = "colors">List with the Material's colors</param>
+        <param name = "finishes">List with the Material's finishes</param>
         */
-        private void checkMaterialProperties(string reference, string designation)
+        private void checkMaterialProperties(string reference,
+        string designation, List<Color> colors, List<Finish> finishes)
         {
             if (Strings.isNullOrEmpty(reference)) throw new ArgumentException(INVALID_MATERIAL_REFERENCE);
             if (Strings.isNullOrEmpty(designation)) throw new ArgumentException(INVALID_MATERIAL_DESIGNATION);
+            if (Collections.isListNull(colors) || Collections.isListEmpty(colors)) throw new ArgumentException(INVALID_MATERIAL_COLORS);
+            if (Collections.isListNull(finishes) || Collections.isListEmpty(finishes)) throw new ArgumentException(INVALID_FINISHES_COLORS);
         }
 
         /**
@@ -85,6 +123,85 @@ namespace core.domain
 
         /**
         <summary>
+            Adds a new color to the Material's list of colors.
+        </summary>
+        <param name = "color">Color to add</param>
+        <returns>True if the color is successfully added, false if not</returns>
+        */
+        public bool addColor(Color color)
+        {
+            if (color == null || colors.Contains(color)) return false;
+            colors.Add(color);
+            return true;
+        }
+
+        /**
+        <summary>
+            Removes a color from the Material's list of colors.
+        </summary>
+        <param name = "color">Color to remove</param>
+        <returns>True if the color is successfully removed, false if not</returns>
+        */
+        public bool removeColor(Color color)
+        {
+            if (color == null) return false;
+            return colors.Remove(color);
+        }
+
+        /**
+        <summary>
+            Checks if the Material has a certain color on its list of colors.
+        </summary>
+        <param name = "color">Color to check</param>
+        <returns>True if the color exists, false if not</returns>
+        */
+        public bool hasColor(Color color){
+            if(color == null) return false;
+            return colors.Contains(color);
+        }
+
+        /**
+        <summary>
+            Adds a new finish to the Material's list of finishes.
+        </summary>
+        <param name = "finish">Finish to add</param>
+        <returns>True if the finish is successfully added, false if not</returns>
+        */
+        public bool addFinish(Finish finish)
+        {
+            if (finish == null || finishes.Contains(finish)) return false;
+            finishes.Add(finish);
+            return true;
+        }
+
+        /**
+        <summary>
+            Removes a finish from the Material's list of finishes.
+        </summary>
+        <param name = "finish">Finish to remove</param>
+        <returns>True if the finish is successfully removed, false if not</returns>
+        */
+        public bool removeFinish(Finish finish)
+        {
+            if (finish == null) return false;
+            return finishes.Remove(finish);
+        }
+
+        /**
+        <summary>
+            Checks if the Material has a certain finish on its list of finishes.
+        </summary>
+        <param name = "color">Finish to check</param>
+        <returns>True if the finish exists, false if not</returns>
+        */
+        public bool hasFinish(Finish finish){
+            if(finish == null) return false;
+            return finishes.Contains(finish);
+        }
+
+
+        /**
+        <summary>
             Checks if a certain Material's identity is the same as the current Material.
         </summary>
         <param name = "comparingEntity">string with the Material's identity to compare</param>
@@ -93,6 +210,26 @@ namespace core.domain
         public bool sameAs(string comparingEntity)
         {
             return id().Equals(comparingEntity);
+        }
+
+        /**
+        <summary>
+            Returns a textual description of the Material.
+        </summary>
+         */
+        public override string ToString()
+        {
+            return string.Format("Designation: {0}, Reference {1}", designation, reference);
+        }
+
+        /**
+        <summary>
+            Returns the generated hash code of the Material.
+        </summary>
+         */
+        public override int GetHashCode()
+        {
+            return reference.GetHashCode();
         }
 
         /**
@@ -113,27 +250,6 @@ namespace core.domain
                 Material material = (Material)obj;
                 return reference.Equals(material.reference);
             }
-        }
-
-
-        /**
-        <summary>
-            Returns a textual description of the Material.
-        </summary>
-         */
-        public override string ToString()
-        {
-            return string.Format("Designation: {0}, Reference {1}", designation, reference);
-        }
-
-        /**
-        <summary>
-            Returns the generated hash code of the Material.
-        </summary>
-         */
-        public override int GetHashCode()
-        {
-            return reference.GetHashCode();
         }
     }
 }
