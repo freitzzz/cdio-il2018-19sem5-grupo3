@@ -50,16 +50,18 @@ namespace core.domain{
         //TODO: Should product materials be a list or a set?
         private readonly List<Material> materials;
         /// <summary>
-        /// Builds a new product with its reference and designation 
+        /// Builds a new product with its reference, designation and materials which it can be made of
         /// </summary>
         /// <param name="reference">String with the product reference</param>
         /// <param name="designation">String with the product designation</param>
-        public Product(string reference,string designation){
+        /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
+        public Product(string reference,string designation,IEnumerable<Material> materials){
             checkProductProperties(reference,designation);
+            checkProductMaterials(materials);
             this.reference=reference;
             this.designation=designation;
+            this.materials=new List<Material>(materials);
             this.complementedProducts=new List<Product>();
-            this.materials=new List<Material>();
         }
 
         /// <summary>
@@ -68,13 +70,14 @@ namespace core.domain{
         /// <param name="reference">String with the product reference</param>
         /// <param name="designation">String with the product designation</param>
         /// <param name="complementedProducts">IEnumerable with the product complemented products</param>
-        public Product(string reference,string designation,IEnumerable<Product> complementedProducts){
+        public Product(string reference,string designation,IEnumerable<Material> materials,IEnumerable<Product> complementedProducts){
             checkProductComplementedProducts(complementedProducts);
+            checkProductMaterials(materials);
             checkProductProperties(reference,designation);
             this.reference=reference;
             this.designation=designation;
+            this.materials=new List<Material>(materials);
             this.complementedProducts=new List<Product>(complementedProducts);
-            this.materials=new List<Material>();
         }
 
         /// <summary>
