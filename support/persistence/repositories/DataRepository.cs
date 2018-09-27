@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace support.persistence.repositories{
     /// <summary>
     /// Generic Interface for CRUD functionalities on a data repository
@@ -32,5 +34,10 @@ namespace support.persistence.repositories{
         /// <param name="entityPersistenceID">ID with the entity persistence identifier</param>
         /// <returns>E with the entity which is represented by a certain persistence identifier</returns>
         E find(ID entityPersistenceID);
+        /// <summary>
+        /// Finds all entities of a repository
+        /// </summary>
+        /// <returns>IEnumerable with all of the entities of a repository</returns>
+        IEnumerable<E> findAll();
     }
 }
