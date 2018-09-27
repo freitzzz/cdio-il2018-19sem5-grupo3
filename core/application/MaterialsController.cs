@@ -40,5 +40,25 @@ namespace core.application
         {
             return PersistenceContext.repositories().createMaterialRepository().find(materialID).toDTO();
         }
+
+        /// <summary>
+        /// Parses an enumerable of materials persistence identifiers as an enumerable of entities
+        /// </summary>
+        /// <param name="materialsIDS">Enumerable with the materials persistence identifiers</param>
+        /// <returns>IEnumerable with the materials ids as entities</returns>
+        internal IEnumerable<Material> enumerableOfMaterialsIDSAsEntities(IEnumerable<long> materialsIDS){
+            if(materialsIDS==null)return null;
+            List<Material> materials=new List<Material>();
+            MaterialRepository materialRepository=PersistenceContext.repositories().createMaterialRepository();
+            IEnumerator<long> materialsIDSEnumerator=materialsIDS.GetEnumerator();
+            long nextMaterialID=materialsIDSEnumerator.Current;
+            while(materialsIDSEnumerator.MoveNext()){
+                nextMaterialID=materialsIDSEnumerator.Current;
+                //Uncomment when Material Persistence ID is changed to long
+                //materials.Add(materialRepository.find(nextMaterialID));
+            }
+            return materials;
+        }
+
     }
 }

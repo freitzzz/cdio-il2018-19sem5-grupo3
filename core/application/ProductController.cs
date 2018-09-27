@@ -12,6 +12,15 @@ namespace core.application
     /// </summary>
     public class ProductController
     {
+        public bool addProduct(DTO productAsDTO){
+            Product.ProductBuilder productBuilder=Product.ProductBuilder.create();
+            productBuilder.withReference((string)productAsDTO.get(Product.Properties.REFERENCE_PROPERTY));
+            productBuilder.withDesignation((string)productAsDTO.get(Product.Properties.DESIGNATION_PROPERTY));
+            productBuilder.withComplementedProducts(enumerableOfProductsIDSAsEntities((IEnumerable<long>)productAsDTO.get(Product.Properties.COMPLEMENTED_PRODUCTS_PROPERTY)));
+            productBuilder.withMaterials(new MaterialsController().enumerableOfMaterialsIDSAsEntities((IEnumerable<long>)productAsDTO.get(Product.Properties.MATERIALS_PROPERTY)));
+            
+            return PersistenceContext.repositories().createProductRepository().save(productBuilder.build())!=null;
+        }
         /// <summary>
         /// Fetches a list of all products present in the product repository
         /// </summary>
@@ -44,5 +53,26 @@ namespace core.application
         {
             return PersistenceContext.repositories().createProductRepository().find(productID).toDTO();
         }
+
+
+        /// <summary>
+        /// Parses an enumerable of products persistence identifiers as an enumerable of entities
+        /// </summary>
+        /// <param name="productsIDS">Enumerable with the products persistence identifiers</param>
+        /// <returns>IEnumerable with the products ids as entities</returns>
+        internal IEnumerable<Product> enumerableOfProductsIDSAsEntities(IEnumerable<long> productsIDS){
+            if(productsIDS==null)return null;
+            List<Product> products=new List<Product>();
+            IEnumerator<long> productsIDSIterator=productsIDS.GetEnumerator();
+            long nextProductID=productsIDSIterator.Current;
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            while(productsIDSIterator.MoveNext()){
+                nextProductID=productsIDSIterator.Current;
+                products.Add(productRepository.find(nextProductID));
+            }
+            return products;
+        }
+
     }
+
 }
