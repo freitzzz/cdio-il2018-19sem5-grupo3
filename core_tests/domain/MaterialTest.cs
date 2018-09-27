@@ -753,7 +753,12 @@ namespace core_tests.domain
 
             Material moon = new Material("1160912", "No", colors, finishes);
 
-            Assert.False(moon.Equals("stars"));
+            List<Material> materials = new List<Material>();
+            materials.Add(moon);
+
+            Product stars = new Product("1160998", "Yes", materials);
+
+            Assert.False(moon.Equals(stars));
         }
 
         //ToString tests
