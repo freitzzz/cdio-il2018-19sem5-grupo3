@@ -11,25 +11,22 @@ namespace core.domain
     */
     public class CustomizedDimensions : ValueObject
     {
-        /**
-        <summary>
-            Constant that represents the message that ocurrs if the customizedDimensions's height are not valid.
-        </summary>
-         */
-        private const string INVALID_CUSTOMIZED_DIMENSIONS_HEIGHT = "The CustomizedDimensions's height are not valid!";
-        /**
-        <summary>
-            Constant that represents the message that ocurrs if the CustomizedDimensions's width are not valid.
-        </summary>
-         */
-        private const string INVALID_CUSTOMIZED_DIMENSIONS_WIDTH = "The CustomizedDimensions's width are not valid!";
-        /**
-        <summary>
-            Constant that represents the message that ocurrs if the CustomizedDimensions's depth are not valid.
-        </summary>
-         */
-        private const string INVALID_CUSTOMIZED_DIMENSIONS_DEPTH = "The CustomizedDimensions's depth are not valid!";
-        /**
+       
+        /// <summary>
+        /// Constant that represents the message that occurs if the value is NaN
+        /// </summary>
+        private const string VALUE_IS_NAN_REFERENCE = "Dimension value has to be a number";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the value is infinity
+        /// </summary>
+        private const string VALUE_IS_INFINITY_REFERENCE = "Dimension value can't be infinity";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the value is negative
+        /// </summary>
+        private const string NEGATIVE_VALUE_REFERENCE = "Dimension value can't be negative";
+/**
         <summary>
             The CustomizedDimensions's height.
         </summary>
@@ -69,7 +66,7 @@ namespace core.domain
          */
         private CustomizedDimensions(double height, double width, double depth)
         {
-            checkCustomizedDimensions(height,width,depth);
+            checkCustomizedDimensions(height, width, depth);
             this.height = height;
             this.width = width;
             this.depth = depth;
@@ -84,9 +81,15 @@ namespace core.domain
         */
         private void checkCustomizedDimensions(double height, double width, double depth)
         {
-            if (Double.IsNaN(height)) throw new ArgumentException(INVALID_CUSTOMIZED_DIMENSIONS_HEIGHT);
-            if (Double.IsNaN(width)) throw new ArgumentException(INVALID_CUSTOMIZED_DIMENSIONS_WIDTH);
-            if (Double.IsNaN(depth)) throw new ArgumentException(INVALID_CUSTOMIZED_DIMENSIONS_DEPTH);
+            if (Double.IsNaN(height)) throw new ArgumentException(VALUE_IS_NAN_REFERENCE);
+            if (Double.IsInfinity(height))throw new ArgumentException(VALUE_IS_INFINITY_REFERENCE);
+            if (height < 0)throw new ArgumentException(NEGATIVE_VALUE_REFERENCE);
+            if (Double.IsNaN(width))throw new ArgumentException(VALUE_IS_NAN_REFERENCE);
+            if (Double.IsInfinity(width)) throw new ArgumentException(VALUE_IS_INFINITY_REFERENCE);
+            if (width < 0) throw new ArgumentException(NEGATIVE_VALUE_REFERENCE);
+            if (Double.IsNaN(depth))throw new ArgumentException(VALUE_IS_NAN_REFERENCE);
+            if (Double.IsInfinity(depth))throw new ArgumentException(VALUE_IS_INFINITY_REFERENCE);
+            if (depth < 0)throw new ArgumentException(NEGATIVE_VALUE_REFERENCE);
         }
         /**
         <summary>
@@ -95,7 +98,7 @@ namespace core.domain
          */
         public override string ToString()
         {
-            return string.Format("Height: {0}, Width {1}, Depth {2}", height, width,depth);
+            return string.Format("Height: {0}, Width {1}, Depth {2}", height, width, depth);
         }
         /**
         <summary>
@@ -126,12 +129,12 @@ namespace core.domain
             else
             {
                 CustomizedDimensions custDimensions = (CustomizedDimensions)obj;
-                return height.Equals(custDimensions.height) && 
-                        width.Equals(custDimensions.width) && 
+                return height.Equals(custDimensions.height) &&
+                        width.Equals(custDimensions.width) &&
                         depth.Equals(custDimensions.depth);
             }
         }
 
-        
+
     }
 }
