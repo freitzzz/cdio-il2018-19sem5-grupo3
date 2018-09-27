@@ -7,11 +7,6 @@
             "type": "process",
             "args": [
                 "build",
-<<<<<<< HEAD
-                "${workspaceFolder}/backend/backend.csproj"
-            ],
-            "problemMatcher": "$msCompile"
-=======
                 "${workspaceFolder}/"
             ],
             "problemMatcher": "$msCompile",
@@ -19,7 +14,6 @@
                 "kind": "build",
                 "isDefault": true
             }
->>>>>>> 9ecc8bb266cf9204e9e86a12c38f5138cfd12679
         }
     ]
 }
