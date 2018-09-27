@@ -142,7 +142,7 @@ namespace core_tests.domain
             Material balsamic = new Material("1160912", "Cowboy Boots");
             Material vinegar = new Material("1160912", "Cowboy Boots");
 
-            Assert.Equal(balsamic.GetHashCode(), vinegar.GetHashCode());
+            Assert.Equal(balsamic.ToString(), vinegar.ToString());
         }
 
         /**

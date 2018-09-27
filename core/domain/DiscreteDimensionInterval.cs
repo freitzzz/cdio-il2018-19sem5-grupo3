@@ -13,12 +13,12 @@ namespace core.domain
         /// <summary>
         /// Constant that represents the message that occurs if the list is null
         /// </summary>
-        private static readonly string NULL_LIST_REFERENCE = "List of values can't be null";
+        private const string NULL_LIST_REFERENCE = "List of values can't be null";
 
         /// <summary>
         /// Constant that represents the message that occurs if the min value is NaN
         /// </summary>
-        private static readonly string EMPTY_LIST_REFERENCE = "List of values can't be empty";
+        private const string EMPTY_LIST_REFERENCE = "List of values can't be empty";
 
         /// <summary>
         /// List of values that make up the interval.
