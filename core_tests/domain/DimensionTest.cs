@@ -77,6 +77,13 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureSameInstanceIsEqual(){
+            Dimension instance = Dimension.valueOf(3);
+
+            Assert.True(instance.Equals(instance));
+        }
+
+        [Fact]
         public void testHashCode()
         {
             Dimension instance = Dimension.valueOf(2.718);

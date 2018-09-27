@@ -78,6 +78,15 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureSameInstanceIsEqual(){
+            var list = new List<double>();
+            list.Add(3.0);
+            DiscreteDimensionInterval instance = DiscreteDimensionInterval.valueOf(list);
+
+            Assert.True(instance.Equals(instance));
+        }
+
+        [Fact]
         public void testGetHashCode()
         {
             var list = new List<double>();

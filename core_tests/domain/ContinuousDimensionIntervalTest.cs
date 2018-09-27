@@ -207,6 +207,13 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureSameInstanceIsEqual(){
+            ContinuousDimensionInterval instance = ContinuousDimensionInterval.valueOf(1.0,10.0,1.0);
+
+            Assert.True(instance.Equals(instance));
+        }
+
+        [Fact]
         public void testGetHashCode()
         {
             ContinuousDimensionInterval instance = ContinuousDimensionInterval.valueOf(1.0, 10.0, 1.0);

@@ -68,6 +68,11 @@ namespace core.domain
                 return false;
             }
 
+            if (this == obj)
+            {
+                return true;
+            }
+
             DiscreteDimensionInterval other = (DiscreteDimensionInterval)obj;
 
             return this.values.Equals(other.values);

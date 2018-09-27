@@ -152,6 +152,11 @@ namespace core.domain
                 return false;
             }
 
+            if (this == obj)
+            {
+                return true;
+            }
+
             ContinuousDimensionInterval other = (ContinuousDimensionInterval)obj;
 
             if (!Double.Equals(this.minValue, other.minValue) || !Double.Equals(this.maxValue, other.maxValue))
@@ -178,7 +183,7 @@ namespace core.domain
         public override string ToString()
         {
             return string.Format("Minimum Value: {0}\nMaximum Value: {1}\nIncrement Value: {2}",
-            minValue,maxValue,increment);
+            minValue, maxValue, increment);
         }
     }
 }
