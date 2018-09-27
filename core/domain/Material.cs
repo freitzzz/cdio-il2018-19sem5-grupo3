@@ -17,6 +17,20 @@ namespace core.domain
     {
         /**
         <summary>
+            Constant that represents the message that ocurrs if the Material's reference is not valid.
+        </summary>
+        */
+        private const string INVALID_MATERIAL_REFERENCE = "The Material's reference is not valid!";
+
+        /**
+        <summary>
+            Constant that represents the message that ocurrs if the Material's designation is not valid.
+        </summary>
+        */
+        private const string INVALID_MATERIAL_DESIGNATION = "The Material's designation is not valid!";
+
+        /**
+        <summary>
             String with the Material's reference
         </summary>
         */
@@ -29,21 +43,6 @@ namespace core.domain
         </summary>
         */
         private readonly string designation;
-
-        /**
-        <summary>
-            Constant that represents the message that ocurrs if the Material's reference is not valid.
-        </summary>
-        */
-        private static readonly string INVALID_MATERIAL_REFERENCE = "The Material's reference is not valid!";
-
-        /**
-        <summary>
-            Constant that represents the message that ocurrs if the Material's designation is not valid.
-        </summary>
-        */
-        private static readonly string INVALID_MATERIAL_DESIGNATION = "The Material's designation is not valid!";
-
 
         /**
         <summary>
