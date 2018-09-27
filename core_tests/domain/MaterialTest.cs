@@ -17,8 +17,9 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void testId()
+        public void ensureIdMehodWorks()
         {
+
             string reference = "1160912";
             string designation = "FR E SH A VOCA DO";
 
@@ -33,14 +34,14 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void testSameForSameIdentity()
+        public void ensureMaterialsWithEqualIdentitiesAreTheSame()
         {
             string reference = "1160912";
             string designation = "FR E SH A VOCA DO";
 
             Material material = new Material(reference, designation);
 
-            Assert.Equal(material.sameAs("1160912"), true);
+            Assert.True(material.sameAs(reference));
         }
 
         /**
@@ -49,11 +50,16 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void tesNotSameForDifferentIdentity()
+        public void ensureMaterialsWithDifferentIdentitiesAreNotTheSame()
         {
-            Material material = new Material("1160912", "FR E SH A VOCA DO");
+            string reference = "1160912";
+            string designation = "FR E SH A VOCA DO";
 
-            Assert.Equal(material.sameAs("1160907"), true);
+            string anotherReference = "1160907";
+
+            Material material = new Material(reference, designation);
+
+            Assert.False(material.sameAs(anotherReference));
         }
 
         /**
@@ -62,7 +68,7 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void testGetHashCode()
+        public void ensureGetHashCodeWorks()
         {
             Material balsamic = new Material("1160912", "Cowboy Boots");
             Material vinegar = new Material("1160912", "Cowboy Boots");
@@ -76,12 +82,12 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void testDifferentMaterialsAreNotEqual()
+        public void ensureMaterialsWithDifferentReferencesAreNotEqual()
         {
             Material salt = new Material("1160912", "Guru");
             Material pepper = new Material("1160907", "Velhinho");
 
-            Assert.NotEqual(salt.Equals(pepper), true);
+            Assert.False(salt.Equals(pepper));
         }
 
         /**
@@ -90,12 +96,12 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void testEqualMaterialsAreEqual()
+        public void ensureMaterialsWithSameReferencesAreEqual()
         {
             Material ping = new Material("1160912", "Ping");
             Material pong = new Material("1160912", "Pong");
 
-            Assert.NotEqual(ping.Equals(pong), true);
+            Assert.True(ping.Equals(pong));
         }
 
         /**
@@ -104,11 +110,11 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void testNullMaterialIsNotEqual()
+        public void ensureNullObjectIsNotEqual()
         {
             Material loner = new Material("1160912", "John Snow");
 
-            Assert.NotEqual(loner.Equals(null), true);
+            Assert.False(loner.Equals(null));
         }
 
         /**
@@ -117,12 +123,12 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void testDifferentTypesAreNotEqual()
+        public void ensureDifferentTypesAreNotEqual()
         {
             Material moon = new Material("1160912", "No");
             Product stars = new Product("1160907", "Yes");
 
-            Assert.NotEqual(moon.Equals(stars), true);
+            Assert.False(moon.Equals(stars));
         }
 
         /**
@@ -131,12 +137,56 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void testToString()
+        public void ensureToStringWorks()
         {
             Material balsamic = new Material("1160912", "Cowboy Boots");
             Material vinegar = new Material("1160912", "Cowboy Boots");
 
-            Assert.Equal(balsamic.GetHashCode(), vinegar.GetHashCode());
+            Assert.Equal(balsamic.ToString(), vinegar.ToString());
+        }
+
+        /**
+        <summary>
+            Test to ensure that the instance of Material isn't built if the reference is null.
+        </summary>
+         */
+        [Fact]
+        public void ensureNullReferenceIsNotValid()
+        {
+            Assert.Throws<ArgumentException>(() => new Material(null, "This doesn't work"));
+        }
+
+        /**
+        <summary>
+            Test to ensure that the instance of Material isn't built if the reference is empty.
+        </summary>
+       */
+        [Fact]
+        public void ensureEmptyReferenceIsNotValid()
+        {
+            Assert.Throws<ArgumentException>(() => new Material("", "Let me see..."));
+        }
+
+        /**
+        <summary>
+            Test to ensure that the instance of Material isn't built if the designation is null.
+        </summary>
+       */
+        [Fact]
+        public void ensureNullDesignationIsNotValid()
+        {
+            Assert.Throws<ArgumentException>(() => new Material("Have you tried turning it off and then on again?", null));
+        }
+
+        /**
+        <summary>
+            Test to ensure that the instance of Material isn't built if the designation is empty.
+        </summary>
+       */
+        [Fact]
+        public void ensureEmptyDesignationIsNotValid()
+        {
+            Assert.Throws<ArgumentException>(() => new Material("Still not working", ""));
         }
     }
 }
