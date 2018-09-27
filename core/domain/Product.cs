@@ -362,6 +362,30 @@ namespace core.domain{
             /// Constant that represents the name of the property which maps the product reference
             /// </summary>
             public const string REFERENCE_PROPERTY="reference";
+            /// <summary>
+            /// Constant that represents the name of the property which maps the product persistence identifier
+            /// </summary>
+            public const string PERSISTENCE_ID_PROPERTY="persistence_id";
+            /// <summary>
+            /// Constant that represents the name of the property which maps the product materials
+            /// </summary>
+            public const string MATERIALS_PROPERTY="materials";
+            /// <summary>
+            /// Constant that represents the name of the property which maps the product complemented products
+            /// </summary>
+            public const string COMPLEMENTED_PRODUCTS_PROPERTY="complemented_products";
+            /// <summary>
+            /// Constant that represents the name of the property which maps the product height restrictions
+            /// </summary>
+            public const string HEIGHT_RESTRICTIONS_PROPERTIES="height_restrictions";
+            /// <summary>
+            /// Constant that represents the name of the property which maps the product width restrictions
+            /// </summary>
+            public const string WIDTH_RESTRICTIONS_PROPERTIES="width_restrictions";
+            /// <summary>
+            /// Constant that represents the name of the property which maps the product depth restrictions
+            /// </summary>
+            public const string DEPTH_RESTRICTIONS_PROPERTIES="depth_restrictions";
         }
     }
 }
