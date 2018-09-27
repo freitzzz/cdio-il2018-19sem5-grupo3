@@ -17,15 +17,19 @@ namespace core.domain{
         /// <summary>
         /// Constant that represents the messange that ocurres if the product reference is invalid
         /// </summary>
-        private static readonly string INVALID_PRODUCT_REFERENCE="The product reference is invalid";
+        private const string INVALID_PRODUCT_REFERENCE="The product reference is invalid";
         /// <summary>
         /// Constant that represents the messange that ocurres if the product designation is invalid
         /// </summary>
-        private static readonly string INVALID_PRODUCT_DESIGNATION="The product designation is invalid";
+        private const string INVALID_PRODUCT_DESIGNATION="The product designation is invalid";
         /// <summary>
         /// Constant that represents the messange that ocurres if the product complemented products are invalid
         /// </summary>
-        private static readonly string INVALID_PRODUCT_COMPLEMENTED_PRODUCTS="The products which the product can be complemented by are invalid";
+        private const string INVALID_PRODUCT_COMPLEMENTED_PRODUCTS="The products which the product can be complemented by are invalid";
+        /// <summary>
+        /// Constant that represents the messange that ocurres if the product complemented products are invalid
+        /// </summary>
+        private const string INVALID_PRODUCT_MATERIALS="The materials which the product can be made of are invalid";
         /// <summary>
         /// String with the product reference
         /// </summary>
@@ -41,6 +45,11 @@ namespace core.domain{
         //TODO: Should complemented products be a list and not a set?
         private readonly List<Product> complementedProducts;
         /// <summary>
+        /// List with the materials which the product can be made of
+        /// </summary>
+        //TODO: Should product materials be a list or a set?
+        private readonly List<Material> materials;
+        /// <summary>
         /// Builds a new product with its reference and designation 
         /// </summary>
         /// <param name="reference">String with the product reference</param>
@@ -50,6 +59,7 @@ namespace core.domain{
             this.reference=reference;
             this.designation=designation;
             this.complementedProducts=new List<Product>();
+            this.materials=new List<Material>();
         }
 
         /// <summary>
@@ -64,6 +74,7 @@ namespace core.domain{
             this.reference=reference;
             this.designation=designation;
             this.complementedProducts=new List<Product>(complementedProducts);
+            this.materials=new List<Material>();
         }
 
         /// <summary>
@@ -75,6 +86,18 @@ namespace core.domain{
             if(!isComplementedProductValidForAddition(complementedProduct))
                 return false;
             complementedProducts.Add(complementedProduct);
+            return true;
+        }
+
+        /// <summary>
+        /// Adds a new material which the product can be made of
+        /// </summary>
+        /// <param name="productMaterial">Material with the product material</param>
+        /// <returns>boolean true if the product material was added with success, false if not</returns>
+        public bool addMaterial(Material productMaterial){
+            if(!isProductMaterialValidForAddition(productMaterial))
+                return false;
+            materials.Add(productMaterial);
             return true;
         }
 
@@ -133,10 +156,19 @@ namespace core.domain{
         /// Checks if a complemented product is valid for additon on the current product
         /// </summary>
         /// <param name="complementedProduct">Product with the complemented product being validated</param>
-        /// <returns>boolean true if the complemented product is valid for additon, false if not</returns>
+        /// <returns>boolean true if the complemented product is valid for addition, false if not</returns>
         private bool isComplementedProductValidForAddition(Product complementedProduct){
             if(complementedProduct==null||complementedProduct.Equals(this))return false;
             return complementedProducts.Contains(complementedProduct);
+        }
+
+        /// <summary>
+        /// Checks if a product material is valid for addition on the current product
+        /// </summary>
+        /// <param name="productMaterial">Material with the product material being validated</param>
+        /// <returns>boolean true if the product material is valid for addition, false if not</returns>
+        private bool isProductMaterialValidForAddition(Material productMaterial){
+            return productMaterial!=null && materials.Contains(productMaterial);
         }
 
         /// <summary>
@@ -160,7 +192,17 @@ namespace core.domain{
         }
 
         /// <summary>
-        /// Checks if a enumerable of products have duplicates
+        /// Checks if the materials which a product can be made of are valid
+        /// </summary>
+        /// <param name="productMaterials">IEnumerable with the product materials</param>
+        private void checkProductMaterials(IEnumerable<Material> productMaterials){
+            if(Collections.isEnumerableNullOrEmpty(productMaterials))
+                throw new ArgumentException(INVALID_PRODUCT_MATERIALS);
+            checkDuplicatedMaterials(productMaterials);
+        }
+
+        /// <summary>
+        /// Checks if a enumerable of products has duplicates
         /// </summary>
         /// <param name="complementedProducts">IEnumerable with the complemented products</param>
         private void checkDuplicatedComplementedProducts(IEnumerable<Product> complementedProducts){
@@ -172,6 +214,22 @@ namespace core.domain{
                     throw new ArgumentException(INVALID_PRODUCT_COMPLEMENTED_PRODUCTS);
                 }
                 complementedProduct=complementedProductsEnumerator.Current;
+            }
+        }
+        
+        /// <summary>
+        /// Checks if an enumerable of materials has duplicates
+        /// </summary>
+        /// <param name="productMaterials"></param>
+        private void checkDuplicatedMaterials(IEnumerable<Material> productMaterials){
+            HashSet<string> productMaterialsReferences=new HashSet<string>();
+            IEnumerator<Material> productMaterialsEnumerator=productMaterials.GetEnumerator();
+            Material productMaterial=productMaterialsEnumerator.Current;
+            while(productMaterialsEnumerator.MoveNext()){
+                if(!productMaterialsReferences.Add(productMaterial.id())){
+                    throw new ArgumentException(INVALID_PRODUCT_MATERIALS);
+                }
+                productMaterial=productMaterialsEnumerator.Current;
             }
         }
 
