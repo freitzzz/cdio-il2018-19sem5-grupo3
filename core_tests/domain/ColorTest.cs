@@ -27,7 +27,7 @@ namespace dotnet_example_unittests
         }
 
         [Fact]
-        public void EnsureNamesAreEqual()
+        public void ensureNamesAreEqual()
         {
             var item = new Color();
 
@@ -42,7 +42,7 @@ namespace dotnet_example_unittests
         }
 
         [Fact]
-        public void EnsureRedCoordinatesAreEqual()
+        public void ensureRedCoordinatesAreEqual()
         {
             var item = new Color();
 
@@ -52,7 +52,7 @@ namespace dotnet_example_unittests
 
             int actual = item.Red;
 
-            Assert.True(expected==actual); //Compare strings and don't ignore case
+            Assert.True(expected == actual); //Compare strings and don't ignore case
 
         }
 
@@ -63,6 +63,92 @@ namespace dotnet_example_unittests
             Color other = Color.valueOf("0mg Cholestherol", 255, 1, 2, 66);
 
             Assert.Equal(instance.ToString(), other.ToString());
+        }
+
+        [Fact]
+        public void ensureStringsAreEqual()
+        {
+            Color instance0 = Color.valueOf("0mg Cholestherol", 255, 1, 2, 66);
+
+            Color instance2 = Color.valueOf("0mg Cholestherol", 255, 1, 2, 66);
+
+            Assert.True(instance0.sameAs(instance2.Name)); //Compare strings and don't ignore case
+
+        }
+
+
+        [Fact]
+        public void ensureStringsAreNotEqual()
+        {
+            Color instance0 = Color.valueOf("0mg Cholestherol", 255, 1, 2, 66);
+
+            Color instance1 = Color.valueOf("10mg Cholestherol", 255, 1, 2, 66);
+
+            Assert.False(instance0.sameAs(instance1.Name)); //Compare strings and don't ignore case
+
+        }
+
+        [Fact]
+        public void ensureHashisEqual()
+        {
+            Color instance0 = Color.valueOf("0mg Cholestherol", 255, 1, 2, 66);
+
+            Color instance1 = Color.valueOf("0mg Cholestherol", 255, 1, 2, 66);
+
+            Assert.True(instance0.GetHashCode() == instance1.GetHashCode());//Compare strings and don't ignore case
+
+        }
+
+        [Fact]
+        public void ensureHashisNotEqual()
+        {
+            Color instance0 = Color.valueOf("0mg Cholestherol", 255, 1, 2, 66);
+
+            Color instance1 = Color.valueOf("10mg Cholestherol", 255, 1, 2, 66);
+
+            Assert.False(instance0.GetHashCode() == instance1.GetHashCode()); //Compare strings and don't ignore case
+
+        }
+
+        [Fact]
+        public void ensureHashIsEqual()
+        {
+            Color instance0 = Color.valueOf(null, 255, 1, 2, 66);
+
+            Color instance1 = Color.valueOf("10mg Cholestherol", 255, 1, 2, 66);
+
+            Assert.False(instance0.GetHashCode() == instance1.GetHashCode()); //Compare strings and don't ignore case
+
+        }
+
+        [Fact]
+        public void ensureIsEqual()
+        {
+            Color instance0 = Color.valueOf(null, 255, 1, 2, 66);
+
+            Color instance1 = Color.valueOf("10mg Cholestherol", 255, 1, 2, 66);
+
+            Assert.False(instance0.Equals(instance1)); //Compare strings and don't ignore case
+
+        }
+
+        [Fact]
+        public void ensureIsNotEqualDiffObj()
+        {
+            Color instance0 = Color.valueOf(null, 255, 1, 2, 66);
+
+            Assert.False(instance0.Equals(new Object())); //Compare strings and don't ignore case
+
+        }
+
+        [Fact]
+        public void ensureIsNotEqualDiffCoordinatesRed()
+        {
+            Color instance0 = Color.valueOf("10mg Cholestherol", 25, 1, 2, 66);
+            Color instance1 = Color.valueOf("10mg Cholestherol", 111, 1, 2, 66);
+
+            Assert.False(instance0.Equals(instance1)); //Compare strings and don't ignore case
+
         }
     }
 }
