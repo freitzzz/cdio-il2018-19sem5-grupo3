@@ -140,10 +140,10 @@ namespace core.domain
         }
 
         /// <summary>
-        /// Equals method of ContinuousDimensionInterval.null 
+        /// Equals method of ContinuousDimensionInterval 
         /// Two objects are the same if the min, max and increment values are equal
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">object that is being compared to</param>
         /// <returns>true if the objects are equal, false if otherwise</returns>
         public override bool Equals(object obj)
         {
