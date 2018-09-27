@@ -142,9 +142,7 @@ namespace core_tests.domain.entities
             var materials = new List<Material>();
             materials.Add(material);
 
-            Product product = new Product("11124", "Product", materials);
-
-            Assert.False(category.Equals(product));
+            Assert.False(category.Equals("product"));
 
         }
 
