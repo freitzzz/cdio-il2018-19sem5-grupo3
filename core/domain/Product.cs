@@ -1,3 +1,4 @@
+using support.builders;
 using support.domain;
 using support.domain.ddd;
 using support.dto;
@@ -34,7 +35,12 @@ namespace core.domain{
         /// Constant that represents the messange that ocurres if the product restrinctions are invalid
         /// </summary>
         private const string INVALID_PRODUCT_RESTRICTIONS="The product restrinctions are invalid";
-        
+
+        /// <summary>
+        /// Long property with the persistence iD
+        /// </summary>
+        private long persistenceID{get;set;}
+
         /// <summary>
         /// String with the product reference
         /// </summary>
@@ -199,6 +205,7 @@ namespace core.domain{
             GenericDTO dto=new GenericDTO(Product.Properties.CONTEXT);
             dto.put(Properties.DESIGNATION_PROPERTY,designation);
             dto.put(Properties.REFERENCE_PROPERTY,reference);
+            dto.put(Properties.PERSISTENCE_ID_PROPERTY,persistenceID);
             return dto;
         }
 
@@ -386,6 +393,76 @@ namespace core.domain{
             /// Constant that represents the name of the property which maps the product depth restrictions
             /// </summary>
             public const string DEPTH_RESTRICTIONS_PROPERTIES="depth_restrictions";
+        }
+        public class ProductBuilder : Builder<Product>{
+            /// <summary>
+            /// DTO with the builder content
+            /// </summary>
+            private readonly DTO builderDTO;
+
+            /// <summary>
+            /// Adds a reference to the current product builder
+            /// </summary>
+            /// <param name="reference">string with the product reference</param>
+            /// <returns>ProductBuilder with the product builder with the new reference added</returns>
+            
+            public static ProductBuilder create(){return new ProductBuilder();}
+            
+            public ProductBuilder withReference(string reference){
+                builderDTO.put(Properties.REFERENCE_PROPERTY,reference);
+                return this;
+            }
+
+            public ProductBuilder withDesignation(string designation){
+                builderDTO.put(Properties.DESIGNATION_PROPERTY,designation);
+                return this;
+            }
+
+            public ProductBuilder withComplementedProducts(IEnumerable<Product> complementedProducts){
+                builderDTO.put(Properties.COMPLEMENTED_PRODUCTS_PROPERTY,complementedProducts);
+                return this;
+            }
+
+            public ProductBuilder withMaterials(IEnumerable<Material> materials){
+                builderDTO.put(Properties.MATERIALS_PROPERTY,materials);
+                return this;
+            }
+
+            public ProductBuilder withHeightRestrictions(IEnumerable<Restriction> heightRestrictions){
+                builderDTO.put(Properties.HEIGHT_RESTRICTIONS_PROPERTIES,heightRestrictions);
+                return this;
+            }
+
+            public ProductBuilder withWidthRestrictions(IEnumerable<Restriction> widthRestrictions){
+                builderDTO.put(Properties.WIDTH_RESTRICTIONS_PROPERTIES,widthRestrictions);
+                return this;
+            }
+
+            public ProductBuilder withDepthRestrictions(IEnumerable<Restriction> depthRestrictions){
+                builderDTO.put(Properties.DEPTH_RESTRICTIONS_PROPERTIES,depthRestrictions);
+                return this;
+            }
+
+            public Product build(){
+                IEnumerable<Product> complementedProducts=(IEnumerable<Product>)builderDTO.get(Properties.COMPLEMENTED_PRODUCTS_PROPERTY);
+                if(complementedProducts==null){
+                    return new Product((string)builderDTO.get(Properties.REFERENCE_PROPERTY)
+                                    ,(string)builderDTO.get(Properties.DESIGNATION_PROPERTY)
+                                    ,(IEnumerable<Material>)builderDTO.get(Properties.MATERIALS_PROPERTY)
+                                    ,(IEnumerable<Restriction>)builderDTO.get(Properties.HEIGHT_RESTRICTIONS_PROPERTIES)
+                                    ,(IEnumerable<Restriction>)builderDTO.get(Properties.WIDTH_RESTRICTIONS_PROPERTIES)
+                                    ,(IEnumerable<Restriction>)builderDTO.get(Properties.DEPTH_RESTRICTIONS_PROPERTIES));
+                }else{
+                    return new Product((string)builderDTO.get(Properties.REFERENCE_PROPERTY)
+                                    ,(string)builderDTO.get(Properties.DESIGNATION_PROPERTY)
+                                    ,(IEnumerable<Material>)builderDTO.get(Properties.MATERIALS_PROPERTY)
+                                    ,complementedProducts
+                                    ,(IEnumerable<Restriction>)builderDTO.get(Properties.HEIGHT_RESTRICTIONS_PROPERTIES)
+                                    ,(IEnumerable<Restriction>)builderDTO.get(Properties.WIDTH_RESTRICTIONS_PROPERTIES)
+                                    ,(IEnumerable<Restriction>)builderDTO.get(Properties.DEPTH_RESTRICTIONS_PROPERTIES));
+                }
+            }
+            private ProductBuilder(){builderDTO=new GenericDTO(Properties.CONTEXT);}
         }
     }
 }
