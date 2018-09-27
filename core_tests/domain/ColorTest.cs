@@ -37,7 +37,7 @@ namespace dotnet_example_unittests
 
             string actual = item.Name;
 
-            Assert.True(String.Equals(expected, actual)); //Compare strings and don't ignore case
+            Assert.Equal(expected, actual); //Compare strings and don't ignore case
 
         }
 
@@ -62,7 +62,7 @@ namespace dotnet_example_unittests
             Color instance = Color.valueOf("0mg Cholestherol", 255, 1, 2, 66);
             Color other = Color.valueOf("0mg Cholestherol", 255, 1, 2, 66);
 
-            Assert.True(String.Equals(instance.ToString(), other.ToString()));
+            Assert.Equal(instance.ToString(), other.ToString());
         }
     }
 }
