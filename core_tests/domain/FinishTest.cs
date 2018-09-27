@@ -1,5 +1,6 @@
 using System;
 using Xunit;
+using System.Collections.Generic;
 using core.domain;
 
 namespace core_tests.domain
@@ -20,7 +21,7 @@ namespace core_tests.domain
         public void testGetHashCode()
         {
             Finish finish1 = Finish.valueOf("Acabamento polido");
-            Finish finish2= Finish.valueOf("Acabamento polido");
+            Finish finish2 = Finish.valueOf("Acabamento polido");
 
             Assert.Equal(finish1.GetHashCode(), finish2.GetHashCode());
         }
@@ -33,7 +34,7 @@ namespace core_tests.domain
         public void testDifferentFinishsAreNotEqual()
         {
             Finish finish1 = Finish.valueOf("Acabamento polido");
-            Finish finish2= Finish.valueOf("Acabamento rogoso");
+            Finish finish2 = Finish.valueOf("Acabamento rogoso");
 
             Assert.False(finish2.Equals(finish1));
         }
@@ -70,8 +71,16 @@ namespace core_tests.domain
         [Fact]
         public void testDifferentTypesAreNotEqual()
         {
+
+            List<Color> colors = new List<Color>();
+            Color color = Color.valueOf("Cor de burro quando foge", 1, 2, 3, 0);
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
             Finish finish = Finish.valueOf("Acabamento polido");
-            Material moon = new Material("1160912", "No");
+            finishes.Add(finish);
+
+            Material moon = new Material("1160912", "No", colors, finishes);
 
             Assert.False(finish.Equals(moon));
         }
@@ -83,8 +92,8 @@ namespace core_tests.domain
         [Fact]
         public void testToString()
         {
-            Finish finish1 =  Finish.valueOf("Acabamento polido");
-            Finish finish2 =  Finish.valueOf("Acabamento polido");
+            Finish finish1 = Finish.valueOf("Acabamento polido");
+            Finish finish2 = Finish.valueOf("Acabamento polido");
 
             Assert.Equal(finish1.ToString(), finish2.ToString());
         }
