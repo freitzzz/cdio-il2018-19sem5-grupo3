@@ -12,7 +12,7 @@ namespace dotnet_example_unittests
         public void ensureConstructorDetectsNegativeValue()
         {
 
-            Action act = () => Color.valueOf("test", 5, -10, 1, 2);
+            Action act = () => Color.valueOf("test", 5, -10, -555, 2);
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -21,7 +21,7 @@ namespace dotnet_example_unittests
         public void ensureConstructorDetectsOverValue()
         {
 
-            Action act = () => Color.valueOf("test", 5, 255, 1, 2);
+            Action act = () => Color.valueOf("test", 5, 2561, 1, 2);
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -37,7 +37,7 @@ namespace dotnet_example_unittests
 
             string actual = item.Name;
 
-            Assert.Equal(expected, actual, false); //Compare strings and don't ignore case
+            Assert.True(String.Equals(expected, actual)); //Compare strings and don't ignore case
 
         }
 
@@ -52,7 +52,7 @@ namespace dotnet_example_unittests
 
             int actual = item.Red;
 
-            Assert.Equal(expected, actual); //Compare strings and don't ignore case
+            Assert.True(expected==actual); //Compare strings and don't ignore case
 
         }
 
@@ -62,7 +62,7 @@ namespace dotnet_example_unittests
             Color instance = Color.valueOf("0mg Cholestherol", 255, 1, 2, 66);
             Color other = Color.valueOf("0mg Cholestherol", 255, 1, 2, 66);
 
-            Assert.Equal(instance.ToString(), other.ToString());
+            Assert.True(String.Equals(instance.ToString(), other.ToString()));
         }
     }
 }
