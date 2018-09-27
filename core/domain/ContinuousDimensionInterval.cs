@@ -11,48 +11,48 @@ namespace core.domain
         /// <summary>
         /// Constant that represents the message that occurs if the min value is NaN
         /// </summary>
-        private static readonly string MIN_VALUE_NAN_REFERENCE = "Minimum value has to be a number";
+        private const string MIN_VALUE_NAN_REFERENCE = "Minimum value has to be a number";
 
         /// <summary>
         /// Constant that represents the message that occurs if the max value is NaN
         /// </summary>
-        private static readonly string MAX_VALUE_NAN_REFERENCE = "Maximum value has to be a number";
+        private const string MAX_VALUE_NAN_REFERENCE = "Maximum value has to be a number";
 
         /// <summary>
         /// Constant that represents the message that occurs if the increment value is NaN
         /// </summary>
-        private static readonly string INCREMENT_NAN_REFERENCE = "Increment value has to be a number";
+        private const string INCREMENT_NAN_REFERENCE = "Increment value has to be a number";
 
         /// <summary>
         /// Constant that represents the message that occurs if the min value is infinity
         /// </summary>
-        private static readonly string MIN_VALUE_INFINITY_REFERENCE = "Minimum value can't be infinity";
+        private const string MIN_VALUE_INFINITY_REFERENCE = "Minimum value can't be infinity";
 
         /// <summary>
         /// Constant that represents the message that occurs if the max value is infinity
         /// </summary>
-        private static readonly string MAX_VALUE_INFINITY_REFERENCE = "Maximum value can't be infinity";
+        private const string MAX_VALUE_INFINITY_REFERENCE = "Maximum value can't be infinity";
 
         /// <summary>
         /// Constant that represents the message that occurs if the increment value is infinity
         /// </summary>
-        private static readonly string INCREMENT_INFINITY_REFERENCE = "Increment value can't be infinity";
+        private const string INCREMENT_INFINITY_REFERENCE = "Increment value can't be infinity";
 
         /// <summary>
         /// Constant that represents the message that occurs if one of the values is negative
         /// </summary>
-        private static readonly string NEGATIVE_VALUES_REFERENCE = "All values have to be positive";
+        private const string NEGATIVE_VALUES_REFERENCE = "All values have to be positive";
 
         /// <summary>
         /// Constant that represents the message that occurs if the min value is greater than the max value
         /// </summary>
-        private static readonly string MIN_VALUE_GREATER_THAN_MAX_REFERENCE = "Minimum value can't be greater than maximum value";
+        private const string MIN_VALUE_GREATER_THAN_MAX_REFERENCE = "Minimum value can't be greater than maximum value";
 
         /// <summary>
         /// Constant that represents the message that occurs if the increment value is greater than the
         /// difference between the max and min values
         /// </summary>
-        private static readonly string INCREMENT_GREATER_THAN_MAX_MIN_DIFFERENCE_REFERENCE = "Increment can't be greater than the difference between the max and min values";
+        private const string INCREMENT_GREATER_THAN_MAX_MIN_DIFFERENCE_REFERENCE = "Increment can't be greater than the difference between the max and min values";
 
         /// <summary>
         /// Minimum value of the interval
