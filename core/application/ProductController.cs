@@ -15,8 +15,8 @@ namespace core.application
         /// Adds a new product
         /// </summary>
         /// <param name="productAsDTO">DTO with the product information</param>
-        /// <returns>boolean true if the product was added with success</returns>
-        public bool addProduct(DTO productAsDTO){
+        /// <returns>DTO with the created product DTO, null if the product was not created</returns>
+        public DTO addProduct(DTO productAsDTO){
             Product.ProductBuilder productBuilder=Product.ProductBuilder.create();
             productBuilder.withReference((string)productAsDTO.get(Product.Properties.REFERENCE_PROPERTY));
             productBuilder.withDesignation((string)productAsDTO.get(Product.Properties.DESIGNATION_PROPERTY));
@@ -25,7 +25,9 @@ namespace core.application
             productBuilder.withHeightRestrictions(getProductDTOEnumerableOfHeightRestrictions(productAsDTO));
             productBuilder.withWidthRestrictions(getProductDTOEnumerableOfWidthRestrictions(productAsDTO));
             productBuilder.withDepthRestrictions(getProductDTOEnumerableOfDepthRestrictions(productAsDTO));
-            return PersistenceContext.repositories().createProductRepository().save(productBuilder.build())!=null;
+            Product createdProduct=PersistenceContext.repositories().createProductRepository().save(productBuilder.build());
+            if(createdProduct==null)return null;
+            return createdProduct.toDTO();
         }
         /// <summary>
         /// Fetches a list of all products present in the product repository
