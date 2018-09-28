@@ -13,6 +13,12 @@ namespace core.application
     public class MaterialsController
     {
 
+        private readonly MaterialRepository materialRepository;
+
+        public MaterialsController(MaterialRepository materialRepository){
+            this.materialRepository = materialRepository;
+        }
+
         /// <summary>
         /// Fetches a List with all Materials present in the MaterialRepository.
         /// </summary>
@@ -20,7 +26,7 @@ namespace core.application
         public List<DTO> findAllMaterials()
         {
             List<DTO> dtoMaterials = new List<DTO>();
-            IEnumerable<Material> materials = PersistenceContext.repositories().createMaterialRepository().findAll();
+            IEnumerable<Material> materials = materialRepository.findAll();
 
             foreach (Material material in materials)
             {
@@ -35,9 +41,9 @@ namespace core.application
         /// </summary>
         /// <param name = "materialID">the Material's ID</param>
         /// <returns>DTO that represents the Material</returns>
-        public DTO findMaterialByID(string materialID)
+        public DTO findMaterialByID(long materialID)
         {
-            return PersistenceContext.repositories().createMaterialRepository().find(materialID).toDTO();
+            return materialRepository.find(materialID).toDTO();
         }
 
         /// <summary>
@@ -45,10 +51,10 @@ namespace core.application
         /// </summary>
         /// <param name="materialID">the Material's ID</param>
         /// <returns>DTO that represents the Material</returns>
-        public DTO removeMaterial(string materialID)
+        public DTO removeMaterial(long materialID)
         {
-            Material material = PersistenceContext.repositories().createMaterialRepository().find(materialID);
-            return PersistenceContext.repositories().createMaterialRepository().remove(material).toDTO();
+            Material material = materialRepository.find(materialID);
+            return materialRepository.remove(material).toDTO();
         }
 
         /// <summary>
@@ -79,7 +85,7 @@ namespace core.application
                 finishes.Add(Finish.valueOf((string)finishDTO.get("description")));
             }
 
-            Material addedMaterial = PersistenceContext.repositories().createMaterialRepository().save(new Material(reference, designation, colors, finishes));
+            Material addedMaterial = materialRepository.save(new Material(reference, designation, colors, finishes));
 
             return addedMaterial == null ? null : addedMaterial.toDTO();
         }
@@ -100,16 +106,13 @@ namespace core.application
         /// </summary>
         /// <param name="materialsIDS">Enumerable with the materials persistence identifiers</param>
         /// <returns>IEnumerable with the materials ids as entities</returns>
-        internal IEnumerable<Material> enumerableOfMaterialsIDSAsEntities(IEnumerable<long> materialsIDS)
-        {
-            if (materialsIDS == null) return null;
-            List<Material> materials = new List<Material>();
-            MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
-            IEnumerator<long> materialsIDSEnumerator = materialsIDS.GetEnumerator();
-            long nextMaterialID = materialsIDSEnumerator.Current;
-            while (materialsIDSEnumerator.MoveNext())
-            {
-                nextMaterialID = materialsIDSEnumerator.Current;
+        internal IEnumerable<Material> enumerableOfMaterialsIDSAsEntities(IEnumerable<long> materialsIDS){
+            if(materialsIDS==null)return null;
+            List<Material> materials=new List<Material>();
+            IEnumerator<long> materialsIDSEnumerator=materialsIDS.GetEnumerator();
+            long nextMaterialID=materialsIDSEnumerator.Current;
+            while(materialsIDSEnumerator.MoveNext()){
+                nextMaterialID=materialsIDSEnumerator.Current;
                 //Uncomment when Material Persistence ID is changed to long
                 //materials.Add(materialRepository.find(nextMaterialID));
             }
