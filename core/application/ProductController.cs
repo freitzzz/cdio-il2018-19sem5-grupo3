@@ -29,6 +29,18 @@ namespace core.application
             if(createdProduct==null)return null;
             return createdProduct.toDTO();
         }
+        
+        /// <summary>
+        /// Removes a product
+        /// </summary>
+        /// <param name="productDTO">DTO with the product information</param>
+        /// <returns>boolean true if the product was removed with success</returns>
+        public bool removeProduct(DTO productDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productBeingRemoved=productRepository.find((long)productDTO.get(Product.Properties.PERSISTENCE_ID_PROPERTY));
+            return productBeingRemoved!=null && productRepository.remove(productBeingRemoved)!=null;
+        }
+
         /// <summary>
         /// Fetches a list of all products present in the product repository
         /// </summary>
