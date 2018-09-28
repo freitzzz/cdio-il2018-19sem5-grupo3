@@ -69,16 +69,26 @@ namespace core.application
                 return false;
             }
 
-            addHeightRestrictions(updatesDTO, oldProduct);
-            addWidthRestrictions(updatesDTO, oldProduct);
-            addDepthRestrictions(updatesDTO, oldProduct);
+            IEnumerable<Restriction> heightRestrictions=getProductDTOEnumerableOfHeightRestrictions(updatesDTO);
+            IEnumerable<Restriction> widthRestrictions=getProductDTOEnumerableOfWidthRestrictions(updatesDTO);
+            IEnumerable<Restriction> depthRestrictions=getProductDTOEnumerableOfDepthRestrictions(updatesDTO);
+            
+            foreach(Restriction heightRestriction in heightRestrictions){if(!oldProduct.addHeightRestriction(heightRestriction))return false;}
+            foreach(Restriction widthRestriction in widthRestrictions){if(!oldProduct.addWidthRestriction(widthRestriction))return false;}
+            foreach(Restriction depthRestriction in depthRestrictions){if(!oldProduct.addDepthRestriction(depthRestriction))return false;}
             addMaterials(updatesDTO, oldProduct);
 
-            return repository.save(oldProduct) != null;
+            return repository.update(oldProduct) != null;
         }
 
-        private void addHeightRestrictions(DTO productDTO, Product oldProduct)
+        /// <summary>
+        /// Returns an enumerable of height restrictions found on a product DTO
+        /// </summary>
+        /// <param name="productDTO">DTO with the product DTO</param>
+        /// <returns>IEnumerable with the height restrictions found on a product DTO</returns>
+        internal IEnumerable<Restriction> getProductDTOEnumerableOfHeightRestrictions(DTO productDTO)
         {
+            List<Restriction> heightRestrictions=new List<Restriction>();
             foreach (DTO heightRestrictionDTO in (List<DTO>)productDTO.get(Product.Properties.HEIGHT_RESTRICTIONS_PROPERTIES))
             {
                 String restrictionType = (string)heightRestrictionDTO.get("type");
@@ -91,25 +101,32 @@ namespace core.application
                 if (restrictionType.Equals("discrete"))
                 {
                     DiscreteDimensionInterval discreteInterval = DiscreteDimensionInterval.valueOf(doubleValues);
-                    oldProduct.addHeightRestriction(discreteInterval);
+                    heightRestrictions.Add(discreteInterval);
                 }
                 else if (restrictionType.Equals("continuous"))
                 {
                     double[] array = doubleValues.ToArray();
                     ContinuousDimensionInterval continuousInterval = ContinuousDimensionInterval.valueOf(array[0], array[1], array[2]);
-                    oldProduct.addHeightRestriction(continuousInterval);
+                    heightRestrictions.Add(continuousInterval);
                 }
                 else
                 {
                     double[] array = doubleValues.ToArray();
                     Dimension dimensionValue = Dimension.valueOf(array[0]);
-                    oldProduct.addHeightRestriction(dimensionValue);
+                    heightRestrictions.Add(dimensionValue);
                 }
             }
+            return heightRestrictions;
         }
 
-        private void addWidthRestrictions(DTO productDTO, Product oldProduct)
+        /// <summary>
+        /// Returns an enumerable of width restrictions found on a product DTO
+        /// </summary>
+        /// <param name="productDTO">DTO with the product DTO</param>
+        /// <returns>IEnumerable with the width restrictions found on a product DTO</returns>
+        internal IEnumerable<Restriction> getProductDTOEnumerableOfWidthRestrictions(DTO productDTO)
         {
+            List<Restriction> widthRestrictions=new List<Restriction>();
             foreach (DTO widthRestrictionDTO in (List<DTO>)productDTO.get(Product.Properties.WIDTH_RESTRICTIONS_PROPERTIES))
             {
                 String restrictionType = (string)widthRestrictionDTO.get("type");
@@ -122,25 +139,32 @@ namespace core.application
                 if (restrictionType.Equals("discrete"))
                 {
                     DiscreteDimensionInterval discreteInterval = DiscreteDimensionInterval.valueOf(doubleValues);
-                    oldProduct.addWidthRestriction(discreteInterval);
+                    widthRestrictions.Add(discreteInterval);
                 }
                 else if (restrictionType.Equals("continuous"))
                 {
                     double[] array = doubleValues.ToArray();
                     ContinuousDimensionInterval continuousInterval = ContinuousDimensionInterval.valueOf(array[0], array[1], array[2]);
-                    oldProduct.addWidthRestriction(continuousInterval);
+                    widthRestrictions.Add(continuousInterval);
                 }
                 else
                 {
                     double[] array = doubleValues.ToArray();
                     Dimension dimensionValue = Dimension.valueOf(array[0]);
-                    oldProduct.addWidthRestriction(dimensionValue);
+                    widthRestrictions.Add(dimensionValue);
                 }
             }
+            return widthRestrictions;
         }
 
-        private void addDepthRestrictions(DTO productDTO, Product oldProduct)
+        /// <summary>
+        /// Returns an enumerable of depth restrictions found on a product DTO
+        /// </summary>
+        /// <param name="productDTO">DTO with the product DTO</param>
+        /// <returns>IEnumerable with the depth restrictions found on a product DTO</returns>
+        internal IEnumerable<Restriction> getProductDTOEnumerableOfDepthRestrictions(DTO productDTO)
         {
+            List<Restriction> depthRestrictions=new List<Restriction>();
             foreach (DTO depthRestrictionDTO in (List<DTO>)productDTO.get(Product.Properties.DEPTH_RESTRICTIONS_PROPERTIES))
             {
                 String restrictionType = (string)depthRestrictionDTO.get("type");
@@ -153,21 +177,22 @@ namespace core.application
                 if (restrictionType.Equals("discrete"))
                 {
                     DiscreteDimensionInterval discreteInterval = DiscreteDimensionInterval.valueOf(doubleValues);
-                    oldProduct.addDepthRestriction(discreteInterval);
+                    depthRestrictions.Add(discreteInterval);
                 }
                 else if (restrictionType.Equals("continuous"))
                 {
                     double[] array = doubleValues.ToArray();
                     ContinuousDimensionInterval continuousInterval = ContinuousDimensionInterval.valueOf(array[0], array[1], array[2]);
-                    oldProduct.addDepthRestriction(continuousInterval);
+                    depthRestrictions.Add(continuousInterval);
                 }
                 else
                 {
                     double[] array = doubleValues.ToArray();
                     Dimension dimensionValue = Dimension.valueOf(array[0]);
-                    oldProduct.addDepthRestriction(dimensionValue);
+                    depthRestrictions.Add(dimensionValue);
                 }
             }
+            return depthRestrictions;
         }
 
         /// <summary>
