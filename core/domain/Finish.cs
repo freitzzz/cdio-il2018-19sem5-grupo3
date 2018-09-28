@@ -13,14 +13,17 @@ namespace core.domain
     */
     public class Finish : ValueObject
     {
+
+        public long Id { get; set; }
+
         /**
         <summary>
             Constant that represents the message that ocurrs if the Finish's description is not valid.
         </summary>
         */
-        private static readonly string INVALID_FINISH_DESCRIPTION = 
-		"The Finish's description is not valid!";
-		/**
+        private static readonly string INVALID_FINISH_DESCRIPTION =
+        "The Finish's description is not valid!";
+        /**
         <summary>
             String with the Finish's description
         </summary>
@@ -36,7 +39,7 @@ namespace core.domain
         {
             return new Finish(description);
         }
-		/**
+        /**
         <summary>
             Builds a new instance of Finish, receiving its description.
         </summary>
@@ -47,7 +50,7 @@ namespace core.domain
             checkDescription(description);
             this.description = description;
         }
-		/**
+        /**
         <summary>
             Checks if the Finish's description are valid.
         </summary>
@@ -55,10 +58,10 @@ namespace core.domain
         */
         private void checkDescription(string description)
         {
-            if (Strings.isNullOrEmpty(description)) throw new 
-			ArgumentException(INVALID_FINISH_DESCRIPTION);
+            if (Strings.isNullOrEmpty(description)) throw new
+            ArgumentException(INVALID_FINISH_DESCRIPTION);
         }
-        
+
         /**
         <summary>
             Checks if a certain Finish is the same as a received object.

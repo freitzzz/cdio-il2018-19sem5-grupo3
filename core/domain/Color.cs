@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using support.domain.ddd;
 
 namespace core.domain
@@ -12,10 +13,12 @@ namespace core.domain
     /// <typeparam name="name">Generic-Type of the Color identifier</typeparam>
     public class Color : ValueObject
     {
+        public long Id {get; set;}
+
         /// <summary>
         /// String with the color name.
         /// </summary>
-        public String Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Respective RGBA coordinates.

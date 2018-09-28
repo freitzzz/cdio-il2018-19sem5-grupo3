@@ -57,15 +57,15 @@ namespace core.domain
         /// <summary>
         /// Minimum value of the interval
         /// </summary>
-        private double minValue;
+        public double minValue {get; set;}
         /// <summary>
         /// Maximum value of the interval
         /// </summary>
-        private double maxValue;
+        public double maxValue {get; set;}
         /// <summary>
         /// Increment value of the interval
         /// </summary>
-        private double increment;
+        public double increment {get; set;}
 
         /// <summary>
         /// Returns a new ContinuousDimensionInterval instance
