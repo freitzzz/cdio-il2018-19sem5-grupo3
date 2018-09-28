@@ -72,6 +72,27 @@ namespace backend.Controllers
         }
 
         /// <summary>
+        /// Creates a new product
+        /// </summary>
+        /// <param name="jsonData">JObject with the product information in JSON</param>
+        /// <returns>HTTP Response 200 Ok if the product was created with successs
+        ///         <br>HTTP Response 400 Bad Request if an error occured while creating the product
+        ///         <br>See MyC REST API documentation for a better overview
+        /// </returns>
+        [HttpPost]
+        public ActionResult<DTO> addProduct([FromBody] JObject jsonData){
+            ProductObject productObject=JsonConvert.DeserializeObject<ProductObject>(jsonData.ToString());
+            DTO productDTO=productObjectToProductDTO(productObject);
+            DTO createdProductDTO=new core.application.ProductController().addProduct(productDTO);
+            if(createdProductDTO!=null){
+                return Ok(createdProductDTO);
+            }else{
+                //TODO: INFORM BETTER BAD REQUESTES
+                return BadRequest("{\"Message\":\"An error ocurred while creating the product\"}");
+            }
+        }
+
+        /// <summary>
         /// Updates a product with new restrictions
         /// </summary>
         /// <param name="jsonData"> JObject that contains all updates in JSON format</param>
@@ -83,18 +104,46 @@ namespace backend.Controllers
         [HttpPut("{id}")]
         public ActionResult updateProduct([FromBody] JObject jsonData, String productID)
         {
-            RootObject instance = JsonConvert.DeserializeObject<RootObject>(jsonData.ToString());
+            ProductObject instance = JsonConvert.DeserializeObject<ProductObject>(jsonData.ToString());
+            instance.persistenceID=long.Parse(productID);
+            DTO productDTO = productObjectToProductDTO(instance);
 
+            List<DTO> heightRestrictionDTOList = (List<DTO>)productDTO.get(Product.Properties.HEIGHT_RESTRICTIONS_PROPERTIES);
+            List<DTO> widthRestrictionDTOList = (List<DTO>)productDTO.get(Product.Properties.WIDTH_RESTRICTIONS_PROPERTIES);
+            List<DTO> depthRestrictionDTOList = (List<DTO>)productDTO.get(Product.Properties.DEPTH_RESTRICTIONS_PROPERTIES);
 
-            DTO productDTO = new GenericDTO(Product.Properties.CONTEXT);
+            if (Collections.isListEmpty(heightRestrictionDTOList) || Collections.isListEmpty(widthRestrictionDTOList)
+                    || Collections.isListEmpty(depthRestrictionDTOList))
+            {
+                    return BadRequest();
+            }
 
+            if (!new core.application.ProductController().updateProduct(productDTO))
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Parses a ProductObject into a product DTO
+        /// </summary>
+        /// <param name="productObject">ProductObject with the product information</param>
+        /// <returns>DTO with the parsed ProductObject</returns>
+        private DTO productObjectToProductDTO(ProductObject productObject){
+            DTO productDTO=new GenericDTO(Product.Properties.CONTEXT);
+            productDTO.put(Product.Properties.REFERENCE_PROPERTY,productObject.reference);
+            productDTO.put(Product.Properties.DESIGNATION_PROPERTY,productObject.designation);
+            productDTO.put(Product.Properties.COMPLEMENTED_PRODUCTS_PROPERTY,productObject.complementedProducts);
+            productDTO.put(Product.Properties.MATERIALS_PROPERTY,productObject.materials);
             List<DTO> heightRestrictionDTOList = new List<DTO>();
             List<DTO> widthRestrictionDTOList = new List<DTO>();
             List<DTO> depthRestrictionDTOList = new List<DTO>();
 
-            if (!Collections.isListEmpty(instance.restrictions))
+            if (!Collections.isListEmpty(productObject.restrictions))
             {
-                foreach (Restriction restriction in instance.restrictions)
+                foreach (Restriction restriction in productObject.restrictions)
                 {
                     DTO restrictionDTO = new GenericDTO("restriction");
                     String restrictionDimension = restriction.dimension;
@@ -114,36 +163,22 @@ namespace backend.Controllers
                     }
 
                 }
-
-                if (Collections.isListEmpty(heightRestrictionDTOList) || Collections.isListEmpty(widthRestrictionDTOList)
-                    || Collections.isListEmpty(depthRestrictionDTOList))
-                {
-                    return BadRequest();
-                }
-
                 productDTO.put(Product.Properties.HEIGHT_RESTRICTIONS_PROPERTIES, heightRestrictionDTOList);
                 productDTO.put(Product.Properties.WIDTH_RESTRICTIONS_PROPERTIES, widthRestrictionDTOList);
                 productDTO.put(Product.Properties.DEPTH_RESTRICTIONS_PROPERTIES, depthRestrictionDTOList);
             }
 
-            if (!Collections.isListEmpty(instance.materials))
+            if (!Collections.isListEmpty(productObject.materials))
             {
-                productDTO.put(Product.Properties.MATERIALS_PROPERTY, instance.materials);
+                productDTO.put(Product.Properties.MATERIALS_PROPERTY, productObject.materials);
             }
-
-            productDTO.put(Product.Properties.PERSISTENCE_ID_PROPERTY, productID);
-
-            if (!new core.application.ProductController().updateProduct(productDTO))
-            {
-                return BadRequest();
-            }
-
-            return Ok();
+            productDTO.put(Product.Properties.PERSISTENCE_ID_PROPERTY,productObject.persistenceID);
+            return productDTO;
         }
     }
 
     /// <summary>
-    /// RootObject class to help the deserialization of a product's updates from JSON format
+    /// ProductObject class to help the deserialization of a product's updates from JSON format
     /// </summary>
     public class Restriction
     {
@@ -153,10 +188,14 @@ namespace backend.Controllers
     }
 
     /// <summary>
-    /// RootObject class to help the deserialization of a product's updates from JSON format
+    /// ProductObject class to help the deserialization of a product's updates from JSON format
     /// </summary>
-    public class RootObject
+    public class ProductObject
     {
+        public string reference{get;set;}
+        public string designation{get;set;}
+        public long persistenceID{get;set;}
+        public List<long> complementedProducts{get;set;}
         public List<Restriction> restrictions { get; set; }
         public List<string> materials { get; set; }
     }
