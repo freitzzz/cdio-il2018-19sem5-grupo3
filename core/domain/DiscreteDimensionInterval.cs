@@ -10,6 +10,8 @@ namespace core.domain
     /// </summary>
     public class DiscreteDimensionInterval : Restriction, ValueObject
     {
+        public long Id {get; set;}
+
         /// <summary>
         /// Constant that represents the message that occurs if the list is null
         /// </summary>
@@ -23,7 +25,7 @@ namespace core.domain
         /// <summary>
         /// List of values that make up the interval.
         /// </summary>
-        private List<Double> values;
+        public List<Double> values {get; set;}
 
         /// <summary>
         /// Returns a new DiscreteDimensionInterval instance

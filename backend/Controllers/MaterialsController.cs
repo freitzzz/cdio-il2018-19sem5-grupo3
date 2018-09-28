@@ -12,6 +12,7 @@ using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using support.utils;
+using core.persistence;
 
 
 namespace backend.Controllers
@@ -31,6 +32,14 @@ namespace backend.Controllers
         /// Constant that represents the 400 Bad Request message for when a Material is not found.
         /// </summary>
         private const string MATERIAL_NOT_FOUND_REFERENCE = "Material not found";
+
+
+        private readonly MaterialRepository materialRepository;
+
+        public MaterialsController(MaterialRepository materialRepository)
+        {
+            this.materialRepository = materialRepository;
+        }
 
         /// <summary>
         /// Constant that represents the 400 Bad Request message for when a Material is not removed.
@@ -52,7 +61,7 @@ namespace backend.Controllers
         [HttpGet]
         public ActionResult<List<DTO>> findAll()
         {
-            List<DTO> materials = new core.application.MaterialsController().findAllMaterials();
+            List<DTO> materials = new core.application.MaterialsController(materialRepository).findAllMaterials();
 
             if (materials == null)
             {
@@ -71,9 +80,9 @@ namespace backend.Controllers
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.
         /// </returns>
         [HttpGet("{id}")]
-        public ActionResult<DTO> findByID(string materialID)
+        public ActionResult<DTO> findById(long materialID)
         {
-            DTO materialDTO = new core.application.MaterialsController().findMaterialByID(materialID);
+            DTO materialDTO = new core.application.MaterialsController(materialRepository).findMaterialByID(materialID);
 
             if (materialDTO == null)
             {
@@ -90,9 +99,9 @@ namespace backend.Controllers
         /// <returns>HTTP Response 400 Bad Request if the Material is not removed;
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
         [HttpDelete("{id}")]
-        public ActionResult<DTO> remove(string materialID)
+        public ActionResult<DTO> remove(long materialID)
         {
-            DTO removedDTO = new core.application.MaterialsController().removeMaterial(materialID);
+            DTO removedDTO = new core.application.MaterialsController(materialRepository).removeMaterial(materialID);
 
             if (removedDTO == null)
             {
@@ -115,7 +124,7 @@ namespace backend.Controllers
                 MaterialObject materialObject = JsonConvert.DeserializeObject<MaterialObject>(jsonData.ToString());
 
                 DTO materialDTO = materialObjectToMaterialDTO(materialObject);
-                DTO addedDTO = new core.application.MaterialsController().addMaterial(materialDTO);
+                DTO addedDTO = new core.application.MaterialsController(materialRepository).addMaterial(materialDTO);
 
                 if (addedDTO == null)
                 {
@@ -189,13 +198,13 @@ namespace backend.Controllers
             List<DTO> colors = (List<DTO>)materialDTO.get(Material.Properties.COLORS_PROPERTY);
             List<DTO> finishes = (List<DTO>)materialDTO.get(Material.Properties.FINISHES_PROPERTY);
 
-            bool wasUpdated = new core.application.MaterialsController().updateMaterial(materialDTO);
+            bool wasUpdated = new core.application.MaterialsController(materialRepository).updateMaterial(materialDTO);
 
             if (!wasUpdated)
             {
                 return BadRequest();
             }
-            
+
             return Ok();
         }
 

@@ -6,6 +6,7 @@ using support.utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace core.domain{
     /// <summary>
@@ -39,42 +40,51 @@ namespace core.domain{
         /// <summary>
         /// Long property with the persistence iD
         /// </summary>
-        private long persistenceID{get;set;}
+        public long Id{get; private set;}
 
         /// <summary>
         /// String with the product reference
         /// </summary>
-        [Key]
-        private readonly string reference;
+        public string reference {get; set;}
         /// <summary>
         /// String with the product designation
         /// </summary>
-        private readonly string designation;
+        public string designation {get; set;}
         /// <summary>
         /// List with the products which the current product can be complemented by
         /// </summary>
         //TODO: Should complemented products be a list and not a set?
-        private readonly List<Product> complementedProducts;
+        public List<Product> complementedProducts {get; set;}
         /// <summary>
         /// List with the materials which the product can be made of
         /// </summary>
         //TODO: Should product materials be a list or a set?
-        private readonly List<Material> materials;
+        [NotMapped]
+        public List<Material> materials {get; set;}
         /// <summary>
         /// List with the product heigth restrictions
         /// </summary>
         //TODO: Should product restrictions be a list or a set
-        private readonly List<Restriction> heightRestrictions;
+        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Restriction mapping is configure
+        public List<Restriction> heightRestrictions {get; set;}
         /// <summary>
         /// List with the product width restrictions
         /// </summary>
         //TODO: Should product restrinctions be a list or a set
-        private readonly List<Restriction> widthRestrictions;
+        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Restriction mapping is configured
+        public List<Restriction> widthRestrictions {get; set;}
         /// <summary>
         /// List with the product depth restrictions
         /// </summary>
         //TODO: Should product restrinctions be a list or a set
-        private readonly List<Restriction> depthRestrictions;
+        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Restriction mapping is configured
+        public List<Restriction> depthRestrictions {get; set;}
+
+        /// <summary>
+        /// Empty constructor used by ORM.
+        /// </summary>
+        protected Product(){}
+
         /// <summary>
         /// Builds a new product with its reference, designation and materials which it can be made of
         /// </summary>
@@ -86,17 +96,17 @@ namespace core.domain{
                         IEnumerable<Restriction> widthRestrictions,
                         IEnumerable<Restriction> depthRestrictions){
             checkProductProperties(reference,designation);
-            checkProductMaterials(materials);
+            /*checkProductMaterials(materials);
             checkProductRestrictions(heightRestrictions);
             checkProductRestrictions(widthRestrictions);
-            checkProductRestrictions(depthRestrictions);
+            checkProductRestrictions(depthRestrictions);*/
             this.reference=reference;
             this.designation=designation;
-            this.materials=new List<Material>(materials);
+            /*this.materials=new List<Material>(materials);
             this.complementedProducts=new List<Product>();
             this.heightRestrictions=new List<Restriction>(heightRestrictions);
             this.widthRestrictions=new List<Restriction>(widthRestrictions);
-            this.depthRestrictions=new List<Restriction>(depthRestrictions);
+            this.depthRestrictions=new List<Restriction>(depthRestrictions);*/
         }
 
         /// <summary>
@@ -205,7 +215,7 @@ namespace core.domain{
             GenericDTO dto=new GenericDTO(Product.Properties.CONTEXT);
             dto.put(Properties.DESIGNATION_PROPERTY,designation);
             dto.put(Properties.REFERENCE_PROPERTY,reference);
-            dto.put(Properties.PERSISTENCE_ID_PROPERTY,persistenceID);
+            dto.put(Properties.PERSISTENCE_ID_PROPERTY,Id);
             return dto;
         }
 

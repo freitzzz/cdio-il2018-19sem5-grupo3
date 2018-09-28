@@ -4,6 +4,7 @@ using support.dto;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace core.domain
 {
@@ -45,34 +46,42 @@ namespace core.domain
          */
         private const string INVALID_FINISHES_COLORS = "The Material's finishes are not valid!";
 
+        public long Id { get; set; }
+
         /**
         <summary>
             String with the Material's reference.
         </summary>
         */
         [Key]
-        private string reference;
+        public string reference { get; protected set; }
 
         /** 
         <summary>
             String with the Material's designation.
         </summary>
         */
-        private string designation;
+        public string designation { get; set; }
 
         /**
         <summary>
             List with all the Material's colors.
         </summary>
-         */
-        private readonly List<Color> colors = new List<Color>();
+        **/
+        public List<Color> Colors { get; set; }
 
         /**
          <summary>
              List with all the Material's finishes.
          </summary>
-          */
-        private readonly List<Finish> finishes = new List<Finish>();
+         **/
+        public List<Finish> Finishes { get; set; }
+
+
+        /// <summary>
+        /// Empty constructor used by ORM.
+        /// </summary>
+        protected Material() { }
 
         /**
         <summary>
@@ -96,8 +105,8 @@ namespace core.domain
             checkMaterialProperties(reference, designation, colors, finishes);
             this.reference = reference;
             this.designation = designation;
-            this.colors.AddRange(colors);
-            this.finishes.AddRange(finishes);
+            this.Colors.AddRange(colors);
+            this.Finishes.AddRange(finishes);
         }
 
         /**
@@ -156,8 +165,8 @@ namespace core.domain
         */
         public bool addColor(Color color)
         {
-            if (color == null || colors.Contains(color)) return false;
-            colors.Add(color);
+            if (color == null || Colors.Contains(color)) return false;
+            Colors.Add(color);
             return true;
         }
 
@@ -171,7 +180,7 @@ namespace core.domain
         public bool removeColor(Color color)
         {
             if (color == null) return false;
-            return colors.Remove(color);
+            return Colors.Remove(color);
         }
 
         /**
@@ -184,7 +193,7 @@ namespace core.domain
         public bool hasColor(Color color)
         {
             if (color == null) return false;
-            return colors.Contains(color);
+            return Colors.Contains(color);
         }
 
         /**
@@ -196,8 +205,8 @@ namespace core.domain
         */
         public bool addFinish(Finish finish)
         {
-            if (finish == null || finishes.Contains(finish)) return false;
-            finishes.Add(finish);
+            if (finish == null || Finishes.Contains(finish)) return false;
+            Finishes.Add(finish);
             return true;
         }
 
@@ -211,7 +220,7 @@ namespace core.domain
         public bool removeFinish(Finish finish)
         {
             if (finish == null) return false;
-            return finishes.Remove(finish);
+            return Finishes.Remove(finish);
         }
 
         /**
@@ -224,7 +233,7 @@ namespace core.domain
         public bool hasFinish(Finish finish)
         {
             if (finish == null) return false;
-            return finishes.Contains(finish);
+            return Finishes.Contains(finish);
         }
 
 
@@ -254,14 +263,14 @@ namespace core.domain
             dto.put(Properties.DATABASE_ID_PROPERTY, persistence_id);
 
             List<String> dtoColors = new List<String>();
-            foreach (Color color in colors)
+            foreach (Color color in Colors)
             {
                 dtoColors.Add(color.ToString());
             }
             dto.put(Properties.COLORS_PROPERTY, dtoColors);
 
             List<String> dtoFinishes = new List<String>();
-            foreach (Finish finish in finishes)
+            foreach (Finish finish in Finishes)
             {
                 dtoFinishes.Add(finish.ToString());
             }

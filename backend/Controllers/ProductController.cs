@@ -12,6 +12,7 @@ using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using support.utils;
+using core.persistence;
 
 namespace backend.Controllers
 {
@@ -34,6 +35,16 @@ namespace backend.Controllers
         /// </summary>
         private const string NO_PRODUCTS_FOUND_REFERENCE = "No products found";
 
+        private readonly ProductRepository productRepository;
+
+        private readonly MaterialRepository materialRepository;
+
+        public ProductController(ProductRepository productRepository, MaterialRepository materialRepository)
+        {
+            this.productRepository = productRepository;
+            this.materialRepository = materialRepository;
+        }
+
         /// <summary>
         /// Finds a product by ID
         /// </summary>
@@ -41,9 +52,11 @@ namespace backend.Controllers
         /// <returns>HTTP Response 400 Bad Request if a product with the id isn't found;
         /// HTTP Response 200 Ok with the product's info in JSON format </returns>
         [HttpGet("{id}")]
-        public ActionResult<DTO> findProductByID(long productID)
+        public ActionResult<DTO> findProductByID(/*long productID*/ string reference)
         {
-            DTO productDTO = new core.application.ProductController().findProductByID(productID);
+            //DTO productDTO = new core.application.ProductController(productRepository).findProductByID(productID);
+
+            DTO productDTO = new core.application.ProductController(productRepository, materialRepository).findByReference(reference);
 
             if (productDTO == null)
             {
@@ -53,6 +66,9 @@ namespace backend.Controllers
             return Ok(productDTO);
         }
 
+
+
+
         /// <summary>
         /// Finds all products
         /// </summary>
@@ -61,7 +77,7 @@ namespace backend.Controllers
         [HttpGet]
         public ActionResult<List<DTO>> findAll()
         {
-            List<DTO> allProductsDTO = new core.application.ProductController().findAllProducts();
+            List<DTO> allProductsDTO = new core.application.ProductController(productRepository, materialRepository).findAllProducts();
 
             if (allProductsDTO == null)
             {
@@ -83,7 +99,7 @@ namespace backend.Controllers
         public ActionResult<DTO> addProduct([FromBody] JObject jsonData){
             ProductObject productObject=JsonConvert.DeserializeObject<ProductObject>(jsonData.ToString());
             DTO productDTO=productObjectToProductDTO(productObject);
-            DTO createdProductDTO=new core.application.ProductController().addProduct(productDTO);
+            DTO createdProductDTO=new core.application.ProductController(productRepository, materialRepository).addProduct(productDTO);
             if(createdProductDTO!=null){
                 return Ok(createdProductDTO);
             }else{
@@ -118,7 +134,7 @@ namespace backend.Controllers
                     return BadRequest();
             }
 
-            if (!new core.application.ProductController().updateProduct(productDTO))
+            if (!new core.application.ProductController(productRepository, materialRepository).updateProduct(productDTO))
             {
                 return BadRequest();
             }
@@ -138,7 +154,7 @@ namespace backend.Controllers
         public ActionResult removeProduct(long productID){
             DTO productDTO=new GenericDTO(Product.Properties.CONTEXT);
             productDTO.put(Product.Properties.PERSISTENCE_ID_PROPERTY,productID);
-            bool removedWithSuccess=new core.application.ProductController().removeProduct(productDTO);
+            bool removedWithSuccess=new core.application.ProductController(productRepository, materialRepository).removeProduct(productDTO);
             if(removedWithSuccess){
                 return Ok("{\"Message\":\"The product was removed with success\"}");
             }else{
