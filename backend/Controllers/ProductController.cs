@@ -127,6 +127,26 @@ namespace backend.Controllers
         }
 
         /// <summary>
+        /// Removes a product from it collection
+        /// </summary>
+        /// <param name="productID">long with the product ID</param>
+        /// <returns>HTTP Response 200 Ok if the product was removed with successs
+        ///         <br>HTTP Response 400 Bad Request if an error occured while removing the product
+        ///         <br>See MyC REST API documentation for a better overview
+        /// </returns>
+        [HttpDelete("{id}")]
+        public ActionResult removeProduct(long productID){
+            DTO productDTO=new GenericDTO(Product.Properties.CONTEXT);
+            productDTO.put(Product.Properties.PERSISTENCE_ID_PROPERTY,productID);
+            bool removedWithSuccess=new core.application.ProductController().removeProduct(productDTO);
+            if(removedWithSuccess){
+                return Ok("{\"Message\":\"The product was removed with success\"}");
+            }else{
+                return BadRequest("{\"Message\":\"An error ocurred while creating the product\"}");
+            }
+        }
+
+        /// <summary>
         /// Parses a ProductObject into a product DTO
         /// </summary>
         /// <param name="productObject">ProductObject with the product information</param>
