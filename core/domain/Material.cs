@@ -51,14 +51,14 @@ namespace core.domain
         </summary>
         */
         [Key]
-        private readonly string reference;
+        private string reference;
 
         /** 
         <summary>
             String with the Material's designation.
         </summary>
         */
-        private readonly string designation;
+        private string designation;
 
         /**
         <summary>
@@ -79,7 +79,7 @@ namespace core.domain
             Long with the Material's database ID.
         </summary>
          */
-        private long persistence_id{get;set;}
+        private long persistence_id { get; set; }
 
         /**
         <summary>
@@ -116,6 +116,24 @@ namespace core.domain
             if (Strings.isNullOrEmpty(designation)) throw new ArgumentException(INVALID_MATERIAL_DESIGNATION);
             if (Collections.isListNull(colors) || Collections.isListEmpty(colors)) throw new ArgumentException(INVALID_MATERIAL_COLORS);
             if (Collections.isListNull(finishes) || Collections.isListEmpty(finishes)) throw new ArgumentException(INVALID_FINISHES_COLORS);
+        }
+
+        /**
+            Changes the Material's reference.
+         */
+        public void changeReference(string reference)
+        {
+            if (String.IsNullOrEmpty(reference)) throw new ArgumentException(INVALID_MATERIAL_REFERENCE);
+            this.reference = reference;
+        }
+
+        /**
+            Changes the Material's designation.
+         */
+        public void changeDesignation(string designation)
+        {
+            if (String.IsNullOrEmpty(designation)) throw new ArgumentException(INVALID_MATERIAL_DESIGNATION);
+            this.designation = designation;
         }
 
         /**
