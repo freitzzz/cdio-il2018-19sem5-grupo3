@@ -5,7 +5,6 @@ using System.Text;
 using support.domain;
 using support.domain.ddd;
 using support.dto;
-using Microsoft.EntityFrameworkCore;
 
 namespace core.domain
 {
@@ -125,6 +124,7 @@ namespace core.domain
             DTO dto = new GenericDTO(Properties.CONTEXT);
 
             dto.put(Properties.CATEGORY_NAME, name);
+            dto.put(Properties.CATEGORY_ID, ProductCategoryId);
 
             return dto;
         }
@@ -150,6 +150,11 @@ namespace core.domain
             /// Key for the ProductCategory's name attribute.
             /// </summary>
             public const string CATEGORY_NAME = "name";
+
+            /// <summary>
+            /// Key for the ProducCategory's database identifier.
+            /// </summary>
+            public const string CATEGORY_ID = "id";
 
         }
 
