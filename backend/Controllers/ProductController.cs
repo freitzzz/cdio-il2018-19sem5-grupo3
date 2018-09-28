@@ -41,7 +41,7 @@ namespace backend.Controllers
         /// <returns>HTTP Response 400 Bad Request if a product with the id isn't found;
         /// HTTP Response 200 Ok with the product's info in JSON format </returns>
         [HttpGet("{id}")]
-        public ActionResult<DTO> findByProductByID(string productID)
+        public ActionResult<DTO> findProductByID(long productID)
         {
             DTO productDTO = new core.application.ProductController().findProductByID(productID);
 
@@ -102,10 +102,10 @@ namespace backend.Controllers
         /// HTTP Response 200 Ok if the product is updated successfully</returns>
         /// TODO Refactor method
         [HttpPut("{id}")]
-        public ActionResult updateProduct([FromBody] JObject jsonData, String productID)
+        public ActionResult updateProduct([FromBody] JObject jsonData, long productID)
         {
             ProductObject instance = JsonConvert.DeserializeObject<ProductObject>(jsonData.ToString());
-            instance.persistenceID=long.Parse(productID);
+            instance.persistenceID=productID;
             DTO productDTO = productObjectToProductDTO(instance);
 
             List<DTO> heightRestrictionDTOList = (List<DTO>)productDTO.get(Product.Properties.HEIGHT_RESTRICTIONS_PROPERTIES);

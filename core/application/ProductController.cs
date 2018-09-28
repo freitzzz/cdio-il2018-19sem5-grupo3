@@ -69,7 +69,7 @@ namespace core.application
         /// </summary>
         /// <param name="productID">the product's ID</param>
         /// <returns></returns>
-        public DTO findProductByID(string productID)
+        public DTO findProductByID(long productID)
         {
             return PersistenceContext.repositories().createProductRepository().find(productID).toDTO();
         }
