@@ -76,6 +76,13 @@ namespace core.domain
 
         /**
         <summary>
+            Long with the Material's database ID.
+        </summary>
+         */
+        private long persistence_id{get;set;}
+
+        /**
+        <summary>
             Builds a new instance of Material, receiving its reference and designation.
         </summary>
         <param name = "reference">string with the new Material's reference</param>
@@ -223,9 +230,10 @@ namespace core.domain
         public DTO toDTO()
         {
             GenericDTO dto = new GenericDTO(Properties.CONTEXT);
-            
+
             dto.put(Properties.REFERENCE_PROPERTY, reference);
             dto.put(Properties.DESIGNATION_PROPERTY, designation);
+            dto.put(Properties.DATABASE_ID_PROPERTY, persistence_id);
 
             List<String> dtoColors = new List<String>();
             foreach (Color color in colors)
@@ -235,10 +243,11 @@ namespace core.domain
             dto.put(Properties.COLORS_PROPERTY, dtoColors);
 
             List<String> dtoFinishes = new List<String>();
-            foreach(Finish finish in finishes){
+            foreach (Finish finish in finishes)
+            {
                 dtoFinishes.Add(finish.ToString());
             }
-            dto.put(Properties.FINISHES_PROPERTY, dtoFinishes);            
+            dto.put(Properties.FINISHES_PROPERTY, dtoFinishes);
 
             return dto;
         }
@@ -296,6 +305,13 @@ namespace core.domain
             </summary>
             */
             public const string CONTEXT = "Material";
+
+            /**
+            <summary>
+                Constant that represents the name of the Property which maps the Material's database ID.
+            </summary>
+             */
+            public const string DATABASE_ID_PROPERTY = "id";
 
             /**
             <summary>
