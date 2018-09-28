@@ -24,13 +24,18 @@ namespace core.domain
         /// Database identifier property
         /// </summary>
         /// <value></value>
-        public long ProductCategoryId { get; set; }
+        public long Id { get; set; }
 
 
         /// <summary>
         /// The ProductCategory's name e.g.: "Shelves", Drawers", "Handles".
         /// </summary>
-        private string name;
+        public string name { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected ProductCategory(){}
 
         /// <summary>
         /// Creates a new instance of ProductCategory with a given name and an empty collection of Product.
@@ -124,10 +129,19 @@ namespace core.domain
             DTO dto = new GenericDTO(Properties.CONTEXT);
 
             dto.put(Properties.CATEGORY_NAME, name);
-            dto.put(Properties.CATEGORY_ID, ProductCategoryId);
+            dto.put(Properties.CATEGORY_ID, Id);
 
             return dto;
         }
+
+        public static ProductCategory fromDTO(DTO dto)
+        {
+
+            string name = (string)dto.get(Properties.CATEGORY_NAME);
+
+            return new ProductCategory(name);
+        }
+
         public bool sameAs(string comparingEntity)
         {
             return name.Equals(comparingEntity, StringComparison.InvariantCultureIgnoreCase);
