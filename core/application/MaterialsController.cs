@@ -60,7 +60,6 @@ namespace core.application
         {
             string reference = (string)materialAsDTO.get(Material.Properties.REFERENCE_PROPERTY);
             string designation = (string)materialAsDTO.get(Material.Properties.DESIGNATION_PROPERTY);
-            materialAsDTO.get(Material.Properties.FINISHES_PROPERTY);
 
             List<Color> colors = new List<Color>();
             foreach (DTO colorDTO in (List<DTO>)materialAsDTO.get(Material.Properties.COLORS_PROPERTY))
@@ -89,12 +88,36 @@ namespace core.application
         /// </summary>
         /// <param name="materialDTO">DTO that holds all info about the Material</param>
         /// <returns>DTO that represents the updated Material</returns>
-        // public DTO updateMaterial(DTO materialDTO)
-        //  {
+        public bool updateMaterial(DTO materialDTO)
+        {
+            MaterialRepository repository = PersistenceContext.repositories().createMaterialRepository();
+            Material material = repository.find((string)materialDTO.get(Material.Properties.DATABASE_ID_PROPERTY));
 
-        //   return PersistenceContext.repositories().createMaterialRepository().update(material).toDTO();
-        // }
+            if (material == null)
+            {
+                return false;
+            }
 
+            material.changeReference((string)materialDTO.get(Material.Properties.REFERENCE_PROPERTY));
+            material.changeDesignation((string)materialDTO.get(Material.Properties.DESIGNATION_PROPERTY));
+
+            foreach (DTO colorDTO in (List<DTO>)materialDTO.get(Material.Properties.COLORS_PROPERTY))
+            {
+                string name = (string)colorDTO.get("name");
+                int red = (int)colorDTO.get("red");
+                int green = (int)colorDTO.get("green");
+                int blue = (int)colorDTO.get("blue");
+                int alpha = (int)colorDTO.get("alpha");
+                material.addColor(Color.valueOf(name, red, green, blue, alpha));
+            }
+
+            foreach (DTO finishDTO in (List<DTO>)materialDTO.get(Material.Properties.FINISHES_PROPERTY))
+            {
+                material.addFinish(Finish.valueOf((string)finishDTO.get("description")));
+            }
+            
+            return repository.update(material) != null;
+        }
 
         /// Parses an enumerable of materials persistence identifiers as an enumerable of entities
         /// </summary>

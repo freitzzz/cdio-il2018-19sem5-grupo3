@@ -179,10 +179,25 @@ namespace backend.Controllers
         /// <param name="materialDTO">DTO that holds all info about the Material</param>
         /// <returns>HTTP Response 400 Bad Request if the Material is not updated;
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
-        //[HttpPut]
-        //public ActionResult<DTO> update(DTO materialDTO){
-        //  DTO updatedDTO = new core.application.MaterialsController().updateMaterial(materialDTO);            
-        //}
+        [HttpPut]
+        public ActionResult<DTO> update([FromBody] JObject jsonData, long materialID)
+        {
+            MaterialObject materialObject = JsonConvert.DeserializeObject<MaterialObject>(jsonData.ToString());
+            DTO materialDTO = materialObjectToMaterialDTO(materialObject);
+
+            materialObject.persistenceID = materialID;
+            List<DTO> colors = (List<DTO>)materialDTO.get(Material.Properties.COLORS_PROPERTY);
+            List<DTO> finishes = (List<DTO>)materialDTO.get(Material.Properties.FINISHES_PROPERTY);
+
+            bool wasUpdated = new core.application.MaterialsController().updateMaterial(materialDTO);
+
+            if (!wasUpdated)
+            {
+                return BadRequest();
+            }
+            
+            return Ok();
+        }
 
         /// <summary>
         /// Auxiliar MaterialObject class used in the deserialization of a Material's updates/addition from JSON format.
