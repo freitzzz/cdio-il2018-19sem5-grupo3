@@ -10,15 +10,21 @@ namespace core.application
     /// <summary>
     /// Core ProductController class
     /// </summary>
-    public class ProductController
-    {
+    public class ProductController{
+        /// <summary>
+        /// Adds a new product
+        /// </summary>
+        /// <param name="productAsDTO">DTO with the product information</param>
+        /// <returns>boolean true if the product was added with success</returns>
         public bool addProduct(DTO productAsDTO){
             Product.ProductBuilder productBuilder=Product.ProductBuilder.create();
             productBuilder.withReference((string)productAsDTO.get(Product.Properties.REFERENCE_PROPERTY));
             productBuilder.withDesignation((string)productAsDTO.get(Product.Properties.DESIGNATION_PROPERTY));
             productBuilder.withComplementedProducts(enumerableOfProductsIDSAsEntities((IEnumerable<long>)productAsDTO.get(Product.Properties.COMPLEMENTED_PRODUCTS_PROPERTY)));
             productBuilder.withMaterials(new MaterialsController().enumerableOfMaterialsIDSAsEntities((IEnumerable<long>)productAsDTO.get(Product.Properties.MATERIALS_PROPERTY)));
-            
+            productBuilder.withHeightRestrictions(getProductDTOEnumerableOfHeightRestrictions(productAsDTO));
+            productBuilder.withWidthRestrictions(getProductDTOEnumerableOfWidthRestrictions(productAsDTO));
+            productBuilder.withDepthRestrictions(getProductDTOEnumerableOfDepthRestrictions(productAsDTO));
             return PersistenceContext.repositories().createProductRepository().save(productBuilder.build())!=null;
         }
         /// <summary>
