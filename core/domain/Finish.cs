@@ -25,7 +25,7 @@ namespace core.domain
             String with the Finish's description
         </summary>
         */
-        private readonly string description;
+        public string description { get; set; }
         /**
         <summary>
             Builds a new instance of Finish, receiving its description.
