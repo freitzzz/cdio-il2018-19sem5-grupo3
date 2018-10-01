@@ -18,7 +18,7 @@ namespace support.utils
         /// <returns>true if it's empty, false if otherwise</returns>
         public static bool isListEmpty<T>(List<T> list)
         {
-            return list != null && list.Count == 0;
+            return list == null || list.Count == 0;
         }
 
         /// <summary>

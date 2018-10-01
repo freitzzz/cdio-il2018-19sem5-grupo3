@@ -8,8 +8,8 @@ namespace support.domain.ddd{
     /// they are the ones who aggregate other entities
     /// </summary>
     /// <typeparam name="E">Generic-Type of the aggregate root which repository is held</typeparam>
-    /// <typeparam name="I">Generic-Type of the domain entitiy identifier</typeparam>
-    /// <typeparam name="ID">Generic-Type of the entity persistence identifier</typeparam>
+    /// <typeparam name="ID">Generic-Type of the persistence entitiy identifier</typeparam>
+    /// <typeparam name="EID">Generic-Type of the domain identifier</typeparam>
     //TODO: We have a problem on generic identifiers
     //C# doesn't have an "anonymous generic tag" so we can't do stuff like AggregateRoot<?>
     public interface Repository<E,ID,EID>:DataRepository<E,ID> where E:AggregateRoot<EID>{

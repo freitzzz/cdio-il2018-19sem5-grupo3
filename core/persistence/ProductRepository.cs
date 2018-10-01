@@ -7,7 +7,7 @@ namespace core.persistence{
     /// Interface that represents the repository functionalities for Product entities
     /// </summary>
     /// <typeparam name="Product">Generic-Type of the repository entity</typeparam>
-    /// <typeparam name="string">Generic-Type of the repository persistence ID</typeparam>
+    /// <typeparam name="long">Generic-Type of the repository persistence ID</typeparam>
     /// <typeparam name="string">Generic-Type of the repository entity identifier</typeparam>
-    public interface ProductRepository:Repository<Product,long,string>{}
+    public interface ProductRepository:Repository<Product,long,string>, DataRepository<Product,long>{}
 }

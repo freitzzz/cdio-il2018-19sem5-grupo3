@@ -3,8 +3,8 @@ namespace support.domain.ddd{
     /// <summary>
     /// Generic interface for marking domain entities
     /// </summary>
-    /// <typeparam name="I">Generic-Type of the entity identifier</typeparam>
-    public interface DomainEntity<I>:Identifiable<I>{
+    /// <typeparam name="EID">Generic-Type of the entity identifier</typeparam>
+    public interface DomainEntity<EID>:Identifiable<EID>{
         ///<summary>Represents the entity hashcode</summary>
         ///<returns>Integer with the entity hashcode</returns>
         ///

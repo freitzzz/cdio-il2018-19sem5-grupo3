@@ -4,7 +4,7 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 
-namespace core_tests.domain.entities
+namespace core_tests.domain
 {
     public class ProductCategoryTest
     {

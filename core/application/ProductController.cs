@@ -10,35 +10,48 @@ namespace core.application
     /// <summary>
     /// Core ProductController class
     /// </summary>
-    public class ProductController{
+    public class ProductController
+    {
+
+        private readonly ProductRepository productRepository;
+
+        private readonly MaterialRepository materialRepository;
+
+        public ProductController(ProductRepository productRepository, MaterialRepository materialRepository)
+        {
+            this.productRepository = productRepository;
+            this.materialRepository = materialRepository;
+        }
+
         /// <summary>
         /// Adds a new product
         /// </summary>
         /// <param name="productAsDTO">DTO with the product information</param>
         /// <returns>DTO with the created product DTO, null if the product was not created</returns>
-        public DTO addProduct(DTO productAsDTO){
-            Product.ProductBuilder productBuilder=Product.ProductBuilder.create();
+        public DTO addProduct(DTO productAsDTO)
+        {
+            Product.ProductBuilder productBuilder = Product.ProductBuilder.create();
             productBuilder.withReference((string)productAsDTO.get(Product.Properties.REFERENCE_PROPERTY));
             productBuilder.withDesignation((string)productAsDTO.get(Product.Properties.DESIGNATION_PROPERTY));
-            productBuilder.withComplementedProducts(enumerableOfProductsIDSAsEntities((IEnumerable<long>)productAsDTO.get(Product.Properties.COMPLEMENTED_PRODUCTS_PROPERTY)));
-            productBuilder.withMaterials(new MaterialsController().enumerableOfMaterialsIDSAsEntities((IEnumerable<long>)productAsDTO.get(Product.Properties.MATERIALS_PROPERTY)));
+            /*productBuilder.withComplementedProducts(enumerableOfProductsIDSAsEntities((IEnumerable<long>)productAsDTO.get(Product.Properties.COMPLEMENTED_PRODUCTS_PROPERTY)));
+            productBuilder.withMaterials(new MaterialsController(materialRepository).enumerableOfMaterialsIDSAsEntities((IEnumerable<long>)productAsDTO.get(Product.Properties.MATERIALS_PROPERTY)));
             productBuilder.withHeightRestrictions(getProductDTOEnumerableOfHeightRestrictions(productAsDTO));
             productBuilder.withWidthRestrictions(getProductDTOEnumerableOfWidthRestrictions(productAsDTO));
-            productBuilder.withDepthRestrictions(getProductDTOEnumerableOfDepthRestrictions(productAsDTO));
-            Product createdProduct=PersistenceContext.repositories().createProductRepository().save(productBuilder.build());
-            if(createdProduct==null)return null;
+            productBuilder.withDepthRestrictions(getProductDTOEnumerableOfDepthRestrictions(productAsDTO));*/
+            Product createdProduct = productRepository.save(productBuilder.build());
+            if (createdProduct == null) return null;
             return createdProduct.toDTO();
         }
-        
+
         /// <summary>
         /// Removes a product
         /// </summary>
         /// <param name="productDTO">DTO with the product information</param>
         /// <returns>boolean true if the product was removed with success</returns>
-        public bool removeProduct(DTO productDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productBeingRemoved=productRepository.find((long)productDTO.get(Product.Properties.PERSISTENCE_ID_PROPERTY));
-            return productBeingRemoved!=null && productRepository.remove(productBeingRemoved)!=null;
+        public bool removeProduct(DTO productDTO)
+        {
+            Product productBeingRemoved = productRepository.find((long)productDTO.get(Product.Properties.PERSISTENCE_ID_PROPERTY));
+            return productBeingRemoved != null && productRepository.remove(productBeingRemoved) != null;
         }
 
         /// <summary>
@@ -49,7 +62,7 @@ namespace core.application
         {
             List<DTO> productDTOList = new List<DTO>();
 
-            IEnumerable<Product> productList = PersistenceContext.repositories().createProductRepository().findAll();
+            IEnumerable<Product> productList = productRepository.findAll();
 
             if (productList == null)
             {
@@ -71,7 +84,11 @@ namespace core.application
         /// <returns></returns>
         public DTO findProductByID(long productID)
         {
-            return PersistenceContext.repositories().createProductRepository().find(productID).toDTO();
+            return productRepository.find(productID).toDTO();
+        }
+
+        public DTO findByReference(string reference){
+            return productRepository.find(reference).toDTO();
         }
 
         /// <summary>
@@ -82,23 +99,22 @@ namespace core.application
         /// TODO Refactor method 
         public bool updateProduct(DTO updatesDTO)
         {
-            ProductRepository repository = PersistenceContext.repositories().createProductRepository();
-            Product oldProduct = repository.find((string)updatesDTO.get(Product.Properties.PERSISTENCE_ID_PROPERTY));
+            Product oldProduct = productRepository.find((string)updatesDTO.get(Product.Properties.PERSISTENCE_ID_PROPERTY));
             if (oldProduct == null)
             {
                 return false;
             }
 
-            IEnumerable<Restriction> heightRestrictions=getProductDTOEnumerableOfHeightRestrictions(updatesDTO);
-            IEnumerable<Restriction> widthRestrictions=getProductDTOEnumerableOfWidthRestrictions(updatesDTO);
-            IEnumerable<Restriction> depthRestrictions=getProductDTOEnumerableOfDepthRestrictions(updatesDTO);
-            
-            foreach(Restriction heightRestriction in heightRestrictions){if(!oldProduct.addHeightRestriction(heightRestriction))return false;}
-            foreach(Restriction widthRestriction in widthRestrictions){if(!oldProduct.addWidthRestriction(widthRestriction))return false;}
-            foreach(Restriction depthRestriction in depthRestrictions){if(!oldProduct.addDepthRestriction(depthRestriction))return false;}
+            IEnumerable<Restriction> heightRestrictions = getProductDTOEnumerableOfHeightRestrictions(updatesDTO);
+            IEnumerable<Restriction> widthRestrictions = getProductDTOEnumerableOfWidthRestrictions(updatesDTO);
+            IEnumerable<Restriction> depthRestrictions = getProductDTOEnumerableOfDepthRestrictions(updatesDTO);
+
+            foreach (Restriction heightRestriction in heightRestrictions) { if (!oldProduct.addHeightRestriction(heightRestriction)) return false; }
+            foreach (Restriction widthRestriction in widthRestrictions) { if (!oldProduct.addWidthRestriction(widthRestriction)) return false; }
+            foreach (Restriction depthRestriction in depthRestrictions) { if (!oldProduct.addDepthRestriction(depthRestriction)) return false; }
             addMaterials(updatesDTO, oldProduct);
 
-            return repository.update(oldProduct) != null;
+            return productRepository.update(oldProduct) != null;
         }
 
         /// <summary>
@@ -108,7 +124,7 @@ namespace core.application
         /// <returns>IEnumerable with the height restrictions found on a product DTO</returns>
         internal IEnumerable<Restriction> getProductDTOEnumerableOfHeightRestrictions(DTO productDTO)
         {
-            List<Restriction> heightRestrictions=new List<Restriction>();
+            List<Restriction> heightRestrictions = new List<Restriction>();
             foreach (DTO heightRestrictionDTO in (List<DTO>)productDTO.get(Product.Properties.HEIGHT_RESTRICTIONS_PROPERTIES))
             {
                 String restrictionType = (string)heightRestrictionDTO.get("type");
@@ -146,7 +162,7 @@ namespace core.application
         /// <returns>IEnumerable with the width restrictions found on a product DTO</returns>
         internal IEnumerable<Restriction> getProductDTOEnumerableOfWidthRestrictions(DTO productDTO)
         {
-            List<Restriction> widthRestrictions=new List<Restriction>();
+            List<Restriction> widthRestrictions = new List<Restriction>();
             foreach (DTO widthRestrictionDTO in (List<DTO>)productDTO.get(Product.Properties.WIDTH_RESTRICTIONS_PROPERTIES))
             {
                 String restrictionType = (string)widthRestrictionDTO.get("type");
@@ -184,7 +200,7 @@ namespace core.application
         /// <returns>IEnumerable with the depth restrictions found on a product DTO</returns>
         internal IEnumerable<Restriction> getProductDTOEnumerableOfDepthRestrictions(DTO productDTO)
         {
-            List<Restriction> depthRestrictions=new List<Restriction>();
+            List<Restriction> depthRestrictions = new List<Restriction>();
             foreach (DTO depthRestrictionDTO in (List<DTO>)productDTO.get(Product.Properties.DEPTH_RESTRICTIONS_PROPERTIES))
             {
                 String restrictionType = (string)depthRestrictionDTO.get("type");
@@ -222,26 +238,26 @@ namespace core.application
         /// <param name="oldProduct">product to be updated</param>
         private void addMaterials(DTO productDTO, Product oldProduct)
         {
-            MaterialRepository repository = PersistenceContext.repositories().createMaterialRepository();
             foreach (string str in (List<string>)productDTO.get(Product.Properties.MATERIALS_PROPERTY))
             {
-                oldProduct.addMaterial(repository.find(str));
+                oldProduct.addMaterial(materialRepository.find(str));
             }
         }
 
-         /// <summary>
+        /// <summary>
         /// Parses an enumerable of products persistence identifiers as an enumerable of entities
         /// </summary>
         /// <param name="productsIDS">Enumerable with the products persistence identifiers</param>
         /// <returns>IEnumerable with the products ids as entities</returns>
-        internal IEnumerable<Product> enumerableOfProductsIDSAsEntities(IEnumerable<long> productsIDS){
-            if(productsIDS==null)return null;
-            List<Product> products=new List<Product>();
-            IEnumerator<long> productsIDSIterator=productsIDS.GetEnumerator();
-            long nextProductID=productsIDSIterator.Current;
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            while(productsIDSIterator.MoveNext()){
-                nextProductID=productsIDSIterator.Current;
+        internal IEnumerable<Product> enumerableOfProductsIDSAsEntities(IEnumerable<long> productsIDS)
+        {
+            if (productsIDS == null) return null;
+            List<Product> products = new List<Product>();
+            IEnumerator<long> productsIDSIterator = productsIDS.GetEnumerator();
+            long nextProductID = productsIDSIterator.Current;
+            while (productsIDSIterator.MoveNext())
+            {
+                nextProductID = productsIDSIterator.Current;
                 products.Add(productRepository.find(nextProductID));
             }
             return products;

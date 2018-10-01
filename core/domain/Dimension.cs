@@ -10,6 +10,8 @@ namespace core.domain
     public class Dimension : Restriction, ValueObject
     {
 
+        public long Id {get; set;}
+
         /// <summary>
         /// Constant that represents the message that occurs if the value is NaN
         /// </summary>
@@ -28,7 +30,7 @@ namespace core.domain
         /// <summary>
         /// Value that the dimension has
         /// </summary>
-        private double value;
+        public double value {get; set;}
 
         /// <summary>
         /// Returns a new instance of Dimension

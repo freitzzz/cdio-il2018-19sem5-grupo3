@@ -4,6 +4,7 @@ using support.dto;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace core.domain
 {
@@ -45,34 +46,49 @@ namespace core.domain
          */
         private const string INVALID_FINISHES_COLORS = "The Material's finishes are not valid!";
 
+        public long Id { get; set; }
+
         /**
         <summary>
             String with the Material's reference.
         </summary>
         */
         [Key]
-        private readonly string reference;
+        public string reference { get; protected set; }
 
         /** 
         <summary>
             String with the Material's designation.
         </summary>
         */
-        private readonly string designation;
+        public string designation { get; set; }
 
         /**
         <summary>
             List with all the Material's colors.
         </summary>
-         */
-        private readonly List<Color> colors = new List<Color>();
+        **/
+        public List<Color> Colors { get; set; }
 
         /**
          <summary>
              List with all the Material's finishes.
          </summary>
-          */
-        private readonly List<Finish> finishes = new List<Finish>();
+         **/
+        public List<Finish> Finishes { get; set; }
+
+
+        /// <summary>
+        /// Empty constructor used by ORM.
+        /// </summary>
+        protected Material() { }
+
+        /**
+        <summary>
+            Long with the Material's database ID.
+        </summary>
+         */
+        private long persistence_id { get; set; }
 
         /**
         <summary>
@@ -89,8 +105,8 @@ namespace core.domain
             checkMaterialProperties(reference, designation, colors, finishes);
             this.reference = reference;
             this.designation = designation;
-            this.colors.AddRange(colors);
-            this.finishes.AddRange(finishes);
+            this.Colors.AddRange(colors);
+            this.Finishes.AddRange(finishes);
         }
 
         /**
@@ -109,6 +125,24 @@ namespace core.domain
             if (Strings.isNullOrEmpty(designation)) throw new ArgumentException(INVALID_MATERIAL_DESIGNATION);
             if (Collections.isListNull(colors) || Collections.isListEmpty(colors)) throw new ArgumentException(INVALID_MATERIAL_COLORS);
             if (Collections.isListNull(finishes) || Collections.isListEmpty(finishes)) throw new ArgumentException(INVALID_FINISHES_COLORS);
+        }
+
+        /**
+            Changes the Material's reference.
+         */
+        public void changeReference(string reference)
+        {
+            if (String.IsNullOrEmpty(reference)) throw new ArgumentException(INVALID_MATERIAL_REFERENCE);
+            this.reference = reference;
+        }
+
+        /**
+            Changes the Material's designation.
+         */
+        public void changeDesignation(string designation)
+        {
+            if (String.IsNullOrEmpty(designation)) throw new ArgumentException(INVALID_MATERIAL_DESIGNATION);
+            this.designation = designation;
         }
 
         /**
@@ -131,8 +165,8 @@ namespace core.domain
         */
         public bool addColor(Color color)
         {
-            if (color == null || colors.Contains(color)) return false;
-            colors.Add(color);
+            if (color == null || Colors.Contains(color)) return false;
+            Colors.Add(color);
             return true;
         }
 
@@ -146,7 +180,7 @@ namespace core.domain
         public bool removeColor(Color color)
         {
             if (color == null) return false;
-            return colors.Remove(color);
+            return Colors.Remove(color);
         }
 
         /**
@@ -159,7 +193,7 @@ namespace core.domain
         public bool hasColor(Color color)
         {
             if (color == null) return false;
-            return colors.Contains(color);
+            return Colors.Contains(color);
         }
 
         /**
@@ -171,8 +205,8 @@ namespace core.domain
         */
         public bool addFinish(Finish finish)
         {
-            if (finish == null || finishes.Contains(finish)) return false;
-            finishes.Add(finish);
+            if (finish == null || Finishes.Contains(finish)) return false;
+            Finishes.Add(finish);
             return true;
         }
 
@@ -186,7 +220,7 @@ namespace core.domain
         public bool removeFinish(Finish finish)
         {
             if (finish == null) return false;
-            return finishes.Remove(finish);
+            return Finishes.Remove(finish);
         }
 
         /**
@@ -199,7 +233,7 @@ namespace core.domain
         public bool hasFinish(Finish finish)
         {
             if (finish == null) return false;
-            return finishes.Contains(finish);
+            return Finishes.Contains(finish);
         }
 
 
@@ -223,22 +257,24 @@ namespace core.domain
         public DTO toDTO()
         {
             GenericDTO dto = new GenericDTO(Properties.CONTEXT);
-            
+
             dto.put(Properties.REFERENCE_PROPERTY, reference);
             dto.put(Properties.DESIGNATION_PROPERTY, designation);
+            dto.put(Properties.DATABASE_ID_PROPERTY, persistence_id);
 
             List<String> dtoColors = new List<String>();
-            foreach (Color color in colors)
+            foreach (Color color in Colors)
             {
                 dtoColors.Add(color.ToString());
             }
             dto.put(Properties.COLORS_PROPERTY, dtoColors);
 
             List<String> dtoFinishes = new List<String>();
-            foreach(Finish finish in finishes){
+            foreach (Finish finish in Finishes)
+            {
                 dtoFinishes.Add(finish.ToString());
             }
-            dto.put(Properties.FINISHES_PROPERTY, dtoFinishes);            
+            dto.put(Properties.FINISHES_PROPERTY, dtoFinishes);
 
             return dto;
         }
@@ -296,6 +332,13 @@ namespace core.domain
             </summary>
             */
             public const string CONTEXT = "Material";
+
+            /**
+            <summary>
+                Constant that represents the name of the Property which maps the Material's database ID.
+            </summary>
+             */
+            public const string DATABASE_ID_PROPERTY = "id";
 
             /**
             <summary>
