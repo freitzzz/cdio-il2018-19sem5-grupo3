@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using core.dto;
 
 namespace core.domain
 {
@@ -16,7 +17,7 @@ namespace core.domain
     </summary>
     <typeparam name = "string">Generic-Type of the Material entity identifier</typeparam>
     */
-    public class Material : AggregateRoot<string>, DTOAble
+    public class Material : AggregateRoot<string>, DTOAble<MaterialDTO>
     {
         /**
         <summary>
@@ -53,7 +54,6 @@ namespace core.domain
             String with the Material's reference.
         </summary>
         */
-        [Key]
         public string reference { get; protected set; }
 
         /** 
@@ -254,7 +254,7 @@ namespace core.domain
         </summary>
         <returns>DTO with the current DTO representation of the Material</returns>
         */
-        public DTO toDTO()
+        public GenericDTO toDTO()
         {
             GenericDTO dto = new GenericDTO(Properties.CONTEXT);
 
@@ -317,6 +317,11 @@ namespace core.domain
                 Material material = (Material)obj;
                 return reference.Equals(material.reference);
             }
+        }
+
+        MaterialDTO DTOAble<MaterialDTO>.toDTO()
+        {
+            throw new NotImplementedException();
         }
 
         /**

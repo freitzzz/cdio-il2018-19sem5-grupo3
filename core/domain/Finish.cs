@@ -1,4 +1,6 @@
+using core.dto;
 using support.domain.ddd;
+using support.dto;
 using support.utils;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +13,7 @@ namespace core.domain
         <br>Finish is a value object.
     </summary>
     */
-    public class Finish : ValueObject
+    public class Finish : ValueObject, DTOAble<FinishDTO>
     {
 
         public long Id { get; set; }
@@ -99,6 +101,11 @@ namespace core.domain
         public override int GetHashCode()
         {
             return description.GetHashCode();
+        }
+
+        public FinishDTO toDTO()
+        {
+            throw new NotImplementedException();
         }
     }
 }

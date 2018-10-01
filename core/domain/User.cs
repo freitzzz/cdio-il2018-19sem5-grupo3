@@ -15,7 +15,7 @@ namespace core.domain {
     /// <br>User is an Aggregate Root</br>
     /// </summary>
     /// <typeparam name="Authentication">Generic-Type of the User entity identifier</typeparam>
-    public class User : AggregateRoot<Authentication>, DTOAble {
+    public class User : AggregateRoot<Authentication>, DTOAble<GenericDTO> {
         /// <summary>
         /// User's authentication
         /// </summary>
@@ -69,8 +69,8 @@ namespace core.domain {
         /// Returns the User as a DTO
         /// </summary>
         /// <returns>User represented as a DTO</returns>
-        public DTO toDTO() {
-            DTO dto = new GenericDTO("User");
+        public GenericDTO toDTO() {
+            GenericDTO dto = new GenericDTO("User");
             dto.put("1", auth);
             return dto;
         }

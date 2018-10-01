@@ -1,8 +1,9 @@
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using core.dto;
 using support.domain.ddd;
+using support.dto;
 
 namespace core.domain
 {
@@ -11,7 +12,7 @@ namespace core.domain
     /// <br>Color is an Value Object
     /// </summary>
     /// <typeparam name="name">Generic-Type of the Color identifier</typeparam>
-    public class Color : ValueObject
+    public class Color : ValueObject, DTOAble<ColorDTO>
     {
         public long Id {get; set;}
 
@@ -132,6 +133,11 @@ namespace core.domain
         public override String ToString()
         {
             return "Name: " + Name + " R:" + Red + " G:" + Green + " B:" + Blue + " A:" + Alpha + ".\n";
+        }
+
+        public ColorDTO toDTO()
+        {
+            throw new NotImplementedException();
         }
     }
 }

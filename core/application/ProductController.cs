@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using support.dto;
 using core.domain;
 using core.persistence;
-
+using core.dto;
 
 namespace core.application
 {
@@ -28,17 +28,21 @@ namespace core.application
         /// </summary>
         /// <param name="productAsDTO">DTO with the product information</param>
         /// <returns>DTO with the created product DTO, null if the product was not created</returns>
-        public DTO addProduct(DTO productAsDTO)
+        public ProductDTO addProduct(ProductDTO productAsDTO)
         {
-            Product.ProductBuilder productBuilder = Product.ProductBuilder.create();
+            Product newProduct = productAsDTO.toEntity();
+
+/*             Product.ProductBuilder productBuilder = Product.ProductBuilder.create();
             productBuilder.withReference((string)productAsDTO.get(Product.Properties.REFERENCE_PROPERTY));
             productBuilder.withDesignation((string)productAsDTO.get(Product.Properties.DESIGNATION_PROPERTY));
-            /*productBuilder.withComplementedProducts(enumerableOfProductsIDSAsEntities((IEnumerable<long>)productAsDTO.get(Product.Properties.COMPLEMENTED_PRODUCTS_PROPERTY)));
+            productBuilder.withComplementedProducts(enumerableOfProductsIDSAsEntities((IEnumerable<long>)productAsDTO.get(Product.Properties.COMPLEMENTED_PRODUCTS_PROPERTY)));
             productBuilder.withMaterials(new MaterialsController(materialRepository).enumerableOfMaterialsIDSAsEntities((IEnumerable<long>)productAsDTO.get(Product.Properties.MATERIALS_PROPERTY)));
             productBuilder.withHeightRestrictions(getProductDTOEnumerableOfHeightRestrictions(productAsDTO));
             productBuilder.withWidthRestrictions(getProductDTOEnumerableOfWidthRestrictions(productAsDTO));
             productBuilder.withDepthRestrictions(getProductDTOEnumerableOfDepthRestrictions(productAsDTO));*/
-            Product createdProduct = productRepository.save(productBuilder.build());
+
+            Product createdProduct = productRepository.save(newProduct); 
+            
             if (createdProduct == null) return null;
             return createdProduct.toDTO();
         }
@@ -48,7 +52,7 @@ namespace core.application
         /// </summary>
         /// <param name="productDTO">DTO with the product information</param>
         /// <returns>boolean true if the product was removed with success</returns>
-        public bool removeProduct(DTO productDTO)
+        public bool removeProduct(GenericDTO productDTO)
         {
             Product productBeingRemoved = productRepository.find((long)productDTO.get(Product.Properties.PERSISTENCE_ID_PROPERTY));
             return productBeingRemoved != null && productRepository.remove(productBeingRemoved) != null;
@@ -58,9 +62,9 @@ namespace core.application
         /// Fetches a list of all products present in the product repository
         /// </summary>
         /// <returns>a list of all of the products DTOs</returns>
-        public List<DTO> findAllProducts()
+        public List<ProductDTO> findAllProducts()
         {
-            List<DTO> productDTOList = new List<DTO>();
+            List<ProductDTO> productDTOList = new List<ProductDTO>();
 
             IEnumerable<Product> productList = productRepository.findAll();
 
@@ -82,12 +86,12 @@ namespace core.application
         /// </summary>
         /// <param name="productID">the product's ID</param>
         /// <returns></returns>
-        public DTO findProductByID(long productID)
+        public ProductDTO findProductByID(long productID)
         {
             return productRepository.find(productID).toDTO();
         }
 
-        public DTO findByReference(string reference){
+        public ProductDTO findByReference(string reference){
             return productRepository.find(reference).toDTO();
         }
 
@@ -97,7 +101,7 @@ namespace core.application
         /// <param name="updatesDTO"></param>
         /// <returns></returns>
         /// TODO Refactor method 
-        public bool updateProduct(DTO updatesDTO)
+        public bool updateProduct(GenericDTO updatesDTO)
         {
             Product oldProduct = productRepository.find((string)updatesDTO.get(Product.Properties.PERSISTENCE_ID_PROPERTY));
             if (oldProduct == null)
@@ -122,10 +126,10 @@ namespace core.application
         /// </summary>
         /// <param name="productDTO">DTO with the product DTO</param>
         /// <returns>IEnumerable with the height restrictions found on a product DTO</returns>
-        internal IEnumerable<Restriction> getProductDTOEnumerableOfHeightRestrictions(DTO productDTO)
+        internal IEnumerable<Restriction> getProductDTOEnumerableOfHeightRestrictions(GenericDTO productDTO)
         {
             List<Restriction> heightRestrictions = new List<Restriction>();
-            foreach (DTO heightRestrictionDTO in (List<DTO>)productDTO.get(Product.Properties.HEIGHT_RESTRICTIONS_PROPERTIES))
+            foreach (GenericDTO heightRestrictionDTO in (List<GenericDTO>)productDTO.get(Product.Properties.HEIGHT_RESTRICTIONS_PROPERTIES))
             {
                 String restrictionType = (string)heightRestrictionDTO.get("type");
                 List<string> values = (List<string>)heightRestrictionDTO.get("values");
@@ -160,10 +164,10 @@ namespace core.application
         /// </summary>
         /// <param name="productDTO">DTO with the product DTO</param>
         /// <returns>IEnumerable with the width restrictions found on a product DTO</returns>
-        internal IEnumerable<Restriction> getProductDTOEnumerableOfWidthRestrictions(DTO productDTO)
+        internal IEnumerable<Restriction> getProductDTOEnumerableOfWidthRestrictions(GenericDTO productDTO)
         {
             List<Restriction> widthRestrictions = new List<Restriction>();
-            foreach (DTO widthRestrictionDTO in (List<DTO>)productDTO.get(Product.Properties.WIDTH_RESTRICTIONS_PROPERTIES))
+            foreach (GenericDTO widthRestrictionDTO in (List<GenericDTO>)productDTO.get(Product.Properties.WIDTH_RESTRICTIONS_PROPERTIES))
             {
                 String restrictionType = (string)widthRestrictionDTO.get("type");
                 List<string> values = (List<string>)widthRestrictionDTO.get("values");
@@ -198,10 +202,10 @@ namespace core.application
         /// </summary>
         /// <param name="productDTO">DTO with the product DTO</param>
         /// <returns>IEnumerable with the depth restrictions found on a product DTO</returns>
-        internal IEnumerable<Restriction> getProductDTOEnumerableOfDepthRestrictions(DTO productDTO)
+        internal IEnumerable<Restriction> getProductDTOEnumerableOfDepthRestrictions(GenericDTO productDTO)
         {
             List<Restriction> depthRestrictions = new List<Restriction>();
-            foreach (DTO depthRestrictionDTO in (List<DTO>)productDTO.get(Product.Properties.DEPTH_RESTRICTIONS_PROPERTIES))
+            foreach (GenericDTO depthRestrictionDTO in (List<GenericDTO>)productDTO.get(Product.Properties.DEPTH_RESTRICTIONS_PROPERTIES))
             {
                 String restrictionType = (string)depthRestrictionDTO.get("type");
                 List<string> values = (List<string>)depthRestrictionDTO.get("values");
@@ -236,7 +240,7 @@ namespace core.application
         /// </summary>
         /// <param name="productDTO">list of updates in DTO</param>
         /// <param name="oldProduct">product to be updated</param>
-        private void addMaterials(DTO productDTO, Product oldProduct)
+        private void addMaterials(GenericDTO productDTO, Product oldProduct)
         {
             foreach (string str in (List<string>)productDTO.get(Product.Properties.MATERIALS_PROPERTY))
             {

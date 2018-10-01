@@ -7,15 +7,19 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using core.dto;
 
 namespace core.domain{
+
     /// <summary>
-    /// Class that represents a Product
+    /// Class that represents a Product.
     /// <br>Product is an entity
     /// <br>Product is an aggregate root
     /// </summary>
+    /// <typeparam name="Product"></typeparam>
+    /// <typeparam name="ProductDTO">Type of DTO being used</typeparam>
     /// <typeparam name="string">Generic-Type of the Product entity identifier</typeparam>
-    public class Product:AggregateRoot<string>,DTOAble{
+    public class Product: AggregateRoot<string>, DTOAble<ProductDTO>{
         /// <summary>
         /// Constant that represents the messange that ocurres if the product reference is invalid
         /// </summary>
@@ -211,14 +215,28 @@ namespace core.domain{
         /// Returns the current product as a DTO
         /// </summary>
         /// <returns>DTO with the current DTO representation of the product</returns>
-        public DTO toDTO(){
-            GenericDTO dto=new GenericDTO(Product.Properties.CONTEXT);
-            dto.put(Properties.DESIGNATION_PROPERTY,designation);
-            dto.put(Properties.REFERENCE_PROPERTY,reference);
-            dto.put(Properties.PERSISTENCE_ID_PROPERTY,Id);
+        public ProductDTO toDTO(){
+            ProductDTO dto = new ProductDTO();
+
+            dto.id = this.Id;
+            dto.designation = this.designation;
+            dto.reference = this.reference;
+
+            if(this.complementedProducts != null){
+                List<ProductDTO> complementDTOList = new List<ProductDTO>();
+
+                foreach(Product complement in complementedProducts){
+                    complementDTOList.Add(complement.toDTO()); 
+                }
+                dto.complements = complementDTOList;
+            }
+
+            //TODO: add missing DTO's
+
+
             return dto;
         }
-
+        
         /// <summary>
         /// Represents the textual information of the Product
         /// </summary>
@@ -408,7 +426,7 @@ namespace core.domain{
             /// <summary>
             /// DTO with the builder content
             /// </summary>
-            private readonly DTO builderDTO;
+            private readonly GenericDTO builderDTO;
 
             /// <summary>
             /// Adds a reference to the current product builder
