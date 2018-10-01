@@ -9,5 +9,5 @@ namespace core.persistence{
     /// <typeparam name="Product">Generic-Type of the repository entity</typeparam>
     /// <typeparam name="long">Generic-Type of the repository persistence ID</typeparam>
     /// <typeparam name="string">Generic-Type of the repository entity identifier</typeparam>
-    public interface ProductRepository:Repository<Product,long,string>, DataRepository<Product,long>{}
+    public interface ProductRepository:Repository<Product,long,string>{}
 }
