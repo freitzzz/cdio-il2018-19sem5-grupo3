@@ -1,12 +1,12 @@
 namespace support.dto{
     /// <summary>
-    /// Functional interface which allows the creation of a DTO
+    /// Represents a domain object that can be transformed into a DTO.
     /// </summary>
-    public interface DTOAble{
+    public interface DTOAble<D> where D : DTO{
         /// <summary>
-        /// Returns a DTO of the current object
+        /// Returns a DTO of the current object.
         /// </summary>
-        /// <returns>DTO with the DTO of the current object</returns>
-        DTO toDTO();
+        /// <returns>DTO containing domain object's information.</returns>
+        D toDTO();
     }
 }

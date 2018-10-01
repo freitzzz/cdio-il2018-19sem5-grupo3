@@ -1,14 +1,16 @@
 namespace support.dto{
     /// <summary>
-    /// Functional Interface which allow the parse of a DTO into its original object
-    /// Its useful for concrete implementations of DTO
+    /// Abstract class used for indicating that a class 
     /// </summary>
-    /// <typeparam name="T">Generic-Type of the object which created the DTO</typeparam>
-    public interface DTOParseable<T> where T:DTO{
+    /// <typeparam name="T">Type of object being tranformed into a DTO.</typeparam>
+    /// <typeparam name="D">Type of DTO in which object tranformation will result.</typeparam>
+    public interface DTOParseable<T,D> where T : DTOAble<D> where D : DTO{
+
         /// <summary>
-        /// Parses a DTO into its original object
+        /// Converts an instance of DTO into an instance of the given object type.
         /// </summary>
-        /// <returns>T with the original object which created the DTO</returns>
-        T valueOf();
+        /// <param name="dto">DTO containing object information</param>
+        /// <returns></returns>
+        T toEntity();
     }
 }
