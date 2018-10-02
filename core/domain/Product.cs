@@ -40,6 +40,10 @@ namespace core.domain{
         /// Constant that represents the messange that ocurres if the product restrinctions are invalid
         /// </summary>
         private const string INVALID_PRODUCT_DIMENSIONS="The product dimensions are invalid";
+        /// <summary>
+        /// Constant that represents the messange that ocurres if the product category is invalid
+        /// </summary>
+        private const string INVALID_PRODUCT_CATEGORY="The product category is invalid";
 
         /// <summary>
         /// Long property with the persistence iD
@@ -83,6 +87,10 @@ namespace core.domain{
         //TODO: Should product restrinctions be a list or a set
         [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configured
         public List<Dimension> depthValues {get; set;}
+        /// <summary>
+        /// ProductCategory with the category which the product belongs to
+        /// </summary>
+        public ProductCategory productCategory;
 
         /// <summary>
         /// Empty constructor used by ORM.
@@ -94,8 +102,12 @@ namespace core.domain{
         /// </summary>
         /// <param name="reference">String with the product reference</param>
         /// <param name="designation">String with the product designation</param>
+        /// <param name="productCategory">ProductCategory with the product category</param>
         /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
-        public Product(string reference,string designation,IEnumerable<Material> materials,
+        /// <param name="heightDimensions">IEnumerable with the product height dimensions</param>
+        /// <param name="widthDimensions">IEnumerable with the product width dimensions</param>
+        /// <param name="depthDimensions">IEnumerable with the product depth dimensions</param>
+        public Product(string reference,string designation,ProductCategory productCategory,IEnumerable<Material> materials,
                         IEnumerable<Dimension> heightDimensions,
                         IEnumerable<Dimension> widthDimensions,
                         IEnumerable<Dimension> depthDimensions){
@@ -104,6 +116,7 @@ namespace core.domain{
             checkProductDimensions(heightDimensions);
             checkProductDimensions(widthDimensions);
             checkProductDimensions(depthDimensions);
+            checkProductCategory(productCategory);
             this.reference=reference;
             this.designation=designation;
             this.materials=new List<Material>(materials);
@@ -111,6 +124,7 @@ namespace core.domain{
             this.heightValues=new List<Dimension>(heightDimensions);
             this.widthValues=new List<Dimension>(widthDimensions);
             this.depthValues=new List<Dimension>(depthDimensions);
+            this.productCategory=productCategory;
         }
 
         /// <summary>
@@ -118,8 +132,13 @@ namespace core.domain{
         /// </summary>
         /// <param name="reference">String with the product reference</param>
         /// <param name="designation">String with the product designation</param>
+        /// <param name="productCategory">ProductCategory with the product category</param>
+        /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
         /// <param name="complementedProducts">IEnumerable with the product complemented products</param>
-        public Product(string reference,string designation,IEnumerable<Material> materials,IEnumerable<Component> complementedProducts,
+        /// <param name="heightDimensions">IEnumerable with the product height dimensions</param>
+        /// <param name="widthDimensions">IEnumerable with the product width dimensions</param>
+        /// <param name="depthDimensions">IEnumerable with the product depth dimensions</param>
+        public Product(string reference,string designation,ProductCategory productCategory,IEnumerable<Material> materials,IEnumerable<Component> complementedProducts,
                         IEnumerable<Dimension> heightValues,
                         IEnumerable<Dimension> widthValues,
                         IEnumerable<Dimension> depthValues){
@@ -129,6 +148,7 @@ namespace core.domain{
             checkProductDimensions(heightValues);
             checkProductDimensions(widthValues);
             checkProductDimensions(depthValues);
+            checkProductCategory(productCategory);
             this.reference=reference;
             this.designation=designation;
             this.materials=new List<Material>(materials);
@@ -136,6 +156,7 @@ namespace core.domain{
             this.heightValues=new List<Dimension>(heightValues);
             this.widthValues=new List<Dimension>(widthValues);
             this.depthValues=new List<Dimension>(depthValues);
+            this.productCategory=productCategory;
         }
 
         /// <summary>
@@ -199,6 +220,18 @@ namespace core.domain{
         }
 
         /// <summary>
+        /// Changes the current product category
+        /// </summary>
+        /// <param name="productCategory">ProductCategory with the new product category</param>
+        /// <returns>boolean true if the product category was changed, false if not</returns>
+        public bool changeProductCategory(ProductCategory productCategory){
+            if(productCategory==null||this.productCategory.Equals(productCategory))
+                return false;
+            this.productCategory=productCategory;
+            return true;
+        }
+
+        /// <summary>
         /// Returns the product identity
         /// </summary>
         /// <returns>string with the product identity</returns>
@@ -221,6 +254,11 @@ namespace core.domain{
             dto.id = this.Id;
             dto.designation = this.designation;
             dto.reference = this.reference;
+
+            dto.heightDimensions=new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
+            dto.widthDimensions=new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
+            dto.depthDimensions=new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
+            dto.productCategory=productCategory.toDTO();
 
             if(this.complementedProducts != null){
                 List<ComponentDTO> complementDTOList = new List<ComponentDTO>();
@@ -331,6 +369,14 @@ namespace core.domain{
             if(Collections.isEnumerableNullOrEmpty(productDimensions))
                 throw new ArgumentException(INVALID_PRODUCT_DIMENSIONS);
             checkDuplicatedDimensions(productDimensions);
+        }
+
+        /// <summary>
+        /// Checks if the product category is valid
+        /// </summary>
+        /// <param name="productCategory">ProductCategory with the product category</param>
+        private void checkProductCategory(ProductCategory productCategory){
+            if(productCategory==null)throw new ArgumentException(INVALID_PRODUCT_CATEGORY);
         }
 
         /// <summary>
@@ -445,7 +491,7 @@ namespace core.domain{
             public static ProductBuilder create(){return new ProductBuilder();}
 
             /// <summary>
-            /// Adds a reference to the product builder
+            /// Adds a reference to the current product builder
             /// </summary>
             /// <param name="reference">string with the product reference</param>
             /// <returns>ProductBuilder with the updated builder</returns>            
@@ -455,7 +501,7 @@ namespace core.domain{
             }
 
             /// <summary>
-            /// Adds a designation to the product builder
+            /// Adds a designation to the current product builder
             /// </summary>
             /// <param name="designation">string with the product designation</param>
             /// <returns>ProductBuilder with the updated builder</returns>
@@ -465,7 +511,7 @@ namespace core.domain{
             }
 
             /// <summary>
-            /// Adds complemented product to the product builder
+            /// Adds complemented products to the current product builder
             /// </summary>
             /// <param name="complementedProducts">IEnumerable with the product complemented products</param>
             /// <returns>ProductBuilder with the updated builder</returns>
@@ -475,9 +521,19 @@ namespace core.domain{
             }
 
             /// <summary>
+            /// Adds product category to the current product builder
+            /// </summary>
+            /// <param name="productCategory">ProductCategory with the product category</param>
+            /// <returns>ProductBuilder with the updated builder</returns>
+            public ProductBuilder withProductCategory(ProductCategoryDTO productCategory){
+                builderDTO.productCategory=productCategory;
+                return this;
+            }
+
+            /// <summary>
             /// Adds materials to the product builder
             /// </summary>
-            /// <param name="materials">IEnumerable with the product materials</param>
+            /// <param name="materials">IEnumerable with the current product materials</param>
             /// <returns>ProductBuilder with the updated builder</returns>
             public ProductBuilder withMaterials(IEnumerable<MaterialDTO> materials){
                 builderDTO.materials=new List<MaterialDTO>(materials);
@@ -485,9 +541,9 @@ namespace core.domain{
             }
 
             /// <summary>
-            /// Adds a height dimensions to the product builder
+            /// Adds height dimensions to the product builder
             /// </summary>
-            /// <param name="heightDimensions">IEnumerable with the product height dimensions</param>
+            /// <param name="heightDimensions">IEnumerable with the current product height dimensions</param>
             /// <returns>ProductBuilder with the updated builder</returns>
             public ProductBuilder withHeightDimensions(IEnumerable<DimensionDTO> heightDimensions){
                 builderDTO.heightDimensions=new List<DimensionDTO>(heightDimensions);
@@ -495,9 +551,9 @@ namespace core.domain{
             }
 
             /// <summary>
-            /// Adds a depth dimensions to the product builder
+            /// Adds depth dimensions to the product builder
             /// </summary>
-            /// <param name="depthDimensions">IEnumerable with the product depth dimensions</param>
+            /// <param name="depthDimensions">IEnumerable with the current product depth dimensions</param>
             /// <returns>ProductBuilder with the updated builder</returns>
             public ProductBuilder withDepthDimensions(IEnumerable<DimensionDTO> depthDimensions){
                 builderDTO.depthDimensions=new List<DimensionDTO>(depthDimensions);
@@ -505,9 +561,9 @@ namespace core.domain{
             }
 
             /// <summary>
-            /// Adds a width dimensions to the product builder
+            /// Adds width dimensions to the product builder
             /// </summary>
-            /// <param name="widthDimensions">IEnumerable with the product width dimensions</param>
+            /// <param name="widthDimensions">IEnumerable with the current product width dimensions</param>
             /// <returns>ProductBuilder with the updated builder</returns>
             public ProductBuilder withWidthDimensions(IEnumerable<DimensionDTO> widthDimensions){
                 builderDTO.widthDimensions=new List<DimensionDTO>(widthDimensions);
@@ -523,6 +579,7 @@ namespace core.domain{
                 if(complementedProducts==null){
                     return new Product(builderDTO.reference
                                     ,builderDTO.designation
+                                    ,DTOUtils.reverseDTO(builderDTO.productCategory)
                                     ,DTOUtils.reverseDTOS(builderDTO.materials)
                                     ,DTOUtils.reverseDTOS(builderDTO.heightDimensions)
                                     ,DTOUtils.reverseDTOS(builderDTO.widthDimensions)
@@ -530,6 +587,7 @@ namespace core.domain{
                 }else{
                     return new Product(builderDTO.reference
                                     ,builderDTO.designation
+                                    ,DTOUtils.reverseDTO(builderDTO.productCategory)
                                     ,DTOUtils.reverseDTOS(builderDTO.materials)
                                     ,DTOUtils.reverseDTOS(complementedProducts)
                                     ,DTOUtils.reverseDTOS(builderDTO.heightDimensions)

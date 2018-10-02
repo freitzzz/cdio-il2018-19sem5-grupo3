@@ -63,6 +63,11 @@ namespace core.dto
         /// </summary>
         public List<DimensionDTO> widthDimensions{get;set;}
 
+        /// <summary>
+        /// Product category
+        /// </summary>
+        public ProductCategoryDTO productCategory{get;set;}
+
 
         public Product toEntity()
         {
