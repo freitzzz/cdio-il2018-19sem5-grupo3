@@ -13,7 +13,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureConstructorDetectsValueIsNaN()
         {
-            Action act = () => Dimension.valueOf(Double.NaN);
+            Action act = () => SingleValueDimension.valueOf(Double.NaN);
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -21,7 +21,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureConstructorDetectsValueIsInfinity()
         {
-            Action act = () => Dimension.valueOf(Double.PositiveInfinity);
+            Action act = () => SingleValueDimension.valueOf(Double.PositiveInfinity);
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -29,7 +29,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureConstructorDetectsNegativeValue()
         {
-            Action act = () => Dimension.valueOf(-4.0);
+            Action act = () => SingleValueDimension.valueOf(-4.0);
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -37,7 +37,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureInstanceIsCreated()
         {
-            Dimension instance = Dimension.valueOf(100.0);
+            SingleValueDimension instance = SingleValueDimension.valueOf(100.0);
 
             Assert.NotNull(instance);
         }
@@ -45,7 +45,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureInstanceAndNullAreNotEqual()
         {
-            Dimension instance = Dimension.valueOf(333.5);
+            SingleValueDimension instance = SingleValueDimension.valueOf(333.5);
 
             Assert.False(instance.Equals(null));
         }
@@ -53,7 +53,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureInstancesOfDifferentTypesAreNotEqual()
         {
-            Dimension instance = Dimension.valueOf(123.4);
+            SingleValueDimension instance = SingleValueDimension.valueOf(123.4);
 
             Assert.False(instance.Equals("Lil Xan ate too many Hot Cheetos"));
         }
@@ -61,8 +61,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureInstancesWithDifferentValuesAreNotEqual()
         {
-            Dimension instance = Dimension.valueOf(210.5);
-            Dimension other = Dimension.valueOf(210.4);
+            SingleValueDimension instance = SingleValueDimension.valueOf(210.5);
+            SingleValueDimension other = SingleValueDimension.valueOf(210.4);
 
             Assert.False(instance.Equals(other));
         }
@@ -70,15 +70,15 @@ namespace core_tests.domain
         [Fact]
         public void ensureInstancesWithSameValueAreEqual()
         {
-            Dimension instance = Dimension.valueOf(3.14);
-            Dimension other = Dimension.valueOf(3.14);
+            SingleValueDimension instance = SingleValueDimension.valueOf(3.14);
+            SingleValueDimension other = SingleValueDimension.valueOf(3.14);
 
             Assert.True(instance.Equals(other));
         }
 
         [Fact]
         public void ensureSameInstanceIsEqual(){
-            Dimension instance = Dimension.valueOf(3);
+            SingleValueDimension instance = SingleValueDimension.valueOf(3);
 
             Assert.True(instance.Equals(instance));
         }
@@ -86,8 +86,8 @@ namespace core_tests.domain
         [Fact]
         public void testHashCode()
         {
-            Dimension instance = Dimension.valueOf(2.718);
-            Dimension other = Dimension.valueOf(2.718);
+            SingleValueDimension instance = SingleValueDimension.valueOf(2.718);
+            SingleValueDimension other = SingleValueDimension.valueOf(2.718);
 
             Assert.Equal(instance.GetHashCode(), other.GetHashCode());
         }
@@ -95,8 +95,8 @@ namespace core_tests.domain
         [Fact]
         public void testToString()
         {
-            Dimension instance = Dimension.valueOf(9.8);
-            Dimension other = Dimension.valueOf(9.8);
+            SingleValueDimension instance = SingleValueDimension.valueOf(9.8);
+            SingleValueDimension other = SingleValueDimension.valueOf(9.8);
 
             Assert.Equal(instance.ToString(), other.ToString());
         }

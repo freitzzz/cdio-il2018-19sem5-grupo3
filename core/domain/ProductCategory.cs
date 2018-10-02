@@ -5,6 +5,7 @@ using System.Text;
 using support.domain;
 using support.domain.ddd;
 using support.dto;
+using core.dto;
 
 namespace core.domain
 {
@@ -13,7 +14,7 @@ namespace core.domain
     /// Class used for categorizing all the available products.
     /// </summary>
     /// <typeparam name="string">ProductCategory's identifier</typeparam>
-    public class ProductCategory : AggregateRoot<string>, DTOAble
+    public class ProductCategory : AggregateRoot<string>, DTOAble<ProductCategoryDTO>
     {
         /// <summary>
         /// Constant that represents the message being presented when a ProductCategory with an empty name is attempted to be created. 
@@ -24,13 +25,13 @@ namespace core.domain
         /// Database identifier property
         /// </summary>
         /// <value></value>
-        public long Id { get; set; }
+        public long Id { get; internal set; }
 
 
         /// <summary>
         /// The ProductCategory's name e.g.: "Shelves", Drawers", "Handles".
         /// </summary>
-        public string name { get; set; }
+        public string name { get; internal set; }
 
         /// <summary>
         /// 
@@ -123,55 +124,20 @@ namespace core.domain
             return sb.ToString();
         }
 
-
-        public DTO toDTO()
-        {
-            DTO dto = new GenericDTO(Properties.CONTEXT);
-
-            dto.put(Properties.CATEGORY_NAME, name);
-            dto.put(Properties.CATEGORY_ID, Id);
-
-            return dto;
-        }
-
-        public static ProductCategory fromDTO(DTO dto)
-        {
-
-            string name = (string)dto.get(Properties.CATEGORY_NAME);
-
-            return new ProductCategory(name);
-        }
-
         public bool sameAs(string comparingEntity)
         {
             return name.Equals(comparingEntity, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        //DTO mapping keys
-
-        /// <summary>
-        /// Static inner class that represents the keys by which ProductCategory's attributes are mapped.
-        /// </summary>
-        public static class Properties
+        public ProductCategoryDTO toDTO()
         {
+            ProductCategoryDTO dto = new ProductCategoryDTO();
 
-            /// <summary>
-            /// Constant that represents the mapping context.
-            /// </summary>
-            public const string CONTEXT = "ProductCategory";
+            dto.id = Id;
+            dto.name = name;
 
-            /// <summary>
-            /// Key for the ProductCategory's name attribute.
-            /// </summary>
-            public const string CATEGORY_NAME = "name";
-
-            /// <summary>
-            /// Key for the ProducCategory's database identifier.
-            /// </summary>
-            public const string CATEGORY_ID = "id";
-
+            return dto;
         }
-
     }
 
 }

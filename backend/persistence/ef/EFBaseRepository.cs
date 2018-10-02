@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using core.domain;
 using Microsoft.EntityFrameworkCore;
 using support.domain.ddd;
 using support.persistence.repositories;
@@ -14,8 +15,15 @@ namespace backend.persistence.ef
     /// <typeparam name="EID">Type of domain Entity identifier</typeparam>
     public abstract class EFBaseRepository<E, ID, EID> : Repository<E, ID, EID> where E : class, AggregateRoot<EID>
     {
+        /// <summary>
+        /// Current database context.
+        /// </summary>
         protected readonly MyCContext dbContext;
 
+        /// <summary>
+        /// Constructs a new instance of EFBaseRepository with a given database context.
+        /// </summary>
+        /// <param name="dbContext"></param>
         protected EFBaseRepository(MyCContext dbContext)
         {
             this.dbContext = dbContext;
@@ -28,7 +36,8 @@ namespace backend.persistence.ef
 
         public E find(EID entityID)
         {
-            return dbContext.Set<E>().SingleOrDefault(e => e.id().Equals(entityID));
+            //use the entity's sameAs() method since it might have extra comparison criteria
+            return dbContext.Set<E>().Where(e => e.sameAs(entityID)).SingleOrDefault();
         }
 
         public IEnumerable<E> findAll()
@@ -38,6 +47,7 @@ namespace backend.persistence.ef
 
         public E remove(E entity)
         {
+            //TODO: change to soft/logical delete
             dbContext.Set<E>().Remove(entity);
             dbContext.SaveChanges();
 
@@ -46,6 +56,12 @@ namespace backend.persistence.ef
 
         public E save(E entity)
         {
+            //*Avoid adding entities with the same business identifier
+            //*A unique index could also work, but if the business identifier is a string,
+            //*it's harder to ensure that field is case insensitive
+            if(find(entity.id()) != null){
+                return null;
+            }
             dbContext.Set<E>().Add(entity);
             dbContext.SaveChanges();
 

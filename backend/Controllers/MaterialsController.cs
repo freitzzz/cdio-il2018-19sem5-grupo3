@@ -59,9 +59,9 @@ namespace backend.Controllers
         /// <br>HTTP Response 200 Ok with the info of all Materials in JSON format.
         /// </returns>
         [HttpGet]
-        public ActionResult<List<DTO>> findAll()
+        public ActionResult<List<GenericDTO>> findAll()
         {
-            List<DTO> materials = new core.application.MaterialsController(materialRepository).findAllMaterials();
+            List<GenericDTO> materials = new core.application.MaterialsController(materialRepository).findAllMaterials();
 
             if (materials == null)
             {
@@ -80,9 +80,9 @@ namespace backend.Controllers
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.
         /// </returns>
         [HttpGet("{id}")]
-        public ActionResult<DTO> findById(long materialID)
+        public ActionResult<GenericDTO> findById(long materialID)
         {
-            DTO materialDTO = new core.application.MaterialsController(materialRepository).findMaterialByID(materialID);
+            GenericDTO materialDTO = new core.application.MaterialsController(materialRepository).findMaterialByID(materialID);
 
             if (materialDTO == null)
             {
@@ -99,9 +99,9 @@ namespace backend.Controllers
         /// <returns>HTTP Response 400 Bad Request if the Material is not removed;
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
         [HttpDelete("{id}")]
-        public ActionResult<DTO> remove(long materialID)
+        public ActionResult<GenericDTO> remove(long materialID)
         {
-            DTO removedDTO = new core.application.MaterialsController(materialRepository).removeMaterial(materialID);
+            GenericDTO removedDTO = new core.application.MaterialsController(materialRepository).removeMaterial(materialID);
 
             if (removedDTO == null)
             {
@@ -118,13 +118,13 @@ namespace backend.Controllers
         /// <returns>HTTP Response 400 Bad Request if the Material is not added;
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
         [HttpPost]
-        public ActionResult<DTO> add([FromBody] JObject jsonData)
+        public ActionResult<GenericDTO> add([FromBody] JObject jsonData)
         {
             {
                 MaterialObject materialObject = JsonConvert.DeserializeObject<MaterialObject>(jsonData.ToString());
 
-                DTO materialDTO = materialObjectToMaterialDTO(materialObject);
-                DTO addedDTO = new core.application.MaterialsController(materialRepository).addMaterial(materialDTO);
+                GenericDTO materialDTO = materialObjectToMaterialDTO(materialObject);
+                GenericDTO addedDTO = new core.application.MaterialsController(materialRepository).addMaterial(materialDTO);
 
                 if (addedDTO == null)
                 {
@@ -139,20 +139,20 @@ namespace backend.Controllers
         /// </summary>
         /// <param name="materialObject">MaterialObject with the Material's info</param>
         /// <returns>DTO with the parsed MaterialObject</returns>
-        private DTO materialObjectToMaterialDTO(MaterialObject materialObject)
+        private GenericDTO materialObjectToMaterialDTO(MaterialObject materialObject)
         {
-            DTO materialDTO = new GenericDTO(Material.Properties.CONTEXT);
+            GenericDTO materialDTO = new GenericDTO(Material.Properties.CONTEXT);
 
             materialDTO.put(Material.Properties.REFERENCE_PROPERTY, materialObject.reference); //Holds the reference of the Material
             materialDTO.put(Material.Properties.DESIGNATION_PROPERTY, materialObject.designation); //Holds the designation of the Material
 
-            List<DTO> colorsDTOList = new List<DTO>();
+            List<GenericDTO> colorsDTOList = new List<GenericDTO>();
 
             if (!Collections.isListEmpty(materialObject.colors))
             {
                 foreach (Color color in materialObject.colors)
                 {
-                    DTO colorDTO = new GenericDTO("color");
+                    GenericDTO colorDTO = new GenericDTO("color");
                     colorDTO.put("name", color.Name);
                     colorDTO.put("red", color.Red);
                     colorDTO.put("green", color.Green);
@@ -165,13 +165,13 @@ namespace backend.Controllers
 
             materialDTO.put(Material.Properties.COLORS_PROPERTY, colorsDTOList);
 
-            List<DTO> finishesDTOList = new List<DTO>();
+            List<GenericDTO> finishesDTOList = new List<GenericDTO>();
 
             if (!Collections.isListEmpty(materialObject.finishes))
             {
                 foreach (Finish finish in materialObject.finishes)
                 {
-                    DTO finishDTO = new GenericDTO("finish");
+                    GenericDTO finishDTO = new GenericDTO("finish");
                     finishDTO.put("description", finish.description);
                     finishesDTOList.Add(finishDTO);
                 }
@@ -189,14 +189,14 @@ namespace backend.Controllers
         /// <returns>HTTP Response 400 Bad Request if the Material is not updated;
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
         [HttpPut]
-        public ActionResult<DTO> update([FromBody] JObject jsonData, long materialID)
+        public ActionResult<GenericDTO> update([FromBody] JObject jsonData, long materialID)
         {
             MaterialObject materialObject = JsonConvert.DeserializeObject<MaterialObject>(jsonData.ToString());
-            DTO materialDTO = materialObjectToMaterialDTO(materialObject);
+            GenericDTO materialDTO = materialObjectToMaterialDTO(materialObject);
 
             materialObject.persistenceID = materialID;
-            List<DTO> colors = (List<DTO>)materialDTO.get(Material.Properties.COLORS_PROPERTY);
-            List<DTO> finishes = (List<DTO>)materialDTO.get(Material.Properties.FINISHES_PROPERTY);
+            List<GenericDTO> colors = (List<GenericDTO>)materialDTO.get(Material.Properties.COLORS_PROPERTY);
+            List<GenericDTO> finishes = (List<GenericDTO>)materialDTO.get(Material.Properties.FINISHES_PROPERTY);
 
             bool wasUpdated = new core.application.MaterialsController(materialRepository).updateMaterial(materialDTO);
 

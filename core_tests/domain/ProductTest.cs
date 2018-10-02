@@ -20,8 +20,8 @@ namespace core_tests.domain{
                     =new List<Material>(new []{PREDEFINED_MATERIAL});
 
         
-        private static readonly List<Restriction> PREDEFINED_RESTRICTIONS
-                    =new List<Restriction>(new []{Dimension.valueOf(20f)});
+        private static readonly List<Dimension> PREDEFINED_RESTRICTIONS
+                    =new List<Dimension>(new []{SingleValueDimension.valueOf(20f)});
 
         /// <summary>
         /// Ensures that product can't be created with a null reference
@@ -202,7 +202,7 @@ namespace core_tests.domain{
             Console.WriteLine("ensureProductCantBeCreatedWithEmptyHeightRestrictions");
             Action emptyHeightRestrictionsProductCreation
                                 =()=>new Product("#666","Shelf",
-                                                PREDEFINED_MATERIALS,new List<Restriction>(),PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS);
+                                                PREDEFINED_MATERIALS,new List<Dimension>(),PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS);
             //Since the product was created with empty height restrictions, then it should throw
             //An ArgumentException
             Assert.Throws<ArgumentException>(emptyHeightRestrictionsProductCreation);
@@ -216,7 +216,7 @@ namespace core_tests.domain{
             Console.WriteLine("ensureProductCantBeCreatedWithEmptyWidthRestrictions");
             Action emptyWidthRestrictionsProductCreation
                                 =()=>new Product("#666","Shelf",
-                                                PREDEFINED_MATERIALS,PREDEFINED_RESTRICTIONS,new List<Restriction>(),PREDEFINED_RESTRICTIONS);
+                                                PREDEFINED_MATERIALS,PREDEFINED_RESTRICTIONS,new List<Dimension>(),PREDEFINED_RESTRICTIONS);
             //Since the product was created with empty width restrictions, then it should throw
             //An ArgumentException
             Assert.Throws<ArgumentException>(emptyWidthRestrictionsProductCreation);
@@ -230,7 +230,7 @@ namespace core_tests.domain{
             Console.WriteLine("ensureProductCantBeCreatedWithEmptyDepthRestrictions");
             Action emptyDepthRestrictionsProductCreation
                                 =()=>new Product("#666","Shelf",
-                                                PREDEFINED_MATERIALS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS,new List<Restriction>());
+                                                PREDEFINED_MATERIALS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS,new List<Dimension>());
             //Since the product was created with empty depth restrictions, then it should throw
             //An ArgumentException
             Assert.Throws<ArgumentException>(emptyDepthRestrictionsProductCreation);
@@ -314,72 +314,72 @@ namespace core_tests.domain{
         /// Ensures that a product cant add null height restrictions
         /// </summary>
         [Fact]
-        public void ensureProductCantAddNullHeightRestriction(){
-            Console.WriteLine("ensureProductCantAddNullHeightRestriction");
+        public void ensureProductCantAddNullHeightDimension(){
+            Console.WriteLine("ensureProductCantAddNullHeightDimension");
             Product product=new Product("#666","Shelf",PREDEFINED_MATERIALS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS);
             //Since we added a null restriction then it should return false
-            Assert.False(product.addHeightRestriction(null));
+            Assert.False(product.addHeightValue(null));
         }
 
         /// <summary>
         /// Ensures that a product cant add null width restrictions
         /// </summary>
         [Fact]
-        public void ensureProductCantAddNullWidthRestriction(){
-            Console.WriteLine("ensureProductCantAddNullWidthRestriction");
+        public void ensureProductCantAddNullWidthDimension(){
+            Console.WriteLine("ensureProductCantAddNullWidthDimension");
             Product product=new Product("#666","Shelf",PREDEFINED_MATERIALS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS);
             //Since we added a null restriction then it should return false
-            Assert.False(product.addWidthRestriction(null));
+            Assert.False(product.addWidthValue(null));
         }
 
         /// <summary>
         /// Ensures that a product cant add null depth restrictions
         /// </summary>
         [Fact]
-        public void ensureProductCantAddNullDepthRestriction(){
-            Console.WriteLine("ensureProductCantAddNullDepthRestriction");
+        public void ensureProductCantAddNullDepthDimension(){
+            Console.WriteLine("ensureProductCantAddNullDepthDimension");
             Product product=new Product("#666","Shelf",PREDEFINED_MATERIALS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS);
             //Since we added a null restriction then it should return false
-            Assert.False(product.addDepthRestriction(null));
+            Assert.False(product.addDepthValue(null));
         }
 
         /// <summary>
         /// Ensures that a product cant add duplicated height restrictions
         /// </summary>
         [Fact]
-        public void ensureProductCantAddDuplicatedHeightRestriction(){
-            Console.WriteLine("ensureProductCantAddDuplicatedHeightRestriction");
+        public void ensureProductCantAddDuplicatedHeightDimension(){
+            Console.WriteLine("ensureProductCantAddDuplicatedHeightDimension");
             Product product=new Product("#666","Shelf",PREDEFINED_MATERIALS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS);
-            Restriction restriction=Dimension.valueOf(5000);
-            product.addHeightRestriction(restriction);
+            Dimension restriction=SingleValueDimension.valueOf(5000);
+            product.addHeightValue(restriction);
             //Since we added a duplicated restriction then it should return false
-            Assert.False(product.addHeightRestriction(restriction));
+            Assert.False(product.addHeightValue(restriction));
         }
 
         /// <summary>
         /// Ensures that a product cant add duplicated width restrictions
         /// </summary>
         [Fact]
-        public void ensureProductCantAddDuplicatedWidthRestriction(){
-            Console.WriteLine("ensureProductCantAddDuplicatedWidthRestriction");
+        public void ensureProductCantAddDuplicatedWidthDimension(){
+            Console.WriteLine("ensureProductCantAddDuplicatedWidthDimension");
             Product product=new Product("#666","Shelf",PREDEFINED_MATERIALS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS);
-            Restriction restriction=Dimension.valueOf(5000);
-            product.addWidthRestriction(restriction);
+            Dimension restriction=SingleValueDimension.valueOf(5000);
+            product.addWidthValue(restriction);
             //Since we added a duplicated restriction then it should return false
-            Assert.False(product.addWidthRestriction(restriction));
+            Assert.False(product.addWidthValue(restriction));
         }
 
         /// <summary>
         /// Ensures that a product cant add duplicated depth restrictions
         /// </summary>
         [Fact]
-        public void ensureProductCantAddDuplicatedDepthRestriction(){
-            Console.WriteLine("ensureProductCantAddDuplicatedDepthRestriction");
+        public void ensureProductCantAddDuplicatedDepthDimension(){
+            Console.WriteLine("ensureProductCantAddDuplicatedDepthDimension");
             Product product=new Product("#666","Shelf",PREDEFINED_MATERIALS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS);
-            Restriction restriction=Dimension.valueOf(5000);
-            product.addDepthRestriction(restriction);
+            Dimension restriction=SingleValueDimension.valueOf(5000);
+            product.addDepthValue(restriction);
             //Since we added a duplicated restriction then it should return false
-            Assert.False(product.addDepthRestriction(restriction));
+            Assert.False(product.addDepthValue(restriction));
         }
 
         /// <summary>

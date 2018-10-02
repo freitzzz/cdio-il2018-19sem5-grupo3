@@ -23,9 +23,9 @@ namespace core.application
         /// Fetches a List with all Materials present in the MaterialRepository.
         /// </summary>
         /// <returns>a List with all of the Material's DTOs</returns>
-        public List<DTO> findAllMaterials()
+        public List<GenericDTO> findAllMaterials()
         {
-            List<DTO> dtoMaterials = new List<DTO>();
+            List<GenericDTO> dtoMaterials = new List<GenericDTO>();
             IEnumerable<Material> materials = materialRepository.findAll();
 
             foreach (Material material in materials)
@@ -41,7 +41,7 @@ namespace core.application
         /// </summary>
         /// <param name = "materialID">the Material's ID</param>
         /// <returns>DTO that represents the Material</returns>
-        public DTO findMaterialByID(long materialID)
+        public GenericDTO findMaterialByID(long materialID)
         {
             return materialRepository.find(materialID).toDTO();
         }
@@ -51,7 +51,7 @@ namespace core.application
         /// </summary>
         /// <param name="materialID">the Material's ID</param>
         /// <returns>DTO that represents the Material</returns>
-        public DTO removeMaterial(long materialID)
+        public GenericDTO removeMaterial(long materialID)
         {
             Material material = materialRepository.find(materialID);
             return materialRepository.remove(material).toDTO();
@@ -62,13 +62,13 @@ namespace core.application
         /// </summary>
         /// <param name="materialDTO">DTO that holds all info about the Material</param>
         /// <returns>DTO that represents the Material</returns>
-        public DTO addMaterial(DTO materialAsDTO)
+        public GenericDTO addMaterial(GenericDTO materialAsDTO)
         {
             string reference = (string)materialAsDTO.get(Material.Properties.REFERENCE_PROPERTY);
             string designation = (string)materialAsDTO.get(Material.Properties.DESIGNATION_PROPERTY);
 
             List<Color> colors = new List<Color>();
-            foreach (DTO colorDTO in (List<DTO>)materialAsDTO.get(Material.Properties.COLORS_PROPERTY))
+            foreach (GenericDTO colorDTO in (List<GenericDTO>)materialAsDTO.get(Material.Properties.COLORS_PROPERTY))
             {
                 string name = (string)colorDTO.get("name");
                 int red = (int)colorDTO.get("red");
@@ -79,7 +79,7 @@ namespace core.application
             }
 
             List<Finish> finishes = new List<Finish>();
-            foreach (DTO finishDTO in (List<DTO>)materialAsDTO.get(Material.Properties.FINISHES_PROPERTY))
+            foreach (GenericDTO finishDTO in (List<GenericDTO>)materialAsDTO.get(Material.Properties.FINISHES_PROPERTY))
             {
                 finishes.Add(Finish.valueOf((string)finishDTO.get("description")));
             }
@@ -94,7 +94,7 @@ namespace core.application
         /// </summary>
         /// <param name="materialDTO">DTO that holds all info about the Material</param>
         /// <returns>DTO that represents the updated Material</returns>
-        public bool updateMaterial(DTO materialDTO)
+        public bool updateMaterial(GenericDTO materialDTO)
         {
             MaterialRepository repository = PersistenceContext.repositories().createMaterialRepository();
             Material material = repository.find((string)materialDTO.get(Material.Properties.DATABASE_ID_PROPERTY));
@@ -107,7 +107,7 @@ namespace core.application
             material.changeReference((string)materialDTO.get(Material.Properties.REFERENCE_PROPERTY));
             material.changeDesignation((string)materialDTO.get(Material.Properties.DESIGNATION_PROPERTY));
 
-            foreach (DTO colorDTO in (List<DTO>)materialDTO.get(Material.Properties.COLORS_PROPERTY))
+            foreach (GenericDTO colorDTO in (List<GenericDTO>)materialDTO.get(Material.Properties.COLORS_PROPERTY))
             {
                 string name = (string)colorDTO.get("name");
                 int red = (int)colorDTO.get("red");
@@ -117,7 +117,7 @@ namespace core.application
                 material.addColor(Color.valueOf(name, red, green, blue, alpha));
             }
 
-            foreach (DTO finishDTO in (List<DTO>)materialDTO.get(Material.Properties.FINISHES_PROPERTY))
+            foreach (GenericDTO finishDTO in (List<GenericDTO>)materialDTO.get(Material.Properties.FINISHES_PROPERTY))
             {
                 material.addFinish(Finish.valueOf((string)finishDTO.get("description")));
             }

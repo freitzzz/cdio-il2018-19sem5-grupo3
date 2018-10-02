@@ -64,7 +64,7 @@ namespace core_tests.domain {
             Console.WriteLine("toDTO");
             Authentication auth1 = new Auth("username", "email", "password");
             User u1 = new User(auth1);
-            DTO dto = new GenericDTO("User");
+            GenericDTO dto = new GenericDTO("User");
             dto.put("1", auth1);
             Assert.True(dto.get("1").Equals(u1.toDTO().get("1")));
         }

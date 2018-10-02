@@ -8,6 +8,7 @@ namespace support.dto{
     /// </summary>
     /// <typeparam name="string">Generic-Type of the DTO key mapper</typeparam>
     /// <typeparam name="object">Generic-Type of the DTO objects</typeparam>
+    [Obsolete("Use concrete DTO's instead")]
     public sealed class GenericDTO:DTO,IDictionary<string,object>{
         /// <summary>
         /// Constant that repesents the message that occures if the DTO context is invalid
