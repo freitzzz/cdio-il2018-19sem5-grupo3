@@ -39,7 +39,7 @@ namespace core.domain{
         /// <summary>
         /// Constant that represents the messange that ocurres if the product restrinctions are invalid
         /// </summary>
-        private const string INVALID_PRODUCT_RESTRICTIONS="The product restrinctions are invalid";
+        private const string INVALID_PRODUCT_DIMENSIONS="The product dimensions are invalid";
 
         /// <summary>
         /// Long property with the persistence iD
@@ -70,19 +70,19 @@ namespace core.domain{
         /// </summary>
         //TODO: Should product restrictions be a list or a set
         [NotMapped] //! NotMapped annotation is only temporary, should be removed once Restriction mapping is configure
-        public List<Restriction> heightRestrictions {get; set;}
+        public List<Dimension> heightValues {get; set;}
         /// <summary>
         /// List with the product width restrictions
         /// </summary>
         //TODO: Should product restrinctions be a list or a set
         [NotMapped] //! NotMapped annotation is only temporary, should be removed once Restriction mapping is configured
-        public List<Restriction> widthRestrictions {get; set;}
+        public List<Dimension> widthValues {get; set;}
         /// <summary>
         /// List with the product depth restrictions
         /// </summary>
         //TODO: Should product restrinctions be a list or a set
         [NotMapped] //! NotMapped annotation is only temporary, should be removed once Restriction mapping is configured
-        public List<Restriction> depthRestrictions {get; set;}
+        public List<Dimension> depthValues {get; set;}
 
         /// <summary>
         /// Empty constructor used by ORM.
@@ -96,9 +96,9 @@ namespace core.domain{
         /// <param name="designation">String with the product designation</param>
         /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
         public Product(string reference,string designation,IEnumerable<Material> materials,
-                        IEnumerable<Restriction> heightRestrictions,
-                        IEnumerable<Restriction> widthRestrictions,
-                        IEnumerable<Restriction> depthRestrictions){
+                        IEnumerable<Dimension> heightDimensions,
+                        IEnumerable<Dimension> widthDimensions,
+                        IEnumerable<Dimension> depthDimensions){
             checkProductProperties(reference,designation);
             /*checkProductMaterials(materials);
             checkProductRestrictions(heightRestrictions);
@@ -120,22 +120,22 @@ namespace core.domain{
         /// <param name="designation">String with the product designation</param>
         /// <param name="complementedProducts">IEnumerable with the product complemented products</param>
         public Product(string reference,string designation,IEnumerable<Material> materials,IEnumerable<Product> complementedProducts,
-                        IEnumerable<Restriction> heightRestrictions,
-                        IEnumerable<Restriction> widthRestrictions,
-                        IEnumerable<Restriction> depthRestrictions){
+                        IEnumerable<Dimension> heightValues,
+                        IEnumerable<Dimension> widthValues,
+                        IEnumerable<Dimension> depthValues){
             checkProductComplementedProducts(complementedProducts);
             checkProductMaterials(materials);
             checkProductProperties(reference,designation);
-            checkProductRestrictions(heightRestrictions);
-            checkProductRestrictions(widthRestrictions);
-            checkProductRestrictions(depthRestrictions);
+            checkProductDimensions(heightValues);
+            checkProductDimensions(widthValues);
+            checkProductDimensions(depthValues);
             this.reference=reference;
             this.designation=designation;
             this.materials=new List<Material>(materials);
             this.complementedProducts=new List<Product>(complementedProducts);
-            this.heightRestrictions=new List<Restriction>(heightRestrictions);
-            this.widthRestrictions=new List<Restriction>(widthRestrictions);
-            this.depthRestrictions=new List<Restriction>(depthRestrictions);
+            this.heightValues=new List<Dimension>(heightValues);
+            this.widthValues=new List<Dimension>(widthValues);
+            this.depthValues=new List<Dimension>(depthValues);
         }
 
         /// <summary>
@@ -163,38 +163,38 @@ namespace core.domain{
         }
 
         /// <summary>
-        /// Adds a new height restriction to the product
+        /// Adds new height value(s) to the product
         /// </summary>
-        /// <param name="restriction">Restriction with the height restriction</param>
-        /// <returns>boolean true if the restriction was added with success, false if not</returns>
-        public bool addHeightRestriction(Restriction restriction){
-            if(!isProductRestrictionValidForAddition(restriction,heightRestrictions))
+        /// <param name="value">Height's value(s)</param>
+        /// <returns>boolean true if the value(s) were added with success, false if not</returns>
+        public bool addHeightValue(Dimension value){
+            if(!isProductDimensionValidForAddition(value,heightValues))
                 return false;
-            heightRestrictions.Add(restriction);
+            heightValues.Add(value);
             return true;
         }
 
         /// <summary>
-        /// Adds a new width restriction to the product
+        /// Adds new width value(s) to the product
         /// </summary>
-        /// <param name="restriction">Restriction with the width restriction</param>
-        /// <returns>boolean true if the restriction was added with success, false if not</returns>
-        public bool addWidthRestriction(Restriction restriction){
-            if(!isProductRestrictionValidForAddition(restriction,widthRestrictions))
+        /// <param name="value">Width's value(s)</param>
+        /// <returns>boolean true if the value(s) were added with success, false if not</returns>
+        public bool addWidthValue(Dimension value){
+            if(!isProductDimensionValidForAddition(value,widthValues))
                 return false;
-            widthRestrictions.Add(restriction);
+            widthValues.Add(value);
             return true;
         }
 
         /// <summary>
-        /// Adds a new depth restriction to the product
+        /// Adds new depth value(s) to the product
         /// </summary>
-        /// <param name="restriction">Restriction with the depth restriction</param>
-        /// <returns>boolean true if the restriction was added with success, false if not</returns>
-        public bool addDepthRestriction(Restriction restriction){
-            if(!isProductRestrictionValidForAddition(restriction,depthRestrictions))
+        /// <param name="value">Depth's value(s)</param>
+        /// <returns>boolean true if the value(s) were added with success, false if not</returns>
+        public bool addDepthValue(Dimension value){
+            if(!isProductDimensionValidForAddition(value,depthValues))
                 return false;
-            depthRestrictions.Add(restriction);
+            depthValues.Add(value);
             return true;
         }
 
@@ -284,13 +284,13 @@ namespace core.domain{
         }
 
         /// <summary>
-        /// Checks if a product restriction is valid for addition on the current product
+        /// Checks if a product dimension is valid for addition on the current product
         /// </summary>
-        /// <param name="productRestriction">Restriction with the restriction being validated</param>
-        /// <param name="productRestrictions">ICollection with the product restrictions</param>
-        /// <returns>boolean true if the restriction is valid for addition, false if not</returns>
-        private bool isProductRestrictionValidForAddition(Restriction productRestriction,ICollection<Restriction> productRestrictions){
-            return productRestriction!=null && !productRestrictions.Contains(productRestriction);
+        /// <param name="productDimension">Dimension being validated</param>
+        /// <param name="productDimensions">IEnumerable with the product dimensions</param>
+        /// <returns>boolean true if the dimension is valid for addition, false if not</returns>
+        private bool isProductDimensionValidForAddition(Dimension productDimension,ICollection<Dimension> productDimensions){
+            return productDimension!=null && !productDimensions.Contains(productDimension);
         }
         
         /// <summary>
@@ -324,13 +324,13 @@ namespace core.domain{
         }
 
         /// <summary>
-        /// Checks if the product restrinctions are valid
+        /// Checks if the product dimensions are valid
         /// </summary>
-        /// <param name="productRestrictions">IEnumerable with the product restrictions</param>
-        private void checkProductRestrictions(IEnumerable<Restriction> productRestrictions){
-            if(Collections.isEnumerableNullOrEmpty(productRestrictions))
-                throw new ArgumentException(INVALID_PRODUCT_RESTRICTIONS);
-            checkDuplicatedRestrictions(productRestrictions);
+        /// <param name="productDimensions">IEnumerable with the product dimensions</param>
+        private void checkProductDimensions(IEnumerable<Dimension> productDimensions){
+            if(Collections.isEnumerableNullOrEmpty(productDimensions))
+                throw new ArgumentException(INVALID_PRODUCT_DIMENSIONS);
+            checkDuplicatedDimensions(productDimensions);
         }
 
         /// <summary>
@@ -366,17 +366,17 @@ namespace core.domain{
         }
 
         /// <summary>
-        /// Checks if an enumerable of restrictions has duplicates
+        /// Checks if an enumerable of dimensions has duplicates
         /// </summary>
-        /// <param name="productRestrictions">IEnumerable with product restrictions</param>
-        private void checkDuplicatedRestrictions(IEnumerable<Restriction> productRestrictions){
-            HashSet<int> productRestrictionsHashCodes=new HashSet<int>();
-            IEnumerator<Restriction> productRestrictionsEnumerator=productRestrictions.GetEnumerator();
-            Restriction nextRestriction=productRestrictionsEnumerator.Current;
-            while(productRestrictionsEnumerator.MoveNext()){
-                nextRestriction=productRestrictionsEnumerator.Current;
-                if(!productRestrictionsHashCodes.Add(nextRestriction.GetHashCode())){
-                    throw new ArgumentException(INVALID_PRODUCT_RESTRICTIONS);
+        /// <param name="productDimension">IEnumerable with product dimensions</param>
+        private void checkDuplicatedDimensions(IEnumerable<Dimension> productDimensions){
+            HashSet<int> productDimensionsHashCodes=new HashSet<int>();
+            IEnumerator<Dimension> productDimensionsEnumerator=productDimensions.GetEnumerator();
+            Dimension nextDimension=productDimensionsEnumerator.Current;
+            while(productDimensionsEnumerator.MoveNext()){
+                nextDimension=productDimensionsEnumerator.Current;
+                if(!productDimensionsHashCodes.Add(nextDimension.GetHashCode())){
+                    throw new ArgumentException(INVALID_PRODUCT_DIMENSIONS);
                 }
             }
         }
@@ -410,17 +410,17 @@ namespace core.domain{
             /// </summary>
             public const string COMPLEMENTED_PRODUCTS_PROPERTY="complemented_products";
             /// <summary>
-            /// Constant that represents the name of the property which maps the product height restrictions
+            /// Constant that represents the name of the property which maps the product height values
             /// </summary>
-            public const string HEIGHT_RESTRICTIONS_PROPERTIES="height_restrictions";
+            public const string HEIGHT_VALUES_PROPERTIES="height_values";
             /// <summary>
-            /// Constant that represents the name of the property which maps the product width restrictions
+            /// Constant that represents the name of the property which maps the product width values
             /// </summary>
-            public const string WIDTH_RESTRICTIONS_PROPERTIES="width_restrictions";
+            public const string WIDTH_VALUES_PROPERTIES="width_values";
             /// <summary>
-            /// Constant that represents the name of the property which maps the product depth restrictions
+            /// Constant that represents the name of the property which maps the product depth values
             /// </summary>
-            public const string DEPTH_RESTRICTIONS_PROPERTIES="depth_restrictions";
+            public const string DEPTH_VALUES_PROPERTIES="depth_values";
         }
         public class ProductBuilder : Builder<Product>{
             /// <summary>
@@ -456,18 +456,18 @@ namespace core.domain{
                 return this;
             }
 
-            public ProductBuilder withHeightRestrictions(IEnumerable<Restriction> heightRestrictions){
-                builderDTO.put(Properties.HEIGHT_RESTRICTIONS_PROPERTIES,heightRestrictions);
+            public ProductBuilder withHeightValues(IEnumerable<Dimension> heightRestrictions){
+                builderDTO.put(Properties.HEIGHT_VALUES_PROPERTIES,heightRestrictions);
                 return this;
             }
 
-            public ProductBuilder withWidthRestrictions(IEnumerable<Restriction> widthRestrictions){
-                builderDTO.put(Properties.WIDTH_RESTRICTIONS_PROPERTIES,widthRestrictions);
+            public ProductBuilder withWidthValues(IEnumerable<Dimension> widthRestrictions){
+                builderDTO.put(Properties.WIDTH_VALUES_PROPERTIES,widthRestrictions);
                 return this;
             }
 
-            public ProductBuilder withDepthRestrictions(IEnumerable<Restriction> depthRestrictions){
-                builderDTO.put(Properties.DEPTH_RESTRICTIONS_PROPERTIES,depthRestrictions);
+            public ProductBuilder withDepthValues(IEnumerable<Dimension> depthRestrictions){
+                builderDTO.put(Properties.DEPTH_VALUES_PROPERTIES,depthRestrictions);
                 return this;
             }
 
@@ -477,17 +477,17 @@ namespace core.domain{
                     return new Product((string)builderDTO.get(Properties.REFERENCE_PROPERTY)
                                     ,(string)builderDTO.get(Properties.DESIGNATION_PROPERTY)
                                     ,(IEnumerable<Material>)builderDTO.get(Properties.MATERIALS_PROPERTY)
-                                    ,(IEnumerable<Restriction>)builderDTO.get(Properties.HEIGHT_RESTRICTIONS_PROPERTIES)
-                                    ,(IEnumerable<Restriction>)builderDTO.get(Properties.WIDTH_RESTRICTIONS_PROPERTIES)
-                                    ,(IEnumerable<Restriction>)builderDTO.get(Properties.DEPTH_RESTRICTIONS_PROPERTIES));
+                                    ,(IEnumerable<Dimension>)builderDTO.get(Properties.HEIGHT_VALUES_PROPERTIES)
+                                    ,(IEnumerable<Dimension>)builderDTO.get(Properties.WIDTH_VALUES_PROPERTIES)
+                                    ,(IEnumerable<Dimension>)builderDTO.get(Properties.DEPTH_VALUES_PROPERTIES));
                 }else{
                     return new Product((string)builderDTO.get(Properties.REFERENCE_PROPERTY)
                                     ,(string)builderDTO.get(Properties.DESIGNATION_PROPERTY)
                                     ,(IEnumerable<Material>)builderDTO.get(Properties.MATERIALS_PROPERTY)
                                     ,complementedProducts
-                                    ,(IEnumerable<Restriction>)builderDTO.get(Properties.HEIGHT_RESTRICTIONS_PROPERTIES)
-                                    ,(IEnumerable<Restriction>)builderDTO.get(Properties.WIDTH_RESTRICTIONS_PROPERTIES)
-                                    ,(IEnumerable<Restriction>)builderDTO.get(Properties.DEPTH_RESTRICTIONS_PROPERTIES));
+                                    ,(IEnumerable<Dimension>)builderDTO.get(Properties.HEIGHT_VALUES_PROPERTIES)
+                                    ,(IEnumerable<Dimension>)builderDTO.get(Properties.WIDTH_VALUES_PROPERTIES)
+                                    ,(IEnumerable<Dimension>)builderDTO.get(Properties.DEPTH_VALUES_PROPERTIES));
                 }
             }
             private ProductBuilder(){builderDTO=new GenericDTO(Properties.CONTEXT);}
