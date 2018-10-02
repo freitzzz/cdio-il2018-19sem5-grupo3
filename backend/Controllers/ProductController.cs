@@ -122,12 +122,12 @@ namespace backend.Controllers
             instance.persistenceID=productID;
             GenericDTO productDTO = productObjectToProductDTO(instance);
 
-            List<GenericDTO> heightRestrictionDTOList = (List<GenericDTO>)productDTO.get(Product.Properties.HEIGHT_RESTRICTIONS_PROPERTIES);
-            List<GenericDTO> widthRestrictionDTOList = (List<GenericDTO>)productDTO.get(Product.Properties.WIDTH_RESTRICTIONS_PROPERTIES);
-            List<GenericDTO> depthRestrictionDTOList = (List<GenericDTO>)productDTO.get(Product.Properties.DEPTH_RESTRICTIONS_PROPERTIES);
+            List<GenericDTO> heightDimensionDTOList = (List<GenericDTO>)productDTO.get(Product.Properties.HEIGHT_VALUES_PROPERTIES);
+            List<GenericDTO> widthDimensionDTOList = (List<GenericDTO>)productDTO.get(Product.Properties.WIDTH_VALUES_PROPERTIES);
+            List<GenericDTO> depthDimensionDTOList = (List<GenericDTO>)productDTO.get(Product.Properties.DEPTH_VALUES_PROPERTIES);
 
-            if (Collections.isListEmpty(heightRestrictionDTOList) || Collections.isListEmpty(widthRestrictionDTOList)
-                    || Collections.isListEmpty(depthRestrictionDTOList))
+            if (Collections.isListEmpty(heightDimensionDTOList) || Collections.isListEmpty(widthDimensionDTOList)
+                    || Collections.isListEmpty(depthDimensionDTOList))
             {
                     return BadRequest();
             }
@@ -197,9 +197,9 @@ namespace backend.Controllers
                     }
 
                 }
-                productDTO.put(Product.Properties.HEIGHT_RESTRICTIONS_PROPERTIES, heightRestrictionDTOList);
-                productDTO.put(Product.Properties.WIDTH_RESTRICTIONS_PROPERTIES, widthRestrictionDTOList);
-                productDTO.put(Product.Properties.DEPTH_RESTRICTIONS_PROPERTIES, depthRestrictionDTOList);
+                productDTO.put(Product.Properties.HEIGHT_VALUES_PROPERTIES, heightRestrictionDTOList);
+                productDTO.put(Product.Properties.WIDTH_VALUES_PROPERTIES, widthRestrictionDTOList);
+                productDTO.put(Product.Properties.DEPTH_VALUES_PROPERTIES, depthRestrictionDTOList);
             }
 
             if (!Collections.isListEmpty(productObject.materials))
