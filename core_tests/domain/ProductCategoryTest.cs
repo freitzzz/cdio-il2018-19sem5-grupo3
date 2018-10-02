@@ -8,10 +8,7 @@ namespace core_tests.domain
 {
     public class ProductCategoryTest
     {
-
-        private const string CATEGORY_FIELD_NAME = "name";
-
-        private const string PRODUCT_FIELD_NAME = "products";
+        private readonly BindingFlags accessFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
         [Fact]
         public void ensureInstanceCantBeCreatedWithEmptyName()
@@ -58,8 +55,7 @@ namespace core_tests.domain
             category.changeName("");
 
             //Use reflection
-            string currentName = (string)typeof(ProductCategory).GetField(CATEGORY_FIELD_NAME,
-             BindingFlags.NonPublic | BindingFlags.Instance).GetValue(category);
+            string currentName = (string)category.GetType().GetFields(accessFlags)[1].GetValue(category);
 
             Assert.Equal(name, currentName);
         }
@@ -82,8 +78,7 @@ namespace core_tests.domain
             category.changeName("           ");
 
             //Use reflection
-            string currentName = (string)typeof(ProductCategory).GetField(CATEGORY_FIELD_NAME,
-             BindingFlags.NonPublic | BindingFlags.Instance).GetValue(category);
+            string currentName = (string)category.GetType().GetFields(accessFlags)[1].GetValue(category);
 
             Assert.Equal(name, currentName);
         }
@@ -106,8 +101,7 @@ namespace core_tests.domain
             category.changeName(newName);
 
             //Use reflection
-            string currentName = (string)typeof(ProductCategory).GetField(CATEGORY_FIELD_NAME,
-             BindingFlags.NonPublic | BindingFlags.Instance).GetValue(category);
+            string currentName = (string)category.GetType().GetFields(accessFlags)[1].GetValue(category);
 
             Assert.Equal(newName, currentName);
         }
@@ -129,18 +123,6 @@ namespace core_tests.domain
         {
 
             ProductCategory category = new ProductCategory("Drawers");
-
-            var color = Color.valueOf("Blue", 0, 0, 255, 0);
-            var colors = new List<Color>();
-            colors.Add(color);
-
-            var finish = Finish.valueOf("Glossy");
-            var finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("4342342", "MDF", colors, finishes);
-            var materials = new List<Material>();
-            materials.Add(material);
 
             Assert.False(category.Equals("product"));
 
