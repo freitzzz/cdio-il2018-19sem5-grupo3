@@ -46,7 +46,23 @@ namespace core.dto
         /// </summary>
         /// <value>Gets/sets the value of the complements field.</value>
         [DataMember(EmitDefaultValue = false)]  //no data field data is presented if it's null
-        public List<ProductDTO> complements {get; set;}
+        public List<ComponentDTO> complements {get; set;}
+
+        /// <summary>
+        /// Products list of height dimensions
+        /// </summary>
+        public List<DimensionDTO> heightDimensions{get;set;}
+
+        /// <summary>
+        /// Products list of depth dimensions
+        /// </summary>
+        public List<DimensionDTO> depthDimensions{get;set;}
+
+        /// <summary>
+        /// Products list of width dimensions
+        /// </summary>
+        public List<DimensionDTO> widthDimensions{get;set;}
+
 
         public Product toEntity()
         {
