@@ -66,22 +66,22 @@ namespace core.domain{
         [NotMapped]
         public List<Material> materials {get; set;}
         /// <summary>
-        /// List with the product heigth restrictions
+        /// List with the product heigth dimensions
         /// </summary>
-        //TODO: Should product restrictions be a list or a set
-        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Restriction mapping is configure
+        //TODO: Should product dimensions be a list or a set
+        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configure
         public List<Dimension> heightValues {get; set;}
         /// <summary>
-        /// List with the product width restrictions
+        /// List with the product width dimensions
         /// </summary>
-        //TODO: Should product restrinctions be a list or a set
-        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Restriction mapping is configured
+        //TODO: Should product dimensions be a list or a set
+        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configured
         public List<Dimension> widthValues {get; set;}
         /// <summary>
-        /// List with the product depth restrictions
+        /// List with the product depth dimensions
         /// </summary>
         //TODO: Should product restrinctions be a list or a set
-        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Restriction mapping is configured
+        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configured
         public List<Dimension> depthValues {get; set;}
 
         /// <summary>
@@ -100,17 +100,17 @@ namespace core.domain{
                         IEnumerable<Dimension> widthDimensions,
                         IEnumerable<Dimension> depthDimensions){
             checkProductProperties(reference,designation);
-            /*checkProductMaterials(materials);
-            checkProductRestrictions(heightRestrictions);
-            checkProductRestrictions(widthRestrictions);
-            checkProductRestrictions(depthRestrictions);*/
+            checkProductMaterials(materials);
+            checkProductDimensions(heightDimensions);
+            checkProductDimensions(widthDimensions);
+            checkProductDimensions(depthDimensions);
             this.reference=reference;
             this.designation=designation;
-            /*this.materials=new List<Material>(materials);
+            this.materials=new List<Material>(materials);
             this.complementedProducts=new List<Product>();
-            this.heightRestrictions=new List<Restriction>(heightRestrictions);
-            this.widthRestrictions=new List<Restriction>(widthRestrictions);
-            this.depthRestrictions=new List<Restriction>(depthRestrictions);*/
+            this.heightValues=new List<Dimension>(heightDimensions);
+            this.widthValues=new List<Dimension>(widthDimensions);
+            this.depthValues=new List<Dimension>(depthDimensions);
         }
 
         /// <summary>
@@ -165,36 +165,36 @@ namespace core.domain{
         /// <summary>
         /// Adds new height value(s) to the product
         /// </summary>
-        /// <param name="value">Height's value(s)</param>
+        /// <param name="heightDimension">Height's value(s)</param>
         /// <returns>boolean true if the value(s) were added with success, false if not</returns>
-        public bool addHeightValue(Dimension value){
-            if(!isProductDimensionValidForAddition(value,heightValues))
+        public bool addHeightDimension(Dimension heightDimension){
+            if(!isProductDimensionValidForAddition(heightDimension,heightValues))
                 return false;
-            heightValues.Add(value);
+            heightValues.Add(heightDimension);
             return true;
         }
 
         /// <summary>
         /// Adds new width value(s) to the product
         /// </summary>
-        /// <param name="value">Width's value(s)</param>
+        /// <param name="widthDimension">Width's value(s)</param>
         /// <returns>boolean true if the value(s) were added with success, false if not</returns>
-        public bool addWidthValue(Dimension value){
-            if(!isProductDimensionValidForAddition(value,widthValues))
+        public bool addWidthDimension(Dimension widthDimension){
+            if(!isProductDimensionValidForAddition(widthDimension,widthValues))
                 return false;
-            widthValues.Add(value);
+            widthValues.Add(widthDimension);
             return true;
         }
 
         /// <summary>
         /// Adds new depth value(s) to the product
         /// </summary>
-        /// <param name="value">Depth's value(s)</param>
+        /// <param name="depthDimension">Depth's value(s)</param>
         /// <returns>boolean true if the value(s) were added with success, false if not</returns>
-        public bool addDepthValue(Dimension value){
-            if(!isProductDimensionValidForAddition(value,depthValues))
+        public bool addDepthDimension(Dimension depthDimension){
+            if(!isProductDimensionValidForAddition(depthDimension,depthValues))
                 return false;
-            depthValues.Add(value);
+            depthValues.Add(depthDimension);
             return true;
         }
 
@@ -422,75 +422,125 @@ namespace core.domain{
             /// </summary>
             public const string DEPTH_VALUES_PROPERTIES="depth_values";
         }
+        /// <summary>
+        /// Represents a builder of products
+        /// </summary>
+        /// <typeparam name="Product">Generic-Type of the Product entity</typeparam>
         public class ProductBuilder : Builder<Product>{
             /// <summary>
             /// DTO with the builder content
             /// </summary>
-            private readonly GenericDTO builderDTO;
+            private readonly ProductDTO builderDTO;
 
             /// <summary>
             /// Adds a reference to the current product builder
             /// </summary>
             /// <param name="reference">string with the product reference</param>
             /// <returns>ProductBuilder with the product builder with the new reference added</returns>
-            
+
+            /// <summary>
+            /// Creates a new ProductBuilder
+            /// </summary>
+            /// <returns>ProductBuilder with the builder for products</returns>
             public static ProductBuilder create(){return new ProductBuilder();}
-            
+
+            /// <summary>
+            /// Adds a reference to the product builder
+            /// </summary>
+            /// <param name="reference">string with the product reference</param>
+            /// <returns>ProductBuilder with the updated builder</returns>            
             public ProductBuilder withReference(string reference){
-                builderDTO.put(Properties.REFERENCE_PROPERTY,reference);
+                builderDTO.reference=reference;
                 return this;
             }
 
+            /// <summary>
+            /// Adds a designation to the product builder
+            /// </summary>
+            /// <param name="designation">string with the product designation</param>
+            /// <returns>ProductBuilder with the updated builder</returns>
             public ProductBuilder withDesignation(string designation){
-                builderDTO.put(Properties.DESIGNATION_PROPERTY,designation);
+                builderDTO.designation=designation;
                 return this;
             }
 
-            public ProductBuilder withComplementedProducts(IEnumerable<Product> complementedProducts){
-                builderDTO.put(Properties.COMPLEMENTED_PRODUCTS_PROPERTY,complementedProducts);
+            /// <summary>
+            /// Adds complemented product to the product builder
+            /// </summary>
+            /// <param name="complementedProducts">IEnumerable with the product complemented products</param>
+            /// <returns>ProductBuilder with the updated builder</returns>
+            public ProductBuilder withComplementedProducts(IEnumerable<ProductDTO> complementedProducts){
+                builderDTO.complements=new List<ProductDTO>(complementedProducts);
                 return this;
             }
 
-            public ProductBuilder withMaterials(IEnumerable<Material> materials){
-                builderDTO.put(Properties.MATERIALS_PROPERTY,materials);
+            /// <summary>
+            /// Adds materials to the product builder
+            /// </summary>
+            /// <param name="materials">IEnumerable with the product materials</param>
+            /// <returns>ProductBuilder with the updated builder</returns>
+            public ProductBuilder withMaterials(IEnumerable<MaterialDTO> materials){
+                builderDTO.materials=new List<MaterialDTO>(materials);
                 return this;
             }
 
-            public ProductBuilder withHeightValues(IEnumerable<Dimension> heightRestrictions){
-                builderDTO.put(Properties.HEIGHT_VALUES_PROPERTIES,heightRestrictions);
+            /// <summary>
+            /// Adds a height dimensions to the product builder
+            /// </summary>
+            /// <param name="heightDimensions">IEnumerable with the product height dimensions</param>
+            /// <returns>ProductBuilder with the updated builder</returns>
+            public ProductBuilder withHeightDimensions(IEnumerable<DimensionDTO> heightDimensions){
+                builderDTO.heightDimensions=new List<DimensionDTO>(heightDimensions);
                 return this;
             }
 
-            public ProductBuilder withWidthValues(IEnumerable<Dimension> widthRestrictions){
-                builderDTO.put(Properties.WIDTH_VALUES_PROPERTIES,widthRestrictions);
+            /// <summary>
+            /// Adds a depth dimensions to the product builder
+            /// </summary>
+            /// <param name="depthDimensions">IEnumerable with the product depth dimensions</param>
+            /// <returns>ProductBuilder with the updated builder</returns>
+            public ProductBuilder withDepthDimensions(IEnumerable<DimensionDTO> depthDimensions){
+                builderDTO.depthDimensions=new List<DimensionDTO>(depthDimensions);
                 return this;
             }
 
-            public ProductBuilder withDepthValues(IEnumerable<Dimension> depthRestrictions){
-                builderDTO.put(Properties.DEPTH_VALUES_PROPERTIES,depthRestrictions);
+            /// <summary>
+            /// Adds a width dimensions to the product builder
+            /// </summary>
+            /// <param name="widthDimensions">IEnumerable with the product width dimensions</param>
+            /// <returns>ProductBuilder with the updated builder</returns>
+            public ProductBuilder withWidthDimensions(IEnumerable<DimensionDTO> widthDimensions){
+                builderDTO.widthDimensions=new List<DimensionDTO>(widthDimensions);
                 return this;
             }
 
+            /// <summary>
+            /// Builds a new Product based on the builder input
+            /// </summary>
+            /// <returns>Product with the product based on the builder input</returns>
             public Product build(){
-                IEnumerable<Product> complementedProducts=(IEnumerable<Product>)builderDTO.get(Properties.COMPLEMENTED_PRODUCTS_PROPERTY);
+                IEnumerable<ProductDTO> complementedProducts=builderDTO.complements;
                 if(complementedProducts==null){
-                    return new Product((string)builderDTO.get(Properties.REFERENCE_PROPERTY)
-                                    ,(string)builderDTO.get(Properties.DESIGNATION_PROPERTY)
-                                    ,(IEnumerable<Material>)builderDTO.get(Properties.MATERIALS_PROPERTY)
-                                    ,(IEnumerable<Dimension>)builderDTO.get(Properties.HEIGHT_VALUES_PROPERTIES)
-                                    ,(IEnumerable<Dimension>)builderDTO.get(Properties.WIDTH_VALUES_PROPERTIES)
-                                    ,(IEnumerable<Dimension>)builderDTO.get(Properties.DEPTH_VALUES_PROPERTIES));
+                    return new Product(builderDTO.reference
+                                    ,builderDTO.designation
+                                    ,DTOUtils.reverseDTOS(builderDTO.materials)
+                                    ,DTOUtils.reverseDTOS(builderDTO.heightDimensions)
+                                    ,DTOUtils.reverseDTOS(builderDTO.widthDimensions)
+                                    ,DTOUtils.reverseDTOS(builderDTO.depthDimensions));
                 }else{
-                    return new Product((string)builderDTO.get(Properties.REFERENCE_PROPERTY)
-                                    ,(string)builderDTO.get(Properties.DESIGNATION_PROPERTY)
-                                    ,(IEnumerable<Material>)builderDTO.get(Properties.MATERIALS_PROPERTY)
-                                    ,complementedProducts
-                                    ,(IEnumerable<Dimension>)builderDTO.get(Properties.HEIGHT_VALUES_PROPERTIES)
-                                    ,(IEnumerable<Dimension>)builderDTO.get(Properties.WIDTH_VALUES_PROPERTIES)
-                                    ,(IEnumerable<Dimension>)builderDTO.get(Properties.DEPTH_VALUES_PROPERTIES));
+                    return new Product(builderDTO.reference
+                                    ,builderDTO.designation
+                                    ,DTOUtils.reverseDTOS(builderDTO.materials)
+                                    ,DTOUtils.reverseDTOS(complementedProducts)
+                                    ,DTOUtils.reverseDTOS(builderDTO.heightDimensions)
+                                    ,DTOUtils.reverseDTOS(builderDTO.widthDimensions)
+                                    ,DTOUtils.reverseDTOS(builderDTO.depthDimensions));
                 }
             }
-            private ProductBuilder(){builderDTO=new GenericDTO(Properties.CONTEXT);}
+            /// <summary>
+            /// Hides default constructor
+            /// </summary>
+            private ProductBuilder(){builderDTO=new ProductDTO();}
         }
     }
 }
