@@ -93,6 +93,11 @@ namespace core.domain{
         public ProductCategory productCategory;
 
         /// <summary>
+        /// Boolean that controls if the current product is available or not
+        /// </summary>
+        public bool isAvailable{get;set;}
+
+        /// <summary>
         /// Empty constructor used by ORM.
         /// </summary>
         protected Product(){}
@@ -228,6 +233,16 @@ namespace core.domain{
             if(productCategory==null||this.productCategory.Equals(productCategory))
                 return false;
             this.productCategory=productCategory;
+            return true;
+        }
+
+        /// <summary>
+        /// Disables the current product
+        /// </summary>
+        /// <returns>boolean true if the product was disabled with success, false if not</returns>
+        public bool disable(){
+            if(!isAvailable)return false;
+            isAvailable=false;
             return true;
         }
 

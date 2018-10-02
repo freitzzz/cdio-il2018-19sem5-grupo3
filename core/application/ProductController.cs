@@ -32,15 +32,6 @@ namespace core.application
         {
             Product newProduct = productAsDTO.toEntity();
 
-/*             Product.ProductBuilder productBuilder = Product.ProductBuilder.create();
-            productBuilder.withReference((string)productAsDTO.get(Product.Properties.REFERENCE_PROPERTY));
-            productBuilder.withDesignation((string)productAsDTO.get(Product.Properties.DESIGNATION_PROPERTY));
-            productBuilder.withComplementedProducts(enumerableOfProductsIDSAsEntities((IEnumerable<long>)productAsDTO.get(Product.Properties.COMPLEMENTED_PRODUCTS_PROPERTY)));
-            productBuilder.withMaterials(new MaterialsController(materialRepository).enumerableOfMaterialsIDSAsEntities((IEnumerable<long>)productAsDTO.get(Product.Properties.MATERIALS_PROPERTY)));
-            productBuilder.withHeightRestrictions(getProductDTOEnumerableOfHeightRestrictions(productAsDTO));
-            productBuilder.withWidthRestrictions(getProductDTOEnumerableOfWidthRestrictions(productAsDTO));
-            productBuilder.withDepthRestrictions(getProductDTOEnumerableOfDepthRestrictions(productAsDTO));*/
-
             Product createdProduct = productRepository.save(newProduct); 
             
             if (createdProduct == null) return null;
@@ -48,14 +39,14 @@ namespace core.application
         }
 
         /// <summary>
-        /// Removes a product
+        /// Removes (Disables) a product
         /// </summary>
         /// <param name="productDTO">DTO with the product information</param>
-        /// <returns>boolean true if the product was removed with success</returns>
-        public bool removeProduct(GenericDTO productDTO)
+        /// <returns>boolean true if the product was removed (disabled) with success</returns>
+        public bool removeProduct(ProductDTO productDTO)
         {
-            Product productBeingRemoved = productRepository.find((long)productDTO.get(Product.Properties.PERSISTENCE_ID_PROPERTY));
-            return productBeingRemoved != null && productRepository.remove(productBeingRemoved) != null;
+            Product productBeingRemoved=productRepository.find(productDTO.id);
+            return productBeingRemoved != null && productBeingRemoved.disable() && productRepository.update(productBeingRemoved) != null;
         }
 
         /// <summary>
@@ -113,9 +104,9 @@ namespace core.application
             IEnumerable<Dimension> widthDimensions = getProductDTOEnumerableOfWidthDimensions(updatesDTO);
             IEnumerable<Dimension> depthDimensions = getProductDTOEnumerableOfDepthDimensions(updatesDTO);
 
-            foreach (Dimension heightDimension in heightDimensions) { if (!oldProduct.addHeightValue(heightDimension)) return false; }
-            foreach (Dimension widthDimension in widthDimensions) { if (!oldProduct.addWidthValue(widthDimension)) return false; }
-            foreach (Dimension depthDimension in depthDimensions) { if (!oldProduct.addDepthValue(depthDimension)) return false; }
+            foreach (Dimension heightDimension in heightDimensions) { if (!oldProduct.addHeightDimension(heightDimension)) return false; }
+            foreach (Dimension widthDimension in widthDimensions) { if (!oldProduct.addWidthDimension(widthDimension)) return false; }
+            foreach (Dimension depthDimension in depthDimensions) { if (!oldProduct.addDepthDimension(depthDimension)) return false; }
             addMaterials(updatesDTO, oldProduct);
 
             return productRepository.update(oldProduct) != null;
