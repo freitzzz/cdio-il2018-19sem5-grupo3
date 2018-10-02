@@ -8,7 +8,7 @@ namespace core.domain
     /// <summary>
     /// Class that represents a discrete dimension interval
     /// </summary>
-    public class DiscreteDimensionInterval : Restriction, ValueObject
+    public class DiscreteDimensionInterval :Dimension, ValueObject
     {
         public long Id {get; set;}
 

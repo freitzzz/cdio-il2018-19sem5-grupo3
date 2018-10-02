@@ -6,7 +6,7 @@ namespace core.domain
     /// <summary>
     /// Class that represents a continuous dimension interval
     /// </summary>
-    public class ContinuousDimensionInterval : Restriction, ValueObject
+    public class ContinuousDimensionInterval : Dimension, ValueObject
     {
         /// <summary>
         /// Constant that represents the message that occurs if the min value is NaN
