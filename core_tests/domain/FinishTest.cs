@@ -2,24 +2,22 @@ using System;
 using Xunit;
 using System.Collections.Generic;
 using core.domain;
+using core.dto;
 
-namespace core_tests.domain
-{
+namespace core_tests.domain {
     /**
     <summary>
         Tests of the class Finish.
     </summary>
     */
-    public class FinishTest
-    {
+    public class FinishTest {
         /**
         <summary>
             Test to ensure that the method GetHashCode works.
          </summary>
          */
         [Fact]
-        public void testGetHashCode()
-        {
+        public void testGetHashCode() {
             Finish finish1 = Finish.valueOf("Acabamento polido");
             Finish finish2 = Finish.valueOf("Acabamento polido");
 
@@ -31,8 +29,7 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void testDifferentFinishsAreNotEqual()
-        {
+        public void testDifferentFinishsAreNotEqual() {
             Finish finish1 = Finish.valueOf("Acabamento polido");
             Finish finish2 = Finish.valueOf("Acabamento rogoso");
 
@@ -44,8 +41,7 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void testEqualFinishsAreEqual()
-        {
+        public void testEqualFinishsAreEqual() {
             Finish finish1 = Finish.valueOf("Acabamento polido");
             Finish finish2 = Finish.valueOf("Acabamento polido");
 
@@ -57,8 +53,7 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void testNullFinishIsNotEqual()
-        {
+        public void testNullFinishIsNotEqual() {
             Finish finish = Finish.valueOf("Acabamento polido");
 
             Assert.False(finish.Equals(null));
@@ -69,8 +64,7 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void testDifferentTypesAreNotEqual()
-        {
+        public void testDifferentTypesAreNotEqual() {
 
             List<Color> colors = new List<Color>();
             Color color = Color.valueOf("Cor de burro quando foge", 1, 2, 3, 0);
@@ -90,8 +84,7 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void testToString()
-        {
+        public void testToString() {
             Finish finish1 = Finish.valueOf("Acabamento polido");
             Finish finish2 = Finish.valueOf("Acabamento polido");
 
@@ -104,8 +97,7 @@ namespace core_tests.domain
         </summary>
          */
         [Fact]
-        public void ensureNullDescriptionIsNotValid()
-        {
+        public void ensureNullDescriptionIsNotValid() {
             Assert.Throws<ArgumentException>(() => Finish.valueOf(null));
         }
 
@@ -115,9 +107,19 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureEmptyDescriptionIsNotValid()
-        {
+        public void ensureEmptyDescriptionIsNotValid() {
             Assert.Throws<ArgumentException>(() => Finish.valueOf(""));
+        }
+
+        [Fact]
+        public void testToDTO() {
+            Console.WriteLine("toDTO");
+            string description = "this is the best finish ever";
+            Finish finish = Finish.valueOf(description);
+            FinishDTO dto = new FinishDTO();
+            dto.description = description;
+            FinishDTO dto2 = finish.toDTO();
+            Assert.Equal(dto.description, dto2.description);
         }
     }
 }

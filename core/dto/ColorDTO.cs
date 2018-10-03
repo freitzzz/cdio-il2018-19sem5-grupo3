@@ -2,14 +2,12 @@ using System.Runtime.Serialization;
 using core.domain;
 using support.dto;
 
-namespace core.dto
-{
+namespace core.dto {
     /// <summary>
     /// Represents a Color's Data Tranfer Object.
     /// </summary>
     [DataContract]
-    public class ColorDTO : DTO, DTOParseable<Color, ColorDTO>
-    {
+    public class ColorDTO : DTO, DTOParseable<Color, ColorDTO> {
         /// <summary>
         /// Color's database identifier.
         /// </summary>
@@ -51,9 +49,11 @@ namespace core.dto
         /// <value>Gets/sets the value of the alpha value field.</value>
         [DataMember]
         public int alpha { get; set; }
-
-        public Color toEntity()
-        {
+        /// <summary>
+        /// Returns this DTO's equivalent Entity
+        /// </summary>
+        /// <returns>DTO's equivalent Entity</returns>
+        public Color toEntity() {
             throw new System.NotImplementedException();
         }
     }

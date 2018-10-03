@@ -5,16 +5,14 @@ using core.dto;
 using support.domain.ddd;
 using support.dto;
 
-namespace core.domain
-{
+namespace core.domain {
     /// <summary>
     /// Class that represents a Color
     /// <br>Color is an Value Object
     /// </summary>
     /// <typeparam name="name">Generic-Type of the Color identifier</typeparam>
-    public class Color : ValueObject, DTOAble<ColorDTO>
-    {
-        public long Id {get; set;}
+    public class Color : ValueObject, DTOAble<ColorDTO> {
+        public long Id { get; set; }
 
         /// <summary>
         /// String with the color name.
@@ -55,9 +53,8 @@ namespace core.domain
         /// <param name="maxValue">maximum value of the interval</param>
         /// <param name="increment">increment value of the interval</param>
         /// <returns>ContinuousDimensionInterval instance</returns>
-        public static Color valueOf(String name, int red, int green, int blue, int alpha)
-        {
-            return new Color(name,red,green,blue,alpha);
+        public static Color valueOf(String name, int red, int green, int blue, int alpha) {
+            return new Color(name, red, green, blue, alpha);
         }
 
         public Color() { }
@@ -65,15 +62,12 @@ namespace core.domain
         /// <summary>
         /// Checks if a certain color is the same as the current color.
         /// </summary>
-        private Color(String name, int red, int green, int blue, int alpha)
-        {
-            if (red > MAX_VALUE || green > MAX_VALUE || blue > MAX_VALUE || alpha > MAX_VALUE)
-            {
+        private Color(String name, int red, int green, int blue, int alpha) {
+            if (red > MAX_VALUE || green > MAX_VALUE || blue > MAX_VALUE || alpha > MAX_VALUE) {
                 throw new ArgumentException(COORDINATE_BIGGER_THAN_INTERVAL);
             }
 
-            if (red < MIN_VALUE || green < MIN_VALUE || blue < MIN_VALUE || alpha < MIN_VALUE)
-            {
+            if (red < MIN_VALUE || green < MIN_VALUE || blue < MIN_VALUE || alpha < MIN_VALUE) {
                 throw new ArgumentException(COORDINATE_LOWER_THAN_INTERVAL);
             }
 
@@ -91,10 +85,8 @@ namespace core.domain
         /// <returns>boolean true if both value objects are the same, false if not</returns>
         public bool sameAs(string comparingEntity) { return Name.Equals(comparingEntity); }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
+        public override int GetHashCode() {
+            unchecked {
                 int hashCode = 17;
                 hashCode = (hashCode * 23) + (Name == null ? 0 : this.Name.GetHashCode());
                 hashCode = (hashCode * 23) + this.Red;
@@ -104,24 +96,21 @@ namespace core.domain
                 return hashCode;
             }
         }
-        
-         /// <summary>
+
+        /// <summary>
         /// Equals method of Color.null 
         /// Two objects are the same if the name and RGBA coordinates are the same.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns>true if the objects are equal, false if otherwise</returns>
-        public override bool Equals(object obj)
-        {
-            if (obj == null || GetType() != obj.GetType())
-            {
+        public override bool Equals(object obj) {
+            if (obj == null || GetType() != obj.GetType()) {
                 return false;
             }
 
             Color other = (Color)obj;
 
-            if (!(this.Red == other.Red) || !(this.Blue== other.Blue)||!(this.Green == other.Green)||!(this.Alpha == other.Alpha))
-            {
+            if (!(this.Red == other.Red) || !(this.Blue == other.Blue) || !(this.Green == other.Green) || !(this.Alpha == other.Alpha)) {
                 return false;
             }
 
@@ -130,14 +119,22 @@ namespace core.domain
         /// <summary>
         /// toString override method
         /// </summary>
-        public override String ToString()
-        {
+        public override String ToString() {
             return "Name: " + Name + " R:" + Red + " G:" + Green + " B:" + Blue + " A:" + Alpha + ".\n";
         }
-
-        public ColorDTO toDTO()
-        {
-            throw new NotImplementedException();
+        /// <summary>
+        /// Returns the DTO equivalent of the current instance
+        /// </summary>
+        /// <returns>DTO equivalent of the current instance</returns>
+        public ColorDTO toDTO() {
+            ColorDTO dto = new ColorDTO();
+            dto.id = this.Id;
+            dto.red = this.Red;
+            dto.green = this.Green;
+            dto.blue = this.Blue;
+            dto.alpha = this.Alpha;
+            dto.name = this.Name;
+            return dto;
         }
     }
 }
