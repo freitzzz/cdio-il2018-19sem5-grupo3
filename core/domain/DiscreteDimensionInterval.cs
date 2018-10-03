@@ -2,15 +2,16 @@ using System;
 using System.Collections.Generic;
 using support.domain.ddd;
 using support.utils;
+using core.dto;
 
 namespace core.domain
 {
     /// <summary>
     /// Class that represents a discrete dimension interval
     /// </summary>
-    public class DiscreteDimensionInterval :Dimension, ValueObject
+    public class DiscreteDimensionInterval : Dimension, ValueObject
     {
-        public long Id {get; set;}
+        public long Id { get; set; }
 
         /// <summary>
         /// Constant that represents the message that occurs if the list is null
@@ -25,7 +26,7 @@ namespace core.domain
         /// <summary>
         /// List of values that make up the interval.
         /// </summary>
-        public List<Double> values {get; set;}
+        public List<Double> values { get; set; }
 
         /// <summary>
         /// Returns a new DiscreteDimensionInterval instance
@@ -96,6 +97,20 @@ namespace core.domain
         public override string ToString()
         {
             return string.Format("List of values:\n{0}", values);
+        }
+
+        /// <summary>
+        /// Builds a DimensionDTO out of a DiscreteDimensionInterval instance
+        /// </summary>
+        /// <returns>DimensionDTO instance</returns>
+        public DimensionDTO toDTO()
+        {
+            DiscreteDimensionIntervalDTO dto = new DiscreteDimensionIntervalDTO();
+
+            dto.id = Id;
+            dto.values = values;
+
+            return dto;
         }
     }
 }

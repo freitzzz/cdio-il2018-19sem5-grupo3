@@ -2,9 +2,13 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 using core.domain;
+using core.dto;
 
 namespace core_tests.domain
 {
+    /// <summary>
+    /// Unit testing class for DiscreteDimensionInterval
+    /// </summary>
     public class DiscreteDimensionIntervalTest
     {
 
@@ -78,7 +82,8 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureSameInstanceIsEqual(){
+        public void ensureSameInstanceIsEqual()
+        {
             var list = new List<double>();
             list.Add(3.0);
             DiscreteDimensionInterval instance = DiscreteDimensionInterval.valueOf(list);
@@ -106,6 +111,17 @@ namespace core_tests.domain
             DiscreteDimensionInterval other = DiscreteDimensionInterval.valueOf(list);
 
             Assert.Equal(instance.ToString(), other.ToString());
+        }
+
+        [Fact]
+        public void testToDTO()
+        {
+            var list = new List<double>();
+            list.Add(1.234);
+            DiscreteDimensionInterval instance = DiscreteDimensionInterval.valueOf(list);
+            DiscreteDimensionInterval other = DiscreteDimensionInterval.valueOf(list);
+
+            Assert.Equal(instance.toDTO().ToString(), other.toDTO().ToString());
         }
     }
 }

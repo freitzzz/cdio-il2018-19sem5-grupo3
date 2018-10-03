@@ -1,6 +1,7 @@
 using System;
 using Xunit;
 using core.domain;
+using core.dto;
 
 namespace core_tests.domain
 {
@@ -207,8 +208,9 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureSameInstanceIsEqual(){
-            ContinuousDimensionInterval instance = ContinuousDimensionInterval.valueOf(1.0,10.0,1.0);
+        public void ensureSameInstanceIsEqual()
+        {
+            ContinuousDimensionInterval instance = ContinuousDimensionInterval.valueOf(1.0, 10.0, 1.0);
 
             Assert.True(instance.Equals(instance));
         }
@@ -229,6 +231,15 @@ namespace core_tests.domain
             ContinuousDimensionInterval other = ContinuousDimensionInterval.valueOf(1.0, 10.0, 1.0);
 
             Assert.Equal(instance.ToString(), other.ToString());
+        }
+
+        [Fact]
+        public void testToDTO()
+        {
+            ContinuousDimensionInterval instance = ContinuousDimensionInterval.valueOf(1.0, 10.0, 1.0);
+            ContinuousDimensionInterval other = ContinuousDimensionInterval.valueOf(1.0, 10.0, 1.0);
+
+            Assert.Equal(instance.toDTO().ToString(), other.toDTO().ToString());
         }
     }
 }
