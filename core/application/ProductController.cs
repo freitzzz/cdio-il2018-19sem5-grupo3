@@ -17,6 +17,8 @@ namespace core.application
 
         private readonly MaterialRepository materialRepository;
 
+        private readonly ProductCategoryRepository productCategoryRepository;
+
         public ProductController(ProductRepository productRepository, MaterialRepository materialRepository)
         {
             this.productRepository = productRepository;
@@ -36,6 +38,20 @@ namespace core.application
             
             if (createdProduct == null) return null;
             return createdProduct.toDTO();
+        }
+
+        /// <summary>
+        /// Updates the category of a product
+        /// </summary>
+        /// <param name="productDTO">ProductDTO with the product dto which category is going to be changed</param>
+        /// <param name="productCategoryDTO"></param>
+        /// <returns></returns>
+        public bool updateProductCategory(ProductDTO productDTO,ProductCategoryDTO productCategoryDTO){
+            Product productToUpdate=productRepository.find(productDTO.id);
+            if(productToUpdate==null)return false;
+            ProductCategory productNewCategory=productCategoryRepository.find(productCategoryDTO.id);
+            if(!productToUpdate.changeProductCategory(productNewCategory))return false;
+            return productRepository.update(productToUpdate)!=null;
         }
 
         /// <summary>

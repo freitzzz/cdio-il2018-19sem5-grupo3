@@ -237,6 +237,27 @@ namespace core.domain{
         }
 
         /// <summary>
+        /// Removes a specified width dimension from the current product
+        /// </summary>
+        /// <param name="widthDimension">Dimension with the width dimension being removed</param>
+        /// <returns>boolean true if the dimension was removed with success, false if not</returns>
+        public bool removeWidthDimension(Dimension widthDimension){return widthValues.Remove(widthDimension);}
+
+        /// <summary>
+        /// Removes a specified height dimension from the current product
+        /// </summary>
+        /// <param name="heightDimension">Dimension with the height dimension being removed</param>
+        /// <returns>boolean true if the dimension was removed with success, false if not</returns>
+        public bool removeHeightDimension(Dimension heightDimension){return heightValues.Remove(heightDimension);}
+
+        /// <summary>
+        /// Removes a specified depth dimension from the current product
+        /// </summary>
+        /// <param name="depthDimension">Dimension with the depth dimension being removed</param>
+        /// <returns>boolean true if the dimension was removed with success, false if not</returns>
+        public bool removeDepthDimension(Dimension depthDimension){return depthValues.Remove(depthDimension);}
+
+        /// <summary>
         /// Disables the current product
         /// </summary>
         /// <returns>boolean true if the product was disabled with success, false if not</returns>
