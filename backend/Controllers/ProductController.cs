@@ -15,15 +15,13 @@ using support.utils;
 using core.persistence;
 using core.dto;
 
-namespace backend.Controllers
-{
+namespace backend.Controllers {
 
     /// <summary>
     /// Backend ProductController class
     /// </summary>
     [Route("myc/products")]
-    public class ProductController : Controller
-    {
+    public class ProductController : Controller {
         /// <summary>
         /// Constant that represents the 400 Bad Request message for when a product
         /// is not found
@@ -40,8 +38,7 @@ namespace backend.Controllers
 
         private readonly MaterialRepository materialRepository;
 
-        public ProductController(ProductRepository productRepository, MaterialRepository materialRepository)
-        {
+        public ProductController(ProductRepository productRepository, MaterialRepository materialRepository) {
             this.productRepository = productRepository;
             this.materialRepository = materialRepository;
         }
@@ -53,11 +50,9 @@ namespace backend.Controllers
         /// <returns>HTTP Response 400 Bad Request if a product with the id isn't found;
         /// HTTP Response 200 Ok with the product's info in JSON format </returns>
         [HttpGet("{id}")]
-        public ActionResult<ProductDTO> findProductByID(long productID)
-        {
+        public ActionResult<ProductDTO> findProductByID(long productID) {
             ProductDTO productDTO = new core.application.ProductController(productRepository, materialRepository).findProductByID(productID);
-            if (productDTO == null)
-            {
+            if (productDTO == null) {
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
             }
 
@@ -73,12 +68,10 @@ namespace backend.Controllers
         /// <returns>HTTP Response 400 Bad Request if no products are found;
         /// HTTP Response 200 Ok with the info of all products in JSON format </returns>
         [HttpGet]
-        public ActionResult<List<ProductDTO>> findAll()
-        {
+        public ActionResult<List<ProductDTO>> findAll() {
             List<ProductDTO> allProductsDTO = new core.application.ProductController(productRepository, materialRepository).findAllProducts();
 
-            if (allProductsDTO == null)
-            {
+            if (allProductsDTO == null) {
                 return BadRequest(NO_PRODUCTS_FOUND_REFERENCE);
             }
 
@@ -94,13 +87,13 @@ namespace backend.Controllers
         ///         <br>See MyC REST API documentation for a better overview
         /// </returns>
         [HttpPost]
-        public ActionResult<ProductDTO> addProduct([FromBody] ProductDTO jsonData){
+        public ActionResult<ProductDTO> addProduct([FromBody] ProductDTO jsonData) {
 
             ProductDTO productDTO = new core.application.ProductController(productRepository, materialRepository).addProduct(jsonData);
 
-            if(productDTO!=null){
+            if (productDTO != null) {
                 return Ok(productDTO);
-            }else{
+            } else {
                 //TODO: INFORM BETTER BAD REQUESTES
                 return BadRequest("{\"Message\":\"An error ocurred while creating the product\"}");
             }
@@ -116,24 +109,11 @@ namespace backend.Controllers
         /// HTTP Response 200 Ok if the product is updated successfully</returns>
         /// TODO Refactor method
         [HttpPut("{id}")]
-        public ActionResult updateProduct([FromBody] JObject jsonData, long productID)
-        {
-            ProductObject instance = JsonConvert.DeserializeObject<ProductObject>(jsonData.ToString());
-            instance.persistenceID=productID;
-            GenericDTO productDTO = productObjectToProductDTO(instance);
+        public ActionResult updateProduct([FromBody] ProductDTO jsonData) {
+            ProductDTO updatedProductDTO = new core.application.ProductController(productRepository, materialRepository).updateProduct(jsonData);
 
-            List<GenericDTO> heightDimensionDTOList = (List<GenericDTO>)productDTO.get(Product.Properties.HEIGHT_VALUES_PROPERTIES);
-            List<GenericDTO> widthDimensionDTOList = (List<GenericDTO>)productDTO.get(Product.Properties.WIDTH_VALUES_PROPERTIES);
-            List<GenericDTO> depthDimensionDTOList = (List<GenericDTO>)productDTO.get(Product.Properties.DEPTH_VALUES_PROPERTIES);
 
-            if (Collections.isListEmpty(heightDimensionDTOList) || Collections.isListEmpty(widthDimensionDTOList)
-                    || Collections.isListEmpty(depthDimensionDTOList))
-            {
-                    return BadRequest();
-            }
-
-            if (!new core.application.ProductController(productRepository, materialRepository).updateProduct(productDTO))
-            {
+            if (updatedProductDTO == null) {
                 return BadRequest();
             }
 
@@ -149,89 +129,25 @@ namespace backend.Controllers
         ///         <br>See MyC REST API documentation for a better overview
         /// </returns>
         [HttpDelete("{id}")]
-        public ActionResult removeProduct(long productID){
-            GenericDTO productDTO=new GenericDTO(Product.Properties.CONTEXT);
-            productDTO.put(Product.Properties.PERSISTENCE_ID_PROPERTY,productID);
-            bool removedWithSuccess=new core.application.ProductController(productRepository, materialRepository).removeProduct(productDTO);
-            if(removedWithSuccess){
+        public ActionResult removeProduct(long productID) {
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.id = productID;
+            bool removedWithSuccess = new core.application.ProductController(productRepository, materialRepository).removeProduct(productDTO);
+            if (removedWithSuccess) {
                 return Ok("{\"Message\":\"The product was removed with success\"}");
-            }else{
+            } else {
                 return BadRequest("{\"Message\":\"An error ocurred while creating the product\"}");
             }
         }
 
         /// <summary>
-        /// Parses a ProductObject into a product DTO
+        /// ProductObject class to help the deserialization of a product's updates from JSON format
         /// </summary>
-        /// <param name="productObject">ProductObject with the product information</param>
-        /// <returns>DTO with the parsed ProductObject</returns>
-        private GenericDTO productObjectToProductDTO(ProductObject productObject){
-            GenericDTO productDTO=new GenericDTO(Product.Properties.CONTEXT);
-            productDTO.put(Product.Properties.REFERENCE_PROPERTY,productObject.reference);
-            productDTO.put(Product.Properties.DESIGNATION_PROPERTY,productObject.designation);
-            productDTO.put(Product.Properties.COMPLEMENTED_PRODUCTS_PROPERTY,productObject.complementedProducts);
-            productDTO.put(Product.Properties.MATERIALS_PROPERTY,productObject.materials);
-            List<GenericDTO> heightRestrictionDTOList = new List<GenericDTO>();
-            List<GenericDTO> widthRestrictionDTOList = new List<GenericDTO>();
-            List<GenericDTO> depthRestrictionDTOList = new List<GenericDTO>();
-
-            if (!Collections.isListEmpty(productObject.restrictions))
-            {
-                foreach (Restriction restriction in productObject.restrictions)
-                {
-                    GenericDTO restrictionDTO = new GenericDTO("restriction");
-                    String restrictionDimension = restriction.dimension;
-                    restrictionDTO.put("type", restriction.type);
-                    restrictionDTO.put("values", restriction.values);
-                    if (restrictionDimension.Equals("height"))
-                    {
-                        heightRestrictionDTOList.Add(restrictionDTO);
-                    }
-                    if (restrictionDimension.Equals("width"))
-                    {
-                        widthRestrictionDTOList.Add(restrictionDTO);
-                    }
-                    else
-                    {
-                        depthRestrictionDTOList.Add(restrictionDTO);
-                    }
-
-                }
-                productDTO.put(Product.Properties.HEIGHT_VALUES_PROPERTIES, heightRestrictionDTOList);
-                productDTO.put(Product.Properties.WIDTH_VALUES_PROPERTIES, widthRestrictionDTOList);
-                productDTO.put(Product.Properties.DEPTH_VALUES_PROPERTIES, depthRestrictionDTOList);
-            }
-
-            if (!Collections.isListEmpty(productObject.materials))
-            {
-                productDTO.put(Product.Properties.MATERIALS_PROPERTY, productObject.materials);
-            }
-            productDTO.put(Product.Properties.PERSISTENCE_ID_PROPERTY,productObject.persistenceID);
-            return productDTO;
+        public class Restriction {
+            public string dimension { get; set; }
+            public string type { get; set; }
+            public List<string> values { get; set; }
         }
-    }
 
-    /// <summary>
-    /// ProductObject class to help the deserialization of a product's updates from JSON format
-    /// </summary>
-    public class Restriction
-    {
-        public string dimension { get; set; }
-        public string type { get; set; }
-        public List<string> values { get; set; }
     }
-
-    /// <summary>
-    /// ProductObject class to help the deserialization of a product's updates from JSON format
-    /// </summary>
-    public class ProductObject
-    {
-        public string reference{get;set;}
-        public string designation{get;set;}
-        public long persistenceID{get;set;}
-        public List<long> complementedProducts{get;set;}
-        public List<Restriction> restrictions { get; set; }
-        public List<string> materials { get; set; }
-    }
-
 }

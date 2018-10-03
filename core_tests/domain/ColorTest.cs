@@ -150,7 +150,7 @@ namespace dotnet_example_unittests {
             dto.name = name;
             dto.red = red;
             dto.green = green;
-            dto.blue = blue,
+            dto.blue = blue;
             dto.alpha = alpha;
             ColorDTO dto2 = color.toDTO();
             Assert.Equal(dto.name, dto2.name);

@@ -6,7 +6,7 @@ namespace backend_tests.utils
 {
     public class JSONStringFormatterTest
     {
-        
+        /*
 
         [Fact]
         public void ensureFormatMessageToJSONWithErrorMessageTypeWorks(){
@@ -18,6 +18,6 @@ namespace backend_tests.utils
             string result = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, message);
 
             Assert.Equal(expected, result);
-        }
+        }*/
     }
 }
