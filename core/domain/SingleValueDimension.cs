@@ -1,5 +1,6 @@
 using System;
 using support.domain.ddd;
+using core.dto;
 
 namespace core.domain
 {
@@ -10,7 +11,7 @@ namespace core.domain
     public class SingleValueDimension : Dimension, ValueObject
     {
 
-        public long Id {get; set;}
+        public long Id { get; set; }
 
         /// <summary>
         /// Constant that represents the message that occurs if the value is NaN
@@ -30,7 +31,7 @@ namespace core.domain
         /// <summary>
         /// Value that the dimension has
         /// </summary>
-        public double value {get; set;}
+        public double value { get; set; }
 
         /// <summary>
         /// Returns a new instance of Dimension
@@ -105,6 +106,20 @@ namespace core.domain
         public override string ToString()
         {
             return string.Format("Value: {0}", value);
+        }
+
+        /// <summary>
+        /// Builds a DimensionDTO out of a SingleValueDimension instance
+        /// </summary>
+        /// <returns>DimensionDTO instance</returns>
+        public DimensionDTO toDTO()
+        {
+            SingleValueDimensionDTO dto = new SingleValueDimensionDTO();
+
+            dto.id = Id;
+            dto.value = value;
+
+            return dto;
         }
     }
 }

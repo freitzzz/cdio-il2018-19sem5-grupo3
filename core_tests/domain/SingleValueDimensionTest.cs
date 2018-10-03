@@ -77,14 +77,15 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureSameInstanceIsEqual(){
+        public void ensureSameInstanceIsEqual()
+        {
             SingleValueDimension instance = SingleValueDimension.valueOf(3);
 
             Assert.True(instance.Equals(instance));
         }
 
         [Fact]
-        public void testHashCode()
+        public void testGetHashCode()
         {
             SingleValueDimension instance = SingleValueDimension.valueOf(2.718);
             SingleValueDimension other = SingleValueDimension.valueOf(2.718);
@@ -99,6 +100,15 @@ namespace core_tests.domain
             SingleValueDimension other = SingleValueDimension.valueOf(9.8);
 
             Assert.Equal(instance.ToString(), other.ToString());
+        }
+
+        [Fact]
+        public void testToDTO()
+        {
+            SingleValueDimension instance = SingleValueDimension.valueOf(10.0);
+            SingleValueDimension other = SingleValueDimension.valueOf(10.0);
+
+            Assert.Equal(instance.toDTO().ToString(), other.toDTO().ToString());
         }
     }
 }

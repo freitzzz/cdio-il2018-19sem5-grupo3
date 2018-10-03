@@ -1,5 +1,6 @@
 using System;
 using support.domain.ddd;
+using core.dto;
 
 namespace core.domain
 {
@@ -55,17 +56,23 @@ namespace core.domain
         private const string INCREMENT_GREATER_THAN_MAX_MIN_DIFFERENCE_REFERENCE = "Increment can't be greater than the difference between the max and min values";
 
         /// <summary>
+        /// Database Identifier
+        /// </summary>
+        /// <value>Get/Set for database identifier</value>
+        public long Id { get; set; }
+
+        /// <summary>
         /// Minimum value of the interval
         /// </summary>
-        public double minValue {get; set;}
+        public double minValue { get; set; }
         /// <summary>
         /// Maximum value of the interval
         /// </summary>
-        public double maxValue {get; set;}
+        public double maxValue { get; set; }
         /// <summary>
         /// Increment value of the interval
         /// </summary>
-        public double increment {get; set;}
+        public double increment { get; set; }
 
         /// <summary>
         /// Returns a new ContinuousDimensionInterval instance
@@ -184,6 +191,22 @@ namespace core.domain
         {
             return string.Format("Minimum Value: {0}\nMaximum Value: {1}\nIncrement Value: {2}",
             minValue, maxValue, increment);
+        }
+
+        /// <summary>
+        /// Builds a DimensionDTO out of a ContinuousDimensionInterval instance
+        /// </summary>
+        /// <returns>DimensionDTO instance</returns>
+        public DimensionDTO toDTO()
+        {
+            ContinuousDimensionIntervalDTO dto = new ContinuousDimensionIntervalDTO();
+
+            dto.id = Id;
+            dto.minValue = minValue;
+            dto.maxValue = maxValue;
+            dto.increment = increment;
+
+            return dto;
         }
     }
 }
