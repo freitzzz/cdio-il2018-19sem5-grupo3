@@ -66,27 +66,20 @@ namespace core.domain {
             List with all the Material's colors.
         </summary>
         **/
-        public List<Color> Colors { get; set; } = new List<Color>();
+        public virtual List<Color> Colors { get; set; }
 
         /**
          <summary>
              List with all the Material's finishes.
          </summary>
          **/
-        public List<Finish> Finishes { get; set; } = new List<Finish>();
+        public virtual List<Finish> Finishes { get; set; }
 
 
         /// <summary>
         /// Empty constructor used by ORM.
         /// </summary>
         protected Material() { }
-
-        /**
-        <summary>
-            Long with the Material's database ID.
-        </summary>
-         */
-        private long persistence_id { get; set; }
 
         /**
         <summary>
@@ -102,6 +95,8 @@ namespace core.domain {
             checkMaterialProperties(reference, designation, colors, finishes);
             this.reference = reference;
             this.designation = designation;
+            this.Colors = new List<Color>();
+            this.Finishes = new List<Finish>();
             this.Colors.AddRange(colors);
             this.Finishes.AddRange(finishes);
         }

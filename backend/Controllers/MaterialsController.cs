@@ -62,7 +62,8 @@ namespace backend.Controllers {
             List<MaterialDTO> materials = new core.application.MaterialsController().findAllMaterials();
 
             if (materials == null) {
-                return BadRequest(NO_MATERIALS_FOUND_REFERENCE);
+                string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_FOUND_REFERENCE);
+                return BadRequest(jsonFormattedMessage);
             }
 
             return Ok(materials);
@@ -81,7 +82,8 @@ namespace backend.Controllers {
             MaterialDTO materialDTO = new core.application.MaterialsController().findMaterialByID(materialID);
 
             if (materialDTO == null) {
-                return BadRequest(MATERIAL_NOT_FOUND_REFERENCE);
+                string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_FOUND_REFERENCE);
+                return BadRequest(jsonFormattedMessage);
             }
 
             return Ok(materialDTO);
@@ -98,7 +100,8 @@ namespace backend.Controllers {
             MaterialDTO removedDTO = new core.application.MaterialsController().removeMaterial(materialID);
 
             if (removedDTO == null) {
-                return BadRequest(MATERIAL_NOT_REMOVED_REFERENCE);
+                string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_REMOVED_REFERENCE);
+                return BadRequest(jsonFormattedMessage);
             }
 
             return Ok(removedDTO);
@@ -109,15 +112,17 @@ namespace backend.Controllers {
         /// </summary>
         /// <param name="materialDTO">DTO that holds all info about the Material</param>
         /// <returns>HTTP Response 400 Bad Request if the Material is not added;
-        /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
+        /// <br>HTTP Response 201 Created with the info of the Material in JSON format.</returns>
         [HttpPost]
         public ActionResult<MaterialDTO> add([FromBody] MaterialDTO jsonData) {
             try {
                 MaterialDTO addedDTO = new core.application.MaterialsController().addMaterial(jsonData);
                 if (addedDTO == null) {
-                    return BadRequest(MATERIAL_NOT_ADDED_REFERENCE);
+                    string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_ADDED_REFERENCE);
+                    return BadRequest(formattedMessage);
                 }
-                return Ok(addedDTO);
+                string url = string.Format("{0}/{1}", Request.Path, addedDTO.id);
+                return Created(url, addedDTO);
             } catch (ArgumentException e) {
                 string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
                 return BadRequest(formattedMessage);

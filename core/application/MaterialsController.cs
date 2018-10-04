@@ -57,7 +57,6 @@ namespace core.application {
         /// </summary>
         /// <param name="materialDTO">DTO that holds all info about the Material</param>
         /// <returns>DTO that represents the Material</returns>
-        //TODO: change usage of Material constructor to MaterialDTO.toEntity()
         public MaterialDTO addMaterial(MaterialDTO materialAsDTO) {
             string reference = materialAsDTO.reference;
             string designation = materialAsDTO.designation;
