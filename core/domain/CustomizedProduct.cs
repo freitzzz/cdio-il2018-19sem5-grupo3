@@ -68,16 +68,73 @@ namespace core.domain
             this.list.Add(product);
         }
 
+        /**
+        <summary>
+            Checks if the CustomizedMaterial's  is valid.
+        </summary>
+        <param name = "customizedMaterial">The CustomizedMaterial</param>
+        */
         private void checkCustomizedMaterial(CustomizedMaterial customizedMaterial)
         {
             if (String.IsNullOrEmpty(customizedMaterial.ToString())) throw new ArgumentException(INVALID_CONFIGURED_PRODUCT_MATERIAL);
 
         }
 
+        /**
+        <summary>
+            Checks if the CustomizedDimension is valid.
+        </summary>
+        <param name = "customizedDimension">The CustomizedDimension</param>
+        */
         private void checkCustomizedDimensions(CustomizedDimensions customizedDimensions)
         {
             if (String.IsNullOrEmpty(customizedDimensions.ToString())) throw new ArgumentException(INVALID_CONFIGURED_PRODUCT_DIMENSIONS);
 
         }
+
+        /**
+        <summary>
+            Returns a textual with the Customized Dimensions and CustomizedMaterial of the Customized Product.
+        </summary>
+         */
+         public override string ToString()
+        {
+            return string.Format("Customized Material {0}, Customized Dimensions {1}", customizedMaterial.ToString(), customizedDimensions.ToString());
+        }
+
+        /**
+        <summary>
+            Returns the generated hash code of the Customized Material.
+        </summary>
+         */
+        public override int GetHashCode()
+        {
+            int hashCode = 17;
+            hashCode = (hashCode * 23) + this.customizedDimensions.GetHashCode();
+            hashCode = (hashCode * 23) + this.customizedMaterial.GetHashCode();
+
+            return hashCode.GetHashCode();
+        }
+
+        /**
+        <summary>
+            Checks if a certain Customized Material is the same as a received object.
+        </summary>
+        <param name = "obj">object to compare to the current Customized Material</param>
+         */
+        public override bool Equals(object obj)
+        {
+            //Check for null and compare run-time types.
+            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                CustomizedProduct configProduct = (CustomizedProduct)obj;
+                return customizedDimensions.Equals(configProduct.customizedDimensions) && customizedMaterial.Equals(configProduct.customizedMaterial);
+            }
+        }
+        
     }
 }
