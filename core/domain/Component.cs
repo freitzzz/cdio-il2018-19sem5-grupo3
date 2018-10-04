@@ -7,6 +7,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using core.dto;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace core.domain
 {
     public class Component : DTOAble<ComponentDTO>
@@ -39,8 +41,13 @@ namespace core.domain
         /// <summary>
         /// List with the restrictions which the current component can be have
         /// </summary>
+        [NotMapped] //!remove this annotation once we figure out how to persist interfaces
         public List<Restriction> restrictions {get; set;}
-
+        
+        /// <summary>
+        /// Empty constructor for ORM.
+        /// </summary>
+        protected Component(){}
         /// <summary>
         /// Builds a new component with its reference, designation and list of the restrictions.
         /// </summary>
