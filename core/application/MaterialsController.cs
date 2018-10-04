@@ -64,10 +64,10 @@ namespace core.application {
             List<Color> colors = new List<Color>();
             foreach (ColorDTO colorDTO in materialAsDTO.colors) {
                 string name = colorDTO.name;
-                int red = colorDTO.red;
-                int green = colorDTO.green;
-                int blue = colorDTO.blue;
-                int alpha = colorDTO.alpha;
+                byte red = colorDTO.red;
+                byte green = colorDTO.green;
+                byte blue = colorDTO.blue;
+                byte alpha = colorDTO.alpha;
                 colors.Add(Color.valueOf(name, red, green, blue, alpha));
             }
 
@@ -99,10 +99,10 @@ namespace core.application {
 
             foreach (ColorDTO colorDTO in materialDTO.colors) {
                 string name = colorDTO.name;
-                int red = colorDTO.red;
-                int green = colorDTO.green;
-                int blue = colorDTO.blue;
-                int alpha = colorDTO.alpha;
+                byte red = colorDTO.red;
+                byte green = colorDTO.green;
+                byte blue = colorDTO.blue;
+                byte alpha = colorDTO.alpha;
                 material.addColor(Color.valueOf(name, red, green, blue, alpha));
             }
 

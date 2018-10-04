@@ -27,28 +27,28 @@ namespace core.dto {
         /// </summary>
         /// <value>Gets/sets the value of the red value field.</value>
         [DataMember]
-        public int red { get; set; }
+        public byte red { get; set; }
 
         /// <summary>
         /// Color's green value.
         /// </summary>
         /// <value>Gets/sets the value of the green value field.</value>
         [DataMember]
-        public int green { get; set; }
+        public byte green { get; set; }
 
         /// <summary>
         /// Color's blue value.
         /// </summary>
         /// <value>Gets/sets the value of the blue value field.</value>
         [DataMember]
-        public int blue { get; set; }
+        public byte blue { get; set; }
 
         /// <summary>
         /// Color's alpha value.
         /// </summary>
         /// <value>Gets/sets the value of the alpha value field.</value>
         [DataMember]
-        public int alpha { get; set; }
+        public byte alpha { get; set; }
         /// <summary>
         /// Returns this DTO's equivalent Entity
         /// </summary>
