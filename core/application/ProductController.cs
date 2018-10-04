@@ -44,7 +44,7 @@ namespace core.application
         /// Updates the category of a product
         /// </summary>
         /// <param name="productDTO">ProductDTO with the product dto which category is going to be changed</param>
-        /// <param name="productCategoryDTO"></param>
+        /// <param name="productCategoryDTO">ProductCategoryDTO</param>
         /// <returns></returns>
         public bool updateProductCategory(ProductDTO productDTO,ProductCategoryDTO productCategoryDTO){
             Product productToUpdate=productRepository.find(productDTO.id);
