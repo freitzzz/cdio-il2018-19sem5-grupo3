@@ -102,6 +102,8 @@ namespace core.domain {
             checkMaterialProperties(reference, designation, colors, finishes);
             this.reference = reference;
             this.designation = designation;
+            this.Colors = new List<Color>();
+            this.Finishes = new List<Finish>();
             this.Colors.AddRange(colors);
             this.Finishes.AddRange(finishes);
         }
