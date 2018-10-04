@@ -139,7 +139,6 @@ namespace backend.Controllers {
                 return BadRequest(new JSONMessageService("An error occured while updating the product category"));
             }
         }
-
         /// <summary>
         /// Disables a product
         /// </summary>
@@ -147,6 +146,8 @@ namespace backend.Controllers {
         /// <returns>HTTP Response 204;No Content if the product was disabled with success
         ///      <br>HTTP Response 400;Bad Request if an error occured while disabling the product
         /// </returns>
+        /// 
+        [HttpDelete("{id}")]
         public ActionResult disableProduct(long productID){
             ProductDTO productDTO=new ProductDTO();
             productDTO.id=productID;
@@ -155,26 +156,6 @@ namespace backend.Controllers {
                 return NoContent();
             }else{
                 return BadRequest();
-            }
-        }
-
-        /// <summary>
-        /// Removes a product from it collection
-        /// </summary>
-        /// <param name="productID">long with the product ID</param>
-        /// <returns>HTTP Response 200 Ok if the product was removed with successs
-        ///         <br>HTTP Response 400 Bad Request if an error occured while removing the product
-        ///         <br>See MyC REST API documentation for a better overview
-        /// </returns>
-        [HttpDelete("{id}")]
-        public ActionResult removeProduct(long productID){
-            ProductDTO productDTO=new ProductDTO();
-            productDTO.id=productID;
-            bool removedWithSuccess=new core.application.ProductController(productRepository, materialRepository).removeProduct(productDTO);
-            if (removedWithSuccess) {
-                return Ok("{\"Message\":\"The product was removed with success\"}");
-            } else {
-                return BadRequest("{\"Message\":\"An error ocurred while creating the product\"}");
             }
         }
 
