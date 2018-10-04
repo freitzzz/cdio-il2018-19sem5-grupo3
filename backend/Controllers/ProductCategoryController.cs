@@ -70,9 +70,7 @@ namespace backend.Controllers
                     return BadRequest(JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, ERROR_ADD_CATEGORY));
                 }
 
-                string url = string.Format("{0}{1}", Request.Path, createdCategory.id);
-
-                return Created(url, createdCategory);
+                return CreatedAtRoute("GetCategory", new {id = createdCategory.id}, createdCategory);
 
             }
             catch (ArgumentException e)
@@ -113,7 +111,7 @@ namespace backend.Controllers
         /// <param name="id">ProductCategory's database identifier.</param>
         /// <returns>ActionResult with the 200 HTTP code if an instance of ProductCategory with a matching
         /// database identifier was found or 404 HTTP code if no ProductCategory was found.</returns>
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetCategory")]
         public ActionResult findById(long id)
         {
             ProductCategoryDTO result = new core.application.

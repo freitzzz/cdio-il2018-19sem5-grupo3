@@ -12,20 +12,20 @@ namespace core.domain {
     /// </summary>
     /// <typeparam name="name">Generic-Type of the Color identifier</typeparam>
     public class Color : ValueObject, DTOAble<ColorDTO> {
-        public long Id { get; set; }
+        public long Id { get; internal set; }
 
         /// <summary>
         /// String with the color name.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; protected set; }
 
         /// <summary>
         /// Respective RGBA coordinates.
         /// </summary>
-        public byte Red { get; set; }
-        public byte Green { get; set; }
-        public byte Blue { get; set; }
-        public byte Alpha { get; set; }
+        public byte Red { get; protected set; }
+        public byte Green { get; protected set; }
+        public byte Blue { get; protected set; }
+        public byte Alpha { get; protected set; }
 
         /// <summary>
         /// Returns a new ContinuousDimensionInterval instance
