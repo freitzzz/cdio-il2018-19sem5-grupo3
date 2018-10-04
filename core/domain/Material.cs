@@ -66,14 +66,14 @@ namespace core.domain {
             List with all the Material's colors.
         </summary>
         **/
-        public List<Color> Colors { get; set; }
+        public List<Color> Colors { get; set; } = new List<Color>();
 
         /**
          <summary>
              List with all the Material's finishes.
          </summary>
          **/
-        public List<Finish> Finishes { get; set; }
+        public List<Finish> Finishes { get; set; } = new List<Finish>();
 
 
         /// <summary>
