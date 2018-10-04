@@ -14,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using support.utils;
 using core.persistence;
 using core.dto;
+using backend.utils;
 
 namespace backend.Controllers {
 
@@ -111,8 +112,6 @@ namespace backend.Controllers {
         [HttpPut("{id}")]
         public ActionResult updateProduct([FromBody] ProductDTO jsonData) {
             ProductDTO updatedProductDTO = new core.application.ProductController(productRepository, materialRepository).updateProduct(jsonData);
-
-
             if (updatedProductDTO == null) {
                 return BadRequest();
             }
@@ -121,32 +120,67 @@ namespace backend.Controllers {
         }
 
         /// <summary>
-        /// Removes a product from it collection
+        /// Updates the category of a product
         /// </summary>
-        /// <param name="productID">long with the product ID</param>
-        /// <returns>HTTP Response 200 Ok if the product was removed with successs
-        ///         <br>HTTP Response 400 Bad Request if an error occured while removing the product
-        ///         <br>See MyC REST API documentation for a better overview
+        /// <param name="productID">Long with the product ID being updated</param>
+        /// <param name="productCategoryDTO">ProductCategoryDTO with the category being updated on the product information</param>
+        /// <returns>HTTP Response 200;OK if the product category was updated with success
+        ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product category
         /// </returns>
+        [HttpPut("{id}/category")]
+        public ActionResult<JSONMessageService> updateProductCategory(long productID,[FromBody]ProductCategoryDTO productCategoryDTO){
+            ProductDTO productDTO=new ProductDTO();
+            productDTO.id=productID;
+            bool updatedWithSucess=new core.application.ProductController(productRepository,materialRepository).updateProductCategory(productDTO,productCategoryDTO);
+            //TODO: Updates should throw an exception with the detailed error if it wasn't possible to update
+            if(updatedWithSucess){
+                return Ok(new JSONMessageService("Product category was updated with success"));
+            }else{
+                return BadRequest(new JSONMessageService("An error occured while updating the product category"));
+            }
+        }
+        /// <summary>
+        /// Disables a product
+        /// </summary>
+        /// <param name="productID">Long with the product being disabled ID</param>
+        /// <returns>HTTP Response 204;No Content if the product was disabled with success
+        ///      <br>HTTP Response 400;Bad Request if an error occured while disabling the product
+        /// </returns>
+        /// 
         [HttpDelete("{id}")]
-        public ActionResult removeProduct(long productID) {
+        public ActionResult disableProduct(long productID){
+            ProductDTO productDTO=new ProductDTO();
+            productDTO.id=productID;
+            bool disabledWithSuccess=new core.application.ProductController(productRepository,materialRepository).disableProduct(productDTO);
+            if(disabledWithSuccess){
+                return NoContent();
+            }else{
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("{id}/dimensions")]
+        public ActionResult defineProductDimensions([FromBody] DimensionsListDTO dimensionsDTO, long productID){
             ProductDTO productDTO = new ProductDTO();
             productDTO.id = productID;
-            bool removedWithSuccess = new core.application.ProductController(productRepository, materialRepository).removeProduct(productDTO);
-            if (removedWithSuccess) {
-                return Ok("{\"Message\":\"The product was removed with success\"}");
-            } else {
-                return BadRequest("{\"Message\":\"An error ocurred while creating the product\"}");
+            productDTO.heightDimensions = dimensionsDTO.heightDimensionDTOs;
+            productDTO.widthDimensions = dimensionsDTO.widthDimensionDTOs;
+            productDTO.depthDimensions = dimensionsDTO.depthDimensionDTOs;
+            bool dimensionsDefinedWithSuccess = new core.application.ProductController(productRepository,materialRepository).defineProductDimensions(productDTO);
+            if(dimensionsDefinedWithSuccess){
+                return Ok();
+            }else{
+                return BadRequest();
             }
         }
 
         /// <summary>
         /// ProductObject class to help the deserialization of a product's updates from JSON format
         /// </summary>
-        public class Restriction {
-            public string dimension { get; set; }
-            public string type { get; set; }
-            public List<string> values { get; set; }
+        public class DimensionsListDTO {
+            public List<DimensionDTO> heightDimensionDTOs { get; set; }
+            public List<DimensionDTO> widthDimensionDTOs {get;set;}
+            public List<DimensionDTO> depthDimensionDTOs {get;set;}
         }
 
     }

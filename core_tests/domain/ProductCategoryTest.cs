@@ -8,8 +8,6 @@ namespace core_tests.domain
 {
     public class ProductCategoryTest
     {
-        private readonly BindingFlags accessFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-
         [Fact]
         public void ensureInstanceCantBeCreatedWithEmptyName()
         {
@@ -55,7 +53,7 @@ namespace core_tests.domain
             category.changeName("");
 
             //Use reflection
-            string currentName = (string)category.GetType().GetFields(accessFlags)[1].GetValue(category);
+            string currentName = category.name;
 
             Assert.Equal(name, currentName);
         }
@@ -78,7 +76,7 @@ namespace core_tests.domain
             category.changeName("           ");
 
             //Use reflection
-            string currentName = (string)category.GetType().GetFields(accessFlags)[1].GetValue(category);
+            string currentName = category.name;
 
             Assert.Equal(name, currentName);
         }
@@ -101,11 +99,30 @@ namespace core_tests.domain
             category.changeName(newName);
 
             //Use reflection
-            string currentName = (string)category.GetType().GetFields(accessFlags)[1].GetValue(category);
+            string currentName = category.name;
 
             Assert.Equal(newName, currentName);
         }
 
+
+        [Fact]
+        public void ensureActivateWorks()
+        {
+            var category = new ProductCategory("Pritchett's Closets");
+            category.activate();
+
+            Assert.True(category.isActive());
+        }
+
+        [Fact]
+        public void ensureDeactivateWorks()
+        {
+            var category = new ProductCategory("Closets Closets Closets");
+            category.deactivate();
+
+            Assert.False(category.isActive());
+
+        }
 
         [Fact]
         public void ensureEqualsReturnsFalseIfObjectIsNull()

@@ -62,31 +62,32 @@ namespace core.domain {
         /// List with the components which the current product can be complemented by
         /// </summary>
         //TODO: Should complemented products be a list and not a set?
-        public List<Component> complementedProducts { get; set; }
+        [NotMapped]
+        public virtual List<Component> complementedProducts { get; set; }
         /// <summary>
         /// List with the materials which the product can be made of
         /// </summary>
         //TODO: Should product materials be a list or a set?
         [NotMapped]
-        public List<ProductMaterial> prodMaterial { get; set; }
+        public virtual List<ProductMaterial> prodMaterial { get; set; }
         /// <summary>
         /// List with the product heigth dimensions
         /// </summary>
         //TODO: Should product dimensions be a list or a set
         [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configure
-        public List<Dimension> heightValues { get; set; }
+        public virtual List<Dimension> heightValues { get; set; }
         /// <summary>
         /// List with the product width dimensions
         /// </summary>
         //TODO: Should product dimensions be a list or a set
         [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configured
-        public List<Dimension> widthValues { get; set; }
+        public virtual List<Dimension> widthValues { get; set; }
         /// <summary>
         /// List with the product depth dimensions
         /// </summary>
         //TODO: Should product restrinctions be a list or a set
         [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configured
-        public List<Dimension> depthValues { get; set; }
+        public virtual List<Dimension> depthValues { get; set; }
         /// <summary>
         /// ProductCategory with the category which the product belongs to
         /// </summary>
@@ -242,6 +243,27 @@ namespace core.domain {
             this.productCategory = productCategory;
             return true;
         }
+
+        /// <summary>
+        /// Removes a specified width dimension from the current product
+        /// </summary>
+        /// <param name="widthDimension">Dimension with the width dimension being removed</param>
+        /// <returns>boolean true if the dimension was removed with success, false if not</returns>
+        public bool removeWidthDimension(Dimension widthDimension){return widthValues.Remove(widthDimension);}
+
+        /// <summary>
+        /// Removes a specified height dimension from the current product
+        /// </summary>
+        /// <param name="heightDimension">Dimension with the height dimension being removed</param>
+        /// <returns>boolean true if the dimension was removed with success, false if not</returns>
+        public bool removeHeightDimension(Dimension heightDimension){return heightValues.Remove(heightDimension);}
+
+        /// <summary>
+        /// Removes a specified depth dimension from the current product
+        /// </summary>
+        /// <param name="depthDimension">Dimension with the depth dimension being removed</param>
+        /// <returns>boolean true if the dimension was removed with success, false if not</returns>
+        public bool removeDepthDimension(Dimension depthDimension){return depthValues.Remove(depthDimension);}
 
         /// <summary>
         /// Disables the current product

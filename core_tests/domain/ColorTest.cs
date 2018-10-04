@@ -4,32 +4,17 @@ using core.dto;
 using Xunit;
 
 
-namespace dotnet_example_unittests {
-    public class TodoItemTest {
-
-        [Fact]
-        public void ensureConstructorDetectsNegativeValue() {
-
-            Action act = () => Color.valueOf("test", 5, 5, 250, 2);
-
-            Assert.Throws<ArgumentException>(act);
-        }
-
-        [Fact]
-        public void ensureConstructorDetectsOverValue() {
-
-            Action act = () => Color.valueOf("test", 5, 254, 1, 2);
-
-            Assert.Throws<ArgumentException>(act);
-        }
+namespace core_tests.domain {
+    public class ColorTest {
 
         [Fact]
         public void ensureNamesAreEqual() {
-            var item = new Color();
 
-            string expected = "Azul";
+            string name = "Azul";
 
-            item.Name = expected;
+            var item = Color.valueOf(name, 0, 0, 255, 0);
+
+            string expected = name;
 
             string actual = item.Name;
 
@@ -39,11 +24,12 @@ namespace dotnet_example_unittests {
 
         [Fact]
         public void ensureRedCoordinatesAreEqual() {
-            var item = new Color();
 
-            byte expected = 255;
+            byte redValue = 255;
 
-            item.Red = expected;
+            var item = Color.valueOf("Red", redValue, 0, 0, 0);
+
+            byte expected = redValue;
 
             byte actual = item.Red;
 

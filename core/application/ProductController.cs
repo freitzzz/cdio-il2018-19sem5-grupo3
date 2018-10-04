@@ -15,6 +15,7 @@ namespace core.application {
 
         private readonly MaterialRepository materialRepository;
 
+        private readonly ProductCategoryRepository productCategoryRepository;
         public ProductController(ProductRepository productRepository, MaterialRepository materialRepository) {
             this.productRepository = productRepository;
             this.materialRepository = materialRepository;
@@ -32,6 +33,30 @@ namespace core.application {
 
             if (createdProduct == null) return null;
             return createdProduct.toDTO();
+        }
+
+        /// <summary>
+        /// Updates the category of a product
+        /// </summary>
+        /// <param name="productDTO">ProductDTO with the product dto which category is going to be changed</param>
+        /// <param name="productCategoryDTO">ProductCategoryDTO</param>
+        /// <returns></returns>
+        public bool updateProductCategory(ProductDTO productDTO,ProductCategoryDTO productCategoryDTO){
+            Product productToUpdate=productRepository.find(productDTO.id);
+            if(productToUpdate==null)return false;
+            ProductCategory productNewCategory=productCategoryRepository.find(productCategoryDTO.id);
+            if(!productToUpdate.changeProductCategory(productNewCategory))return false;
+            return productRepository.update(productToUpdate)!=null;
+        }
+
+        /// <summary>
+        /// Disables a product
+        /// </summary>
+        /// <param name="productDTO">ProductDTO with the product data being disabled</param>
+        /// <returns>boolean true if the product was disabled with success, false if not</returns>
+        public bool disableProduct(ProductDTO productDTO){
+            Product productBeingDisabled=productRepository.find(productDTO.id);
+            return productBeingDisabled!=null && productBeingDisabled.disable();
         }
 
         /// <summary>
@@ -75,6 +100,20 @@ namespace core.application {
 
         public ProductDTO findByReference(string reference) {
             return productRepository.find(reference).toDTO();
+        }
+
+        public bool defineProductDimensions(ProductDTO productDTO){
+            Product product = productRepository.find(productDTO.id);
+            
+            IEnumerable<Dimension> heightDimensions = getProductDTOEnumerableDimensions(productDTO.heightDimensions);
+            IEnumerable<Dimension> widthDimensions = getProductDTOEnumerableDimensions(productDTO.widthDimensions);
+            IEnumerable<Dimension> depthDimensions = getProductDTOEnumerableDimensions(productDTO.depthDimensions);
+
+            foreach(Dimension heightDimension in heightDimensions){if(!product.addHeightDimension(heightDimension)) return false;}
+            foreach(Dimension widthDimension in widthDimensions){if(!product.addWidthDimension(widthDimension)) return false;}
+            foreach(Dimension depthDimension in depthDimensions){if(!product.addDepthDimension(depthDimension)) return false;}
+
+            return productRepository.save(product) != null;
         }
 
         /// <summary>

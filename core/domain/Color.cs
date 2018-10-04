@@ -28,49 +28,25 @@ namespace core.domain {
         public byte Alpha { get; set; }
 
         /// <summary>
-        /// Minimum for the coordinate color (R/G/B/A).
-        /// </summary>
-        private static int MIN_VALUE = 0;
-        /// <summary>
-        /// Maximum for the coordinate color (R/G/B/A).
-        /// </summary>
-        private static int MAX_VALUE = 255;
-
-        /// <summary>
-        /// Constant that represents the message that occurs if the coordinate is bigger than the interval
-        /// </summary>
-        private static readonly string COORDINATE_BIGGER_THAN_INTERVAL = "The inserted value is bigger than" + MAX_VALUE;
-
-        /// <summary>
-        /// Constant that represents the message that occurs if the coordinate is bigger than the interval
-        /// </summary>"
-        private static readonly string COORDINATE_LOWER_THAN_INTERVAL = "The inserted value is less than" + MIN_VALUE;
-
-        /// <summary>
         /// Returns a new ContinuousDimensionInterval instance
         /// </summary>
         /// <param name="minValue">minimum value of the interval</param>
         /// <param name="maxValue">maximum value of the interval</param>
         /// <param name="increment">increment value of the interval</param>
         /// <returns>ContinuousDimensionInterval instance</returns>
-        public static Color valueOf(String name, byte red, byte green, byte blue, byte alpha) {
+        public static Color valueOf(string name, byte red, byte green, byte blue, byte alpha) {
             return new Color(name, red, green, blue, alpha);
         }
 
-        public Color() { }
+        /// <summary>
+        /// Empty constructor for ORM.
+        /// </summary>
+        protected Color() { }
 
         /// <summary>
         /// Checks if a certain color is the same as the current color.
         /// </summary>
-        private Color(String name,byte red, byte green, byte blue, byte alpha) {
-            if (red > MAX_VALUE || green > MAX_VALUE || blue > MAX_VALUE || alpha > MAX_VALUE) {
-                throw new ArgumentException(COORDINATE_BIGGER_THAN_INTERVAL);
-            }
-
-            if (red < MIN_VALUE || green < MIN_VALUE || blue < MIN_VALUE || alpha < MIN_VALUE) {
-                throw new ArgumentException(COORDINATE_LOWER_THAN_INTERVAL);
-            }
-
+        private Color(string name,byte red, byte green, byte blue, byte alpha) {
             this.Name = name;
             this.Red = red;
             this.Green = green;
