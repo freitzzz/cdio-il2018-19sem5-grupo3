@@ -3,6 +3,7 @@ using support.domain.ddd;
 using System;
 using support.dto;
 using core.dto;
+using System.Linq;
 
 namespace core.domain
 {
@@ -14,6 +15,13 @@ namespace core.domain
     */
     public class CustomizedProduct : ValueObject, DTOAble<CustomizedProductDTO>
     {
+        public CustomizedProduct(long id, string designation, long persistence_id)
+        {
+            this.Id = id;
+            this.designation = designation;
+            this.persistence_id = persistence_id;
+
+        }
         public long Id { get; set; }
         /**
         <summary>
@@ -49,6 +57,14 @@ namespace core.domain
                </summary>
                 */
         private const string INVALID_PRODUCT_DESIGNATION = "The inserted designation is invalid!";
+
+
+        /**
+        <summary>
+                   Constant that represents the message that ocurrs if the CustomizedMaterial's  are not valid.
+               </summary>
+                */
+        private const string INVALID_LIST = "List is invalid or empty!";
 
 
         /**
@@ -94,20 +110,46 @@ namespace core.domain
         private long persistence_id { get; set; }
 
 
+        /**
+        <summary>
+            Customized Product's valueOf
+            <param name = "reference">string with the new ConfiguredProduct's reference</param>
+            <param name = "designation">string with the new ConfiguredProduct's designation</param>
+            <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
+            <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
+            <param name = "product">string with the new ConfiguredProduct's product</param>DDD
+        </summary>
+         */
         public static CustomizedProduct valueOf(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, Product product)
         {
             return new CustomizedProduct(reference, designation, customizedMaterial, customizedDimensions, product);
         }
+
+        /**
+        <summary>
+            Customized Product's valueOf
+            <param name = "reference">string with the new ConfiguredProduct's reference</param>
+            <param name = "designation">string with the new ConfiguredProduct's designation</param>
+            <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
+            <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
+            <param name = "list">string with the new list of Products </param>DDD
+        </summary>
+         */
+        public static CustomizedProduct valueOf(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, List<Product> list)
+        {
+            return new CustomizedProduct(reference, designation, customizedMaterial, customizedDimensions, list);
+        }
+
         /**
        <summary>
            Builds a new instance of ConfiguredProduct, receiving its reference, designation, 
-           customizedDimensions, customizedMaterial and product.
+           customizedDimensions, customizedMaterial and product.~
+            <param name = "reference">string with the new ConfiguredProduct's reference</param>
+            <param name = "designation">string with the new ConfiguredProduct's designation</param>
+            <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
+            <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
+            <param name = "product">string with the new ConfiguredProduct's product</param>DDD
        </summary>
-       <param name = "reference">string with the new ConfiguredProduct's reference</param>
-       <param name = "designation">string with the new ConfiguredProduct's designation</param>
-       <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
-       <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
-       <param name = "product">string with the new ConfiguredProduct's product</param>
         */
         private CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, Product product)
         {
@@ -122,6 +164,42 @@ namespace core.domain
             this.list.Add(product);
         }
 
+        /**
+     <summary>
+         Builds a new instance of ConfiguredProduct, receiving its reference, designation, 
+         customizedDimensions, customizedMaterial and product.~
+          <param name = "reference">string with the new ConfiguredProduct's reference</param>
+          <param name = "designation">string with the new ConfiguredProduct's designation</param>
+          <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
+          <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
+          <param name = "product">string with the new ConfiguredProduct's product</param>DDD
+     </summary>
+      */
+        private CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, List<Product> list)
+        {
+            checkCustomizedMaterial(customizedMaterial);
+            checkCustomizedDimensions(customizedDimensions);
+            checkList(list);
+            checkString(reference);
+            checkString(designation);
+            this.reference = reference;
+            this.designation = designation;
+            this.customizedDimensions = customizedDimensions;
+            this.customizedMaterial = customizedMaterial;
+            this.list = list;
+        }
+
+        /**
+        <summary>
+            Checks if the CustomizedMaterial's  is valid.
+        </summary>
+        <param name = "customizedMaterial">The CustomizedMaterial</param>
+        */
+        private void checkList(List<Product> list)
+        {
+            if (list.Count() == 0) throw new ArgumentException(INVALID_CONFIGURED_PRODUCT_MATERIAL);
+
+        }
         /**
         <summary>
             Checks if the CustomizedMaterial's  is valid.
@@ -145,6 +223,7 @@ namespace core.domain
             if (String.IsNullOrEmpty(customizedDimensions.ToString())) throw new ArgumentException(INVALID_CONFIGURED_PRODUCT_DIMENSIONS);
 
         }
+
 
         /**
         <summary>
@@ -190,11 +269,19 @@ namespace core.domain
         }
 
 
-        CustomizedProductDTO DTOAble<CustomizedProductDTO>.toDTO()
+        /** <summary>
+                    Returns the current ConfiguredProduct as a DTO.
+                </summary>
+                <returns>DTO with the current DTO representation of the ConfiguredProduct</returns>
+                */
+        public CustomizedProductDTO toDTO()
         {
-            throw new NotImplementedException();
+            CustomizedProductDTO dto = new CustomizedProductDTO();
+            dto.reference = this.reference;
+            dto.designation = this.designation;
+            dto.id = this.Id;
+            return dto;
         }
-
         /**
         <summary>
             Checks if string is valid
@@ -236,6 +323,7 @@ namespace core.domain
         {
             return reference;
         }
+
 
         /**
        <summary>
