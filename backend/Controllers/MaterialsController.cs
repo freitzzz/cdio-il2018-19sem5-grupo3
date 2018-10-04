@@ -111,62 +111,19 @@ namespace backend.Controllers {
         /// <returns>HTTP Response 400 Bad Request if the Material is not added;
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
         [HttpPost]
-        public ActionResult<MaterialDTO> add([FromBody] JObject jsonData) {
-            {
-                MaterialObject materialObject = JsonConvert.DeserializeObject<MaterialObject>(jsonData.ToString());
-
-                MaterialDTO materialDTO = materialObjectToMaterialDTO(materialObject);
-                MaterialDTO addedDTO = new core.application.MaterialsController(materialRepository).addMaterial(materialDTO);
-
+        public ActionResult<MaterialDTO> add([FromBody] MaterialDTO jsonData) {
+            try {
+                MaterialDTO addedDTO = new core.application.MaterialsController(materialRepository).addMaterial(jsonData);
                 if (addedDTO == null) {
                     return BadRequest(MATERIAL_NOT_ADDED_REFERENCE);
                 }
                 return Ok(addedDTO);
+            } catch (ArgumentException e) {
+                string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
+                return BadRequest(formattedMessage);
             }
         }
 
-        /// <summary>
-        /// Parses a MaterialObjec into a Material DTO.
-        /// </summary>
-        /// <param name="materialObject">MaterialObject with the Material's info</param>
-        /// <returns>DTO with the parsed MaterialObject</returns>
-        private MaterialDTO materialObjectToMaterialDTO(MaterialObject materialObject) {
-            MaterialDTO materialDTO = new MaterialDTO();
-
-            materialDTO.reference = materialObject.reference; //Holds the reference of the Material
-            materialDTO.designation = materialObject.designation; //Holds the designation of the Material
-
-            List<ColorDTO> colorsDTOList = new List<ColorDTO>();
-
-            if (!Collections.isListEmpty(materialObject.colors)) {
-                foreach (Color color in materialObject.colors) {
-                    ColorDTO colorDTO = new ColorDTO();
-                    colorDTO.name = color.Name;
-                    colorDTO.red = color.Red;
-                    colorDTO.green = color.Green;
-                    colorDTO.blue = color.Blue;
-                    colorDTO.alpha = color.Alpha;
-
-                    colorsDTOList.Add(colorDTO);
-                }
-            }
-
-            materialDTO.colors = colorsDTOList;
-
-            List<FinishDTO> finishesDTOList = new List<FinishDTO>();
-
-            if (!Collections.isListEmpty(materialObject.finishes)) {
-                foreach (Finish finish in materialObject.finishes) {
-                    FinishDTO finishDTO = new FinishDTO();
-                    finishDTO.description = finish.description;
-                    finishesDTOList.Add(finishDTO);
-                }
-            }
-
-            materialDTO.finishes = finishesDTOList;
-
-            return materialDTO;
-        }
 
         /// <summary>
         /// Updates a material given its DTO.
@@ -175,21 +132,19 @@ namespace backend.Controllers {
         /// <returns>HTTP Response 400 Bad Request if the Material is not updated;
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
         [HttpPut]
-        public ActionResult<MaterialDTO> update([FromBody] JObject jsonData, long materialID) {
-            MaterialObject materialObject = JsonConvert.DeserializeObject<MaterialObject>(jsonData.ToString());
-            MaterialDTO materialDTO = materialObjectToMaterialDTO(materialObject);
+        public ActionResult<MaterialDTO> update([FromBody] MaterialDTO jsonData) {
+            try {
+                MaterialDTO matDTO = new core.application.MaterialsController(materialRepository).updateMaterial(jsonData);
 
-            materialObject.persistenceID = materialID;
-            List<ColorDTO> colors = materialDTO.colors;
-            List<FinishDTO> finishes = materialDTO.finishes;
+                if (matDTO == null) {
+                    return BadRequest();
+                }
 
-            bool wasUpdated = new core.application.MaterialsController(materialRepository).updateMaterial(materialDTO);
-
-            if (!wasUpdated) {
-                return BadRequest();
+                return Ok(matDTO);
+            } catch (ArgumentException e) {
+                string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
+                return BadRequest(formattedMessage);
             }
-
-            return Ok();
         }
         /// <summary>
         /// Updates the finishes of a material
@@ -209,35 +164,6 @@ namespace backend.Controllers {
                 string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
                 return BadRequest(formattedMessage);
             }
-        }
-
-        /// <summary>
-        /// Auxiliar MaterialObject class used in the deserialization of a Material's updates/addition from JSON format.
-        /// </summary>
-        public class MaterialObject {
-            /// <summary>
-            /// Material's reference.
-            /// </summary>
-            public string reference { get; set; }
-
-            /// <summary>
-            /// Materials's designation.
-            /// </summary>
-            public string designation { get; set; }
-
-            /// <summary>
-            /// Material's persistence ID.
-            /// </summary>
-            public long persistenceID { get; set; }
-            /// <summary>
-            /// List of colors.
-            /// </summary>
-            public List<Color> colors { get; set; }
-
-            /// <summary>
-            /// List of finishes.
-            /// </summary>
-            public List<Finish> finishes { get; set; }
         }
     }
 }
