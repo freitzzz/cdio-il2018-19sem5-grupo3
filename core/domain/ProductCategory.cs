@@ -27,6 +27,10 @@ namespace core.domain
         /// <value></value>
         public long Id { get; internal set; }
 
+        /// <summary>
+        /// Boolean that represents the ProductCategory's state (for soft delete purposes)
+        /// </summary>
+        private bool active;
 
         /// <summary>
         /// The ProductCategory's name e.g.: "Shelves", Drawers", "Handles".
@@ -36,7 +40,7 @@ namespace core.domain
         /// <summary>
         /// 
         /// </summary>
-        protected ProductCategory(){}
+        protected ProductCategory() { }
 
         /// <summary>
         /// Creates a new instance of ProductCategory with a given name and an empty collection of Product.
@@ -45,7 +49,7 @@ namespace core.domain
         public ProductCategory(string name)
         {
             this.name = name;
-
+            this.active = true;
             if (!isNameLengthValid(name))
             {
                 throw new ArgumentException(ERROR_EMPTY_NAME);
@@ -77,6 +81,31 @@ namespace core.domain
             this.name = newName;
 
             return true;
+        }
+
+        /// <summary>
+        /// Checks if the ProductCategory is active 
+        /// </summary>
+        /// <returns>true if the ProductCategory is active, false if not</returns>
+        public bool isActive()
+        {
+            return this.active == true;
+        }
+
+        /// <summary>
+        /// Deactivates the ProductCategory
+        /// </summary>
+        public void deactivate()
+        {
+            this.active = false;
+        }
+
+        /// <summary>
+        /// Activates the ProductCategory
+        /// </summary>
+        public void activate()
+        {
+            this.active = true;
         }
 
         public override bool Equals(object obj)
