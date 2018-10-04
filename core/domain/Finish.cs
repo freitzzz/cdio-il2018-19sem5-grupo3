@@ -5,16 +5,14 @@ using support.utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace core.domain
-{
+namespace core.domain {
     /**
     <summary>
         Class that represents a finish of the material.
         <br>Finish is a value object.
     </summary>
     */
-    public class Finish : ValueObject, DTOAble<FinishDTO>
-    {
+    public class Finish : ValueObject, DTOAble<FinishDTO> {
 
         public long Id { get; set; }
 
@@ -37,8 +35,7 @@ namespace core.domain
         </summary>
         <param name = "description">string with the new Finish's description</param>
          */
-        public static Finish valueOf(string description)
-        {
+        public static Finish valueOf(string description) {
             return new Finish(description);
         }
         /**
@@ -47,8 +44,7 @@ namespace core.domain
         </summary>
         <param name = "description">string with the new Finish's description</param>
          */
-        private Finish(string description)
-        {
+        private Finish(string description) {
             checkDescription(description);
             this.description = description;
         }
@@ -58,8 +54,7 @@ namespace core.domain
         </summary>
         <param name = "description">String with the Finish's description</param>
         */
-        private void checkDescription(string description)
-        {
+        private void checkDescription(string description) {
             if (Strings.isNullOrEmpty(description)) throw new
             ArgumentException(INVALID_FINISH_DESCRIPTION);
         }
@@ -70,15 +65,11 @@ namespace core.domain
         </summary>
         <param name = "obj">object to compare to the current Finish</param>
          */
-        public override bool Equals(object obj)
-        {
+        public override bool Equals(object obj) {
             //Check for null and compare run-time types.
-            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
-            {
+            if ((obj == null) || !this.GetType().Equals(obj.GetType())) {
                 return false;
-            }
-            else
-            {
+            } else {
                 Finish finish = (Finish)obj;
                 return description.Equals(finish.description);
             }
@@ -88,8 +79,7 @@ namespace core.domain
             Returns a description of the Finish.
         </summary>
          */
-        public override string ToString()
-        {
+        public override string ToString() {
             return string.Format("Description: {0}", description);
         }
 
@@ -98,14 +88,18 @@ namespace core.domain
             Returns the generated hash code of the Finish.
         </summary>
          */
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             return description.GetHashCode();
         }
-
-        public FinishDTO toDTO()
-        {
-            throw new NotImplementedException();
+        /// <summary>
+        /// Returns the DTO equivalent of the current instance
+        /// </summary>
+        /// <returns>DTO equivalent of the current instance</returns>
+        public FinishDTO toDTO() {
+            FinishDTO dto = new FinishDTO();
+            dto.id = this.Id;
+            dto.description = this.description;
+            return dto;
         }
     }
 }

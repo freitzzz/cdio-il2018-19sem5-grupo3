@@ -40,7 +40,7 @@ namespace support_tests.utils
 
             List<Object> test = null;
 
-            Assert.False(Collections.isListEmpty(test));
+            Assert.True(Collections.isListEmpty(test));
         }
 
         /**

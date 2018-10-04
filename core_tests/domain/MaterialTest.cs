@@ -2,16 +2,16 @@ using System;
 using Xunit;
 using System.Collections.Generic;
 using core.domain;
+using core.dto;
+using support.dto;
 
-namespace core_tests.domain
-{
+namespace core_tests.domain {
     /**
     <summary>
         Tests of the class Material.
     </summary>
     */
-    public class MaterialTest
-    {
+    public class MaterialTest {
         //id tests
 
         /**
@@ -20,8 +20,7 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void ensureIdMethodWorks()
-        {
+        public void ensureIdMethodWorks() {
             Console.WriteLine("ensureIdMethodWorks");
 
             string reference = "1160912";
@@ -48,8 +47,7 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void ensureMaterialsWithEqualIdentitiesAreTheSame()
-        {
+        public void ensureMaterialsWithEqualIdentitiesAreTheSame() {
             Console.WriteLine("ensureMaterialsWithEqualIdentitiesAreTheSame");
 
             string reference = "1160912";
@@ -74,8 +72,7 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void ensureMaterialsWithDifferentIdentitiesAreNotTheSame()
-        {
+        public void ensureMaterialsWithDifferentIdentitiesAreNotTheSame() {
             Console.WriteLine("ensureMaterialsWithDifferentIdentitiesAreNotTheSame");
 
             string reference = "1160912";
@@ -104,8 +101,7 @@ namespace core_tests.domain
         </summary>
          */
         [Fact]
-        public void ensureNullReferenceIsNotValid()
-        {
+        public void ensureNullReferenceIsNotValid() {
             Console.WriteLine("ensureNullReferenceIsNotValid");
 
             List<Color> colors = new List<Color>();
@@ -125,8 +121,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureEmptyReferenceIsNotValid()
-        {
+        public void ensureEmptyReferenceIsNotValid() {
             Console.WriteLine("ensureEmptyReferenceIsNotValid");
 
             List<Color> colors = new List<Color>();
@@ -146,8 +141,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureNullDesignationIsNotValid()
-        {
+        public void ensureNullDesignationIsNotValid() {
             Console.WriteLine("ensureNullDesignationIsNotValid");
 
             List<Color> colors = new List<Color>();
@@ -167,8 +161,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureEmptyDesignationIsNotValid()
-        {
+        public void ensureEmptyDesignationIsNotValid() {
             Console.WriteLine("ensureEmptyDesignationIsNotValid");
 
             List<Color> colors = new List<Color>();
@@ -188,8 +181,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureNullColorListIsNotValid()
-        {
+        public void ensureNullColorListIsNotValid() {
             Console.WriteLine("ensureNullColorListIsNotValid");
 
             List<Finish> finishes = new List<Finish>();
@@ -205,8 +197,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureEmptyColorListIsNotValid()
-        {
+        public void ensureEmptyColorListIsNotValid() {
             Console.WriteLine("ensureEmptyColorListIsNotValid");
 
             List<Color> colors = new List<Color>();
@@ -224,8 +215,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureNullFinishListIsNotValid()
-        {
+        public void ensureNullFinishListIsNotValid() {
             Console.WriteLine("ensureNullFinishListIsNotValid");
 
             List<Color> colors = new List<Color>();
@@ -241,8 +231,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureEmptyFinishListIsNotValid()
-        {
+        public void ensureEmptyFinishListIsNotValid() {
             Console.WriteLine("ensureEmptyFinishListIsNotValid");
 
             List<Color> colors = new List<Color>();
@@ -262,8 +251,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureAlreadyExistentColorCannotBeAdded()
-        {
+        public void ensureAlreadyExistentColorCannotBeAdded() {
             Console.WriteLine("ensureAlreadyExistentColorCannotBeAdded");
 
             List<Color> colors = new List<Color>();
@@ -285,8 +273,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureNullColorCannotBeAdded()
-        {
+        public void ensureNullColorCannotBeAdded() {
             Console.WriteLine("ensureNullColorCannotBeAdded");
 
             List<Color> colors = new List<Color>();
@@ -308,8 +295,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureValidColorCanBeAdded()
-        {
+        public void ensureValidColorCanBeAdded() {
             Console.WriteLine("ensureValidColorCanBeAdded");
 
             List<Color> colors = new List<Color>();
@@ -333,8 +319,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureNonExistentColorCannotBeRemoved()
-        {
+        public void ensureNonExistentColorCannotBeRemoved() {
             Console.WriteLine("ensureNonExistentColorCannotBeRemoved");
 
             List<Color> colors = new List<Color>();
@@ -356,8 +341,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureNullColorCannotBeRemoved()
-        {
+        public void ensureNullColorCannotBeRemoved() {
             Console.WriteLine("ensureNullColorCannotBeRemoved");
 
             List<Color> colors = new List<Color>();
@@ -379,8 +363,7 @@ namespace core_tests.domain
          </summary>
         */
         [Fact]
-        public void ensureValidColorCanBeRemoved()
-        {
+        public void ensureValidColorCanBeRemoved() {
             Console.WriteLine("ensureValidColorCanBeRemoved");
 
             List<Color> colors = new List<Color>();
@@ -404,8 +387,7 @@ namespace core_tests.domain
             </summary>
            */
         [Fact]
-        public void ensureAlreadyExistentFinishCannotBeAdded()
-        {
+        public void ensureAlreadyExistentFinishCannotBeAdded() {
             Console.WriteLine("ensureAlreadyExistentFinishCannotBeAdded");
 
             List<Color> colors = new List<Color>();
@@ -427,8 +409,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureNullFinishCannotBeAdded()
-        {
+        public void ensureNullFinishCannotBeAdded() {
             Console.WriteLine("ensureNullFinishCannotBeAdded");
 
             List<Color> colors = new List<Color>();
@@ -450,8 +431,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureValidFinishCanBeAdded()
-        {
+        public void ensureValidFinishCanBeAdded() {
             Console.WriteLine("ensureValidFinishCanBeAdded");
 
             List<Color> colors = new List<Color>();
@@ -475,8 +455,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureNonExistentFinishCannotBeRemoved()
-        {
+        public void ensureNonExistentFinishCannotBeRemoved() {
             Console.WriteLine("ensureNonExistentFinishCannotBeRemoved");
 
             List<Color> colors = new List<Color>();
@@ -498,8 +477,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureNullFinishCannotBeRemoved()
-        {
+        public void ensureNullFinishCannotBeRemoved() {
             Console.WriteLine("ensureNullFinishCannotBeRemoved");
 
             List<Color> colors = new List<Color>();
@@ -521,8 +499,7 @@ namespace core_tests.domain
          </summary>
         */
         [Fact]
-        public void ensureValidFinishCanBeRemoved()
-        {
+        public void ensureValidFinishCanBeRemoved() {
             Console.WriteLine("ensureValidFinishCanBeRemoved");
 
             List<Color> colors = new List<Color>();
@@ -546,8 +523,7 @@ namespace core_tests.domain
         </summary>
         */
         [Fact]
-        public void ensureValidColorExists()
-        {
+        public void ensureValidColorExists() {
             Console.WriteLine("ensureValidColorExists");
 
             List<Color> colors = new List<Color>();
@@ -569,8 +545,7 @@ namespace core_tests.domain
         </summary>
         */
         [Fact]
-        public void ensureNullColorDoesNotExist()
-        {
+        public void ensureNullColorDoesNotExist() {
             Console.WriteLine("ensureNullColorDoesNotExist");
 
             List<Color> colors = new List<Color>();
@@ -594,8 +569,7 @@ namespace core_tests.domain
         </summary>
         */
         [Fact]
-        public void ensureValidFinishExists()
-        {
+        public void ensureValidFinishExists() {
             Console.WriteLine("ensureValidFinishExists");
 
             List<Color> colors = new List<Color>();
@@ -617,8 +591,7 @@ namespace core_tests.domain
         </summary>
         */
         [Fact]
-        public void ensureNullFinishDoesNotExist()
-        {
+        public void ensureNullFinishDoesNotExist() {
             Console.WriteLine("ensureNullFinishDoesNotExist");
 
             List<Color> colors = new List<Color>();
@@ -642,8 +615,7 @@ namespace core_tests.domain
         </summary>
         */
         [Fact]
-        public void ensureGetHashCodeWorks()
-        {
+        public void ensureGetHashCodeWorks() {
             Console.WriteLine("ensureGetHashCodeWorks");
 
             List<Color> colors = new List<Color>();
@@ -668,8 +640,7 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void ensureMaterialsWithDifferentReferencesAreNotEqual()
-        {
+        public void ensureMaterialsWithDifferentReferencesAreNotEqual() {
             Console.WriteLine("ensureMaterialsWithDifferentReferencesAreNotEqual");
 
             List<Color> colors = new List<Color>();
@@ -692,8 +663,7 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void ensureMaterialsWithSameReferencesAreEqual()
-        {
+        public void ensureMaterialsWithSameReferencesAreEqual() {
             Console.WriteLine("ensureMaterialsWithSameReferencesAreEqual");
 
             List<Color> colors = new List<Color>();
@@ -716,8 +686,7 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void ensureNullObjectIsNotEqual()
-        {
+        public void ensureNullObjectIsNotEqual() {
             Console.WriteLine("ensureNullObjectIsNotEqual");
 
             List<Color> colors = new List<Color>();
@@ -739,8 +708,7 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void ensureDifferentTypesAreNotEqual()
-        {
+        public void ensureDifferentTypesAreNotEqual() {
             Console.WriteLine("ensureDifferentTypesAreNotEqual");
 
             List<Color> colors = new List<Color>();
@@ -767,8 +735,7 @@ namespace core_tests.domain
          </summary>
          */
         [Fact]
-        public void ensureToStringWorks()
-        {
+        public void ensureToStringWorks() {
             Console.WriteLine("ensureToStringWorks");
 
             List<Color> colors = new List<Color>();
@@ -783,6 +750,25 @@ namespace core_tests.domain
             Material vinegar = new Material("1160912", "Cowboy Boots", colors, finishes);
 
             Assert.Equal(balsamic.ToString(), vinegar.ToString());
+        }
+        [Fact]
+        public void testToDTO() {
+            Console.WriteLine("toDTO");
+            string reference = "el. psy. kongroo.";
+            string designation = "I am mad scientist!";
+            List<Color> colors = new List<Color>();
+            List<Finish> finishes = new List<Finish>();
+            Material material = new Material(reference, designation, colors, finishes);
+            MaterialDTO dto = new MaterialDTO();
+            dto.reference = reference;
+            dto.designation = designation;
+            dto.colors = new List<ColorDTO>(DTOUtils.parseToDTOS(colors));
+            dto.finishes = new List<FinishDTO>(DTOUtils.parseToDTOS(finishes));
+            MaterialDTO dto2 = material.toDTO();
+            Assert.Equal(dto.reference, dto2.reference);
+            Assert.Equal(dto.designation, dto2.designation);
+            Assert.Equal(dto.colors, dto2.colors);
+            Assert.Equal(dto.finishes, dto2.finishes);
         }
     }
 }
