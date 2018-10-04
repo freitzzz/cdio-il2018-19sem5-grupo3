@@ -29,6 +29,12 @@ namespace core.domain {
         </summary>
         */
         public string description { get; set; }
+
+        /// <summary>
+        /// Empty constructor for ORM.
+        /// </summary>
+        protected Finish(){}
+
         /**
         <summary>
             Builds a new instance of Finish, receiving its description.

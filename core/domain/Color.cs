@@ -57,7 +57,10 @@ namespace core.domain {
             return new Color(name, red, green, blue, alpha);
         }
 
-        public Color() { }
+        /// <summary>
+        /// Empty constructor for ORM.
+        /// </summary>
+        protected Color() { }
 
         /// <summary>
         /// Checks if a certain color is the same as the current color.
