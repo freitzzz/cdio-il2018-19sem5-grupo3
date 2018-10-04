@@ -1,4 +1,5 @@
 using support.domain.ddd;
+using System.Collections.Generic;
 
 namespace core.domain
 {
