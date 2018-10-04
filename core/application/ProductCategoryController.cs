@@ -12,19 +12,11 @@ namespace core.application
     /// </summary>
     public class ProductCategoryController
     {
-        /// <summary>
-        /// Current instance of ProductCategoryRepository.
-        /// </summary>
-        private readonly ProductCategoryRepository categoryRepository;
 
         /// <summary>
         /// Constructs a new instance of ProductCategory application controller.
         /// </summary>
-        /// <param name="productCategoryRepository">injected ProductCategoryRepository.</param>
-        public ProductCategoryController(ProductCategoryRepository productCategoryRepository)
-        {
-            categoryRepository = productCategoryRepository;
-        }
+        public ProductCategoryController(){}
 
         /// <summary>
         /// Adds a new ProductCategory to the repository.
@@ -33,7 +25,7 @@ namespace core.application
         /// <returns>Returns the added ProductCategory's DTO or null, if it was not added.</returns>
         public ProductCategoryDTO addProductCategory(ProductCategoryDTO productCategoryDTO){
 
-            ProductCategory category = categoryRepository.save(productCategoryDTO.toEntity());
+            ProductCategory category = PersistenceContext.repositories().createProductCategoryRepository().save(productCategoryDTO.toEntity());
 
             //category was not able to be added (probably due to a violation of business identifiers)
             if(category == null){
@@ -49,6 +41,7 @@ namespace core.application
         /// <param name="id">Database identifier of the ProductCategory to be removed.</param>
         /// <returns>A DTO representation of the removed ProductCategory.</returns>
         public ProductCategoryDTO removeProductCategory(long id){
+            ProductCategoryRepository categoryRepository=PersistenceContext.repositories().createProductCategoryRepository();
             
             ProductCategory categoryToBeRemoved = categoryRepository.find(id);
 
@@ -68,7 +61,7 @@ namespace core.application
         {
             List<ProductCategoryDTO> categoryDTOList = new List<ProductCategoryDTO>();
 
-            IEnumerable<ProductCategory> categories = categoryRepository.findAll();
+            IEnumerable<ProductCategory> categories = PersistenceContext.repositories().createProductCategoryRepository().findAll();
 
             foreach (ProductCategory category in categories)
             {
@@ -88,7 +81,7 @@ namespace core.application
         /// or null if no ProductCategory with a matching id was found.</returns>
         public ProductCategoryDTO findByDatabaseId(long id)
         {
-            ProductCategory category = categoryRepository.find(id);
+            ProductCategory category = PersistenceContext.repositories().createProductCategoryRepository().find(id);
 
             if(category == null){   //category might not exist
                 return null;
@@ -104,7 +97,7 @@ namespace core.application
         /// <returns>DTO representation of the instance of ProductCategory with a matching business identifier.</returns>
         public ProductCategoryDTO findByName(string id)
         {
-            ProductCategory category = categoryRepository.find(id);
+            ProductCategory category = PersistenceContext.repositories().createProductCategoryRepository().find(id);
 
             if(category == null){   //category might not exist
                 return null;

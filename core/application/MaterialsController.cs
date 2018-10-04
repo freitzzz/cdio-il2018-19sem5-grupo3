@@ -12,11 +12,10 @@ namespace core.application {
     /// </summary>
     public class MaterialsController {
 
-        private readonly MaterialRepository materialRepository;
-
-        public MaterialsController(MaterialRepository materialRepository) {
-            this.materialRepository = materialRepository;
-        }
+        /// <summary>
+        /// Builds a new MaterialsController
+        /// </summary>
+        public MaterialsController() {}
 
         /// <summary>
         /// Fetches a List with all Materials present in the MaterialRepository.
@@ -24,7 +23,7 @@ namespace core.application {
         /// <returns>a List with all of the Material's DTOs</returns>
         public List<MaterialDTO> findAllMaterials() {
             List<MaterialDTO> dtoMaterials = new List<MaterialDTO>();
-            IEnumerable<Material> materials = materialRepository.findAll();
+            IEnumerable<Material> materials = PersistenceContext.repositories().createMaterialRepository().findAll();
 
             foreach (Material material in materials) {
                 dtoMaterials.Add(material.toDTO());
@@ -39,7 +38,7 @@ namespace core.application {
         /// <param name = "materialID">the Material's ID</param>
         /// <returns>DTO that represents the Material</returns>
         public MaterialDTO findMaterialByID(long materialID) {
-            return materialRepository.find(materialID).toDTO();
+            return PersistenceContext.repositories().createMaterialRepository().find(materialID).toDTO();
         }
 
         /// <summary>
@@ -48,6 +47,7 @@ namespace core.application {
         /// <param name="materialID">the Material's ID</param>
         /// <returns>DTO that represents the Material</returns>
         public MaterialDTO removeMaterial(long materialID) {
+            MaterialRepository materialRepository=PersistenceContext.repositories().createMaterialRepository();
             Material material = materialRepository.find(materialID);
             return materialRepository.remove(material).toDTO();
         }
@@ -77,7 +77,7 @@ namespace core.application {
                 finishes.Add(Finish.valueOf(finishDTO.description));
             }
 
-            Material addedMaterial = materialRepository.save(new Material(reference, designation, colors, finishes));
+            Material addedMaterial = PersistenceContext.repositories().createMaterialRepository().save(new Material(reference, designation, colors, finishes));
 
             return addedMaterial == null ? null : addedMaterial.toDTO();
         }
@@ -138,7 +138,7 @@ namespace core.application {
         /// <param name="finishes">new list of finishes</param>
         /// <returns>DTO of the updated material</returns>
         public MaterialDTO updateFinishes(long id, List<FinishDTO> finishes) {
-            Material material = materialRepository.find(id);
+            Material material = PersistenceContext.repositories().createMaterialRepository().find(id);
             List<Finish> finishList = new List<Finish>();
             foreach (FinishDTO dto in finishes) {
                 finishList.Add(dto.toEntity());

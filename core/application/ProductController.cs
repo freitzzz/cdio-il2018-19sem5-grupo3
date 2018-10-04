@@ -10,16 +10,10 @@ namespace core.application {
     /// Core ProductController class
     /// </summary>
     public class ProductController {
-
-        private readonly ProductRepository productRepository;
-
-        private readonly MaterialRepository materialRepository;
-
-        private readonly ProductCategoryRepository productCategoryRepository;
-        public ProductController(ProductRepository productRepository, MaterialRepository materialRepository) {
-            this.productRepository = productRepository;
-            this.materialRepository = materialRepository;
-        }
+        /// <summary>
+        /// Builds a new ProductController
+        /// </summary>
+        public ProductController() {}
 
         /// <summary>
         /// Adds a new product
@@ -27,11 +21,9 @@ namespace core.application {
         /// <param name="productAsDTO">DTO with the product information</param>
         /// <returns>DTO with the created product DTO, null if the product was not created</returns>
         public ProductDTO addProduct(ProductDTO productAsDTO) {
-            Product newProduct = productAsDTO.toEntity();
-
-            Product createdProduct = productRepository.save(newProduct);
-
-            if (createdProduct == null) return null;
+            Product newProduct=productAsDTO.toEntity();
+            Product createdProduct=PersistenceContext.repositories().createProductRepository().save(newProduct);
+            if (createdProduct==null) return null;
             return createdProduct.toDTO();
         }
 
@@ -42,9 +34,10 @@ namespace core.application {
         /// <param name="productCategoryDTO">ProductCategoryDTO</param>
         /// <returns></returns>
         public bool updateProductCategory(ProductDTO productDTO,ProductCategoryDTO productCategoryDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productToUpdate=productRepository.find(productDTO.id);
             if(productToUpdate==null)return false;
-            ProductCategory productNewCategory=productCategoryRepository.find(productCategoryDTO.id);
+            ProductCategory productNewCategory=PersistenceContext.repositories().createProductCategoryRepository().find(productCategoryDTO.id);
             if(!productToUpdate.changeProductCategory(productNewCategory))return false;
             return productRepository.update(productToUpdate)!=null;
         }
@@ -55,7 +48,7 @@ namespace core.application {
         /// <param name="productDTO">ProductDTO with the product data being disabled</param>
         /// <returns>boolean true if the product was disabled with success, false if not</returns>
         public bool disableProduct(ProductDTO productDTO){
-            Product productBeingDisabled=productRepository.find(productDTO.id);
+            Product productBeingDisabled=PersistenceContext.repositories().createProductRepository().find(productDTO.id);
             return productBeingDisabled!=null && productBeingDisabled.disable();
         }
 
@@ -65,6 +58,7 @@ namespace core.application {
         /// <param name="productDTO">DTO with the product information</param>
         /// <returns>boolean true if the product was removed (disabled) with success</returns>
         public bool removeProduct(ProductDTO productDTO) {
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productBeingRemoved = productRepository.find(productDTO.id);
             return productBeingRemoved != null && productBeingRemoved.disable() && productRepository.update(productBeingRemoved) != null;
         }
@@ -76,7 +70,7 @@ namespace core.application {
         public List<ProductDTO> findAllProducts() {
             List<ProductDTO> productDTOList = new List<ProductDTO>();
 
-            IEnumerable<Product> productList = productRepository.findAll();
+            IEnumerable<Product> productList = PersistenceContext.repositories().createProductRepository().findAll();
 
             if (productList == null) {
                 return null;
@@ -95,11 +89,11 @@ namespace core.application {
         /// <param name="productID">the product's ID</param>
         /// <returns></returns>
         public ProductDTO findProductByID(long productID) {
-            return productRepository.find(productID).toDTO();
+            return PersistenceContext.repositories().createProductRepository().find(productID).toDTO();
         }
 
         public ProductDTO findByReference(string reference) {
-            return productRepository.find(reference).toDTO();
+            return PersistenceContext.repositories().createProductRepository().find(reference).toDTO();
         }
 
         /// <summary>
@@ -109,6 +103,7 @@ namespace core.application {
         /// <returns></returns>
         /// TODO Refactor method 
         public ProductDTO updateProduct(ProductDTO updatesDTO) {
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product oldProduct = productRepository.find(updatesDTO.id);
             if (oldProduct == null) {
                 return null;
@@ -121,7 +116,7 @@ namespace core.application {
             foreach (Dimension heightDimension in heightDimensions) { if (!oldProduct.addHeightDimension(heightDimension)) return null; }
             foreach (Dimension widthDimension in widthDimensions) { if (!oldProduct.addWidthDimension(widthDimension)) return null; }
             foreach (Dimension depthDimension in depthDimensions) { if (!oldProduct.addDepthDimension(depthDimension)) return null; }
-            addMaterials(updatesDTO, oldProduct);
+            //addMaterials(updatesDTO, oldProduct);
 
             Product prod = productRepository.update(oldProduct);
             if(prod == null) {
@@ -162,12 +157,13 @@ namespace core.application {
         /// </summary>
         /// <param name="productDTO">list of updates in DTO</param>
         /// <param name="oldProduct">product to be updated</param>
-        private void addMaterials(ProductDTO productDTO, Product oldProduct) {
+        /// TODO:REFACTOR THIS 
+        /* private void addMaterials(ProductDTO productDTO, Product oldProduct) {
             foreach (ProductMaterialDTO prodMDTO in productDTO.productMaterials) {
                 long matID = prodMDTO.material.id;
                 oldProduct.addMaterial(materialRepository.find(matID));
             }
-        }
+        } */
 
         /// <summary>
         /// Parses an enumerable of products persistence identifiers as an enumerable of entities
@@ -181,7 +177,7 @@ namespace core.application {
             long nextProductID = productsIDSIterator.Current;
             while (productsIDSIterator.MoveNext()) {
                 nextProductID = productsIDSIterator.Current;
-                products.Add(productRepository.find(nextProductID));
+                products.Add(PersistenceContext.repositories().createProductRepository().find(nextProductID));
             }
             return products;
         }

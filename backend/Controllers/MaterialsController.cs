@@ -59,7 +59,7 @@ namespace backend.Controllers {
         /// </returns>
         [HttpGet]
         public ActionResult<List<MaterialDTO>> findAll() {
-            List<MaterialDTO> materials = new core.application.MaterialsController(materialRepository).findAllMaterials();
+            List<MaterialDTO> materials = new core.application.MaterialsController().findAllMaterials();
 
             if (materials == null) {
                 return BadRequest(NO_MATERIALS_FOUND_REFERENCE);
@@ -78,7 +78,7 @@ namespace backend.Controllers {
         /// </returns>
         [HttpGet("{id}")]
         public ActionResult<MaterialDTO> findById(long materialID) {
-            MaterialDTO materialDTO = new core.application.MaterialsController(materialRepository).findMaterialByID(materialID);
+            MaterialDTO materialDTO = new core.application.MaterialsController().findMaterialByID(materialID);
 
             if (materialDTO == null) {
                 return BadRequest(MATERIAL_NOT_FOUND_REFERENCE);
@@ -95,7 +95,7 @@ namespace backend.Controllers {
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
         [HttpDelete("{id}")]
         public ActionResult<MaterialDTO> remove(long materialID) {
-            MaterialDTO removedDTO = new core.application.MaterialsController(materialRepository).removeMaterial(materialID);
+            MaterialDTO removedDTO = new core.application.MaterialsController().removeMaterial(materialID);
 
             if (removedDTO == null) {
                 return BadRequest(MATERIAL_NOT_REMOVED_REFERENCE);
@@ -113,7 +113,7 @@ namespace backend.Controllers {
         [HttpPost]
         public ActionResult<MaterialDTO> add([FromBody] MaterialDTO jsonData) {
             try {
-                MaterialDTO addedDTO = new core.application.MaterialsController(materialRepository).addMaterial(jsonData);
+                MaterialDTO addedDTO = new core.application.MaterialsController().addMaterial(jsonData);
                 if (addedDTO == null) {
                     return BadRequest(MATERIAL_NOT_ADDED_REFERENCE);
                 }
@@ -134,7 +134,7 @@ namespace backend.Controllers {
         [HttpPut]
         public ActionResult<MaterialDTO> update([FromBody] MaterialDTO jsonData) {
             try {
-                MaterialDTO matDTO = new core.application.MaterialsController(materialRepository).updateMaterial(jsonData);
+                MaterialDTO matDTO = new core.application.MaterialsController().updateMaterial(jsonData);
 
                 if (matDTO == null) {
                     return BadRequest();
@@ -155,7 +155,7 @@ namespace backend.Controllers {
         [HttpPut("{id}/finishes")]
         public ActionResult updateFinishes(long id, [FromBody] List<FinishDTO> finishes) {
             try {
-                MaterialDTO matDTO = new core.application.MaterialsController(materialRepository).updateFinishes(id, finishes);
+                MaterialDTO matDTO = new core.application.MaterialsController().updateFinishes(id, finishes);
                 if (matDTO == null) {
                     return BadRequest();
                 }
