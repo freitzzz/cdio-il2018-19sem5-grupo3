@@ -120,6 +120,12 @@ namespace backend.Controllers {
             return Ok();
         }
 
+        [HttpPut("{id}/category")]
+        public ActionResult updateProductCategory(long productID,[FromBody]ProductCategoryDTO productCategoryDTO){
+            
+            return null;
+        }
+
         /// <summary>
         /// Removes a product from it collection
         /// </summary>
@@ -129,10 +135,10 @@ namespace backend.Controllers {
         ///         <br>See MyC REST API documentation for a better overview
         /// </returns>
         [HttpDelete("{id}")]
-        public ActionResult removeProduct(long productID) {
-            ProductDTO productDTO = new ProductDTO();
-            productDTO.id = productID;
-            bool removedWithSuccess = new core.application.ProductController(productRepository, materialRepository).removeProduct(productDTO);
+        public ActionResult removeProduct(long productID){
+            ProductDTO productDTO=new ProductDTO();
+            productDTO.id=productID;
+            bool removedWithSuccess=new core.application.ProductController(productRepository, materialRepository).removeProduct(productDTO);
             if (removedWithSuccess) {
                 return Ok("{\"Message\":\"The product was removed with success\"}");
             } else {
