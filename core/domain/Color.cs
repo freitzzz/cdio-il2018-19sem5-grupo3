@@ -22,10 +22,10 @@ namespace core.domain {
         /// <summary>
         /// Respective RGBA coordinates.
         /// </summary>
-        public int Red { get; set; }
-        public int Green { get; set; }
-        public int Blue { get; set; }
-        public int Alpha { get; set; }
+        public byte Red { get; set; }
+        public byte Green { get; set; }
+        public byte Blue { get; set; }
+        public byte Alpha { get; set; }
 
         /// <summary>
         /// Minimum for the coordinate color (R/G/B/A).
@@ -53,7 +53,7 @@ namespace core.domain {
         /// <param name="maxValue">maximum value of the interval</param>
         /// <param name="increment">increment value of the interval</param>
         /// <returns>ContinuousDimensionInterval instance</returns>
-        public static Color valueOf(String name, int red, int green, int blue, int alpha) {
+        public static Color valueOf(String name, byte red, byte green, byte blue, byte alpha) {
             return new Color(name, red, green, blue, alpha);
         }
 
@@ -62,7 +62,7 @@ namespace core.domain {
         /// <summary>
         /// Checks if a certain color is the same as the current color.
         /// </summary>
-        private Color(String name, int red, int green, int blue, int alpha) {
+        private Color(String name,byte red, byte green, byte blue, byte alpha) {
             if (red > MAX_VALUE || green > MAX_VALUE || blue > MAX_VALUE || alpha > MAX_VALUE) {
                 throw new ArgumentException(COORDINATE_BIGGER_THAN_INTERVAL);
             }

@@ -10,7 +10,7 @@ namespace dotnet_example_unittests {
         [Fact]
         public void ensureConstructorDetectsNegativeValue() {
 
-            Action act = () => Color.valueOf("test", 5, -10, -555, 2);
+            Action act = () => Color.valueOf("test", 5, 5, 250, 2);
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -18,7 +18,7 @@ namespace dotnet_example_unittests {
         [Fact]
         public void ensureConstructorDetectsOverValue() {
 
-            Action act = () => Color.valueOf("test", 5, 2561, 1, 2);
+            Action act = () => Color.valueOf("test", 5, 254, 1, 2);
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -41,11 +41,11 @@ namespace dotnet_example_unittests {
         public void ensureRedCoordinatesAreEqual() {
             var item = new Color();
 
-            int expected = 255;
+            byte expected = 255;
 
             item.Red = expected;
 
-            int actual = item.Red;
+            byte actual = item.Red;
 
             Assert.True(expected == actual); //Compare strings and don't ignore case
 
@@ -140,10 +140,10 @@ namespace dotnet_example_unittests {
         [Fact]
         public void testToDTO() {
             Console.WriteLine("toDTO");
-            int red = 1;
-            int blue = 1;
-            int green = 1;
-            int alpha = 1;
+            byte red = 1;
+            byte blue = 1;
+            byte green = 1;
+            byte alpha = 1;
             string name = "Cor de Burro quando foge";
             Color color = Color.valueOf(name, red, green, blue, alpha);
             ColorDTO dto = new ColorDTO();
