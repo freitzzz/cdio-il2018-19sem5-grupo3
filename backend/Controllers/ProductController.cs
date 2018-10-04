@@ -159,13 +159,28 @@ namespace backend.Controllers {
             }
         }
 
+        [HttpPut("{id}/dimensions")]
+        public ActionResult defineProductDimensions([FromBody] DimensionsListDTO dimensionsDTO, long productID){
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.id = productID;
+            productDTO.heightDimensions = dimensionsDTO.heightDimensionDTOs;
+            productDTO.widthDimensions = dimensionsDTO.widthDimensionDTOs;
+            productDTO.depthDimensions = dimensionsDTO.depthDimensionDTOs;
+            bool dimensionsDefinedWithSuccess = new core.application.ProductController(productRepository,materialRepository).defineProductDimensions(productDTO);
+            if(dimensionsDefinedWithSuccess){
+                return Ok();
+            }else{
+                return BadRequest();
+            }
+        }
+
         /// <summary>
         /// ProductObject class to help the deserialization of a product's updates from JSON format
         /// </summary>
-        public class Restriction {
-            public string dimension { get; set; }
-            public string type { get; set; }
-            public List<string> values { get; set; }
+        public class DimensionsListDTO {
+            public List<DimensionDTO> heightDimensionDTOs { get; set; }
+            public List<DimensionDTO> widthDimensionDTOs {get;set;}
+            public List<DimensionDTO> depthDimensionDTOs {get;set;}
         }
 
     }

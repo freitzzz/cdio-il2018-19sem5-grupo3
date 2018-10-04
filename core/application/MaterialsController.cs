@@ -57,27 +57,9 @@ namespace core.application {
         /// </summary>
         /// <param name="materialDTO">DTO that holds all info about the Material</param>
         /// <returns>DTO that represents the Material</returns>
-        //TODO: change usage of Material constructor to MaterialDTO.toEntity()
         public MaterialDTO addMaterial(MaterialDTO materialAsDTO) {
-            string reference = materialAsDTO.reference;
-            string designation = materialAsDTO.designation;
-
-            List<Color> colors = new List<Color>();
-            foreach (ColorDTO colorDTO in materialAsDTO.colors) {
-                string name = colorDTO.name;
-                byte red = colorDTO.red;
-                byte green = colorDTO.green;
-                byte blue = colorDTO.blue;
-                byte alpha = colorDTO.alpha;
-                colors.Add(Color.valueOf(name, red, green, blue, alpha));
-            }
-
-            List<Finish> finishes = new List<Finish>();
-            foreach (FinishDTO finishDTO in materialAsDTO.finishes) {
-                finishes.Add(Finish.valueOf(finishDTO.description));
-            }
-
-            Material addedMaterial = materialRepository.save(new Material(reference, designation, colors, finishes));
+            
+            Material addedMaterial = materialRepository.save(materialAsDTO.toEntity());
 
             return addedMaterial == null ? null : addedMaterial.toDTO();
         }

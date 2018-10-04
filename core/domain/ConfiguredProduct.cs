@@ -1,4 +1,6 @@
+using core.dto;
 using support.domain.ddd;
+using support.dto;
 using System.Collections.Generic;
 
 namespace core.domain
@@ -9,7 +11,7 @@ namespace core.domain
         <br> Configured Product is value object;
     </summary>
     */
-    public class ConfiguredProduct : ValueObject
+    public class ConfiguredProduct : ValueObject,DTOAble<ConfiguredProductDTO>
     {
         /**
         <summary>

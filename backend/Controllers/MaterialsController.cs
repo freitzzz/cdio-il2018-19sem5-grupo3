@@ -112,15 +112,17 @@ namespace backend.Controllers {
         /// </summary>
         /// <param name="materialDTO">DTO that holds all info about the Material</param>
         /// <returns>HTTP Response 400 Bad Request if the Material is not added;
-        /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
+        /// <br>HTTP Response 201 Created with the info of the Material in JSON format.</returns>
         [HttpPost]
         public ActionResult<MaterialDTO> add([FromBody] MaterialDTO jsonData) {
             try {
                 MaterialDTO addedDTO = new core.application.MaterialsController(materialRepository).addMaterial(jsonData);
                 if (addedDTO == null) {
-                    return BadRequest(MATERIAL_NOT_ADDED_REFERENCE);
+                    string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_ADDED_REFERENCE);
+                    return BadRequest(formattedMessage);
                 }
-                return Ok(addedDTO);
+                string url = string.Format("{0}/{1}", Request.Path, addedDTO.id);
+                return Created(url, addedDTO);
             } catch (ArgumentException e) {
                 string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
                 return BadRequest(formattedMessage);
