@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using support.domain.ddd;
 using System;
+using support.dto;
+using core.dto;
 
 namespace core.domain
 {
@@ -10,7 +12,7 @@ namespace core.domain
         <br> Configured Product is value object;
     </summary>
     */
-    public class CustomizedProduct : ValueObject
+    public class CustomizedProduct :  ValueObject, DTOAble<CustomizedProductDTO>
     {
         /**
         <summary>
@@ -135,6 +137,11 @@ namespace core.domain
                 return customizedDimensions.Equals(configProduct.customizedDimensions) && customizedMaterial.Equals(configProduct.customizedMaterial);
             }
         }
-        
+
+
+        CustomizedProductDTO DTOAble<CustomizedProductDTO>.toDTO()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
