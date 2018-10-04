@@ -147,15 +147,15 @@ namespace backend.Controllers {
             }
         }
         /// <summary>
-        /// Updates the finishes of a material
+        /// Adds finishes to a material
         /// </summary>
         /// <param name="id">id of the material to be updated</param>
-        /// <param name="finishes">new list of finishes</param>
+        /// <param name="finishes">list of finishes to be added</param>
         /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
         [HttpPut("{id}/finishes")]
-        public ActionResult updateFinishes(long id, [FromBody] List<FinishDTO> finishes) {
+        public ActionResult addFinishes(long id, [FromBody] List<FinishDTO> finishes) {
             try {
-                MaterialDTO matDTO = new core.application.MaterialsController(materialRepository).updateFinishes(id, finishes);
+                MaterialDTO matDTO = new core.application.MaterialsController(materialRepository).addFinishes(id, finishes);
                 if (matDTO == null) {
                     return BadRequest();
                 }
@@ -164,6 +164,17 @@ namespace backend.Controllers {
                 string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
                 return BadRequest(formattedMessage);
             }
+        }
+        /// <summary>
+        /// Removes finishes from a material
+        /// </summary>
+        /// <param name="id">id of the material to be updated</param>
+        /// <param name="finishes">list of finishes to remove</param>
+        /// <returns></returns>
+        [HttpDelete("{id}/finishes")]
+        public ActionResult removeFinishes(long id, [FromBody] List<FinishDTO> finishes) {
+            MaterialDTO matDTO = new core.application.MaterialsController(materialRepository).removeFinishes(id,finishes);
+            return Ok(matDTO);
         }
     }
 }

@@ -132,18 +132,32 @@ namespace core.application {
             return materials;
         }
         /// <summary>
-        /// Updates the finishes of a material
+        /// Adds finishes to a material
         /// </summary>
         /// <param name="id">id of the material to update</param>
-        /// <param name="finishes">new list of finishes</param>
+        /// <param name="finishes">list of finishes to be added</param>
         /// <returns>DTO of the updated material</returns>
-        public MaterialDTO updateFinishes(long id, List<FinishDTO> finishes) {
+        public MaterialDTO addFinishes(long id, List<FinishDTO> finishes) {
             Material material = materialRepository.find(id);
-            List<Finish> finishList = new List<Finish>();
             foreach (FinishDTO dto in finishes) {
-                finishList.Add(dto.toEntity());
+                material.addFinish(dto.toEntity());
             }
-            material.Finishes = finishList;
+            materialRepository.update(material);
+            return material.toDTO();
+        }
+        /// <summary>
+        /// Removes finishes from a material
+        /// </summary>
+        /// <param name="id">id of the material to be updated</param>
+        /// <param name="finishes">list of finishes to remove</param>
+        /// <returns>DTO representing the updated material</returns>
+        public MaterialDTO removeFinishes(long id, List<FinishDTO> finishes) {
+            Material material = materialRepository.find(id);
+            foreach (FinishDTO dto in finishes) {
+                Finish fin = materialRepository.findFinish(material, dto.id);
+                material.removeFinish(fin);
+            }
+            materialRepository.update(material);
             return material.toDTO();
         }
     }
