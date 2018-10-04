@@ -62,7 +62,8 @@ namespace backend.Controllers {
             List<MaterialDTO> materials = new core.application.MaterialsController(materialRepository).findAllMaterials();
 
             if (materials == null) {
-                return BadRequest(NO_MATERIALS_FOUND_REFERENCE);
+                string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_FOUND_REFERENCE);
+                return BadRequest(jsonFormattedMessage);
             }
 
             return Ok(materials);
@@ -77,11 +78,12 @@ namespace backend.Controllers {
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.
         /// </returns>
         [HttpGet("{id}")]
-        public ActionResult<MaterialDTO> findById(long materialID) {
-            MaterialDTO materialDTO = new core.application.MaterialsController(materialRepository).findMaterialByID(materialID);
+        public ActionResult<MaterialDTO> findById(long id) {
+            MaterialDTO materialDTO = new core.application.MaterialsController(materialRepository).findMaterialByID(id);
 
             if (materialDTO == null) {
-                return BadRequest(MATERIAL_NOT_FOUND_REFERENCE);
+                string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_FOUND_REFERENCE);
+                return BadRequest(jsonFormattedMessage);
             }
 
             return Ok(materialDTO);
@@ -98,7 +100,8 @@ namespace backend.Controllers {
             MaterialDTO removedDTO = new core.application.MaterialsController(materialRepository).removeMaterial(materialID);
 
             if (removedDTO == null) {
-                return BadRequest(MATERIAL_NOT_REMOVED_REFERENCE);
+                string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_REMOVED_REFERENCE);
+                return BadRequest(jsonFormattedMessage);
             }
 
             return Ok(removedDTO);
