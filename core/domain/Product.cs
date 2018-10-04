@@ -48,46 +48,46 @@ namespace core.domain {
         /// <summary>
         /// Long property with the persistence iD
         /// </summary>
-        public long Id { get; private set; }
+        public long Id { get; internal set; }   //the id should have an internal set, since DTO's have to be able to set them
 
         /// <summary>
         /// String with the product reference
         /// </summary>
-        public string reference { get; set; }
+        public string reference { get; protected set; }
         /// <summary>
         /// String with the product designation
         /// </summary>
-        public string designation { get; set; }
+        public string designation { get; protected set; }
         /// <summary>
         /// List with the components which the current product can be complemented by
         /// </summary>
         //TODO: Should complemented products be a list and not a set?
         [NotMapped]
-        public virtual List<Component> complementedProducts { get; set; }
+        public virtual List<Component> complementedProducts { get; protected set; }
         /// <summary>
         /// List with the materials which the product can be made of
         /// </summary>
         //TODO: Should product materials be a list or a set?
         [NotMapped]
-        public virtual List<ProductMaterial> prodMaterial { get; set; }
+        public virtual List<ProductMaterial> prodMaterial { get; protected set; }
         /// <summary>
         /// List with the product heigth dimensions
         /// </summary>
         //TODO: Should product dimensions be a list or a set
         [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configure
-        public virtual List<Dimension> heightValues { get; set; }
+        public virtual List<Dimension> heightValues { get; protected set; }
         /// <summary>
         /// List with the product width dimensions
         /// </summary>
         //TODO: Should product dimensions be a list or a set
         [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configured
-        public virtual List<Dimension> widthValues { get; set; }
+        public virtual List<Dimension> widthValues { get; protected set; }
         /// <summary>
         /// List with the product depth dimensions
         /// </summary>
         //TODO: Should product restrinctions be a list or a set
         [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configured
-        public virtual List<Dimension> depthValues { get; set; }
+        public virtual List<Dimension> depthValues { get; protected set; }
         /// <summary>
         /// ProductCategory with the category which the product belongs to
         /// </summary>
@@ -96,7 +96,7 @@ namespace core.domain {
         /// <summary>
         /// Boolean that controls if the current product is available or not
         /// </summary>
-        public bool isAvailable { get; set; }
+        public bool isAvailable { get; protected set; }
 
         /// <summary>
         /// Empty constructor used by ORM.

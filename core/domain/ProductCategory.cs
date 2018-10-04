@@ -25,20 +25,20 @@ namespace core.domain
         /// Database identifier property
         /// </summary>
         /// <value></value>
-        public long Id { get; internal set; }
+        public long Id { get; internal set; } //the id should have an internal set, since DTO's have to be able to set them
 
         /// <summary>
         /// Boolean that represents the ProductCategory's state (for soft delete purposes)
         /// </summary>
-        private bool active;
+        public bool active {get; protected set;}
 
         /// <summary>
         /// The ProductCategory's name e.g.: "Shelves", Drawers", "Handles".
         /// </summary>
-        public string name { get; internal set; }
+        public string name { get; protected set; }
 
         /// <summary>
-        /// 
+        /// Empty constructor for ORM.
         /// </summary>
         protected ProductCategory() { }
 
