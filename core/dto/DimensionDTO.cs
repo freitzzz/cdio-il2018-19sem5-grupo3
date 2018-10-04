@@ -22,14 +22,6 @@ namespace core.dto{
         public string type {get;set;}
 
         /// <summary>
-        /// Dimension of a product that the DTO is representing (e.g. width)
-        /// </summary>
-        /// <value></value>
-        [DataMember]
-        public string dimension {get;set;}
-
-
-        /// <summary>
         /// Builds a Dimension instance from a DimensionDTO
         /// </summary>
         /// <returns>Dimension instance</returns>

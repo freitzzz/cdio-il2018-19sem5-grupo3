@@ -15,6 +15,7 @@ using support.utils;
 using core.persistence;
 using core.dto;
 using backend.utils;
+using System.Runtime.Serialization;
 
 namespace backend.Controllers {
 
@@ -163,22 +164,12 @@ namespace backend.Controllers {
             productDTO.heightDimensions = dimensionsDTO.heightDimensionDTOs;
             productDTO.widthDimensions = dimensionsDTO.widthDimensionDTOs;
             productDTO.depthDimensions = dimensionsDTO.depthDimensionDTOs;
-            bool dimensionsDefinedWithSuccess = new core.application.ProductController(productRepository,materialRepository).defineProductDimensions(productDTO);
+            bool dimensionsDefinedWithSuccess = new core.application.ProductController().defineProductDimensions(productDTO);
             if(dimensionsDefinedWithSuccess){
                 return Ok();
             }else{
                 return BadRequest();
             }
         }
-
-        /// <summary>
-        /// ProductObject class to help the deserialization of a product's updates from JSON format
-        /// </summary>
-        public class DimensionsListDTO {
-            public List<DimensionDTO> heightDimensionDTOs { get; set; }
-            public List<DimensionDTO> widthDimensionDTOs {get;set;}
-            public List<DimensionDTO> depthDimensionDTOs {get;set;}
-        }
-
     }
 }

@@ -4,6 +4,7 @@ using support.dto;
 using core.domain;
 using core.persistence;
 using core.dto;
+using core.services;
 
 namespace core.application {
     /// <summary>
@@ -21,7 +22,7 @@ namespace core.application {
         /// <param name="productAsDTO">DTO with the product information</param>
         /// <returns>DTO with the created product DTO, null if the product was not created</returns>
         public ProductDTO addProduct(ProductDTO productAsDTO) {
-            Product newProduct=productAsDTO.toEntity();
+            Product newProduct=new ProductDTOService().transform(productAsDTO);
             Product createdProduct=PersistenceContext.repositories().createProductRepository().save(newProduct);
             if (createdProduct==null) return null;
             return createdProduct.toDTO();
@@ -97,6 +98,7 @@ namespace core.application {
         }
 
         public bool defineProductDimensions(ProductDTO productDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product product = productRepository.find(productDTO.id);
             
             IEnumerable<Dimension> heightDimensions = getProductDTOEnumerableDimensions(productDTO.heightDimensions);
