@@ -66,27 +66,20 @@ namespace core.domain {
             List with all the Material's colors.
         </summary>
         **/
-        public List<Color> Colors { get; set; } = new List<Color>();
+        public virtual List<Color> Colors { get; set; }
 
         /**
          <summary>
              List with all the Material's finishes.
          </summary>
          **/
-        public List<Finish> Finishes { get; set; } = new List<Finish>();
+        public virtual List<Finish> Finishes { get; set; }
 
 
         /// <summary>
         /// Empty constructor used by ORM.
         /// </summary>
         protected Material() { }
-
-        /**
-        <summary>
-            Long with the Material's database ID.
-        </summary>
-         */
-        private long persistence_id { get; set; }
 
         /**
         <summary>
