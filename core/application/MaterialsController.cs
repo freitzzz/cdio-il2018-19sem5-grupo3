@@ -142,7 +142,7 @@ namespace core.application {
             foreach (FinishDTO dto in finishes) {
                 finishList.Add(dto.toEntity());
             }
-            material.Finishes = finishList;
+            //TODO:???? Pretty sure this is wrong => material.Finishes = finishList;
             return material.toDTO();
         }
     }
