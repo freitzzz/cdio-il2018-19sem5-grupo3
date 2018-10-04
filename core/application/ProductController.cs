@@ -50,6 +50,16 @@ namespace core.application {
         }
 
         /// <summary>
+        /// Disables a product
+        /// </summary>
+        /// <param name="productDTO">ProductDTO with the product data being disabled</param>
+        /// <returns>boolean true if the product was disabled with success, false if not</returns>
+        public bool disableProduct(ProductDTO productDTO){
+            Product productBeingDisabled=productRepository.find(productDTO.id);
+            return productBeingDisabled!=null && productBeingDisabled.disable();
+        }
+
+        /// <summary>
         /// Removes (Disables) a product
         /// </summary>
         /// <param name="productDTO">DTO with the product information</param>
