@@ -77,7 +77,7 @@ namespace backend.Controllers {
         /// HTTP Response 400 Bad Request if the Material is not found;
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.
         /// </returns>
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetMaterial")]
         public ActionResult<MaterialDTO> findById(long id) {
             MaterialDTO materialDTO = new core.application.MaterialsController(materialRepository).findMaterialByID(id);
 
@@ -121,8 +121,7 @@ namespace backend.Controllers {
                     string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_ADDED_REFERENCE);
                     return BadRequest(formattedMessage);
                 }
-                string url = string.Format("{0}/{1}", Request.Path, addedDTO.id);
-                return Created(url, addedDTO);
+                return CreatedAtRoute("GetMaterial", new {id = addedDTO.id}, addedDTO);
             } catch (ArgumentException e) {
                 string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
                 return BadRequest(formattedMessage);
