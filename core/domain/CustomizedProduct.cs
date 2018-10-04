@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using support.domain.ddd;
 using System;
+using support.dto;
+using core.dto;
+using System.Linq;
 
 namespace core.domain
 {
@@ -10,22 +13,74 @@ namespace core.domain
         <br> Configured Product is value object;
     </summary>
     */
-    public class CustomizedProduct : ValueObject
+    public class CustomizedProduct : ValueObject, DTOAble<CustomizedProductDTO>
     {
+        public CustomizedProduct(long id, string designation, long persistence_id)
+        {
+            this.Id = id;
+            this.designation = designation;
+            this.persistence_id = persistence_id;
+
+        }
+        public long Id { get; set; }
         /**
         <summary>
             Constant that represents the message that ocurrs if the CustomizedMaterial's  are not valid.
         </summary>
          */
         private const string INVALID_CONFIGURED_PRODUCT_MATERIAL = "The CustomizedMaterial is not valid!";
-        
+
         /**
         <summary>
             Constant that represents the message that ocurrs if the CustomizedMaterial's  are not valid.
         </summary>
          */
         private const string INVALID_CONFIGURED_PRODUCT_DIMENSIONS = "The CustomizedDimension is  not valid!";
-        
+
+        /**
+        <summary>
+            Constant that represents the message that ocurrs if the string is not valid.
+        </summary>
+         */
+        private const string INVALID_STRING = "The String inserted is not valid!";
+
+        /**
+       <summary>
+           Constant that represents the message that ocurrs if the CustomizedMaterial's  are not valid.
+       </summary>
+        */
+        private const string INVALID_PRODUCT_REFERENCE = "The inserted product reference is invalid!";
+
+        /**
+               <summary>
+                   Constant that represents the message that ocurrs if the CustomizedMaterial's  are not valid.
+               </summary>
+                */
+        private const string INVALID_PRODUCT_DESIGNATION = "The inserted designation is invalid!";
+
+
+        /**
+        <summary>
+                   Constant that represents the message that ocurrs if the CustomizedMaterial's  are not valid.
+               </summary>
+                */
+        private const string INVALID_LIST = "List is invalid or empty!";
+
+
+        /**
+        <summary>
+            String with the ConfiguredProduct's reference.
+        </summary>
+        */
+        public string reference { get; protected set; }
+
+        /** 
+        <summary>
+            String with the ConfiguredProduct's designation.
+        </summary>
+        */
+        public string designation { get; set; }
+
         /**
         <summary>
             The CustomizedProduct Customized Material
@@ -47,27 +102,104 @@ namespace core.domain
          */
         private List<Product> list;
 
-        public static CustomizedProduct valueOf(CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions,Product product)
-        {
-            return new CustomizedProduct(customizedMaterial,customizedDimensions,product);
-        }
-        /** 
+        /**
         <summary>
-            Builds a new instance of CustomizedProduct receiving its color and finish.
+            Long with the ConfiguredProduct's database ID.
         </summary>
-        <param name = "customizedMaterial,">The new CustomizedProduct's customizedMaterial</param>
-        <param name = "customizedDimensions">The new CustomizedProduct's customizedMaterial</param>
-        <param name = "Product">The new CustomizedProduct's product</param>
          */
-        private CustomizedProduct(CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions,Product product)
+        private long persistence_id { get; set; }
+
+
+        /**
+        <summary>
+            Customized Product's valueOf
+            <param name = "reference">string with the new ConfiguredProduct's reference</param>
+            <param name = "designation">string with the new ConfiguredProduct's designation</param>
+            <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
+            <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
+            <param name = "product">string with the new ConfiguredProduct's product</param>DDD
+        </summary>
+         */
+        public static CustomizedProduct valueOf(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, Product product)
+        {
+            return new CustomizedProduct(reference, designation, customizedMaterial, customizedDimensions, product);
+        }
+
+        /**
+        <summary>
+            Customized Product's valueOf
+            <param name = "reference">string with the new ConfiguredProduct's reference</param>
+            <param name = "designation">string with the new ConfiguredProduct's designation</param>
+            <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
+            <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
+            <param name = "list">string with the new list of Products </param>DDD
+        </summary>
+         */
+        public static CustomizedProduct valueOf(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, List<Product> list)
+        {
+            return new CustomizedProduct(reference, designation, customizedMaterial, customizedDimensions, list);
+        }
+
+        /**
+       <summary>
+           Builds a new instance of ConfiguredProduct, receiving its reference, designation, 
+           customizedDimensions, customizedMaterial and product.~
+            <param name = "reference">string with the new ConfiguredProduct's reference</param>
+            <param name = "designation">string with the new ConfiguredProduct's designation</param>
+            <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
+            <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
+            <param name = "product">string with the new ConfiguredProduct's product</param>DDD
+       </summary>
+        */
+        private CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, Product product)
         {
             checkCustomizedMaterial(customizedMaterial);
             checkCustomizedDimensions(customizedDimensions);
+            checkString(reference);
+            checkString(designation);
+            this.reference = reference;
+            this.designation = designation;
             this.customizedDimensions = customizedDimensions;
             this.customizedMaterial = customizedMaterial;
             this.list.Add(product);
         }
 
+        /**
+     <summary>
+         Builds a new instance of ConfiguredProduct, receiving its reference, designation, 
+         customizedDimensions, customizedMaterial and product.~
+          <param name = "reference">string with the new ConfiguredProduct's reference</param>
+          <param name = "designation">string with the new ConfiguredProduct's designation</param>
+          <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
+          <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
+          <param name = "product">string with the new ConfiguredProduct's product</param>DDD
+     </summary>
+      */
+        private CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, List<Product> list)
+        {
+            checkCustomizedMaterial(customizedMaterial);
+            checkCustomizedDimensions(customizedDimensions);
+            checkList(list);
+            checkString(reference);
+            checkString(designation);
+            this.reference = reference;
+            this.designation = designation;
+            this.customizedDimensions = customizedDimensions;
+            this.customizedMaterial = customizedMaterial;
+            this.list = list;
+        }
+
+        /**
+        <summary>
+            Checks if the CustomizedMaterial's  is valid.
+        </summary>
+        <param name = "customizedMaterial">The CustomizedMaterial</param>
+        */
+        private void checkList(List<Product> list)
+        {
+            if (list.Count() == 0) throw new ArgumentException(INVALID_CONFIGURED_PRODUCT_MATERIAL);
+
+        }
         /**
         <summary>
             Checks if the CustomizedMaterial's  is valid.
@@ -92,16 +224,16 @@ namespace core.domain
 
         }
 
+
         /**
         <summary>
-            Returns a textual with the Customized Dimensions and CustomizedMaterial of the Customized Product.
+            Returns a textual description of the ConfiguredProduct.
         </summary>
          */
-         public override string ToString()
+        public override string ToString()
         {
-            return string.Format("Customized Material {0}, Customized Dimensions {1}", customizedMaterial.ToString(), customizedDimensions.ToString());
+            return string.Format("Designation: {0}, Reference {1}", designation, reference);
         }
-
         /**
         <summary>
             Returns the generated hash code of the Customized Material.
@@ -135,6 +267,98 @@ namespace core.domain
                 return customizedDimensions.Equals(configProduct.customizedDimensions) && customizedMaterial.Equals(configProduct.customizedMaterial);
             }
         }
-        
+
+
+        /** <summary>
+                    Returns the current ConfiguredProduct as a DTO.
+                </summary>
+                <returns>DTO with the current DTO representation of the ConfiguredProduct</returns>
+                */
+        public CustomizedProductDTO toDTO()
+        {
+            CustomizedProductDTO dto = new CustomizedProductDTO();
+            dto.reference = this.reference;
+            dto.designation = this.designation;
+            dto.id = this.Id;
+            return dto;
+        }
+        /**
+        <summary>
+            Checks if string is valid
+        </summary>
+        <param name = "string">The string</param>
+        */
+        private void checkString(string obj)
+        {
+            if (String.IsNullOrEmpty(obj)) throw new ArgumentException(INVALID_STRING);
+
+        }
+
+
+        /**
+            Changes the ConfiguredProduct's reference.
+         */
+        public void changeReference(string reference)
+        {
+            if (String.IsNullOrEmpty(reference)) throw new ArgumentException(INVALID_PRODUCT_REFERENCE);
+            this.reference = reference;
+        }
+
+        /**
+            Changes the ConfiguredProduct's designation.
+         */
+        public void changeDesignation(string designation)
+        {
+            if (String.IsNullOrEmpty(designation)) throw new ArgumentException(INVALID_PRODUCT_DESIGNATION);
+            this.designation = designation;
+        }
+
+        /**
+        <summary>
+            Returns the ConfiguredProduct's identity.
+        </summary>
+        <returns>String with the ConfiguredProduct's identity</returns>
+         */
+        public string id()
+        {
+            return reference;
+        }
+
+
+        /**
+       <summary>
+           Inner static class which represents the ConfiguredProduct's properties used to map on data holders (e.g. DTO)
+       </summary>
+        */
+        public static class Properties
+        {
+            /**
+           <summary>
+                Constant that represents the context of the Properties.
+            </summary>
+            */
+            public const string CONTEXT = "ConfiguredProductDTO";
+
+            /**
+            <summary>
+                Constant that represents the name of the Property which maps the Material's database ID.
+            </summary>
+             */
+            public const string DATABASE_ID_PROPERTY = "id";
+
+            /**
+            <summary>
+                Constant that represents the name of the Property which maps the Material's reference.
+            </summary>
+             */
+            public const string REFERENCE_PROPERTY = "reference";
+
+            /**
+            <summary>
+                Constant that represents the name of the Property which maps the Material's designation.
+            </summary>
+             */
+            public const string DESIGNATION_PROPERTY = "designation";
+        }
     }
 }
