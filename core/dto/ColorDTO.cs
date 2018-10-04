@@ -2,14 +2,12 @@ using System.Runtime.Serialization;
 using core.domain;
 using support.dto;
 
-namespace core.dto
-{
+namespace core.dto {
     /// <summary>
     /// Represents a Color's Data Tranfer Object.
     /// </summary>
     [DataContract]
-    public class ColorDTO : DTO, DTOParseable<Color, ColorDTO>
-    {
+    public class ColorDTO : DTO, DTOParseable<Color, ColorDTO> {
         /// <summary>
         /// Color's database identifier.
         /// </summary>
@@ -29,31 +27,33 @@ namespace core.dto
         /// </summary>
         /// <value>Gets/sets the value of the red value field.</value>
         [DataMember]
-        public int red { get; set; }
+        public byte red { get; set; }
 
         /// <summary>
         /// Color's green value.
         /// </summary>
         /// <value>Gets/sets the value of the green value field.</value>
         [DataMember]
-        public int green { get; set; }
+        public byte green { get; set; }
 
         /// <summary>
         /// Color's blue value.
         /// </summary>
         /// <value>Gets/sets the value of the blue value field.</value>
         [DataMember]
-        public int blue { get; set; }
+        public byte blue { get; set; }
 
         /// <summary>
         /// Color's alpha value.
         /// </summary>
         /// <value>Gets/sets the value of the alpha value field.</value>
         [DataMember]
-        public int alpha { get; set; }
-
-        public Color toEntity()
-        {
+        public byte alpha { get; set; }
+        /// <summary>
+        /// Returns this DTO's equivalent Entity
+        /// </summary>
+        /// <returns>DTO's equivalent Entity</returns>
+        public Color toEntity() {
             throw new System.NotImplementedException();
         }
     }
