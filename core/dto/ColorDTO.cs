@@ -54,7 +54,9 @@ namespace core.dto {
         /// </summary>
         /// <returns>DTO's equivalent Entity</returns>
         public Color toEntity() {
-            throw new System.NotImplementedException();
+            Color color = Color.valueOf(name, red, green, blue, alpha);
+            color.Id = this.id;
+            return color;
         }
     }
 }

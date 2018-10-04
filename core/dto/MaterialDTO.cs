@@ -48,7 +48,23 @@ namespace core.dto {
         /// </summary>
         /// <returns>DTO's equivalent Entity</returns>
         public Material toEntity() {
-            throw new System.NotImplementedException();
+
+            List<Color> colors = new List<Color>();
+
+            foreach(ColorDTO dto in this.colors){
+                colors.Add(dto.toEntity());
+            }
+
+            List<Finish> finishes = new List<Finish>();
+
+            foreach(FinishDTO dto in this.finishes){
+                finishes.Add(dto.toEntity());
+            }
+
+            Material material = new Material(this.reference, this.designation, colors, finishes);
+            material.Id = this.id;
+
+            return material;
         }
     }
 }
