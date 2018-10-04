@@ -77,6 +77,20 @@ namespace core.application {
             return productRepository.find(reference).toDTO();
         }
 
+        public bool defineProductDimensions(ProductDTO productDTO){
+            Product product = productRepository.find(productDTO.id);
+            
+            IEnumerable<Dimension> heightDimensions = getProductDTOEnumerableDimensions(productDTO.heightDimensions);
+            IEnumerable<Dimension> widthDimensions = getProductDTOEnumerableDimensions(productDTO.widthDimensions);
+            IEnumerable<Dimension> depthDimensions = getProductDTOEnumerableDimensions(productDTO.depthDimensions);
+
+            foreach(Dimension heightDimension in heightDimensions){if(!product.addHeightDimension(heightDimension)) return false;}
+            foreach(Dimension widthDimension in widthDimensions){if(!product.addWidthDimension(widthDimension)) return false;}
+            foreach(Dimension depthDimension in depthDimensions){if(!product.addDepthDimension(depthDimension)) return false;}
+
+            return productRepository.save(product) != null;
+        }
+
         /// <summary>
         /// Updates a product with new dimensions and/or new materials
         /// </summary>
