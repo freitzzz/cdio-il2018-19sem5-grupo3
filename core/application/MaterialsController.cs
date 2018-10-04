@@ -86,12 +86,12 @@ namespace core.application {
         /// </summary>
         /// <param name="materialDTO">DTO that holds all info about the Material</param>
         /// <returns>DTO that represents the updated Material</returns>
-        public bool updateMaterial(MaterialDTO materialDTO) {
+        public MaterialDTO updateMaterial(MaterialDTO materialDTO) {
             MaterialRepository repository = PersistenceContext.repositories().createMaterialRepository();
             Material material = repository.find(materialDTO.id);
 
             if (material == null) {
-                return false;
+                return null;
             }
 
             material.changeReference(materialDTO.reference);
@@ -109,8 +109,8 @@ namespace core.application {
             foreach (FinishDTO finishDTO in materialDTO.finishes) {
                 material.addFinish(Finish.valueOf(finishDTO.description));
             }
-
-            return repository.update(material) != null;
+            Material mat = repository.update(material);
+            return mat == null ? null : mat.toDTO();
         }
 
         /// Parses an enumerable of materials persistence identifiers as an enumerable of entities
