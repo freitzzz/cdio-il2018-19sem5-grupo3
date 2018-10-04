@@ -9,12 +9,16 @@ namespace core.persistence{
         /// <returns>ProductRepository with the repository for product entities</returns>
         ProductRepository createProductRepository();
 
-        /**
-        <summary>
-            Creates a MaterialRepository.
-        </summary>
-        <returns>MaterialRepository with the repository for Material entities</returns>
-         */
-        MaterialRepository createMaterialRepository();   
+        /// <summary>
+        /// Creates a MaterialRepository
+        /// </summary>
+        /// <returns>MaterialRepository with the repository for material entities</returns>
+        MaterialRepository createMaterialRepository();
+        
+        /// <summary>
+        /// Creates a ProductCategoryRepository
+        /// </summary>
+        /// <returns>ProductCategoryRepository with the repository for product category entities</returns>
+        ProductCategoryRepository createProductCategoryRepository();
     }
 }

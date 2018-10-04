@@ -52,7 +52,7 @@ namespace backend.Controllers {
         /// HTTP Response 200 Ok with the product's info in JSON format </returns>
         [HttpGet("{id}")]
         public ActionResult<ProductDTO> findProductByID(long productID) {
-            ProductDTO productDTO = new core.application.ProductController(productRepository, materialRepository).findProductByID(productID);
+            ProductDTO productDTO = new core.application.ProductController().findProductByID(productID);
             if (productDTO == null) {
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
             }
@@ -70,7 +70,7 @@ namespace backend.Controllers {
         /// HTTP Response 200 Ok with the info of all products in JSON format </returns>
         [HttpGet]
         public ActionResult<List<ProductDTO>> findAll() {
-            List<ProductDTO> allProductsDTO = new core.application.ProductController(productRepository, materialRepository).findAllProducts();
+            List<ProductDTO> allProductsDTO = new core.application.ProductController().findAllProducts();
 
             if (allProductsDTO == null) {
                 return BadRequest(NO_PRODUCTS_FOUND_REFERENCE);
@@ -88,15 +88,12 @@ namespace backend.Controllers {
         ///         <br>See MyC REST API documentation for a better overview
         /// </returns>
         [HttpPost]
-        public ActionResult<ProductDTO> addProduct([FromBody] ProductDTO jsonData) {
-
-            ProductDTO productDTO = new core.application.ProductController(productRepository, materialRepository).addProduct(jsonData);
-
-            if (productDTO != null) {
-                return Ok(productDTO);
-            } else {
-                //TODO: INFORM BETTER BAD REQUESTES
-                return BadRequest("{\"Message\":\"An error ocurred while creating the product\"}");
+        public ActionResult<ProductDTO> addProduct([FromBody]ProductDTO productData){
+            ProductDTO createdProductDTO=new core.application.ProductController().addProduct(productData);
+            if(createdProductDTO!=null){
+                return Created(Request.Path,createdProductDTO);
+            }else{
+                return BadRequest();
             }
         }
 
@@ -111,7 +108,7 @@ namespace backend.Controllers {
         /// TODO Refactor method
         [HttpPut("{id}")]
         public ActionResult updateProduct([FromBody] ProductDTO jsonData) {
-            ProductDTO updatedProductDTO = new core.application.ProductController(productRepository, materialRepository).updateProduct(jsonData);
+            ProductDTO updatedProductDTO = new core.application.ProductController().updateProduct(jsonData);
             if (updatedProductDTO == null) {
                 return BadRequest();
             }
@@ -128,15 +125,15 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product category
         /// </returns>
         [HttpPut("{id}/category")]
-        public ActionResult<JSONMessageService> updateProductCategory(long productID,[FromBody]ProductCategoryDTO productCategoryDTO){
+        public ActionResult<SimpleJSONMessageService> updateProductCategory(long productID,[FromBody]ProductCategoryDTO productCategoryDTO){
             ProductDTO productDTO=new ProductDTO();
             productDTO.id=productID;
-            bool updatedWithSucess=new core.application.ProductController(productRepository,materialRepository).updateProductCategory(productDTO,productCategoryDTO);
+            bool updatedWithSucess=new core.application.ProductController().updateProductCategory(productDTO,productCategoryDTO);
             //TODO: Updates should throw an exception with the detailed error if it wasn't possible to update
             if(updatedWithSucess){
-                return Ok(new JSONMessageService("Product category was updated with success"));
+                return Ok(new SimpleJSONMessageService("Product category was updated with success"));
             }else{
-                return BadRequest(new JSONMessageService("An error occured while updating the product category"));
+                return BadRequest(new SimpleJSONMessageService("An error occured while updating the product category"));
             }
         }
         /// <summary>
@@ -151,7 +148,7 @@ namespace backend.Controllers {
         public ActionResult disableProduct(long productID){
             ProductDTO productDTO=new ProductDTO();
             productDTO.id=productID;
-            bool disabledWithSuccess=new core.application.ProductController(productRepository,materialRepository).disableProduct(productDTO);
+            bool disabledWithSuccess=new core.application.ProductController().disableProduct(productDTO);
             if(disabledWithSuccess){
                 return NoContent();
             }else{

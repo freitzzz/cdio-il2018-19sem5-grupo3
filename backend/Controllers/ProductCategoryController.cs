@@ -61,7 +61,7 @@ namespace backend.Controllers
         {
             try
             {
-                ProductCategoryDTO createdCategory = new core.application.ProductCategoryController(categoryRepository).
+                ProductCategoryDTO createdCategory = new core.application.ProductCategoryController().
                 addProductCategory(categoryAsJson);
 
                 //category was not added (probably due to a duplicate business identifier)
@@ -91,7 +91,7 @@ namespace backend.Controllers
         public ActionResult removeProductCategory(long id)
         {
             ProductCategoryDTO removedCategory = new core.application.
-                ProductCategoryController(categoryRepository).removeProductCategory(id);
+                ProductCategoryController().removeProductCategory(id);
 
             if (removedCategory == null)
             {
@@ -115,7 +115,7 @@ namespace backend.Controllers
         public ActionResult findById(long id)
         {
             ProductCategoryDTO result = new core.application.
-                ProductCategoryController(categoryRepository).findByDatabaseId(id);
+                ProductCategoryController().findByDatabaseId(id);
 
             if (result == null)
             {
@@ -151,7 +151,7 @@ namespace backend.Controllers
         private ActionResult findAll()
         {
             List<ProductCategoryDTO> result = new core.application.
-                ProductCategoryController(categoryRepository).findAllCategories();
+                ProductCategoryController().findAllCategories();
 
             if (result.Count == 0)
             {
@@ -173,7 +173,7 @@ namespace backend.Controllers
         private ActionResult findByName(string name)
         {
             ProductCategoryDTO result = new core.application.
-                ProductCategoryController(categoryRepository).findByName(name);
+                ProductCategoryController().findByName(name);
 
             if (result == null)
             {

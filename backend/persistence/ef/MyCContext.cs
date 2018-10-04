@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using core.domain;
+using backend.config;
 using System.Linq;
 
 namespace backend.persistence.ef
@@ -32,7 +33,7 @@ namespace backend.persistence.ef
         /// </summary>
         /// <param name="options">The options for the context.</param>
         /// <returns>New instance of MyCContext.</returns>
-        public MyCContext(DbContextOptions<MyCContext> options) : base(options) { }
+        public MyCContext(DbContextOptions<MyCContext> options) : base(options) {BackendConfiguration.entityFrameworkContext=this;}
 
 
         protected override void OnModelCreating(ModelBuilder builder){
