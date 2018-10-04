@@ -163,7 +163,7 @@ namespace backend.Controllers {
             productDTO.heightDimensions = dimensionsDTO.heightDimensionDTOs;
             productDTO.widthDimensions = dimensionsDTO.widthDimensionDTOs;
             productDTO.depthDimensions = dimensionsDTO.depthDimensionDTOs;
-            bool dimensionsDefinedWithSuccess = new core.application.ProductController(productRepository,materialRepository).defineProductDimensions(productDTO);
+            bool dimensionsDefinedWithSuccess = new core.application.ProductController().defineProductDimensions(productDTO);
             if(dimensionsDefinedWithSuccess){
                 return Ok();
             }else{

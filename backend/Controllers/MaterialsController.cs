@@ -79,7 +79,7 @@ namespace backend.Controllers {
         /// </returns>
         [HttpGet("{id}", Name = "GetMaterial")]
         public ActionResult<MaterialDTO> findById(long id) {
-            MaterialDTO materialDTO = new core.application.MaterialsController(materialRepository).findMaterialByID(id);
+            MaterialDTO materialDTO = new core.application.MaterialsController().findMaterialByID(id);
 
             if (materialDTO == null) {
                 string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_FOUND_REFERENCE);

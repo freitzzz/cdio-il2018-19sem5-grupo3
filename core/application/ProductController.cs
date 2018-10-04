@@ -97,6 +97,9 @@ namespace core.application {
         }
 
         public bool defineProductDimensions(ProductDTO productDTO){
+
+            ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
+
             Product product = productRepository.find(productDTO.id);
             
             IEnumerable<Dimension> heightDimensions = getProductDTOEnumerableDimensions(productDTO.heightDimensions);
