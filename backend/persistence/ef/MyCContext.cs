@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using core.domain;
+using System.Linq;
 
 namespace backend.persistence.ef
 {
@@ -33,5 +34,13 @@ namespace backend.persistence.ef
         /// <returns>New instance of MyCContext.</returns>
         public MyCContext(DbContextOptions<MyCContext> options) : base(options) { }
 
+
+        protected override void OnModelCreating(ModelBuilder builder){
+            base.OnModelCreating(builder);
+
+            //!Define How Entities Are Mapped Here
+            builder.Entity<Material>().HasMany(m => m.Colors).WithOne();        //one-to-many relationship
+            builder.Entity<Material>().HasMany(m => m.Finishes).WithOne();      //one-to-many relationship
+        }
     }
 }
