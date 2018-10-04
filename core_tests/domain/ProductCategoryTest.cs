@@ -108,6 +108,25 @@ namespace core_tests.domain
 
 
         [Fact]
+        public void ensureActivateWorks()
+        {
+            var category = new ProductCategory("Pritchett's Closets");
+            category.activate();
+
+            Assert.True(category.isActive());
+        }
+
+        [Fact]
+        public void ensureDeactivateWorks()
+        {
+            var category = new ProductCategory("Closets Closets Closets");
+            category.deactivate();
+
+            Assert.False(category.isActive());
+
+        }
+
+        [Fact]
         public void ensureEqualsReturnsFalseIfObjectIsNull()
         {
             ProductCategory category = new ProductCategory("Drawers");
