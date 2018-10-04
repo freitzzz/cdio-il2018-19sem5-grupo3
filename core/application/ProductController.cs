@@ -5,20 +5,17 @@ using core.domain;
 using core.persistence;
 using core.dto;
 
-namespace core.application
-{
+namespace core.application {
     /// <summary>
     /// Core ProductController class
     /// </summary>
-    public class ProductController
-    {
+    public class ProductController {
 
         private readonly ProductRepository productRepository;
 
         private readonly MaterialRepository materialRepository;
 
-        public ProductController(ProductRepository productRepository, MaterialRepository materialRepository)
-        {
+        public ProductController(ProductRepository productRepository, MaterialRepository materialRepository) {
             this.productRepository = productRepository;
             this.materialRepository = materialRepository;
         }
@@ -28,12 +25,11 @@ namespace core.application
         /// </summary>
         /// <param name="productAsDTO">DTO with the product information</param>
         /// <returns>DTO with the created product DTO, null if the product was not created</returns>
-        public ProductDTO addProduct(ProductDTO productAsDTO)
-        {
+        public ProductDTO addProduct(ProductDTO productAsDTO) {
             Product newProduct = productAsDTO.toEntity();
 
-            Product createdProduct = productRepository.save(newProduct); 
-            
+            Product createdProduct = productRepository.save(newProduct);
+
             if (createdProduct == null) return null;
             return createdProduct.toDTO();
         }
@@ -43,9 +39,8 @@ namespace core.application
         /// </summary>
         /// <param name="productDTO">DTO with the product information</param>
         /// <returns>boolean true if the product was removed (disabled) with success</returns>
-        public bool removeProduct(ProductDTO productDTO)
-        {
-            Product productBeingRemoved=productRepository.find(productDTO.id);
+        public bool removeProduct(ProductDTO productDTO) {
+            Product productBeingRemoved = productRepository.find(productDTO.id);
             return productBeingRemoved != null && productBeingRemoved.disable() && productRepository.update(productBeingRemoved) != null;
         }
 
@@ -53,19 +48,16 @@ namespace core.application
         /// Fetches a list of all products present in the product repository
         /// </summary>
         /// <returns>a list of all of the products DTOs</returns>
-        public List<ProductDTO> findAllProducts()
-        {
+        public List<ProductDTO> findAllProducts() {
             List<ProductDTO> productDTOList = new List<ProductDTO>();
 
             IEnumerable<Product> productList = productRepository.findAll();
 
-            if (productList == null)
-            {
+            if (productList == null) {
                 return null;
             }
 
-            foreach (Product product in productList)
-            {
+            foreach (Product product in productList) {
                 productDTOList.Add(product.toDTO());
             }
 
@@ -77,12 +69,11 @@ namespace core.application
         /// </summary>
         /// <param name="productID">the product's ID</param>
         /// <returns></returns>
-        public ProductDTO findProductByID(long productID)
-        {
+        public ProductDTO findProductByID(long productID) {
             return productRepository.find(productID).toDTO();
         }
 
-        public ProductDTO findByReference(string reference){
+        public ProductDTO findByReference(string reference) {
             return productRepository.find(reference).toDTO();
         }
 
@@ -92,138 +83,53 @@ namespace core.application
         /// <param name="updatesDTO"></param>
         /// <returns></returns>
         /// TODO Refactor method 
-        public bool updateProduct(GenericDTO updatesDTO)
-        {
-            Product oldProduct = productRepository.find((string)updatesDTO.get(Product.Properties.PERSISTENCE_ID_PROPERTY));
-            if (oldProduct == null)
-            {
-                return false;
+        public ProductDTO updateProduct(ProductDTO updatesDTO) {
+            Product oldProduct = productRepository.find(updatesDTO.id);
+            if (oldProduct == null) {
+                return null;
             }
 
-            IEnumerable<Dimension> heightDimensions = getProductDTOEnumerableOfHeightDimensions(updatesDTO);
-            IEnumerable<Dimension> widthDimensions = getProductDTOEnumerableOfWidthDimensions(updatesDTO);
-            IEnumerable<Dimension> depthDimensions = getProductDTOEnumerableOfDepthDimensions(updatesDTO);
+            IEnumerable<Dimension> heightDimensions = getProductDTOEnumerableDimensions(updatesDTO.heightDimensions);
+            IEnumerable<Dimension> widthDimensions = getProductDTOEnumerableDimensions(updatesDTO.widthDimensions);
+            IEnumerable<Dimension> depthDimensions = getProductDTOEnumerableDimensions(updatesDTO.depthDimensions);
 
-            foreach (Dimension heightDimension in heightDimensions) { if (!oldProduct.addHeightDimension(heightDimension)) return false; }
-            foreach (Dimension widthDimension in widthDimensions) { if (!oldProduct.addWidthDimension(widthDimension)) return false; }
-            foreach (Dimension depthDimension in depthDimensions) { if (!oldProduct.addDepthDimension(depthDimension)) return false; }
+            foreach (Dimension heightDimension in heightDimensions) { if (!oldProduct.addHeightDimension(heightDimension)) return null; }
+            foreach (Dimension widthDimension in widthDimensions) { if (!oldProduct.addWidthDimension(widthDimension)) return null; }
+            foreach (Dimension depthDimension in depthDimensions) { if (!oldProduct.addDepthDimension(depthDimension)) return null; }
             addMaterials(updatesDTO, oldProduct);
 
-            return productRepository.update(oldProduct) != null;
+            Product prod = productRepository.update(oldProduct);
+            if(prod == null) {
+                return null;
+            } else {
+                return prod.toDTO();
+            }
         }
 
         /// <summary>
-        /// Returns an enumerable of height dimensions found on a product DTO
+        /// Returns an enumerable of dimensions found on a product DTO
         /// </summary>
         /// <param name="productDTO">DTO with the product DTO</param>
-        /// <returns>IEnumerable with the height dimensions found on a product DTO</returns>
-        internal IEnumerable<Dimension> getProductDTOEnumerableOfHeightDimensions(GenericDTO productDTO)
-        {
-            List<Dimension> heightDimensions = new List<Dimension>();
-            foreach (GenericDTO heightDimensionDTO in (List<GenericDTO>)productDTO.get(Product.Properties.HEIGHT_VALUES_PROPERTIES))
-            {
-                String dimensionType = (string)heightDimensionDTO.get("type");
-                List<string> values = (List<string>)heightDimensionDTO.get("values");
-                List<double> doubleValues = new List<double>();
-                foreach (string str in values)
-                {
-                    doubleValues.Add(Double.Parse(str));
-                }
-                if (dimensionType.Equals("discrete"))
-                {
-                    DiscreteDimensionInterval discreteInterval = DiscreteDimensionInterval.valueOf(doubleValues);
-                    heightDimensions.Add(discreteInterval);
-                }
-                else if (dimensionType.Equals("continuous"))
-                {
-                    double[] array = doubleValues.ToArray();
-                    ContinuousDimensionInterval continuousInterval = ContinuousDimensionInterval.valueOf(array[0], array[1], array[2]);
-                    heightDimensions.Add(continuousInterval);
-                }
-                else
-                {
-                    double[] array = doubleValues.ToArray();
-                    SingleValueDimension dimensionValue = SingleValueDimension.valueOf(array[0]);
-                    heightDimensions.Add(dimensionValue);
+        /// <returns>IEnumerable with the dimensions found on a product DTO</returns>
+        internal IEnumerable<Dimension> getProductDTOEnumerableDimensions(List<DimensionDTO> dimensionsDTOs) {
+            List<Dimension> dimensions = new List<Dimension>();
+            foreach (DimensionDTO dimensionDTO in dimensionsDTOs) {
+                String dimensionType = dimensionDTO.type;
+                if (dimensionType.Equals("discrete")) {
+                    DiscreteDimensionIntervalDTO ddiDTO = (DiscreteDimensionIntervalDTO)dimensionDTO;
+                    DiscreteDimensionInterval discreteInterval = DiscreteDimensionInterval.valueOf(ddiDTO.values);
+                    dimensions.Add(discreteInterval);
+                } else if (dimensionDTO.GetType() == typeof(ContinuousDimensionIntervalDTO)) {
+                    ContinuousDimensionIntervalDTO cdiDTO = (ContinuousDimensionIntervalDTO)dimensionDTO;
+                    ContinuousDimensionInterval continuousInterval = ContinuousDimensionInterval.valueOf(cdiDTO.minValue, cdiDTO.maxValue, cdiDTO.increment);
+                    dimensions.Add(continuousInterval);
+                } else {
+                    SingleValueDimensionDTO svdDTO = (SingleValueDimensionDTO)dimensionDTO;
+                    SingleValueDimension dimensionValue = SingleValueDimension.valueOf(svdDTO.value);
+                    dimensions.Add(dimensionValue);
                 }
             }
-            return heightDimensions;
-        }
-
-        /// <summary>
-        /// Returns an enumerable of width dimensions found on a product DTO
-        /// </summary>
-        /// <param name="productDTO">DTO with the product DTO</param>
-        /// <returns>IEnumerable with the width dimensions found on a product DTO</returns>
-        internal IEnumerable<Dimension> getProductDTOEnumerableOfWidthDimensions(GenericDTO productDTO)
-        {
-            List<Dimension> widthDimensions = new List<Dimension>();
-            foreach (GenericDTO widthDimensionDTO in (List<GenericDTO>)productDTO.get(Product.Properties.WIDTH_VALUES_PROPERTIES))
-            {
-                String dimensionType = (string)widthDimensionDTO.get("type");
-                List<string> values = (List<string>)widthDimensionDTO.get("values");
-                List<double> doubleValues = new List<double>();
-                foreach (string str in values)
-                {
-                    doubleValues.Add(Double.Parse(str));
-                }
-                if (dimensionType.Equals("discrete"))
-                {
-                    DiscreteDimensionInterval discreteInterval = DiscreteDimensionInterval.valueOf(doubleValues);
-                    widthDimensions.Add(discreteInterval);
-                }
-                else if (dimensionType.Equals("continuous"))
-                {
-                    double[] array = doubleValues.ToArray();
-                    ContinuousDimensionInterval continuousInterval = ContinuousDimensionInterval.valueOf(array[0], array[1], array[2]);
-                    widthDimensions.Add(continuousInterval);
-                }
-                else
-                {
-                    double[] array = doubleValues.ToArray();
-                    SingleValueDimension dimensionValue = SingleValueDimension.valueOf(array[0]);
-                    widthDimensions.Add(dimensionValue);
-                }
-            }
-            return widthDimensions;
-        }
-
-        /// <summary>
-        /// Returns an enumerable of depth dimensions found on a product DTO
-        /// </summary>
-        /// <param name="productDTO">DTO with the product DTO</param>
-        /// <returns>IEnumerable with the depth dimensions found on a product DTO</returns>
-        internal IEnumerable<Dimension> getProductDTOEnumerableOfDepthDimensions(GenericDTO productDTO)
-        {
-            List<Dimension> depthDimensions = new List<Dimension>();
-            foreach (GenericDTO depthDimensionDTO in (List<GenericDTO>)productDTO.get(Product.Properties.DEPTH_VALUES_PROPERTIES))
-            {
-                String dimensionType = (string)depthDimensionDTO.get("type");
-                List<string> values = (List<string>)depthDimensionDTO.get("values");
-                List<double> doubleValues = new List<double>();
-                foreach (string str in values)
-                {
-                    doubleValues.Add(Double.Parse(str));
-                }
-                if (dimensionType.Equals("discrete"))
-                {
-                    DiscreteDimensionInterval discreteInterval = DiscreteDimensionInterval.valueOf(doubleValues);
-                    depthDimensions.Add(discreteInterval);
-                }
-                else if (dimensionType.Equals("continuous"))
-                {
-                    double[] array = doubleValues.ToArray();
-                    ContinuousDimensionInterval continuousInterval = ContinuousDimensionInterval.valueOf(array[0], array[1], array[2]);
-                    depthDimensions.Add(continuousInterval);
-                }
-                else
-                {
-                    double[] array = doubleValues.ToArray();
-                    SingleValueDimension dimensionValue = SingleValueDimension.valueOf(array[0]);
-                    depthDimensions.Add(dimensionValue);
-                }
-            }
-            return depthDimensions;
+            return dimensions;
         }
 
         /// <summary>
@@ -231,11 +137,10 @@ namespace core.application
         /// </summary>
         /// <param name="productDTO">list of updates in DTO</param>
         /// <param name="oldProduct">product to be updated</param>
-        private void addMaterials(GenericDTO productDTO, Product oldProduct)
-        {
-            foreach (string str in (List<string>)productDTO.get(Product.Properties.MATERIALS_PROPERTY))
-            {
-                oldProduct.addMaterial(materialRepository.find(str));
+        private void addMaterials(ProductDTO productDTO, Product oldProduct) {
+            foreach (ProductMaterialDTO prodMDTO in productDTO.productMaterials) {
+                long matID = prodMDTO.material.id;
+                oldProduct.addMaterial(materialRepository.find(matID));
             }
         }
 
@@ -244,14 +149,12 @@ namespace core.application
         /// </summary>
         /// <param name="productsIDS">Enumerable with the products persistence identifiers</param>
         /// <returns>IEnumerable with the products ids as entities</returns>
-        internal IEnumerable<Product> enumerableOfProductsIDSAsEntities(IEnumerable<long> productsIDS)
-        {
+        internal IEnumerable<Product> enumerableOfProductsIDSAsEntities(IEnumerable<long> productsIDS) {
             if (productsIDS == null) return null;
             List<Product> products = new List<Product>();
             IEnumerator<long> productsIDSIterator = productsIDS.GetEnumerator();
             long nextProductID = productsIDSIterator.Current;
-            while (productsIDSIterator.MoveNext())
-            {
+            while (productsIDSIterator.MoveNext()) {
                 nextProductID = productsIDSIterator.Current;
                 products.Add(productRepository.find(nextProductID));
             }

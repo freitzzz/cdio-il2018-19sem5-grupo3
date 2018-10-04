@@ -13,16 +13,16 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using support.utils;
 using core.persistence;
+using core.dto;
+using backend.utils;
+using static backend.utils.JSONStringFormatter;
 
-
-namespace backend.Controllers
-{
+namespace backend.Controllers {
     //<summary>
     //Backend MaterialsController class.
     //</summary>
     [Route("myc/materials")]
-    public class MaterialsController : Controller
-    {
+    public class MaterialsController : Controller {
         /// <summary>
         /// Constant that represents the 400 Bad Request message for when no Materials are found.
         /// </summary>
@@ -36,8 +36,7 @@ namespace backend.Controllers
 
         private readonly MaterialRepository materialRepository;
 
-        public MaterialsController(MaterialRepository materialRepository)
-        {
+        public MaterialsController(MaterialRepository materialRepository) {
             this.materialRepository = materialRepository;
         }
 
@@ -59,12 +58,10 @@ namespace backend.Controllers
         /// <br>HTTP Response 200 Ok with the info of all Materials in JSON format.
         /// </returns>
         [HttpGet]
-        public ActionResult<List<GenericDTO>> findAll()
-        {
-            List<GenericDTO> materials = new core.application.MaterialsController(materialRepository).findAllMaterials();
+        public ActionResult<List<MaterialDTO>> findAll() {
+            List<MaterialDTO> materials = new core.application.MaterialsController(materialRepository).findAllMaterials();
 
-            if (materials == null)
-            {
+            if (materials == null) {
                 return BadRequest(NO_MATERIALS_FOUND_REFERENCE);
             }
 
@@ -80,12 +77,10 @@ namespace backend.Controllers
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.
         /// </returns>
         [HttpGet("{id}")]
-        public ActionResult<GenericDTO> findById(long materialID)
-        {
-            GenericDTO materialDTO = new core.application.MaterialsController(materialRepository).findMaterialByID(materialID);
+        public ActionResult<MaterialDTO> findById(long materialID) {
+            MaterialDTO materialDTO = new core.application.MaterialsController(materialRepository).findMaterialByID(materialID);
 
-            if (materialDTO == null)
-            {
+            if (materialDTO == null) {
                 return BadRequest(MATERIAL_NOT_FOUND_REFERENCE);
             }
 
@@ -99,12 +94,10 @@ namespace backend.Controllers
         /// <returns>HTTP Response 400 Bad Request if the Material is not removed;
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
         [HttpDelete("{id}")]
-        public ActionResult<GenericDTO> remove(long materialID)
-        {
-            GenericDTO removedDTO = new core.application.MaterialsController(materialRepository).removeMaterial(materialID);
+        public ActionResult<MaterialDTO> remove(long materialID) {
+            MaterialDTO removedDTO = new core.application.MaterialsController(materialRepository).removeMaterial(materialID);
 
-            if (removedDTO == null)
-            {
+            if (removedDTO == null) {
                 return BadRequest(MATERIAL_NOT_REMOVED_REFERENCE);
             }
 
@@ -118,16 +111,14 @@ namespace backend.Controllers
         /// <returns>HTTP Response 400 Bad Request if the Material is not added;
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
         [HttpPost]
-        public ActionResult<GenericDTO> add([FromBody] JObject jsonData)
-        {
+        public ActionResult<MaterialDTO> add([FromBody] JObject jsonData) {
             {
                 MaterialObject materialObject = JsonConvert.DeserializeObject<MaterialObject>(jsonData.ToString());
 
-                GenericDTO materialDTO = materialObjectToMaterialDTO(materialObject);
-                GenericDTO addedDTO = new core.application.MaterialsController(materialRepository).addMaterial(materialDTO);
+                MaterialDTO materialDTO = materialObjectToMaterialDTO(materialObject);
+                MaterialDTO addedDTO = new core.application.MaterialsController(materialRepository).addMaterial(materialDTO);
 
-                if (addedDTO == null)
-                {
+                if (addedDTO == null) {
                     return BadRequest(MATERIAL_NOT_ADDED_REFERENCE);
                 }
                 return Ok(addedDTO);
@@ -139,45 +130,40 @@ namespace backend.Controllers
         /// </summary>
         /// <param name="materialObject">MaterialObject with the Material's info</param>
         /// <returns>DTO with the parsed MaterialObject</returns>
-        private GenericDTO materialObjectToMaterialDTO(MaterialObject materialObject)
-        {
-            GenericDTO materialDTO = new GenericDTO(Material.Properties.CONTEXT);
+        private MaterialDTO materialObjectToMaterialDTO(MaterialObject materialObject) {
+            MaterialDTO materialDTO = new MaterialDTO();
 
-            materialDTO.put(Material.Properties.REFERENCE_PROPERTY, materialObject.reference); //Holds the reference of the Material
-            materialDTO.put(Material.Properties.DESIGNATION_PROPERTY, materialObject.designation); //Holds the designation of the Material
+            materialDTO.reference = materialObject.reference; //Holds the reference of the Material
+            materialDTO.designation = materialObject.designation; //Holds the designation of the Material
 
-            List<GenericDTO> colorsDTOList = new List<GenericDTO>();
+            List<ColorDTO> colorsDTOList = new List<ColorDTO>();
 
-            if (!Collections.isListEmpty(materialObject.colors))
-            {
-                foreach (Color color in materialObject.colors)
-                {
-                    GenericDTO colorDTO = new GenericDTO("color");
-                    colorDTO.put("name", color.Name);
-                    colorDTO.put("red", color.Red);
-                    colorDTO.put("green", color.Green);
-                    colorDTO.put("blue", color.Blue);
-                    colorDTO.put("alpha", color.Alpha);
+            if (!Collections.isListEmpty(materialObject.colors)) {
+                foreach (Color color in materialObject.colors) {
+                    ColorDTO colorDTO = new ColorDTO();
+                    colorDTO.name = color.Name;
+                    colorDTO.red = color.Red;
+                    colorDTO.green = color.Green;
+                    colorDTO.blue = color.Blue;
+                    colorDTO.alpha = color.Alpha;
 
                     colorsDTOList.Add(colorDTO);
                 }
             }
 
-            materialDTO.put(Material.Properties.COLORS_PROPERTY, colorsDTOList);
+            materialDTO.colors = colorsDTOList;
 
-            List<GenericDTO> finishesDTOList = new List<GenericDTO>();
+            List<FinishDTO> finishesDTOList = new List<FinishDTO>();
 
-            if (!Collections.isListEmpty(materialObject.finishes))
-            {
-                foreach (Finish finish in materialObject.finishes)
-                {
-                    GenericDTO finishDTO = new GenericDTO("finish");
-                    finishDTO.put("description", finish.description);
+            if (!Collections.isListEmpty(materialObject.finishes)) {
+                foreach (Finish finish in materialObject.finishes) {
+                    FinishDTO finishDTO = new FinishDTO();
+                    finishDTO.description = finish.description;
                     finishesDTOList.Add(finishDTO);
                 }
             }
 
-            materialDTO.put(Material.Properties.FINISHES_PROPERTY, finishesDTOList);
+            materialDTO.finishes = finishesDTOList;
 
             return materialDTO;
         }
@@ -189,30 +175,46 @@ namespace backend.Controllers
         /// <returns>HTTP Response 400 Bad Request if the Material is not updated;
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
         [HttpPut]
-        public ActionResult<GenericDTO> update([FromBody] JObject jsonData, long materialID)
-        {
+        public ActionResult<MaterialDTO> update([FromBody] JObject jsonData, long materialID) {
             MaterialObject materialObject = JsonConvert.DeserializeObject<MaterialObject>(jsonData.ToString());
-            GenericDTO materialDTO = materialObjectToMaterialDTO(materialObject);
+            MaterialDTO materialDTO = materialObjectToMaterialDTO(materialObject);
 
             materialObject.persistenceID = materialID;
-            List<GenericDTO> colors = (List<GenericDTO>)materialDTO.get(Material.Properties.COLORS_PROPERTY);
-            List<GenericDTO> finishes = (List<GenericDTO>)materialDTO.get(Material.Properties.FINISHES_PROPERTY);
+            List<ColorDTO> colors = materialDTO.colors;
+            List<FinishDTO> finishes = materialDTO.finishes;
 
             bool wasUpdated = new core.application.MaterialsController(materialRepository).updateMaterial(materialDTO);
 
-            if (!wasUpdated)
-            {
+            if (!wasUpdated) {
                 return BadRequest();
             }
 
             return Ok();
         }
+        /// <summary>
+        /// Updates the finishes of a material
+        /// </summary>
+        /// <param name="id">id of the material to be updated</param>
+        /// <param name="finishes">new list of finishes</param>
+        /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
+        [HttpPut("{id}/finishes")]
+        public ActionResult updateFinishes(long id, [FromBody] List<FinishDTO> finishes) {
+            try {
+                MaterialDTO matDTO = new core.application.MaterialsController(materialRepository).updateFinishes(id, finishes);
+                if (matDTO == null) {
+                    return BadRequest();
+                }
+                return Ok(matDTO);
+            } catch (ArgumentException e) {
+                string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
+                return BadRequest(formattedMessage);
+            }
+        }
 
         /// <summary>
         /// Auxiliar MaterialObject class used in the deserialization of a Material's updates/addition from JSON format.
         /// </summary>
-        public class MaterialObject
-        {
+        public class MaterialObject {
             /// <summary>
             /// Material's reference.
             /// </summary>
