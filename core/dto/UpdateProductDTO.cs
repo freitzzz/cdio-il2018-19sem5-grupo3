@@ -20,7 +20,11 @@ namespace core.dto{
         /// String with the product designation being updated
         /// </summary>
         public string designation;
-
+        /// <summary>
+        /// ProductCategoryDTO with the category being updated
+        /// </summary>
+        [DataMember(Name="category")]
+        public ProductCategoryDTO productCategoryToUpdate;
         
         /// <summary>
         /// List with the components being added

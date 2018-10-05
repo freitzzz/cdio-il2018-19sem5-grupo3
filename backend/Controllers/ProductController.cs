@@ -169,25 +169,20 @@ namespace backend.Controllers {
         }
 
         /// <summary>
-        /// Updates the category of a product
+        /// Updates the dimensions of a product
         /// </summary>
-        /// <param name="productID">Long with the product ID being updated</param>
-        /// <param name="productCategoryDTO">ProductCategoryDTO with the category being updated on the product information</param>
-        /// <returns>HTTP Response 200;OK if the product category was updated with success
-        ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product category
+        /// <param name="updateProductData">UpdateProductDTO with the information of the product being updated</param>
+        /// <returns>HTTP Response 200;OK if the product was updated with success
+        ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
         /// </returns>
         [HttpPut("{id}/category")]
-        public ActionResult<SimpleJSONMessageService> updateProductCategory(long productID,[FromBody]ProductCategoryDTO productCategoryDTO){
-            ProductDTO productDTO=new ProductDTO();
-            productDTO.id=productID;
-            bool updatedWithSucess=new core.application.ProductController().updateProductCategory(productDTO,productCategoryDTO);
-            //TODO: Updates should throw an exception with the detailed error if it wasn't possible to update
-            if(updatedWithSucess){
-                return Ok(new SimpleJSONMessageService("Product category was updated with success"));
-            }else{
-                return BadRequest(new SimpleJSONMessageService("An error occured while updating the product category"));
-            }
+        public ActionResult updateProductCategory(long productID,[FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id=productID;
+            if(new core.application.ProductController().updateProductCategory(updateProductData))
+                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
+
         /// <summary>
         /// Disables a product
         /// </summary>

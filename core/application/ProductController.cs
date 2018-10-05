@@ -29,21 +29,6 @@ namespace core.application {
         }
 
         /// <summary>
-        /// Updates the category of a product
-        /// </summary>
-        /// <param name="productDTO">ProductDTO with the product dto which category is going to be changed</param>
-        /// <param name="productCategoryDTO">ProductCategoryDTO</param>
-        /// <returns></returns>
-        public bool updateProductCategory(ProductDTO productDTO,ProductCategoryDTO productCategoryDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productToUpdate=productRepository.find(productDTO.id);
-            if(productToUpdate==null)return false;
-            ProductCategory productNewCategory=PersistenceContext.repositories().createProductCategoryRepository().find(productCategoryDTO.id);
-            if(!productToUpdate.changeProductCategory(productNewCategory))return false;
-            return productRepository.update(productToUpdate)!=null;
-        }
-
-        /// <summary>
         /// Updates basic information of a product
         /// </summary>
         /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
@@ -197,6 +182,24 @@ namespace core.application {
 
             if(!updatedWithSuccess)return false;
 
+            updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
+            return updatedWithSuccess;
+        }
+
+        /// <summary>
+        /// Updates the category of a product
+        /// </summary>
+        /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
+        /// <returns>boolean true if the update was successful, fasle if not</returns>
+        public bool updateProductCategory(UpdateProductDTO updateProductDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productBeingUpdated=productRepository.find(updateProductDTO.id);
+            bool updatedWithSuccess=false;
+            if(updateProductDTO.productCategoryToUpdate!=null){
+                ProductCategory productCategory=PersistenceContext.repositories().createProductCategoryRepository().find(updateProductDTO.productCategoryToUpdate.id);
+                updatedWithSuccess&=productBeingUpdated.changeProductCategory(productCategory);
+            }
+            if(!updatedWithSuccess)return false;
             updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
         }
