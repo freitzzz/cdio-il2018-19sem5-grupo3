@@ -36,6 +36,16 @@ namespace backend.Controllers {
         /// </summary>
         private const string NO_PRODUCTS_FOUND_REFERENCE = "No products found";
 
+        /// <summary>
+        /// Constant that represents the message that ocurres if the update of a product fails
+        /// </summary>
+        private const string INVALID_PRODUCT_UPDATE_MESSAGE="An error occured while updating the product";
+
+        /// <summary>
+        /// Constant that represents the message that ocurres if the update of a product is successful
+        /// </summary>
+        private const string VALID_PRODUCT_UPDATE_MESSAGE="Product was updated with success";
+
         private readonly ProductRepository productRepository;
 
         private readonly MaterialRepository materialRepository;
@@ -99,22 +109,18 @@ namespace backend.Controllers {
         }
 
         /// <summary>
-        /// Updates a product with new restrictions
+        /// Updates a product basic information
         /// </summary>
-        /// <param name="jsonData"> JObject that contains all updates in JSON format</param>
-        /// <param name="productID"> Product's ID</param>
-        /// <returns>HTTP Response 400 Bad Request if the product can't be found or if the
-        /// JSON body is flawed;
-        /// HTTP Response 200 Ok if the product is updated successfully</returns>
-        /// TODO Refactor method
+        /// <param name="updateProductData">UpdateProductDTO with the basic information of the product being updated</param>
+        /// <returns>HTTP Response 200;OK if the product was updated with success
+        ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
+        /// </returns>
         [HttpPut("{id}")]
-        public ActionResult updateProduct([FromBody] ProductDTO jsonData) {
-            ProductDTO updatedProductDTO = new core.application.ProductController().updateProduct(jsonData);
-            if (updatedProductDTO == null) {
-                return BadRequest();
-            }
-
-            return Ok();
+        public ActionResult updateProductBasicInformation(long productID,[FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id=productID;
+            if(new core.application.ProductController().updateProductBasicInformation(updateProductData))
+                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
 
         /// <summary>

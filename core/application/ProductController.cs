@@ -44,6 +44,22 @@ namespace core.application {
         }
 
         /// <summary>
+        /// Updates basic information of a product
+        /// </summary>
+        /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
+        /// <returns>boolean true if the update was successful, fasle if not</returns>
+        public bool updateProductBasicInformation(UpdateProductDTO updateProductDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productBeingUpdated=productRepository.find(updateProductDTO.id);
+            bool updatedWithSuccess=false;
+            if(updateProductDTO.reference!=null)
+                updatedWithSuccess&=productBeingUpdated.changeProductReference(updateProductDTO.reference);
+            if(updateProductDTO.designation!=null)
+                updatedWithSuccess&=productBeingUpdated.changeProductDesignation(updateProductDTO.designation);
+            return updatedWithSuccess;
+        }
+
+        /// <summary>
         /// Disables a product
         /// </summary>
         /// <param name="productDTO">ProductDTO with the product data being disabled</param>

@@ -245,6 +245,28 @@ namespace core.domain {
         }
 
         /// <summary>
+        /// Changes the current product reference
+        /// </summary>
+        /// <param name="reference">String with the reference being updated</param>
+        /// <returns>boolean true if the reference update was valid, false if not</returns>
+        public bool changeProductReference(string reference){
+            if(Strings.isNullOrEmpty(reference))return false;
+            this.reference=reference;
+            return true;
+        }
+
+        /// <summary>
+        /// Changes the current product designation
+        /// </summary>
+        /// <param name="designation">String with the designation being updated</param>
+        /// <returns>boolean true if the designation update was valid, false if not</returns>
+        public bool changeProductDesignation(string designation){
+            if(Strings.isNullOrEmpty(designation))return false;
+            this.designation=designation;
+            return true;
+        }
+
+        /// <summary>
         /// Removes a specified width dimension from the current product
         /// </summary>
         /// <param name="widthDimension">Dimension with the width dimension being removed</param>
