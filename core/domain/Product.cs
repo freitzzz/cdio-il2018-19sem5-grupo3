@@ -288,11 +288,18 @@ namespace core.domain {
         public bool removeDepthDimension(Dimension depthDimension){return depthValues.Remove(depthDimension);}
 
         /// <summary>
-        /// Removes a material which the product can be made of from the current product
+        /// Removes a material which the current product can be made of
         /// </summary>
-        /// <param name="material">Material with the material being removed from the materials which the product can be made of</param>
+        /// <param name="material">Material with the material being removed</param>
         /// <returns>boolean true if the material was removed with success, false if not</returns>
         public bool removeMaterial(Material material){return productMaterials.Remove(new ProductMaterial(this,material));}
+
+        /// <summary>
+        /// Removes a component which the current product can be complemented with
+        /// </summary>
+        /// <param name="component">Component with the component being removed</param>
+        /// <returns>boolean true if the component was removed with success, false if not</returns>
+        public bool removeComplementedProduct(Component component){return complementedProducts.Remove(component);}
 
         /// <summary>
         /// Disables the current product

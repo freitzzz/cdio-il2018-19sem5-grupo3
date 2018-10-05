@@ -56,6 +56,7 @@ namespace core.application {
                 updatedWithSuccess&=productBeingUpdated.changeProductReference(updateProductDTO.reference);
             if(updateProductDTO.designation!=null)
                 updatedWithSuccess&=productBeingUpdated.changeProductDesignation(updateProductDTO.designation);
+            if(!updatedWithSuccess)return false;
             updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
         }
@@ -73,6 +74,7 @@ namespace core.application {
 
             if(updateProductDTO.materialsToAdd!=null){
                 IEnumerable<Material> materialsBeingAdded=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToAdd);
+                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
                 foreach(Material material in materialsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addMaterial(material);
             }
@@ -80,10 +82,50 @@ namespace core.application {
             if(!updatedWithSuccess)return false;
 
             if(updateProductDTO.materialsToRemove!=null){
-                IEnumerable<Material> materialsBeingAdded=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToRemove);
-                foreach(Material material in materialsBeingAdded)
+                IEnumerable<Material> materialsBeingRemoved=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToRemove);
+                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                foreach(Material material in materialsBeingRemoved)
                     updatedWithSuccess&=productBeingUpdated.removeMaterial(material);
             }
+
+            if(!updatedWithSuccess)return false;
+
+            updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
+            return updatedWithSuccess;
+        }
+
+        /// <summary>
+        /// Updates the components of a product
+        /// </summary>
+        /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
+        /// <returns>boolean true if the update was successful, fasle if not</returns>
+        public bool updateProductComponents(UpdateProductDTO updateProductDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productBeingUpdated=productRepository.find(updateProductDTO.id);
+            bool updatedWithSuccess=false;
+
+
+            //TODO:DISCUSSION REGARDING COMPONENTS
+
+
+            if(updateProductDTO.componentsToAdd!=null){
+                IEnumerable<Component> componentsBeingAdded=null;
+                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                foreach(Component component in componentsBeingAdded)
+                    updatedWithSuccess&=productBeingUpdated.addComplementedProduct(component);
+            }
+
+            if(!updatedWithSuccess)return false;
+
+            if(updateProductDTO.componentsToRemove!=null){
+                IEnumerable<Component> componentsBeingRemoved=null;
+                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                foreach(Component component in componentsBeingRemoved)
+                    updatedWithSuccess&=productBeingUpdated.removeComplementedProduct(component);
+            }
+
+            if(!updatedWithSuccess)return false;
+
             updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
         }
