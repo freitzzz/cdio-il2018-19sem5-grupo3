@@ -56,6 +56,35 @@ namespace core.application {
                 updatedWithSuccess&=productBeingUpdated.changeProductReference(updateProductDTO.reference);
             if(updateProductDTO.designation!=null)
                 updatedWithSuccess&=productBeingUpdated.changeProductDesignation(updateProductDTO.designation);
+            updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
+            return updatedWithSuccess;
+        }
+
+        /// <summary>
+        /// Updates the materials of a product
+        /// </summary>
+        /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
+        /// <returns>boolean true if the update was successful, fasle if not</returns>
+        public bool updateProductMaterials(UpdateProductDTO updateProductDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            MaterialRepository materialRepository=PersistenceContext.repositories().createMaterialRepository();
+            Product productBeingUpdated=productRepository.find(updateProductDTO.id);
+            bool updatedWithSuccess=false;
+
+            if(updateProductDTO.materialsToAdd!=null){
+                IEnumerable<Material> materialsBeingAdded=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToAdd);
+                foreach(Material material in materialsBeingAdded)
+                    updatedWithSuccess&=productBeingUpdated.addMaterial(material);
+            }
+
+            if(!updatedWithSuccess)return false;
+
+            if(updateProductDTO.materialsToRemove!=null){
+                IEnumerable<Material> materialsBeingAdded=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToRemove);
+                foreach(Material material in materialsBeingAdded)
+                    updatedWithSuccess&=productBeingUpdated.removeMaterial(material);
+            }
+            updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
         }
 

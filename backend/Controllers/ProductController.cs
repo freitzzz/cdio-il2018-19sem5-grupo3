@@ -124,6 +124,21 @@ namespace backend.Controllers {
         }
 
         /// <summary>
+        /// Updates the materials which a product can be made of
+        /// </summary>
+        /// <param name="updateProductData">UpdateProductDTO with the information of the product being updated</param>
+        /// <returns>HTTP Response 200;OK if the product was updated with success
+        ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
+        /// </returns>
+        [HttpPut("{id}/materials")]
+        public ActionResult updateProductMaterials(long productID,[FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id=productID;
+            if(new core.application.ProductController().updateProductMaterials(updateProductData))
+                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
+        }
+
+        /// <summary>
         /// Updates the category of a product
         /// </summary>
         /// <param name="productID">Long with the product ID being updated</param>

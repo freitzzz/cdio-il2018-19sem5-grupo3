@@ -69,7 +69,7 @@ namespace core.domain {
         /// </summary>
         //TODO: Should product materials be a list or a set?
         [NotMapped]
-        public virtual List<ProductMaterial> prodMaterial { get; protected set; }
+        public virtual List<ProductMaterial> productMaterials { get; protected set; }
         /// <summary>
         /// List with the product heigth dimensions
         /// </summary>
@@ -125,9 +125,9 @@ namespace core.domain {
             checkProductCategory(productCategory);
             this.reference = reference;
             this.designation = designation;
-            this.prodMaterial = new List<ProductMaterial>();
+            this.productMaterials = new List<ProductMaterial>();
             foreach (Material mat in materials) {
-                this.prodMaterial.Add(new ProductMaterial(this, mat));
+                this.productMaterials.Add(new ProductMaterial(this, mat));
             }
             this.complementedProducts = new List<Component>();
             this.heightValues = new List<Dimension>(heightDimensions);
@@ -160,9 +160,9 @@ namespace core.domain {
             checkProductCategory(productCategory);
             this.reference = reference;
             this.designation = designation;
-            this.prodMaterial = new List<ProductMaterial>();
+            this.productMaterials = new List<ProductMaterial>();
             foreach (Material mat in materials) {
-                this.prodMaterial.Add(new ProductMaterial(this, mat));
+                this.productMaterials.Add(new ProductMaterial(this, mat));
             }
             this.complementedProducts = new List<Component>(complementedProducts);
             this.heightValues = new List<Dimension>(heightValues);
@@ -192,7 +192,7 @@ namespace core.domain {
             if (!isProductMaterialValidForAddition(productMaterial)) {
                 return false;
             }
-            this.prodMaterial.Add(new ProductMaterial(this, productMaterial));
+            this.productMaterials.Add(new ProductMaterial(this, productMaterial));
             return true;
         }
 
@@ -286,6 +286,13 @@ namespace core.domain {
         /// <param name="depthDimension">Dimension with the depth dimension being removed</param>
         /// <returns>boolean true if the dimension was removed with success, false if not</returns>
         public bool removeDepthDimension(Dimension depthDimension){return depthValues.Remove(depthDimension);}
+
+        /// <summary>
+        /// Removes a material which the product can be made of from the current product
+        /// </summary>
+        /// <param name="material">Material with the material being removed from the materials which the product can be made of</param>
+        /// <returns>boolean true if the material was removed with success, false if not</returns>
+        public bool removeMaterial(Material material){return productMaterials.Remove(new ProductMaterial(this,material));}
 
         /// <summary>
         /// Disables the current product
@@ -387,7 +394,7 @@ namespace core.domain {
             if (productMaterial == null) {
                 return false;
             }
-            foreach (ProductMaterial prodM in this.prodMaterial) {
+            foreach (ProductMaterial prodM in this.productMaterials) {
                 if (prodM.hasMaterial(productMaterial)) {
                     return false;
                 }
