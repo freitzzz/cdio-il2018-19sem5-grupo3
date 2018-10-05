@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using support.domain.ddd;
 using support.utils;
 using core.dto;
+using System.Linq;
 
 namespace core.domain
 {
@@ -25,7 +26,8 @@ namespace core.domain
         /// <summary>
         /// List of values that make up the interval.
         /// </summary>
-        public List<Double> values { get; set; }
+        //*Since EF Core 2.1 does not support collections of primitive types, a wrapper ValueObject class must be used */
+        public virtual List<DoubleValue> values { get; set; }
 
         /// <summary>
         /// Empty constructor for ORM.
@@ -37,7 +39,7 @@ namespace core.domain
         /// </summary>
         /// <param name="values">list of values that make up the interval</param>
         /// <returns>DiscreteDimensionInterval instance</returns>
-        public static DiscreteDimensionInterval valueOf(List<Double> values)
+        public static DiscreteDimensionInterval valueOf(List<double> values)
         {
             return new DiscreteDimensionInterval(values);
         }
@@ -46,7 +48,7 @@ namespace core.domain
         /// Builds a DiscreteDimensionInterval instance
         /// </summary>
         /// <param name="values">list of values that make up the interval</param>
-        private DiscreteDimensionInterval(List<Double> values)
+        private DiscreteDimensionInterval(List<double> values)
         {
 
             if (Collections.isListNull(values))
@@ -59,7 +61,13 @@ namespace core.domain
                 throw new ArgumentException(EMPTY_LIST_REFERENCE);
             }
 
-            this.values = values;
+            List<DoubleValue> doubleValues = new List<DoubleValue>();
+            foreach (double value in values)
+            {
+                doubleValues.Add(value);
+            }
+
+            this.values = doubleValues;
         }
 
         /// <summary>
@@ -81,8 +89,9 @@ namespace core.domain
             }
 
             DiscreteDimensionInterval other = (DiscreteDimensionInterval)obj;
-
-            return this.values.Equals(other.values);
+            //!Equals() on lists tests reference equality
+            //if order does not matter then use All()
+            return this.values.SequenceEqual(other.values);
         }
 
         /// <summary>
@@ -91,7 +100,16 @@ namespace core.domain
         /// <returns>hash code of a DiscreteDimensionInterval instance</returns>
         public override int GetHashCode()
         {
-            return values.GetHashCode();
+            unchecked
+            {
+                int hash = 19;
+
+                foreach(DoubleValue value in values){
+                    hash = hash * 31 + value.GetHashCode();
+                }
+
+                return hash;
+            }
         }
 
         /// <summary>
@@ -107,12 +125,17 @@ namespace core.domain
         /// Builds a DimensionDTO out of a DiscreteDimensionInterval instance
         /// </summary>
         /// <returns>DimensionDTO instance</returns>
-        public DimensionDTO toDTO()
+        public override DimensionDTO toDTO()
         {
             DiscreteDimensionIntervalDTO dto = new DiscreteDimensionIntervalDTO();
 
             dto.id = Id;
-            dto.values = values;
+            dto.values = new List<double>();
+
+            foreach (DoubleValue doubleValue in values)
+            {
+                dto.values.Add(doubleValue);
+            }
 
             return dto;
         }
