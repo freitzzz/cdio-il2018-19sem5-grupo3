@@ -11,7 +11,6 @@ namespace core.domain
     /// </summary>
     public class DiscreteDimensionInterval : Dimension, ValueObject
     {
-        public long Id { get; set; }
 
         /// <summary>
         /// Constant that represents the message that occurs if the list is null
@@ -27,6 +26,11 @@ namespace core.domain
         /// List of values that make up the interval.
         /// </summary>
         public List<Double> values { get; set; }
+
+        /// <summary>
+        /// Empty constructor for ORM.
+        /// </summary>
+        protected DiscreteDimensionInterval() { }
 
         /// <summary>
         /// Returns a new DiscreteDimensionInterval instance

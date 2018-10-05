@@ -56,12 +56,6 @@ namespace core.domain
         private const string INCREMENT_GREATER_THAN_MAX_MIN_DIFFERENCE_REFERENCE = "Increment can't be greater than the difference between the max and min values";
 
         /// <summary>
-        /// Database Identifier
-        /// </summary>
-        /// <value>Get/Set for database identifier</value>
-        public long Id { get; set; }
-
-        /// <summary>
         /// Minimum value of the interval
         /// </summary>
         public double minValue { get; set; }
@@ -73,6 +67,11 @@ namespace core.domain
         /// Increment value of the interval
         /// </summary>
         public double increment { get; set; }
+
+        /// <summary>
+        /// Empty constructor for ORM.
+        /// </summary>
+        protected ContinuousDimensionInterval(){}
 
         /// <summary>
         /// Returns a new ContinuousDimensionInterval instance
@@ -197,7 +196,7 @@ namespace core.domain
         /// Builds a DimensionDTO out of a ContinuousDimensionInterval instance
         /// </summary>
         /// <returns>DimensionDTO instance</returns>
-        public DimensionDTO toDTO()
+        public override DimensionDTO toDTO()
         {
             ContinuousDimensionIntervalDTO dto = new ContinuousDimensionIntervalDTO();
 
