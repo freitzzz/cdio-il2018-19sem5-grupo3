@@ -74,24 +74,21 @@ namespace core.domain {
         /// List with the product heigth dimensions
         /// </summary>
         //TODO: Should product dimensions be a list or a set
-        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configure
         public virtual List<Dimension> heightValues { get; protected set; }
         /// <summary>
         /// List with the product width dimensions
         /// </summary>
         //TODO: Should product dimensions be a list or a set
-        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configured
         public virtual List<Dimension> widthValues { get; protected set; }
         /// <summary>
         /// List with the product depth dimensions
         /// </summary>
         //TODO: Should product restrinctions be a list or a set
-        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configured
         public virtual List<Dimension> depthValues { get; protected set; }
         /// <summary>
         /// ProductCategory with the category which the product belongs to
         /// </summary>
-        public ProductCategory productCategory;
+        public virtual ProductCategory productCategory {get; protected set;}
 
         /// <summary>
         /// Boolean that controls if the current product is available or not
