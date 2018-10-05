@@ -131,6 +131,77 @@ namespace core.application {
         }
 
         /// <summary>
+        /// Updates the dimensions of a product
+        /// </summary>
+        /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
+        /// <returns>boolean true if the update was successful, fasle if not</returns>
+        public bool updateProductDimensions(UpdateProductDTO updateProductDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productBeingUpdated=productRepository.find(updateProductDTO.id);
+            bool updatedWithSuccess=false;
+
+            if(updateProductDTO.dimensionsToAdd.widthDimensionDTOs!=null){
+                IEnumerable<Dimension> widthDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.widthDimensionDTOs);
+                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                foreach(Dimension widthDimension in widthDimensionsBeingAdded)
+                    updatedWithSuccess&=productBeingUpdated.addWidthDimension(widthDimension);
+                if(!updatedWithSuccess)return false;
+            }
+
+            if(updateProductDTO.dimensionsToAdd.heightDimensionDTOs!=null){
+                IEnumerable<Dimension> heightDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.heightDimensionDTOs);
+                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                foreach(Dimension heightDimension in heightDimensionsBeingAdded)
+                    updatedWithSuccess&=productBeingUpdated.addHeightDimension(heightDimension);
+                if(!updatedWithSuccess)return false;
+            }
+
+            if(updateProductDTO.dimensionsToAdd.depthDimensionDTOs!=null){
+                IEnumerable<Dimension> depthDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.depthDimensionDTOs);
+                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                foreach(Dimension depthDimension in depthDimensionsBeingAdded)
+                    updatedWithSuccess&=productBeingUpdated.addDepthDimension(depthDimension);
+                if(!updatedWithSuccess)return false;
+            }
+
+            
+            //TODO:FIX DIMENSIONS RETRIEVAL
+
+
+            if(updateProductDTO.dimensionsToRemove.widthDimensionDTOs!=null){
+                IEnumerable<Dimension> widthDimensionsBeingRemoved=null;
+                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                if(widthDimensionsBeingRemoved!=null)
+                    foreach(Dimension widthDimension in widthDimensionsBeingRemoved)
+                        updatedWithSuccess&=productBeingUpdated.removeWidthDimension(widthDimension);
+                if(!updatedWithSuccess)return false;
+            }
+
+            if(updateProductDTO.dimensionsToRemove.heightDimensionDTOs!=null){
+                IEnumerable<Dimension> heightDimensionsBeingRemoved=null;
+                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                if(heightDimensionsBeingRemoved!=null)
+                    foreach(Dimension heightDimension in heightDimensionsBeingRemoved)
+                        updatedWithSuccess&=productBeingUpdated.removeHeightDimension(heightDimension);
+                if(!updatedWithSuccess)return false;
+            }
+
+            if(updateProductDTO.dimensionsToRemove.depthDimensionDTOs!=null){
+                IEnumerable<Dimension> depthDimensionsBeingRemoved=null;
+                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                if(depthDimensionsBeingRemoved!=null)
+                    foreach(Dimension depthDimension in depthDimensionsBeingRemoved)
+                        updatedWithSuccess&=productBeingUpdated.removeDepthDimension(depthDimension);
+                if(!updatedWithSuccess)return false;
+            }
+
+            if(!updatedWithSuccess)return false;
+
+            updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
+            return updatedWithSuccess;
+        }
+
+        /// <summary>
         /// Disables a product
         /// </summary>
         /// <param name="productDTO">ProductDTO with the product data being disabled</param>

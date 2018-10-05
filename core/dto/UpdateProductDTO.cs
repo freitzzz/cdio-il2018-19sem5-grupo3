@@ -33,10 +33,10 @@ namespace core.dto{
         [DataMember(Name="add")]
         public List<MaterialDTO> materialsToAdd{get;set;}
         /// <summary>
-        /// List with the dimensions being added
+        /// DimensionListDTO with the dimensions being added
         /// </summary>
         [DataMember(Name="add")]
-        public List<DimensionDTO> dimensionsToAdd{get;set;}
+        public DimensionsListDTO dimensionsToAdd{get;set;}
 
         /// <summary>
         /// List with the components being removed
@@ -49,9 +49,9 @@ namespace core.dto{
         [DataMember(Name="remove")]
         public List<MaterialDTO> materialsToRemove{get;set;}
         /// <summary>
-        /// List with the dimensions being removed
+        /// DimensionListDTO with the dimensions being removed
         /// </summary>
         [DataMember(Name="remove")]
-        public List<DimensionDTO> dimensionsToRemove{get;set;}
+        public DimensionsListDTO dimensionsToRemove{get;set;}
     }
 }
