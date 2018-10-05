@@ -207,9 +207,9 @@ namespace backend.Controllers {
         public ActionResult defineProductDimensions([FromBody] DimensionsListDTO dimensionsDTO, long productID){
             ProductDTO productDTO = new ProductDTO();
             productDTO.id = productID;
-            productDTO.heightDimensions = dimensionsDTO.heightDimensionDTOs;
-            productDTO.widthDimensions = dimensionsDTO.widthDimensionDTOs;
-            productDTO.depthDimensions = dimensionsDTO.depthDimensionDTOs;
+            productDTO.dimensions.heightDimensionDTOs = dimensionsDTO.heightDimensionDTOs;
+            productDTO.dimensions.widthDimensionDTOs = dimensionsDTO.widthDimensionDTOs;
+            productDTO.dimensions.depthDimensionDTOs = dimensionsDTO.depthDimensionDTOs;
             bool dimensionsDefinedWithSuccess = new core.application.ProductController().defineProductDimensions(productDTO);
             if(dimensionsDefinedWithSuccess){
                 return Ok();

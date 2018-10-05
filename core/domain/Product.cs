@@ -331,13 +331,13 @@ namespace core.domain {
             dto.id = this.Id;
             dto.designation = this.designation;
             dto.reference = this.reference;
-
-            dto.heightDimensions = new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
-            dto.widthDimensions = new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
-            dto.depthDimensions = new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
+            dto.dimensions.heightDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues)); 
+            dto.dimensions.widthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
+            dto.dimensions.depthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
             dto.productCategory = productCategory.toDTO();
 
-            if (this.complementedProducts != null) {
+            //TODO: remove null check once complement database mappping is complete
+            if(complementedProducts != null && complementedProducts.Count >= 0){
                 List<ComponentDTO> complementDTOList = new List<ComponentDTO>();
 
                 foreach (Component complement in complementedProducts) {
