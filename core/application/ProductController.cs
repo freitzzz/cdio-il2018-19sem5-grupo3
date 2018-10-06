@@ -36,12 +36,17 @@ namespace core.application {
         public bool updateProductBasicInformation(UpdateProductDTO updateProductDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productBeingUpdated=productRepository.find(updateProductDTO.id);
-            bool updatedWithSuccess=false;
-            if(updateProductDTO.reference!=null)
+            bool updatedWithSuccess=true;
+            bool perfomedAtLeastOneUpdate=false;
+            if(updateProductDTO.reference!=null){
                 updatedWithSuccess&=productBeingUpdated.changeProductReference(updateProductDTO.reference);
-            if(updateProductDTO.designation!=null)
+                perfomedAtLeastOneUpdate=true;
+            }
+            if(updateProductDTO.designation!=null){
                 updatedWithSuccess&=productBeingUpdated.changeProductDesignation(updateProductDTO.designation);
-            if(!updatedWithSuccess)return false;
+                perfomedAtLeastOneUpdate=true;
+            }
+            if(!perfomedAtLeastOneUpdate||!updatedWithSuccess)return false;
             updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
         }
@@ -55,13 +60,15 @@ namespace core.application {
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             MaterialRepository materialRepository=PersistenceContext.repositories().createMaterialRepository();
             Product productBeingUpdated=productRepository.find(updateProductDTO.id);
-            bool updatedWithSuccess=false;
-
+            bool updatedWithSuccess=true;
+            bool perfomedAtLeastOneUpdate=false;
+            
             if(updateProductDTO.materialsToAdd!=null){
                 IEnumerable<Material> materialsBeingAdded=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToAdd);
                 //TODO:CHECK DTO AND ENTITY LISTS LENGTH
                 foreach(Material material in materialsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addMaterial(material);
+                perfomedAtLeastOneUpdate=true;
             }
 
             if(!updatedWithSuccess)return false;
@@ -71,9 +78,10 @@ namespace core.application {
                 //TODO:CHECK DTO AND ENTITY LISTS LENGTH
                 foreach(Material material in materialsBeingRemoved)
                     updatedWithSuccess&=productBeingUpdated.removeMaterial(material);
+                perfomedAtLeastOneUpdate=true;
             }
 
-            if(!updatedWithSuccess)return false;
+            if(!perfomedAtLeastOneUpdate||!updatedWithSuccess)return false;
 
             updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
@@ -87,7 +95,8 @@ namespace core.application {
         public bool updateProductComponents(UpdateProductDTO updateProductDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productBeingUpdated=productRepository.find(updateProductDTO.id);
-            bool updatedWithSuccess=false;
+            bool updatedWithSuccess=true;
+            bool perfomedAtLeastOneUpdate=false;
 
 
             //TODO:DISCUSSION REGARDING COMPONENTS
@@ -98,6 +107,7 @@ namespace core.application {
                 //TODO:CHECK DTO AND ENTITY LISTS LENGTH
                 foreach(Component component in componentsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addComplementedProduct(component);
+                perfomedAtLeastOneUpdate=true;
             }
 
             if(!updatedWithSuccess)return false;
@@ -107,9 +117,10 @@ namespace core.application {
                 //TODO:CHECK DTO AND ENTITY LISTS LENGTH
                 foreach(Component component in componentsBeingRemoved)
                     updatedWithSuccess&=productBeingUpdated.removeComplementedProduct(component);
+                perfomedAtLeastOneUpdate=true;
             }
 
-            if(!updatedWithSuccess)return false;
+            if(!perfomedAtLeastOneUpdate||!updatedWithSuccess)return false;
 
             updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
@@ -123,13 +134,14 @@ namespace core.application {
         public bool updateProductDimensions(UpdateProductDTO updateProductDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productBeingUpdated=productRepository.find(updateProductDTO.id);
-            bool updatedWithSuccess=false;
-
+            bool updatedWithSuccess=true;
+            bool perfomedAtLeastOneUpdate=false;
             if(updateProductDTO.dimensionsToAdd.widthDimensionDTOs!=null){
                 IEnumerable<Dimension> widthDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.widthDimensionDTOs);
                 //TODO:CHECK DTO AND ENTITY LISTS LENGTH
                 foreach(Dimension widthDimension in widthDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addWidthDimension(widthDimension);
+                perfomedAtLeastOneUpdate=true;
                 if(!updatedWithSuccess)return false;
             }
 
@@ -138,6 +150,7 @@ namespace core.application {
                 //TODO:CHECK DTO AND ENTITY LISTS LENGTH
                 foreach(Dimension heightDimension in heightDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addHeightDimension(heightDimension);
+                perfomedAtLeastOneUpdate=true;
                 if(!updatedWithSuccess)return false;
             }
 
@@ -146,6 +159,7 @@ namespace core.application {
                 //TODO:CHECK DTO AND ENTITY LISTS LENGTH
                 foreach(Dimension depthDimension in depthDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addDepthDimension(depthDimension);
+                perfomedAtLeastOneUpdate=true;
                 if(!updatedWithSuccess)return false;
             }
 
@@ -159,6 +173,7 @@ namespace core.application {
                 if(widthDimensionsBeingRemoved!=null)
                     foreach(Dimension widthDimension in widthDimensionsBeingRemoved)
                         updatedWithSuccess&=productBeingUpdated.removeWidthDimension(widthDimension);
+               perfomedAtLeastOneUpdate=true;
                 if(!updatedWithSuccess)return false;
             }
 
@@ -168,6 +183,7 @@ namespace core.application {
                 if(heightDimensionsBeingRemoved!=null)
                     foreach(Dimension heightDimension in heightDimensionsBeingRemoved)
                         updatedWithSuccess&=productBeingUpdated.removeHeightDimension(heightDimension);
+                perfomedAtLeastOneUpdate=true;
                 if(!updatedWithSuccess)return false;
             }
 
@@ -177,10 +193,11 @@ namespace core.application {
                 if(depthDimensionsBeingRemoved!=null)
                     foreach(Dimension depthDimension in depthDimensionsBeingRemoved)
                         updatedWithSuccess&=productBeingUpdated.removeDepthDimension(depthDimension);
+                perfomedAtLeastOneUpdate=true;
                 if(!updatedWithSuccess)return false;
             }
 
-            if(!updatedWithSuccess)return false;
+            if(!perfomedAtLeastOneUpdate||!updatedWithSuccess)return false;
 
             updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
@@ -194,12 +211,14 @@ namespace core.application {
         public bool updateProductCategory(UpdateProductDTO updateProductDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productBeingUpdated=productRepository.find(updateProductDTO.id);
-            bool updatedWithSuccess=false;
+            bool updatedWithSuccess=true;
+            bool perfomedAtLeastOneUpdate=false;
             if(updateProductDTO.productCategoryToUpdate!=null){
                 ProductCategory productCategory=PersistenceContext.repositories().createProductCategoryRepository().find(updateProductDTO.productCategoryToUpdate.id);
                 updatedWithSuccess&=productBeingUpdated.changeProductCategory(productCategory);
+                perfomedAtLeastOneUpdate=true;
             }
-            if(!updatedWithSuccess)return false;
+            if(!perfomedAtLeastOneUpdate||!updatedWithSuccess)return false;
             updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
         }
@@ -246,12 +265,12 @@ namespace core.application {
         }
 
         /// <summary>
-        /// Fetches a product from the product repository given an ID
+        /// Returns a product which has a certain persistence id
         /// </summary>
-        /// <param name="productID">the product's ID</param>
-        /// <returns></returns>
-        public ProductDTO findProductByID(long productID) {
-            return PersistenceContext.repositories().createProductRepository().find(productID).toDTO();
+        /// <param name="productDTO">ProductDTO with the product information</param>
+        /// <returns>ProductDTO with the product which has a certain persistence id</returns>
+        public ProductDTO findProductByID(ProductDTO productDTO) {
+            return PersistenceContext.repositories().createProductRepository().find(productDTO.id).toDTO();
         }
 
         public ProductDTO findByReference(string reference) {

@@ -6,25 +6,28 @@ namespace core.dto{
     /// <summary>
     /// Simple DTO class used to transpor data required for products updates
     /// </summary>
-    public sealed class UpdateProductDTO{
+    public class UpdateProductDTO{
         /// <summary>
         /// ID of the product being updated
         /// </summary>
-        public long id;
+        [DataMember]
+        public long id{get;set;}
 
         /// <summary>
         /// String with the product reference being updated
         /// </summary>
-        public string reference;
+        [DataMember]
+        public string reference{get;set;}
         /// <summary>
         /// String with the product designation being updated
         /// </summary>
-        public string designation;
+        [DataMember]
+        public string designation{get;set;}
         /// <summary>
         /// ProductCategoryDTO with the category being updated
         /// </summary>
         [DataMember(Name="category")]
-        public ProductCategoryDTO productCategoryToUpdate;
+        public ProductCategoryDTO productCategoryToUpdate{get;set;}
         
         /// <summary>
         /// List with the components being added
