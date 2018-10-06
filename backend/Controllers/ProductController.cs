@@ -202,20 +202,5 @@ namespace backend.Controllers {
                 return BadRequest();
             }
         }
-
-        [HttpPut("{id}/dimensions")]
-        public ActionResult defineProductDimensions([FromBody] DimensionsListDTO dimensionsDTO, long productID){
-            ProductDTO productDTO = new ProductDTO();
-            productDTO.id = productID;
-            productDTO.dimensions.heightDimensionDTOs = dimensionsDTO.heightDimensionDTOs;
-            productDTO.dimensions.widthDimensionDTOs = dimensionsDTO.widthDimensionDTOs;
-            productDTO.dimensions.depthDimensionDTOs = dimensionsDTO.depthDimensionDTOs;
-            bool dimensionsDefinedWithSuccess = new core.application.ProductController().defineProductDimensions(productDTO);
-            if(dimensionsDefinedWithSuccess){
-                return Ok();
-            }else{
-                return BadRequest();
-            }
-        }
     }
 }
