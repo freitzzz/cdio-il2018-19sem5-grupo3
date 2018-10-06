@@ -13,7 +13,7 @@ namespace core.dto
     public class DiscreteDimensionIntervalDTO : DimensionDTO
     {
 
-        [DataMember]
+        [DataMember (Order = 2)]
         /// <summary>
         /// List of values that the dimension can have
         /// </summary>

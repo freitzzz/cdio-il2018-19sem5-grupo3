@@ -16,7 +16,7 @@ namespace core.dto
         /// Value that the dimension has
         /// </summary>
         /// <value>Get/Set of the value</value>
-        [DataMember]
+        [DataMember (Order = 2)]
         public double value { get; set; }
 
         /// <summary>
