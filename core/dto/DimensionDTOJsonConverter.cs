@@ -9,7 +9,7 @@ namespace core.dto
     /// Converts a DimensionDTO into a concrete type.
     /// Part of the solution presented <a href = https://stackoverflow.com/a/30579193>here</a>
     /// </summary>
-    public class DimensioDTOJsonConverter : JsonConverter
+    public class DimensionDTOJsonConverter : JsonConverter
     {
 
         static JsonSerializerSettings subclassConversion = new JsonSerializerSettings() { ContractResolver = new DimensionDTOContractResolver() };
