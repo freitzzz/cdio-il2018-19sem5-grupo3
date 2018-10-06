@@ -4,14 +4,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using backend.config;
+using System.Security;
+using Microsoft.EntityFrameworkCore;
+using backend.persistence.ef;
 
 namespace backend
 {
     public class Startup
     {
+        private IHostingEnvironment env;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+        }
+
+        public Startup(IHostingEnvironment env)
+        {
+            this.env = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -49,6 +59,25 @@ namespace backend
             app.UseCookiePolicy();*/
 
             app.UseMvc();
+        }
+
+        /// <summary>
+        /// Method that is overriden by integration test classes to use a test database
+        /// </summary>
+        /// <param name="services">Test database services</param>
+        public virtual void setupDatabase(IServiceCollection services)
+        {
+            services.AddDbContext<MyCContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("MyCContext"),
+            sqlOptions => sqlOptions.MigrationsAssembly("backend")));
+        }
+
+        /// <summary>
+        /// Method that is overriden by integration test classes to use a test database
+        /// </summary>
+        /// <param name="context">Test database context</param>
+        public virtual void ensureDatabaseIsCreated(MyCContext context){
+            context.Database.Migrate();
         }
     }
 }

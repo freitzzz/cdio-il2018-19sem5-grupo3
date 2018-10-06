@@ -14,7 +14,7 @@ namespace core.domain {
     */
     public class Finish : ValueObject, DTOAble<FinishDTO> {
 
-        public long Id { get; set; }
+        public long Id { get; internal set;}
 
         /**
         <summary>
@@ -28,7 +28,7 @@ namespace core.domain {
             String with the Finish's description
         </summary>
         */
-        public string description { get; set; }
+        public string description { get; internal set; }
 
         /// <summary>
         /// Empty constructor for ORM.

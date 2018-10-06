@@ -45,7 +45,7 @@ namespace core.domain {
          */
         private const string INVALID_FINISHES_COLORS = "The Material's finishes are not valid!";
 
-        public long Id { get; set; }
+        public long Id { get; internal set; } //the id should have an internal set, since DTO's have to be able to set them
 
         /**
         <summary>
@@ -59,21 +59,21 @@ namespace core.domain {
             String with the Material's designation.
         </summary>
         */
-        public string designation { get; set; }
+        public string designation { get; protected set; }
 
         /**
         <summary>
             List with all the Material's colors.
         </summary>
         **/
-        public virtual List<Color> Colors { get; set; }
+        public virtual List<Color> Colors { get; protected set; }
 
         /**
          <summary>
              List with all the Material's finishes.
          </summary>
          **/
-        public virtual List<Finish> Finishes { get; set; }
+        public virtual List<Finish> Finishes { get; protected set; }
 
 
         /// <summary>

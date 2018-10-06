@@ -15,6 +15,7 @@ using support.utils;
 using core.persistence;
 using core.dto;
 using backend.utils;
+using System.Runtime.Serialization;
 
 namespace backend.Controllers {
 
@@ -35,6 +36,16 @@ namespace backend.Controllers {
         /// </summary>
         private const string NO_PRODUCTS_FOUND_REFERENCE = "No products found";
 
+        /// <summary>
+        /// Constant that represents the message that ocurres if the update of a product fails
+        /// </summary>
+        private const string INVALID_PRODUCT_UPDATE_MESSAGE="An error occured while updating the product";
+
+        /// <summary>
+        /// Constant that represents the message that ocurres if the update of a product is successful
+        /// </summary>
+        private const string VALID_PRODUCT_UPDATE_MESSAGE="Product was updated with success";
+
         private readonly ProductRepository productRepository;
 
         private readonly MaterialRepository materialRepository;
@@ -45,32 +56,13 @@ namespace backend.Controllers {
         }
 
         /// <summary>
-        /// Finds a product by ID
-        /// </summary>
-        /// <param name="productID"> id of the product</param>
-        /// <returns>HTTP Response 400 Bad Request if a product with the id isn't found;
-        /// HTTP Response 200 Ok with the product's info in JSON format </returns>
-        [HttpGet("{id}")]
-        public ActionResult<ProductDTO> findProductByID(long productID) {
-            ProductDTO productDTO = new core.application.ProductController(productRepository, materialRepository).findProductByID(productID);
-            if (productDTO == null) {
-                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
-            }
-
-            return Ok(productDTO);
-        }
-
-
-
-
-        /// <summary>
         /// Finds all products
         /// </summary>
         /// <returns>HTTP Response 400 Bad Request if no products are found;
         /// HTTP Response 200 Ok with the info of all products in JSON format </returns>
         [HttpGet]
         public ActionResult<List<ProductDTO>> findAll() {
-            List<ProductDTO> allProductsDTO = new core.application.ProductController(productRepository, materialRepository).findAllProducts();
+            List<ProductDTO> allProductsDTO = new core.application.ProductController().findAllProducts();
 
             if (allProductsDTO == null) {
                 return BadRequest(NO_PRODUCTS_FOUND_REFERENCE);
@@ -88,100 +80,125 @@ namespace backend.Controllers {
         ///         <br>See MyC REST API documentation for a better overview
         /// </returns>
         [HttpPost]
-        public ActionResult<ProductDTO> addProduct([FromBody] ProductDTO jsonData) {
-
-            ProductDTO productDTO = new core.application.ProductController(productRepository, materialRepository).addProduct(jsonData);
-
-            if (productDTO != null) {
-                return Ok(productDTO);
-            } else {
-                //TODO: INFORM BETTER BAD REQUESTES
-                return BadRequest("{\"Message\":\"An error ocurred while creating the product\"}");
-            }
-        }
-
-        /// <summary>
-        /// Updates a product with new restrictions
-        /// </summary>
-        /// <param name="jsonData"> JObject that contains all updates in JSON format</param>
-        /// <param name="productID"> Product's ID</param>
-        /// <returns>HTTP Response 400 Bad Request if the product can't be found or if the
-        /// JSON body is flawed;
-        /// HTTP Response 200 Ok if the product is updated successfully</returns>
-        /// TODO Refactor method
-        [HttpPut("{id}")]
-        public ActionResult updateProduct([FromBody] ProductDTO jsonData) {
-            ProductDTO updatedProductDTO = new core.application.ProductController(productRepository, materialRepository).updateProduct(jsonData);
-            if (updatedProductDTO == null) {
+        public ActionResult<ProductDTO> addProduct([FromBody]ProductDTO productData){
+            ProductDTO createdProductDTO=new core.application.ProductController().addProduct(productData);
+            if(createdProductDTO!=null){
+                return Created(Request.Path,createdProductDTO);
+            }else{
                 return BadRequest();
             }
-
-            return Ok();
         }
 
         /// <summary>
-        /// Updates the category of a product
+        /// Finds a product by ID
         /// </summary>
-        /// <param name="productID">Long with the product ID being updated</param>
-        /// <param name="productCategoryDTO">ProductCategoryDTO with the category being updated on the product information</param>
-        /// <returns>HTTP Response 200;OK if the product category was updated with success
-        ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product category
+        /// <param name="id"> id of the product</param>
+        /// <returns>HTTP Response 400 Bad Request if a product with the id isn't found;
+        /// HTTP Response 200 Ok with the product's info in JSON format </returns>
+        [HttpGet("{id}",Name="GetProduct")]
+        public ActionResult<ProductDTO> findById(long id) {
+            ProductDTO productDTOX=new ProductDTO();
+            productDTOX.id=id;
+            ProductDTO productDTOY = new core.application.ProductController().findProductByID(productDTOX);
+            if (productDTOY == null) {
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }
+            return Ok(productDTOY);
+        }
+
+        /// <summary>
+        /// Updates a product basic information
+        /// </summary>
+        /// <param name="updateProductData">UpdateProductDTO with the basic information of the product being updated</param>
+        /// <returns>HTTP Response 200;OK if the product was updated with success
+        ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
+        /// </returns>
+        [HttpPut("{id}")]
+        public ActionResult updateProductBasicInformation(long id,[FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id=id;
+            if(new core.application.ProductController().updateProductBasicInformation(updateProductData))
+                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
+        }
+
+        /// <summary>
+        /// Updates the materials which a product can be made of
+        /// </summary>
+        /// <param name="updateProductData">UpdateProductDTO with the information of the product being updated</param>
+        /// <returns>HTTP Response 200;OK if the product was updated with success
+        ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
+        /// </returns>
+        [HttpPut("{id}/materials")]
+        public ActionResult updateProductMaterials(long id,[FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id=id;
+            if(new core.application.ProductController().updateProductMaterials(updateProductData))
+                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
+        }
+
+        /// <summary>
+        /// Updates the components which a product can be complemented with
+        /// </summary>
+        /// <param name="updateProductData">UpdateProductDTO with the information of the product being updated</param>
+        /// <returns>HTTP Response 200;OK if the product was updated with success
+        ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
+        /// </returns>
+        [HttpPut("{id}/components")]
+        public ActionResult updateProductComponents(long id,[FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id=id;
+            if(new core.application.ProductController().updateProductComponents(updateProductData))
+                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
+        }
+
+        /// <summary>
+        /// Updates the dimensions of a product
+        /// </summary>
+        /// <param name="updateProductData">UpdateProductDTO with the information of the product being updated</param>
+        /// <returns>HTTP Response 200;OK if the product was updated with success
+        ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
+        /// </returns>
+        [HttpPut("{id}/dimensions")]
+        public ActionResult updateProductDimensions(long id,[FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id=id;
+            if(new core.application.ProductController().updateProductDimensions(updateProductData))
+                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
+        }
+
+        /// <summary>
+        /// Updates the dimensions of a product
+        /// </summary>
+        /// <param name="updateProductData">UpdateProductDTO with the information of the product being updated</param>
+        /// <returns>HTTP Response 200;OK if the product was updated with success
+        ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
         /// </returns>
         [HttpPut("{id}/category")]
-        public ActionResult<JSONMessageService> updateProductCategory(long productID,[FromBody]ProductCategoryDTO productCategoryDTO){
-            ProductDTO productDTO=new ProductDTO();
-            productDTO.id=productID;
-            bool updatedWithSucess=new core.application.ProductController(productRepository,materialRepository).updateProductCategory(productDTO,productCategoryDTO);
-            //TODO: Updates should throw an exception with the detailed error if it wasn't possible to update
-            if(updatedWithSucess){
-                return Ok(new JSONMessageService("Product category was updated with success"));
-            }else{
-                return BadRequest(new JSONMessageService("An error occured while updating the product category"));
-            }
+        public ActionResult updateProductCategory(long id,[FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id=id;
+            if(new core.application.ProductController().updateProductCategory(updateProductData))
+                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
+
         /// <summary>
         /// Disables a product
         /// </summary>
-        /// <param name="productID">Long with the product being disabled ID</param>
+        /// <param name="id">Long with the product being disabled ID</param>
         /// <returns>HTTP Response 204;No Content if the product was disabled with success
         ///      <br>HTTP Response 400;Bad Request if an error occured while disabling the product
         /// </returns>
         /// 
         [HttpDelete("{id}")]
-        public ActionResult disableProduct(long productID){
+        public ActionResult disableProduct(long id){
             ProductDTO productDTO=new ProductDTO();
-            productDTO.id=productID;
-            bool disabledWithSuccess=new core.application.ProductController(productRepository,materialRepository).disableProduct(productDTO);
+            productDTO.id=id;
+            bool disabledWithSuccess=new core.application.ProductController().disableProduct(productDTO);
             if(disabledWithSuccess){
                 return NoContent();
             }else{
                 return BadRequest();
             }
         }
-
-        [HttpPut("{id}/dimensions")]
-        public ActionResult defineProductDimensions([FromBody] DimensionsListDTO dimensionsDTO, long productID){
-            ProductDTO productDTO = new ProductDTO();
-            productDTO.id = productID;
-            productDTO.heightDimensions = dimensionsDTO.heightDimensionDTOs;
-            productDTO.widthDimensions = dimensionsDTO.widthDimensionDTOs;
-            productDTO.depthDimensions = dimensionsDTO.depthDimensionDTOs;
-            bool dimensionsDefinedWithSuccess = new core.application.ProductController(productRepository,materialRepository).defineProductDimensions(productDTO);
-            if(dimensionsDefinedWithSuccess){
-                return Ok();
-            }else{
-                return BadRequest();
-            }
-        }
-
-        /// <summary>
-        /// ProductObject class to help the deserialization of a product's updates from JSON format
-        /// </summary>
-        public class DimensionsListDTO {
-            public List<DimensionDTO> heightDimensionDTOs { get; set; }
-            public List<DimensionDTO> widthDimensionDTOs {get;set;}
-            public List<DimensionDTO> depthDimensionDTOs {get;set;}
-        }
-
     }
 }

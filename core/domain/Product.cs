@@ -48,55 +48,52 @@ namespace core.domain {
         /// <summary>
         /// Long property with the persistence iD
         /// </summary>
-        public long Id { get; private set; }
+        public long Id { get; internal set; }   //the id should have an internal set, since DTO's have to be able to set them
 
         /// <summary>
         /// String with the product reference
         /// </summary>
-        public string reference { get; set; }
+        public string reference { get; protected set; }
         /// <summary>
         /// String with the product designation
         /// </summary>
-        public string designation { get; set; }
+        public string designation { get; protected set; }
         /// <summary>
         /// List with the components which the current product can be complemented by
         /// </summary>
         //TODO: Should complemented products be a list and not a set?
         [NotMapped]
-        public virtual List<Component> complementedProducts { get; set; }
+        public virtual List<Component> complementedProducts { get; protected set; }
         /// <summary>
         /// List with the materials which the product can be made of
         /// </summary>
         //TODO: Should product materials be a list or a set?
         [NotMapped]
-        public virtual List<ProductMaterial> prodMaterial { get; set; }
+        public virtual List<ProductMaterial> productMaterials { get; protected set; }
         /// <summary>
         /// List with the product heigth dimensions
         /// </summary>
         //TODO: Should product dimensions be a list or a set
-        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configure
-        public virtual List<Dimension> heightValues { get; set; }
+        public virtual List<Dimension> heightValues { get; protected set; }
         /// <summary>
         /// List with the product width dimensions
         /// </summary>
         //TODO: Should product dimensions be a list or a set
-        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configured
-        public virtual List<Dimension> widthValues { get; set; }
+        public virtual List<Dimension> widthValues { get; protected set; }
         /// <summary>
         /// List with the product depth dimensions
         /// </summary>
         //TODO: Should product restrinctions be a list or a set
-        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configured
-        public virtual List<Dimension> depthValues { get; set; }
+        public virtual List<Dimension> depthValues { get; protected set; }
         /// <summary>
         /// ProductCategory with the category which the product belongs to
         /// </summary>
-        public ProductCategory productCategory;
+        public virtual ProductCategory productCategory {get; protected set;}
 
         /// <summary>
         /// Boolean that controls if the current product is available or not
         /// </summary>
-        public bool isAvailable { get; set; }
+        public bool isAvailable { get; protected set; }
 
         /// <summary>
         /// Empty constructor used by ORM.
@@ -125,15 +122,16 @@ namespace core.domain {
             checkProductCategory(productCategory);
             this.reference = reference;
             this.designation = designation;
-            this.prodMaterial = new List<ProductMaterial>();
+            this.productMaterials = new List<ProductMaterial>();
             foreach (Material mat in materials) {
-                this.prodMaterial.Add(new ProductMaterial(this, mat));
+                this.productMaterials.Add(new ProductMaterial(this, mat));
             }
             this.complementedProducts = new List<Component>();
             this.heightValues = new List<Dimension>(heightDimensions);
             this.widthValues = new List<Dimension>(widthDimensions);
             this.depthValues = new List<Dimension>(depthDimensions);
             this.productCategory = productCategory;
+            this.isAvailable=true;
         }
 
         /// <summary>
@@ -160,15 +158,16 @@ namespace core.domain {
             checkProductCategory(productCategory);
             this.reference = reference;
             this.designation = designation;
-            this.prodMaterial = new List<ProductMaterial>();
+            this.productMaterials = new List<ProductMaterial>();
             foreach (Material mat in materials) {
-                this.prodMaterial.Add(new ProductMaterial(this, mat));
+                this.productMaterials.Add(new ProductMaterial(this, mat));
             }
             this.complementedProducts = new List<Component>(complementedProducts);
             this.heightValues = new List<Dimension>(heightValues);
             this.widthValues = new List<Dimension>(widthValues);
             this.depthValues = new List<Dimension>(depthValues);
             this.productCategory = productCategory;
+            this.isAvailable=true;
         }
 
         /// <summary>
@@ -192,7 +191,7 @@ namespace core.domain {
             if (!isProductMaterialValidForAddition(productMaterial)) {
                 return false;
             }
-            this.prodMaterial.Add(new ProductMaterial(this, productMaterial));
+            this.productMaterials.Add(new ProductMaterial(this, productMaterial));
             return true;
         }
 
@@ -245,6 +244,28 @@ namespace core.domain {
         }
 
         /// <summary>
+        /// Changes the current product reference
+        /// </summary>
+        /// <param name="reference">String with the reference being updated</param>
+        /// <returns>boolean true if the reference update was valid, false if not</returns>
+        public bool changeProductReference(string reference){
+            if(Strings.isNullOrEmpty(reference)||this.reference.Equals(reference))return false;
+            this.reference=reference;
+            return true;
+        }
+
+        /// <summary>
+        /// Changes the current product designation
+        /// </summary>
+        /// <param name="designation">String with the designation being updated</param>
+        /// <returns>boolean true if the designation update was valid, false if not</returns>
+        public bool changeProductDesignation(string designation){
+            if(Strings.isNullOrEmpty(designation)||this.designation.Equals(designation))return false;
+            this.designation=designation;
+            return true;
+        }
+
+        /// <summary>
         /// Removes a specified width dimension from the current product
         /// </summary>
         /// <param name="widthDimension">Dimension with the width dimension being removed</param>
@@ -264,6 +285,20 @@ namespace core.domain {
         /// <param name="depthDimension">Dimension with the depth dimension being removed</param>
         /// <returns>boolean true if the dimension was removed with success, false if not</returns>
         public bool removeDepthDimension(Dimension depthDimension){return depthValues.Remove(depthDimension);}
+
+        /// <summary>
+        /// Removes a material which the current product can be made of
+        /// </summary>
+        /// <param name="material">Material with the material being removed</param>
+        /// <returns>boolean true if the material was removed with success, false if not</returns>
+        public bool removeMaterial(Material material){return productMaterials.Remove(new ProductMaterial(this,material));}
+
+        /// <summary>
+        /// Removes a component which the current product can be complemented with
+        /// </summary>
+        /// <param name="component">Component with the component being removed</param>
+        /// <returns>boolean true if the component was removed with success, false if not</returns>
+        public bool removeComplementedProduct(Component component){return complementedProducts.Remove(component);}
 
         /// <summary>
         /// Disables the current product
@@ -298,13 +333,13 @@ namespace core.domain {
             dto.id = this.Id;
             dto.designation = this.designation;
             dto.reference = this.reference;
-
-            dto.heightDimensions = new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
-            dto.widthDimensions = new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
-            dto.depthDimensions = new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
+            dto.dimensions.heightDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues)); 
+            dto.dimensions.widthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
+            dto.dimensions.depthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
             dto.productCategory = productCategory.toDTO();
 
-            if (this.complementedProducts != null) {
+            //TODO: remove null check once complement database mappping is complete
+            if(complementedProducts != null && complementedProducts.Count >= 0){
                 List<ComponentDTO> complementDTOList = new List<ComponentDTO>();
 
                 foreach (Component complement in complementedProducts) {
@@ -365,7 +400,7 @@ namespace core.domain {
             if (productMaterial == null) {
                 return false;
             }
-            foreach (ProductMaterial prodM in this.prodMaterial) {
+            foreach (ProductMaterial prodM in this.productMaterials) {
                 if (prodM.hasMaterial(productMaterial)) {
                     return false;
                 }

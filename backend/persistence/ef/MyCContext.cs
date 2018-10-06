@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using core.domain;
+using backend.config;
 using System.Linq;
 
 namespace backend.persistence.ef
@@ -32,15 +33,28 @@ namespace backend.persistence.ef
         /// </summary>
         /// <param name="options">The options for the context.</param>
         /// <returns>New instance of MyCContext.</returns>
-        public MyCContext(DbContextOptions<MyCContext> options) : base(options) { }
+        public MyCContext(DbContextOptions<MyCContext> options) : base(options) {BackendConfiguration.entityFrameworkContext=this;}
 
 
         protected override void OnModelCreating(ModelBuilder builder){
             base.OnModelCreating(builder);
 
             //!Define How Entities Are Mapped Here
+            //Dimension inheritance mapping
+            builder.Entity<ContinuousDimensionInterval>().HasBaseType<Dimension>();
+            builder.Entity<DiscreteDimensionInterval>().HasBaseType<Dimension>();
+            builder.Entity<SingleValueDimension>().HasBaseType<Dimension>();
+
+
+            builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values).WithOne();   //one-to-many relationship
+            
             builder.Entity<Material>().HasMany(m => m.Colors).WithOne();        //one-to-many relationship
             builder.Entity<Material>().HasMany(m => m.Finishes).WithOne();      //one-to-many relationship
+
+            builder.Entity<Product>().HasOne(p => p.productCategory);           //one-to-one relationship
+            builder.Entity<Product>().HasMany(p => p.depthValues).WithOne();    //one-to-many relationship
+            builder.Entity<Product>().HasMany(p => p.widthValues).WithOne();    //one-to-many relationship
+            builder.Entity<Product>().HasMany(p => p.heightValues).WithOne();   //one-to-many relationship
         }
     }
 }

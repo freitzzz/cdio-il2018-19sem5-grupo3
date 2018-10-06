@@ -1,5 +1,7 @@
 using support.system;
 using System.IO;
+using System;
+using System.Reflection;
 namespace core{
     /// <summary>
     /// Class that represents the application settings
@@ -14,7 +16,7 @@ namespace core{
         /// Constant that represents the name of the key which holds the value for 
         /// the application persistence context
         /// </summary>
-        private static readonly string PERSISTENCE_CONTEXT_KEY="persistence.context";
+        private static readonly string PERSISTENCE_CONTEXT_KEY="repository.factory";
         /// <summary>
         /// Current application settings holder
         /// </summary>
@@ -38,7 +40,7 @@ namespace core{
         /// </summary>
         /// <returns>Properties with the injected application settings</returns>
         private Properties injectApplicationSettings(){
-            return injectSettings(File.OpenRead(SETTINGS_INJECTOR));
+            return injectSettings(File.OpenRead(System.AppDomain.CurrentDomain.BaseDirectory+SETTINGS_INJECTOR));
         }
 
         /// <summary>

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using core.domain;
 using support.dto;
+using System;
 
 namespace core.dto {
     /// <summary>
@@ -36,45 +37,58 @@ namespace core.dto {
         /// List of product-material relations
         /// </summary>
         /// <value>Gets/sets the value of the materials field.</value>
-        [DataMember(EmitDefaultValue = false)]  //no data field data is presented if it's null
-        public List<ProductMaterialDTO> productMaterials { get; set; }
+        [DataMember(Name="materials",EmitDefaultValue = false)]  //no data field data is presented if it's null
+        public List<MaterialDTO> productMaterials { get; set; }
 
         /// <summary>
         /// Product's list of complementary products.
         /// </summary>
         /// <value>Gets/sets the value of the complements field.</value>
-        [DataMember(EmitDefaultValue = false)]  //no data field data is presented if it's null
+        [DataMember(Name="components",EmitDefaultValue = false)]  //no data field data is presented if it's null
         public List<ComponentDTO> complements { get; set; }
-
-        /// <summary>
-        /// Products list of height dimensions
-        /// </summary>
-        public List<DimensionDTO> heightDimensions { get; set; }
-
-        /// <summary>
-        /// Products list of depth dimensions
-        /// </summary>
-        public List<DimensionDTO> depthDimensions { get; set; }
-
-        /// <summary>
-        /// Products list of width dimensions
-        /// </summary>
-        public List<DimensionDTO> widthDimensions { get; set; }
 
         /// <summary>
         /// Product category
         /// </summary>
+        [DataMember(Name="category")]
         public ProductCategoryDTO productCategory { get; set; }
+        [DataMember(Name="dimensions")]
+        public DimensionsListDTO dimensions{get;set;}
+
+        public ProductDTO(){
+            //it is necessary to instantiate the DimensionsListDTO property
+            dimensions = new DimensionsListDTO();
+        }
 
         /// <summary>
         /// Returns this DTO's equivalent Entity
         /// </summary>
         /// <returns>DTO's equivalent Entity</returns>
         public Product toEntity() {
-            throw new System.NotImplementedException();
+     /*        IEnumerable<Component> productComponents=complements!=null ? DTOUtils.reverseDTOS(complements) : null;
+            if(productComponents==null){
+                Console.WriteLine("->>>>>>>>>>>>>>>"+reference);
+                Console.WriteLine("->>>>>>>>>>>>>>>"+productCategory);
+                return new Product(reference
+                                    ,designation
+                                    ,productCategory.toEntity()
+                                    ,DTOUtils.reverseDTOS(productMaterials)
+                                    ,DTOUtils.reverseDTOS(heightDimensions)
+                                    ,DTOUtils.reverseDTOS(widthDimensions)
+                                    ,DTOUtils.reverseDTOS(depthDimensions)
+                                  );
+            }else{
+                return new Product(reference
+                                    ,designation
+                                    ,productCategory.toEntity()
+                                    ,DTOUtils.reverseDTOS(productMaterials)
+                                    ,productComponents
+                                    ,DTOUtils.reverseDTOS(heightDimensions)
+                                    ,DTOUtils.reverseDTOS(widthDimensions)
+                                    ,DTOUtils.reverseDTOS(depthDimensions)
+                                  );
+            } */return null;
         }
-
-
         //TODO: Add RestrictionDTO's
     }
 }
