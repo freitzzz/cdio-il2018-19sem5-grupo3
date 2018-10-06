@@ -1,10 +1,5 @@
 using core.persistence;
 using Microsoft.AspNetCore.Mvc;
-using support.dto;
-using core.domain;
-using System.Web;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using core.dto;
 using System;

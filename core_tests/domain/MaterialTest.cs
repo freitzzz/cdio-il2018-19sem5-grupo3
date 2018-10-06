@@ -751,24 +751,57 @@ namespace core_tests.domain {
 
             Assert.Equal(balsamic.ToString(), vinegar.ToString());
         }
+
         [Fact]
         public void testToDTO() {
             Console.WriteLine("toDTO");
             string reference = "el. psy. kongroo.";
             string designation = "I am mad scientist!";
+
             List<Color> colors = new List<Color>();
+
+            Color color = Color.valueOf("Blue", 0, 0, 255, 0);
+            colors.Add(color);
+
             List<Finish> finishes = new List<Finish>();
+
+            Finish finish = Finish.valueOf("Glossy");
+            finishes.Add(finish);
+
             Material material = new Material(reference, designation, colors, finishes);
-            MaterialDTO dto = new MaterialDTO();
-            dto.reference = reference;
-            dto.designation = designation;
-            dto.colors = new List<ColorDTO>(DTOUtils.parseToDTOS(colors));
-            dto.finishes = new List<FinishDTO>(DTOUtils.parseToDTOS(finishes));
-            MaterialDTO dto2 = material.toDTO();
-            Assert.Equal(dto.reference, dto2.reference);
-            Assert.Equal(dto.designation, dto2.designation);
-            Assert.Equal(dto.colors, dto2.colors);
-            Assert.Equal(dto.finishes, dto2.finishes);
+
+            
+            MaterialDTO expected = new MaterialDTO();
+            expected.reference = reference;
+            expected.designation = designation;
+            expected.colors = new List<ColorDTO>(DTOUtils.parseToDTOS(colors));
+            expected.finishes = new List<FinishDTO>(DTOUtils.parseToDTOS(finishes));
+
+            MaterialDTO actual = material.toDTO();
+            
+            Assert.Equal(expected.reference, actual.reference);
+            Assert.Equal(expected.designation, actual.designation);
+
+            int actualColorListSize = actual.colors.Count;
+            int expectedColorListSize = expected.colors.Count;
+
+            Assert.Equal(expectedColorListSize, actualColorListSize);
+
+            for(int i = 0; i < actualColorListSize; i++){
+                Assert.Equal(expected.colors[i].red, actual.colors[i].red);
+                Assert.Equal(expected.colors[i].green, actual.colors[i].green);  
+                Assert.Equal(expected.colors[i].blue, actual.colors[i].blue); 
+                Assert.Equal(expected.colors[i].alpha, actual.colors[i].alpha); 
+            }
+
+            int actualFinishListSize = actual.finishes.Count;
+            int expectedFinishListSize = expected.finishes.Count;
+
+            Assert.Equal(expectedFinishListSize, actualFinishListSize);
+
+            for(int i = 0; i < actualFinishListSize; i++){
+                Assert.Equal(expected.finishes[i].description, actual.finishes[i].description); 
+            }
         }
     }
 }
