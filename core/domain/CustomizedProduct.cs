@@ -100,7 +100,7 @@ namespace core.domain
             List of Products from CustomizedProduct
         </summary>
          */
-        private List<Product> list;
+        private Product product;
 
         /**
         <summary>
@@ -125,20 +125,8 @@ namespace core.domain
             return new CustomizedProduct(reference, designation, customizedMaterial, customizedDimensions, product);
         }
 
-        /**
-        <summary>
-            Customized Product's valueOf
-            <param name = "reference">string with the new ConfiguredProduct's reference</param>
-            <param name = "designation">string with the new ConfiguredProduct's designation</param>
-            <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
-            <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
-            <param name = "list">string with the new list of Products </param>DDD
-        </summary>
-         */
-        public static CustomizedProduct valueOf(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, List<Product> list)
-        {
-            return new CustomizedProduct(reference, designation, customizedMaterial, customizedDimensions, list);
-        }
+       
+        
 
         /**
        <summary>
@@ -157,49 +145,28 @@ namespace core.domain
             checkCustomizedDimensions(customizedDimensions);
             checkString(reference);
             checkString(designation);
+
             this.reference = reference;
             this.designation = designation;
             this.customizedDimensions = customizedDimensions;
             this.customizedMaterial = customizedMaterial;
-            this.list.Add(product);
+            this.product = product;
         }
 
-        /**
-     <summary>
-         Builds a new instance of ConfiguredProduct, receiving its reference, designation, 
-         customizedDimensions, customizedMaterial and product.~
-          <param name = "reference">string with the new ConfiguredProduct's reference</param>
-          <param name = "designation">string with the new ConfiguredProduct's designation</param>
-          <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
-          <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
-          <param name = "product">string with the new ConfiguredProduct's product</param>DDD
-     </summary>
-      */
-        private CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, List<Product> list)
-        {
-            checkCustomizedMaterial(customizedMaterial);
-            checkCustomizedDimensions(customizedDimensions);
-            checkList(list);
-            checkString(reference);
-            checkString(designation);
-            this.reference = reference;
-            this.designation = designation;
-            this.customizedDimensions = customizedDimensions;
-            this.customizedMaterial = customizedMaterial;
-            this.list = list;
-        }
-
-        /**
+       
+       /**
         <summary>
-            Checks if the CustomizedMaterial's  is valid.
+            Checks if the Product is valid
         </summary>
-        <param name = "customizedMaterial">The CustomizedMaterial</param>
+        <param name = "product">The Product</param>
         */
-        private void checkList(List<Product> list)
+        private void checkProduct(Product product)
         {
-            if (list.Count() == 0) throw new ArgumentException(INVALID_CONFIGURED_PRODUCT_MATERIAL);
+            if (product == null) throw new ArgumentException(INVALID_CONFIGURED_PRODUCT_MATERIAL);
 
         }
+
+       
         /**
         <summary>
             Checks if the CustomizedMaterial's  is valid.
