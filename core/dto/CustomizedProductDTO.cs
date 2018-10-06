@@ -52,15 +52,15 @@ namespace core.dto
 
         /**
         <summary>
-            List of Products from CustomizedProduct
+            Product from CustomizedProduct
         </summary>
          */
-        private List<Product> list;
+        private Product product;
 
         public  CustomizedProduct toEntity()
         {
         
-            CustomizedProduct instanceFromDTO = CustomizedProduct.valueOf(reference, designation, customizedMaterial, customizedDimensions, list);
+            CustomizedProduct instanceFromDTO = CustomizedProduct.valueOf(reference, designation, customizedMaterial, customizedDimensions, product);
             instanceFromDTO.Id = this.id;
             return instanceFromDTO;
             

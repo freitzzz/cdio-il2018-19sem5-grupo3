@@ -100,7 +100,7 @@ namespace core.domain
             List of Products from CustomizedProduct
         </summary>
          */
-        private List<Product> list;
+        private Product product;
 
         /**
         <summary>
@@ -125,20 +125,8 @@ namespace core.domain
             return new CustomizedProduct(reference, designation, customizedMaterial, customizedDimensions, product);
         }
 
-        /**
-        <summary>
-            Customized Product's valueOf
-            <param name = "reference">string with the new ConfiguredProduct's reference</param>
-            <param name = "designation">string with the new ConfiguredProduct's designation</param>
-            <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
-            <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
-            <param name = "list">string with the new list of Products </param>DDD
-        </summary>
-         */
-        public static CustomizedProduct valueOf(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, List<Product> list)
-        {
-            return new CustomizedProduct(reference, designation, customizedMaterial, customizedDimensions, list);
-        }
+
+
 
         /**
        <summary>
@@ -155,51 +143,31 @@ namespace core.domain
         {
             checkCustomizedMaterial(customizedMaterial);
             checkCustomizedDimensions(customizedDimensions);
+            checkProduct(product);
             checkString(reference);
             checkString(designation);
+
             this.reference = reference;
             this.designation = designation;
             this.customizedDimensions = customizedDimensions;
             this.customizedMaterial = customizedMaterial;
-            this.list.Add(product);
+            this.product = product;
         }
+
 
         /**
-     <summary>
-         Builds a new instance of ConfiguredProduct, receiving its reference, designation, 
-         customizedDimensions, customizedMaterial and product.~
-          <param name = "reference">string with the new ConfiguredProduct's reference</param>
-          <param name = "designation">string with the new ConfiguredProduct's designation</param>
-          <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
-          <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
-          <param name = "product">string with the new ConfiguredProduct's product</param>DDD
-     </summary>
-      */
-        private CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, List<Product> list)
+         <summary>
+             Checks if the Product is valid
+         </summary>
+         <param name = "product">The Product</param>
+         */
+        private void checkProduct(Product product)
         {
-            checkCustomizedMaterial(customizedMaterial);
-            checkCustomizedDimensions(customizedDimensions);
-            checkList(list);
-            checkString(reference);
-            checkString(designation);
-            this.reference = reference;
-            this.designation = designation;
-            this.customizedDimensions = customizedDimensions;
-            this.customizedMaterial = customizedMaterial;
-            this.list = list;
-        }
-
-        /**
-        <summary>
-            Checks if the CustomizedMaterial's  is valid.
-        </summary>
-        <param name = "customizedMaterial">The CustomizedMaterial</param>
-        */
-        private void checkList(List<Product> list)
-        {
-            if (list.Count() == 0) throw new ArgumentException(INVALID_CONFIGURED_PRODUCT_MATERIAL);
+            if (product == null) throw new ArgumentException(INVALID_CONFIGURED_PRODUCT_MATERIAL);
 
         }
+
+
         /**
         <summary>
             Checks if the CustomizedMaterial's  is valid.
@@ -242,9 +210,11 @@ namespace core.domain
         public override int GetHashCode()
         {
             int hashCode = 17;
-            hashCode = (hashCode * 23) + this.customizedDimensions.GetHashCode();
-            hashCode = (hashCode * 23) + this.customizedMaterial.GetHashCode();
-
+            hashCode += (hashCode * 23) + this.reference.GetHashCode();
+            hashCode += (hashCode * 23) + this.designation.GetHashCode();
+            hashCode += (hashCode * 23) + this.customizedDimensions.GetHashCode();
+            hashCode += (hashCode * 23) + this.customizedMaterial.GetHashCode();
+            hashCode += (hashCode * 23) + this.product.GetHashCode();
             return hashCode.GetHashCode();
         }
 
@@ -264,7 +234,11 @@ namespace core.domain
             else
             {
                 CustomizedProduct configProduct = (CustomizedProduct)obj;
-                return customizedDimensions.Equals(configProduct.customizedDimensions) && customizedMaterial.Equals(configProduct.customizedMaterial);
+                return reference.Equals(configProduct.reference) && 
+                designation.Equals(configProduct.designation) && 
+                customizedDimensions.Equals(configProduct.customizedDimensions) && 
+                customizedMaterial.Equals(configProduct.customizedMaterial) && 
+                product.Equals(configProduct.product);
             }
         }
 
