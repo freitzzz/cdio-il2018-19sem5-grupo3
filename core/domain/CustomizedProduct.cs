@@ -125,8 +125,8 @@ namespace core.domain
             return new CustomizedProduct(reference, designation, customizedMaterial, customizedDimensions, product);
         }
 
-       
-        
+
+
 
         /**
        <summary>
@@ -154,20 +154,20 @@ namespace core.domain
             this.product = product;
         }
 
-       
-       /**
-        <summary>
-            Checks if the Product is valid
-        </summary>
-        <param name = "product">The Product</param>
-        */
+
+        /**
+         <summary>
+             Checks if the Product is valid
+         </summary>
+         <param name = "product">The Product</param>
+         */
         private void checkProduct(Product product)
         {
             if (product == null) throw new ArgumentException(INVALID_CONFIGURED_PRODUCT_MATERIAL);
 
         }
 
-       
+
         /**
         <summary>
             Checks if the CustomizedMaterial's  is valid.
@@ -210,9 +210,11 @@ namespace core.domain
         public override int GetHashCode()
         {
             int hashCode = 17;
-            hashCode = (hashCode * 23) + this.customizedDimensions.GetHashCode();
-            hashCode = (hashCode * 23) + this.customizedMaterial.GetHashCode();
-
+            hashCode += (hashCode * 23) + this.reference.GetHashCode();
+            hashCode += (hashCode * 23) + this.designation.GetHashCode();
+            hashCode += (hashCode * 23) + this.customizedDimensions.GetHashCode();
+            hashCode += (hashCode * 23) + this.customizedMaterial.GetHashCode();
+            hashCode += (hashCode * 23) + this.product.GetHashCode();
             return hashCode.GetHashCode();
         }
 
@@ -232,7 +234,11 @@ namespace core.domain
             else
             {
                 CustomizedProduct configProduct = (CustomizedProduct)obj;
-                return customizedDimensions.Equals(configProduct.customizedDimensions) && customizedMaterial.Equals(configProduct.customizedMaterial);
+                return reference.Equals(configProduct.reference) && 
+                designation.Equals(configProduct.designation) && 
+                customizedDimensions.Equals(configProduct.customizedDimensions) && 
+                customizedMaterial.Equals(configProduct.customizedMaterial) && 
+                product.Equals(configProduct.product);
             }
         }
 
