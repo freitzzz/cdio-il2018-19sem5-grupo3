@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 namespace core.dto
 {
     [DataContract]
-    [JsonConverter(typeof(DimensioDTOJsonConverter))]
+    [JsonConverter(typeof(DimensionDTOJsonConverter))]
     public abstract class DimensionDTO : DTO, DTOParseable<Dimension, DimensionDTO>
     {
 
