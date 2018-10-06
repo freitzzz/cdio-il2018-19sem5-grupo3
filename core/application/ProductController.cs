@@ -253,7 +253,7 @@ namespace core.application {
 
             IEnumerable<Product> productList = PersistenceContext.repositories().createProductRepository().findAll();
 
-            if (productList == null) {
+            if (productList == null||!productList.GetEnumerator().MoveNext()) {
                 return null;
             }
 

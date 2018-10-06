@@ -22,7 +22,7 @@ namespace backend.Controllers {
     /// <summary>
     /// Backend ProductController class
     /// </summary>
-    [Route("myc/products")]
+    [Route("myc/api/products")]
     public class ProductController : Controller {
         /// <summary>
         /// Constant that represents the 400 Bad Request message for when a product
@@ -45,6 +45,10 @@ namespace backend.Controllers {
         /// Constant that represents the message that ocurres if the update of a product is successful
         /// </summary>
         private const string VALID_PRODUCT_UPDATE_MESSAGE="Product was updated with success";
+        /// <summary>
+        /// Constant that represents the message that ocurres if a client attemps to create a product with an invalid request body
+        /// </summary>
+        private const string INVALID_CREATE_PRODUCT_REQUEST_BODY_MESSAGE="The request body is invalid\nCheck documentation for more information";
 
         private readonly ProductRepository productRepository;
 
@@ -81,11 +85,18 @@ namespace backend.Controllers {
         /// </returns>
         [HttpPost]
         public ActionResult<ProductDTO> addProduct([FromBody]ProductDTO productData){
-            ProductDTO createdProductDTO=new core.application.ProductController().addProduct(productData);
-            if(createdProductDTO!=null){
-                return Created(Request.Path,createdProductDTO);
-            }else{
-                return BadRequest();
+            try{
+                ProductDTO createdProductDTO=new core.application.ProductController().addProduct(productData);
+                if(createdProductDTO!=null){
+                    return Created(Request.Path,createdProductDTO);
+                }else{
+                    return BadRequest();
+                }
+            }catch(NullReferenceException){
+                return BadRequest(INVALID_CREATE_PRODUCT_REQUEST_BODY_MESSAGE);
+            }catch(ArgumentException){
+                throw new NotImplementedException();
+                //Treat Product Creation exception
             }
         }
 
