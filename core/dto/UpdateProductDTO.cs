@@ -29,33 +29,33 @@ namespace core.dto{
         /// <summary>
         /// List with the components being added
         /// </summary>
-        [DataMember(Name="add")]
+        [DataMember(Name="addComponents")]
         public List<ComponentDTO> componentsToAdd{get;set;}
         /// <summary>
         /// List with the materials being added
         /// </summary>
-        [DataMember(Name="add")]
+        [DataMember(Name="addMaterials")]
         public List<MaterialDTO> materialsToAdd{get;set;}
         /// <summary>
         /// DimensionListDTO with the dimensions being added
         /// </summary>
-        [DataMember(Name="add")]
+        [DataMember(Name="addDimensions")]
         public DimensionsListDTO dimensionsToAdd{get;set;}
 
         /// <summary>
         /// List with the components being removed
         /// </summary>
-        [DataMember(Name="remove")]
+        [DataMember(Name="removeComponents")]
         public List<ComponentDTO> componentsToRemove{get;set;}
         /// <summary>
         /// List with the materials being removed
         /// </summary>
-        [DataMember(Name="remove")]
+        [DataMember(Name="removeMaterials")]
         public List<MaterialDTO> materialsToRemove{get;set;}
         /// <summary>
         /// DimensionListDTO with the dimensions being removed
         /// </summary>
-        [DataMember(Name="remove")]
+        [DataMember(Name="removeDimensions")]
         public DimensionsListDTO dimensionsToRemove{get;set;}
     }
 }
