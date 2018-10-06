@@ -10,7 +10,7 @@ namespace core_tests.domain
     public class CustomizedProductTest
     {
         [Fact]
-        public void ensureCustomizedDimensionIsNull()
+        public void ensureCustomizedProductCategoryIsNull()
         {
             var category = new ProductCategory("Drawers");
 
