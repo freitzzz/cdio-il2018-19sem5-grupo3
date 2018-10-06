@@ -143,6 +143,7 @@ namespace core.domain
         {
             checkCustomizedMaterial(customizedMaterial);
             checkCustomizedDimensions(customizedDimensions);
+            checkProduct(product);
             checkString(reference);
             checkString(designation);
 
