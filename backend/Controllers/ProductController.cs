@@ -56,25 +56,6 @@ namespace backend.Controllers {
         }
 
         /// <summary>
-        /// Finds a product by ID
-        /// </summary>
-        /// <param name="productID"> id of the product</param>
-        /// <returns>HTTP Response 400 Bad Request if a product with the id isn't found;
-        /// HTTP Response 200 Ok with the product's info in JSON format </returns>
-        [HttpGet("{id}")]
-        public ActionResult<ProductDTO> findProductByID(long productID) {
-            ProductDTO productDTO = new core.application.ProductController().findProductByID(productID);
-            if (productDTO == null) {
-                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
-            }
-
-            return Ok(productDTO);
-        }
-
-
-
-
-        /// <summary>
         /// Finds all products
         /// </summary>
         /// <returns>HTTP Response 400 Bad Request if no products are found;
@@ -109,6 +90,23 @@ namespace backend.Controllers {
         }
 
         /// <summary>
+        /// Finds a product by ID
+        /// </summary>
+        /// <param name="id"> id of the product</param>
+        /// <returns>HTTP Response 400 Bad Request if a product with the id isn't found;
+        /// HTTP Response 200 Ok with the product's info in JSON format </returns>
+        [HttpGet("{id}",Name="GetProduct")]
+        public ActionResult<ProductDTO> findById(long id) {
+            ProductDTO productDTOX=new ProductDTO();
+            productDTOX.id=id;
+            ProductDTO productDTOY = new core.application.ProductController().findProductByID(productDTOX);
+            if (productDTOY == null) {
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }
+            return Ok(productDTOY);
+        }
+
+        /// <summary>
         /// Updates a product basic information
         /// </summary>
         /// <param name="updateProductData">UpdateProductDTO with the basic information of the product being updated</param>
@@ -116,8 +114,8 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
         /// </returns>
         [HttpPut("{id}")]
-        public ActionResult updateProductBasicInformation(long productID,[FromBody] UpdateProductDTO updateProductData) {
-            updateProductData.id=productID;
+        public ActionResult updateProductBasicInformation(long id,[FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id=id;
             if(new core.application.ProductController().updateProductBasicInformation(updateProductData))
                 return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
@@ -131,8 +129,8 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
         /// </returns>
         [HttpPut("{id}/materials")]
-        public ActionResult updateProductMaterials(long productID,[FromBody] UpdateProductDTO updateProductData) {
-            updateProductData.id=productID;
+        public ActionResult updateProductMaterials(long id,[FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id=id;
             if(new core.application.ProductController().updateProductMaterials(updateProductData))
                 return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
@@ -146,8 +144,8 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
         /// </returns>
         [HttpPut("{id}/components")]
-        public ActionResult updateProductComponents(long productID,[FromBody] UpdateProductDTO updateProductData) {
-            updateProductData.id=productID;
+        public ActionResult updateProductComponents(long id,[FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id=id;
             if(new core.application.ProductController().updateProductComponents(updateProductData))
                 return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
@@ -161,8 +159,8 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
         /// </returns>
         [HttpPut("{id}/dimensions")]
-        public ActionResult updateProductDimensions(long productID,[FromBody] UpdateProductDTO updateProductData) {
-            updateProductData.id=productID;
+        public ActionResult updateProductDimensions(long id,[FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id=id;
             if(new core.application.ProductController().updateProductDimensions(updateProductData))
                 return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
@@ -176,8 +174,8 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
         /// </returns>
         [HttpPut("{id}/category")]
-        public ActionResult updateProductCategory(long productID,[FromBody] UpdateProductDTO updateProductData) {
-            updateProductData.id=productID;
+        public ActionResult updateProductCategory(long id,[FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id=id;
             if(new core.application.ProductController().updateProductCategory(updateProductData))
                 return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
@@ -186,15 +184,15 @@ namespace backend.Controllers {
         /// <summary>
         /// Disables a product
         /// </summary>
-        /// <param name="productID">Long with the product being disabled ID</param>
+        /// <param name="id">Long with the product being disabled ID</param>
         /// <returns>HTTP Response 204;No Content if the product was disabled with success
         ///      <br>HTTP Response 400;Bad Request if an error occured while disabling the product
         /// </returns>
         /// 
         [HttpDelete("{id}")]
-        public ActionResult disableProduct(long productID){
+        public ActionResult disableProduct(long id){
             ProductDTO productDTO=new ProductDTO();
-            productDTO.id=productID;
+            productDTO.id=id;
             bool disabledWithSuccess=new core.application.ProductController().disableProduct(productDTO);
             if(disabledWithSuccess){
                 return NoContent();

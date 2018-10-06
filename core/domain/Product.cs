@@ -131,6 +131,7 @@ namespace core.domain {
             this.widthValues = new List<Dimension>(widthDimensions);
             this.depthValues = new List<Dimension>(depthDimensions);
             this.productCategory = productCategory;
+            this.isAvailable=true;
         }
 
         /// <summary>
@@ -166,6 +167,7 @@ namespace core.domain {
             this.widthValues = new List<Dimension>(widthValues);
             this.depthValues = new List<Dimension>(depthValues);
             this.productCategory = productCategory;
+            this.isAvailable=true;
         }
 
         /// <summary>
@@ -247,7 +249,7 @@ namespace core.domain {
         /// <param name="reference">String with the reference being updated</param>
         /// <returns>boolean true if the reference update was valid, false if not</returns>
         public bool changeProductReference(string reference){
-            if(Strings.isNullOrEmpty(reference))return false;
+            if(Strings.isNullOrEmpty(reference)||this.reference.Equals(reference))return false;
             this.reference=reference;
             return true;
         }
@@ -258,7 +260,7 @@ namespace core.domain {
         /// <param name="designation">String with the designation being updated</param>
         /// <returns>boolean true if the designation update was valid, false if not</returns>
         public bool changeProductDesignation(string designation){
-            if(Strings.isNullOrEmpty(designation))return false;
+            if(Strings.isNullOrEmpty(designation)||this.designation.Equals(designation))return false;
             this.designation=designation;
             return true;
         }
