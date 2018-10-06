@@ -262,9 +262,9 @@ namespace core.application {
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product product = productRepository.find(productDTO.id);
             
-            IEnumerable<Dimension> heightDimensions = getProductDTOEnumerableDimensions(productDTO.heightDimensions);
-            IEnumerable<Dimension> widthDimensions = getProductDTOEnumerableDimensions(productDTO.widthDimensions);
-            IEnumerable<Dimension> depthDimensions = getProductDTOEnumerableDimensions(productDTO.depthDimensions);
+            IEnumerable<Dimension> heightDimensions = getProductDTOEnumerableDimensions(productDTO.dimensions.heightDimensionDTOs);
+            IEnumerable<Dimension> widthDimensions = getProductDTOEnumerableDimensions(productDTO.dimensions.widthDimensionDTOs);
+            IEnumerable<Dimension> depthDimensions = getProductDTOEnumerableDimensions(productDTO.dimensions.depthDimensionDTOs);
 
             foreach(Dimension heightDimension in heightDimensions){if(!product.addHeightDimension(heightDimension)) return false;}
             foreach(Dimension widthDimension in widthDimensions){if(!product.addWidthDimension(widthDimension)) return false;}
@@ -286,9 +286,9 @@ namespace core.application {
                 return null;
             }
 
-            IEnumerable<Dimension> heightDimensions = getProductDTOEnumerableDimensions(updatesDTO.heightDimensions);
-            IEnumerable<Dimension> widthDimensions = getProductDTOEnumerableDimensions(updatesDTO.widthDimensions);
-            IEnumerable<Dimension> depthDimensions = getProductDTOEnumerableDimensions(updatesDTO.depthDimensions);
+            IEnumerable<Dimension> heightDimensions = getProductDTOEnumerableDimensions(updatesDTO.dimensions.heightDimensionDTOs);
+            IEnumerable<Dimension> widthDimensions = getProductDTOEnumerableDimensions(updatesDTO.dimensions.widthDimensionDTOs);
+            IEnumerable<Dimension> depthDimensions = getProductDTOEnumerableDimensions(updatesDTO.dimensions.depthDimensionDTOs);
 
             foreach (Dimension heightDimension in heightDimensions) { if (!oldProduct.addHeightDimension(heightDimension)) return null; }
             foreach (Dimension widthDimension in widthDimensions) { if (!oldProduct.addWidthDimension(widthDimension)) return null; }
@@ -311,16 +311,15 @@ namespace core.application {
         internal IEnumerable<Dimension> getProductDTOEnumerableDimensions(List<DimensionDTO> dimensionsDTOs) {
             List<Dimension> dimensions = new List<Dimension>();
             foreach (DimensionDTO dimensionDTO in dimensionsDTOs) {
-                String dimensionType = dimensionDTO.type;
-                if (dimensionType.Equals("discrete")) {
+                if (dimensionDTO.GetType() == typeof(DiscreteDimensionIntervalDTO)) {
                     DiscreteDimensionIntervalDTO ddiDTO = (DiscreteDimensionIntervalDTO)dimensionDTO;
                     DiscreteDimensionInterval discreteInterval = DiscreteDimensionInterval.valueOf(ddiDTO.values);
                     dimensions.Add(discreteInterval);
-                } else if (dimensionDTO.GetType() == typeof(ContinuousDimensionIntervalDTO)) {
+                } else if (dimensionDTO.GetType() == typeof(ContinuousDimensionIntervalDTO) ) {
                     ContinuousDimensionIntervalDTO cdiDTO = (ContinuousDimensionIntervalDTO)dimensionDTO;
                     ContinuousDimensionInterval continuousInterval = ContinuousDimensionInterval.valueOf(cdiDTO.minValue, cdiDTO.maxValue, cdiDTO.increment);
                     dimensions.Add(continuousInterval);
-                } else {
+                } else if(dimensionDTO.GetType() == typeof(SingleValueDimensionDTO)){
                     SingleValueDimensionDTO svdDTO = (SingleValueDimensionDTO)dimensionDTO;
                     SingleValueDimension dimensionValue = SingleValueDimension.valueOf(svdDTO.value);
                     dimensions.Add(dimensionValue);

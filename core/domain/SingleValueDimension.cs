@@ -11,8 +11,6 @@ namespace core.domain
     public class SingleValueDimension : Dimension, ValueObject
     {
 
-        public long Id { get; set; }
-
         /// <summary>
         /// Constant that represents the message that occurs if the value is NaN
         /// </summary>
@@ -32,6 +30,11 @@ namespace core.domain
         /// Value that the dimension has
         /// </summary>
         public double value { get; set; }
+
+        /// <summary>
+        /// Empty constructor for ORM.
+        /// </summary>
+        protected SingleValueDimension(){}
 
         /// <summary>
         /// Returns a new instance of Dimension
@@ -112,7 +115,7 @@ namespace core.domain
         /// Builds a DimensionDTO out of a SingleValueDimension instance
         /// </summary>
         /// <returns>DimensionDTO instance</returns>
-        public DimensionDTO toDTO()
+        public override DimensionDTO toDTO()
         {
             SingleValueDimensionDTO dto = new SingleValueDimensionDTO();
 

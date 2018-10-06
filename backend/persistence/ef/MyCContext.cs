@@ -40,8 +40,21 @@ namespace backend.persistence.ef
             base.OnModelCreating(builder);
 
             //!Define How Entities Are Mapped Here
+            //Dimension inheritance mapping
+            builder.Entity<ContinuousDimensionInterval>().HasBaseType<Dimension>();
+            builder.Entity<DiscreteDimensionInterval>().HasBaseType<Dimension>();
+            builder.Entity<SingleValueDimension>().HasBaseType<Dimension>();
+
+
+            builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values).WithOne();   //one-to-many relationship
+            
             builder.Entity<Material>().HasMany(m => m.Colors).WithOne();        //one-to-many relationship
             builder.Entity<Material>().HasMany(m => m.Finishes).WithOne();      //one-to-many relationship
+
+            builder.Entity<Product>().HasOne(p => p.productCategory);           //one-to-one relationship
+            builder.Entity<Product>().HasMany(p => p.depthValues).WithOne();    //one-to-many relationship
+            builder.Entity<Product>().HasMany(p => p.widthValues).WithOne();    //one-to-many relationship
+            builder.Entity<Product>().HasMany(p => p.heightValues).WithOne();   //one-to-many relationship
         }
     }
 }

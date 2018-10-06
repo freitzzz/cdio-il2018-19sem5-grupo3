@@ -48,24 +48,6 @@ namespace core.dto {
         public List<ComponentDTO> complements { get; set; }
 
         /// <summary>
-        /// Products list of height dimensions
-        /// </summary>
-        [DataMember(Name="heightDimensions")]
-        public List<DimensionDTO> heightDimensions { get; set; }
-
-        /// <summary>
-        /// Products list of depth dimensions
-        /// </summary>
-        [DataMember(Name="depthDimensions")]
-        public List<DimensionDTO> depthDimensions { get; set; }
-
-        /// <summary>
-        /// Products list of width dimensions
-        /// </summary>
-        [DataMember(Name="widthDimensions")]
-        public List<DimensionDTO> widthDimensions { get; set; }
-
-        /// <summary>
         /// Product category
         /// </summary>
         [DataMember(Name="category")]
@@ -73,12 +55,17 @@ namespace core.dto {
         [DataMember(Name="dimensions")]
         public DimensionsListDTO dimensions{get;set;}
 
+        public ProductDTO(){
+            //it is necessary to instantiate the DimensionsListDTO property
+            dimensions = new DimensionsListDTO();
+        }
+
         /// <summary>
         /// Returns this DTO's equivalent Entity
         /// </summary>
         /// <returns>DTO's equivalent Entity</returns>
         public Product toEntity() {
-            IEnumerable<Component> productComponents=complements!=null ? DTOUtils.reverseDTOS(complements) : null;
+     /*        IEnumerable<Component> productComponents=complements!=null ? DTOUtils.reverseDTOS(complements) : null;
             if(productComponents==null){
                 Console.WriteLine("->>>>>>>>>>>>>>>"+reference);
                 Console.WriteLine("->>>>>>>>>>>>>>>"+productCategory);
@@ -100,7 +87,7 @@ namespace core.dto {
                                     ,DTOUtils.reverseDTOS(widthDimensions)
                                     ,DTOUtils.reverseDTOS(depthDimensions)
                                   );
-            }
+            } */return null;
         }
         //TODO: Add RestrictionDTO's
     }

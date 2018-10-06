@@ -74,24 +74,21 @@ namespace core.domain {
         /// List with the product heigth dimensions
         /// </summary>
         //TODO: Should product dimensions be a list or a set
-        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configure
         public virtual List<Dimension> heightValues { get; protected set; }
         /// <summary>
         /// List with the product width dimensions
         /// </summary>
         //TODO: Should product dimensions be a list or a set
-        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configured
         public virtual List<Dimension> widthValues { get; protected set; }
         /// <summary>
         /// List with the product depth dimensions
         /// </summary>
         //TODO: Should product restrinctions be a list or a set
-        [NotMapped] //! NotMapped annotation is only temporary, should be removed once Dimension mapping is configured
         public virtual List<Dimension> depthValues { get; protected set; }
         /// <summary>
         /// ProductCategory with the category which the product belongs to
         /// </summary>
-        public ProductCategory productCategory;
+        public virtual ProductCategory productCategory {get; protected set;}
 
         /// <summary>
         /// Boolean that controls if the current product is available or not
@@ -334,13 +331,13 @@ namespace core.domain {
             dto.id = this.Id;
             dto.designation = this.designation;
             dto.reference = this.reference;
-
-            dto.heightDimensions = new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
-            dto.widthDimensions = new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
-            dto.depthDimensions = new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
+            dto.dimensions.heightDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues)); 
+            dto.dimensions.widthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
+            dto.dimensions.depthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
             dto.productCategory = productCategory.toDTO();
 
-            if (this.complementedProducts != null) {
+            //TODO: remove null check once complement database mappping is complete
+            if(complementedProducts != null && complementedProducts.Count >= 0){
                 List<ComponentDTO> complementDTOList = new List<ComponentDTO>();
 
                 foreach (Component complement in complementedProducts) {
