@@ -29,23 +29,23 @@ namespace backend.persistence.ef
             this.dbContext = dbContext;
         }
 
-        public E find(ID entityPersistenceID)
+        public virtual E find(ID entityPersistenceID)
         {
             return dbContext.Set<E>().Find(entityPersistenceID);
         }
 
-        public E find(EID entityID)
+        public virtual E find(EID entityID)
         {
             //use the entity's sameAs() method since it might have extra comparison criteria
             return dbContext.Set<E>().Where(e => e.sameAs(entityID)).SingleOrDefault();
         }
 
-        public IEnumerable<E> findAll()
+        public virtual IEnumerable<E> findAll()
         {
             return dbContext.Set<E>().ToList();
         }
 
-        public E remove(E entity)
+        public virtual E remove(E entity)
         {
             //TODO: change to soft/logical delete
             dbContext.Set<E>().Remove(entity);

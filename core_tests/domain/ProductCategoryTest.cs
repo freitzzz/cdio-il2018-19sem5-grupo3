@@ -1,8 +1,6 @@
 using Xunit;
 using core.domain;
 using System;
-using System.Reflection;
-using System.Collections.Generic;
 
 namespace core_tests.domain
 {
@@ -52,7 +50,6 @@ namespace core_tests.domain
 
             category.changeName("");
 
-            //Use reflection
             string currentName = category.name;
 
             Assert.Equal(name, currentName);
@@ -75,7 +72,6 @@ namespace core_tests.domain
 
             category.changeName("           ");
 
-            //Use reflection
             string currentName = category.name;
 
             Assert.Equal(name, currentName);
@@ -98,7 +94,6 @@ namespace core_tests.domain
 
             category.changeName(newName);
 
-            //Use reflection
             string currentName = category.name;
 
             Assert.Equal(newName, currentName);
