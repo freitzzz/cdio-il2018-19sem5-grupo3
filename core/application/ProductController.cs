@@ -1,16 +1,23 @@
 using System;
 using System.Collections.Generic;
-using support.dto;
 using core.domain;
 using core.persistence;
 using core.dto;
 using core.services;
+using support.dto;
+using support.utils;
 
 namespace core.application {
     /// <summary>
     /// Core ProductController class
     /// </summary>
     public class ProductController {
+        /// <summary>
+        /// Constant that represents the message that occures if the materials being fetched 
+        /// are invalid
+        /// </summary>
+        private const string INVALID_MATERIALS_FETCH="The materials being fetched are invalid";
+
         /// <summary>
         /// Builds a new ProductController
         /// </summary>
@@ -65,7 +72,7 @@ namespace core.application {
             
             if(updateProductDTO.materialsToAdd!=null){
                 IEnumerable<Material> materialsBeingAdded=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToAdd);
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                ensureMaterialsFetchWasSuccessful(updateProductDTO.materialsToAdd,materialsBeingAdded);
                 foreach(Material material in materialsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addMaterial(material);
                 perfomedAtLeastOneUpdate=true;
@@ -75,7 +82,7 @@ namespace core.application {
 
             if(updateProductDTO.materialsToRemove!=null){
                 IEnumerable<Material> materialsBeingRemoved=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToRemove);
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                ensureMaterialsFetchWasSuccessful(updateProductDTO.materialsToAdd,materialsBeingAdded);
                 foreach(Material material in materialsBeingRemoved)
                     updatedWithSuccess&=productBeingUpdated.removeMaterial(material);
                 perfomedAtLeastOneUpdate=true;
@@ -375,6 +382,16 @@ namespace core.application {
                 products.Add(PersistenceContext.repositories().createProductRepository().find(nextProductID));
             }
             return products;
+        }
+
+        /// <summary>
+        /// Ensures that the materials fetch was successful
+        /// </summary>
+        /// <param name="materialsToFetch">IEnumerable with the materials dtos to fetch</param>
+        /// <param name="materialsFetched">IEnumerable with the fetched materials</param>
+        private void ensureMaterialsFetchWasSuccessful(IEnumerable<MaterialDTO> materialsToFetch,IEnumerable<Material> materialsFetched){
+            if(Collections.getEnumerableSize(materialsToFetch)!=Collections.getEnumerableSize(materialsFetched))
+                throw new InvalidOperationException(INVALID_MATERIALS_FETCH);
         }
 
     }
