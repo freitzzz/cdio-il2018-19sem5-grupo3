@@ -17,6 +17,11 @@ namespace core.application {
         /// are invalid
         /// </summary>
         private const string INVALID_MATERIALS_FETCH="The materials being fetched are invalid";
+        /// <summary>
+        /// Constant that represents the message that occures if the components being fetched 
+        /// are invalid
+        /// </summary>
+        private const string INVALID_COMPONENTS_FETCH="The components being fetched are invalid";
 
         /// <summary>
         /// Builds a new ProductController
@@ -82,7 +87,7 @@ namespace core.application {
 
             if(updateProductDTO.materialsToRemove!=null){
                 IEnumerable<Material> materialsBeingRemoved=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToRemove);
-                ensureMaterialsFetchWasSuccessful(updateProductDTO.materialsToAdd,materialsBeingAdded);
+                ensureMaterialsFetchWasSuccessful(updateProductDTO.materialsToRemove,materialsBeingRemoved);
                 foreach(Material material in materialsBeingRemoved)
                     updatedWithSuccess&=productBeingUpdated.removeMaterial(material);
                 perfomedAtLeastOneUpdate=true;
@@ -105,13 +110,9 @@ namespace core.application {
             bool updatedWithSuccess=true;
             bool perfomedAtLeastOneUpdate=false;
 
-
-            //TODO:DISCUSSION REGARDING COMPONENTS
-
-
             if(updateProductDTO.componentsToAdd!=null){
-                IEnumerable<Component> componentsBeingAdded=null;
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                IEnumerable<Component> componentsBeingAdded=PersistenceContext.repositories().createComponentRepository().fetchComponentsByIDS(updateProductDTO.componentsToAdd);
+                ensureProductsComponentsFetchWasSuccesful(updateProductDTO.componentsToAdd,componentsBeingAdded);
                 foreach(Component component in componentsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addComplementedProduct(component);
                 perfomedAtLeastOneUpdate=true;
@@ -120,8 +121,8 @@ namespace core.application {
             if(!updatedWithSuccess)return false;
 
             if(updateProductDTO.componentsToRemove!=null){
-                IEnumerable<Component> componentsBeingRemoved=null;
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                IEnumerable<Component> componentsBeingRemoved=PersistenceContext.repositories().createComponentRepository().fetchComponentsByIDS(updateProductDTO.componentsToRemove);
+                ensureProductsComponentsFetchWasSuccesful(updateProductDTO.componentsToRemove,componentsBeingRemoved);
                 foreach(Component component in componentsBeingRemoved)
                     updatedWithSuccess&=productBeingUpdated.removeComplementedProduct(component);
                 perfomedAtLeastOneUpdate=true;
@@ -388,12 +389,21 @@ namespace core.application {
         /// Ensures that the materials fetch was successful
         /// </summary>
         /// <param name="materialsToFetch">IEnumerable with the materials dtos to fetch</param>
-        /// <param name="materialsFetched">IEnumerable with the fetched materials</param>
-        private void ensureMaterialsFetchWasSuccessful(IEnumerable<MaterialDTO> materialsToFetch,IEnumerable<Material> materialsFetched){
-            if(Collections.getEnumerableSize(materialsToFetch)!=Collections.getEnumerableSize(materialsFetched))
+        /// <param name="fetchedMaterials">IEnumerable with the fetched materials</param>
+        private void ensureMaterialsFetchWasSuccessful(IEnumerable<MaterialDTO> materialsToFetch,IEnumerable<Material> fetchedMaterials){
+            if(Collections.getEnumerableSize(materialsToFetch)!=Collections.getEnumerableSize(fetchedMaterials))
                 throw new InvalidOperationException(INVALID_MATERIALS_FETCH);
         }
 
+        /// <summary>
+        /// Ensures that the materials fetch was successful
+        /// </summary>
+        /// <param name="componentsToFetch">IEnumerable with the components dtos to fetch</param>
+        /// <param name="fetchedComponents">IEnumerable with the fetched components</param>
+        private void ensureProductsComponentsFetchWasSuccesful(IEnumerable<ComponentDTO> componentsToFetch,IEnumerable<Component> fetchedComponents){
+            if(Collections.getEnumerableSize(componentsToFetch)!=Collections.getEnumerableSize(fetchedComponents))
+                throw new InvalidOperationException(INVALID_COMPONENTS_FETCH);
+        }
     }
 
 }

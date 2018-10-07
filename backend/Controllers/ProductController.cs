@@ -147,8 +147,8 @@ namespace backend.Controllers {
                     return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
             }catch(NullReferenceException){
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
-            }catch(InvalidOperationException invalidOperation){
-                return BadRequest(new SimpleJSONMessageService(invalidOperation.Message));
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
             }
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
@@ -163,8 +163,14 @@ namespace backend.Controllers {
         [HttpPut("{id}/components")]
         public ActionResult updateProductComponents(long id,[FromBody] UpdateProductDTO updateProductData) {
             updateProductData.id=id;
-            if(new core.application.ProductController().updateProductComponents(updateProductData))
-                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            try{
+                if(new core.application.ProductController().updateProductComponents(updateProductData))
+                    return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            }catch(NullReferenceException){
+                return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
 
