@@ -11,20 +11,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace core.domain
 {
-    public class Component : DTOAble<ComponentDTO>
+    public class Component :AggregateRoot<Product>, DTOAble<ComponentDTO>
     {
+        /// <summary>
+        /// Long with the persistence ID
+        /// </summary>
         public long Id{get; private set;}
-
+        
         /// <summary>
-        /// String with the component reference
-        /// </summary>
-        public string reference {get; set;}
-        /// <summary>
-        /// String with the component designation
-        /// </summary>
-        public string designation {get; set;}
-        /// <summary>
-        /// String with the component designation
+        /// Product with the product 
         /// </summary>
         public Product product {get; set;}
         /// <summary>
@@ -41,21 +36,22 @@ namespace core.domain
         /// Builds a new component with its list of the restrictions.
         /// </summary>
         /// <param name="restricitions">List with the restrictions of the component</param>
-        public Component(List<Restriction> restrictions){
+        public Component(Product product,List<Restriction> restrictions){
+            this.product=product;
             this.restrictions=restrictions;
         }
          /// <summary>
         /// Returns the component identity
         /// </summary>
-        /// <returns>string with the component identity</returns>
-        public string id(){return reference;}
+        /// <returns>Product with the component identity</returns>
+        public Product id(){return product;}
 
         /// <summary>
         /// Checks if a certain component entity is the same as the current component
         /// </summary>
-        /// <param name="comparingEntity">string with the comparing component identity</param>
+        /// <param name="comparingEntity">Product with the comparing component identity</param>
         /// <returns>boolean true if both entities identity are the same, false if not</returns>
-        public bool sameAs(string comparingEntity){return id().Equals(comparingEntity);}
+        public bool sameAs(Product comparingEntity){return id().Equals(comparingEntity);}
         /// <summary>
         /// Returns the current component as a DTO
         /// </summary>
