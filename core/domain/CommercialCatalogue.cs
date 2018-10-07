@@ -71,6 +71,18 @@ namespace core.domain
         </summary>
          */
         private long persistence_id { get; set; }
+        /**
+       <summary>
+           Commercial Catalogue's valueOf
+           <param name = "reference">string with the new CommercialCatalogue's reference</param>
+           <param name = "designation">string with the new CommercialCatalogue's designation</param>
+            <param name = "custProducts">List with the new CommercialCatalogue's custoProduct</param>
+       </summary>
+        */
+        public static CommercialCatalogue valueOf(string reference, string designation, List<CustomizedProduct> custProducts)
+        {
+            return new CommercialCatalogue(reference, designation, custProducts);
+        }
 
         /**
         <summary>

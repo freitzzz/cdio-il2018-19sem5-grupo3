@@ -59,7 +59,7 @@ namespace core_tests.domain
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, custProducts);
+            CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf(reference, designation, custProducts);
 
             Assert.Equal(comCatalogue.id(), reference, true);
         }
@@ -111,7 +111,7 @@ namespace core_tests.domain
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, custProducts);
+            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf(reference, designation, custProducts);
 
 
             Assert.True(comCatalogue.sameAs(reference));
@@ -164,7 +164,7 @@ namespace core_tests.domain
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, custProducts);
+            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf(reference, designation, custProducts);
 
 
 
@@ -215,7 +215,7 @@ namespace core_tests.domain
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
-            Assert.Throws<ArgumentException>(() => new CommercialCatalogue(null, "This doesn't work", custProducts));
+            Assert.Throws<ArgumentException>(() =>  CommercialCatalogue.valueOf(null, "This doesn't work", custProducts));
         }
 
         /**
@@ -260,7 +260,7 @@ namespace core_tests.domain
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
-            Assert.Throws<ArgumentException>(() => new CommercialCatalogue("", "Let me see...", custProducts));
+            Assert.Throws<ArgumentException>(() =>  CommercialCatalogue.valueOf("", "Let me see...", custProducts));
         }
 
         /**
@@ -304,7 +304,7 @@ namespace core_tests.domain
 
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
-            Assert.Throws<ArgumentException>(() => new CommercialCatalogue("Have you tried turning it off and then on again?", null, custProducts));
+            Assert.Throws<ArgumentException>(() =>  CommercialCatalogue.valueOf("Have you tried turning it off and then on again?", null, custProducts));
         }
 
         /**
@@ -349,7 +349,7 @@ namespace core_tests.domain
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
-            Assert.Throws<ArgumentException>(() => new CommercialCatalogue("Still not working", "", custProducts));
+            Assert.Throws<ArgumentException>(() =>  CommercialCatalogue.valueOf("Still not working", "", custProducts));
         }
 
         /**
@@ -362,7 +362,7 @@ namespace core_tests.domain
         {
             Console.WriteLine("ensureNullCustProductListIsNotValid");
 
-            Assert.Throws<ArgumentException>(() => new CommercialCatalogue("Hello", "It's me, Mario", null));
+            Assert.Throws<ArgumentException>(() =>  CommercialCatalogue.valueOf("Hello", "It's me, Mario", null));
         }
 
         /**
@@ -377,7 +377,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
 
-            Assert.Throws<ArgumentException>(() => new CommercialCatalogue("Goodbye", "See you later", custoProducts));
+            Assert.Throws<ArgumentException>(() =>  CommercialCatalogue.valueOf("Goodbye", "See you later", custoProducts));
         }
 
         //addCustomizedProduct tests
@@ -424,7 +424,7 @@ namespace core_tests.domain
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.False(comCatalogue.addCustomizedProduct(custProduct));
         }
@@ -471,7 +471,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
             Assert.False(comCatalogue.addCustomizedProduct(null));
         }
 
@@ -517,7 +517,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.True(comCatalogue.addCustomizedProduct(CustomizedProduct.valueOf("566", "CustomizedProduct2", custMaterial, custDimensions, product)));
         }
@@ -566,7 +566,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.False(comCatalogue.removeCustomizedProduct(CustomizedProduct.valueOf("Tira", "CustomizedProduct3", custMaterial, custDimensions, product)));
         }
@@ -613,7 +613,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.False(comCatalogue.removeCustomizedProduct(null));
         }
@@ -660,7 +660,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.True(comCatalogue.removeCustomizedProduct(custProduct));
         }
@@ -709,7 +709,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.True(comCatalogue.hasCustomizedProduct(custProduct));
         }
@@ -756,7 +756,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.False(comCatalogue.hasCustomizedProduct(null));
         }
@@ -805,8 +805,8 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", custoProducts);
-            CommercialCatalogue comCatalogue2 = new CommercialCatalogue("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue1 =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue2 =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.Equal(comCatalogue1.GetHashCode(), comCatalogue2.GetHashCode());
         }
@@ -855,8 +855,8 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", custoProducts);
-            CommercialCatalogue comCatalogue2 = new CommercialCatalogue("Equal", "One", custoProducts);
+            CommercialCatalogue comCatalogue1 =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue2 =  CommercialCatalogue.valueOf("Equal", "One", custoProducts);
 
 
             Assert.False(comCatalogue1.Equals(comCatalogue2));
@@ -904,8 +904,8 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", custoProducts);
-            CommercialCatalogue comCatalogue2 = new CommercialCatalogue("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue1 =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue2 =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
 
 
@@ -954,7 +954,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
 
             Assert.False(comCatalogue.Equals(null));
@@ -1000,7 +1000,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
 
             Assert.False(comCatalogue.Equals("stars"));
@@ -1050,8 +1050,8 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", custoProducts);
-            CommercialCatalogue comCatalogue2 = new CommercialCatalogue("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue1 =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue2 =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
 
 
