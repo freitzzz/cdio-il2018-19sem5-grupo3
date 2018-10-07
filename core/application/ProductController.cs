@@ -22,6 +22,11 @@ namespace core.application {
         /// are invalid
         /// </summary>
         private const string INVALID_COMPONENTS_FETCH="The components being fetched are invalid";
+        /// <summary>
+        /// Constant that represents the message that occures if the dimensions being fetched 
+        /// are invalid
+        /// </summary>
+        private const string INVALID_DIMENSIONS_FETCH="The dimensions being fetched are invalid";
 
         /// <summary>
         /// Builds a new ProductController
@@ -146,7 +151,6 @@ namespace core.application {
             bool perfomedAtLeastOneUpdate=false;
             if(updateProductDTO.dimensionsToAdd.widthDimensionDTOs!=null){
                 IEnumerable<Dimension> widthDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.widthDimensionDTOs);
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
                 foreach(Dimension widthDimension in widthDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addWidthDimension(widthDimension);
                 perfomedAtLeastOneUpdate=true;
@@ -155,7 +159,6 @@ namespace core.application {
 
             if(updateProductDTO.dimensionsToAdd.heightDimensionDTOs!=null){
                 IEnumerable<Dimension> heightDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.heightDimensionDTOs);
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
                 foreach(Dimension heightDimension in heightDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addHeightDimension(heightDimension);
                 perfomedAtLeastOneUpdate=true;
@@ -164,7 +167,6 @@ namespace core.application {
 
             if(updateProductDTO.dimensionsToAdd.depthDimensionDTOs!=null){
                 IEnumerable<Dimension> depthDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.depthDimensionDTOs);
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
                 foreach(Dimension depthDimension in depthDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addDepthDimension(depthDimension);
                 perfomedAtLeastOneUpdate=true;
@@ -396,13 +398,23 @@ namespace core.application {
         }
 
         /// <summary>
-        /// Ensures that the materials fetch was successful
+        /// Ensures that the produts components fetch was successful
         /// </summary>
         /// <param name="componentsToFetch">IEnumerable with the components dtos to fetch</param>
         /// <param name="fetchedComponents">IEnumerable with the fetched components</param>
         private void ensureProductsComponentsFetchWasSuccesful(IEnumerable<ComponentDTO> componentsToFetch,IEnumerable<Component> fetchedComponents){
             if(Collections.getEnumerableSize(componentsToFetch)!=Collections.getEnumerableSize(fetchedComponents))
                 throw new InvalidOperationException(INVALID_COMPONENTS_FETCH);
+        }
+
+        /// <summary>
+        /// Ensures that the products dimensions fetch was successful
+        /// </summary>
+        /// <param name="dimensionsToFetch">IEnumerable with the dimensions dtos to fetch</param>
+        /// <param name="fetchedDimensions">IEnumerable with the fetched dimensions</param>
+        private void ensureProductsDimensionsFetchWasSuccesful(IEnumerable<DimensionDTO> dimensionsToFetch,IEnumerable<Dimension> fetchedDimensions){
+            if(Collections.getEnumerableSize(dimensionsToFetch)!=Collections.getEnumerableSize(fetchedDimensions))
+                throw new InvalidOperationException(INVALID_DIMENSIONS_FETCH);
         }
     }
 

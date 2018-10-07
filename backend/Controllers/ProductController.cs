@@ -90,13 +90,15 @@ namespace backend.Controllers {
                 if(createdProductDTO!=null){
                     return Created(Request.Path,createdProductDTO);
                 }else{
+                    //TODO:????????
                     return BadRequest();
                 }
             }catch(NullReferenceException){
-                return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
-            }catch(ArgumentException){
-                throw new NotImplementedException();
-                //Treat Product Creation exception
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+            }catch(ArgumentException argumentException){
+                return BadRequest(new SimpleJSONMessageService(argumentException.Message));
             }
         }
 
