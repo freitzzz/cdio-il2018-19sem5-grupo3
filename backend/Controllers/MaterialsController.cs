@@ -21,7 +21,7 @@ namespace backend.Controllers {
     //<summary>
     //Backend MaterialsController class.
     //</summary>
-    [Route("myc/materials")]
+    [Route("myc/api/materials")]
     public class MaterialsController : Controller {
         /// <summary>
         /// Constant that represents the 400 Bad Request message for when no Materials are found.
@@ -61,8 +61,8 @@ namespace backend.Controllers {
         public ActionResult<List<MaterialDTO>> findAll() {
             List<MaterialDTO> materials = new core.application.MaterialsController().findAllMaterials();
 
-            if (materials == null) {
-                string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_FOUND_REFERENCE);
+            if (Collections.isListEmpty(materials)) {
+                string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, NO_MATERIALS_FOUND_REFERENCE);
                 return BadRequest(jsonFormattedMessage);
             }
 
