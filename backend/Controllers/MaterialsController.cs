@@ -62,7 +62,7 @@ namespace backend.Controllers {
             List<MaterialDTO> materials = new core.application.MaterialsController().findAllMaterials();
 
             if (Collections.isListEmpty(materials)) {
-                string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_FOUND_REFERENCE);
+                string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, NO_MATERIALS_FOUND_REFERENCE);
                 return BadRequest(jsonFormattedMessage);
             }
 
