@@ -41,5 +41,21 @@ namespace support.utils
             return enumerable==null||!enumerable.GetEnumerator().MoveNext();
         }
 
+        /// <summary>
+        /// Returns the current size of an enumerable
+        /// </summary>
+        /// <param name="enumerable">IEnumerable with the enumerable which size is being retrieved</param>
+        /// <typeparam name="T">Generic-Type param of the enumerable</typeparam>
+        /// <returns>Integer with the enumerable size</returns>
+        public static int getEnumerableSize<T>(IEnumerable<T> enumerable){
+            if(enumerable.GetType()==typeof(List<T>)){
+                return ((List<T>)enumerable).Count;
+            }else{
+                int size=0;
+                foreach(T item in enumerable)
+                    size++;
+                return size;
+            }
+        }
     }
 }
