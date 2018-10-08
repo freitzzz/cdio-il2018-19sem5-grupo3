@@ -151,15 +151,15 @@ namespace backend.Controllers {
             }
         }
         /// <summary>
-        /// Adds finishes to a material
+        /// Updates finishes of a material
         /// </summary>
         /// <param name="id">id of the material to be updated</param>
-        /// <param name="finishes">list of finishes to be added</param>
+        /// <param name="upMat">dto with the list of finishes to add and remove</param>
         /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
         [HttpPut("{id}/finishes")]
-        public ActionResult addFinishes(long id, [FromBody] List<FinishDTO> finishes) {
+        public ActionResult updateFinishes(long id, [FromBody] UpdateMaterialDTO upMat) {
             try {
-                MaterialDTO matDTO = new core.application.MaterialsController().updateFinishes(id, finishes);
+                MaterialDTO matDTO = new core.application.MaterialsController().updateFinishes(id, upMat);
                 if (matDTO == null) {
                     return BadRequest();
                 }
@@ -167,18 +167,10 @@ namespace backend.Controllers {
             } catch (ArgumentException e) {
                 string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
                 return BadRequest(formattedMessage);
+            } catch (NullReferenceException ex) {
+                string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, ex.Message);
+                return BadRequest(formattedMessage);
             }
-        }
-        /// <summary>
-        /// Removes finishes from a material
-        /// </summary>
-        /// <param name="id">id of the material to be updated</param>
-        /// <param name="finishes">list of finishes to remove</param>
-        /// <returns></returns>
-        [HttpDelete("{id}/finishes")]
-        public ActionResult removeFinishes(long id, [FromBody] List<FinishDTO> finishes) {
-            MaterialDTO matDTO = new core.application.MaterialsController().removeFinishes(id, finishes);
-            return Ok(matDTO);
         }
     }
 }

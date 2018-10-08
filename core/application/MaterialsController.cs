@@ -136,31 +136,22 @@ namespace core.application {
         /// <param name="id">id of the material to update</param>
         /// <param name="finishes">list of finishes to be added</param>
         /// <returns>DTO of the updated material</returns>
-        public MaterialDTO updateFinishes(long id, List<FinishDTO> finishes) {
+        public MaterialDTO updateFinishes(long id, UpdateMaterialDTO upMat) {
             MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
             Material material = materialRepository.find(id);
             List<Finish> finishList = new List<Finish>();
-            foreach (FinishDTO dto in finishes) {
-                material.addFinish(dto.toEntity());
+            if (upMat.finishesToAdd != null) {
+                foreach (FinishDTO dto in upMat.finishesToAdd) {
+                    material.addFinish(dto.toEntity());
+                }
+            }
+            if (upMat.finishesToRemove != null) {
+                foreach (FinishDTO dto in upMat.finishesToRemove) {
+                    Finish fin = materialRepository.findFinish(material, dto.id);
+                    material.removeFinish(fin);
+                }
             }
             materialRepository.update(material);
-            return material.toDTO();
-        }
-        /// <summary>
-        /// Removes finishes from a material
-        /// </summary>
-        /// <param name="id">id of the material to be updated</param>
-        /// <param name="finishes">list of finishes to remove</param>
-        /// <returns>DTO representing the updated material</returns>
-        public MaterialDTO removeFinishes(long id, List<FinishDTO> finishes) {
-            MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
-            Material material = materialRepository.find(id);
-            foreach (FinishDTO dto in finishes) {
-                Finish fin = materialRepository.findFinish(material, dto.id);
-                material.removeFinish(fin);
-            }
-            materialRepository.update(material);
-            //TODO:???? Pretty sure this is wrong => material.Finishes = finishList;
             return material.toDTO();
         }
     }

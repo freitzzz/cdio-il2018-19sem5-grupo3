@@ -4,6 +4,7 @@ using core.domain;
 using core.dto;
 using core.persistence;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.persistence.ef {
     public class EFMaterialRepository : EFBaseRepository<Material, long, string>, MaterialRepository {
@@ -23,10 +24,14 @@ namespace backend.persistence.ef {
         }
 
         public Finish findFinish(Material mat, long id) {
-            Material material = dbContext.Material.Single(m => m.Id == mat.Id);
-            List<Finish> finishes = (List<Finish>)dbContext.Entry(material).Collection(f => f.Finishes.Where(fin => (fin.Id == id))).CurrentValue;
-            Console.WriteLine(finishes.Capacity);
-            Console.WriteLine(finishes.ElementAt(0).description);
+            DbSet<Material> materials = dbContext.Material;
+            foreach (Material material in materials) {
+                foreach (Finish fin in material.Finishes) {
+                    if (fin.Id == id) {
+                        return fin;
+                    }
+                }
+            }
             return null;
         }
     }
