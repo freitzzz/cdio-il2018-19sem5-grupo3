@@ -10,6 +10,7 @@ using backend_tests.utils;
 
 namespace backend_tests.Controllers
 {
+    [TestCaseOrderer("backend_tests.Setup.PriorityOrderer","backend_tests.Setup")]
     /// <summary>
     /// Integration Tests for Materials Collection API
     /// </summary>
@@ -36,7 +37,7 @@ namespace backend_tests.Controllers
             client = fixture.httpClient;
         }
 
-        [Fact]
+        [Fact, TestPriority(1)]
         public async Task ensureGetAllMaterialsSendsBadRequestWhenListIsEmpty()
         {
 
@@ -45,17 +46,17 @@ namespace backend_tests.Controllers
             var responseString = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<Object>(responseString);
 
-            Assert.True(response.StatusCode == HttpStatusCode.BadRequest);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             Assert.NotNull(result);
         }
 
         //!Test is failing. NullReferenceException at line 61 of core/application/MaterialsController
         //TODO Assert that response message is the correct one?
-        [Fact]
+        [Fact, TestPriority(2)]
         public async Task ensurePostMaterialFailsWithEmptyRequestBody(){
             var response = await client.PostAsJsonAsync(urlBase,"{}");
 
-            Assert.True(response.StatusCode == HttpStatusCode.BadRequest);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
     }
