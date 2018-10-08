@@ -141,8 +141,7 @@ namespace core.application {
             }
             if (upMat.finishesToRemove != null) {
                 foreach (FinishDTO dto in upMat.finishesToRemove) {
-                    Finish fin = materialRepository.findFinish(material, dto.id);
-                    material.removeFinish(fin);
+                    material.removeFinish(dto.toEntity());
                 }
             }
             materialRepository.update(material);

@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.Serialization;
 using core.domain;
 using support.dto;
@@ -22,6 +23,10 @@ namespace core.dto {
         [DataMember]
         public string description { get; set; }
 
+        /// <summary>
+        /// Returns the Entity equivalent of the DTO
+        /// </summary>
+        /// <returns>Entity equivalent of the DTO</returns>
         public Finish toEntity() {
             Finish finish = Finish.valueOf(description);
             finish.Id = this.id;
