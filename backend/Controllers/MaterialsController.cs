@@ -17,14 +17,12 @@ using core.dto;
 using backend.utils;
 using static backend.utils.JSONStringFormatter;
 
-namespace backend.Controllers
-{
+namespace backend.Controllers {
     //<summary>
     //Backend MaterialsController class.
     //</summary>
     [Route("myc/api/materials")]
-    public class MaterialsController : Controller
-    {
+    public class MaterialsController : Controller {
         /// <summary>
         /// Constant that represents the 400 Bad Request message for when no Materials are found.
         /// </summary>
@@ -38,8 +36,7 @@ namespace backend.Controllers
 
         private readonly MaterialRepository materialRepository;
 
-        public MaterialsController(MaterialRepository materialRepository)
-        {
+        public MaterialsController(MaterialRepository materialRepository) {
             this.materialRepository = materialRepository;
         }
 
@@ -66,12 +63,10 @@ namespace backend.Controllers
         /// <br>HTTP Response 200 Ok with the info of all Materials in JSON format.
         /// </returns>
         [HttpGet]
-        public ActionResult<List<MaterialDTO>> findAll()
-        {
+        public ActionResult<List<MaterialDTO>> findAll() {
             List<MaterialDTO> materials = new core.application.MaterialsController().findAllMaterials();
 
-            if (Collections.isListEmpty(materials))
-            {
+            if (Collections.isListEmpty(materials)) {
                 string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, NO_MATERIALS_FOUND_REFERENCE);
                 return BadRequest(jsonFormattedMessage);
             }
@@ -88,12 +83,10 @@ namespace backend.Controllers
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.
         /// </returns>
         [HttpGet("{id}", Name = "GetMaterial")]
-        public ActionResult<MaterialDTO> findById(long id)
-        {
+        public ActionResult<MaterialDTO> findById(long id) {
             MaterialDTO materialDTO = new core.application.MaterialsController().findMaterialByID(id);
 
-            if (materialDTO == null)
-            {
+            if (materialDTO == null) {
                 string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_FOUND_REFERENCE);
                 return BadRequest(jsonFormattedMessage);
             }
@@ -108,12 +101,10 @@ namespace backend.Controllers
         /// <returns>HTTP Response 400 Bad Request if the Material is not removed;
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
         [HttpDelete("{id}")]
-        public ActionResult<MaterialDTO> remove(long materialID)
-        {
+        public ActionResult<MaterialDTO> remove(long materialID) {
             MaterialDTO removedDTO = new core.application.MaterialsController().removeMaterial(materialID);
 
-            if (removedDTO == null)
-            {
+            if (removedDTO == null) {
                 string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_REMOVED_REFERENCE);
                 return BadRequest(jsonFormattedMessage);
             }
@@ -128,28 +119,20 @@ namespace backend.Controllers
         /// <returns>HTTP Response 400 Bad Request if the Material is not added;
         /// <br>HTTP Response 201 Created with the info of the Material in JSON format.</returns>
         [HttpPost]
-        public ActionResult<MaterialDTO> add([FromBody] MaterialDTO jsonData)
-        {
-            try
-            {
+        public ActionResult<MaterialDTO> add([FromBody] MaterialDTO jsonData) {
+            try {
                 MaterialDTO addedDTO = new core.application.MaterialsController().addMaterial(jsonData);
-                if (addedDTO == null)
-                {
+                if (addedDTO == null) {
                     string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_ADDED_REFERENCE);
                     return BadRequest(formattedMessage);
                 }
                 return CreatedAtRoute("GetMaterial", new { id = addedDTO.id }, addedDTO);
-            }
-            catch (NullReferenceException)
-            {
+
+            } catch (NullReferenceException) {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
-            }
-            catch (InvalidOperationException invalidOperationException)
-            {
+            } catch (InvalidOperationException invalidOperationException) {
                 return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
-            }
-            catch (ArgumentException argumentException)
-            {
+            } catch (ArgumentException argumentException) {
                 return BadRequest(new SimpleJSONMessageService(argumentException.Message));
             }
         }
@@ -161,46 +144,40 @@ namespace backend.Controllers
         /// <returns>HTTP Response 400 Bad Request if the Material is not updated;
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.</returns>
         [HttpPut]
-        public ActionResult<MaterialDTO> update([FromBody] MaterialDTO jsonData)
-        {
-            try
-            {
+        public ActionResult<MaterialDTO> update([FromBody] MaterialDTO jsonData) {
+            try {
                 MaterialDTO matDTO = new core.application.MaterialsController().updateMaterial(jsonData);
 
-                if (matDTO == null)
-                {
+                if (matDTO == null) {
                     return BadRequest();
                 }
 
                 return Ok(matDTO);
-            }
-            catch (ArgumentException e)
-            {
+            } catch (ArgumentException e) {
                 string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
                 return BadRequest(formattedMessage);
             }
         }
         /// <summary>
-        /// Updates the finishes of a material
+        /// Updates finishes of a material
         /// </summary>
         /// <param name="id">id of the material to be updated</param>
-        /// <param name="finishes">new list of finishes</param>
+        /// <param name="upMat">dto with the list of finishes to add and remove</param>
         /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
         [HttpPut("{id}/finishes")]
-        public ActionResult updateFinishes(long id, [FromBody] List<FinishDTO> finishes)
-        {
-            try
-            {
-                MaterialDTO matDTO = new core.application.MaterialsController().updateFinishes(id, finishes);
-                if (matDTO == null)
-                {
+        public ActionResult updateFinishes(long id, [FromBody] UpdateMaterialDTO upMat) {
+            try {
+                MaterialDTO matDTO = new core.application.MaterialsController().updateFinishes(id, upMat);
+                if (matDTO == null) {
+
                     return BadRequest();
                 }
                 return Ok(matDTO);
-            }
-            catch (ArgumentException e)
-            {
+            } catch (ArgumentException e) {
                 string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
+                return BadRequest(formattedMessage);
+            } catch (NullReferenceException ex) {
+                string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, ex.Message);
                 return BadRequest(formattedMessage);
             }
         }
