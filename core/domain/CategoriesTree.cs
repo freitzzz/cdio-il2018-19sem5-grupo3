@@ -45,37 +45,30 @@ namespace core.domain
         }
 
         /// <summary>
-        /// Finds all Nodes within the Tree.
+        /// Finds all Node elements within the Tree.
         /// </summary>
         /// <returns>List with all Categories</returns>
         public List<ProductCategory> getAllCategories()
         {
-            List<Node> nodes = new List<Node>();
-            getAllNodes(nodes, root);
-            nodes.Remove(root);
-
             List<ProductCategory> categories = new List<ProductCategory>();
-            foreach (Node node in nodes)
-            {
-                categories.Add(node.getElement());
-            }
-
+            getAllCategories(categories, root);
+            categories.Remove(root.getElement());
             return categories;
         }
 
         /// <summary>
-        /// Auxiliar method that finds all Nodes within the Tree.
-        /// Recursively adds the Nodes to the List received as a parameter.
+        /// Auxiliar method that finds all ProductCategories within the Tree.
+        /// Recursively adds the ProductCategories to the List received as a parameter.
         /// </summary>
-        /// <param name="nodes">List to fill with the Nodes</param>
+        /// <param name="categories">List to fill with the Node elements</param>
         /// <param name="node">Node to search</param>
-        private void getAllNodes(List<Node> nodes, Node node)
+        private void getAllCategories(List<ProductCategory> categories, Node node)
         {
-            nodes.Add(node);
+            categories.Add(node.getElement());
 
             foreach (Node child in node.getChildren())
             {
-                getAllNodes(nodes, child);
+                getAllCategories(categories, child);
             }
         }
 
@@ -124,7 +117,7 @@ namespace core.domain
         {
             node.getElement().deactivate();
             nodes--;
-            
+
             if (!node.isLeaf())
             {
                 foreach (Node child in node.getChildren())
@@ -158,30 +151,36 @@ namespace core.domain
         }
 
         /// <summary>
+        /// Auxiliar method that finds all Nodes within the Tree.
+        /// Recursively adds the Nodes to the List received as a parameter.
+        /// </summary>
+        /// <param name="categories">List to fill with the Nodes</param>
+        /// <param name="node">Node to search</param>
+        private void getAllNodes(List<Node> nodes, Node node)
+        {
+            nodes.Add(node);
+
+            foreach (Node child in node.getChildren())
+            {
+                getAllNodes(nodes, child);
+            }
+        }
+
+        /// <summary>
         /// Finds a Node's parent within the Tree.
         /// </summary>
         /// <param name="category">ProductCategory in question</param>
         /// <returns>the element (ProductCategory) of the parent Node</returns>
         public ProductCategory findCategoryParent(ProductCategory category)
         {
-            if(category == null) return null;
+            if (category == null) return null;
 
             if (category.Equals(root.getElement())) return null; //If the ProductCategory is the root, then there is no parent
 
             Node catNode = findCategoryNode(category);
-            if(catNode == null) return null;
+            if (catNode == null) return null;
 
-            List<Node> nodes = new List<Node>();
-            getAllNodes(nodes, root);
-
-            foreach (Node node in nodes)
-            {
-                if (node.getChildren().Contains(catNode))
-                {
-                    return node.getElement();
-                }
-            }
-            return null;
+            return catNode.getParent().getElement();
         }
 
         /// <summary>
