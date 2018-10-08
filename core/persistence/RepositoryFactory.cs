@@ -21,10 +21,6 @@ namespace core.persistence{
         /// <returns>ProductCategoryRepository with the repository for product category entities</returns>
         ProductCategoryRepository createProductCategoryRepository();
 
-        /// <summary>
-        /// Creates a ComponentRepository
-        /// </summary>
-        /// <returns>ComponentRepository with the repository for component entities</returns>
-        ComponentRepository createComponentRepository();
+        
     }
 }
