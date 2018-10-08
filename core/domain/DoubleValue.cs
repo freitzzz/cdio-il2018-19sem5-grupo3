@@ -71,7 +71,7 @@ namespace core.domain
                 return false;
             }
 
-            if(obj.GetType().Equals(this.GetType())){
+            if(obj.GetType().ToString().Equals("core.domain.DoubleValue")){
                 DoubleValue other = (DoubleValue)obj;
                 return this.value.Equals(other.value);
             }
