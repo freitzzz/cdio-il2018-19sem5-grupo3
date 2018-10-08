@@ -3,10 +3,10 @@ using core.persistence;
 
 namespace backend.persistence.ef{
     public sealed class EFRepositoryFactoryImpl : RepositoryFactory
-    {
+    {/*
         public ComponentRepository createComponentRepository() {
             throw new System.NotImplementedException();
-        }
+        }*/
 
         /// <summary>
         /// Creates a MaterialRepository

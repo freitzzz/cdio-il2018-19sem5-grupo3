@@ -14,7 +14,7 @@ namespace core.domain {
     */
     public class Finish : ValueObject, DTOAble<FinishDTO> {
 
-        public long Id { get; internal set;}
+        public long Id { get; internal set; }
 
         /**
         <summary>
@@ -33,7 +33,7 @@ namespace core.domain {
         /// <summary>
         /// Empty constructor for ORM.
         /// </summary>
-        protected Finish(){}
+        protected Finish() { }
 
         /**
         <summary>
@@ -72,8 +72,11 @@ namespace core.domain {
         <param name = "obj">object to compare to the current Finish</param>
          */
         public override bool Equals(object obj) {
+            if (obj == this) {
+                return true;
+            }
             //Check for null and compare run-time types.
-            if ((obj == null) || !this.GetType().Equals(obj.GetType())) {
+            if ((obj == null) || obj.GetType().ToString() != "core.domain.Finish") {
                 return false;
             } else {
                 Finish finish = (Finish)obj;

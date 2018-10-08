@@ -169,7 +169,6 @@ namespace backend.Controllers {
             try {
                 MaterialDTO matDTO = new core.application.MaterialsController().updateFinishes(id, upMat);
                 if (matDTO == null) {
-
                     return BadRequest();
                 }
                 return Ok(matDTO);
