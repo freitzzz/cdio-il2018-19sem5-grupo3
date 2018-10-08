@@ -186,8 +186,14 @@ namespace backend.Controllers {
         [HttpPut("{id}/dimensions")]
         public ActionResult updateProductDimensions(long id,[FromBody] UpdateProductDTO updateProductData) {
             updateProductData.id=id;
-            if(new core.application.ProductController().updateProductDimensions(updateProductData))
-                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            try{
+                if(new core.application.ProductController().updateProductDimensions(updateProductData))
+                    return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            }catch(NullReferenceException){
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+            }
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
 
@@ -201,8 +207,14 @@ namespace backend.Controllers {
         [HttpPut("{id}/category")]
         public ActionResult updateProductCategory(long id,[FromBody] UpdateProductDTO updateProductData) {
             updateProductData.id=id;
-            if(new core.application.ProductController().updateProductCategory(updateProductData))
-                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            try{
+                if(new core.application.ProductController().updateProductCategory(updateProductData))
+                    return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            }catch(NullReferenceException){
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+            }
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
 

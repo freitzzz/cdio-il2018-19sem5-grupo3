@@ -178,8 +178,7 @@ namespace core.application {
 
 
             if(updateProductDTO.dimensionsToRemove.widthDimensionDTOs!=null){
-                IEnumerable<Dimension> widthDimensionsBeingRemoved=null;
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                IEnumerable<Dimension> widthDimensionsBeingRemoved=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToRemove.widthDimensionDTOs);
                 if(widthDimensionsBeingRemoved!=null)
                     foreach(Dimension widthDimension in widthDimensionsBeingRemoved)
                         updatedWithSuccess&=productBeingUpdated.removeWidthDimension(widthDimension);
@@ -188,8 +187,7 @@ namespace core.application {
             }
 
             if(updateProductDTO.dimensionsToRemove.heightDimensionDTOs!=null){
-                IEnumerable<Dimension> heightDimensionsBeingRemoved=null;
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                IEnumerable<Dimension> heightDimensionsBeingRemoved=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToRemove.heightDimensionDTOs);
                 if(heightDimensionsBeingRemoved!=null)
                     foreach(Dimension heightDimension in heightDimensionsBeingRemoved)
                         updatedWithSuccess&=productBeingUpdated.removeHeightDimension(heightDimension);
@@ -198,8 +196,7 @@ namespace core.application {
             }
 
             if(updateProductDTO.dimensionsToRemove.depthDimensionDTOs!=null){
-                IEnumerable<Dimension> depthDimensionsBeingRemoved=null;
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                IEnumerable<Dimension> depthDimensionsBeingRemoved=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToRemove.depthDimensionDTOs);
                 if(depthDimensionsBeingRemoved!=null)
                     foreach(Dimension depthDimension in depthDimensionsBeingRemoved)
                         updatedWithSuccess&=productBeingUpdated.removeDepthDimension(depthDimension);
