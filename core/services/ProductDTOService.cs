@@ -18,7 +18,8 @@ namespace core.services{
         public Product transform(ProductDTO productDTO){
             string reference=productDTO.reference;
             string designation=productDTO.designation;
-            IEnumerable<Component> productComponents=new ComponentDTOService().transform(productDTO.complements);
+            IEnumerable<Component> productComponents=null;
+            if(productDTO.complements!=null)productComponents=new ComponentDTOService().transform(productDTO.complements);
             ProductCategory productCategory=PersistenceContext.repositories().createProductCategoryRepository().find(productDTO.productCategory.id);
             //TODO:Check if the length of product materials is equal to product materials dtos
             IEnumerable<Material> productMaterials=PersistenceContext.repositories().createMaterialRepository().getMaterialsByIDS(productDTO.productMaterials);
