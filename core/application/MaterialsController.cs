@@ -58,17 +58,9 @@ namespace core.application {
         /// <param name="materialDTO">DTO that holds all info about the Material</param>
         /// <returns>DTO that represents the Material</returns>
         public MaterialDTO addMaterial(MaterialDTO materialAsDTO) {
-            string reference = materialAsDTO.reference;
-            string designation = materialAsDTO.designation;
-
             List<Color> colors = new List<Color>();
             foreach (ColorDTO colorDTO in materialAsDTO.colors) {
-                string name = colorDTO.name;
-                byte red = colorDTO.red;
-                byte green = colorDTO.green;
-                byte blue = colorDTO.blue;
-                byte alpha = colorDTO.alpha;
-                colors.Add(Color.valueOf(name, red, green, blue, alpha));
+                colors.Add(Color.valueOf(colorDTO.name, colorDTO.red, colorDTO.green, colorDTO.blue, colorDTO.alpha));
             }
 
             List<Finish> finishes = new List<Finish>();
@@ -76,10 +68,12 @@ namespace core.application {
                 finishes.Add(Finish.valueOf(finishDTO.description));
             }
 
-            Material addedMaterial = PersistenceContext.repositories().createMaterialRepository().save(new Material(reference, designation, colors, finishes));
+            Material addedMaterial = PersistenceContext.repositories().createMaterialRepository().
+            save(new Material(materialAsDTO.reference, materialAsDTO.designation, colors, finishes));
 
             return addedMaterial == null ? null : addedMaterial.toDTO();
         }
+
 
         /// <summary>
         /// Updates the Material on the MaterialRepository given its data.

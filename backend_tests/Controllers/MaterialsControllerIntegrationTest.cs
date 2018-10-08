@@ -14,6 +14,8 @@ namespace backend_tests.Controllers
     /// Integration Tests for Materials Collection API
     /// </summary>
     /// <typeparam name="TestStartupSQLite">class that handles database startup</typeparam>
+    [Collection("Integration Collection")]
+    [TestCaseOrderer("backend_tests.Setup.PriorityOrderer","backend_tests.Setup")]
     public class MaterialsControllerIntegrationTest : IClassFixture<TestFixture<TestStartupSQLite>>
     {
 
@@ -39,7 +41,6 @@ namespace backend_tests.Controllers
         [Fact]
         public async Task ensureGetAllMaterialsSendsBadRequestWhenListIsEmpty()
         {
-
             var response = await client.GetAsync(urlBase);
 
             var responseString = await response.Content.ReadAsStringAsync();
@@ -49,14 +50,11 @@ namespace backend_tests.Controllers
             Assert.NotNull(result);
         }
 
-        //!Test is failing. NullReferenceException at line 61 of core/application/MaterialsController
-        //TODO Assert that response message is the correct one?
         [Fact]
-        public async Task ensurePostMaterialFailsWithEmptyRequestBody(){
-            var response = await client.PostAsJsonAsync(urlBase,"{}");
-
+        public async Task ensurePostMaterialFailsWithEmptyRequestBody()
+        {
+            var response = await client.PostAsJsonAsync(urlBase, "{}");
             Assert.True(response.StatusCode == HttpStatusCode.BadRequest);
         }
-
     }
 }

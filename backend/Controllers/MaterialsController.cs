@@ -51,6 +51,11 @@ namespace backend.Controllers {
         private const string MATERIAL_NOT_ADDED_REFERENCE = "Could not add material";
 
         /// <summary>
+        /// Constant that represents the message for creating a Material with an invalid Request Body.
+        /// </summary>
+        private const string INVALID_REQUEST_BODY_MESSAGE = "The request body is invalid\nCheck documentation for more information";
+
+        /// <summary>
         /// Finds all Materials.
         /// </summary>
         /// <returns>
@@ -122,12 +127,15 @@ namespace backend.Controllers {
                     return BadRequest(formattedMessage);
                 }
                 return CreatedAtRoute("GetMaterial", new { id = addedDTO.id }, addedDTO);
-            } catch (ArgumentException e) {
-                string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
-                return BadRequest(formattedMessage);
+
+            } catch (NullReferenceException) {
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            } catch (InvalidOperationException invalidOperationException) {
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+            } catch (ArgumentException argumentException) {
+                return BadRequest(new SimpleJSONMessageService(argumentException.Message));
             }
         }
-
 
         /// <summary>
         /// Updates a material given its DTO.
@@ -161,6 +169,7 @@ namespace backend.Controllers {
             try {
                 MaterialDTO matDTO = new core.application.MaterialsController().updateFinishes(id, upMat);
                 if (matDTO == null) {
+
                     return BadRequest();
                 }
                 return Ok(matDTO);

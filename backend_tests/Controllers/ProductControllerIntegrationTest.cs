@@ -14,6 +14,8 @@ namespace backend_tests.Controllers{
     /// <summary>
     /// Integration Tests for Products Collection API
     /// </summary>
+    [Collection("Integration Collection")]
+    [TestCaseOrderer("backend_tests.Setup.PriorityOrderer", "backend_tests.Setup")]
     public sealed class ProductControllerIntegrationTest:IClassFixture<TestFixture<TestStartupSQLite>>{
         /// <summary>
         /// String with the URI where the API Requests will be performed
