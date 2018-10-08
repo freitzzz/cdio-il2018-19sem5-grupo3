@@ -14,6 +14,7 @@ namespace backend_tests.Controllers
     /// Integration Tests for Materials Collection API
     /// </summary>
     /// <typeparam name="TestStartupSQLite">class that handles database startup</typeparam>
+    [Collection("Integration Collection")]
     public class MaterialsControllerIntegrationTest : IClassFixture<TestFixture<TestStartupSQLite>>
     {
 
@@ -49,9 +50,9 @@ namespace backend_tests.Controllers
         }
 
         [Fact]
-        public async Task ensurePostMaterialFailsWithEmptyRequestBody(){
-            var response = await client.PostAsJsonAsync(urlBase,"{}");
-
+        public async Task ensurePostMaterialFailsWithEmptyRequestBody()
+        {
+            var response = await client.PostAsJsonAsync(urlBase, "{}");
             Assert.True(response.StatusCode == HttpStatusCode.BadRequest);
         }
     }
