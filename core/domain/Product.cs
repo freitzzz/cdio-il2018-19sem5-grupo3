@@ -471,7 +471,7 @@ namespace core.domain {
         /// </summary>
         /// <param name="complementedProducts">IEnumerable with the complemented products</param>
         private void checkDuplicatedComplementedProducts(IEnumerable<Component> complementedProducts) {
-            HashSet<string> complementedProductsRefereces = new HashSet<string>();
+            HashSet<Product> complementedProductsRefereces = new HashSet<Product>();
             IEnumerator<Component> complementedProductsEnumerator = complementedProducts.GetEnumerator();
             Component complementedProduct = complementedProductsEnumerator.Current;
             while (complementedProductsEnumerator.MoveNext()) {
