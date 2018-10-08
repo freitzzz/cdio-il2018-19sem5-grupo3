@@ -48,7 +48,7 @@ namespace backend.Controllers {
         /// <summary>
         /// Constant that represents the message that ocurres if a client attemps to create a product with an invalid request body
         /// </summary>
-        private const string INVALID_CREATE_PRODUCT_REQUEST_BODY_MESSAGE="The request body is invalid\nCheck documentation for more information";
+        private const string INVALID_REQUEST_BODY_MESSAGE="The request body is invalid\nCheck documentation for more information";
 
         private readonly ProductRepository productRepository;
 
@@ -90,13 +90,15 @@ namespace backend.Controllers {
                 if(createdProductDTO!=null){
                     return Created(Request.Path,createdProductDTO);
                 }else{
+                    //TODO:????????
                     return BadRequest();
                 }
             }catch(NullReferenceException){
-                return BadRequest(INVALID_CREATE_PRODUCT_REQUEST_BODY_MESSAGE);
-            }catch(ArgumentException){
-                throw new NotImplementedException();
-                //Treat Product Creation exception
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+            }catch(ArgumentException argumentException){
+                return BadRequest(new SimpleJSONMessageService(argumentException.Message));
             }
         }
 
@@ -142,8 +144,14 @@ namespace backend.Controllers {
         [HttpPut("{id}/materials")]
         public ActionResult updateProductMaterials(long id,[FromBody] UpdateProductDTO updateProductData) {
             updateProductData.id=id;
-            if(new core.application.ProductController().updateProductMaterials(updateProductData))
-                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            try{
+                if(new core.application.ProductController().updateProductMaterials(updateProductData))
+                    return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            }catch(NullReferenceException){
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+            }
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
 
@@ -157,8 +165,14 @@ namespace backend.Controllers {
         [HttpPut("{id}/components")]
         public ActionResult updateProductComponents(long id,[FromBody] UpdateProductDTO updateProductData) {
             updateProductData.id=id;
-            if(new core.application.ProductController().updateProductComponents(updateProductData))
-                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            try{
+                if(new core.application.ProductController().updateProductComponents(updateProductData))
+                    return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            }catch(NullReferenceException){
+                return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
 

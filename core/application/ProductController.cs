@@ -1,16 +1,33 @@
 using System;
 using System.Collections.Generic;
-using support.dto;
 using core.domain;
 using core.persistence;
 using core.dto;
 using core.services;
+using support.dto;
+using support.utils;
 
 namespace core.application {
     /// <summary>
     /// Core ProductController class
     /// </summary>
     public class ProductController {
+        /// <summary>
+        /// Constant that represents the message that occures if the materials being fetched 
+        /// are invalid
+        /// </summary>
+        private const string INVALID_MATERIALS_FETCH="The materials being fetched are invalid";
+        /// <summary>
+        /// Constant that represents the message that occures if the components being fetched 
+        /// are invalid
+        /// </summary>
+        private const string INVALID_COMPONENTS_FETCH="The components being fetched are invalid";
+        /// <summary>
+        /// Constant that represents the message that occures if the dimensions being fetched 
+        /// are invalid
+        /// </summary>
+        private const string INVALID_DIMENSIONS_FETCH="The dimensions being fetched are invalid";
+
         /// <summary>
         /// Builds a new ProductController
         /// </summary>
@@ -65,7 +82,7 @@ namespace core.application {
             
             if(updateProductDTO.materialsToAdd!=null){
                 IEnumerable<Material> materialsBeingAdded=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToAdd);
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                ensureMaterialsFetchWasSuccessful(updateProductDTO.materialsToAdd,materialsBeingAdded);
                 foreach(Material material in materialsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addMaterial(material);
                 perfomedAtLeastOneUpdate=true;
@@ -75,7 +92,7 @@ namespace core.application {
 
             if(updateProductDTO.materialsToRemove!=null){
                 IEnumerable<Material> materialsBeingRemoved=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToRemove);
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                ensureMaterialsFetchWasSuccessful(updateProductDTO.materialsToRemove,materialsBeingRemoved);
                 foreach(Material material in materialsBeingRemoved)
                     updatedWithSuccess&=productBeingUpdated.removeMaterial(material);
                 perfomedAtLeastOneUpdate=true;
@@ -98,13 +115,9 @@ namespace core.application {
             bool updatedWithSuccess=true;
             bool perfomedAtLeastOneUpdate=false;
 
-
-            //TODO:DISCUSSION REGARDING COMPONENTS
-
-
             if(updateProductDTO.componentsToAdd!=null){
-                IEnumerable<Component> componentsBeingAdded=null;
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                IEnumerable<Component> componentsBeingAdded=PersistenceContext.repositories().createComponentRepository().fetchComponentsByIDS(updateProductDTO.componentsToAdd);
+                ensureProductsComponentsFetchWasSuccesful(updateProductDTO.componentsToAdd,componentsBeingAdded);
                 foreach(Component component in componentsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addComplementedProduct(component);
                 perfomedAtLeastOneUpdate=true;
@@ -113,8 +126,8 @@ namespace core.application {
             if(!updatedWithSuccess)return false;
 
             if(updateProductDTO.componentsToRemove!=null){
-                IEnumerable<Component> componentsBeingRemoved=null;
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
+                IEnumerable<Component> componentsBeingRemoved=PersistenceContext.repositories().createComponentRepository().fetchComponentsByIDS(updateProductDTO.componentsToRemove);
+                ensureProductsComponentsFetchWasSuccesful(updateProductDTO.componentsToRemove,componentsBeingRemoved);
                 foreach(Component component in componentsBeingRemoved)
                     updatedWithSuccess&=productBeingUpdated.removeComplementedProduct(component);
                 perfomedAtLeastOneUpdate=true;
@@ -138,7 +151,6 @@ namespace core.application {
             bool perfomedAtLeastOneUpdate=false;
             if(updateProductDTO.dimensionsToAdd.widthDimensionDTOs!=null){
                 IEnumerable<Dimension> widthDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.widthDimensionDTOs);
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
                 foreach(Dimension widthDimension in widthDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addWidthDimension(widthDimension);
                 perfomedAtLeastOneUpdate=true;
@@ -147,7 +159,6 @@ namespace core.application {
 
             if(updateProductDTO.dimensionsToAdd.heightDimensionDTOs!=null){
                 IEnumerable<Dimension> heightDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.heightDimensionDTOs);
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
                 foreach(Dimension heightDimension in heightDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addHeightDimension(heightDimension);
                 perfomedAtLeastOneUpdate=true;
@@ -156,7 +167,6 @@ namespace core.application {
 
             if(updateProductDTO.dimensionsToAdd.depthDimensionDTOs!=null){
                 IEnumerable<Dimension> depthDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.depthDimensionDTOs);
-                //TODO:CHECK DTO AND ENTITY LISTS LENGTH
                 foreach(Dimension depthDimension in depthDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addDepthDimension(depthDimension);
                 perfomedAtLeastOneUpdate=true;
@@ -377,6 +387,35 @@ namespace core.application {
             return products;
         }
 
+        /// <summary>
+        /// Ensures that the materials fetch was successful
+        /// </summary>
+        /// <param name="materialsToFetch">IEnumerable with the materials dtos to fetch</param>
+        /// <param name="fetchedMaterials">IEnumerable with the fetched materials</param>
+        private void ensureMaterialsFetchWasSuccessful(IEnumerable<MaterialDTO> materialsToFetch,IEnumerable<Material> fetchedMaterials){
+            if(Collections.getEnumerableSize(materialsToFetch)!=Collections.getEnumerableSize(fetchedMaterials))
+                throw new InvalidOperationException(INVALID_MATERIALS_FETCH);
+        }
+
+        /// <summary>
+        /// Ensures that the produts components fetch was successful
+        /// </summary>
+        /// <param name="componentsToFetch">IEnumerable with the components dtos to fetch</param>
+        /// <param name="fetchedComponents">IEnumerable with the fetched components</param>
+        private void ensureProductsComponentsFetchWasSuccesful(IEnumerable<ComponentDTO> componentsToFetch,IEnumerable<Component> fetchedComponents){
+            if(Collections.getEnumerableSize(componentsToFetch)!=Collections.getEnumerableSize(fetchedComponents))
+                throw new InvalidOperationException(INVALID_COMPONENTS_FETCH);
+        }
+
+        /// <summary>
+        /// Ensures that the products dimensions fetch was successful
+        /// </summary>
+        /// <param name="dimensionsToFetch">IEnumerable with the dimensions dtos to fetch</param>
+        /// <param name="fetchedDimensions">IEnumerable with the fetched dimensions</param>
+        private void ensureProductsDimensionsFetchWasSuccesful(IEnumerable<DimensionDTO> dimensionsToFetch,IEnumerable<Dimension> fetchedDimensions){
+            if(Collections.getEnumerableSize(dimensionsToFetch)!=Collections.getEnumerableSize(fetchedDimensions))
+                throw new InvalidOperationException(INVALID_DIMENSIONS_FETCH);
+        }
     }
 
 }

@@ -11,31 +11,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace core.domain
 {
-    public class Component : DTOAble<ComponentDTO>
+    public class Component :AggregateRoot<Product>, DTOAble<ComponentDTO>
     {
-         /// <summary>
-        /// Constant that represents the messange that ocurres if the component reference is invalid
-        /// </summary>
-        private const string INVALID_COMPONENT_REFERENCE="The component reference is invalid";
         /// <summary>
-        /// Constant that represents the messange that ocurres if the component designation is invalid
-        /// </summary>
-        private const string INVALID_COMPONENT_DESIGNATION="The component designation is invalid";
-        /// <summary>
-        /// Long property with the persistence iD
+        /// Long with the persistence ID
         /// </summary>
         public long Id{get; private set;}
-
+        
         /// <summary>
-        /// String with the component reference
-        /// </summary>
-        public string reference {get; set;}
-        /// <summary>
-        /// String with the component designation
-        /// </summary>
-        public string designation {get; set;}
-        /// <summary>
-        /// String with the component designation
+        /// Product with the product 
         /// </summary>
         public Product product {get; set;}
         /// <summary>
@@ -49,48 +33,31 @@ namespace core.domain
         /// </summary>
         protected Component(){}
         /// <summary>
-        /// Builds a new component with its reference, designation and list of the restrictions.
+        /// Builds a new component with its list of the restrictions.
         /// </summary>
-        /// <param name="reference">String with the component reference</param>
-        /// <param name="designation">String with the component designation</param>
         /// <param name="restricitions">List with the restrictions of the component</param>
-        public Component(string reference,string designation,List<Restriction> restrictions){
-            checkComponentProperties(reference,designation);
-            this.reference=reference;
-            this.designation=designation;
+        public Component(Product product,List<Restriction> restrictions){
+            this.product=product;
             this.restrictions=restrictions;
-        }
-        /// <summary>
-        /// Checks if the component properties are valid
-        /// </summary>
-        /// <param name="reference">String with the component reference</param>
-        /// <param name="designation">String with the component designation</param>
-        private void checkComponentProperties(string reference,string designation){
-            if(Strings.isNullOrEmpty(reference))throw new ArgumentException(INVALID_COMPONENT_REFERENCE);
-            if(Strings.isNullOrEmpty(designation))throw new ArgumentException(INVALID_COMPONENT_DESIGNATION);
         }
          /// <summary>
         /// Returns the component identity
         /// </summary>
-        /// <returns>string with the component identity</returns>
-        public string id(){return reference;}
+        /// <returns>Product with the component identity</returns>
+        public Product id(){return product;}
 
         /// <summary>
         /// Checks if a certain component entity is the same as the current component
         /// </summary>
-        /// <param name="comparingEntity">string with the comparing component identity</param>
+        /// <param name="comparingEntity">Product with the comparing component identity</param>
         /// <returns>boolean true if both entities identity are the same, false if not</returns>
-        public bool sameAs(string comparingEntity){return id().Equals(comparingEntity);}
+        public bool sameAs(Product comparingEntity){return id().Equals(comparingEntity);}
         /// <summary>
         /// Returns the current component as a DTO
         /// </summary>
         /// <returns>DTO with the current DTO representation of the component</returns>
         public ComponentDTO toDTO(){
             ComponentDTO dto = new ComponentDTO();
-
-            dto.id = this.Id;
-            dto.designation = this.designation;
-            dto.reference = this.reference;
 
             if(this.restrictions != null){
                 List<RestrictionDTO> complementDTOList = new List<RestrictionDTO>();
@@ -130,7 +97,7 @@ namespace core.domain
         /// <returns>String with the textual representation of the component</returns>
         public override string ToString(){
             //Should ToString List the Component Complemented Component?
-            return String.Format("Component Information\n- Designation: {0}\n- Reference: {1}",designation,reference);
+            return String.Format("Component Information\n- List of restrictions: {0}\n", restrictions);
         }
         
     }

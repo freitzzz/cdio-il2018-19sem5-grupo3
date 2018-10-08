@@ -16,9 +16,9 @@ namespace core.services{
         /// <param name="productDTO">ProductDTO with the product dto being transformed</param>
         /// <returns>Product with the product transformed from the dto</returns>
         public Product transform(ProductDTO productDTO){
-            //TODO:Components
             string reference=productDTO.reference;
             string designation=productDTO.designation;
+            IEnumerable<Component> productComponents=PersistenceContext.repositories().createComponentRepository().fetchComponentsByIDS(productDTO.complements);
             ProductCategory productCategory=PersistenceContext.repositories().createProductCategoryRepository().find(productDTO.productCategory.id);
             //TODO:Check if the length of product materials is equal to product materials dtos
             IEnumerable<Material> productMaterials=PersistenceContext.repositories().createMaterialRepository().getMaterialsByIDS(productDTO.productMaterials);
@@ -26,11 +26,18 @@ namespace core.services{
             IEnumerable<Dimension> productHeightDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.heightDimensionDTOs);
             IEnumerable<Dimension> productWidthDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.widthDimensionDTOs);
             IEnumerable<Dimension> productDepthDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.depthDimensionDTOs);
+            if(productComponents==null)
+                return new Product(reference,designation,productCategory
+                                            ,productMaterials
+                                            ,productHeightDimensions
+                                            ,productWidthDimensions
+                                            ,productDepthDimensions);
             return new Product(reference,designation,productCategory
-                                        ,productMaterials
-                                        ,productHeightDimensions
-                                        ,productWidthDimensions
-                                        ,productDepthDimensions);
+                                            ,productMaterials
+                                            ,productComponents
+                                            ,productHeightDimensions
+                                            ,productWidthDimensions
+                                            ,productDepthDimensions); 
         }
     }
 }
