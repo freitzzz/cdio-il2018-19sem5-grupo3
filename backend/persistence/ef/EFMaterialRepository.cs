@@ -22,17 +22,5 @@ namespace backend.persistence.ef {
                     where materialsIDS.Contains(material.Id)
                     select material).ToList();
         }
-
-        public Finish findFinish(Material mat, long id) {
-            DbSet<Material> materials = dbContext.Material;
-            foreach (Material material in materials) {
-                foreach (Finish fin in material.Finishes) {
-                    if (fin.Id == id) {
-                        return fin;
-                    }
-                }
-            }
-            return null;
-        }
     }
 }

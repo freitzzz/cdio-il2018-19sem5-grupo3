@@ -15,7 +15,5 @@ namespace core.persistence {
         /// <param name="materialsDTO">IEnumerable with the materials identifiers information</param>
         /// <returns>IEnumerable with the materials based on their identifiers</returns>
         IEnumerable<Material> getMaterialsByIDS(IEnumerable<MaterialDTO> materialsDTO);
-
-        Finish findFinish(Material mat, long id);
     }
 }
