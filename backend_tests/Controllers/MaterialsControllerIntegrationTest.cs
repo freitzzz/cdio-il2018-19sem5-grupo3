@@ -10,11 +10,12 @@ using backend_tests.utils;
 
 namespace backend_tests.Controllers
 {
-    [TestCaseOrderer("backend_tests.Setup.PriorityOrderer","backend_tests.Setup")]
     /// <summary>
     /// Integration Tests for Materials Collection API
     /// </summary>
     /// <typeparam name="TestStartupSQLite">class that handles database startup</typeparam>
+    [Collection("Integration Collection")]
+    [TestCaseOrderer("backend_tests.Setup.PriorityOrderer","backend_tests.Setup")]
     public class MaterialsControllerIntegrationTest : IClassFixture<TestFixture<TestStartupSQLite>>
     {
 
@@ -37,27 +38,23 @@ namespace backend_tests.Controllers
             client = fixture.httpClient;
         }
 
-        [Fact, TestPriority(1)]
+        [Fact]
         public async Task ensureGetAllMaterialsSendsBadRequestWhenListIsEmpty()
         {
-
             var response = await client.GetAsync(urlBase);
 
             var responseString = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<Object>(responseString);
 
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.True(response.StatusCode == HttpStatusCode.BadRequest);
             Assert.NotNull(result);
         }
 
-        //!Test is failing. NullReferenceException at line 61 of core/application/MaterialsController
-        //TODO Assert that response message is the correct one?
-        [Fact, TestPriority(2)]
-        public async Task ensurePostMaterialFailsWithEmptyRequestBody(){
-            var response = await client.PostAsJsonAsync(urlBase,"{}");
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        [Fact]
+        public async Task ensurePostMaterialFailsWithEmptyRequestBody()
+        {
+            var response = await client.PostAsJsonAsync(urlBase, "{}");
+            Assert.True(response.StatusCode == HttpStatusCode.BadRequest);
         }
-
     }
 }

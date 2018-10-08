@@ -51,6 +51,11 @@ namespace backend.Controllers {
         private const string MATERIAL_NOT_ADDED_REFERENCE = "Could not add material";
 
         /// <summary>
+        /// Constant that represents the message for creating a Material with an invalid Request Body.
+        /// </summary>
+        private const string INVALID_REQUEST_BODY_MESSAGE = "The request body is invalid\nCheck documentation for more information";
+
+        /// <summary>
         /// Finds all Materials.
         /// </summary>
         /// <returns>
@@ -121,13 +126,16 @@ namespace backend.Controllers {
                     string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_ADDED_REFERENCE);
                     return BadRequest(formattedMessage);
                 }
-                return CreatedAtRoute("GetMaterial", new {id = addedDTO.id}, addedDTO);
-            } catch (ArgumentException e) {
-                string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
-                return BadRequest(formattedMessage);
+                return CreatedAtRoute("GetMaterial", new { id = addedDTO.id }, addedDTO);
+
+            } catch (NullReferenceException) {
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            } catch (InvalidOperationException invalidOperationException) {
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+            } catch (ArgumentException argumentException) {
+                return BadRequest(new SimpleJSONMessageService(argumentException.Message));
             }
         }
-
 
         /// <summary>
         /// Updates a material given its DTO.
@@ -151,21 +159,25 @@ namespace backend.Controllers {
             }
         }
         /// <summary>
-        /// Updates the finishes of a material
+        /// Updates finishes of a material
         /// </summary>
         /// <param name="id">id of the material to be updated</param>
-        /// <param name="finishes">new list of finishes</param>
+        /// <param name="upMat">dto with the list of finishes to add and remove</param>
         /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
         [HttpPut("{id}/finishes")]
-        public ActionResult updateFinishes(long id, [FromBody] List<FinishDTO> finishes) {
+        public ActionResult updateFinishes(long id, [FromBody] UpdateMaterialDTO upMat) {
             try {
-                MaterialDTO matDTO = new core.application.MaterialsController().updateFinishes(id, finishes);
+                MaterialDTO matDTO = new core.application.MaterialsController().updateFinishes(id, upMat);
                 if (matDTO == null) {
+
                     return BadRequest();
                 }
                 return Ok(matDTO);
             } catch (ArgumentException e) {
                 string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
+                return BadRequest(formattedMessage);
+            } catch (NullReferenceException ex) {
+                string formattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, ex.Message);
                 return BadRequest(formattedMessage);
             }
         }

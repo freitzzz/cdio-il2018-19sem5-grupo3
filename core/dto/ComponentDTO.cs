@@ -19,25 +19,11 @@ namespace core.dto
         /// <value>Gets/sets the value of the database identifier field.</value>
         [DataMember]
         public long id {get; set;}
-
-        /// <summary>
-        /// Component's reference.
-        /// </summary>
-        /// <value>Gets/sets the value of the reference field.</value>
-        [DataMember]
-        public string reference {get; set;}
-
-        /// <summary>
-        /// Component's designation.
-        /// </summary>
-        /// <value>Gets/sets the value of the designation field.</value>
-        [DataMember]
-        public string designation {get; set;}
         /// <summary>
         /// Component's product.
         /// </summary>
         [DataMember]
-        public long productID {get; set;}
+        public ProductDTO product {get; set;}
         /// <summary>
         /// Component's list restrictions.
         /// </summary>
