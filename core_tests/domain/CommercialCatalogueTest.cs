@@ -32,7 +32,7 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -50,7 +50,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -63,7 +63,7 @@ namespace core_tests.domain
 
             Assert.Equal(comCatalogue.id(), reference, true);
         }
-        
+
         //sameAs tests
 
         /**
@@ -83,12 +83,12 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
-           List<Double> values2 = new List<Double>();
+            List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
             DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
             List<Dimension> valuest = new List<Dimension>();
@@ -102,7 +102,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -111,7 +111,7 @@ namespace core_tests.domain
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf(reference, designation, custProducts);
+            CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf(reference, designation, custProducts);
 
 
             Assert.True(comCatalogue.sameAs(reference));
@@ -136,7 +136,7 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -155,7 +155,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -164,7 +164,7 @@ namespace core_tests.domain
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf(reference, designation, custProducts);
+            CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf(reference, designation, custProducts);
 
 
 
@@ -187,7 +187,7 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -206,7 +206,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -215,7 +215,7 @@ namespace core_tests.domain
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
-            Assert.Throws<ArgumentException>(() =>  CommercialCatalogue.valueOf(null, "This doesn't work", custProducts));
+            Assert.Throws<ArgumentException>(() => CommercialCatalogue.valueOf(null, "This doesn't work", custProducts));
         }
 
         /**
@@ -232,7 +232,7 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -251,7 +251,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -260,7 +260,7 @@ namespace core_tests.domain
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
-            Assert.Throws<ArgumentException>(() =>  CommercialCatalogue.valueOf("", "Let me see...", custProducts));
+            Assert.Throws<ArgumentException>(() => CommercialCatalogue.valueOf("", "Let me see...", custProducts));
         }
 
         /**
@@ -277,7 +277,7 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -296,7 +296,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -304,7 +304,7 @@ namespace core_tests.domain
 
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
-            Assert.Throws<ArgumentException>(() =>  CommercialCatalogue.valueOf("Have you tried turning it off and then on again?", null, custProducts));
+            Assert.Throws<ArgumentException>(() => CommercialCatalogue.valueOf("Have you tried turning it off and then on again?", null, custProducts));
         }
 
         /**
@@ -321,12 +321,12 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
-           List<Double> values2 = new List<Double>();
+            List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
             DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
             List<Dimension> valuest = new List<Dimension>();
@@ -340,7 +340,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -349,7 +349,7 @@ namespace core_tests.domain
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
-            Assert.Throws<ArgumentException>(() =>  CommercialCatalogue.valueOf("Still not working", "", custProducts));
+            Assert.Throws<ArgumentException>(() => CommercialCatalogue.valueOf("Still not working", "", custProducts));
         }
 
         /**
@@ -362,7 +362,7 @@ namespace core_tests.domain
         {
             Console.WriteLine("ensureNullCustProductListIsNotValid");
 
-            Assert.Throws<ArgumentException>(() =>  CommercialCatalogue.valueOf("Hello", "It's me, Mario", null));
+            Assert.Throws<ArgumentException>(() => CommercialCatalogue.valueOf("Hello", "It's me, Mario", null));
         }
 
         /**
@@ -377,7 +377,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
 
-            Assert.Throws<ArgumentException>(() =>  CommercialCatalogue.valueOf("Goodbye", "See you later", custoProducts));
+            Assert.Throws<ArgumentException>(() => CommercialCatalogue.valueOf("Goodbye", "See you later", custoProducts));
         }
 
         //addCustomizedProduct tests
@@ -395,12 +395,12 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
-           List<Double> values2 = new List<Double>();
+            List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
             DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
             List<Dimension> valuest = new List<Dimension>();
@@ -415,7 +415,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -424,7 +424,7 @@ namespace core_tests.domain
             CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.False(comCatalogue.addCustomizedProduct(custProduct));
         }
@@ -442,7 +442,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -461,7 +461,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -471,7 +471,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf("Another", "One", custoProducts);
             Assert.False(comCatalogue.addCustomizedProduct(null));
         }
 
@@ -488,7 +488,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -507,7 +507,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -517,7 +517,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.True(comCatalogue.addCustomizedProduct(CustomizedProduct.valueOf("566", "CustomizedProduct2", custMaterial, custDimensions, product)));
         }
@@ -537,12 +537,12 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
-           List<Double> values2 = new List<Double>();
+            List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
             DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
             List<Dimension> valuest = new List<Dimension>();
@@ -556,7 +556,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -566,7 +566,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.False(comCatalogue.removeCustomizedProduct(CustomizedProduct.valueOf("Tira", "CustomizedProduct3", custMaterial, custDimensions, product)));
         }
@@ -584,12 +584,12 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
-           List<Double> values2 = new List<Double>();
+            List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
             DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
             List<Dimension> valuest = new List<Dimension>();
@@ -603,7 +603,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -613,7 +613,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.False(comCatalogue.removeCustomizedProduct(null));
         }
@@ -631,7 +631,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -644,13 +644,13 @@ namespace core_tests.domain
             IEnumerable<Dimension> heightDimensions = valuest;
             IEnumerable<Dimension> widthDimensions = valuest;
             IEnumerable<Dimension> depthDimensions = valuest;
-           List<Color> colors = new List<Color>();
+            List<Color> colors = new List<Color>();
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -660,7 +660,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.True(comCatalogue.removeCustomizedProduct(custProduct));
         }
@@ -680,54 +680,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
-
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
-
-            ProductCategory prodCat = new ProductCategory("Category 1");
-           List<Double> values2 = new List<Double>();
-            values2.Add(500.0); //Width
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-            IEnumerable<Dimension> heightDimensions = valuest;
-            IEnumerable<Dimension> widthDimensions = valuest;
-            IEnumerable<Dimension> depthDimensions = valuest;
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234","Materail",colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
-
-            custoProducts.Add(custProduct);
-
-            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
-
-            Assert.True(comCatalogue.hasCustomizedProduct(custProduct));
-        }
-
-        /**
-        <summary>
-            Test to ensure that a null customizedProduct is not found in the CommercialCatalogue's list of customizedProduct.
-        </summary>
-        */
-        [Fact]
-        public void ensureNullComCatalogueDoesNotExist()
-        {
-            Console.WriteLine("ensureNullComCatalogueDoesNotExist");
-
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -746,7 +699,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -756,7 +709,54 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf("Another", "One", custoProducts);
+
+            Assert.True(comCatalogue.hasCustomizedProduct(custProduct));
+        }
+
+        /**
+        <summary>
+            Test to ensure that a null customizedProduct is not found in the CommercialCatalogue's list of customizedProduct.
+        </summary>
+        */
+        [Fact]
+        public void ensureNullComCatalogueDoesNotExist()
+        {
+            Console.WriteLine("ensureNullComCatalogueDoesNotExist");
+
+            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
+
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+
+            ProductCategory prodCat = new ProductCategory("Category 1");
+            List<Double> values2 = new List<Double>();
+            values2.Add(500.0); //Width
+            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
+            List<Dimension> valuest = new List<Dimension>();
+            valuest.Add(d2);
+            IEnumerable<Dimension> heightDimensions = valuest;
+            IEnumerable<Dimension> widthDimensions = valuest;
+            IEnumerable<Dimension> depthDimensions = valuest;
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+
+            Material material = new Material("1234", "Material", colors, finishes);
+            List<Material> listMaterial = new List<Material>();
+            listMaterial.Add(material);
+            IEnumerable<Material> materials = listMaterial;
+            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+
+            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+
+            custoProducts.Add(custProduct);
+
+            CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.False(comCatalogue.hasCustomizedProduct(null));
         }
@@ -776,7 +776,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -789,13 +789,13 @@ namespace core_tests.domain
             IEnumerable<Dimension> heightDimensions = valuest;
             IEnumerable<Dimension> widthDimensions = valuest;
             IEnumerable<Dimension> depthDimensions = valuest;
-           List<Color> colors = new List<Color>();
+            List<Color> colors = new List<Color>();
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -805,8 +805,8 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue1 =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
-            CommercialCatalogue comCatalogue2 =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue1 = CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue2 = CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
             Assert.Equal(comCatalogue1.GetHashCode(), comCatalogue2.GetHashCode());
         }
@@ -826,56 +826,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
-
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
-
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            List<Double> values2 = new List<Double>();
-            values2.Add(500.0); //Width
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-            IEnumerable<Dimension> heightDimensions = valuest;
-            IEnumerable<Dimension> widthDimensions = valuest;
-            IEnumerable<Dimension> depthDimensions = valuest;
-           List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234","Materail",colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
-
-            custoProducts.Add(custProduct);
-
-            CommercialCatalogue comCatalogue1 =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
-            CommercialCatalogue comCatalogue2 =  CommercialCatalogue.valueOf("Equal", "One", custoProducts);
-
-
-            Assert.False(comCatalogue1.Equals(comCatalogue2));
-        }
-
-        /**
-        <summary>
-            Test to ensure that the method Equals works, for two CommercialCatalogue with the same reference.
-         </summary>
-         */
-        [Fact]
-        public void ensureCommercialCataloguesWithSameReferencesAreEqual()
-        {
-            Console.WriteLine("ensureMaterialsWithSameReferencesAreEqual");
-
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -894,7 +845,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -904,8 +855,57 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue1 =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
-            CommercialCatalogue comCatalogue2 =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue1 = CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue2 = CommercialCatalogue.valueOf("Equal", "One", custoProducts);
+
+
+            Assert.False(comCatalogue1.Equals(comCatalogue2));
+        }
+
+        /**
+        <summary>
+            Test to ensure that the method Equals works, for two CommercialCatalogue with the same reference.
+         </summary>
+         */
+        [Fact]
+        public void ensureCommercialCataloguesWithSameReferencesAreEqual()
+        {
+            Console.WriteLine("ensureMaterialsWithSameReferencesAreEqual");
+
+            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
+
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+
+            ProductCategory prodCat = new ProductCategory("Category 1");
+            List<Double> values2 = new List<Double>();
+            values2.Add(500.0); //Width
+            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
+            List<Dimension> valuest = new List<Dimension>();
+            valuest.Add(d2);
+            IEnumerable<Dimension> heightDimensions = valuest;
+            IEnumerable<Dimension> widthDimensions = valuest;
+            IEnumerable<Dimension> depthDimensions = valuest;
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+
+            Material material = new Material("1234", "Material", colors, finishes);
+            List<Material> listMaterial = new List<Material>();
+            listMaterial.Add(material);
+            IEnumerable<Material> materials = listMaterial;
+            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+
+            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+
+            custoProducts.Add(custProduct);
+
+            CommercialCatalogue comCatalogue1 = CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue2 = CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
 
 
@@ -925,12 +925,12 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
-           List<Double> values2 = new List<Double>();
+            List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
             DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
             List<Dimension> valuest = new List<Dimension>();
@@ -944,7 +944,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -954,7 +954,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
 
             Assert.False(comCatalogue.Equals(null));
@@ -971,12 +971,12 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
-           List<Double> values2 = new List<Double>();
+            List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
             DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
             List<Dimension> valuest = new List<Dimension>();
@@ -990,7 +990,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -1000,7 +1000,7 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
 
             Assert.False(comCatalogue.Equals("stars"));
@@ -1021,12 +1021,12 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf("123", color, finish);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
-           List<Double> values2 = new List<Double>();
+            List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
             DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
             List<Dimension> valuest = new List<Dimension>();
@@ -1040,7 +1040,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234","Materail",colors, finishes);
+            Material material = new Material("1234", "Material", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -1050,29 +1050,29 @@ namespace core_tests.domain
 
             custoProducts.Add(custProduct);
 
-            CommercialCatalogue comCatalogue1 =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
-            CommercialCatalogue comCatalogue2 =  CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue1 = CommercialCatalogue.valueOf("Another", "One", custoProducts);
+            CommercialCatalogue comCatalogue2 = CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
 
 
             Assert.Equal(comCatalogue1.ToString(), comCatalogue2.ToString());
         }
-       /** [Fact]
-        public void testToDTO()
-        {
-            Console.WriteLine("toDTO");
-            string reference = "123456789.";
-            string designation = "Commercial Catalogue 2019";
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, custoProducts);
-            CommercialCatalogueDTO dto = new CommercialCatalogueDTO();
-            dto.reference = reference;
-            dto.designation = designation;
-            dto.custProducts = new List<CustomizedProductDTO>(DTOUtils.parseToDTOS(custoProducts));
-            CommercialCatalogueDTO dto2 = comCatalogue.toDTO();
-            Assert.Equal(dto.reference, dto2.reference);
-            //Assert.Equal(dto.designation, dto2.designation);
-           // Assert.Equal(dto.custProducts, dto2.custProducts);
-        }*/
+        /** [Fact]
+         public void testToDTO()
+         {
+             Console.WriteLine("toDTO");
+             string reference = "123456789.";
+             string designation = "Commercial Catalogue 2019";
+             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
+             CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, custoProducts);
+             CommercialCatalogueDTO dto = new CommercialCatalogueDTO();
+             dto.reference = reference;
+             dto.designation = designation;
+             dto.custProducts = new List<CustomizedProductDTO>(DTOUtils.parseToDTOS(custoProducts));
+             CommercialCatalogueDTO dto2 = comCatalogue.toDTO();
+             Assert.Equal(dto.reference, dto2.reference);
+             //Assert.Equal(dto.designation, dto2.designation);
+            // Assert.Equal(dto.custProducts, dto2.custProducts);
+         }*/
     }
 }
