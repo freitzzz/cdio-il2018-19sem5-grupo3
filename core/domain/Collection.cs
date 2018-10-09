@@ -244,7 +244,7 @@ namespace core.domain
                 Collection collection = (Collection)obj;
                 return reference.Equals(collection.reference) && 
                 designation.Equals(collection.designation) && 
-                list.Equals(collection.customizedDimensions);
+                list.Equals(collection.list);
             }
         }
 
