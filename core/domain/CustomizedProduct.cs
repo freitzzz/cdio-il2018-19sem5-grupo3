@@ -210,11 +210,11 @@ namespace core.domain
         public override int GetHashCode()
         {
             int hashCode = 17;
-            hashCode += (hashCode * 23) + this.reference.GetHashCode();
-            hashCode += (hashCode * 23) + this.designation.GetHashCode();
-            hashCode += (hashCode * 23) + this.customizedDimensions.GetHashCode();
-            hashCode += (hashCode * 23) + this.customizedMaterial.GetHashCode();
-            hashCode += (hashCode * 23) + this.product.GetHashCode();
+            hashCode = (hashCode * 23) + this.reference.GetHashCode();
+            hashCode = (hashCode * 23) + this.designation.GetHashCode();
+            hashCode = (hashCode * 23) + this.customizedDimensions.GetHashCode();
+            hashCode = (hashCode * 23) + this.customizedMaterial.GetHashCode();
+            hashCode = (hashCode * 23) + this.product.GetHashCode();
             return hashCode.GetHashCode();
         }
 
