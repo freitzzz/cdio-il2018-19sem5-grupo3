@@ -225,6 +225,29 @@ namespace core.domain
 
         } **/
 
+        
+        /**
+        <summary>
+            Checks if a certain Collection is the same as a received object.
+        </summary>
+        <param name = "obj">object to compare to the current Collection</param>
+         */
+        public override bool Equals(object obj)
+        {
+            //Check for null and compare run-time types.
+            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                Collection collection = (Collection)obj;
+                return reference.Equals(collection.reference) && 
+                designation.Equals(collection.designation) && 
+                list.Equals(collection.customizedDimensions);
+            }
+        }
+
          /**
        <summary>
            Inner static class which represents the Collections's properties used to map on data holders (e.g. DTO)
