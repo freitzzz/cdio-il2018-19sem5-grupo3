@@ -133,7 +133,8 @@ namespace core_tests.domain
                 condition = "True";
 
             }
-            Assert.True(condition.Equals("True"));
+            Assert.Equal(condition,"True");
+        
 
 
         }
@@ -163,7 +164,7 @@ namespace core_tests.domain
                 condition = "True";
 
             }
-            Assert.True(condition.Equals("True"));
+            Assert.Equal(condition,"True");
         }
 
         [Fact]
@@ -220,7 +221,7 @@ namespace core_tests.domain
 
             CustomizedProduct cp1 = CustomizedProduct.valueOf("#666", "Shelf", custMaterial1, customizedDimensions, product);
 
-            Assert.True(cp.Equals(cp1));
+            Assert.Equal(cp,cp1);
         }
 
         [Fact]
