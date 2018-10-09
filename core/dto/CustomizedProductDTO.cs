@@ -41,21 +41,21 @@ namespace core.dto
             The CustomizedProduct Customized Material
         </summary>
          */
-        private readonly CustomizedMaterial customizedMaterial;
+        public  CustomizedMaterial customizedMaterial;
 
         /**
         <summary>
             The CustomizedProduct Customized Dimensions
         </summary>
          */
-        private readonly CustomizedDimensions customizedDimensions;
+        public CustomizedDimensions customizedDimensions;
 
         /**
         <summary>
             Product from CustomizedProduct
         </summary>
          */
-        private Product product;
+        public Product product;
 
         public  CustomizedProduct toEntity()
         {

@@ -253,6 +253,9 @@ namespace core.domain
             CustomizedProductDTO dto = new CustomizedProductDTO();
             dto.reference = this.reference;
             dto.designation = this.designation;
+            dto.product = this.product;
+            dto.customizedDimensions = this.customizedDimensions;
+            dto.customizedMaterial = this.customizedMaterial;
             dto.id = this.Id;
             return dto;
         }
