@@ -318,24 +318,31 @@ namespace core.domain
 
             /**
             <summary>
-                Constant that represents the name of the Property which maps the Material's database ID.
+                Constant that represents the name of the Property which maps the Customized Product's database ID.
             </summary>
              */
             public const string DATABASE_ID_PROPERTY = "id";
 
             /**
             <summary>
-                Constant that represents the name of the Property which maps the Material's reference.
+                Constant that represents the name of the Property which maps the Customized Product's reference.
             </summary>
              */
             public const string REFERENCE_PROPERTY = "reference";
 
             /**
             <summary>
-                Constant that represents the name of the Property which maps the Material's designation.
+                Constant that represents the name of the Property which maps the Customized Product's designation.
             </summary>
              */
             public const string DESIGNATION_PROPERTY = "designation";
+
+            /**
+            <summary>
+                Constant that represents the name of the Property which maps the Customized Product's Product.
+            </summary>
+             */
+            public const string DESIGNATION_PRODUCT = "product";
         }
     }
 }
