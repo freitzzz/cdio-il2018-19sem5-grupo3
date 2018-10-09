@@ -14,7 +14,7 @@ namespace core.dto
     public class CustomizedProductDTO : DTO, DTOParseable<CustomizedProduct, CustomizedProductDTO>
     {
         // <summary>
-        /// Finish's database identifier.
+        /// Customized Products's database identifier.
         /// </summary>
         /// <value>Gets/sets the value of the database identifier field.</value>
         [DataMember]
@@ -23,14 +23,14 @@ namespace core.dto
 
         /**
         <summary>
-            String with the ConfiguredProduct's reference.
+            String with the Customized Products's reference.
         </summary>
         */
         public string reference { get; set; }
 
         /** 
         <summary>
-            String with the ConfiguredProduct's designation.
+            String with the Customized Products's designation.
         </summary>
         */
         public string designation { get; set; }
