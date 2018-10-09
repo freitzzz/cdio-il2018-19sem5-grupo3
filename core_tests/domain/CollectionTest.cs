@@ -26,7 +26,7 @@ namespace core_tests.domain
                 condition = "True";
 
             }
-            Assert.Equal(condition, "True");
+            Assert.Equal("True", condition);
         }
         //ensureReferenceisInvalid
         [Fact]
@@ -92,7 +92,7 @@ namespace core_tests.domain
                 condition = "True";
 
             }
-            Assert.Equal(condition, "True");
+            Assert.Equal("True", condition);
         }
         //ensureDesignationisInvalid
         [Fact]
@@ -158,7 +158,7 @@ namespace core_tests.domain
                 condition = "True";
 
             }
-            Assert.Equal(condition, "True");
+            Assert.Equal("True", condition);
         }
         //ensureListisInvalid
         [Fact]
@@ -181,7 +181,7 @@ namespace core_tests.domain
                 condition = "True";
 
             }
-            Assert.Equal(condition, "True");
+            Assert.Equal("True", condition);
         }
         //EnsureEqualsWorks
         [Fact]
@@ -236,7 +236,7 @@ namespace core_tests.domain
             Collection c = Collection.valueOf("Lucy", "666", list);
             Collection c1 = Collection.valueOf("Lucy", "666", list);
 
-            Assert.True(c.Equals(c1));
+            Assert.Equal(c, c1);
         }
 
     }
