@@ -111,7 +111,7 @@ namespace core.domain
 
             this.designation = designation;
             this.reference = reference;
-            //this.list = new List<CustomizedProduct>();
+            this.list = new List<CustomizedProduct>();
             this.list.Add(customizedProduct);
         }
 
@@ -225,7 +225,7 @@ namespace core.domain
 
         } **/
 
-        
+
         /**
         <summary>
             Checks if a certain Collection is the same as a received object.
@@ -242,17 +242,31 @@ namespace core.domain
             else
             {
                 Collection collection = (Collection)obj;
-                return reference.Equals(collection.reference) && 
-                designation.Equals(collection.designation) && 
-                list.Equals(collection.list);
+                return reference.Equals(collection.reference) &&
+                designation.Equals(collection.designation) &&
+                compareTwoLists(collection.list);
             }
         }
 
-         /**
-       <summary>
-           Inner static class which represents the Collections's properties used to map on data holders (e.g. DTO)
-       </summary>
-        */
+        private bool compareTwoLists(List<CustomizedProduct> list1)
+        {
+            foreach (CustomizedProduct cp in this.list)
+            {
+                foreach (CustomizedProduct cp1 in list1)
+                {
+                    if (!(cp.Equals(cp1)))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        /**
+      <summary>
+          Inner static class which represents the Collections's properties used to map on data holders (e.g. DTO)
+      </summary>
+       */
         public static class Properties
         {
             /**
