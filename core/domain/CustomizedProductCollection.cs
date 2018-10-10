@@ -57,12 +57,18 @@ namespace core.domain
         public List<CustomizedProduct> customizedProducts{get;protected set;}
 
         /// <summary>
+        /// Boolean which tells if the current collection of customized products is available
+        /// </summary>
+        public bool available{get;protected set;}
+
+        /// <summary>
         /// Builds a new CustomizedProductCollection with the collection name
         /// </summary>
         /// <param name="name">string with the customized products collection name</param>
         public CustomizedProductCollection(string name){
             checkCustomizedProductCollectionProperties(name);
             this.name=name;
+            this.available=true;
             this.customizedProducts=new List<CustomizedProduct>();
         }
 
@@ -75,6 +81,7 @@ namespace core.domain
             checkCustomizedProductCollectionProperties(name);
             checkCollectionCustomizedProducts(customizedProducts);
             this.name=name;
+            this.available=true;
             this.customizedProducts=new List<CustomizedProduct>(customizedProducts);
         }
 
@@ -91,11 +98,32 @@ namespace core.domain
         }
 
         /// <summary>
+        /// Changes the name of the current customized products collection
+        /// </summary>
+        /// <param name="name">string with the new collection name</param>
+        /// <returns>boolean true if the collection name was changed with success, false if not</returns>
+        public bool changeName(string name){
+            if(String.IsNullOrEmpty(name))return false;
+            this.name=name;
+            return true;
+        }
+
+        /// <summary>
         /// Removes a customized product from the current customized products collection
         /// </summary>
         /// <param name="customizedProduct">CustomizedProduct with the customized product being removed</param>
         /// <returns>boolean true if the customized product was removed with success, false if not</returns>
         public bool removeCustomizedProduct(CustomizedProduct customizedProduct){return customizedProducts.Remove(customizedProduct);}
+        
+        /// <summary>
+        /// Disables the current customized products collection
+        /// </summary>
+        /// <returns>boolean true if the current collection was disabled with success, false if not</returns>
+        public bool disable(){
+            if(!available)return false;
+            this.available=false;
+            return true;
+        }
 
         /// <summary>
         /// Returns the current collection identity
