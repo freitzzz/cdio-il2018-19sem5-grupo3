@@ -150,7 +150,7 @@ namespace core.domain
         <summary>
             Adds a new<Collection to the CommercialCatalogue's list of<Collection.
         </summary>
-        <param name = <Collection"<Collection to add</param>
+        <param name = "Collection"<Collection to add</param>
         <returns>True if the<Collection is successfully added, false if not</returns>
         */
         public bool addCollection(Collection collection)
@@ -159,10 +159,24 @@ namespace core.domain
             collectionList.Add(collection);
             return true;
         }
+        /**
+        <summary>
+            Adds a Customized Product to a list of Collections.
+        </summary>
+        <param name = "Collection" Collection to be added from</param>
+        <param name = "CustomizedProduct" customizedProduct to add </param>
+        <returns>True if the<Collection is successfully removed, false if not</returns>
+        */
+        public bool addCustomizedProductToCollection(Collection collection,CustomizedProduct customizedProduct)
+        {
+            if (collection == null || customizedProduct == null || collection.list.Contains(customizedProduct)) return false;
+
+            return collection.addCustomizedProduct(customizedProduct);
+        }
 
         /**
         <summary>
-            Removes a<Collection from the CommercialCatalogue's list of<Collection.
+            Removes a Collection from the CommercialCatalogue's list of<Collection.
         </summary>
         <param name = <Collection"<Collection to remove</param>
         <returns>True if the<Collection is successfully removed, false if not</returns>
@@ -173,6 +187,18 @@ namespace core.domain
             return collectionList.Remove(collection);
         }
 
+         /**
+        <summary>
+            Removes a Customized Product from a list of Collections.
+        </summary>
+        <param name = <Collection"<Collection to remove</param>
+        <returns>True if the<Collection is successfully removed, false if not</returns>
+        */
+        public bool removeCustomizedProductFromCollection(Collection collection,CustomizedProduct customizedProduct)
+        {
+             if (collection == null || customizedProduct == null || !collection.list.Contains(customizedProduct))return false;
+            return collection.list.Remove(customizedProduct);
+        }
         /**
         <summary>
             Checks if the CommercialCatalogue has a certain<Collection on its list of<Collection.

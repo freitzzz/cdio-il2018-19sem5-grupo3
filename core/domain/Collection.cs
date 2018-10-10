@@ -27,7 +27,7 @@ namespace core.domain
            Constant that represents a list of Customized Products of a collection.
        </summary>
         */
-        private List<CustomizedProduct> list;
+        public List<CustomizedProduct> list;
 
 
         /**
