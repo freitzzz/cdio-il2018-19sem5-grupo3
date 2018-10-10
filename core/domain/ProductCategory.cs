@@ -3,6 +3,7 @@ using System.Text;
 using support.domain.ddd;
 using support.dto;
 using core.dto;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace core.domain
 {
@@ -17,6 +18,16 @@ namespace core.domain
         /// Constant that represents the message being presented when a ProductCategory with an empty name is attempted to be created. 
         /// </summary>
         private const string ERROR_EMPTY_NAME = "The name must not be empty.";
+
+        /// <summary>
+        /// Constant that represents the message being presented when a ProductCategory with an invalid parent ProductCategory is attempted to be created.
+        /// </summary>
+        private const string ERROR_NULL_PARENT = "The parent category must not be null";
+
+        /// <summary>
+        /// Constant that represents the message being presented when a ProductCategory shares the same name as its parent ProductCategory.
+        /// </summary>
+        private const string ERROR_SAME_CATEGORY = "The category can't be its own parent";
 
         /// <summary>
         /// Database identifier property
@@ -39,6 +50,9 @@ namespace core.domain
         /// </summary>
         /// <value></value>
         public long? parentId { get; internal set; }
+
+        [ForeignKey("parentId")]
+        public virtual ProductCategory parent {get; protected set;}
 
         /// <summary>
         /// Empty constructor for ORM.
@@ -65,6 +79,14 @@ namespace core.domain
         /// <param name="name">ProductCategory's name</param>
         public ProductCategory(string name, ProductCategory parent) : this(name)
         {
+            if(parent == null){
+                throw new ArgumentException(ERROR_NULL_PARENT);
+            }
+            if(parent.sameAs(name)){
+                throw new ArgumentException(ERROR_SAME_CATEGORY);
+            }
+
+            this.parent = parent;
             this.parentId = parent.Id;
         }
 
@@ -122,8 +144,6 @@ namespace core.domain
 
         public override bool Equals(object obj)
         {
-
-
             if (this == obj)
             {
                 return true;
