@@ -17,7 +17,7 @@ namespace core.domain
     </summary>
     <typeparam name = "string">Generic-Type of the CommercialCatalogue entity identifier</typeparam>
     */
-    public class CommercialCatalogue : DTOAble<CommercialCatalogueDTO>
+    public class CommercialCatalogue : AggregateRoot<string>,DTOAble<CommercialCatalogueDTO>
     {
         /**
         <summary>
