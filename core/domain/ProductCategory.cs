@@ -27,12 +27,18 @@ namespace core.domain
         /// <summary>
         /// Boolean that represents the ProductCategory's state (for soft delete purposes)
         /// </summary>
-        public bool active {get; protected set;}
+        public bool active { get; protected set; }
 
         /// <summary>
         /// The ProductCategory's name e.g.: "Shelves", Drawers", "Handles".
         /// </summary>
         public string name { get; protected set; }
+
+        /// <summary>
+        /// Long that represents the parent's ID.
+        /// </summary>
+        /// <value></value>
+        public long? parentId { get; internal set; }
 
         /// <summary>
         /// Empty constructor for ORM.
@@ -51,6 +57,15 @@ namespace core.domain
             {
                 throw new ArgumentException(ERROR_EMPTY_NAME);
             }
+        }
+
+        /// <summary>
+        /// Creates a new instance of ProductCategory with a given name, an empty collection of Product and its parent.
+        /// </summary>
+        /// <param name="name">ProductCategory's name</param>
+        public ProductCategory(string name, ProductCategory parent) : this(name)
+        {
+            this.parentId = parent.Id;
         }
 
         /// <summary>
@@ -159,6 +174,7 @@ namespace core.domain
         {
             ProductCategoryDTO dto = new ProductCategoryDTO();
 
+            dto.parentId = parentId;
             dto.id = Id;
             dto.name = name;
 

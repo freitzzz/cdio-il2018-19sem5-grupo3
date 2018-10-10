@@ -26,7 +26,8 @@ namespace backend.persistence.ef
             return dbContext.ProductCategory.Where(c => c.active).Where(c => c.Id == entityPersistenceID).SingleOrDefault();
         }
 
-        public override ProductCategory remove(ProductCategory entity){
+        public override ProductCategory remove(ProductCategory entity)
+        {
 
             entity.deactivate();
             dbContext.SaveChanges();
@@ -34,5 +35,24 @@ namespace backend.persistence.ef
             return entity;
         }
 
+        /// <summary>
+        /// Finds all ProductCategories' sub-categories (ProductCategories that have the received category as a parent).
+        /// </summary>
+        /// <param name="category">Category to search</param>
+        /// <returns>List with all ProductCategory sub-categories</returns>
+        public IEnumerable<ProductCategory> findSubCategories(ProductCategory category)
+        {
+            return dbContext.ProductCategory.Where(c => c.parentId == category.Id).Where(c => c.active).ToList();
+        }
+
+        /// <summary>
+        /// Finds all ProductCategories that are leaves (that aren't parent of any other ProductCategory).
+        /// </summary>
+        /// <returns>List with all ProductCategory leaves</returns>
+        public IEnumerable<ProductCategory> findLeaves()
+        {
+            var ids = dbContext.ProductCategory.Where(c => c.active).Select(c => c.Id).ToList();
+            return dbContext.ProductCategory.Where(c => !ids.Contains(c.Id)).ToList();
+        }
     }
 }
