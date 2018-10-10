@@ -56,7 +56,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
             CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf(reference, designation, custProducts);
@@ -108,7 +108,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
             CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf(reference, designation, custProducts);
@@ -161,7 +161,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct =new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
             CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf(reference, designation, custProducts);
@@ -212,7 +212,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
             Assert.Throws<ArgumentException>(() => CommercialCatalogue.valueOf(null, "This doesn't work", custProducts));
@@ -257,7 +257,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
             Assert.Throws<ArgumentException>(() => CommercialCatalogue.valueOf("", "Let me see...", custProducts));
@@ -302,7 +302,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
             Assert.Throws<ArgumentException>(() => CommercialCatalogue.valueOf("Have you tried turning it off and then on again?", null, custProducts));
         }
@@ -346,7 +346,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
             Assert.Throws<ArgumentException>(() => CommercialCatalogue.valueOf("Still not working", "", custProducts));
@@ -421,7 +421,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct =new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custoProducts.Add(custProduct);
 
             CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf("Another", "One", custoProducts);
@@ -467,7 +467,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
 
@@ -513,13 +513,13 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
 
             CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
-            Assert.True(comCatalogue.addCustomizedProduct(CustomizedProduct.valueOf("566", "CustomizedProduct2", custMaterial, custDimensions, product)));
+            Assert.True(comCatalogue.addCustomizedProduct(new CustomizedProduct("566", "CustomizedProduct2", custMaterial, custDimensions, product)));
         }
 
         //removeCustomizedProduct tests
@@ -562,13 +562,13 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
 
             CommercialCatalogue comCatalogue = CommercialCatalogue.valueOf("Another", "One", custoProducts);
 
-            Assert.False(comCatalogue.removeCustomizedProduct(CustomizedProduct.valueOf("Tira", "CustomizedProduct3", custMaterial, custDimensions, product)));
+            Assert.False(comCatalogue.removeCustomizedProduct(new CustomizedProduct("Tira", "CustomizedProduct3", custMaterial, custDimensions, product)));
         }
 
         /**
@@ -609,7 +609,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
 
@@ -656,7 +656,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
 
@@ -705,7 +705,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
 
@@ -752,7 +752,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
 
@@ -801,7 +801,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
 
@@ -851,7 +851,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
 
@@ -900,7 +900,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
 
@@ -950,7 +950,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
 
@@ -996,7 +996,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
 
@@ -1046,7 +1046,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-            CustomizedProduct custProduct = CustomizedProduct.valueOf("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
 

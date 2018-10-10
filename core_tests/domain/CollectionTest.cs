@@ -75,7 +75,7 @@ namespace core_tests.domain
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(color1, finish2);
 
 
-            CustomizedProduct cp = CustomizedProduct.valueOf("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
 
             string condition = ";";
 
@@ -141,7 +141,7 @@ namespace core_tests.domain
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(color1, finish2);
 
 
-            CustomizedProduct cp = CustomizedProduct.valueOf("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp =new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
 
             string condition = ";";
 
@@ -230,7 +230,7 @@ namespace core_tests.domain
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(color1, finish2);
 
             List<CustomizedProduct> list = new List<CustomizedProduct>();
-            CustomizedProduct cp = CustomizedProduct.valueOf("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             list.Add(cp);
 
             Collection c = Collection.valueOf("Lucy", "666", list);
