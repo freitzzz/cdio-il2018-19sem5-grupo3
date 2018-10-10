@@ -11,6 +11,12 @@ namespace backend.persistence.ef
     public class MyCContext : DbContext
     {
         /// <summary>
+        /// Database set containing all of the saved instances of CommercialCatalogue.
+        /// </summary>
+        /// <value>Gets/sets the database set containing all the saved instances of CommercialCatalogue.</value>
+        public DbSet<CommercialCatalogue> CommercialCatalogue { get; set; }
+
+        /// <summary>
         /// Database set containing all of the saved instances of Material.
         /// </summary>
         /// <value>Gets/sets the database set containing all the saved instances of Material.</value>
@@ -55,6 +61,8 @@ namespace backend.persistence.ef
             builder.Entity<Product>().HasMany(p => p.depthValues).WithOne();    //one-to-many relationship
             builder.Entity<Product>().HasMany(p => p.widthValues).WithOne();    //one-to-many relationship
             builder.Entity<Product>().HasMany(p => p.heightValues).WithOne();   //one-to-many relationship
+
+            builder.Entity<CommercialCatalogue>().HasMany(c => c.collectionList).WithOne();
         }
     }
 }
