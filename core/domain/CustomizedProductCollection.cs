@@ -79,6 +79,25 @@ namespace core.domain
         }
 
         /// <summary>
+        /// Add's a customized product to the current customized products collection
+        /// </summary>
+        /// <param name="customizedProduct">CustomizedProduct with the customized product being added</param>
+        /// <returns>boolean true if the customized product was added with success, false if not</returns>
+        public bool addCustomizedProduct(CustomizedProduct customizedProduct){
+            if(!isCustomizedProductValidForAddition(customizedProduct))
+                return false;
+            customizedProducts.Add(customizedProduct);
+            return true; 
+        }
+
+        /// <summary>
+        /// Removes a customized product from the current customized products collection
+        /// </summary>
+        /// <param name="customizedProduct">CustomizedProduct with the customized product being removed</param>
+        /// <returns>boolean true if the customized product was removed with success, false if not</returns>
+        public bool removeCustomizedProduct(CustomizedProduct customizedProduct){return customizedProducts.Remove(customizedProduct);}
+
+        /// <summary>
         /// Returns the current collection identity
         /// </summary>
         /// <returns>String with the collection identity</returns>
@@ -134,6 +153,15 @@ namespace core.domain
         public override string ToString()
         {
             return string.Format("Name {0}",name);
+        }
+
+        /// <summary>
+        /// Checks if a customized product is valid for addition on the collection
+        /// </summary>
+        /// <param name="customizedProduct">CustomizedProduct with the customized product being validated</param>
+        /// <returns>boolean true if the customized product is valid for addition, false if not</returns>
+        private bool isCustomizedProductValidForAddition(CustomizedProduct customizedProduct){
+            return customizedProduct==null || !customizedProducts.Contains(customizedProduct);
         }
 
         /// <summary>
