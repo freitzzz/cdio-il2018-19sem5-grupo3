@@ -55,7 +55,7 @@ namespace backend_tests.Controllers{
         [Fact]
         public async void ensureProductCantBeCreatedWithEmptyRequestBody(){
             //We are attempting to create an object with an empty request body
-            var createProductEmptyRequestBody=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentUtils.contentAsJSON("{}"));
+            var createProductEmptyRequestBody=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON("{}"));
             //Since we performed a request to create a product with empty request body
             //Then the response should be a Bad Request
             Assert.True(createProductEmptyRequestBody.StatusCode==HttpStatusCode.BadRequest);
@@ -75,12 +75,13 @@ namespace backend_tests.Controllers{
             //Designation can be whatever we decide
             string designation="Time N Place";
             //Categories must previously exist as they can be shared in various products
-            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureProductCategoryIsCreatedSucessfuly();
+            //TODO Create ProductCategoryControllerIntegrationTest Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureProductCategoryIsCreatedSucessfuly();
             //Materials must previously exist as they can be shared in various products
             ProductDTO productDTO=new ProductDTO();
             productDTO.reference=reference;
             productDTO.designation=designation;
-            return httpClient.PostAsync(PRODUCTS_URI,HTTPContentUtils.contentAsJSON(productDTO)).;
+            //TODO fix return statementreturn httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON(productDTO));
+            return null;
         }
     }
 }
