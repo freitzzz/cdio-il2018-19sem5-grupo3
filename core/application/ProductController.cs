@@ -157,7 +157,7 @@ namespace core.application {
             Product productBeingUpdated=productRepository.find(updateProductDTO.id);
             bool updatedWithSuccess=true;
             bool perfomedAtLeastOneUpdate=false;
-            if(updateProductDTO.dimensionsToAdd.widthDimensionDTOs!=null){
+            if(updateProductDTO.dimensionsToAdd != null && updateProductDTO.dimensionsToAdd.widthDimensionDTOs!=null){
                 IEnumerable<Dimension> widthDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.widthDimensionDTOs);
                 foreach(Dimension widthDimension in widthDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addWidthDimension(widthDimension);
@@ -165,7 +165,7 @@ namespace core.application {
                 if(!updatedWithSuccess)return false;
             }
 
-            if(updateProductDTO.dimensionsToAdd.heightDimensionDTOs!=null){
+            if(updateProductDTO.dimensionsToAdd != null && updateProductDTO.dimensionsToAdd.heightDimensionDTOs!=null){
                 IEnumerable<Dimension> heightDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.heightDimensionDTOs);
                 foreach(Dimension heightDimension in heightDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addHeightDimension(heightDimension);
@@ -173,19 +173,15 @@ namespace core.application {
                 if(!updatedWithSuccess)return false;
             }
 
-            if(updateProductDTO.dimensionsToAdd.depthDimensionDTOs!=null){
+            if(updateProductDTO.dimensionsToAdd != null && updateProductDTO.dimensionsToAdd.depthDimensionDTOs!=null){
                 IEnumerable<Dimension> depthDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.depthDimensionDTOs);
                 foreach(Dimension depthDimension in depthDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addDepthDimension(depthDimension);
                 perfomedAtLeastOneUpdate=true;
                 if(!updatedWithSuccess)return false;
             }
-
-
             
-
-
-            if(updateProductDTO.dimensionsToRemove.widthDimensionDTOs!=null){
+            if(updateProductDTO.dimensionsToRemove != null && updateProductDTO.dimensionsToRemove.widthDimensionDTOs!=null){
                 IEnumerable<Dimension> widthDimensionsBeingRemoved=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToRemove.widthDimensionDTOs);
                 if(widthDimensionsBeingRemoved!=null)
                     foreach(Dimension widthDimension in widthDimensionsBeingRemoved)
@@ -194,7 +190,7 @@ namespace core.application {
                 if(!updatedWithSuccess)return false;
             }
 
-            if(updateProductDTO.dimensionsToRemove.heightDimensionDTOs!=null){
+            if(updateProductDTO.dimensionsToRemove != null && updateProductDTO.dimensionsToRemove.heightDimensionDTOs!=null){
                 IEnumerable<Dimension> heightDimensionsBeingRemoved=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToRemove.heightDimensionDTOs);
                 if(heightDimensionsBeingRemoved!=null)
                     foreach(Dimension heightDimension in heightDimensionsBeingRemoved)
@@ -203,7 +199,7 @@ namespace core.application {
                 if(!updatedWithSuccess)return false;
             }
 
-            if(updateProductDTO.dimensionsToRemove.depthDimensionDTOs!=null){
+            if(updateProductDTO.dimensionsToRemove != null && updateProductDTO.dimensionsToRemove.depthDimensionDTOs!=null){
                 IEnumerable<Dimension> depthDimensionsBeingRemoved=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToRemove.depthDimensionDTOs);
                 if(depthDimensionsBeingRemoved!=null)
                     foreach(Dimension depthDimension in depthDimensionsBeingRemoved)

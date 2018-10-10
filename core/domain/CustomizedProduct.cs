@@ -210,11 +210,11 @@ namespace core.domain
         public override int GetHashCode()
         {
             int hashCode = 17;
-            hashCode += (hashCode * 23) + this.reference.GetHashCode();
-            hashCode += (hashCode * 23) + this.designation.GetHashCode();
-            hashCode += (hashCode * 23) + this.customizedDimensions.GetHashCode();
-            hashCode += (hashCode * 23) + this.customizedMaterial.GetHashCode();
-            hashCode += (hashCode * 23) + this.product.GetHashCode();
+            hashCode = (hashCode * 23) + this.reference.GetHashCode();
+            hashCode = (hashCode * 23) + this.designation.GetHashCode();
+            hashCode = (hashCode * 23) + this.customizedDimensions.GetHashCode();
+            hashCode = (hashCode * 23) + this.customizedMaterial.GetHashCode();
+            hashCode = (hashCode * 23) + this.product.GetHashCode();
             return hashCode.GetHashCode();
         }
 
@@ -253,6 +253,9 @@ namespace core.domain
             CustomizedProductDTO dto = new CustomizedProductDTO();
             dto.reference = this.reference;
             dto.designation = this.designation;
+            dto.product = this.product;
+            dto.customizedDimensions = this.customizedDimensions;
+            dto.customizedMaterial = this.customizedMaterial;
             dto.id = this.Id;
             return dto;
         }
@@ -315,24 +318,31 @@ namespace core.domain
 
             /**
             <summary>
-                Constant that represents the name of the Property which maps the Material's database ID.
+                Constant that represents the name of the Property which maps the Customized Product's database ID.
             </summary>
              */
             public const string DATABASE_ID_PROPERTY = "id";
 
             /**
             <summary>
-                Constant that represents the name of the Property which maps the Material's reference.
+                Constant that represents the name of the Property which maps the Customized Product's reference.
             </summary>
              */
             public const string REFERENCE_PROPERTY = "reference";
 
             /**
             <summary>
-                Constant that represents the name of the Property which maps the Material's designation.
+                Constant that represents the name of the Property which maps the Customized Product's designation.
             </summary>
              */
             public const string DESIGNATION_PROPERTY = "designation";
+
+            /**
+            <summary>
+                Constant that represents the name of the Property which maps the Customized Product's Product.
+            </summary>
+             */
+            public const string DESIGNATION_PRODUCT = "product";
         }
     }
 }

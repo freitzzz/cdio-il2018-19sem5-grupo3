@@ -14,8 +14,6 @@ namespace core_tests.domain
         {
             var category = new ProductCategory("Drawers");
 
-
-
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
 
@@ -66,7 +64,7 @@ namespace core_tests.domain
                 condition = "True";
 
             }
-            Assert.True(condition.Equals("True"));
+            Assert.Equal("True", condition);
 
 
         }
@@ -133,7 +131,8 @@ namespace core_tests.domain
                 condition = "True";
 
             }
-            Assert.True(condition.Equals("True"));
+            Assert.Equal("True", condition);
+
 
 
         }
@@ -163,7 +162,7 @@ namespace core_tests.domain
                 condition = "True";
 
             }
-            Assert.True(condition.Equals("True"));
+            Assert.Equal("True", condition);
         }
 
         [Fact]
@@ -220,7 +219,7 @@ namespace core_tests.domain
 
             CustomizedProduct cp1 = CustomizedProduct.valueOf("#666", "Shelf", custMaterial1, customizedDimensions, product);
 
-            Assert.True(cp.Equals(cp1));
+            Assert.Equal(cp, cp1);
         }
 
         [Fact]
@@ -277,7 +276,7 @@ namespace core_tests.domain
 
             CustomizedProduct cp1 = CustomizedProduct.valueOf("#666", "Shelf", custMaterial1, customizedDimensions, product);
 
-            Assert.False(cp.Equals(cp1));
+            Assert.NotEqual(cp, cp1);
         }
 
         [Fact]
@@ -334,7 +333,7 @@ namespace core_tests.domain
 
             CustomizedProduct cp1 = CustomizedProduct.valueOf("#66666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product);
 
-            Assert.False(cp.Equals(cp1));
+            Assert.NotEqual(cp, cp1);
         }
 
         [Fact]
@@ -401,7 +400,7 @@ namespace core_tests.domain
 
             CustomizedProduct cp1 = CustomizedProduct.valueOf("#66666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product2);
 
-            Assert.False(cp.Equals(cp1));
+            Assert.NotEqual(cp, cp1);
         }
     }
 }

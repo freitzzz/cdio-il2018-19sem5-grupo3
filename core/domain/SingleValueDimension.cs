@@ -78,7 +78,7 @@ namespace core.domain
         /// <returns>true if the objects are equal, false if otherwise</returns>
         public override bool Equals(object obj)
         {
-            if (obj == null || GetType() != obj.GetType())
+            if (obj == null || !obj.GetType().ToString().Equals("core.domain.SingleValueDimension"))
             {
                 return false;
             }
