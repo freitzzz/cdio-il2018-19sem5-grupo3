@@ -32,6 +32,35 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureInstanceCanNotBeCreatedWithANullParent()
+        {
+            Action action = () => new ProductCategory("Drawers", null);
+
+            Assert.Throws<ArgumentException>(action);
+        }
+
+        [Fact]
+        public void ensureInstanceCanNotBeCreatedIfParentHasTheSameName()
+        {
+
+            var parent = new ProductCategory("Drawers");
+
+            Action action = () => new ProductCategory("Drawers", parent);
+
+            Assert.Throws<ArgumentException>(action);
+        }
+
+        [Fact]
+        public void ensureInstanceIsCreatedIfParentHasDifferentName()
+        {
+            var parent = new ProductCategory("Drawers");
+
+            var category = new ProductCategory("Wooden Drawers", parent);
+
+            Assert.NotNull(category);
+        }
+
+        [Fact]
         public void ensureChangeNameWithEmptyNameReturnsFalse()
         {
             var category = new ProductCategory("Drawers");

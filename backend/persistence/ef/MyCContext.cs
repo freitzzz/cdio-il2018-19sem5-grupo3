@@ -62,7 +62,11 @@ namespace backend.persistence.ef
             builder.Entity<Product>().HasMany(p => p.widthValues).WithOne();    //one-to-many relationship
             builder.Entity<Product>().HasMany(p => p.heightValues).WithOne();   //one-to-many relationship
 
+<<<<<<< HEAD
             builder.Entity<CommercialCatalogue>().HasMany(c => c.collectionList).WithOne();
+=======
+            builder.Entity<ProductCategory>().HasOne(c => c.parent).WithOne().HasForeignKey<ProductCategory>(c => c.parentId);
+>>>>>>> abd307ffdb3c16020f5c596270d15e4da1171912
         }
     }
 }
