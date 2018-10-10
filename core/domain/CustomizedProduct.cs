@@ -13,16 +13,15 @@ namespace core.domain
         <br> Configured Product is value object;
     </summary>
     */
-    public class CustomizedProduct : ValueObject, DTOAble<CustomizedProductDTO>
+    public class CustomizedProduct :DomainEntity<string> ,DTOAble<CustomizedProductDTO>
     {
         public CustomizedProduct(long id, string designation, long persistence_id)
         {
             this.Id = id;
             this.designation = designation;
-            this.persistence_id = persistence_id;
 
         }
-        public long Id { get; set; }
+        public long Id { get; internal set; }
         /**
         <summary>
             Constant that represents the message that ocurrs if the CustomizedMaterial's  are not valid.
@@ -79,52 +78,30 @@ namespace core.domain
             String with the ConfiguredProduct's designation.
         </summary>
         */
-        public string designation { get; set; }
+        public string designation { get; protected set; }
 
         /**
         <summary>
             The CustomizedProduct Customized Material
         </summary>
          */
-        private readonly CustomizedMaterial customizedMaterial;
+        public virtual CustomizedMaterial customizedMaterial { get; protected set; }
 
         /**
         <summary>
             The CustomizedProduct Customized Dimensions
         </summary>
          */
-        private readonly CustomizedDimensions customizedDimensions;
+        public virtual CustomizedDimensions customizedDimensions { get; protected set; }
 
         /**
         <summary>
             List of Products from CustomizedProduct
         </summary>
          */
-        private Product product;
+        public virtual Product product { get; protected set; }
 
-        /**
-        <summary>
-            Long with the ConfiguredProduct's database ID.
-        </summary>
-         */
-        private long persistence_id { get; set; }
-
-
-        /**
-        <summary>
-            Customized Product's valueOf
-            <param name = "reference">string with the new ConfiguredProduct's reference</param>
-            <param name = "designation">string with the new ConfiguredProduct's designation</param>
-            <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
-            <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
-            <param name = "product">string with the new ConfiguredProduct's product</param>DDD
-        </summary>
-         */
-        public static CustomizedProduct valueOf(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, Product product)
-        {
-            return new CustomizedProduct(reference, designation, customizedMaterial, customizedDimensions, product);
-        }
-
+     
 
 
 
@@ -139,7 +116,7 @@ namespace core.domain
             <param name = "product">string with the new ConfiguredProduct's product</param>DDD
        </summary>
         */
-        private CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, Product product)
+        public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, Product product)
         {
             checkCustomizedMaterial(customizedMaterial);
             checkCustomizedDimensions(customizedDimensions);
@@ -210,12 +187,8 @@ namespace core.domain
         public override int GetHashCode()
         {
             int hashCode = 17;
-            hashCode = (hashCode * 23) + this.reference.GetHashCode();
-            hashCode = (hashCode * 23) + this.designation.GetHashCode();
-            hashCode = (hashCode * 23) + this.customizedDimensions.GetHashCode();
-            hashCode = (hashCode * 23) + this.customizedMaterial.GetHashCode();
-            hashCode = (hashCode * 23) + this.product.GetHashCode();
-            return hashCode.GetHashCode();
+            return  (hashCode * 23) + this.reference.GetHashCode();
+           
         }
 
         /**
@@ -253,7 +226,7 @@ namespace core.domain
             CustomizedProductDTO dto = new CustomizedProductDTO();
             dto.reference = this.reference;
             dto.designation = this.designation;
-            dto.product = this.product;
+            dto.productDTO = this.product.toDTO();
             dto.customizedDimensions = this.customizedDimensions;
             dto.customizedMaterial = this.customizedMaterial;
             dto.id = this.Id;
@@ -301,48 +274,12 @@ namespace core.domain
             return reference;
         }
 
-
-        /**
-       <summary>
-           Inner static class which represents the ConfiguredProduct's properties used to map on data holders (e.g. DTO)
-       </summary>
-        */
-        public static class Properties
+        public bool sameAs(string comparingEntity)
         {
-            /**
-           <summary>
-                Constant that represents the context of the Properties.
-            </summary>
-            */
-            public const string CONTEXT = "ConfiguredProductDTO";
-
-            /**
-            <summary>
-                Constant that represents the name of the Property which maps the Customized Product's database ID.
-            </summary>
-             */
-            public const string DATABASE_ID_PROPERTY = "id";
-
-            /**
-            <summary>
-                Constant that represents the name of the Property which maps the Customized Product's reference.
-            </summary>
-             */
-            public const string REFERENCE_PROPERTY = "reference";
-
-            /**
-            <summary>
-                Constant that represents the name of the Property which maps the Customized Product's designation.
-            </summary>
-             */
-            public const string DESIGNATION_PROPERTY = "designation";
-
-            /**
-            <summary>
-                Constant that represents the name of the Property which maps the Customized Product's Product.
-            </summary>
-             */
-            public const string DESIGNATION_PRODUCT = "product";
+            return reference.Equals(comparingEntity,StringComparison.InvariantCultureIgnoreCase);
         }
+
+
+    
     }
 }
