@@ -59,7 +59,7 @@ namespace core.domain
             List with all the CommercialCatalogue's<Collection.
         </summary>
         **/
-        public List<Collection> collectionList { get; set; } = new List<Collection>();
+        public List<CustomizedProductCollection> collectionList { get; set; } = new List<CustomizedProductCollection>();
         /// <summary>
         /// Empty constructor used by ORM.
         /// </summary>
@@ -79,7 +79,7 @@ namespace core.domain
             <param name = "collectionList">List with the new CommercialCatalogue's custoProduct</param>
        </summary>
         */
-        public static CommercialCatalogue valueOf(string reference, string designation, List<Collection> collectionList)
+        public static CommercialCatalogue valueOf(string reference, string designation, List<CustomizedProductCollection> collectionList)
         {
             return new CommercialCatalogue(reference, designation, collectionList);
         }
@@ -93,7 +93,7 @@ namespace core.domain
         <param name = "custoProduct">List with the new CommercialCatalogue's custoProduct</param>
          */
         public CommercialCatalogue(string reference, string designation,
-        List<Collection> custoProduct)
+        List<CustomizedProductCollection> custoProduct)
         {
             checkComCatalogueProperties(reference, designation, custoProduct);
             this.reference = reference;
@@ -110,7 +110,7 @@ namespace core.domain
         <param name = "custoProduct">List with the new CommercialCatalogue's custoProduct</param>
         */
         private void checkComCatalogueProperties(string reference,
-        string designation, List<Collection> custoProduct)
+        string designation, List<CustomizedProductCollection> custoProduct)
         {
             if (Strings.isNullOrEmpty(reference)) throw new ArgumentException(INVALID_COM_CATALOGUE_REFERENCE);
             if (Strings.isNullOrEmpty(designation)) throw new ArgumentException(INVALID_COM_CATALOGUE_DESIGNATION);
@@ -153,7 +153,7 @@ namespace core.domain
         <param name = "Collection"<Collection to add</param>
         <returns>True if the<Collection is successfully added, false if not</returns>
         */
-        public bool addCollection(Collection collection)
+        public bool addCollection(CustomizedProductCollection collection)
         {
             if (collection == null || collectionList.Contains(collection)) return false;
             collectionList.Add(collection);
@@ -167,10 +167,9 @@ namespace core.domain
         <param name = "CustomizedProduct" customizedProduct to add </param>
         <returns>True if the<Collection is successfully removed, false if not</returns>
         */
-        public bool addCustomizedProductToCollection(Collection collection,CustomizedProduct customizedProduct)
+        public bool addCustomizedProductToCollection(CustomizedProductCollection collection,CustomizedProduct customizedProduct)
         {
-            if (collection == null || customizedProduct == null || collection.list.Contains(customizedProduct)) return false;
-
+            if (collection == null)return false;
             return collection.addCustomizedProduct(customizedProduct);
         }
 
@@ -181,7 +180,7 @@ namespace core.domain
         <param name = <Collection"<Collection to remove</param>
         <returns>True if the<Collection is successfully removed, false if not</returns>
         */
-        public bool removeCollection(Collection collection)
+        public bool removeCollection(CustomizedProductCollection collection)
         {
             if (collection == null) return false;
             return collectionList.Remove(collection);
@@ -194,10 +193,10 @@ namespace core.domain
         <param name = <Collection"<Collection to remove</param>
         <returns>True if the<Collection is successfully removed, false if not</returns>
         */
-        public bool removeCustomizedProductFromCollection(Collection collection,CustomizedProduct customizedProduct)
+        public bool removeCustomizedProductFromCollection(CustomizedProductCollection collection,CustomizedProduct customizedProduct)
         {
-             if (collection == null || customizedProduct == null || !collection.list.Contains(customizedProduct))return false;
-            return collection.list.Remove(customizedProduct);
+             if (collection == null)return false;
+             return collection.removeCustomizedProduct(customizedProduct);
         }
         /**
         <summary>
@@ -206,7 +205,7 @@ namespace core.domain
         <param name = <Collection"<Collection to check</param>
         <returns>True if the<Collection exists, false if not</returns>
         */
-        public bool hasCollection(Collection collection)
+        public bool hasCollection(CustomizedProductCollection collection)
         {
             if (collection == null) return false;
             return collectionList.Contains(collection);
@@ -235,8 +234,8 @@ namespace core.domain
             dto.reference = this.reference;
             dto.designation = this.designation;
 
-            List<CollectionDTO> dtoCustoProducts = new List<CollectionDTO>();
-            foreach (Collection c in collectionList)
+            List<CustomizedProductCollectionDTO> dtoCustoProducts = new List<CustomizedProductCollectionDTO>();
+            foreach (CustomizedProductCollection c in collectionList)
             {
                 dtoCustoProducts.Add(c.toDTO());
             }
