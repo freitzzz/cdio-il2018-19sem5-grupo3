@@ -51,7 +51,7 @@ namespace core_tests.domain
             string condition = ";";
             try
             {
-                CustomizedProduct cp = CustomizedProduct.valueOf("#666", "Shelf", null, customizedDimensions, product);
+                CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", null, customizedDimensions, product);
 
             }
             catch (ArgumentException) // The argument was thrown
@@ -118,7 +118,7 @@ namespace core_tests.domain
             string condition = ";";
             try
             {
-                CustomizedProduct cp = CustomizedProduct.valueOf("#666", "Shelf", custMaterial1, null, product);
+                CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, null, product);
 
             }
             catch (ArgumentException) // The argument was thrown
@@ -149,7 +149,7 @@ namespace core_tests.domain
             string condition = ";";
             try
             {
-                CustomizedProduct cp = CustomizedProduct.valueOf("#666", "Shelf", custMaterial1, customizedDimensions, null);
+                CustomizedProduct cp =  new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, null);
 
             }
             catch (ArgumentException) // The argument was thrown
@@ -214,10 +214,10 @@ namespace core_tests.domain
 
 
 
-            CustomizedProduct cp = CustomizedProduct.valueOf("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp =  new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
 
 
-            CustomizedProduct cp1 = CustomizedProduct.valueOf("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp1 = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
 
             Assert.Equal(cp, cp1);
         }
@@ -271,10 +271,10 @@ namespace core_tests.domain
 
 
 
-            CustomizedProduct cp = CustomizedProduct.valueOf("#666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = new CustomizedProduct("#666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product);
 
 
-            CustomizedProduct cp1 = CustomizedProduct.valueOf("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp1 =  new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
 
             Assert.NotEqual(cp, cp1);
         }
@@ -328,10 +328,10 @@ namespace core_tests.domain
 
 
 
-            CustomizedProduct cp = CustomizedProduct.valueOf("#666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = new CustomizedProduct("#666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product);
 
 
-            CustomizedProduct cp1 = CustomizedProduct.valueOf("#66666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp1 =  new CustomizedProduct("#66666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product);
 
             Assert.NotEqual(cp, cp1);
         }
@@ -395,10 +395,10 @@ namespace core_tests.domain
             //Product2 
             Product product2 = new Product("#666", "Shelf", category, matsList, heightValues1, widthValues, depthValues);
 
-            CustomizedProduct cp = CustomizedProduct.valueOf("#666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = new CustomizedProduct("#666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product);
 
 
-            CustomizedProduct cp1 = CustomizedProduct.valueOf("#66666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product2);
+            CustomizedProduct cp1 = new CustomizedProduct("#66666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product2);
 
             Assert.NotEqual(cp, cp1);
         }
