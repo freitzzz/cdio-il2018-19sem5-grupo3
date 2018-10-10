@@ -17,21 +17,29 @@ namespace core.dto
         /// </summary>
         /// <value>Gets/sets the value of the database identifier.</value>
         [DataMember]
-        public long id {get; set;}
+        public long id { get; set; }
 
         /// <summary>
         /// ProductCategory's name.
         /// </summary>
         /// <value>Gets/sets the value of the name.</value>
         [DataMember]
-        public string name {get; set;}
+        public string name { get; set; }
+
+        /// <summary>
+        /// ProductCategory's parent ID.
+        /// </summary>
+        /// <value>Gets/sets the value of the ID.</value>
+        [DataMember(EmitDefaultValue = false)]
+        public long? parentId { get; set; }
 
         public ProductCategory toEntity()
         {
-           ProductCategory category = new ProductCategory(this.name);
-           category.Id = id;
+            ProductCategory category = new ProductCategory(this.name);
+            category.Id = id;
+            category.parentId = parentId;
 
-           return category;
+            return category;
         }
     }
 }
