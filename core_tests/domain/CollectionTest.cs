@@ -15,7 +15,7 @@ namespace core_tests.domain
             CustomizedProduct cp = null;
             try
             {
-                Collection c = Collection.valueOf("#666", "Shelf", cp);
+                CustomizedProductCollection c = CustomizedProductCollection.valueOf("#666", "Shelf", cp);
             }
             catch (ArgumentException)
             {
@@ -81,7 +81,7 @@ namespace core_tests.domain
 
             try
             {
-                Collection c = Collection.valueOf(null, "Shelf", cp);
+                CustomizedProductCollection c = CustomizedProductCollection.valueOf(null, "Shelf", cp);
             }
             catch (ArgumentException)
             {
@@ -147,7 +147,7 @@ namespace core_tests.domain
 
             try
             {
-                Collection c = Collection.valueOf("Lucy", null, cp);
+                CustomizedProductCollection c = CustomizedProductCollection.valueOf("Lucy", null, cp);
             }
             catch (ArgumentException)
             {
@@ -170,7 +170,7 @@ namespace core_tests.domain
 
             try
             {
-                Collection c = Collection.valueOf("Lucy", "666", list);
+                CustomizedProductCollection c = CustomizedProductCollection.valueOf("Lucy", "666", list);
             }
             catch (ArgumentException)
             {
@@ -233,8 +233,8 @@ namespace core_tests.domain
             CustomizedProduct cp = CustomizedProduct.valueOf("#666", "Shelf", custMaterial1, customizedDimensions, product);
             list.Add(cp);
 
-            Collection c = Collection.valueOf("Lucy", "666", list);
-            Collection c1 = Collection.valueOf("Lucy", "666", list);
+            CustomizedProductCollection c = CustomizedProductCollection.valueOf("Lucy", "666", list);
+            CustomizedProductCollection c1 = CustomizedProductCollection.valueOf("Lucy", "666", list);
 
             Assert.Equal(c, c1);
         }
