@@ -152,6 +152,7 @@ namespace core.domain
         private void checkCollectionCustomizedProducts(IEnumerable<CustomizedProduct> enumerableCustomizedProducts){
             if(Collections.isEnumerableNullOrEmpty(enumerableCustomizedProducts))
                 throw new ArgumentException(INVALID_COLLECTION_CUSTOMIZED_PRODUCTS);
+            checkCustomizedProductsDuplicates(enumerableCustomizedProducts);
         }
 
         /// <summary>

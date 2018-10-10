@@ -1,11 +1,11 @@
-using System;
+/* using System;
 using System.Collections.Generic;
 using core.domain;
 using Xunit;
 
 namespace core_tests.domain
 {
-    public class CollectionTest
+    public class CustomizedProductCollectionTest
     {
         //ensureProductisInvalid
         [Fact]
@@ -240,4 +240,4 @@ namespace core_tests.domain
         }
 
     }
-}
+} */
