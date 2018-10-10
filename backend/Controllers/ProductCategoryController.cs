@@ -11,7 +11,7 @@ namespace backend.Controllers
     /// <summary>
     /// REST controller being called when accessing the myc/categories resource.
     /// </summary>
-    [Route("myc/categories")]
+    [Route("myc/api/categories")]
     public class ProductCategoryController : Controller
     {
 
