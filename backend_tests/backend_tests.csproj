@@ -22,4 +22,9 @@
     <ProjectReference Include = "../backend/backend.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="../core/measurement_units.json" Link="../core/measurement_units.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../core/application-settings" Link="application-settings" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

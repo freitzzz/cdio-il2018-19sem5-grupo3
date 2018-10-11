@@ -20,4 +20,8 @@
     <ProjectReference Include="../core/core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="../core/measurement_units.json" Link="../core/measurement_units.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
