@@ -39,10 +39,11 @@ namespace backend.persistence.ef
         /// </summary>
         /// <param name="options">The options for the context.</param>
         /// <returns>New instance of MyCContext.</returns>
-        public MyCContext(DbContextOptions<MyCContext> options) : base(options) {BackendConfiguration.entityFrameworkContext=this;}
+        public MyCContext(DbContextOptions<MyCContext> options) : base(options) { BackendConfiguration.entityFrameworkContext = this; }
 
 
-        protected override void OnModelCreating(ModelBuilder builder){
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
             base.OnModelCreating(builder);
 
             //!Define How Entities Are Mapped Here
@@ -53,7 +54,7 @@ namespace backend.persistence.ef
 
 
             builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values).WithOne();   //one-to-many relationship
-            
+
             builder.Entity<Material>().HasMany(m => m.Colors).WithOne();        //one-to-many relationship
             builder.Entity<Material>().HasMany(m => m.Finishes).WithOne();      //one-to-many relationship
 
