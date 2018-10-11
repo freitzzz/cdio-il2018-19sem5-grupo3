@@ -24,7 +24,7 @@ namespace backend.Controllers
     //<summary>
     //Backend CommercialCatalogueController class.
     //</summary>
-    [Route("myc/api/CommercialCatalogue")]
+    [Route("myc/api/commercialcatalogue")]
     public class CommercialCatalogueController : Controller
     {
         /// <summary>
@@ -123,5 +123,79 @@ namespace backend.Controllers
                 return BadRequest(new SimpleJSONMessageService(argumentException.Message));
             }
         }
+
+        /// <summary>
+        /// Adds a new collection 
+        /// </summary>
+        /// <param name="jsonData">JObject with the commercialCatalogue information in JSON</param>
+        /// <returns>HTTP Response 200 Ok if the commercialCatalogue was created with successs
+        ///         <br>HTTP Response 400 Bad Request if an error occured while creating the commercialCatalogue
+        ///         <br>See MyC REST API documentation for a better overview
+        /// </returns>
+        [HttpPost]
+        public ActionResult<CommercialCatalogueDTO> addCollection([FromBody]CommercialCatalogueDTO comCatalogueDTO, CustomizedProductCollectionDTO customizedProductCollectionDTO)
+        {
+            try
+            {
+                CommercialCatalogueDTO createdComCatalogueDTO = new core.application.CommercialCatalogueController().addCollection(comCatalogueDTO, customizedProductCollectionDTO);
+                if (createdComCatalogueDTO != null)
+                {
+                    return Created(Request.Path, createdComCatalogueDTO);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (NullReferenceException)
+            {
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+            }
+            catch (ArgumentException argumentException)
+            {
+                return BadRequest(new SimpleJSONMessageService(argumentException.Message));
+            }
+        } 
+
+        /// <summary>
+        /// Removes a collection.
+        /// </summary>
+        /// <param name="jsonData">JObject with the commercialCatalogue information in JSON</param>
+        /// <returns>HTTP Response 200 Ok if the commercialCatalogue was created with success
+        ///         <br>HTTP Response 400 Bad Request if an error occured while creating the commercialCatalogue
+        ///         <br>See MyC REST API documentation for a better overview
+        /// </returns>
+        [HttpPost]
+        public ActionResult<CommercialCatalogueDTO> removeCollection([FromBody]CommercialCatalogueDTO comCatalogueDTO, CustomizedProductCollectionDTO customizedProductCollectionDTO)
+        {
+            try
+            {
+                CommercialCatalogueDTO createdComCatalogueDTO = new core.application.CommercialCatalogueController().removeCollection(comCatalogueDTO, customizedProductCollectionDTO);
+                if (createdComCatalogueDTO != null)
+                {
+                    return Created(Request.Path, createdComCatalogueDTO);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (NullReferenceException)
+            {
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+            }
+            catch (ArgumentException argumentException)
+            {
+                return BadRequest(new SimpleJSONMessageService(argumentException.Message));
+            }
+        } 
     }
 }
