@@ -35,6 +35,19 @@ namespace backend.persistence.ef
         public DbSet<ProductCategory> ProductCategory { get; set; }
 
         /// <summary>
+        /// Database set containing all of the saved instances of CustomizedProduct.
+        /// </summary>
+        /// <value>Gets/sets the database set containing all the saved instances of CustomizedProduct.</value>
+        public DbSet<CustomizedProductCollection> CustomizedProduct { get; set; }
+
+        /// <summary>
+        /// Database set containing all of the saved instances of CustomizedProductCollection.
+        /// </summary>
+        /// <value>Gets/sets the database set containing all the saved instances of CustomizedProductCollection.</value>
+        public DbSet<CustomizedProductCollection> CustomizedProductCollection { get; set; }
+        
+
+        /// <summary>
         /// Constructs a new database for the MakeYourCloset application.
         /// </summary>
         /// <param name="options">The options for the context.</param>
