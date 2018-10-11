@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net;
 using backend_tests.utils;
+using core.dto;
 
 namespace backend_tests.Controllers
 {
@@ -38,7 +39,7 @@ namespace backend_tests.Controllers
             client = fixture.httpClient;
         }
 
-        [Fact]
+        [Fact, TestPriority(0)]
         public async Task ensureGetAllMaterialsSendsBadRequestWhenListIsEmpty()
         {
             var response = await client.GetAsync(urlBase);
@@ -50,11 +51,31 @@ namespace backend_tests.Controllers
             Assert.NotNull(result);
         }
 
-        [Fact]
+        [Fact, TestPriority(1)]
         public async Task ensurePostMaterialFailsWithEmptyRequestBody()
         {
             var response = await client.PostAsJsonAsync(urlBase, "{}");
             Assert.True(response.StatusCode == HttpStatusCode.BadRequest);
+        }
+
+        [Fact, TestPriority(2)]
+        public async Task<MaterialDTO> ensurePostMaterialWorks(){
+            MaterialDTO materialDTO = new MaterialDTO();
+            materialDTO.designation = "mdf"+DateTime.Now;
+            materialDTO.reference = "bananas"+DateTime.Now;
+            ColorDTO colorDTO = new ColorDTO();
+            colorDTO.name = "lilxan";
+            colorDTO.red = 100;
+            colorDTO.green = 200;
+            colorDTO.blue = 10;
+            colorDTO.alpha = 0;
+            FinishDTO finishDTO = new FinishDTO();
+            finishDTO.description="ola";
+            materialDTO.colors = new List<ColorDTO>(new []{colorDTO});
+            materialDTO.finishes = new List<FinishDTO>(new []{finishDTO});
+            var response = await client.PostAsJsonAsync(urlBase,materialDTO);
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+            return JsonConvert.DeserializeObject<MaterialDTO>(await response.Content.ReadAsStringAsync());
         }
     }
 }
