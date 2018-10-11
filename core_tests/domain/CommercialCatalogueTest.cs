@@ -65,7 +65,311 @@ namespace core_tests.domain
 
             Assert.Equal(comCatalogue.id(), reference, true);
         }
+        /**
+        <summary>
+            Test to ensure that the method ChangeReference works.
+         </summary>
+         */
+        [Fact]
+        public void ensurechangeReferenceInComCatalogue()
+        {
+            Console.WriteLine("ensurechangeReferenceInComCatalogue");
 
+            string reference = "123456789";
+            string designation = "Commercial Catalogue 2019";
+
+            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
+
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
+
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            ProductCategory prodCat = new ProductCategory("Category 1");
+            List<Double> values2 = new List<Double>();
+            values2.Add(500.0); //Width
+            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
+            List<Dimension> valuest = new List<Dimension>();
+            valuest.Add(d2);
+            IEnumerable<Dimension> heightDimensions = valuest;
+            IEnumerable<Dimension> widthDimensions = valuest;
+            IEnumerable<Dimension> depthDimensions = valuest;
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+
+            Material material = new Material("1234", "Material", colors, finishes);
+            List<Material> listMaterial = new List<Material>();
+            listMaterial.Add(material);
+            IEnumerable<Material> materials = listMaterial;
+            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            custProducts.Add(custProduct);
+            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
+            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
+            listCollection.Add(custProCollection);
+            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, listCollection);
+            comCatalogue.changeReference("Mudei referecia");
+            Assert.Equal(comCatalogue.reference, "Mudei referecia", true);
+        }
+/**
+       <summary>
+           Test to ensure that the method ChangeReference works.
+        </summary>
+        */
+        [Fact]
+        public void ensurechangeNullReferenceInComCatalogue()
+        {
+            Console.WriteLine("ensurechangeNullReferenceInComCatalogue");
+
+            string reference = "123456789";
+            string designation = "Commercial Catalogue 2019";
+
+            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
+
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
+
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            ProductCategory prodCat = new ProductCategory("Category 1");
+            List<Double> values2 = new List<Double>();
+            values2.Add(500.0); //Width
+            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
+            List<Dimension> valuest = new List<Dimension>();
+            valuest.Add(d2);
+            IEnumerable<Dimension> heightDimensions = valuest;
+            IEnumerable<Dimension> widthDimensions = valuest;
+            IEnumerable<Dimension> depthDimensions = valuest;
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+
+            Material material = new Material("1234", "Material", colors, finishes);
+            List<Material> listMaterial = new List<Material>();
+            listMaterial.Add(material);
+            IEnumerable<Material> materials = listMaterial;
+            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            custProducts.Add(custProduct);
+            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
+            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
+            listCollection.Add(custProCollection);
+            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, listCollection);
+            ///comCatalogue.changeDesignation("Mudei designation");
+            Assert.Throws<ArgumentException>(() => comCatalogue.changeReference(null));
+        
+        }
+        /**
+       <summary>
+           Test to ensure that the method ChangeReference works.
+        </summary>
+        */
+        [Fact]
+        public void ensurechangeEmpetyReferenceInComCatalogue()
+        {
+            Console.WriteLine("ensurechangeEmpetyReferenceInComCatalogue");
+
+            string reference = "123456789";
+            string designation = "Commercial Catalogue 2019";
+
+            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
+
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
+
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            ProductCategory prodCat = new ProductCategory("Category 1");
+            List<Double> values2 = new List<Double>();
+            values2.Add(500.0); //Width
+            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
+            List<Dimension> valuest = new List<Dimension>();
+            valuest.Add(d2);
+            IEnumerable<Dimension> heightDimensions = valuest;
+            IEnumerable<Dimension> widthDimensions = valuest;
+            IEnumerable<Dimension> depthDimensions = valuest;
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+
+            Material material = new Material("1234", "Material", colors, finishes);
+            List<Material> listMaterial = new List<Material>();
+            listMaterial.Add(material);
+            IEnumerable<Material> materials = listMaterial;
+            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            custProducts.Add(custProduct);
+            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
+            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
+            listCollection.Add(custProCollection);
+            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, listCollection);
+            ///comCatalogue.changeDesignation("Mudei designation");
+            Assert.Throws<ArgumentException>(() => comCatalogue.changeReference(""));
+        
+        }
+        /**
+       <summary>
+           Test to ensure that the method ChangeReference works.
+        </summary>
+        */
+        [Fact]
+        public void ensurechangeDesignationInComCatalogue()
+        {
+            Console.WriteLine("ensurechangeDesignationInComCatalogue");
+
+            string reference = "123456789";
+            string designation = "Commercial Catalogue 2019";
+
+            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
+
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
+
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            ProductCategory prodCat = new ProductCategory("Category 1");
+            List<Double> values2 = new List<Double>();
+            values2.Add(500.0); //Width
+            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
+            List<Dimension> valuest = new List<Dimension>();
+            valuest.Add(d2);
+            IEnumerable<Dimension> heightDimensions = valuest;
+            IEnumerable<Dimension> widthDimensions = valuest;
+            IEnumerable<Dimension> depthDimensions = valuest;
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+
+            Material material = new Material("1234", "Material", colors, finishes);
+            List<Material> listMaterial = new List<Material>();
+            listMaterial.Add(material);
+            IEnumerable<Material> materials = listMaterial;
+            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            custProducts.Add(custProduct);
+            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
+            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
+            listCollection.Add(custProCollection);
+            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, listCollection);
+            comCatalogue.changeDesignation("Mudei designation");
+            Assert.Equal(comCatalogue.designation, "Mudei designation", true);
+        }
+
+/**
+       <summary>
+           Test to ensure that the method ChangeReference works.
+        </summary>
+        */
+        [Fact]
+        public void ensurechangeNullDesignationInComCatalogue()
+        {
+            Console.WriteLine("ensurechangeNullDesignationInComCatalogue");
+
+            string reference = "123456789";
+            string designation = "Commercial Catalogue 2019";
+
+            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
+
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
+
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            ProductCategory prodCat = new ProductCategory("Category 1");
+            List<Double> values2 = new List<Double>();
+            values2.Add(500.0); //Width
+            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
+            List<Dimension> valuest = new List<Dimension>();
+            valuest.Add(d2);
+            IEnumerable<Dimension> heightDimensions = valuest;
+            IEnumerable<Dimension> widthDimensions = valuest;
+            IEnumerable<Dimension> depthDimensions = valuest;
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+
+            Material material = new Material("1234", "Material", colors, finishes);
+            List<Material> listMaterial = new List<Material>();
+            listMaterial.Add(material);
+            IEnumerable<Material> materials = listMaterial;
+            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            custProducts.Add(custProduct);
+            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
+            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
+            listCollection.Add(custProCollection);
+            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, listCollection);
+            ///comCatalogue.changeDesignation("Mudei designation");
+            Assert.Throws<ArgumentException>(() => comCatalogue.changeDesignation(null));
+        
+        }
+        /**
+       <summary>
+           Test to ensure that the method ChangeReference works.
+        </summary>
+        */
+        [Fact]
+        public void ensurechangeEmpetyDesignationInComCatalogue()
+        {
+            Console.WriteLine("ensurechangeEmpetyDesignationInComCatalogue");
+
+            string reference = "123456789";
+            string designation = "Commercial Catalogue 2019";
+
+            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
+
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
+
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            ProductCategory prodCat = new ProductCategory("Category 1");
+            List<Double> values2 = new List<Double>();
+            values2.Add(500.0); //Width
+            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
+            List<Dimension> valuest = new List<Dimension>();
+            valuest.Add(d2);
+            IEnumerable<Dimension> heightDimensions = valuest;
+            IEnumerable<Dimension> widthDimensions = valuest;
+            IEnumerable<Dimension> depthDimensions = valuest;
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+
+            Material material = new Material("1234", "Material", colors, finishes);
+            List<Material> listMaterial = new List<Material>();
+            listMaterial.Add(material);
+            IEnumerable<Material> materials = listMaterial;
+            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            custProducts.Add(custProduct);
+            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
+            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
+            listCollection.Add(custProCollection);
+            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, listCollection);
+            ///comCatalogue.changeDesignation("Mudei designation");
+            Assert.Throws<ArgumentException>(() => comCatalogue.changeDesignation(""));
+        
+        }
         //sameAs tests
 
         /**
@@ -693,11 +997,11 @@ namespace core_tests.domain
 
             Assert.False(comCatalogue.removeCustomizedProductFromCollection(custProCollection, new CustomizedProduct("Tira", "CustomizedProduct3", custMaterial, custDimensions, product)));
         }
-/**
-        <summary>
-            Test to ensure that a non-existent collestion cannot be removed from the CommercialCatalogue's.
-        </summary>
-       */
+        /**
+                <summary>
+                    Test to ensure that a non-existent collestion cannot be removed from the CommercialCatalogue's.
+                </summary>
+               */
         [Fact]
         public void ensureNonExistentCollectionCannotBeRemoved()
         {
@@ -741,7 +1045,7 @@ namespace core_tests.domain
             CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", listCollection);
 
             Assert.False(comCatalogue.removeCollection(new CustomizedProductCollection("Collection2", custoProducts)));
-            
+
         }
         /**
         <summary>
@@ -791,7 +1095,7 @@ namespace core_tests.domain
             CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", listCollection);
 
             Assert.False(comCatalogue.removeCollection(null));
-            
+
         }
 
         /**

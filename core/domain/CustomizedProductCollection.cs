@@ -82,11 +82,8 @@ namespace core.domain
         /// </summary>
         /// <param name="name">string with the customized products collection name</param>
         /// <param name="customizedProducts">IEnumerable with the collection customized products</param>
-        public CustomizedProductCollection(string name,IEnumerable<CustomizedProduct> customizedProducts){
-            checkCustomizedProductCollectionProperties(name);
+        public CustomizedProductCollection(string name,IEnumerable<CustomizedProduct> customizedProducts) : this(name){
             checkCollectionCustomizedProducts(customizedProducts);
-            this.name=name;
-            this.available=true;
             this.customizedProducts=new List<CustomizedProduct>(customizedProducts);
         }
 
@@ -194,7 +191,7 @@ namespace core.domain
         /// <param name="customizedProduct">CustomizedProduct with the customized product being validated</param>
         /// <returns>boolean true if the customized product is valid for addition, false if not</returns>
         private bool isCustomizedProductValidForAddition(CustomizedProduct customizedProduct){
-            return customizedProduct==null || !customizedProducts.Contains(customizedProduct);
+            return customizedProduct != null && !customizedProducts.Contains(customizedProduct);
         }
 
         /// <summary>

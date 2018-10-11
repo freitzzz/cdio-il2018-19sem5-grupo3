@@ -75,7 +75,7 @@ namespace core.domain
        */
         private void checkComponentProperties(Product product, List<Restriction> restrictions)
         {
-            if (product == null) throw new ArgumentException(INVALID_COMPONENT_PRODUCT);
+            checkComponentProduct(product);
             if (Collections.isListNull(restrictions) || Collections.isListEmpty(restrictions)) throw new ArgumentException(INVALID_COMPONENT_RESTRICTIONS);
         }
         /**
@@ -107,6 +107,7 @@ namespace core.domain
         public ComponentDTO toDTO()
         {
             ComponentDTO dto = new ComponentDTO();
+            dto.product=product.toDTO();
 
             if (this.restrictions != null)
             {
@@ -118,10 +119,6 @@ namespace core.domain
                 }
                 dto.restrictions = complementDTOList;
             }
-
-            //TODO: add missing DTO's
-
-
             return dto;
         }
 
