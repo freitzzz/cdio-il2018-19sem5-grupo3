@@ -105,7 +105,7 @@ namespace core.domain
         /// <param name="name">string with the new collection name</param>
         /// <returns>boolean true if the collection name was changed with success, false if not</returns>
         public bool changeName(string name){
-            if(String.IsNullOrEmpty(name))return false;
+            if(String.IsNullOrEmpty(name)||this.name.Equals(name))return false;
             this.name=name;
             return true;
         }

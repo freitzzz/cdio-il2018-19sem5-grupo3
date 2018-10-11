@@ -103,8 +103,9 @@ namespace core.application{
         /// <param name="customizedProductCollectionDTO">UpdateCustomizedProductCollectionDTO with the customized product collection information</param>
         /// <returns>boolean true if the disable was successful, false if not</returns>
         public bool disableCustomizedProductCollection(CustomizedProductCollectionDTO customizedProductCollectionDTO){
-            CustomizedProductCollection customizedProductCollection=PersistenceContext.repositories().createCustomizedProductCollectionRepository().find(customizedProductCollectionDTO.id);
-            return customizedProductCollection!=null && customizedProductCollection.disable();
+            CustomizedProductCollectionRepository customizedProductCollectionRepository=PersistenceContext.repositories().createCustomizedProductCollectionRepository();
+            CustomizedProductCollection customizedProductCollection=customizedProductCollectionRepository.find(customizedProductCollectionDTO.id);
+            return customizedProductCollection!=null && customizedProductCollection.disable() && customizedProductCollectionRepository.update(customizedProductCollection)!=null;
         }
     }
 }

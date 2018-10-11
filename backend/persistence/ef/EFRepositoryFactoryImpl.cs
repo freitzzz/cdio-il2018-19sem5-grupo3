@@ -32,7 +32,7 @@ namespace backend.persistence.ef{
         /// <returns>CustomizedProductRepository with the repository for customized products</returns>
         public CustomizedProductRepository createCustomizedProductRepository()
         {
-            throw new System.NotImplementedException();
+            return new EFCustomizedProductRepository(BackendConfiguration.entityFrameworkContext);
         }
 
         /// <summary>

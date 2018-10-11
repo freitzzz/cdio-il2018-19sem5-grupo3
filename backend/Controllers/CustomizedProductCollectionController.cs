@@ -1,4 +1,5 @@
 using core.dto;
+using core.persistence;
 using support.utils;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -34,6 +35,27 @@ namespace backend.Controllers{
         /// Constant that represents the message that ocurres if an update is valid
         /// </summary>
         private const string VALID_UPDATE_MESSAGE="The resource was updated with success";
+
+        /// <summary>
+        /// This repository attribute is only here due to entity framework injection
+        /// </summary>
+        private readonly CustomizedProductCollectionRepository customizedProductCollectionRepository;
+
+        /// <summary>
+        /// This repository attribute is only here due to entity framework injection
+        /// </summary>
+        private readonly CustomizedProductRepository customizedProductRepository;
+
+        /// <summary>
+        /// This constructor is only here due to entity framework injection
+        /// </summary>
+        /// <param name="customizedProductCollectionRepository">Injected repository of customized products collections</param>
+        /// <param name="customizedProductRepository">Injected repository of customized products</param>
+        public CustomizedProductCollectionController(CustomizedProductCollectionRepository customizedProductCollectionRepository,CustomizedProductRepository customizedProductRepository){
+            this.customizedProductCollectionRepository=customizedProductCollectionRepository;
+            this.customizedProductRepository=customizedProductRepository;
+        }
+
         /// <summary>
         /// Fetches all available collections of customized products
         /// </summary>
@@ -53,12 +75,16 @@ namespace backend.Controllers{
         /// <returns>ActionResult with the customized product collection information</returns>
         [HttpGet("{id}")]
         public ActionResult<CustomizedProductCollectionDTO> findByID(long id){
-            CustomizedProductCollectionDTO customizedProductCollectionDTO=new CustomizedProductCollectionDTO();
-            customizedProductCollectionDTO.id=id;
-            CustomizedProductCollectionDTO customizedProductCollection=new core.application.CustomizedProductCollectionController().findCollectionByID(customizedProductCollectionDTO);
-            if(customizedProductCollection!=null)
-                return Ok(customizedProductCollection);
-            return BadRequest(RESOURCE_NOT_FOUND_MESSAGE);
+            try{
+                CustomizedProductCollectionDTO customizedProductCollectionDTO=new CustomizedProductCollectionDTO();
+                customizedProductCollectionDTO.id=id;
+                CustomizedProductCollectionDTO customizedProductCollection=new core.application.CustomizedProductCollectionController().findCollectionByID(customizedProductCollectionDTO);
+                if(customizedProductCollection!=null)
+                    return Ok(customizedProductCollection);
+                return BadRequest(RESOURCE_NOT_FOUND_MESSAGE);
+            }catch(NullReferenceException){
+                return BadRequest(RESOURCE_NOT_FOUND_MESSAGE);
+            }
         }
 
         /// <summary>
@@ -69,7 +95,7 @@ namespace backend.Controllers{
         [HttpPost]
         public ActionResult<CustomizedProductCollectionDTO> addCustomizedProductCollection([FromBody]CustomizedProductCollectionDTO customizedProductCollectionDTO){
             try{
-                CustomizedProductCollectionDTO customizedProductCollection=new core.application.CustomizedProductCollectionController().findCollectionByID(customizedProductCollectionDTO);
+                CustomizedProductCollectionDTO customizedProductCollection=new core.application.CustomizedProductCollectionController().addCollection(customizedProductCollectionDTO);
                 return Created(Request.Path,customizedProductCollection);
             }catch(NullReferenceException){
                 return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
@@ -87,7 +113,7 @@ namespace backend.Controllers{
         /// <param name="updateCustomizedProductCollectionDTO">UpdateCustomizedProductCollection with the information about the update</param>
         /// <returns>ActionResult with the information success about update</returns>
         [HttpPut("{id}")]
-        public ActionResult<CustomizedProductCollectionDTO> updateCustomizedProductCollection(long id,UpdateCustomizedProductCollectionDTO updateCustomizedProductCollectionDTO){
+        public ActionResult<CustomizedProductCollectionDTO> updateCustomizedProductCollection(long id,[FromBody]UpdateCustomizedProductCollectionDTO updateCustomizedProductCollectionDTO){
             try{
                 updateCustomizedProductCollectionDTO.id=id;
                 bool updatedWithSuccess=new core.application.CustomizedProductCollectionController().updateCollectionBasicInformation(updateCustomizedProductCollectionDTO);
@@ -110,7 +136,7 @@ namespace backend.Controllers{
         /// <param name="updateCustomizedProductCollectionDTO">UpdateCustomizedProductCollection with the information about the update</param>
         /// <returns>ActionResult with the information success about update</returns>
         [HttpPut("{id}/customizedproducts")]
-        public ActionResult<CustomizedProductCollectionDTO> updateCustomizedProductCollectionCustomizedProducts(long id,UpdateCustomizedProductCollectionDTO updateCustomizedProductCollectionDTO){
+        public ActionResult<CustomizedProductCollectionDTO> updateCustomizedProductCollectionCustomizedProducts(long id,[FromBody]UpdateCustomizedProductCollectionDTO updateCustomizedProductCollectionDTO){
             try{
                 updateCustomizedProductCollectionDTO.id=id;
                 bool updatedWithSuccess=new core.application.CustomizedProductCollectionController().updateCollectionCustomizedProducts(updateCustomizedProductCollectionDTO);

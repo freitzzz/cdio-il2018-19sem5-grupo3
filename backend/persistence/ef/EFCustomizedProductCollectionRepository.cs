@@ -12,6 +12,16 @@ namespace backend.persistence.ef
         public EFCustomizedProductCollectionRepository(MyCContext dbContext) : base(dbContext){}
 
         /// <summary>
+        /// Finds a customized product collection by its persistence id
+        /// </summary>
+        /// <param name="entityPersistenceID">long with the collection of customized products persistence id</param>
+        /// <returns>CustomizedProductCollection with the collection of customized products which has a certain persistence id</returns>
+        public override CustomizedProductCollection find(long entityPersistenceID){
+            CustomizedProductCollection customizedProductCollection=base.find(entityPersistenceID);
+            return customizedProductCollection.available ? customizedProductCollection : null;
+        }
+
+        /// <summary>
         /// Fetches all available collections of customized products
         /// </summary>
         /// <returns>IEnumerable with all collections of customized products</returns>
