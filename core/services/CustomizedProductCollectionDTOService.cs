@@ -16,9 +16,10 @@ namespace core.services{
         /// <returns>CustomizedProductCollection with the collection of customized products transformed from the dto</returns>
         public CustomizedProductCollection transform(CustomizedProductCollectionDTO customizedProductCollectionDTO){
             string name=customizedProductCollectionDTO.name;
-            IEnumerable<CustomizedProduct> customizedProducts=PersistenceContext.repositories().createCustomizedProductRepository().findCustomizedProductsByTheirPIDS(customizedProductCollectionDTO.customizedProducts);
-            if(customizedProducts==null)
+            if(customizedProductCollectionDTO.customizedProducts==null)
                 return new CustomizedProductCollection(name);
+            IEnumerable<CustomizedProduct> customizedProducts=PersistenceContext.repositories().createCustomizedProductRepository().findCustomizedProductsByTheirPIDS(customizedProductCollectionDTO.customizedProducts);
+            
             return new CustomizedProductCollection(name,customizedProducts);
         }
     }
