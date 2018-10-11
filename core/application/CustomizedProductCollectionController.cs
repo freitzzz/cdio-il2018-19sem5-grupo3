@@ -1,5 +1,8 @@
 using core.domain;
 using core.dto;
+using core.persistence;
+using support.dto;
+using support.utils;
 using System;
 using System.Collections.Generic;
 
@@ -14,7 +17,7 @@ namespace core.application{
         /// </summary>
         /// <returns>List with all available customized products collections</returns>
         public List<CustomizedProductCollectionDTO> findAllCollections(){
-            throw new NotImplementedException();
+            return new List<CustomizedProductCollectionDTO>(PersistenceContext.repositories().createCustomizedProductCollectionRepository().findAllCollections());
         }
 
         /// <summary>
@@ -23,7 +26,7 @@ namespace core.application{
         /// <param name="customizedProductCollectionDTO">CustomizedProductCollectionDTO with the customized product collection information</param>
         /// <returns>CustomizedProductCollectionDTO with the fetched customized product collection information</returns>
         public CustomizedProductCollectionDTO findCollectionByID(CustomizedProductCollectionDTO customizedProductCollectionDTO){
-            throw new NotImplementedException();
+            return PersistenceContext.repositories().createCustomizedProductCollectionRepository().find(customizedProductCollectionDTO.id).toDTO();
         }
 
         /// <summary>
@@ -41,7 +44,17 @@ namespace core.application{
         /// <param name="updateCustomizedProductCollectionDTO">UpdateCustomizedProductCollectionDTO with the customized product collection update information</param>
         /// <returns>boolean true if the update was successful, false if not</returns>
         public bool updateCollectionBasicInformation(UpdateCustomizedProductCollectionDTO updateCustomizedProductCollectionDTO){
-            throw new NotImplementedException();
+            CustomizedProductCollectionRepository customizedProductCollectionRepository=PersistenceContext.repositories().createCustomizedProductCollectionRepository();
+            CustomizedProductCollection customizedProductCollection=customizedProductCollectionRepository.find(updateCustomizedProductCollectionDTO.id);
+            bool updatedWithSuccess=true;
+            bool performedAtLeastOneUpdate=false;
+            if(updateCustomizedProductCollectionDTO.name!=null){
+                updatedWithSuccess&=customizedProductCollection.changeName(updateCustomizedProductCollectionDTO.name);
+                performedAtLeastOneUpdate=true;
+            }
+            if(!performedAtLeastOneUpdate||!updatedWithSuccess)return false;
+            updatedWithSuccess&=customizedProductCollectionRepository.update(customizedProductCollection)!=null;
+            return updatedWithSuccess;
         }
 
         /// <summary>
@@ -50,6 +63,21 @@ namespace core.application{
         /// <param name="updateCustomizedProductCollectionDTO">UpdateCustomizedProductCollectionDTO with the customized product collection update information</param>
         /// <returns>boolean true if the update was successful, false if not</returns>
         public bool updateCollectionCustomizedProducts(UpdateCustomizedProductCollectionDTO updateCustomizedProductCollectionDTO){
+            CustomizedProductCollectionRepository customizedProductCollectionRepository=PersistenceContext.repositories().createCustomizedProductCollectionRepository();
+            CustomizedProductCollection customizedProductCollection=customizedProductCollectionRepository.find(updateCustomizedProductCollectionDTO.id);
+            bool updatedWithSuccess=true;
+            bool performedAtLeastOneUpdate=false;
+            
+            if(!Collections.isEnumerableNullOrEmpty(updateCustomizedProductCollectionDTO.customizedProductsToAdd)){
+                
+                
+                
+                performedAtLeastOneUpdate=true;
+            }
+
+            if(!performedAtLeastOneUpdate||!updatedWithSuccess)return false;
+            updatedWithSuccess&=customizedProductCollectionRepository.update(customizedProductCollection)!=null;
+            return updatedWithSuccess;
             throw new NotImplementedException();
         }
 

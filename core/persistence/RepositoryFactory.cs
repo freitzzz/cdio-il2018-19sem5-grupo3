@@ -21,6 +21,12 @@ namespace core.persistence{
         /// <returns>ProductCategoryRepository with the repository for product category entities</returns>
         ProductCategoryRepository createProductCategoryRepository();
 
+        /// <summary>
+        /// Creates a CustomizedProductCollectionRepository
+        /// </summary>
+        /// <returns>CustomizedProductCollectionRepository with the repository for customized products collections</returns>
+        CustomizedProductCollectionRepository createCustomizedProductCollectionRepository();
+
         
     }
 }
