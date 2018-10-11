@@ -337,6 +337,9 @@ namespace core.domain {
             dto.dimensions.widthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
             dto.dimensions.depthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
             dto.productCategory = productCategory.toDTO();
+            foreach (ProductMaterial pm in this.productMaterials) {
+                dto.productMaterials.Add(pm.material.toDTO());
+            }
 
             //TODO: remove null check once complement database mappping is complete
             if (complementedProducts != null && complementedProducts.Count >= 0) {

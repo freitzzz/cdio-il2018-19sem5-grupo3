@@ -17,15 +17,15 @@ namespace core.domain {
         /// <summary>
         /// Material
         /// </summary>
-        private Material material { get; set; }
+        public virtual Material material { get; set; }
         /// <summary>
         /// List of restrictions in this relation
         /// </summary>
-        private List<Restriction> restrictions { get; set; }
+        public virtual List<Restriction> restrictions { get; set; }
         /// <summary>
         /// Product
         /// </summary>
-        private Product product { get; set; }
+        public virtual Product product { get; set; }
         /// <summary>
         /// Creates a new instance of ProductMaterial from the data received as parameter
         /// </summary>
@@ -53,7 +53,7 @@ namespace core.domain {
         /// <param name="restriction">Restriction to be added</param>
         /// <returns>true if the Restriction was successfully added, false if not</returns>
         public bool addRestriction(Restriction restriction) {
-            if (restriction != null && restrictionExists(restriction)) {
+            if (restriction == null || restrictionExists(restriction)) {
                 return false;
             }
             restrictions.Add(restriction);

@@ -271,49 +271,6 @@ namespace core.domain
                 return reference.Equals(commercialCatalogue.reference);
             }
         }
-        /**
-        <summary>
-            Inner static class which represents the CommercialCatalogue's properties used to map on data holders (e.g. DTO)
-        </summary>
-         */
-        public static class Properties
-        {
-            /**
-           <summary>
-                Constant that represents the context of the Properties.
-            </summary>
-            */
-            public const string CONTEXT = "CommercialCatalogue";
-
-            /**
-            <summary>
-                Constant that represents the name of the Property which maps the CommercialCatalogue's database ID.
-            </summary>
-             */
-            public const string DATABASE_ID_PROPERTY = "id";
-
-            /**
-            <summary>
-                Constant that represents the name of the Property which maps the CommercialCatalogue's reference.
-            </summary>
-             */
-            public const string REFERENCE_PROPERTY = "reference";
-
-            /**
-            <summary>
-                Constant that represents the name of the Property which maps the CommercialCatalogue's designation.
-            </summary>
-             */
-            public const string DESIGNATION_PROPERTY = "designation";
-
-            /**
-            <summary>
-                Constant that represents the name of the Property which maps the CommercialCatalogue's<Collections.
-            </summary>
-             */
-            public const string CUSTOMIZED_PRODUCTS_PROPERTY = "Collections";
-
-        }
 
     }
 }
