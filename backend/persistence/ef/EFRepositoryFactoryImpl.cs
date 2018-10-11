@@ -7,6 +7,10 @@ namespace backend.persistence.ef{
         public ComponentRepository createComponentRepository() {
             throw new System.NotImplementedException();
         }*/
+        public CommercialCatalogueRepository createCommercialCatalogueRepository()
+        {
+            return new EFCommercialCatalogueRepository(BackendConfiguration.entityFrameworkContext);
+        }
 
         /// <summary>
         /// Creates a MaterialRepository

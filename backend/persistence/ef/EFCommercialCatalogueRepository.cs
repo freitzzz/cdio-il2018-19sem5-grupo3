@@ -17,7 +17,7 @@ namespace backend.persistence.ef
         /// </summary>
         /// <param name="productsDTO">IEnumerable with the products information</param>
         /// <returns>IEnumerable with the fetched products</returns>
-         public IEnumerable<CommercialCatalogue> FetchCommercialCataloguesById(IEnumerable<CommercialCatalogueDTO> commercialCatalogueDTO)
+         public IEnumerable<CommercialCatalogue> fetchCommercialCataloguesById(IEnumerable<CommercialCatalogueDTO> commercialCatalogueDTO)
          {
            List<long> catalogueIDS = new List<long>();
            foreach(CommercialCatalogueDTO collectionDTO in commercialCatalogueDTO) catalogueIDS.Add(collectionDTO.id);

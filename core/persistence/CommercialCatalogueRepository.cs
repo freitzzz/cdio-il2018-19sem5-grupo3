@@ -1,7 +1,8 @@
-using System.Collections.Generic;
 using core.domain;
 using core.dto;
 using support.domain.ddd;
+using support.persistence.repositories;
+using System.Collections.Generic;
 
 namespace core.persistence
 {
@@ -20,7 +21,7 @@ namespace core.persistence
         /// </summary>
         /// <param name="productsDTO">IEnumerable with the products information</param>
         /// <returns>IEnumerable with the fetched products</returns>
-        IEnumerable<CommercialCatalogue> FetchCommercialCataloguesById(IEnumerable<CommercialCatalogueDTO> commercialCataloguesDTO);
+        IEnumerable<CommercialCatalogue> fetchCommercialCataloguesById(IEnumerable<CommercialCatalogueDTO> commercialCataloguesDTO);
 
     }
 }
