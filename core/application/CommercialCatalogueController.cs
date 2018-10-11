@@ -28,7 +28,7 @@ namespace core.application {
                     collections.Add(collection.toEntity());
                 }
             }
-            CommercialCatalogue newComCatalogue = CommercialCatalogue.valueOf(reference, designation, collections);
+            CommercialCatalogue newComCatalogue = new CommercialCatalogue(reference, designation, collections);
             CommercialCatalogue createdComCatalogue = PersistenceContext.repositories().createCommercialCatalogueRepository().save(newComCatalogue);
             if (createdComCatalogue == null) return null;
             return createdComCatalogue.toDTO();
