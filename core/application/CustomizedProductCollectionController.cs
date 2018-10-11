@@ -1,6 +1,7 @@
 using core.domain;
 using core.dto;
 using core.persistence;
+using core.services;
 using support.dto;
 using support.utils;
 using System;
@@ -17,7 +18,11 @@ namespace core.application{
         /// </summary>
         /// <returns>List with all available customized products collections</returns>
         public List<CustomizedProductCollectionDTO> findAllCollections(){
-            return new List<CustomizedProductCollectionDTO>(PersistenceContext.repositories().createCustomizedProductCollectionRepository().findAllCollections());
+            return Collections.enumerableAsList(
+                DTOUtils.parseToDTOS(
+                    PersistenceContext.repositories().createCustomizedProductCollectionRepository().findAllCollections()
+                )
+            );
         }
 
         /// <summary>
@@ -35,7 +40,8 @@ namespace core.application{
         /// <param name="customizedProductCollectionDTO">CustomizedProductCollectionDTO with the customized product collection information</param>
         /// <returns>CustomizedProductCollectionDTO with the created customized product collection information</returns>
         public CustomizedProductCollectionDTO addCollection(CustomizedProductCollectionDTO customizedProductCollectionDTO){
-            throw new NotImplementedException();
+            CustomizedProductCollection customizedProductCollection=new CustomizedProductCollectionDTOService().transform(customizedProductCollectionDTO);
+            return PersistenceContext.repositories().createCustomizedProductCollectionRepository().save(customizedProductCollection).toDTO();
         }
 
         /// <summary>
@@ -69,16 +75,26 @@ namespace core.application{
             bool performedAtLeastOneUpdate=false;
             
             if(!Collections.isEnumerableNullOrEmpty(updateCustomizedProductCollectionDTO.customizedProductsToAdd)){
-                
-                
-                
+                IEnumerable<CustomizedProduct> customizedProductsToAdd=PersistenceContext.repositories().createCustomizedProductRepository().findCustomizedProductsByTheirPIDS(updateCustomizedProductCollectionDTO.customizedProductsToAdd);
+                //TODO: CHECK LISTS LENGTH
+                foreach(CustomizedProduct customizedProduct in customizedProductsToAdd)
+                    updatedWithSuccess&=customizedProductCollection.addCustomizedProduct(customizedProduct);
+                performedAtLeastOneUpdate=true;
+            }
+
+            if(!updatedWithSuccess)return false;
+
+            if(!Collections.isEnumerableNullOrEmpty(updateCustomizedProductCollectionDTO.customizedProductsToRemove)){
+                IEnumerable<CustomizedProduct> customizedProductsToRemove=PersistenceContext.repositories().createCustomizedProductRepository().findCustomizedProductsByTheirPIDS(updateCustomizedProductCollectionDTO.customizedProductsToRemove);
+                //TODO: CHECK LISTS LENGTH
+                foreach(CustomizedProduct customizedProduct in customizedProductsToRemove)
+                    updatedWithSuccess&=customizedProductCollection.removeCustomizedProduct(customizedProduct);
                 performedAtLeastOneUpdate=true;
             }
 
             if(!performedAtLeastOneUpdate||!updatedWithSuccess)return false;
             updatedWithSuccess&=customizedProductCollectionRepository.update(customizedProductCollection)!=null;
             return updatedWithSuccess;
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -87,7 +103,8 @@ namespace core.application{
         /// <param name="customizedProductCollectionDTO">UpdateCustomizedProductCollectionDTO with the customized product collection information</param>
         /// <returns>boolean true if the disable was successful, false if not</returns>
         public bool disableCustomizedProductCollection(CustomizedProductCollectionDTO customizedProductCollectionDTO){
-            throw new NotImplementedException();
+            CustomizedProductCollection customizedProductCollection=PersistenceContext.repositories().createCustomizedProductCollectionRepository().find(customizedProductCollectionDTO.id);
+            return customizedProductCollection!=null && customizedProductCollection.disable();
         }
     }
 }
