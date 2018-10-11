@@ -6,6 +6,15 @@ namespace core_tests.domain
 {
     public class ProductCategoryTest
     {
+
+        [Fact]
+        public void ensureInstanceCantBeCreateWithNullName()
+        {
+            Action action = () => new ProductCategory(null);
+
+            Assert.Throws<ArgumentException>(action);
+        }
+
         [Fact]
         public void ensureInstanceCantBeCreatedWithEmptyName()
         {
@@ -61,6 +70,31 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureChangeNameWithNullNameReturnsFalse()
+        {
+            var category = new ProductCategory("Drawers");
+
+            bool changed = category.changeName(null);
+
+            Assert.False(changed);
+        }
+
+        [Fact]
+        public void ensureChangeNameWithNullNameDoesNotChangeName()
+        {
+
+            string name = "Drawers";
+
+            var category = new ProductCategory(name);
+
+            category.changeName(null);
+
+            string currentName = category.name;
+
+            Assert.Equal(name, currentName);
+        }
+
+        [Fact]
         public void ensureChangeNameWithEmptyNameReturnsFalse()
         {
             var category = new ProductCategory("Drawers");
@@ -107,7 +141,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangeNameWithValidNameReturnsFalse()
+        public void ensureChangeNameWithValidNameReturnsTrue()
         {
             var category = new ProductCategory("Hangers");
 
