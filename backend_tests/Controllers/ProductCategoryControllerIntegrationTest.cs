@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using backend_tests.Setup;
+using backend_tests.utils;
 using core.dto;
 using Newtonsoft.Json;
 using Xunit;
@@ -39,13 +40,15 @@ namespace backend_tests.Controllers
 
 
         [Fact, TestPriority(1)]
-        public async Task ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully()
+        public async Task<ProductCategoryDTO> ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully()
         {
-            ProductCategoryDTO categoryDTO = new ProductCategoryDTO() { name = "Drawers" };
+            ProductCategoryDTO categoryDTO = new ProductCategoryDTO() { name = "Drawers"+DateTime.Now };
 
             var response = await client.PostAsJsonAsync(baseUrl, categoryDTO);
 
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+            return JsonConvert.DeserializeObject<ProductCategoryDTO>(await response.Content.ReadAsStringAsync());
         }
 
 

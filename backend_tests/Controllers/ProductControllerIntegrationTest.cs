@@ -41,7 +41,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that the products collection is empty if there are no products available
         /// </summary>
-        [Fact]
+        [Fact, TestPriority(0)]
         public async void ensureProductsCollecionFetchIsEmpty(){
             //Since we haven't add any products yet, the products collection should be empty
             var productsCollectionFetch=await httpClient.GetAsync(PRODUCTS_URI);
@@ -52,7 +52,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if the request body is empty
         /// </summary>
-        [Fact]
+        [Fact, TestPriority(1)]
         public async void ensureProductCantBeCreatedWithEmptyRequestBody(){
             //We are attempting to create an object with an empty request body
             var createProductEmptyRequestBody=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON("{}"));
@@ -65,6 +65,7 @@ namespace backend_tests.Controllers{
         /// Ensures that a product is created succesfuly
         /// </summary>
         /// <returns>ProductDTO with the created product</returns>
+        [Fact, TestPriority(2)]
         public async Task<ProductDTO> ensureProductIsCreatedSuccesfuly(){
             //We are going to create a valid product
             //A valid product creation requires a valid reference, a valid desgination
@@ -75,13 +76,30 @@ namespace backend_tests.Controllers{
             //Designation can be whatever we decide
             string designation="Time N Place";
             //Categories must previously exist as they can be shared in various products
-            //TODO Create ProductCategoryControllerIntegrationTest Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureProductCategoryIsCreatedSucessfuly();
+            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryDTO.Wait();
             //Materials must previously exist as they can be shared in various products
+            Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
+            materialDTO.Wait();
+            DiscreteDimensionIntervalDTO discreteDimensionIntervalDTO=new DiscreteDimensionIntervalDTO();
+            discreteDimensionIntervalDTO.values=new List<double>(new[]{1.0,2.0,30.0});
+            ContinuousDimensionIntervalDTO continuousDimensionIntervalDTO=new ContinuousDimensionIntervalDTO();
+            continuousDimensionIntervalDTO.increment=1;
+            continuousDimensionIntervalDTO.minValue=10;
+            continuousDimensionIntervalDTO.maxValue=100;
+            SingleValueDimensionDTO singleValueDimensionDTO=new SingleValueDimensionDTO();
+            singleValueDimensionDTO.value=50;
             ProductDTO productDTO=new ProductDTO();
             productDTO.reference=reference;
             productDTO.designation=designation;
-            //TODO fix return statementreturn httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON(productDTO));
-            return null;
+            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
+            productDTO.productCategory=categoryDTO.Result;
+            productDTO.dimensions.depthDimensionDTOs=new List<DimensionDTO>(new[]{discreteDimensionIntervalDTO});
+            productDTO.dimensions.heightDimensionDTOs=new List<DimensionDTO>(new[]{continuousDimensionIntervalDTO});
+            productDTO.dimensions.widthDimensionDTOs=new List<DimensionDTO>(new[]{singleValueDimensionDTO});
+            var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+            return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
         }
     }
 }

@@ -48,7 +48,7 @@ namespace backend.Controllers {
         /// <summary>
         /// Constant that represents the message that ocurres if a client attemps to create a product with an invalid request body
         /// </summary>
-        private const string INVALID_REQUEST_BODY_MESSAGE="The request body is invalid\nCheck documentation for more information";
+        private const string INVALID_REQUEST_BODY_MESSAGE="The request body is invalid! Check documentation for more information";
 
         private readonly ProductRepository productRepository;
 

@@ -12,21 +12,21 @@ namespace core.dto{
         /// Long with the id of the customized product collection being updated
         /// </summary>
         [DataMember(Name="id")]
-        public long id;
+        public long id{get;set;}
         /// <summary>
         /// String with the customized product collection name
         /// </summary>
         [DataMember(Name="name")]
-        public string name;
+        public string name{get;set;}
         /// <summary>
         /// List with the customized products to add to the collection
         /// </summary>
         [DataMember(Name="addCustomizedProducts")]
-        public List<CustomizedProductDTO> customizedProductsToAdd;
+        public List<CustomizedProductDTO> customizedProductsToAdd{get;set;}
         /// <summary>
         /// List with the customized products to remove from the collection
         /// </summary>
         [DataMember(Name="removeCustomizedProducts")]
-        public List<CustomizedProductDTO> customizedProductsToRemove;
+        public List<CustomizedProductDTO> customizedProductsToRemove{get;set;}
     }
 }
