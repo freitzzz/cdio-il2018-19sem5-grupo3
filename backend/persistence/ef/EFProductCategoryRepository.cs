@@ -51,8 +51,10 @@ namespace backend.persistence.ef
         /// <returns>List with all ProductCategory leaves</returns>
         public IEnumerable<ProductCategory> findLeaves()
         {
-            var ids = dbContext.ProductCategory.Where(c => c.active).Select(c => c.Id).ToList();
-            return dbContext.ProductCategory.Where(c => !ids.Contains(c.Id)).ToList();
+            //fetch all active parent categories' ids
+            var ids = dbContext.ProductCategory.Where(c => c.parentId != null).Select(c => c.parentId).Distinct().ToList();
+            
+            return dbContext.ProductCategory.Where(c => !ids.Contains(c.Id)).Where(c => c.parentId != null).ToList();
         }
     }
 }

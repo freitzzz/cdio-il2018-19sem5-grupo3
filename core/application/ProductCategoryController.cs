@@ -14,19 +14,41 @@ namespace core.application
         /// <summary>
         /// Constructs a new instance of ProductCategory application controller.
         /// </summary>
-        public ProductCategoryController(){}
+        public ProductCategoryController() { }
 
         /// <summary>
         /// Adds a new ProductCategory to the repository.
         /// </summary>
         /// <param name="productCategoryDTO">DTO containing ProductCategory information.</param>
         /// <returns>Returns the added ProductCategory's DTO or null, if it was not added.</returns>
-        public ProductCategoryDTO addProductCategory(ProductCategoryDTO productCategoryDTO){
+        public ProductCategoryDTO addProductCategory(ProductCategoryDTO productCategoryDTO)
+        {
+            ProductCategoryRepository repository = PersistenceContext.repositories().createProductCategoryRepository();
 
-            ProductCategory category = PersistenceContext.repositories().createProductCategoryRepository().save(productCategoryDTO.toEntity());
+            long? parentId = productCategoryDTO.parentId;
+
+            ProductCategory category = null;
+
+            if (parentId != null)   //if a parent id is defined, add it as a subcategory
+            {
+                ProductCategory parentCategory = repository.find((long)parentId);
+
+                if (parentCategory == null)
+                {
+                    return null;
+                }
+
+                category = new ProductCategory(productCategoryDTO.name, parentCategory);
+                category = repository.save(category);
+            }
+            else                //if no parent id is defined then add it as a root category 
+            {
+                category = repository.save(productCategoryDTO.toEntity());
+            }
 
             //category was not able to be added (probably due to a violation of business identifiers)
-            if(category == null){
+            if (category == null)
+            {
                 return null;
             }
 
@@ -38,13 +60,15 @@ namespace core.application
         /// </summary>
         /// <param name="id">Database identifier of the ProductCategory to be removed.</param>
         /// <returns>A DTO representation of the removed ProductCategory.</returns>
-        public ProductCategoryDTO removeProductCategory(long id){
-            ProductCategoryRepository categoryRepository=PersistenceContext.repositories().createProductCategoryRepository();
-            
+        public ProductCategoryDTO removeProductCategory(long id)
+        {
+            ProductCategoryRepository categoryRepository = PersistenceContext.repositories().createProductCategoryRepository();
+
             ProductCategory categoryToBeRemoved = categoryRepository.find(id);
 
             //category does not exist
-            if(categoryToBeRemoved == null){
+            if (categoryToBeRemoved == null)
+            {
                 return null;
             }
 
@@ -81,7 +105,8 @@ namespace core.application
         {
             ProductCategory category = PersistenceContext.repositories().createProductCategoryRepository().find(id);
 
-            if(category == null){   //category might not exist
+            if (category == null)
+            {   //category might not exist
                 return null;
             }
 
@@ -97,7 +122,8 @@ namespace core.application
         {
             ProductCategory category = PersistenceContext.repositories().createProductCategoryRepository().find(id);
 
-            if(category == null){   //category might not exist
+            if (category == null)
+            {   //category might not exist
                 return null;
             }
 

@@ -11,6 +11,12 @@ namespace backend.persistence.ef
     public class MyCContext : DbContext
     {
         /// <summary>
+        /// Database set containing all of the saved instances of CommercialCatalogue.
+        /// </summary>
+        /// <value>Gets/sets the database set containing all the saved instances of CommercialCatalogue.</value>
+        public DbSet<CommercialCatalogue> CommercialCatalogue { get; set; }
+
+        /// <summary>
         /// Database set containing all of the saved instances of Material.
         /// </summary>
         /// <value>Gets/sets the database set containing all the saved instances of Material.</value>
@@ -33,10 +39,11 @@ namespace backend.persistence.ef
         /// </summary>
         /// <param name="options">The options for the context.</param>
         /// <returns>New instance of MyCContext.</returns>
-        public MyCContext(DbContextOptions<MyCContext> options) : base(options) {BackendConfiguration.entityFrameworkContext=this;}
+        public MyCContext(DbContextOptions<MyCContext> options) : base(options) { BackendConfiguration.entityFrameworkContext = this; }
 
 
-        protected override void OnModelCreating(ModelBuilder builder){
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
             base.OnModelCreating(builder);
 
             //!Define How Entities Are Mapped Here
@@ -47,7 +54,7 @@ namespace backend.persistence.ef
 
 
             builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values).WithOne();   //one-to-many relationship
-            
+
             builder.Entity<Material>().HasMany(m => m.Colors).WithOne();        //one-to-many relationship
             builder.Entity<Material>().HasMany(m => m.Finishes).WithOne();      //one-to-many relationship
 
@@ -55,6 +62,9 @@ namespace backend.persistence.ef
             builder.Entity<Product>().HasMany(p => p.depthValues).WithOne();    //one-to-many relationship
             builder.Entity<Product>().HasMany(p => p.widthValues).WithOne();    //one-to-many relationship
             builder.Entity<Product>().HasMany(p => p.heightValues).WithOne();   //one-to-many relationship
+
+            builder.Entity<CommercialCatalogue>().HasMany(c => c.collectionList).WithOne();
+            builder.Entity<ProductCategory>().HasOne(c => c.parent).WithOne().HasForeignKey<ProductCategory>(c => c.parentId);
         }
     }
 }

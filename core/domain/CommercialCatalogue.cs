@@ -17,7 +17,7 @@ namespace core.domain
     </summary>
     <typeparam name = "string">Generic-Type of the CommercialCatalogue entity identifier</typeparam>
     */
-    public class CommercialCatalogue : DTOAble<CommercialCatalogueDTO>
+    public class CommercialCatalogue : AggregateRoot<string>,DTOAble<CommercialCatalogueDTO>
     {
         /**
         <summary>
@@ -38,7 +38,12 @@ namespace core.domain
         </summary>
         */
         private const string INVALID_COM_CATALOGUE_CUST_PRODUCTS = "The CommercialCatalogue's<Collection are not valid!";
-        public long Id { get; set; }
+
+        /// <summary>
+        /// Database identifier.
+        /// </summary>
+        /// <value></value>
+        public long Id { get; internal set; }
 
         /**
         <summary>
@@ -52,37 +57,19 @@ namespace core.domain
             String with the CommercialCatalogue's designation.
         </summary>
         */
-        public string designation { get; set; }
+        public string designation { get; protected set; }
 
         /**
         <summary>
             List with all the CommercialCatalogue's<Collection.
         </summary>
         **/
-        public List<CustomizedProductCollection> collectionList { get; set; } = new List<CustomizedProductCollection>();
+        public virtual List<CustomizedProductCollection> collectionList { get; protected set; }
+
         /// <summary>
         /// Empty constructor used by ORM.
         /// </summary>
         protected CommercialCatalogue() { }
-
-        /**
-        <summary>
-            Long with the CommercialCatalogue's database ID.
-        </summary>
-         */
-        private long persistence_id { get; set; }
-        /**
-       <summary>
-           Commercial Catalogue's valueOf
-           <param name = "reference">string with the new CommercialCatalogue's reference</param>
-           <param name = "designation">string with the new CommercialCatalogue's designation</param>
-            <param name = "collectionList">List with the new CommercialCatalogue's custoProduct</param>
-       </summary>
-        */
-        public static CommercialCatalogue valueOf(string reference, string designation, List<CustomizedProductCollection> collectionList)
-        {
-            return new CommercialCatalogue(reference, designation, collectionList);
-        }
 
         /**
         <summary>
@@ -98,6 +85,7 @@ namespace core.domain
             checkComCatalogueProperties(reference, designation, custoProduct);
             this.reference = reference;
             this.designation = designation;
+            this.collectionList = custoProduct;
             this.collectionList = custoProduct;
         }
 

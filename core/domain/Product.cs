@@ -88,7 +88,7 @@ namespace core.domain {
         /// <summary>
         /// ProductCategory with the category which the product belongs to
         /// </summary>
-        public virtual ProductCategory productCategory {get; protected set;}
+        public virtual ProductCategory productCategory { get; protected set; }
 
         /// <summary>
         /// Boolean that controls if the current product is available or not
@@ -131,7 +131,7 @@ namespace core.domain {
             this.widthValues = new List<Dimension>(widthDimensions);
             this.depthValues = new List<Dimension>(depthDimensions);
             this.productCategory = productCategory;
-            this.isAvailable=true;
+            this.isAvailable = true;
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace core.domain {
             this.widthValues = new List<Dimension>(widthValues);
             this.depthValues = new List<Dimension>(depthValues);
             this.productCategory = productCategory;
-            this.isAvailable=true;
+            this.isAvailable = true;
         }
 
         /// <summary>
@@ -248,9 +248,9 @@ namespace core.domain {
         /// </summary>
         /// <param name="reference">String with the reference being updated</param>
         /// <returns>boolean true if the reference update was valid, false if not</returns>
-        public bool changeProductReference(string reference){
-            if(Strings.isNullOrEmpty(reference)||this.reference.Equals(reference))return false;
-            this.reference=reference;
+        public bool changeProductReference(string reference) {
+            if (Strings.isNullOrEmpty(reference) || this.reference.Equals(reference)) return false;
+            this.reference = reference;
             return true;
         }
 
@@ -259,9 +259,9 @@ namespace core.domain {
         /// </summary>
         /// <param name="designation">String with the designation being updated</param>
         /// <returns>boolean true if the designation update was valid, false if not</returns>
-        public bool changeProductDesignation(string designation){
-            if(Strings.isNullOrEmpty(designation)||this.designation.Equals(designation))return false;
-            this.designation=designation;
+        public bool changeProductDesignation(string designation) {
+            if (Strings.isNullOrEmpty(designation) || this.designation.Equals(designation)) return false;
+            this.designation = designation;
             return true;
         }
 
@@ -270,35 +270,35 @@ namespace core.domain {
         /// </summary>
         /// <param name="widthDimension">Dimension with the width dimension being removed</param>
         /// <returns>boolean true if the dimension was removed with success, false if not</returns>
-        public bool removeWidthDimension(Dimension widthDimension){return widthValues.Remove(widthDimension);}
+        public bool removeWidthDimension(Dimension widthDimension) { return widthValues.Remove(widthDimension); }
 
         /// <summary>
         /// Removes a specified height dimension from the current product
         /// </summary>
         /// <param name="heightDimension">Dimension with the height dimension being removed</param>
         /// <returns>boolean true if the dimension was removed with success, false if not</returns>
-        public bool removeHeightDimension(Dimension heightDimension){return heightValues.Remove(heightDimension);}
+        public bool removeHeightDimension(Dimension heightDimension) { return heightValues.Remove(heightDimension); }
 
         /// <summary>
         /// Removes a specified depth dimension from the current product
         /// </summary>
         /// <param name="depthDimension">Dimension with the depth dimension being removed</param>
         /// <returns>boolean true if the dimension was removed with success, false if not</returns>
-        public bool removeDepthDimension(Dimension depthDimension){return depthValues.Remove(depthDimension);}
+        public bool removeDepthDimension(Dimension depthDimension) { return depthValues.Remove(depthDimension); }
 
         /// <summary>
         /// Removes a material which the current product can be made of
         /// </summary>
         /// <param name="material">Material with the material being removed</param>
         /// <returns>boolean true if the material was removed with success, false if not</returns>
-        public bool removeMaterial(Material material){return productMaterials.Remove(new ProductMaterial(this,material));}
+        public bool removeMaterial(Material material) { return productMaterials.Remove(new ProductMaterial(this, material)); }
 
         /// <summary>
         /// Removes a component which the current product can be complemented with
         /// </summary>
         /// <param name="component">Component with the component being removed</param>
         /// <returns>boolean true if the component was removed with success, false if not</returns>
-        public bool removeComplementedProduct(Component component){return complementedProducts.Remove(component);}
+        public bool removeComplementedProduct(Component component) { return complementedProducts.Remove(component); }
 
         /// <summary>
         /// Disables the current product
@@ -333,13 +333,13 @@ namespace core.domain {
             dto.id = this.Id;
             dto.designation = this.designation;
             dto.reference = this.reference;
-            dto.dimensions.heightDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues)); 
+            dto.dimensions.heightDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
             dto.dimensions.widthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
             dto.dimensions.depthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
             dto.productCategory = productCategory.toDTO();
 
             //TODO: remove null check once complement database mappping is complete
-            if(complementedProducts != null && complementedProducts.Count >= 0){
+            if (complementedProducts != null && complementedProducts.Count >= 0) {
                 List<ComponentDTO> complementDTOList = new List<ComponentDTO>();
 
                 foreach (Component complement in complementedProducts) {
@@ -387,7 +387,7 @@ namespace core.domain {
         /// <param name="complementedProduct">Product with the complemented product being validated</param>
         /// <returns>boolean true if the complemented product is valid for addition, false if not</returns>
         private bool isComplementedProductValidForAddition(Component complementedProduct) {
-            if (complementedProduct == null || complementedProduct.Equals(this)) return false;
+            if (complementedProduct == null || complementedProduct.product.Equals(this)) return false;
             return !complementedProducts.Contains(complementedProduct);
         }
 
