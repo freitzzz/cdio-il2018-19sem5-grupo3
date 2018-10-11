@@ -13,7 +13,7 @@ namespace core.domain
         <br> Configured Product is value object;
     </summary>
     */
-    public class CustomizedProduct :DomainEntity<string> ,DTOAble<CustomizedProductDTO>
+    public class CustomizedProduct :AggregateRoot<string> ,DTOAble<CustomizedProductDTO>
     {
 
         /// <summary>
