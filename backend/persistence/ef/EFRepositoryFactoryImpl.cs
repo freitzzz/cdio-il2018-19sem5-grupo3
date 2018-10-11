@@ -7,9 +7,32 @@ namespace backend.persistence.ef{
         public ComponentRepository createComponentRepository() {
             throw new System.NotImplementedException();
         }*/
+
+                /// <summary>
+        /// Creates a CommercialCatalogueRepository
+        /// </summary>
+        /// <returns>CommercialCatalogueRepository with the repository for CommercialCatalogue entities</returns>
         public CommercialCatalogueRepository createCommercialCatalogueRepository()
         {
             return new EFCommercialCatalogueRepository(BackendConfiguration.entityFrameworkContext);
+        }
+
+        /// <summary>
+        /// Creates a CustomizedProductCollectionRepository
+        /// </summary>
+        /// <returns>CustomizedProductCollectionRepository with the repository for customized products collections</returns>
+        public CustomizedProductCollectionRepository createCustomizedProductCollectionRepository()
+        {
+            return new EFCustomizedProductCollectionRepository(BackendConfiguration.entityFrameworkContext);
+        }
+
+        /// <summary>
+        /// Creates a CustomizedProductRepository
+        /// </summary>
+        /// <returns>CustomizedProductRepository with the repository for customized products</returns>
+        public CustomizedProductRepository createCustomizedProductRepository()
+        {
+            throw new System.NotImplementedException();
         }
 
         /// <summary>

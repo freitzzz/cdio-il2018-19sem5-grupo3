@@ -57,5 +57,19 @@ namespace support.utils
                 return size;
             }
         }
+
+        /// <summary>
+        /// Parses an enumerable to a list
+        /// </summary>
+        /// <param name="enumerable">IEnumerable with the enumerable being parsed</param>
+        /// <typeparam name="T">Generic-Type param of the enumerable</typeparam>
+        /// <returns>List with the parsed enumerable</returns>
+        public static List<T> enumerableAsList<T>(IEnumerable<T> enumerable){
+            if(enumerable.GetType()==typeof(List<T>)){
+                return (List<T>)enumerable;
+            }else{
+                return new List<T>(enumerable);
+            }
+        }
     }
 }

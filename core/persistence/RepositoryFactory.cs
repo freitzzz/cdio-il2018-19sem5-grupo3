@@ -26,6 +26,16 @@ namespace core.persistence{
         /// <returns>CommercialCatalogueRepository with the repository for CommercialCatalogue entities</returns>
         CommercialCatalogueRepository createCommercialCatalogueRepository();
 
-        
+        /// <summary>
+        /// Creates a CustomizedProductCollectionRepository
+        /// </summary>
+        /// <returns>CustomizedProductCollectionRepository with the repository for customized products collections</returns>
+        CustomizedProductCollectionRepository createCustomizedProductCollectionRepository();
+
+        /// <summary>
+        /// Creates a CustomizedProductRepository
+        /// </summary>
+        /// <returns>CustomizedProductRepository with the repository for customized products</returns>
+        CustomizedProductRepository createCustomizedProductRepository();
     }
 }

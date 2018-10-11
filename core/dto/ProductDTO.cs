@@ -37,27 +37,28 @@ namespace core.dto {
         /// List of product-material relations
         /// </summary>
         /// <value>Gets/sets the value of the materials field.</value>
-        [DataMember(Name="materials",EmitDefaultValue = false)]  //no data field data is presented if it's null
+        [DataMember(Name = "materials", EmitDefaultValue = false)]  //no data field data is presented if it's null
         public List<MaterialDTO> productMaterials { get; set; }
 
         /// <summary>
         /// Product's list of complementary products.
         /// </summary>
         /// <value>Gets/sets the value of the complements field.</value>
-        [DataMember(Name="components",EmitDefaultValue = false)]  //no data field data is presented if it's null
+        [DataMember(Name = "components", EmitDefaultValue = false)]  //no data field data is presented if it's null
         public List<ComponentDTO> complements { get; set; }
 
         /// <summary>
         /// Product category
         /// </summary>
-        [DataMember(Name="category")]
+        [DataMember(Name = "category")]
         public ProductCategoryDTO productCategory { get; set; }
-        [DataMember(Name="dimensions")]
-        public DimensionsListDTO dimensions{get;set;}
+        [DataMember(Name = "dimensions")]
+        public DimensionsListDTO dimensions { get; set; }
 
-        public ProductDTO(){
+        public ProductDTO() {
             //it is necessary to instantiate the DimensionsListDTO property
             dimensions = new DimensionsListDTO();
+            productMaterials = new List<MaterialDTO>();
         }
 
         /// <summary>
@@ -65,29 +66,30 @@ namespace core.dto {
         /// </summary>
         /// <returns>DTO's equivalent Entity</returns>
         public Product toEntity() {
-     /*        IEnumerable<Component> productComponents=complements!=null ? DTOUtils.reverseDTOS(complements) : null;
-            if(productComponents==null){
-                Console.WriteLine("->>>>>>>>>>>>>>>"+reference);
-                Console.WriteLine("->>>>>>>>>>>>>>>"+productCategory);
-                return new Product(reference
-                                    ,designation
-                                    ,productCategory.toEntity()
-                                    ,DTOUtils.reverseDTOS(productMaterials)
-                                    ,DTOUtils.reverseDTOS(heightDimensions)
-                                    ,DTOUtils.reverseDTOS(widthDimensions)
-                                    ,DTOUtils.reverseDTOS(depthDimensions)
-                                  );
-            }else{
-                return new Product(reference
-                                    ,designation
-                                    ,productCategory.toEntity()
-                                    ,DTOUtils.reverseDTOS(productMaterials)
-                                    ,productComponents
-                                    ,DTOUtils.reverseDTOS(heightDimensions)
-                                    ,DTOUtils.reverseDTOS(widthDimensions)
-                                    ,DTOUtils.reverseDTOS(depthDimensions)
-                                  );
-            } */return null;
+            /*        IEnumerable<Component> productComponents=complements!=null ? DTOUtils.reverseDTOS(complements) : null;
+                   if(productComponents==null){
+                       Console.WriteLine("->>>>>>>>>>>>>>>"+reference);
+                       Console.WriteLine("->>>>>>>>>>>>>>>"+productCategory);
+                       return new Product(reference
+                                           ,designation
+                                           ,productCategory.toEntity()
+                                           ,DTOUtils.reverseDTOS(productMaterials)
+                                           ,DTOUtils.reverseDTOS(heightDimensions)
+                                           ,DTOUtils.reverseDTOS(widthDimensions)
+                                           ,DTOUtils.reverseDTOS(depthDimensions)
+                                         );
+                   }else{
+                       return new Product(reference
+                                           ,designation
+                                           ,productCategory.toEntity()
+                                           ,DTOUtils.reverseDTOS(productMaterials)
+                                           ,productComponents
+                                           ,DTOUtils.reverseDTOS(heightDimensions)
+                                           ,DTOUtils.reverseDTOS(widthDimensions)
+                                           ,DTOUtils.reverseDTOS(depthDimensions)
+                                         );
+                   } */
+            return null;
         }
         //TODO: Add RestrictionDTO's
     }
