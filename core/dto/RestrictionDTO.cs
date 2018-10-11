@@ -19,7 +19,7 @@ namespace core.dto {
         /// </summary>
         /// <returns>Entity equivalent of the DTO</returns>
         public Restriction toEntity() {
-            Restriction restriction = new Restriction();
+            Restriction restriction = new Restriction(this.description);
             restriction.Id = id;
             restriction.description = description;
             return restriction;

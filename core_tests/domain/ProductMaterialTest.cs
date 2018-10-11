@@ -30,7 +30,7 @@ namespace core_tests.domain {
             Console.WriteLine("ensureAddRestrictionSucceeds");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
-            Restriction rest = new Restriction();
+            Restriction rest = new Restriction("restriction");
             Assert.True(pm.addRestriction(rest));
             Assert.True(pm.restrictionExists(rest));
         }
@@ -42,7 +42,7 @@ namespace core_tests.domain {
             Console.WriteLine("ensureAddedRestrictionIsUnique");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
-            Restriction rest = new Restriction();
+            Restriction rest = new Restriction("restriction");
             pm.addRestriction(rest);
             Assert.False(pm.addRestriction(rest));
         }
@@ -54,7 +54,7 @@ namespace core_tests.domain {
             Console.WriteLine("ensureRestrictionExistsSucceeds");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
-            Restriction rest = new Restriction();
+            Restriction rest = new Restriction("restriction");
             pm.addRestriction(rest);
             Assert.True(pm.restrictionExists(rest));
         }
@@ -76,7 +76,7 @@ namespace core_tests.domain {
             Console.WriteLine("ensureRestrictionExistsSucceeds");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
-            Restriction rest = new Restriction();
+            Restriction rest = new Restriction("restriction");
             Assert.False(pm.restrictionExists(rest));
         }
         /// <summary>
@@ -97,7 +97,7 @@ namespace core_tests.domain {
             Console.WriteLine("ensureRemoveRestrictionArgumentExists");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
-            Restriction rest = new Restriction();
+            Restriction rest = new Restriction("restriction");
             Assert.False(pm.removeRestriction(rest));
         }
         /// <summary>
@@ -108,7 +108,7 @@ namespace core_tests.domain {
             Console.WriteLine("ensureRemoveRestrictionSucceeds");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
-            Restriction rest = new Restriction();
+            Restriction rest = new Restriction("restriction");
             pm.addRestriction(rest);
             Assert.True(pm.removeRestriction(rest));
         }

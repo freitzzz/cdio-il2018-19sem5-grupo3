@@ -4,6 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace core.domain {
-    interface Algorithm {
+    public interface Algorithm {
     }
 }

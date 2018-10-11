@@ -145,8 +145,8 @@ namespace core_tests.domain {
             Console.WriteLine("ensureProductCantBeCreatedWithDuplicatedComplementedProduct");
             List<Material> materials = new List<Material>(new[] { PREDEFINED_MATERIAL });
             List<Component> duplicatedProducts
-                    = new List<Component>(new[]{new Component(new Product("#666","Shelf", PREDEFEFINED_CATEGORY,materials,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS), new List<Restriction>(new[] { new Restriction() })),
-                                       new Component(new Product("#666","Shelf", PREDEFEFINED_CATEGORY,materials,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS), new List<Restriction>(new[] { new Restriction() }))});
+                    = new List<Component>(new[]{new Component(new Product("#666","Shelf", PREDEFEFINED_CATEGORY,materials,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS), new List<Restriction>(new[] { new Restriction("restriction") })),
+                                       new Component(new Product("#666","Shelf", PREDEFEFINED_CATEGORY,materials,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS,PREDEFINED_RESTRICTIONS), new List<Restriction>(new[] { new Restriction("restriction") }))});
             Action invalidDuplicatedComplementedProductsProductCreation = () => new Product("#666", "Shelf", PREDEFEFINED_CATEGORY, materials, duplicatedProducts, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
             //Since the product was created with duplicated complemented products, then it should throw
             //An ArgumentException
@@ -293,9 +293,9 @@ namespace core_tests.domain {
             Console.WriteLine("ensureProductCantAddDuplicatedComplementedProducts");
             Material productMaterial = PREDEFINED_MATERIAL;
             Product complementedProduct = new Product("#665", "Shelf", PREDEFEFINED_CATEGORY, new List<Material>(new[] { productMaterial }), PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
-            Product product = new Product("#666", "Shelf", PREDEFEFINED_CATEGORY, new List<Material>(new[] { productMaterial }), new List<Component>(new[] { new Component(complementedProduct, new List<Restriction>(new[] { new Restriction() })) }), PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
+            Product product = new Product("#666", "Shelf", PREDEFEFINED_CATEGORY, new List<Material>(new[] { productMaterial }), new List<Component>(new[] { new Component(complementedProduct, new List<Restriction>(new[] { new Restriction("restriction") })) }), PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
             //Since we added a duplicated complemented product then it should return false
-            Assert.False(product.addComplementedProduct(new Component(complementedProduct, new List<Restriction>(new[] { new Restriction() }))));
+            Assert.False(product.addComplementedProduct(new Component(complementedProduct, new List<Restriction>(new[] { new Restriction("restriction") }))));
         }
 
         /// <summary>
@@ -306,10 +306,10 @@ namespace core_tests.domain {
             Console.WriteLine("ensureProductCantAddComplementedProductsSameReference");
             Material productMaterial = PREDEFINED_MATERIAL;
             Product complementedProduct = new Product("#665", "Shelf", PREDEFEFINED_CATEGORY, new List<Material>(new[] { productMaterial }), PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
-            Component component = new Component(complementedProduct, new List<Restriction>(new[] { new Restriction() }));
+            Component component = new Component(complementedProduct, new List<Restriction>(new[] { new Restriction("restriction") }));
             Product product = new Product("#666", "Shelf", PREDEFEFINED_CATEGORY, new List<Material>(new[] { productMaterial }), new List<Component>(new[] { component}), PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
             //Since we added a complemented product which is the same reference as the base product then it should return false
-            Assert.False(product.addComplementedProduct(new Component(product, new List<Restriction>(new[] { new Restriction() }))));
+            Assert.False(product.addComplementedProduct(new Component(product, new List<Restriction>(new[] { new Restriction("restriction") }))));
         }
 
         /// <summary>
