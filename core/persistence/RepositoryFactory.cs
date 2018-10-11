@@ -32,6 +32,10 @@ namespace core.persistence{
         /// <returns>CustomizedProductCollectionRepository with the repository for customized products collections</returns>
         CustomizedProductCollectionRepository createCustomizedProductCollectionRepository();
 
-        
+        /// <summary>
+        /// Creates a CustomizedProductRepository
+        /// </summary>
+        /// <returns>CustomizedProductRepository with the repository for customized products</returns>
+        CustomizedProductRepository createCustomizedProductRepository();
     }
 }
