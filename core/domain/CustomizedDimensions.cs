@@ -26,24 +26,36 @@ namespace core.domain
         /// Constant that represents the message that occurs if the value is negative
         /// </summary>
         private const string NEGATIVE_VALUE_REFERENCE = "Dimension value can't be negative";
+
+        /// <summary>
+        /// Database identifier.
+        /// </summary>
+        /// <value></value>
+        public long Id {get; internal set;}
 /**
         <summary>
             The CustomizedDimensions's height.
         </summary>
          */
-        private readonly double height;
+        public double height {get; protected set;}
         /**
         <summary>
             The CustomizedDimensions's width.
         </summary>
          */
-        private readonly double width;
+        public double width {get; protected set;}
         /**
         <summary>
             The CustomizedDimensions's depth.
         </summary>
          */
-        private readonly double depth;
+        public double depth {get; protected set;}
+
+        /// <summary>
+        /// Empty constructor for ORM.
+        /// </summary>
+        protected CustomizedDimensions(){}
+
         /**
         <summary>
             Builds a new instance of CustomizedDimensions, receiving its height, width and depth.

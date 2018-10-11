@@ -43,7 +43,7 @@ namespace core.domain
         /// <summary>
         /// Persistence identifier of the current CustomizedProductCollection
         /// </summary>
-        public long Id { get; set; }
+        public long Id { get; internal set; }
 
 
         /// <summary>
@@ -54,12 +54,17 @@ namespace core.domain
         /// <summary>
         /// List with the collection customized products
         /// </summary>
-        public List<CustomizedProduct> customizedProducts{get;protected set;}
+        public virtual List<CustomizedProduct> customizedProducts{get; protected set;}
 
         /// <summary>
         /// Boolean which tells if the current collection of customized products is available
         /// </summary>
         public bool available{get;protected set;}
+
+        /// <summary>
+        /// Empty constructor for ORM.
+        /// </summary>
+        protected CustomizedProductCollection() {}
 
         /// <summary>
         /// Builds a new CustomizedProductCollection with the collection name

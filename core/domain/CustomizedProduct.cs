@@ -15,6 +15,12 @@ namespace core.domain
     */
     public class CustomizedProduct :DomainEntity<string> ,DTOAble<CustomizedProductDTO>
     {
+
+        /// <summary>
+        /// Empty constructor for ORM.
+        /// </summary>
+        protected CustomizedProduct(){}
+
         public CustomizedProduct(long id, string designation, long persistence_id)
         {
             this.Id = id;

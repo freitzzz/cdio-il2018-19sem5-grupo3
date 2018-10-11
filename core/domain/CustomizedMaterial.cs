@@ -24,19 +24,32 @@ namespace core.domain
         </summary>
          */
         private const string INVALID_CUSTOMIZED_MATERIAL_FINISH = "The CustomizedMaterial's finish are not valid!";
+        
+        /// <summary>
+        /// Database identifier.
+        /// </summary>
+        /// <value></value>
+        public long Id {get; internal set;}
+
         /**
         <summary>
             The CustomizedMaterial's color.
         </summary>
          */
-        private readonly Color color;
+        public virtual Color color {get; protected set;}
 
         /**
          <summary>
              The CustomizedMaterial's finishe.
          </summary>
           */
-        private readonly Finish finish;
+        public virtual Finish finish {get; protected set;}
+
+        /// <summary>
+        /// Empty constructor for ORM.
+        /// </summary>
+        protected CustomizedMaterial(){}
+
         /**
         <summary>
             Builds a new instance of CustomizedMaterial, receiving its color and finish.
