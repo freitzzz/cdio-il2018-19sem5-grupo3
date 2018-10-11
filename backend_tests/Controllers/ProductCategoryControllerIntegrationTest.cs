@@ -41,13 +41,12 @@ namespace backend_tests.Controllers
 
         [Fact, TestPriority(1)]
         public async Task<ProductCategoryDTO> ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully()
-        {
-            ProductCategoryDTO categoryDTO = new ProductCategoryDTO() { name = "Drawers"+DateTime.Now };
+        {  
+            ProductCategoryDTO categoryDTO = new ProductCategoryDTO() { name = "Drawers"+Guid.NewGuid().ToString("n") };
 
             var response = await client.PostAsJsonAsync(baseUrl, categoryDTO);
 
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-
             return JsonConvert.DeserializeObject<ProductCategoryDTO>(await response.Content.ReadAsStringAsync());
         }
 

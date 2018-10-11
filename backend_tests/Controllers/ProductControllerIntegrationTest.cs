@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
+using System.Diagnostics;
 
 namespace backend_tests.Controllers{
     
@@ -62,17 +63,102 @@ namespace backend_tests.Controllers{
         }
 
         /// <summary>
+        /// Ensures that a product can't be created if it has no reference
+        /// </summary>
+        [Fact, TestPriority(2)]
+        public async void ensureProductCantBeCreatedWithNoReference(){
+            //We are attempting to created a product with no referene
+            ProductDTO productDTO=new ProductDTO();
+            productDTO.designation="Valid Designation";
+            var createProductNoReference=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON(productDTO));
+            //Since there was an attempt to create a product with no reference
+            //Then the response should be a Bad Request
+            Assert.True(createProductNoReference.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that a product can't be created if it has no designation
+        /// </summary>
+        [Fact, TestPriority(3)]
+        public async void ensureProductCantBeCreatedWithNoDesignation(){
+            //We are attempting to created a product with no designation
+            ProductDTO productDTO=new ProductDTO();
+            productDTO.reference="Valid Reference";
+            var createProductNoDesignation=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON(productDTO));
+            //Since there was an attempt to create a product with no designation
+            //Then the response should be a Bad Request
+            Assert.True(createProductNoDesignation.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that a product can't be created if it has no category
+        /// </summary>
+        [Fact, TestPriority(4)]
+        public async void ensureProductCantBeCreatedWithNoCategory(){
+            //We are attempting to created a product with no category
+            ProductDTO productDTO=new ProductDTO();
+            productDTO.reference="Valid Reference";
+            productDTO.designation="Valid Designation";
+            var createProductNoCategory=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON(productDTO));
+            //Since there was an attempt to create a product with no category
+            //Then the response should be a Bad Request
+            Assert.True(createProductNoCategory.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that a product can't be created if it has no materials
+        /// </summary>
+        [Fact, TestPriority(5)]
+        public async void ensureProductCantBeCreatedWithNoMaterials(){
+            //We are attempting to created a product with no materials
+            ProductDTO productDTO=new ProductDTO();
+            productDTO.reference="Valid Reference";
+            productDTO.designation="Valid Designation";
+            var productCategoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            productCategoryDTO.Wait();
+            productDTO.productCategory=productCategoryDTO.Result;
+            var createProductNoMaterials=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON(productDTO));
+            //Since there was an attempt to create a product with no materials
+            //Then the response should be a Bad Request
+            Assert.True(createProductNoMaterials.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that a product can't be created if it has no dimensions
+        /// </summary>
+        [Fact, TestPriority(6)]
+        public async void ensureProductCantBeCreatedWithNoDimensions(){
+            //We are attempting to created a product with no dimensions
+            ProductDTO productDTO=new ProductDTO();
+            productDTO.reference="Valid Reference";
+            productDTO.designation="Valid Designation";
+            var productCategoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            productCategoryDTO.Wait();
+            productDTO.productCategory=productCategoryDTO.Result;
+            //Materials must previously exist as they can be shared in various products
+            Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
+            materialDTO.Wait();
+            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
+            var createProductNoDimensions=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON(productDTO));
+            //Since there was an attempt to create a product with no dimensions
+            //Then the response should be a Bad Request
+            Assert.True(createProductNoDimensions.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        //public async void ensureProductCollectionFetch
+
+        /// <summary>
         /// Ensures that a product is created succesfuly
         /// </summary>
         /// <returns>ProductDTO with the created product</returns>
-        [Fact, TestPriority(2)]
+        [Fact, TestPriority(8)]
         public async Task<ProductDTO> ensureProductIsCreatedSuccesfuly(){
             //We are going to create a valid product
             //A valid product creation requires a valid reference, a valid desgination
             //A valid category, valid dimensions and valid materials
             //Components are not required
             //To ensure atomicity, our reference will be generated with a timestamp (We have no bussiness rules so far as how they should be so its valid at this point)
-            string reference="#666"+DateTime.Now;
+            string reference="#666"+Guid.NewGuid().ToString("n");
             //Designation can be whatever we decide
             string designation="Time N Place";
             //Categories must previously exist as they can be shared in various products
