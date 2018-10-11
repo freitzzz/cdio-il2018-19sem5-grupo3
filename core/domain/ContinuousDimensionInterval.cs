@@ -1,6 +1,7 @@
 using System;
 using support.domain.ddd;
 using core.dto;
+using core.services;
 
 namespace core.domain
 {
@@ -71,7 +72,7 @@ namespace core.domain
         /// <summary>
         /// Empty constructor for ORM.
         /// </summary>
-        protected ContinuousDimensionInterval(){}
+        protected ContinuousDimensionInterval() { }
 
         /// <summary>
         /// Returns a new ContinuousDimensionInterval instance
@@ -201,9 +202,29 @@ namespace core.domain
             ContinuousDimensionIntervalDTO dto = new ContinuousDimensionIntervalDTO();
 
             dto.id = Id;
+            dto.unit = MeasurementUnitService.getMinimumUnit();
             dto.minValue = minValue;
             dto.maxValue = maxValue;
             dto.increment = increment;
+
+            return dto;
+        }
+
+        public override DimensionDTO toDTO(string unit)
+        {
+
+            if (unit == null)
+            {
+                return this.toDTO();
+            }
+
+            ContinuousDimensionIntervalDTO dto = new ContinuousDimensionIntervalDTO();
+
+            dto.id = Id;
+            dto.minValue = MeasurementUnitService.convertToUnit(minValue, unit);
+            dto.maxValue = MeasurementUnitService.convertToUnit(maxValue, unit);
+            dto.increment = MeasurementUnitService.convertToUnit(increment, unit);
+            dto.unit = unit;
 
             return dto;
         }
