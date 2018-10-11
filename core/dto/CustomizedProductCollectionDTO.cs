@@ -38,7 +38,13 @@ namespace core.dto
         
         public CustomizedProductCollection toEntity()
         {
-            throw new NotImplementedException();
+            List<CustomizedProduct> list = new List<CustomizedProduct>();
+            foreach(CustomizedProductDTO dto in this.customizedProducts){
+                list.Add(dto.toEntity());
+            }
+            CustomizedProductCollection instance = new CustomizedProductCollection(this.name,list);
+            instance.Id = this.id;
+            return instance;
         }
     }
 }
