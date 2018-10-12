@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using System.Collections.Generic;
 using core.domain;
 using support.dto;
+using core.services;
 
 namespace core.dto
 {
@@ -26,8 +27,15 @@ namespace core.dto
         /// <returns>DiscreteDimensionInterval instance</returns>
         public override Dimension toEntity()
         {
-            DiscreteDimensionInterval instanceFromDTO = DiscreteDimensionInterval.valueOf(values);
+            List<double> valuesInMilimetres = new List<double>();
+
+            foreach(double value in values){
+                valuesInMilimetres.Add(MeasurementUnitService.convertFromUnit(value, unit));
+            }
+
+            DiscreteDimensionInterval instanceFromDTO = DiscreteDimensionInterval.valueOf(valuesInMilimetres);
             instanceFromDTO.Id = id;
+            
             return instanceFromDTO;
         }
     }

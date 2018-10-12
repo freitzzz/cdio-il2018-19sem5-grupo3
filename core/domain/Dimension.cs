@@ -20,5 +20,12 @@ namespace core.domain
         protected Dimension(){}
 
         public abstract DimensionDTO toDTO();
+
+        /// <summary>
+        /// Retrieves the Dimension's DTO and converts the value(s) into the specific unit.
+        /// </summary>
+        /// <param name="unit">Measurement unit to which the values are being converted.</param>
+        /// <returns>DimensionDTO with converted value(s).</returns>
+        public abstract DimensionDTO toDTO(string unit);
     }
 }

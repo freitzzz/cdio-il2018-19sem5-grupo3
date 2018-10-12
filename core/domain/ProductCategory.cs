@@ -4,6 +4,7 @@ using support.domain.ddd;
 using support.dto;
 using core.dto;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace core.domain
 {
@@ -52,7 +53,7 @@ namespace core.domain
         public long? parentId { get; internal set; }
 
         [ForeignKey("parentId")]
-        public virtual ProductCategory parent {get; protected set;}
+        public virtual ProductCategory parent { get; protected set; }
 
         /// <summary>
         /// Empty constructor for ORM.
@@ -65,12 +66,12 @@ namespace core.domain
         /// <param name="name">ProductCategory's name</param>
         public ProductCategory(string name)
         {
-            this.name = name;
-            this.active = true;
-            if (!isNameLengthValid(name))
+            if (!isNameValid(name))
             {
                 throw new ArgumentException(ERROR_EMPTY_NAME);
             }
+            this.name = name;
+            this.active = true;
         }
 
         /// <summary>
@@ -79,10 +80,12 @@ namespace core.domain
         /// <param name="name">ProductCategory's name</param>
         public ProductCategory(string name, ProductCategory parent) : this(name)
         {
-            if(parent == null){
+            if (parent == null)
+            {
                 throw new ArgumentException(ERROR_NULL_PARENT);
             }
-            if(parent.sameAs(name)){
+            if (parent.sameAs(name))
+            {
                 throw new ArgumentException(ERROR_SAME_CATEGORY);
             }
 
@@ -95,9 +98,9 @@ namespace core.domain
         /// </summary>
         /// <param name="name">Name being checked</param>
         /// <returns>true if the name has more than one non-whitespace character, otherwise false is returned.</returns>
-        private bool isNameLengthValid(string name)
+        private bool isNameValid(string name)
         {
-            return name.Trim().Length > 0;
+            return name != null && name.Trim().Length > 0;
         }
 
         /// <summary>
@@ -107,7 +110,7 @@ namespace core.domain
         /// <returns>true if the new name is valid, otherwise false is returned.</returns>
         public bool changeName(string newName)
         {
-            if (!isNameLengthValid(newName))
+            if (!isNameValid(newName))
             {
                 return false;
             }

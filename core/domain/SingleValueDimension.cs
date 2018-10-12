@@ -1,6 +1,7 @@
 using System;
 using support.domain.ddd;
 using core.dto;
+using core.services;
 
 namespace core.domain
 {
@@ -121,6 +122,21 @@ namespace core.domain
 
             dto.id = Id;
             dto.value = value;
+            dto.unit = MeasurementUnitService.getMinimumUnit();
+
+            return dto;
+        }
+
+        public override DimensionDTO toDTO(string unit)
+        {
+            if(unit == null){
+                return this.toDTO();
+            }
+            SingleValueDimensionDTO dto = new SingleValueDimensionDTO();
+
+            dto.id = Id;
+            dto.value = MeasurementUnitService.convertToUnit(value,unit);
+            dto.unit = unit;
 
             return dto;
         }

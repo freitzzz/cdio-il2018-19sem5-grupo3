@@ -9,7 +9,7 @@ namespace core_tests.dto
     /// <summary>
     /// Unit testing class for DimensionIntervalDTO
     /// </summary>
-    public class DimensionIntervalDTOTest
+    public class DiscreteDimensionIntervalDTOTest
     {
         [Fact]
         public void testToEntity()

@@ -4,6 +4,7 @@ using support.domain.ddd;
 using support.utils;
 using core.dto;
 using System.Linq;
+using core.services;
 
 namespace core.domain
 {
@@ -104,7 +105,8 @@ namespace core.domain
             {
                 int hash = 19;
 
-                foreach(DoubleValue value in values){
+                foreach (DoubleValue value in values)
+                {
                     hash = hash * 31 + value.GetHashCode();
                 }
 
@@ -131,11 +133,31 @@ namespace core.domain
 
             dto.id = Id;
             dto.values = new List<double>();
+            dto.unit = MeasurementUnitService.getMinimumUnit();
 
             foreach (DoubleValue doubleValue in values)
             {
                 dto.values.Add(doubleValue);
             }
+
+            return dto;
+        }
+
+        public override DimensionDTO toDTO(string unit)
+        {
+            if(unit == null){
+                return this.toDTO();
+            }
+            DiscreteDimensionIntervalDTO dto = new DiscreteDimensionIntervalDTO();
+
+            dto.id = Id;
+            dto.values = new List<double>();
+
+            foreach (DoubleValue doubleValue in values)
+            {
+                dto.values.Add(MeasurementUnitService.convertToUnit(doubleValue.value,unit));
+            }
+            dto.unit = unit;
 
             return dto;
         }
