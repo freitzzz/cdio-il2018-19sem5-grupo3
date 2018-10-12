@@ -54,6 +54,12 @@ namespace backend.Controllers
         [HttpPost]
         public ActionResult addProductCategory([FromBody] ProductCategoryDTO categoryAsJson)
         {
+
+            if (categoryAsJson == null)
+            {
+                return BadRequest(new { error = ERROR_ADD_CATEGORY });
+            }
+
             try
             {
                 ProductCategoryDTO createdCategory = new core.application.ProductCategoryController().
@@ -62,17 +68,15 @@ namespace backend.Controllers
                 //category was not added (probably due to a duplicate business identifier)
                 if (createdCategory == null)
                 {
-                    return BadRequest(JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, ERROR_ADD_CATEGORY));
+                    return BadRequest(new { error = ERROR_ADD_CATEGORY });
                 }
 
-                return CreatedAtRoute("GetCategory", new {id = createdCategory.id}, createdCategory);
+                return CreatedAtRoute("GetCategory", new { id = createdCategory.id }, createdCategory);
 
             }
             catch (ArgumentException e)
             {
-                string errorMessageJsonFormat = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, e.Message);
-
-                return BadRequest(errorMessageJsonFormat);
+                return BadRequest(new { error = e.Message });
             }
         }
 
@@ -90,11 +94,7 @@ namespace backend.Controllers
 
             if (removedCategory == null)
             {
-
-                string errorMessageJsonFormat = JSONStringFormatter.
-                    formatMessageToJson(MessageTypes.ERROR_MSG, ERROR_REMOVE_CATEGORY);
-
-                return NotFound(errorMessageJsonFormat);
+                return NotFound(new { error = ERROR_REMOVE_CATEGORY });
             }
 
             return NoContent();
@@ -114,10 +114,7 @@ namespace backend.Controllers
 
             if (result == null)
             {
-                string errorMessageJsonFormat = JSONStringFormatter.
-                    formatMessageToJson(MessageTypes.ERROR_MSG, ERROR_NO_CATEGORIES);
-
-                return NotFound(errorMessageJsonFormat);
+                return NotFound(new { error = ERROR_NO_CATEGORIES });
             }
 
             return Ok(result);
@@ -150,10 +147,7 @@ namespace backend.Controllers
 
             if (result.Count == 0)
             {
-                string errorMessageJsonFormat = JSONStringFormatter.
-                    formatMessageToJson(MessageTypes.ERROR_MSG, ERROR_NO_CATEGORIES);
-
-                return NotFound(errorMessageJsonFormat);
+                return NotFound(new { error = ERROR_NO_CATEGORIES });
             }
 
             return Ok(result);
@@ -172,10 +166,7 @@ namespace backend.Controllers
 
             if (result == null)
             {
-                string errorMessageJsonFormat = JSONStringFormatter.
-                    formatMessageToJson(MessageTypes.ERROR_MSG, ERROR_NO_CATEGORIES);
-
-                return NotFound(errorMessageJsonFormat);
+                return NotFound(new { error = ERROR_NO_CATEGORIES });
             }
 
             return Ok(result);

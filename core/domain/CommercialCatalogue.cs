@@ -86,7 +86,6 @@ namespace core.domain
             this.reference = reference;
             this.designation = designation;
             this.collectionList = custoProduct;
-            this.collectionList = custoProduct;
         }
 
         /**
