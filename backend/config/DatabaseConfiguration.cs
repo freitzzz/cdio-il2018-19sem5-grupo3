@@ -45,6 +45,7 @@ namespace backend.config
             services.AddScoped<ProductRepository, EFProductRepository>();
             services.AddScoped<ProductCategoryRepository, EFProductCategoryRepository>();
             services.AddScoped<MaterialRepository, EFMaterialRepository>();
+            services.AddScoped<CommercialCatalogueRepository, EFCommercialCatalogueRepository>();
         }
 
         /// <summary>
