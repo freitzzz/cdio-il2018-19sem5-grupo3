@@ -9,7 +9,7 @@ namespace backend.Controllers{
     /// <summary>
     /// MVC Controller for CustomizedProduct operations
     /// </summary>
-    [Route("/myc/api/")]
+    [Route("/myc/api/customizedproducts")]
     public class CustomizedProductController:Controller{
         /// <summary>
         /// Constant that represents the message that ocurres if there are no customized products available
