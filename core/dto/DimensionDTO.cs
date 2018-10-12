@@ -18,10 +18,13 @@ namespace core.dto
         [DataMember(Order = 1)]
         public long id { get; set; }
 
+        [DataMember(EmitDefaultValue = false)]
+        public string unit { get; set; }
+
         /// <summary>
         /// Builds a Dimension instance from a DimensionDTO
         /// </summary>
         /// <returns>Dimension instance</returns>
-        public abstract Dimension toEntity();
+        public abstract Dimension toEntity();        
     }
 }

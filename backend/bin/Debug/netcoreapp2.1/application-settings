@@ -1,1 +1,0 @@
-repository.factory=backend.persistence.ef.EFRepositoryFactoryImpl,backend

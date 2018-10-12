@@ -106,6 +106,7 @@ namespace core.domain
             this.Finishes = new List<Finish>();
             this.Colors.AddRange(colors);
             this.Finishes.AddRange(finishes);
+            isAvailable = true;
         }
 
         /**

@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using core.domain;
+using core.services;
 using support.dto;
 
 namespace core.dto
@@ -16,7 +17,7 @@ namespace core.dto
         /// Value that the dimension has
         /// </summary>
         /// <value>Get/Set of the value</value>
-        [DataMember (Order = 2)]
+        [DataMember(Order = 2)]
         public double value { get; set; }
 
         /// <summary>
@@ -25,8 +26,11 @@ namespace core.dto
         /// <returns>SingleValueDimension instance</returns>
         public override Dimension toEntity()
         {
+            double value = MeasurementUnitService.convertFromUnit(this.value, unit);
+
             SingleValueDimension instanceFromDTO = SingleValueDimension.valueOf(value);
             instanceFromDTO.Id = id;
+
             return instanceFromDTO;
         }
     }
