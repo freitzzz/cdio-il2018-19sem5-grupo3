@@ -99,15 +99,18 @@ namespace backend.Controllers
         [HttpGet("{id}", Name = "GetMaterial")]
         public ActionResult<MaterialDTO> findById(long id)
         {
-            MaterialDTO materialDTO = new core.application.MaterialsController().findMaterialByID(id);
-
-            if (materialDTO == null)
+            try
             {
-                string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_FOUND_REFERENCE);
-                return BadRequest(jsonFormattedMessage);
+                MaterialDTO materialDTO = new core.application.MaterialsController().findMaterialByID(id);
+                if (materialDTO == null)
+                {
+                    string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_FOUND_REFERENCE);
+                    return BadRequest(jsonFormattedMessage);
+                }
+                return Ok(materialDTO);
+            }catch(NullReferenceException){
+                return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
             }
-
-            return Ok(materialDTO);
         }
 
         /// <summary>
@@ -137,10 +140,6 @@ namespace backend.Controllers
             catch (NullReferenceException)
             {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
-            }
-            catch (InvalidOperationException invalidOperationException)
-            {
-                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
             }
             catch (ArgumentException argumentException)
             {
@@ -181,9 +180,16 @@ namespace backend.Controllers
         [HttpPut("{id}")]
         public ActionResult updateMaterialBasicInformation(long id, [FromBody] UpdateMaterialDTO updateMaterialData)
         {
-            updateMaterialData.id = id;
-            if (new core.application.MaterialsController().updateMaterialBasicInformation(updateMaterialData))
-                return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
+            try
+            {
+                 updateMaterialData.id = id;
+                if (new core.application.MaterialsController().updateMaterialBasicInformation(updateMaterialData))
+                    return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
+            }
+            catch (NullReferenceException)
+            {
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            }
             return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
         }
         /// <summary>
@@ -207,17 +213,13 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
-            catch (InvalidOperationException invalidOperationException)
-            {
-                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
-            }
             return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
         }/// <summary>
-        /// Updates colors of a material
-        /// </summary>
-        /// <param name="id">id of the material to be updated</param>
-        /// <param name="upMat">dto with the list of colors to add and remove</param>
-        /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
+         /// Updates colors of a material
+         /// </summary>
+         /// <param name="id">id of the material to be updated</param>
+         /// <param name="upMat">dto with the list of colors to add and remove</param>
+         /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
         [HttpPut("{id}/finishes")]
         public ActionResult updateColors(long id, [FromBody] UpdateMaterialDTO upMat)
         {
@@ -240,7 +242,7 @@ namespace backend.Controllers
             return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
         }
 
-        
-        
+
+
     }
 }
