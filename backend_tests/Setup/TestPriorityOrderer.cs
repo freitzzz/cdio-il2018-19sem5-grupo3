@@ -6,11 +6,12 @@ using Xunit.Sdk;
 
 namespace backend_tests.Setup
 {
+    //! Test Priority is having zero effect on the execution of integration tests. Fix ASAP
     /// <summary>
     /// PriorityOrderer class to establish an order for tests to be run in.
     /// Based on this solution <a href = https://logcorner.com/asp-net-web-api-core-integration-testing-using-inmemory-entityframeworkcore-sqlite-or-localdb-and-xunit2/></a>
     /// </summary>
-    public class PriorityOrderer : ITestCaseOrderer
+    public class TestPriorityOrderer : ITestCaseOrderer
     {
         /// <summary>
         /// Organizes tests in a specific order
