@@ -54,6 +54,12 @@ namespace backend.Controllers
         [HttpPost]
         public ActionResult addProductCategory([FromBody] ProductCategoryDTO categoryAsJson)
         {
+
+            if (categoryAsJson == null)
+            {
+                return BadRequest(new { error = ERROR_ADD_CATEGORY });
+            }
+
             try
             {
                 ProductCategoryDTO createdCategory = new core.application.ProductCategoryController().
