@@ -17,4 +17,8 @@
     <ProjectReference Include="../core/core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="../core/application-settings" Link="application-settings" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
