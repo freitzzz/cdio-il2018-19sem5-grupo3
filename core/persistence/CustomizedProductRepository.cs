@@ -16,5 +16,10 @@ namespace core.persistence{
         /// </summary>
         /// <returns>IEnumerable with all customized products by their PIDS</returns>
         IEnumerable<CustomizedProduct> findCustomizedProductsByTheirPIDS(IEnumerable<CustomizedProductDTO> customizedProductDTOS);
+        /// <summary>
+        /// Fetches all available customized products
+        /// </summary>
+        /// <returns>IEnumerable with all available customized products</returns>
+        IEnumerable<CustomizedProduct> findAllCustomizedProducts();
     }
 }
