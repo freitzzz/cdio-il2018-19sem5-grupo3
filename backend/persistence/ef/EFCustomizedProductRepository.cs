@@ -12,6 +12,15 @@ namespace backend.persistence.ef
         public EFCustomizedProductRepository(MyCContext dbContext) : base(dbContext){}
 
         /// <summary>
+        /// Fetches all available customized products
+        /// </summary>
+        /// <returns>IEnumerable with all available customized products</returns>
+        public IEnumerable<CustomizedProduct> findAllCustomizedProducts()
+        {
+            return findAll();
+        }
+
+        /// <summary>
         /// Fetches all customized products by their persistence IDS
         /// </summary>
         /// <returns>IEnumerable with all customized products by their PIDS</returns>
