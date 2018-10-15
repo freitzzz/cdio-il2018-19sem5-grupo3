@@ -90,6 +90,20 @@ namespace core.domain
 
         /**
         <summary>
+            Builds a new instance of CommercialCatalogue, receiving its reference, designation and list of the<Collection.
+        </summary>
+        <param name = "reference">string with the new CommercialCatalogue's reference</param>
+        <param name = "designation">string with the new CommercialCatalogue's designation</param>
+         */
+        public CommercialCatalogue(string reference, string designation)
+        {
+            this.reference = reference;
+            this.designation = designation;
+            this.collectionList = new List<CustomizedProductCollection>();
+                    }
+
+        /**
+        <summary>
             Checks if the CommercialCatalogue's properties are valid.
         </summary>
         <param name = "reference">String with the CommercialCatalogue's reference</param>
@@ -220,7 +234,7 @@ namespace core.domain
 
             dto.reference = this.reference;
             dto.designation = this.designation;
-
+            dto.id = this.Id;
             List<CustomizedProductCollectionDTO> dtoCustoProducts = new List<CustomizedProductCollectionDTO>();
             foreach (CustomizedProductCollection c in collectionList)
             {
