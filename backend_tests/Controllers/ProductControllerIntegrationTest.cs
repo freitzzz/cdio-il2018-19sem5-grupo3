@@ -105,10 +105,25 @@ namespace backend_tests.Controllers{
         }
 
         /// <summary>
-        /// Ensures that a product reference cant be updated if the reference is duplicated
+        /// Ensures that a product reference cant be updated if the reference is invalid
         /// </summary>
         [Fact,TestPriority(4)]
-        public async void ensureProductCantUpdateToADuplicatedReference(){
+        public async void ensureProductReferenceCantBeUpdatedIfInvalid(){
+             //We're are going to created two different products, X & Y
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            //If we try to update it to a reference that is invalid, then it should fail
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            var updateReference=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX.Result.id
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateReference.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that a product reference cant be updated if the reference is duplicated
+        /// </summary>
+        [Fact,TestPriority(5)]
+        public async void ensureProductReferenceCantBeUpdatedIfDuplicated(){
             //We're are going to created two different products, X & Y
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
             Task<ProductDTO> createdProductDTOY=ensureProductIsCreatedSuccesfuly();
@@ -123,11 +138,93 @@ namespace backend_tests.Controllers{
                                         ,HTTPContentCreator.contentAsJSON(updatedProductY));
             Assert.True(updateReference.StatusCode==HttpStatusCode.BadRequest);
         }
+        
+        /// <summary>
+        /// Ensures that a product designation cant be updated if the designation is invalid
+        /// </summary>
+        [Fact,TestPriority(5)]
+        public async void ensureProductDesignationCantBeUpdatedIfInvalid(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            //If we try to update it to a designation that is invalid, then it should fail
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            var updateDesignation=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX.Result.id
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateDesignation.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that a product materials cant be updated if the materials are invalid
+        /// </summary>
+        [Fact,TestPriority(6)]
+        public async void ensureProductMaterialsCantBeUpdatedIfInvalid(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            var updateProduct=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/materials"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that a product materials cant be added if the materials are duplicated
+        /// </summary>
+        [Fact,TestPriority(7)]
+        public async void ensureProductMaterialsCantBeAddedIfDuplicated(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            updatedProductX.materialsToAdd=new List<MaterialDTO>(createdProductDTOX.Result.productMaterials);
+            var updateProduct=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/materials"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that a product materials cant be added if the materials don't exist/are not found
+        /// </summary>
+        [Fact,TestPriority(8)]
+        public async void ensureProductMaterialsCantBeAddedIfNotFound(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            updatedProductX.materialsToAdd=new List<MaterialDTO>(new []{new MaterialDTO()});
+            var updateProduct=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/materials"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that a product materials cant be removed if the materials don't exist/are not found
+        /// </summary>
+        [Fact,TestPriority(9)]
+        public async void ensureProductMaterialsCantBeRemovedIfNotFound(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            updatedProductX.materialsToRemove=new List<MaterialDTO>(new []{new MaterialDTO()});
+            var updateProduct=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/materials"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
+        }
 
         /// <summary>
         /// Ensures that a product can't be created if the request body is empty
         /// </summary>
-        [Fact, TestPriority(1)]
+        [Fact, TestPriority(6)]
         public async void ensureProductCantBeCreatedWithEmptyRequestBody(){
             //We are attempting to create an object with an empty request body
             var createProductEmptyRequestBody=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON("{}"));
