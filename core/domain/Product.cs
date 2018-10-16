@@ -62,13 +62,12 @@ namespace core.domain {
         /// List with the components which the current product can be complemented by
         /// </summary>
         //TODO: Should complemented products be a list and not a set?
-        [NotMapped]
         public virtual List<Component> complementedProducts { get; protected set; }
         /// <summary>
         /// List with the materials which the product can be made of
         /// </summary>
         //TODO: Should product materials be a list or a set?
-        [NotMapped]
+        
         public virtual List<ProductMaterial> productMaterials { get; protected set; }
         /// <summary>
         /// List with the product heigth dimensions

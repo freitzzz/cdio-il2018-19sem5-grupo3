@@ -103,5 +103,9 @@ namespace core.domain {
             dto.restrictions = restList;
             return dto;
         }
+        /// <summary>
+        /// Protected constructor in order to allow ORM mapping
+        /// </summary>
+        protected ProductMaterial(){}
     }
 }
