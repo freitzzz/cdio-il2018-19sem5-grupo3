@@ -92,13 +92,12 @@ namespace core.domain {
         /// List with the components which the current product can be complemented by
         /// </summary>
         //TODO: Should complemented products be a list and not a set?
-        [NotMapped]
         public virtual List<Component> complementedProducts { get; protected set; }
         /// <summary>
         /// List with the materials which the product can be made of
         /// </summary>
         //TODO: Should product materials be a list or a set?
-        [NotMapped]
+        
         public virtual List<ProductMaterial> productMaterials { get; protected set; }
         /// <summary>
         /// List with the product heigth dimensions
@@ -363,28 +362,28 @@ namespace core.domain {
         /// </summary>
         /// <param name="widthDimension">Dimension with the width dimension being removed</param>
         /// <returns>boolean true if the dimension was removed with success, false if not</returns>
-        public bool removeWidthDimension(Dimension widthDimension) { return widthValues.Remove(widthDimension); }
+        public bool removeWidthDimension(Dimension widthDimension) { return !Collections.isEnumerableNullOrEmpty(widthValues) && widthValues.Remove(widthDimension); }
 
         /// <summary>
         /// Removes a specified height dimension from the current product
         /// </summary>
         /// <param name="heightDimension">Dimension with the height dimension being removed</param>
         /// <returns>boolean true if the dimension was removed with success, false if not</returns>
-        public bool removeHeightDimension(Dimension heightDimension) { return heightValues.Remove(heightDimension); }
+        public bool removeHeightDimension(Dimension heightDimension) { return !Collections.isEnumerableNullOrEmpty(heightValues) && heightValues.Remove(heightDimension); }
 
         /// <summary>
         /// Removes a specified depth dimension from the current product
         /// </summary>
         /// <param name="depthDimension">Dimension with the depth dimension being removed</param>
         /// <returns>boolean true if the dimension was removed with success, false if not</returns>
-        public bool removeDepthDimension(Dimension depthDimension) { return depthValues.Remove(depthDimension); }
+        public bool removeDepthDimension(Dimension depthDimension) { return !Collections.isEnumerableNullOrEmpty(depthValues) && depthValues.Remove(depthDimension); }
 
         /// <summary>
         /// Removes a material which the current product can be made of
         /// </summary>
         /// <param name="material">Material with the material being removed</param>
         /// <returns>boolean true if the material was removed with success, false if not</returns>
-        public bool removeMaterial(Material material) { return productMaterials.Remove(new ProductMaterial(this, material)); }
+        public bool removeMaterial(Material material) { return !Collections.isEnumerableNullOrEmpty(productMaterials) && productMaterials.Remove(new ProductMaterial(this, material)); }
 
         /// <summary>
         /// Removes a component which the current product can be complemented with

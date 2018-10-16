@@ -35,12 +35,12 @@ namespace core.domain
         /// <summary>
         /// Product with the product 
         /// </summary>
-        public Product product { get; set; }
+        public virtual Product product { get; set; }
         /// <summary>
         /// List with the restrictions which the current component can be have
         /// </summary>
         [NotMapped] //!remove this annotation once we figure out how to persist interfaces
-        public List<Restriction> restrictions { get; set; }
+        public virtual List<Restriction> restrictions { get; set; }
 
         /// <summary>
         /// Empty constructor for ORM.

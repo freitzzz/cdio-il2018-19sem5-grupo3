@@ -112,11 +112,15 @@ namespace backend.Controllers {
         public ActionResult<ProductDTO> findById(long id) {
             ProductDTO productDTOX=new ProductDTO();
             productDTOX.id=id;
-            ProductDTO productDTOY = new core.application.ProductController().findProductByID(productDTOX);
-            if (productDTOY == null) {
+            try{
+                ProductDTO productDTOY = new core.application.ProductController().findProductByID(productDTOX);
+                if (productDTOY == null) {
+                    return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+                }
+                return Ok(productDTOY);
+            }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
             }
-            return Ok(productDTOY);
         }
 
         /// <summary>
