@@ -407,5 +407,92 @@ namespace core_tests.domain {
             //Since the product was created with the id "#666" then its id should be "#666"
             Assert.True(product.sameAs(id));
         }
+
+        /// <summary>
+        /// Ensures that a product with a negative slot maximum size is invalid
+        /// </summary>
+        [Fact]
+        public void ensureNegativeMaxSlotSizeIsInvalid(){
+            Console.WriteLine("ensureNegativeMaxSlotCountIsInvalid");
+            string id = "Test";
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, -1, 3, 5,
+            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
+        }
+
+        /// <summary>
+        /// Ensures that a product with a negative slot minimumm size is invalid
+        /// </summary>
+        [Fact]
+        public void ensureNegativeMinSlotSizeIsInvalid(){
+            Console.WriteLine("ensureNegativeMinSlotSizeIsInvalid");
+            string id = "Test";
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, 3, -1, 5,
+            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
+        }
+
+        /// <summary>
+        /// Ensures that a product with a negative slot recommended size is invalid
+        /// </summary>
+        [Fact]
+        public void ensureNegativeRecommendedSlotSizeIsInvalid(){
+            Console.WriteLine("ensureNegativeRecommendedSlotSizeIsInvalid");
+            string id = "Test";
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, 3, 1, -1,
+            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
+        }
+
+        /// <summary>
+        /// Ensures that a product with a minimum slot size larger than its maximum size is invalid
+        /// </summary>
+        [Fact]
+        public void ensureInvalidMinToMaxSlotSizeRatioIsInvalid(){
+            Console.WriteLine("ensureInvalidMinToMaxSlotSizeRatioIsInvalid");
+            string id = "Test";
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, 3, 10, 1,
+            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
+        }
+
+        /// <summary>
+        /// Ensures that a product with a recommended slot size larger than its maximum size is invalid
+        /// </summary>
+        [Fact]
+        public void ensureInvalidRecommendedToMaxSlotSizeRatioIsInvalid(){
+            Console.WriteLine("ensureInvalidRecommendedToMaxSlotSizeRatioIsInvalid");
+            string id = "Test";
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, 3, 1, 4,
+            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
+        }
+
+        /// <summary>
+        /// Ensures that a product with a recommended slot size smaller than its minimum size is invalid
+        /// </summary>
+        [Fact]
+        public void ensureInvalidRecommendedToMinSlotSizeRatioIsInvalid(){
+            Console.WriteLine("ensureInvalidRecommendedToMinSlotSizeRatioIsInvalid");
+            string id = "Test";
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, 5, 3, 2,
+            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
+        }
+
+        /// <summary>
+        /// Ensures that the textual description of two equal products is the same
+        /// </summary>
+        [Fact]
+        public void ensureToStringWorks(){
+            Console.WriteLine("ensureToStringWorks");
+            string id = "Test";
+            Assert.Equal(new Product(id, "Shelf", true, 4, 2, 3, PREDEFEFINED_CATEGORY,
+            new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS).ToString(),
+            new Product(id, "Shelf", true, 4, 2, 3, PREDEFEFINED_CATEGORY,
+            new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS).ToString());
+        }
     }
 }

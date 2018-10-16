@@ -21,29 +21,59 @@ namespace core.domain {
     /// <typeparam name="string">Generic-Type of the Product entity identifier</typeparam>
     public class Product : AggregateRoot<string>, DTOAble<ProductDTO> {
         /// <summary>
-        /// Constant that represents the messange that ocurres if the product reference is invalid
+        /// Constant that represents the message that occurs if the product reference is invalid
         /// </summary>
         private const string INVALID_PRODUCT_REFERENCE = "The product reference is invalid";
         /// <summary>
-        /// Constant that represents the messange that ocurres if the product designation is invalid
+        /// Constant that represents the message that occurs if the product designation is invalid
         /// </summary>
         private const string INVALID_PRODUCT_DESIGNATION = "The product designation is invalid";
         /// <summary>
-        /// Constant that represents the messange that ocurres if the product complemented products are invalid
+        /// Constant that represents the message that occurs if the product complemented products are invalid
         /// </summary>
         private const string INVALID_PRODUCT_COMPLEMENTED_PRODUCTS = "The products which the product can be complemented by are invalid";
         /// <summary>
-        /// Constant that represents the messange that ocurres if the product complemented products are invalid
+        /// Constant that represents the message that occurs if the product complemented products are invalid
         /// </summary>
         private const string INVALID_PRODUCT_MATERIALS = "The materials which the product can be made of are invalid";
         /// <summary>
-        /// Constant that represents the messange that ocurres if the product restrinctions are invalid
+        /// Constant that represents the message that occurs if the product restrinctions are invalid
         /// </summary>
         private const string INVALID_PRODUCT_DIMENSIONS = "The product dimensions are invalid";
         /// <summary>
-        /// Constant that represents the messange that ocurres if the product category is invalid
+        /// Constant that represents the message that occurs if the product category is invalid
         /// </summary>
         private const string INVALID_PRODUCT_CATEGORY = "The product category is invalid";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the slots maximum size is invalid
+        /// </summary>
+        private const string INVALID_MAX_SLOT_SIZE = "The product's maximum slot size can't be negative";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the slots minimum size is invalid
+        /// </summary>
+        private const string INVALID_MIN_SLOT_SIZE = "The product's minimum slot size can't be negative";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the slots recommended size is invalid
+        /// </summary>
+        private const string INVALID_RECOMMENDED_SLOT_SIZE = "The product's recommended slot size can't be negative";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the slots minimum size is larger than the slots maximum size
+        /// </summary>
+        private const string INVALID_MIN_TO_MAX_SLOT_SIZE_RATIO = "The product's minimum slot size can't be larger than the maximum slot size";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the slots recommended size is larger than the slots maximum size
+        /// </summary>
+        private const string INVALID_RECOMMENDED_TO_MAX_SLOT_SIZE_RATIO = "The product's recommended slot size can't be larger than the maximum slot size";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the slots recommended size is smaller than the slots minimum size
+        /// </summary>
+        private const string INVALID_RECOMMENDED_TO_MIN_SLOT_SIZE_RATIO = "The product's recommended slot size can't be smaller than the minimum slot size";
 
         /// <summary>
         /// Long property with the persistence iD
@@ -96,9 +126,59 @@ namespace core.domain {
         public bool isAvailable { get; protected set; }
 
         /// <summary>
+        /// Integer that represents the maximum size of the slots
+        /// </summary>
+        public int maxSlotSize { get; protected set; }
+
+        /// <summary>
+        /// Integer that represents the minimum size of the slots
+        /// </summary>
+        public int minSlotSize { get; protected set; }
+
+        /// <summary>
+        /// Integer that represents the recommended size of the slots
+        /// </summary>
+        public int recommendedSlotSize { get; protected set; }
+
+        /// <summary>
+        /// Booelan that indicates if the product can hold slots
+        /// </summary>
+        public bool supportsSlots { get; protected set; }
+
+        /// <summary>
         /// Empty constructor used by ORM.
         /// </summary>
         protected Product() { }
+
+        /// <summary>
+        /// Builds a new product with its reference, designation, maximum number of slots, its category,
+        /// the materials it can be made of and its dimensions.
+        /// </summary>
+        /// <param name="reference">Reference of the Product</param>
+        /// <param name="designation">Designation of the Product</param>
+        /// <param name="supportsSlots">Indicates if the product can hold slots</param>
+        /// <param name="maxSlotSize">Maximum slot size</param>
+        /// <param name="minSlotSize">Minimum slot size</param>
+        /// <param name="recommendedSlotSize">Recommended slot size</param>
+        /// <param name="productCategory">ProductCategory with the product's category</param>
+        /// <param name="materials">Materials the product can be made of</param>
+        /// <param name="heightDimensions">Product height dimensions</param>
+        /// <param name="widthDimensions">Product width dimensions</param>
+        /// <param name="depthDimensions">Product depth dimensions</param>
+        public Product(string reference, string designation, bool supportsSlots,
+                        int maxSlotSize, int minSlotSize, int recommendedSlotSize,
+                        ProductCategory productCategory, IEnumerable<Material> materials,
+                        IEnumerable<Dimension> heightDimensions, IEnumerable<Dimension> widthDimensions,
+                        IEnumerable<Dimension> depthDimensions) :
+                        this(reference,designation,productCategory,
+                        materials,heightDimensions,widthDimensions,
+                        depthDimensions){
+                            this.supportsSlots = supportsSlots;
+                            checkProductSlotsSize(maxSlotSize, minSlotSize, recommendedSlotSize);
+                            this.maxSlotSize = maxSlotSize;
+                            this.minSlotSize = minSlotSize;
+                            this.recommendedSlotSize = recommendedSlotSize;
+                        }
 
         /// <summary>
         /// Builds a new product with its reference, designation and materials which it can be made of
@@ -110,7 +190,9 @@ namespace core.domain {
         /// <param name="heightDimensions">IEnumerable with the product height dimensions</param>
         /// <param name="widthDimensions">IEnumerable with the product width dimensions</param>
         /// <param name="depthDimensions">IEnumerable with the product depth dimensions</param>
-        public Product(string reference, string designation, ProductCategory productCategory, IEnumerable<Material> materials,
+        public Product(string reference, string designation,
+                        ProductCategory productCategory,
+                        IEnumerable<Material> materials,
                         IEnumerable<Dimension> heightDimensions,
                         IEnumerable<Dimension> widthDimensions,
                         IEnumerable<Dimension> depthDimensions) {
@@ -132,6 +214,10 @@ namespace core.domain {
             this.depthValues = new List<Dimension>(depthDimensions);
             this.productCategory = productCategory;
             this.isAvailable = true;
+            this.supportsSlots = false;
+            this.maxSlotSize = 0;
+            this.minSlotSize = 0;
+            this.recommendedSlotSize = 0;
         }
 
         /// <summary>
@@ -145,7 +231,10 @@ namespace core.domain {
         /// <param name="heightDimensions">IEnumerable with the product height dimensions</param>
         /// <param name="widthDimensions">IEnumerable with the product width dimensions</param>
         /// <param name="depthDimensions">IEnumerable with the product depth dimensions</param>
-        public Product(string reference, string designation, ProductCategory productCategory, IEnumerable<Material> materials, IEnumerable<Component> complementedProducts,
+        public Product(string reference, string designation,
+                        ProductCategory productCategory, 
+                        IEnumerable<Material> materials,
+                        IEnumerable<Component> complementedProducts,
                         IEnumerable<Dimension> heightValues,
                         IEnumerable<Dimension> widthValues,
                         IEnumerable<Dimension> depthValues) {
@@ -168,6 +257,10 @@ namespace core.domain {
             this.depthValues = new List<Dimension>(depthValues);
             this.productCategory = productCategory;
             this.isAvailable = true;
+            this.supportsSlots = false;
+            this.maxSlotSize = 0;
+            this.minSlotSize = 0;
+            this.recommendedSlotSize = 0;
         }
 
         /// <summary>
@@ -419,6 +512,21 @@ namespace core.domain {
         /// <returns>boolean true if the dimension is valid for addition, false if not</returns>
         private bool isProductDimensionValidForAddition(Dimension productDimension, ICollection<Dimension> productDimensions) {
             return productDimension != null && !productDimensions.Contains(productDimension);
+        }
+
+        /// <summary>
+        /// Checks if the product's slot sizes are valid (non-negative values with proper ratios between them).
+        /// </summary>
+        /// <param name="maxSlotSize">Integer with the maximum size of the slots</param>
+        /// <param name="minSlotSize">Integer with the minimum size of the slots</param>
+        /// <param name="recommendedSlotSize">Integer with the recommended size of the slots</param>
+        private void checkProductSlotsSize(int maxSlotSize, int minSlotSize, int recommendedSlotSize){
+            if(maxSlotSize < 0) throw new ArgumentException(INVALID_MAX_SLOT_SIZE);
+            if(minSlotSize < 0) throw new ArgumentException(INVALID_MIN_SLOT_SIZE);
+            if(recommendedSlotSize < 0) throw new ArgumentException(INVALID_RECOMMENDED_SLOT_SIZE);
+            if(minSlotSize > maxSlotSize) throw new ArgumentException(INVALID_MIN_TO_MAX_SLOT_SIZE_RATIO);
+            if(recommendedSlotSize > maxSlotSize) throw new ArgumentException(INVALID_RECOMMENDED_TO_MAX_SLOT_SIZE_RATIO);
+            if(recommendedSlotSize < minSlotSize) throw new ArgumentException(INVALID_RECOMMENDED_TO_MIN_SLOT_SIZE_RATIO);
         }
 
         /// <summary>
