@@ -13,7 +13,7 @@ using Xunit;
 namespace backend_tests.Controllers
 {
     [Collection("Integration Collection")]
-    [TestCaseOrderer("backend_tests.Setup.TestPriorityOrderer", "backend_tests.Setup")]
+    [TestCaseOrderer("backend_tests.Setup.TestPriorityOrderer", "backend_tests")]
     public class ProductCategoryControllerIntegrationTest : IClassFixture<TestFixture<TestStartupSQLite>>
     {
 
@@ -41,8 +41,8 @@ namespace backend_tests.Controllers
 
         [Fact, TestPriority(1)]
         public async Task<ProductCategoryDTO> ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully()
-        {  
-            ProductCategoryDTO categoryDTO = new ProductCategoryDTO() { name = "Drawers"+Guid.NewGuid().ToString("n") };
+        {
+            ProductCategoryDTO categoryDTO = new ProductCategoryDTO() { name = "Drawers" + Guid.NewGuid().ToString("n") };
 
             var response = await client.PostAsJsonAsync(baseUrl, categoryDTO);
 

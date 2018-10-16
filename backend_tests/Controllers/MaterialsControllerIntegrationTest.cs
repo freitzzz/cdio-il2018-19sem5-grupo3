@@ -17,7 +17,7 @@ namespace backend_tests.Controllers
     /// </summary>
     /// <typeparam name="TestStartupSQLite">class that handles database startup</typeparam>
     [Collection("Integration Collection")]
-    [TestCaseOrderer("backend_tests.Setup.TestPriorityOrderer", "backend_tests.Setup")]
+    [TestCaseOrderer("backend_tests.Setup.TestPriorityOrderer", "backend_tests")]
     public class MaterialsControllerIntegrationTest : IClassFixture<TestFixture<TestStartupSQLite>>
     {
 
@@ -41,7 +41,7 @@ namespace backend_tests.Controllers
         }
 
         //!Test is failing due to priorities not having any effect on the execution order
-        //[Fact, TestPriority(0)]
+        [Fact, TestPriority(0)]
         public async Task ensureGetAllMaterialsSendsBadRequestWhenListIsEmpty()
         {
             var response = await client.GetAsync(urlBase);
