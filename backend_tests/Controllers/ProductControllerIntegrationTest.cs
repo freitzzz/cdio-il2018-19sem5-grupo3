@@ -40,14 +40,88 @@ namespace backend_tests.Controllers{
         }
 
         /// <summary>
-        /// Ensures that the products collection is empty if there are no products available
+        /// Ensures that the product collection fetch is empty
         /// </summary>
-        [Fact, TestPriority(0)]
-        public async void ensureProductsCollecionFetchIsEmpty(){
-            //Since we haven't add any products yet, the products collection should be empty
-            var productsCollectionFetch=await httpClient.GetAsync(PRODUCTS_URI);
-            //HTTP Response should be a Bad Request
-            Assert.True(productsCollectionFetch.StatusCode==HttpStatusCode.BadRequest);
+        [Fact,TestPriority(0)]
+        public async void ensureProductCollectionFetchIsEmpty(){
+            //If we haven't created any products yet, the product collection 
+            //fetch should be empty
+            var fetchProductCollection=await httpClient.GetAsync(PRODUCTS_URI);
+            //We performed a GET of the products collection
+            //Since there are no products available
+            //The response status code should be a Bad Request
+            //Since there aren't any products available
+            Assert.True(fetchProductCollection.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that the product collection fetch isnt empty when previously added a product
+        /// </summary>
+        [Fact,TestPriority(1)]
+        public async void ensureProductCollectionFetchIsNotEmpty(){
+            ensureProductIsCreatedSuccesfuly().Wait();
+            //Since we have created a product, the product collection fetch
+            //fetch shouldn't be empty
+            var fetchProductCollection=await httpClient.GetAsync(PRODUCTS_URI);
+            //We performed a GET of the products collection
+            //Since there are no products available
+            //The response status code should be a Bad Request
+            //Since there aren't any products available
+            Assert.True(fetchProductCollection.StatusCode==HttpStatusCode.OK);
+        }
+
+        /// <summary>
+        /// Ensures that the fetch of a product resource is invalid
+        /// </summary>
+        [Fact,TestPriority(2)]
+        public async void ensureProductResourceFetchIsInvalid(){
+            //If we haven't created any products yet, the product collection 
+            //fetch should be empty
+            long invalidResourceID=0;
+            var fetchProduct=await httpClient.GetAsync(PRODUCTS_URI+"/"+invalidResourceID);
+            //We performed a GET of a certain product by its resource
+            //Since the resource doesn't exist, the fetch should be invalid
+            //And the response status code should be a Bad Request
+            Assert.True(fetchProduct.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that the fetch of a product resource is valid
+        /// </summary>
+        [Fact,TestPriority(3)]
+        public async void ensureProductResourceFetchIsValid(){
+            Task<ProductDTO> createdProductDTORequest=ensureProductIsCreatedSuccesfuly();
+            createdProductDTORequest.Wait();
+            ProductDTO createdProductDTO=createdProductDTORequest.Result;
+            //We just performed a POST request to create a new product
+            //We deserialized the response, and it has a resource ID
+            //By performing a GET request on the resource, the product fetched
+            //Should be the same one as the created one
+            var fetchProduct=await httpClient.GetAsync(PRODUCTS_URI+"/"+createdProductDTO.id);
+            ProductDTO fetchedProductDTO=JsonConvert.DeserializeObject<ProductDTO>(await fetchProduct.Content.ReadAsStringAsync());
+            Assert.True(fetchProduct.StatusCode==HttpStatusCode.OK);
+            Assert.Equal(createdProductDTO.id,fetchedProductDTO.id);
+            Assert.Equal(createdProductDTO.reference,fetchedProductDTO.reference);
+        }
+
+        /// <summary>
+        /// Ensures that a product reference cant be updated if the reference is duplicated
+        /// </summary>
+        [Fact,TestPriority(4)]
+        public async void ensureProductCantUpdateToADuplicatedReference(){
+            //We're are going to created two different products, X & Y
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            Task<ProductDTO> createdProductDTOY=ensureProductIsCreatedSuccesfuly();
+            //Product X has different reference to Y
+            //Since the reference of a product is the identity of a product
+            //If we try to update it to a reference that already exists, then it should fail
+            createdProductDTOX.Wait();
+            createdProductDTOY.Wait();
+            UpdateProductDTO updatedProductY=new UpdateProductDTO();
+            updatedProductY.reference=createdProductDTOX.Result.reference;
+            var updateReference=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOY.Result.id
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductY));
+            Assert.True(updateReference.StatusCode==HttpStatusCode.BadRequest);
         }
 
         /// <summary>
@@ -144,9 +218,7 @@ namespace backend_tests.Controllers{
             //Then the response should be a Bad Request
             Assert.True(createProductNoDimensions.StatusCode==HttpStatusCode.BadRequest);
         }
-
-        //public async void ensureProductCollectionFetch
-
+        
         /// <summary>
         /// Ensures that a product is created succesfuly
         /// </summary>
