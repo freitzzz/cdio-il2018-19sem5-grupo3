@@ -127,7 +127,7 @@ namespace core.domain
         */
         private void checkCustomizedMaterialColor(Color color)
         {
-            if (String.IsNullOrEmpty(color.ToString())) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_COLOR);
+            if ( color == null || String.IsNullOrEmpty(color.ToString())) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_COLOR);
         }
         /**
        <summary>
@@ -137,7 +137,7 @@ namespace core.domain
        */
         private void checkCustomizedMaterialFinish(Finish finish)
         {
-            if (String.IsNullOrEmpty(finish.ToString())) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_FINISH);
+            if (finish == null ||String.IsNullOrEmpty(finish.ToString())) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_FINISH);
         }
         /**
         <summary>
