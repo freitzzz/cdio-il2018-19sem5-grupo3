@@ -176,6 +176,17 @@ namespace core.domain
         }
 
         /**
+        <summary>
+            
+        </summary>
+         */
+        public CustomizedProductCollection clone()
+        {
+            return new CustomizedProductCollection(this.name,this.customizedProducts);
+        }
+
+
+        /**
        <summary>
            Returns a textual description of the Collection.
        </summary>
@@ -223,5 +234,7 @@ namespace core.domain
                 if(!customizedProductsHashes.Add(customizedProduct.GetHashCode()))
                     throw new ArgumentException(INVALID_COLLECTION_CUSTOMIZED_PRODUCTS);
         }
+
+
     }
 }

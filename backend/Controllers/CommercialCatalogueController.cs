@@ -133,11 +133,11 @@ namespace backend.Controllers
         ///         <br>See MyC REST API documentation for a better overview
         /// </returns>
         [HttpPost("{id}/collections")]
-        public ActionResult<CommercialCatalogueDTO> addCollection(long id, [FromBody]CustomizedProductCollectionDTO customizedProductCollectionDTO)
+        public ActionResult<CommercialCatalogueDTO> addCollection(long idCommercialCatalogue, [FromBody]long idCollection)
         {
             try
             {
-                CommercialCatalogueDTO createdComCatalogueDTO = new core.application.CommercialCatalogueController().addCollection(id, customizedProductCollectionDTO);
+                CommercialCatalogueDTO createdComCatalogueDTO = new core.application.CommercialCatalogueController().addCollection(idCommercialCatalogue, idCollection);
                 if (createdComCatalogueDTO != null)
                 {
                     return Created(Request.Path, createdComCatalogueDTO);

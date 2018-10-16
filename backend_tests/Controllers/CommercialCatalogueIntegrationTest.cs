@@ -17,7 +17,7 @@ namespace backend_tests.Controllers
     /// </summary>
     /// <typeparam name="TestStartupSQLite">class that handles database startup</typeparam>
     [Collection("Integration Collection")]
-    [TestCaseOrderer("backend_tests.Setup.TestPriorityOrderer","backend_tests.Setup")]
+    [TestCaseOrderer("backend_tests.Setup.TestPriorityOrderer","backend_tests")]
     public class CommercialCatalogueIntegrationTest: IClassFixture<TestFixture<TestStartupSQLite>>
     {
         // /// <summary>

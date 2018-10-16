@@ -22,14 +22,22 @@ namespace core.application
             string designation = comCatalogueAsDTO.designation;
             List<CustomizedProductCollection> collections = new List<CustomizedProductCollection>();
 
-           /*  if (comCatalogueAsDTO.collectionList != null)
+            if (comCatalogueAsDTO.collectionList != null)
             {
                 foreach (CustomizedProductCollectionDTO collection in comCatalogueAsDTO.collectionList)
                 {
                     collections.Add(collection.toEntity());
                 }
-            } */
-            CommercialCatalogue newComCatalogue = new CommercialCatalogue(reference, designation, collections);
+            }
+            CommercialCatalogue newComCatalogue;
+            if (comCatalogueAsDTO.collectionList.Count == 0)
+            {
+                newComCatalogue = new CommercialCatalogue(reference, designation);
+            }
+            else
+            {
+                newComCatalogue = new CommercialCatalogue(reference, designation, collections);
+            }
             CommercialCatalogue createdComCatalogue = PersistenceContext.repositories().createCommercialCatalogueRepository().save(newComCatalogue);
             if (createdComCatalogue == null) return null;
             return createdComCatalogue.toDTO();
@@ -74,36 +82,27 @@ namespace core.application
         /// <param name="comCatalogueAsDTO">DTO with the customized catalogue</param>
         /// <param name="customizedProductCollectionDTO">DTO with the customized product collection</param>
         /// <returns>DTO with the created product DTO, null if the product was not created</returns>
-        public CommercialCatalogueDTO addCollection(long id, CustomizedProductCollectionDTO customizedProductCollectionDTO)
+        public CommercialCatalogueDTO addCollection(long id, long idCollection)
         {
 
             CommercialCatalogue newComCatalogue = PersistenceContext.repositories().createCommercialCatalogueRepository().find(id);
             //Transform CustomizedProductCollection Dto to entity
-            string name = customizedProductCollectionDTO.name;
+            CustomizedProductCollection customizedProductCollection = PersistenceContext.repositories().createCustomizedProductCollectionRepository().find(idCollection);
 
-            List<CustomizedProduct> list = new List<CustomizedProduct>();
-            if (customizedProductCollectionDTO.customizedProducts != null)
-            {
-                foreach (CustomizedProductDTO customizedProduct in customizedProductCollectionDTO.customizedProducts)
-                {
-                    list.Add(customizedProduct.toEntity());
-                }
-            }
-            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection(name, list);
-            bool test = newComCatalogue.addCollection(customizedProductCollection);
+            bool test = newComCatalogue.addCollection(customizedProductCollection.clone());
             if (!test)
             {
                 return null;
             }
-            CommercialCatalogue createdComCatalogue = PersistenceContext.repositories().createCommercialCatalogueRepository().save(newComCatalogue);
+            CommercialCatalogue createdComCatalogue = PersistenceContext.repositories().createCommercialCatalogueRepository().update(newComCatalogue);
             if (createdComCatalogue == null) return null;
             return createdComCatalogue.toDTO();
 
 
         }
 
-        
-         /// <summary>
+
+        /// <summary>
         /// Removes a new Collection to a CommercialCatalogue
         /// </summary>
         /// <param name="comCatalogueAsDTO">DTO with the product information</param>
@@ -147,6 +146,6 @@ namespace core.application
 
         }
 
-      
+
     }
 }
