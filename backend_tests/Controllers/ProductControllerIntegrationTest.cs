@@ -142,7 +142,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product designation cant be updated if the designation is invalid
         /// </summary>
-        [Fact,TestPriority(5)]
+        [Fact,TestPriority(6)]
         public async void ensureProductDesignationCantBeUpdatedIfInvalid(){
             //We need to create a product for the test
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
@@ -157,7 +157,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product materials cant be updated if the materials are invalid
         /// </summary>
-        [Fact,TestPriority(6)]
+        [Fact,TestPriority(7)]
         public async void ensureProductMaterialsCantBeUpdatedIfInvalid(){
             //We need to create a product for the test
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
@@ -173,7 +173,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product materials cant be added if the materials are duplicated
         /// </summary>
-        [Fact,TestPriority(7)]
+        [Fact,TestPriority(8)]
         public async void ensureProductMaterialsCantBeAddedIfDuplicated(){
             //We need to create a product for the test
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
@@ -190,7 +190,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product materials cant be added if the materials don't exist/are not found
         /// </summary>
-        [Fact,TestPriority(8)]
+        [Fact,TestPriority(9)]
         public async void ensureProductMaterialsCantBeAddedIfNotFound(){
             //We need to create a product for the test
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
@@ -207,7 +207,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product materials cant be removed if the materials don't exist/are not found
         /// </summary>
-        [Fact,TestPriority(9)]
+        [Fact,TestPriority(10)]
         public async void ensureProductMaterialsCantBeRemovedIfNotFound(){
             //We need to create a product for the test
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
@@ -221,10 +221,27 @@ namespace backend_tests.Controllers{
             Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
         }
 
+        /* /// <summary>
+        /// Ensures that the dimensions of a product cant be removed if the dimensions don't exist/are not found
+        /// </summary>
+        [Fact,TestPriority(11)]
+        public async void ensureProductDimensionsCantBeRemovedIfNotFound(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            updatedProductX.dimensionsToRemove=new List<MaterialDTO>(new []{new DimensionDTO()});
+            var updateProduct=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
+        } */
+
         /// <summary>
         /// Ensures that a product can't be created if the request body is empty
         /// </summary>
-        [Fact, TestPriority(6)]
+        [Fact, TestPriority(13)]
         public async void ensureProductCantBeCreatedWithEmptyRequestBody(){
             //We are attempting to create an object with an empty request body
             var createProductEmptyRequestBody=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON("{}"));
@@ -236,7 +253,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no reference
         /// </summary>
-        [Fact, TestPriority(2)]
+        [Fact, TestPriority(14)]
         public async void ensureProductCantBeCreatedWithNoReference(){
             //We are attempting to created a product with no referene
             ProductDTO productDTO=new ProductDTO();
@@ -250,7 +267,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no designation
         /// </summary>
-        [Fact, TestPriority(3)]
+        [Fact, TestPriority(15)]
         public async void ensureProductCantBeCreatedWithNoDesignation(){
             //We are attempting to created a product with no designation
             ProductDTO productDTO=new ProductDTO();
@@ -264,7 +281,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no category
         /// </summary>
-        [Fact, TestPriority(4)]
+        [Fact, TestPriority(16)]
         public async void ensureProductCantBeCreatedWithNoCategory(){
             //We are attempting to created a product with no category
             ProductDTO productDTO=new ProductDTO();
@@ -279,7 +296,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no materials
         /// </summary>
-        [Fact, TestPriority(5)]
+        [Fact, TestPriority(17)]
         public async void ensureProductCantBeCreatedWithNoMaterials(){
             //We are attempting to created a product with no materials
             ProductDTO productDTO=new ProductDTO();
@@ -297,7 +314,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no dimensions
         /// </summary>
-        [Fact, TestPriority(6)]
+        [Fact, TestPriority(18)]
         public async void ensureProductCantBeCreatedWithNoDimensions(){
             //We are attempting to created a product with no dimensions
             ProductDTO productDTO=new ProductDTO();
@@ -320,7 +337,7 @@ namespace backend_tests.Controllers{
         /// Ensures that a product is created succesfuly
         /// </summary>
         /// <returns>ProductDTO with the created product</returns>
-        [Fact, TestPriority(8)]
+        [Fact, TestPriority(19)]
         public async Task<ProductDTO> ensureProductIsCreatedSuccesfuly(){
             //We are going to create a valid product
             //A valid product creation requires a valid reference, a valid desgination
