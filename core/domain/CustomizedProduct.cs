@@ -7,202 +7,269 @@ using System.Linq;
 
 namespace core.domain
 {
-    /**
-    <summary>
-        Class that represents a Configured Product.
-        <br> Configured Product is value object;
-    </summary>
-    */
-    public class CustomizedProduct :AggregateRoot<string> ,DTOAble<CustomizedProductDTO>
+    /// <summary>
+    /// Class that represents a Customized Product.
+    /// </summary>
+    public class CustomizedProduct : AggregateRoot<string>, DTOAble<CustomizedProductDTO>
     {
 
         /// <summary>
         /// Empty constructor for ORM.
         /// </summary>
-        protected CustomizedProduct(){}
+        protected CustomizedProduct() { }
 
-        public CustomizedProduct(long id, string designation, long persistence_id)
-        {
-            this.Id = id;
-            this.designation = designation;
+        /// <summary>
+        /// Constant that represents the message that ocurrs if the CustomizedProduct's material is not valid
+        /// </summary>
+        private const string INVALID_CUSTOMIZED_PRODUCT_MATERIAL = "The chosen material is not valid";
 
-        }
+        /// <summary>
+        /// Constant that represents the message that ocurrs if the CustomizedProduct's dimensions are not valid
+        /// </summary>
+        private const string INVALID_CUSTOMIZED_PRODUCT_DIMENSIONS = "The inserted dimension is not valid";
+
+        /// <summary>
+        /// Constant that represents the message that ocurrs if the CustomizedProduct's product reference is not valid
+        /// </summary>
+        private const string INVALID_PRODUCT_REFERENCE = "The inserted product reference is not valid";
+
+        /// <summary>
+        /// Constant that represents the message that ocurrs if the CustomizedProduct's designation is not valid
+        /// </summary>
+        private const string INVALID_PRODUCT_DESIGNATION = "The inserted designation is not valid";
+
+        /// <summary>
+        /// Long that represents the CustomizedProduct's persistence ID.
+        /// </summary>
         public long Id { get; internal set; }
-        /**
-        <summary>
-            Constant that represents the message that ocurrs if the CustomizedMaterial's  are not valid.
-        </summary>
-         */
-        private const string INVALID_CONFIGURED_PRODUCT_MATERIAL = "The CustomizedMaterial is not valid!";
 
-        /**
-        <summary>
-            Constant that represents the message that ocurrs if the CustomizedMaterial's  are not valid.
-        </summary>
-         */
-        private const string INVALID_CONFIGURED_PRODUCT_DIMENSIONS = "The CustomizedDimension is  not valid!";
-
-        /**
-        <summary>
-            Constant that represents the message that ocurrs if the string is not valid.
-        </summary>
-         */
-        private const string INVALID_STRING = "The String inserted is not valid!";
-
-        /**
-       <summary>
-           Constant that represents the message that ocurrs if the CustomizedMaterial's  are not valid.
-       </summary>
-        */
-        private const string INVALID_PRODUCT_REFERENCE = "The inserted product reference is invalid!";
-
-        /**
-               <summary>
-                   Constant that represents the message that ocurrs if the CustomizedMaterial's  are not valid.
-               </summary>
-                */
-        private const string INVALID_PRODUCT_DESIGNATION = "The inserted designation is invalid!";
-
-
-        /**
-        <summary>
-                   Constant that represents the message that ocurrs if the CustomizedMaterial's  are not valid.
-               </summary>
-                */
-        private const string INVALID_LIST = "List is invalid or empty!";
-
-
-        /**
-        <summary>
-            String with the ConfiguredProduct's reference.
-        </summary>
-        */
+        /// <summary>
+        /// String with the CustomizedProduct's reference
+        /// </summary>
         public string reference { get; protected set; }
 
-        /** 
-        <summary>
-            String with the ConfiguredProduct's designation.
-        </summary>
-        */
+        /// <summary>
+        /// String with the CustomizedProduct's designation
+        /// </summary>
         public string designation { get; protected set; }
 
-        /**
-        <summary>
-            The CustomizedProduct Customized Material
-        </summary>
-         */
+        /// <summary>
+        /// CustomizedMaterial that represents the CustomizedProduct's material
+        /// </summary>
         public virtual CustomizedMaterial customizedMaterial { get; protected set; }
 
-        /**
-        <summary>
-            The CustomizedProduct Customized Dimensions
-        </summary>
-         */
+
+        /// <summary>
+        /// CustomizedDimensions that represents the CustomizedProduct's dimensions
+        /// </summary>
         public virtual CustomizedDimensions customizedDimensions { get; protected set; }
 
-        /**
-        <summary>
-            List of Products from CustomizedProduct
-        </summary>
-         */
+        /// <summary>
+        /// Product that represents the product that the CustomizedProduct refers to
+        /// </summary>
+        /// <value></value>
         public virtual Product product { get; protected set; }
 
-     
+        /// <summary>
+        /// List of Slots that the CustomizedProduct has
+        /// </summary>
+        public List<Slot> slots { get; protected set; }
 
-
-
-        /**
-       <summary>
-           Builds a new instance of ConfiguredProduct, receiving its reference, designation, 
-           customizedDimensions, customizedMaterial and product.~
-            <param name = "reference">string with the new ConfiguredProduct's reference</param>
-            <param name = "designation">string with the new ConfiguredProduct's designation</param>
-            <param name = "customizedDimensions">string with the new ConfiguredProduct's customizedDimensions</param>
-            <param name = "customizedMaterial">string with the new ConfiguredProduct's customizedMaterial</param>
-            <param name = "product">string with the new ConfiguredProduct's product</param>DDD
-       </summary>
-        */
-        public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial, CustomizedDimensions customizedDimensions, Product product)
+        /// <summary>
+        /// Builds a new instance of CustomizedProduct, receiving its reference,
+        /// designation, dimensions, material and the Product it refers to
+        /// <param name = "reference">String with the new CustomizedProduct's reference</param>
+        /// <param name = "designation">String with the new CustomizedProduct's designation</param>
+        /// <param name = "customizedDimensions">String with the new CustomizedProduct's CustomizedDimensions</param>
+        /// <param name = "customizedMaterial">String with the new CustomizedProduct's CustomizedMaterial</param>
+        /// <param name = "product">String with the new CustomizedProduct's Product</param>DDD
+        /// </summary>
+        public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial,
+        CustomizedDimensions customizedDimensions, Product product)
         {
             checkCustomizedMaterial(customizedMaterial);
             checkCustomizedDimensions(customizedDimensions);
             checkProduct(product);
-            checkString(reference);
-            checkString(designation);
+            checkString(reference, INVALID_PRODUCT_REFERENCE);
+            checkString(designation, INVALID_PRODUCT_DESIGNATION);
 
             this.reference = reference;
             this.designation = designation;
             this.customizedDimensions = customizedDimensions;
             this.customizedMaterial = customizedMaterial;
             this.product = product;
+            this.slots = new List<Slot>();
         }
 
+        /// <summary>
+        /// Builds a new instance of CustomizedProduct, receiving its reference,
+        /// designation, dimensions, material and the Product it refers to
+        /// <param name = "reference">String with the new CustomizedProduct's reference</param>
+        /// <param name = "designation">String with the new CustomizedProduct's designation</param>
+        /// <param name = "customizedDimensions">String with the new CustomizedProduct's CustomizedDimensions</param>
+        /// <param name = "customizedMaterial">String with the new CustomizedProduct's CustomizedMaterial</param>
+        /// <param name = "product">String with the new CustomizedProduct's Product</param>DDD
+        /// </summary>
+        public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial,
+        CustomizedDimensions customizedDimensions, Product product, List<Slot> slots)
+        {
+            checkCustomizedMaterial(customizedMaterial);
+            checkCustomizedDimensions(customizedDimensions);
+            checkProduct(product);
+            checkString(reference, INVALID_PRODUCT_REFERENCE);
+            checkString(designation, INVALID_PRODUCT_DESIGNATION);
 
-        /**
-         <summary>
-             Checks if the Product is valid
-         </summary>
-         <param name = "product">The Product</param>
-         */
+            this.reference = reference;
+            this.designation = designation;
+            this.customizedDimensions = customizedDimensions;
+            this.customizedMaterial = customizedMaterial;
+            this.product = product;
+            this.slots = slots;
+        }
+
+        /// <summary>
+        /// Returns the CustomizedProduct's identity
+        /// </summary>
+        /// <returns>String with the CustomizedProduct's identity</returns>
+        public string id()
+        {
+            return reference;
+        }
+
+        /// <summary>
+        /// Changes the CustomizedProduct's reference
+        /// </summary>
+        /// <param name="reference">New reference</param>
+        public void changeReference(string reference)
+        {
+            if (String.IsNullOrEmpty(reference)) throw new ArgumentException(INVALID_PRODUCT_REFERENCE);
+            this.reference = reference;
+        }
+
+        /// <summary>
+        /// Changes the CustomizedProduct's designation
+        /// </summary>
+        /// <param name="designation">New designation</param>
+        public void changeDesignation(string designation)
+        {
+            if (String.IsNullOrEmpty(designation)) throw new ArgumentException(INVALID_PRODUCT_DESIGNATION);
+            this.designation = designation;
+        }
+
+        /// <summary>
+        /// Adds a given Slot from the CustomizedProduct's Slot list
+        /// </summary>
+        /// <param name="slot">Slot to add</param>
+        /// <returns>true if the Slot is added, false if not</returns>
+        public bool addSlot(Slot slot)
+        {
+            if (slot == null) return false;
+            if (product.supportsSlots &&
+            slot.slotDimensions.width >= product.minSlotSize.width
+            && slot.slotDimensions.depth >= product.minSlotSize.depth
+            && slot.slotDimensions.height >= product.minSlotSize.height
+            && slot.slotDimensions.width <= product.maxSlotSize.width
+            && slot.slotDimensions.depth <= product.maxSlotSize.depth
+            && slot.slotDimensions.height <= product.maxSlotSize.height)
+            {
+                slots.Add(slot);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Removes a given Slot from the CustomizedProduct's Slot list
+        /// </summary>
+        /// <param name="slot">Slot to remove</param>
+        /// <returns>true if the Slot is removed, false if not</returns>
+        public bool removeSlot(Slot slot)
+        {
+            if (slot == null) return false;
+            return product.supportsSlots && slots.Remove(slot);
+        }
+
+        /// <summary>
+        /// Returns the number of Slots in the CustomizedProduct's Slot list
+        /// </summary>
+        /// <returns>Number of Slots within the CustomizedProduct</returns>
+        public int numberOfSlots()
+        {
+            return slots.Count;
+        }
+
+        /// <summary>
+        /// Checks if the Product is valid (not null)
+        /// </summary>
+        /// <param name="product">Product to check</param>
         private void checkProduct(Product product)
         {
-            if (product == null) throw new ArgumentException(INVALID_CONFIGURED_PRODUCT_MATERIAL);
-
+            if (product == null) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_MATERIAL);
         }
 
-
-        /**
-        <summary>
-            Checks if the CustomizedMaterial's  is valid.
-        </summary>
-        <param name = "customizedMaterial">The CustomizedMaterial</param>
-        */
+        /// <summary>
+        /// Checks if the CustomizedMaterial is valid
+        /// </summary>
+        /// <param name="customizedMaterial">CustomizedMaterial to check</param>
         private void checkCustomizedMaterial(CustomizedMaterial customizedMaterial)
         {
-            if (String.IsNullOrEmpty(customizedMaterial.ToString())) throw new ArgumentException(INVALID_CONFIGURED_PRODUCT_MATERIAL);
-
+            if (customizedMaterial == null || String.IsNullOrEmpty(customizedMaterial.ToString()))
+                throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_MATERIAL);
         }
 
-        /**
-        <summary>
-            Checks if the CustomizedDimension is valid.
-        </summary>
-        <param name = "customizedDimension">The CustomizedDimension</param>
-        */
+        /// <summary>
+        /// Checks if the CustomizedDimensions are valid
+        /// </summary>
+        /// <param name="customizedDimensions">CustomizedDimensions to check</param>
         private void checkCustomizedDimensions(CustomizedDimensions customizedDimensions)
         {
-            if (String.IsNullOrEmpty(customizedDimensions.ToString())) throw new ArgumentException(INVALID_CONFIGURED_PRODUCT_DIMENSIONS);
-
+            if (customizedDimensions == null || String.IsNullOrEmpty(customizedDimensions.ToString()))
+                throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_DIMENSIONS);
         }
 
+        /// <summary>
+        /// Checks if a given string is valid
+        /// </summary>
+        /// <param name="obj">String to check</param>
+        private void checkString(string obj, string message)
+        {
+            if (String.IsNullOrEmpty(obj)) throw new ArgumentException(message);
+        }
 
-        /**
-        <summary>
-            Returns a textual description of the ConfiguredProduct.
-        </summary>
-         */
+        /// <summary>
+        /// Checks if the CustomizedProduct's identity is the same as the one received as a parameter
+        /// </summary>
+        /// <param name="comparingEntity">Entity to compare to the CustomizedProduct</param>
+        /// <returns></returns>
+        public bool sameAs(string comparingEntity)
+        {
+            return reference.Equals(comparingEntity, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        /// <summary>
+        /// Returns a textual description of the CustomizedProduct
+        /// </summary>
+        /// <returns>String that describes the CustomizedProduct</returns>
         public override string ToString()
         {
             return string.Format("Designation: {0}, Reference {1}", designation, reference);
         }
-        /**
-        <summary>
-            Returns the generated hash code of the Customized Material.
-        </summary>
-         */
+
+        /// <summary>
+        /// Returns the generated hash code of the CustomizedProduct
+        /// </summary>
+        /// <returns>Generated hash code</returns>
         public override int GetHashCode()
         {
             int hashCode = 17;
-            return  (hashCode * 23) + this.reference.GetHashCode();
-           
+            return (hashCode * 23) + this.reference.GetHashCode();
         }
 
-        /**
-        <summary>
-            Checks if a certain Customized Material is the same as a received object.
-        </summary>
-        <param name = "obj">object to compare to the current Customized Material</param>
-         */
+        /// <summary>
+        /// Checks if a certain CustomizedProduct is the same as a received object
+        /// </summary>
+        /// <param name="obj">Object to compare with the CustomizedProduct</param>
+        /// <returns>true if both objects are equal, false if not</returns>
         public override bool Equals(object obj)
         {
             //Check for null and compare run-time types.
@@ -212,80 +279,29 @@ namespace core.domain
             }
             else
             {
-                CustomizedProduct configProduct = (CustomizedProduct)obj;
-                return reference.Equals(configProduct.reference) && 
-                designation.Equals(configProduct.designation) && 
-                customizedDimensions.Equals(configProduct.customizedDimensions) && 
-                customizedMaterial.Equals(configProduct.customizedMaterial) && 
-                product.Equals(configProduct.product);
+                CustomizedProduct customizedProduct = (CustomizedProduct)obj;
+                return reference.Equals(customizedProduct.reference) &&
+                designation.Equals(customizedProduct.designation) &&
+                customizedDimensions.Equals(customizedProduct.customizedDimensions) &&
+                customizedMaterial.Equals(customizedProduct.customizedMaterial) &&
+                product.Equals(customizedProduct.product);
             }
         }
 
-
-        /** <summary>
-                    Returns the current ConfiguredProduct as a DTO.
-                </summary>
-                <returns>DTO with the current DTO representation of the ConfiguredProduct</returns>
-                */
+        /// <summary>
+        /// Returns the current CustomizedProduct as a DTO
+        /// </summary>
+        /// <returns>CustomizedProductDTO with the current representation of the CustomizedProduct</returns>
         public CustomizedProductDTO toDTO()
         {
             CustomizedProductDTO dto = new CustomizedProductDTO();
             dto.reference = this.reference;
             dto.designation = this.designation;
             dto.productDTO = this.product.toDTO();
-            dto.customizedDimensions = this.customizedDimensions;
-            dto.customizedMaterial = this.customizedMaterial;
+            dto.customizedDimensionsDTO = this.customizedDimensions.toDTO();
+            dto.customizedMaterialDTO = this.customizedMaterial;
             dto.id = this.Id;
             return dto;
         }
-        /**
-        <summary>
-            Checks if string is valid
-        </summary>
-        <param name = "string">The string</param>
-        */
-        private void checkString(string obj)
-        {
-            if (String.IsNullOrEmpty(obj)) throw new ArgumentException(INVALID_STRING);
-
-        }
-
-
-        /**
-            Changes the ConfiguredProduct's reference.
-         */
-        public void changeReference(string reference)
-        {
-            if (String.IsNullOrEmpty(reference)) throw new ArgumentException(INVALID_PRODUCT_REFERENCE);
-            this.reference = reference;
-        }
-
-        /**
-            Changes the ConfiguredProduct's designation.
-         */
-        public void changeDesignation(string designation)
-        {
-            if (String.IsNullOrEmpty(designation)) throw new ArgumentException(INVALID_PRODUCT_DESIGNATION);
-            this.designation = designation;
-        }
-
-        /**
-        <summary>
-            Returns the ConfiguredProduct's identity.
-        </summary>
-        <returns>String with the ConfiguredProduct's identity</returns>
-         */
-        public string id()
-        {
-            return reference;
-        }
-
-        public bool sameAs(string comparingEntity)
-        {
-            return reference.Equals(comparingEntity,StringComparison.InvariantCultureIgnoreCase);
-        }
-
-
-    
     }
 }
