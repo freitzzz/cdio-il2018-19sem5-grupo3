@@ -13,7 +13,7 @@ using Xunit;
 namespace backend_tests.Controllers
 {
     [Collection("Integration Collection")]
-    [TestCaseOrderer("backend_tests.Setup.TestPriorityOrderer", "backend_tests")]
+    [TestCaseOrderer(TestPriorityOrderer.TYPE_NAME, TestPriorityOrderer.ASSEMBLY_NAME)]
     public class ProductCategoryControllerIntegrationTest : IClassFixture<TestFixture<TestStartupSQLite>>
     {
 
