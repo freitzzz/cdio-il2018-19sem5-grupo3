@@ -109,23 +109,14 @@ namespace core.domain
         /// <param name = "customizedDimensions">String with the new CustomizedProduct's CustomizedDimensions</param>
         /// <param name = "customizedMaterial">String with the new CustomizedProduct's CustomizedMaterial</param>
         /// <param name = "product">String with the new CustomizedProduct's Product</param>DDD
+        /// <param name="slots">List containing instances of Slot.</param>
         /// </summary>
-        /* public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial,
-        CustomizedDimensions customizedDimensions, Product product, List<Slot> slots)
+        public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial,
+        CustomizedDimensions customizedDimensions, Product product, List<Slot> slots) : 
+            this(reference, designation, customizedMaterial, customizedDimensions, product)
         {
-            checkCustomizedMaterial(customizedMaterial);
-            checkCustomizedDimensions(customizedDimensions);
-            checkProduct(product);
-            checkString(reference, INVALID_PRODUCT_REFERENCE);
-            checkString(designation, INVALID_PRODUCT_DESIGNATION);
-
-            this.reference = reference;
-            this.designation = designation;
-            this.customizedDimensions = customizedDimensions;
-            this.customizedMaterial = customizedMaterial;
-            this.product = product;
-            this.slots = slots;
-        } */
+            this.slots.AddRange(slots);
+        }
 
         /// <summary>
         /// Returns the CustomizedProduct's identity
