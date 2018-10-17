@@ -41,7 +41,7 @@ namespace backend_tests.Setup
                 .AssemblyQualifiedName)
                 .FirstOrDefault();
 
-                var priority = attribute.GetNamedArgument<int>("Priority");
+                var priority = attribute.GetNamedArgument<int>("priority");
                 sortedTestMethods.Add(priority, testCase);
             }
 

@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using core.dto;
 using support.domain.ddd;
+using support.dto;
+
 namespace core.domain
 {
     /**
@@ -9,7 +12,7 @@ namespace core.domain
         <br> Customized Material is value object;
     </summary>
     */
-    public class CustomizedMaterial : ValueObject
+    public class CustomizedMaterial : ValueObject , DTOAble<CustomizedMaterialDTO>
     {
         /**
         <summary>
@@ -181,6 +184,17 @@ namespace core.domain
                 CustomizedMaterial configMaterial = (CustomizedMaterial)obj;
                 return finish.Equals(configMaterial.finish) && color.Equals(configMaterial.color);
             }
+        }
+        /// <summary>
+        /// Returns the DTO equivalent of the current instance
+        /// </summary>
+        /// <returns>DTO equivalent of the current instance</returns>
+        public CustomizedMaterialDTO toDTO() {
+            CustomizedMaterialDTO dto = new CustomizedMaterialDTO();
+            dto.id = this.Id;
+            dto.color = this.color.toDTO();
+            dto.finish = this.finish.toDTO();
+            return dto;
         }
 
     }

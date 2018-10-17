@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using support.dto;
 
 namespace core.dto
 {
@@ -7,7 +8,7 @@ namespace core.dto
     /// Class to help the deserialization of a CustomizedProduct's updates from JSON format
     /// </summary>
     [DataContract]
-    public class SlotListDTO
+    public class SlotListDTO : DTO
     {
         /// <summary>
         /// List of SlotDTOs with the CustomizedProduct's Slots

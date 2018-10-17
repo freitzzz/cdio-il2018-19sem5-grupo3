@@ -19,8 +19,8 @@ namespace core.persistence
         /// <summary>
         /// Fetches an enumerable of Commercial Catalogues by their ids
         /// </summary>
-        /// <param name="productsDTO">IEnumerable with the products information</param>
-        /// <returns>IEnumerable with the fetched products</returns>
+        /// <param name="commercialCataloguesDTO">IEnumerable with the commercialCatalogues information</param>
+        /// <returns>IEnumerable with the fetched commercialCatalogues</returns>
         IEnumerable<CommercialCatalogue> fetchCommercialCataloguesById(IEnumerable<CommercialCatalogueDTO> commercialCataloguesDTO);
 
     }

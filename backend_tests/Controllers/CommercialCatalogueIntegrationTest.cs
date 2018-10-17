@@ -12,91 +12,121 @@ using core.domain;
 
 namespace backend_tests.Controllers
 {
-     /// <summary>
+    /// <summary>
     /// Integration Tests for Commercial Catalogue API
     /// </summary>
     /// <typeparam name="TestStartupSQLite">class that handles database startup</typeparam>
     [Collection("Integration Collection")]
-    [TestCaseOrderer(TestPriorityOrderer.TYPE_NAME,TestPriorityOrderer.ASSEMBLY_NAME)]
-    public class CommercialCatalogueIntegrationTest: IClassFixture<TestFixture<TestStartupSQLite>>
+    [TestCaseOrderer(TestPriorityOrderer.TYPE_NAME, TestPriorityOrderer.ASSEMBLY_NAME)]
+    public class CommercialCatalogueIntegrationTest : IClassFixture<TestFixture<TestStartupSQLite>>
     {
-        // /// <summary>
-        // /// Materials URI for HTTP Requests
-        // /// </summary>
-        // private const string urlBase = "/myc/api/commercialcatalogue";
+        /// <summary>
+        /// Materials URI for HTTP Requests
+        /// </summary>
+        private const string urlBase = "/myc/api/commercialcatalogues";
 
-        // /// <summary>
-        // /// HTTP Client to perform HTTP Requests to the test server
-        // /// </summary>
-        // private HttpClient client;
-        
-        // /// <summary>
-        // /// Injected Mock Server
-        // /// </summary>
-        // private TestFixture<TestStartupSQLite> fixture;
+        /// <summary>
+        /// HTTP Client to perform HTTP Requests to the test server
+        /// </summary>
+        private HttpClient client;
 
-        // /// <summary>
-        // /// Builds a CommercialCatalogueIntegrationTest instance with an injected mocked server
-        // /// </summary>
-        // /// <param name="fixture">injected mocked server</param>
-        // public CommercialCatalogueIntegrationTest(TestFixture<TestStartupSQLite> fixture)
-        // {
-        //     client = fixture.httpClient;
-        //     this.fixture = fixture;
-        // }
+        /// <summary>
+        /// Injected Mock Server
+        /// </summary>
+        private TestFixture<TestStartupSQLite> fixture;
 
-        //  /// <summary>
-        // /// Ensures that a product is created succesfuly
-        // /// </summary>
-        // /// <returns>ProductDTO with the created product</returns>
-        // public async Task<CommercialCatalogueDTO> ensureCommercialCatalogueIsSuccesfullyCreated(){
-        //     //We are going to create a valid CommercialCatalogue
-        //     //A valid product creation requires a valid reference, a valid desgination
-        //     //A valid category, valid dimensions and valid materials
-        //     //Components are not required
-        //     //To ensure atomicity, our reference will be generated with a timestamp (We have no bussiness rules so far as how they should be so its valid at this point)
-        //     string reference="#666"+DateTime.Now;
-        //     //Designation can be whatever we decide
-        //     string designation="Time N Place";
-        //     List<CustomizedProductCollectionDTO> list = new List<CustomizedProductCollectionDTO>();
-        //     CustomizedProductCollectionDTO customizedProductCollectionDTO = new CustomizedProductCollectionDTO(reference,designation,listCu);
+        /// <summary>
+        /// Builds a CommercialCatalogueIntegrationTest instance with an injected mocked server
+        /// </summary>
+        /// <param name="fixture">injected mocked server</param>
+        public CommercialCatalogueIntegrationTest(TestFixture<TestStartupSQLite> fixture)
+        {
+            client = fixture.httpClient;
+            this.fixture = fixture;
+        }
 
-        //     List<CustomizedProductDTO> listCustom = new List<CustomizedProductDTO>();
-        //     Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-        //     Finish finish = Finish.valueOf("Acabamento polido");
-        //     CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
+        [Fact, TestPriority(1)]
+        public async Task ensurePostCommercialCatalogueFailsWithEmptyRequestBody()
+        {
+            var response = await client.PostAsJsonAsync(urlBase, "{}");
+            Console.WriteLine(response.StatusCode);
+            Assert.True(response.StatusCode == HttpStatusCode.NotFound);
+        }
 
-        //     CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+        [Fact, TestPriority(2)]
+//         public async Task<CommercialCatalogueDTO> ensurePostCommercialCatalogueWorks()
+//         {
 
-        //     ProductCategory prodCat = new ProductCategory("Category 1");
-        //     List<Double> values2 = new List<Double>();
-        //     values2.Add(500.0); //Width
-        //     DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-        //     List<Dimension> valuest = new List<Dimension>();
-        //     valuest.Add(d2);
-        //     IEnumerable<Dimension> heightDimensions = valuest;
-        //     IEnumerable<Dimension> widthDimensions = valuest;
-        //     IEnumerable<Dimension> depthDimensions = valuest;
-        //     List<Color> colors = new List<Color>();
-        //     colors.Add(color);
+//             ProductCategoryDTO categoryDTO = new ProductCategoryDTO();
+//             categoryDTO.name = "Category";
 
-        //     List<Finish> finishes = new List<Finish>();
-        //     finishes.Add(finish);
+//             ColorDTO colorDTO = new ColorDTO();
+//             colorDTO.name = "Bule";
+//             colorDTO.alpha = 1;
+//             colorDTO.blue = 1;
+//             colorDTO.green = 1;
+//             colorDTO.red = 1;
+//             List<ColorDTO> colorsDTO = new List<ColorDTO>();
+//             colorsDTO.Add(colorDTO);
+//             FinishDTO finishDTO = new FinishDTO();
+//             finishDTO.description = "Finish";
+//             List<FinishDTO> finishesDTO = new List<FinishDTO>();
+//             finishesDTO.Add(finishDTO);
+//             MaterialDTO materialDTO = new MaterialDTO();
+//             materialDTO.reference = "1";
+//             materialDTO.designation = "Material";
+//             materialDTO.finishes = finishesDTO;
+//             materialDTO.colors = colorsDTO;
 
-        //     Material material = new Material("1234", "Material", colors, finishes);
-        //     List<Material> listMaterial = new List<Material>();
-        //     listMaterial.Add(material);
-        //     IEnumerable<Material> materials = listMaterial;
-        //     Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+//             List<MaterialDTO> materialsDTO = new List<MaterialDTO>();
+//             materialsDTO.Add(materialDTO);
+//             IEnumerable<MaterialDTO> materialsIEnum = materialsDTO;
 
-        //     CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+//             List<Double> values2 = new List<Double>();
+//             values2.Add(500.0); //Width
+//             DiscreteDimensionIntervalDTO d2 = new DiscreteDimensionIntervalDTO();
+//             d2.values = values2;
+//             List<DimensionDTO> valuest = new List<DimensionDTO>();
+//             valuest.Add(d2);
 
-        //     listCustom.Add(custProduct.toDTO());
-        //     //CustomizedProductCollection must previously exist as they can be shared in various products
-            
-        //     //TODO fix return statementreturn httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON(productDTO));
-        //     return null;
-        // }
+//             IEnumerable<DimensionDTO> heightDimensions = valuest;
+//             IEnumerable<DimensionDTO> widthDimensions = valuest;
+//             IEnumerable<DimensionDTO> depthDimensions = valuest;
+//             ProductDTO productDTO = new ProductDTO();
+//             productDTO.designation = "Product";
+//             productDTO.reference = "4";
+//             productDTO.productMaterials = materialsDTO;
+//             productDTO.productCategory = categoryDTO;
+//             productDTO.dimensions =
+
+//             ("2", "Product", category, materialsIEnum, heightDimensions, widthDimensions, depthDimensions);
+
+//             CustomizedMaterialDTO custMaterialDTO = new CustomizedMaterialDTO();
+//             custMaterialDTO.color = colorDTO;
+//             custMaterialDTO.finish = finishDTO;
+
+//             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(23.4, 4.5, 6.0);
+
+
+//             CustomizedProduct custProduct = new CustomizedProduct("3", "Customized Product", custMaterial, custDimensions, product);
+//             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
+//             custProducts.Add(custProduct);
+
+//             CustomizedProductCollection productsCollection = new CustomizedProductCollection("CustomizedProductsCollection", custProducts);
+
+//             CatalogueCollection catalogueCollection = new CatalogueCollection(custProducts, productsCollection);
+
+//             List<CatalogueCollection> listCatalogueCollection = new List<CatalogueCollection>();
+//             listCatalogueCollection.Add(catalogueCollection);
+
+//             CommercialCatalogue commercialCatalogue = new CommercialCatalogue("6", "Catalogue", listCatalogueCollection);
+//             CommercialCatalogueDTO commercialCatalogueDTO = commercialCatalogue.toDTO();
+// S            var response = await client.PostAsJsonAsync(urlBase, commercialCatalogueDTO);
+
+//             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+//             return JsonConvert.DeserializeObject<CommercialCatalogueDTO>(await response.Content.ReadAsStringAsync());
+//         }
 
 
     }

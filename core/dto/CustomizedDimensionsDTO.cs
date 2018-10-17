@@ -44,7 +44,9 @@ namespace core.dto
 
         public CustomizedDimensions toEntity()
         {
-            return CustomizedDimensions.valueOf(height, width, depth);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(height, width, depth);
+            custDimensions.Id=this.Id;
+             return custDimensions;
         }
     }
 }
