@@ -65,22 +65,37 @@ namespace backend.persistence.ef
             builder.Entity<DiscreteDimensionInterval>().HasBaseType<Dimension>();
             builder.Entity<SingleValueDimension>().HasBaseType<Dimension>();
 
+            builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values); //one-to-many relationship
 
-            builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values).WithOne();   //one-to-many relationship
+            //Configure one-to-one relationship between parent and child ProductCategory
+            //*Change to many-to-one??? */
+            builder.Entity<ProductCategory>().HasOne(c => c.parent).WithOne().HasForeignKey<ProductCategory>(c => c.parentId);
 
-            builder.Entity<Material>().HasMany(m => m.Colors).WithOne();        //one-to-many relationship
-            builder.Entity<Material>().HasMany(m => m.Finishes).WithOne();      //one-to-many relationship
+            builder.Entity<Material>().HasMany(m => m.Colors);                  //one-to-many relationship
+            builder.Entity<Material>().HasMany(m => m.Finishes);                //one-to-many relationship
 
-            builder.Entity<Product>().HasOne(p => p.productCategory);           //one-to-one relationship
-            builder.Entity<Product>().HasMany(p => p.depthValues).WithOne();    //one-to-many relationship
-            builder.Entity<Product>().HasMany(p => p.widthValues).WithOne();    //one-to-many relationship
-            builder.Entity<Product>().HasMany(p => p.heightValues).WithOne();   //one-to-many relationship
+            //Configure many-to-many relationship between Product and Material
+            builder.Entity<ProductMaterial>().HasOne(m =>m.material).WithMany();
             builder.Entity<Product>().HasMany(p => p.productMaterials).WithOne(pm =>pm.product);
 
-            builder.Entity<ProductMaterial>().HasOne(m =>m.material).WithMany();
+            builder.Entity<Product>().HasOne(p => p.productCategory);           //many-to-one relationship
+            builder.Entity<Product>().HasMany(p => p.depthValues);              //one-to-many relationship
+            builder.Entity<Product>().HasMany(p => p.widthValues);              //one-to-many relationship
+            builder.Entity<Product>().HasMany(p => p.heightValues);             //one-to-many relationship
+            builder.Entity<Product>().OwnsOne(p => p.minSlotSize);              //embedded Dimensions
+            builder.Entity<Product>().OwnsOne(p => p.maxSlotSize);              //embedded Dimensions
+            builder.Entity<Product>().OwnsOne(p => p.recommendedSlotSize);      //embedded Dimensions
 
-            builder.Entity<CommercialCatalogue>().HasMany(c => c.collectionList).WithOne();
-            builder.Entity<ProductCategory>().HasOne(c => c.parent).WithOne().HasForeignKey<ProductCategory>(c => c.parentId);
+            builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedDimensions); //embedded Dimensions
+            builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedMaterial);   //embedded CustomizedMaterial
+
+            builder.Entity<Slot>().OwnsOne(s => s.slotDimensions);              //embedded Dimensions
+            builder.Entity<Slot>().HasMany(s => s.customizedProducts);          //one-to-many relationship
+
+            builder.Entity<CommercialCatalogue>().HasMany(c => c.collectionList); //one-to-many relationship
+            
+            builder.Entity<CatalogueCollection>().HasMany(c => c.customizedProduct);
+            builder.Entity<CatalogueCollection>().HasOne(c => c.customizedProductCollection);   //one-to-one relationship
         }
     }
 }
