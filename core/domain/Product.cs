@@ -611,47 +611,6 @@ namespace core.domain {
             }
         }
 
-        /// <summary>
-        /// Inner static class which represents the Product properties used to map on data holders (e.g. DTO)
-        /// </summary>
-        public static class Properties {
-            /// <summary>
-            /// Constant that represents the context of the properties
-            /// </summary>
-            public const string CONTEXT = "Product";
-            /// <summary>
-            /// Constant that represents the name of the property which maps the product designation
-            /// </summary>
-            public const string DESIGNATION_PROPERTY = "designation";
-            /// <summary>
-            /// Constant that represents the name of the property which maps the product reference
-            /// </summary>
-            public const string REFERENCE_PROPERTY = "reference";
-            /// <summary>
-            /// Constant that represents the name of the property which maps the product persistence identifier
-            /// </summary>
-            public const string PERSISTENCE_ID_PROPERTY = "persistence_id";
-            /// <summary>
-            /// Constant that represents the name of the property which maps the product materials
-            /// </summary>
-            public const string MATERIALS_PROPERTY = "materials";
-            /// <summary>
-            /// Constant that represents the name of the property which maps the product complemented products
-            /// </summary>
-            public const string COMPLEMENTED_PRODUCTS_PROPERTY = "complemented_products";
-            /// <summary>
-            /// Constant that represents the name of the property which maps the product height values
-            /// </summary>
-            public const string HEIGHT_VALUES_PROPERTIES = "height_values";
-            /// <summary>
-            /// Constant that represents the name of the property which maps the product width values
-            /// </summary>
-            public const string WIDTH_VALUES_PROPERTIES = "width_values";
-            /// <summary>
-            /// Constant that represents the name of the property which maps the product depth values
-            /// </summary>
-            public const string DEPTH_VALUES_PROPERTIES = "depth_values";
-        }
         /*
         /// <summary>
         /// Represents a builder of products
