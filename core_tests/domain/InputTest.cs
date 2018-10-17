@@ -1,4 +1,5 @@
 ﻿using core.domain;
+using core.dto;
 using System;
 using Xunit;
 
@@ -33,6 +34,18 @@ namespace core_tests.domain {
             string name = "der alte würfelt nicht";
             Input input = new Input(name);
             Assert.Equal(name, input.name);
+        }
+        /// <summary>
+        /// Ensure toDTO succeeds
+        /// </summary>
+        [Fact]
+        public void ensureToDTOSucceeds() {
+            Console.WriteLine("ensureToDTOSucceeds");
+            Input input = new Input("Altair");
+            input.value = "Vega";
+            InputDTO dto = input.toDTO();
+            Assert.Equal(input.name, dto.name);
+            Assert.Equal(input.value, dto.value);
         }
     }
 }
