@@ -133,11 +133,12 @@ namespace backend.Controllers
         ///         <br>See MyC REST API documentation for a better overview
         /// </returns>
         [HttpPut("{id}/collections")]
-        public ActionResult<CommercialCatalogueDTO> addCollection(long id, [FromBody]CatalogueCollectionDTO customizedProductCollectionDTO)
+        public ActionResult<CommercialCatalogueDTO> addCollection(long id, [FromBody]UpdateCommercialCatalogueDTO updateCatalogueCollectionDTO)
         {
             try
             {
-                CommercialCatalogueDTO createdComCatalogueDTO = new core.application.CommercialCatalogueController().addCollection(id, customizedProductCollectionDTO);
+                updateCatalogueCollectionDTO.id=id;
+                CommercialCatalogueDTO createdComCatalogueDTO = new core.application.CommercialCatalogueController().updateCollection(updateCatalogueCollectionDTO);
                 if (createdComCatalogueDTO != null)
                 {
                     return Created(Request.Path, createdComCatalogueDTO);
@@ -169,7 +170,7 @@ namespace backend.Controllers
         ///         <br>HTTP Response 400 Bad Request if an error occured while creating the commercialCatalogue
         ///         <br>See MyC REST API documentation for a better overview
         /// </returns>
-        [HttpPut("{id}/collections/{idC}")]
+        [HttpPut("{id}/collections/")]
         public ActionResult<CommercialCatalogueDTO> removeCollection(long id, long idC)
         {
             try
