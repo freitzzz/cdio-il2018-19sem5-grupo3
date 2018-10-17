@@ -102,6 +102,32 @@ namespace core.domain
         }
 
         /// <summary>
+        /// Builds a new instance of CustomizedProduct, receiving its reference,
+        /// designation, dimensions, material and the Product it refers to
+        /// <param name = "reference">String with the new CustomizedProduct's reference</param>
+        /// <param name = "designation">String with the new CustomizedProduct's designation</param>
+        /// <param name = "customizedDimensions">String with the new CustomizedProduct's CustomizedDimensions</param>
+        /// <param name = "customizedMaterial">String with the new CustomizedProduct's CustomizedMaterial</param>
+        /// <param name = "product">String with the new CustomizedProduct's Product</param>DDD
+        /// </summary>
+        public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial,
+        CustomizedDimensions customizedDimensions, Product product, List<Slot> slots)
+        {
+            checkCustomizedMaterial(customizedMaterial);
+            checkCustomizedDimensions(customizedDimensions);
+            checkProduct(product);
+            checkString(reference, INVALID_PRODUCT_REFERENCE);
+            checkString(designation, INVALID_PRODUCT_DESIGNATION);
+
+            this.reference = reference;
+            this.designation = designation;
+            this.customizedDimensions = customizedDimensions;
+            this.customizedMaterial = customizedMaterial;
+            this.product = product;
+            this.slots = slots;
+        }
+
+        /// <summary>
         /// Returns the CustomizedProduct's identity
         /// </summary>
         /// <returns>String with the CustomizedProduct's identity</returns>
@@ -272,8 +298,8 @@ namespace core.domain
             dto.reference = this.reference;
             dto.designation = this.designation;
             dto.productDTO = this.product.toDTO();
-            dto.customizedDimensions = this.customizedDimensions;
-            dto.customizedMaterial = this.customizedMaterial;
+            dto.customizedDimensionsDTO = this.customizedDimensions.toDTO();
+            dto.customizedMaterialDTO = this.customizedMaterial;
             dto.id = this.Id;
             return dto;
         }
