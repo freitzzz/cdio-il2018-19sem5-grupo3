@@ -53,6 +53,7 @@ namespace backend_tests.Controllers
             Assert.True(response.StatusCode == HttpStatusCode.NotFound);
         }
 
+
         [Fact, TestPriority(2)]
         public async Task<CommercialCatalogueDTO> ensurePostCommercialCatalogueWorks()
         {
@@ -94,6 +95,7 @@ namespace backend_tests.Controllers
 
             List<CatalogueCollectionDTO> listCatalogueCollection = new List<CatalogueCollectionDTO>();
             listCatalogueCollection.Add(catalogueCollection);
+
 
             CommercialCatalogueDTO commercialCatalogue = new CommercialCatalogueDTO();
             commercialCatalogue.reference = "6";

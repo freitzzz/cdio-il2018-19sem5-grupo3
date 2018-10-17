@@ -92,7 +92,7 @@ namespace core.application
 
             }
 
-            List<CustomizedProduct> list = new List<CustomizedProduct>();
+           /*  List<CustomizedProduct> list = new List<CustomizedProduct>();
             foreach (CustomizedProductDTO customizedProductDTO in customizedCatalogueDTO.customizedProductsDTO)
             {
                 CustomizedProduct customizedProduct = PersistenceContext.repositories().createCustomizedProductRepository().find(customizedProductDTO.id);
@@ -100,12 +100,12 @@ namespace core.application
             }
 
             CatalogueCollection customizedCatalogue = new CatalogueCollection(list, collection);
-            bool test = newComCatalogue.addCollection(customizedCatalogue);
-            if (!test)
+            bool test = newComCatalogue.addCollection(customizedCatalogue); */
+           /*  if (!test)
             {
                 return null;
-            }
-            CommercialCatalogue createdComCatalogue = PersistenceContext.repositories().createCommercialCatalogueRepository().update(newComCatalogue);
+            } */
+            CommercialCatalogue createdComCatalogue = PersistenceContext.repositories().createCommercialCatalogueRepository().update(null);//newComCatalogue);
             if (createdComCatalogue == null) return null;
             return createdComCatalogue.toDTO();
 
