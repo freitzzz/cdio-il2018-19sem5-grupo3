@@ -38,16 +38,16 @@ namespace core.dto
         /// </summary>
         /// <value>Gets/sets the value of the customized products field.</value>
         [DataMember]
-        public List<CustomizedProductCollectionDTO> collectionList { get; set; }
+        public List<CatalogueCollectionDTO> collectionList { get; set; }
         /// <summary>
         /// Returns this DTO's equivalent Entity
         /// </summary>
         /// <returns>DTO's equivalent Entity</returns>
         public CommercialCatalogue toEntity()
         {
-            List<CustomizedProductCollection> custProducts = new List<CustomizedProductCollection>();
+            List<CatalogueCollection> custProducts = new List<CatalogueCollection>();
 
-            foreach (CustomizedProductCollectionDTO dto in this.collectionList)
+            foreach (CatalogueCollectionDTO dto in this.collectionList)
             {
                 custProducts.Add(dto.toEntity());
             }

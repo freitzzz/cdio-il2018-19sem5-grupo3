@@ -64,7 +64,7 @@ namespace core.domain
             List with all the CommercialCatalogue's<Collection.
         </summary>
         **/
-        public virtual List<CustomizedProductCollection> collectionList { get; protected set; }
+        public virtual List<CatalogueCollection> collectionList { get; protected set; }
 
         /// <summary>
         /// Empty constructor used by ORM.
@@ -80,7 +80,7 @@ namespace core.domain
         <param name = "custoProduct">List with the new CommercialCatalogue's custoProduct</param>
          */
         public CommercialCatalogue(string reference, string designation,
-        List<CustomizedProductCollection> custoProduct)
+        List<CatalogueCollection> custoProduct)
         {
             checkComCatalogueProperties(reference, designation, custoProduct);
             this.reference = reference;
@@ -99,7 +99,7 @@ namespace core.domain
         {
             this.reference = reference;
             this.designation = designation;
-            this.collectionList = new List<CustomizedProductCollection>();
+            this.collectionList = new List<CatalogueCollection>();
                     }
 
         /**
@@ -111,7 +111,7 @@ namespace core.domain
         <param name = "custoProduct">List with the new CommercialCatalogue's custoProduct</param>
         */
         private void checkComCatalogueProperties(string reference,
-        string designation, List<CustomizedProductCollection> custoProduct)
+        string designation, List<CatalogueCollection> custoProduct)
         {
             if (Strings.isNullOrEmpty(reference)) throw new ArgumentException(INVALID_COM_CATALOGUE_REFERENCE);
             if (Strings.isNullOrEmpty(designation)) throw new ArgumentException(INVALID_COM_CATALOGUE_DESIGNATION);
@@ -154,25 +154,13 @@ namespace core.domain
         <param name = "Collection"<Collection to add</param>
         <returns>True if the<Collection is successfully added, false if not</returns>
         */
-        public bool addCollection(CustomizedProductCollection collection)
+        public bool addCollection(CatalogueCollection collection)
         {
             if (collection == null || collectionList.Contains(collection)) return false;
             collectionList.Add(collection);
             return true;
         }
-        /**
-        <summary>
-            Adds a Customized Product to a list of Collections.
-        </summary>
-        <param name = "Collection" Collection to be added from</param>
-        <param name = "CustomizedProduct" customizedProduct to add </param>
-        <returns>True if the<Collection is successfully removed, false if not</returns>
-        */
-        public bool addCustomizedProductToCollection(CustomizedProductCollection collection,CustomizedProduct customizedProduct)
-        {
-            if (collection == null)return false;
-            return collection.addCustomizedProduct(customizedProduct);
-        }
+      
 
         /**
         <summary>
@@ -181,24 +169,13 @@ namespace core.domain
         <param name = <Collection"<Collection to remove</param>
         <returns>True if the<Collection is successfully removed, false if not</returns>
         */
-        public bool removeCollection(CustomizedProductCollection collection)
+        public bool removeCollection(CatalogueCollection collection)
         {
             if (collection == null) return false;
             return collectionList.Remove(collection);
         }
 
-         /**
-        <summary>
-            Removes a Customized Product from a list of Collections.
-        </summary>
-        <param name = <Collection"<Collection to remove</param>
-        <returns>True if the<Collection is successfully removed, false if not</returns>
-        */
-        public bool removeCustomizedProductFromCollection(CustomizedProductCollection collection,CustomizedProduct customizedProduct)
-        {
-             if (collection == null)return false;
-             return collection.removeCustomizedProduct(customizedProduct);
-        }
+      
         /**
         <summary>
             Checks if the CommercialCatalogue has a certain<Collection on its list of<Collection.
@@ -209,7 +186,12 @@ namespace core.domain
         public bool hasCollection(CustomizedProductCollection collection)
         {
             if (collection == null) return false;
-            return collectionList.Contains(collection);
+            foreach(CatalogueCollection customizedCatalogue in collectionList){
+                if(customizedCatalogue.customizedProductCollection.Equals(collection)){
+                    return true;
+                }
+            }
+            return false;
         }
         /**
         <summary>
@@ -235,8 +217,8 @@ namespace core.domain
             dto.reference = this.reference;
             dto.designation = this.designation;
             dto.id = this.Id;
-            List<CustomizedProductCollectionDTO> dtoCustoProducts = new List<CustomizedProductCollectionDTO>();
-            foreach (CustomizedProductCollection c in collectionList)
+            List<CatalogueCollectionDTO> dtoCustoProducts = new List<CatalogueCollectionDTO>();
+            foreach (CatalogueCollection c in collectionList)
             {
                 dtoCustoProducts.Add(c.toDTO());
             }
@@ -284,6 +266,8 @@ namespace core.domain
                 return reference.Equals(commercialCatalogue.reference);
             }
         }
+
+        
 
     }
 }

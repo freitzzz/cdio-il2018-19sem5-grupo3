@@ -13,6 +13,17 @@ namespace backend_tests.Setup
     /// </summary>
     public class TestPriorityOrderer : ITestCaseOrderer
     {
+
+        /// <summary>
+        /// Constant representing the TestPriorityOrderer's type name.
+        /// </summary>
+        public const string TYPE_NAME = "backend_tests.Setup.TestPriorityOrderer";
+
+        /// <summary>
+        /// Constant representing the TestPriorityOrderer's assembly name.
+        /// </summary>
+        public const string ASSEMBLY_NAME = "backend_tests";
+
         /// <summary>
         /// Organizes tests in a specific order
         /// </summary>
