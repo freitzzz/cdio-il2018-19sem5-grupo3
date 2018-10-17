@@ -133,11 +133,12 @@ namespace backend.Controllers
         ///         <br>See MyC REST API documentation for a better overview
         /// </returns>
         [HttpPut("{id}/collections")]
-        public ActionResult<CommercialCatalogueDTO> addCollection(long id, [FromBody]CatalogueCollectionDTO customizedProductCollectionDTO)
+        public ActionResult<CommercialCatalogueDTO> addCollection(long id, [FromBody]UpdateCommercialCatalogueDTO updateCatalogueCollectionDTO)
         {
             try
             {
-                CommercialCatalogueDTO createdComCatalogueDTO = new core.application.CommercialCatalogueController().addCollection( id, customizedProductCollectionDTO);
+                updateCatalogueCollectionDTO.id=id;
+                CommercialCatalogueDTO createdComCatalogueDTO = new core.application.CommercialCatalogueController().updateCollection(updateCatalogueCollectionDTO);
                 if (createdComCatalogueDTO != null)
                 {
                     return Created(Request.Path, createdComCatalogueDTO);
@@ -159,9 +160,9 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(argumentException.Message));
             }
-        } 
+        }
 
-       /*  /// <summary>
+        /// <summary>
         /// Removes a collection.
         /// </summary>
         /// <param name="jsonData">JObject with the commercialCatalogue information in JSON</param>
@@ -169,12 +170,12 @@ namespace backend.Controllers
         ///         <br>HTTP Response 400 Bad Request if an error occured while creating the commercialCatalogue
         ///         <br>See MyC REST API documentation for a better overview
         /// </returns>
-        [HttpPost]
-        public ActionResult<CommercialCatalogueDTO> removeCollection([FromBody]CommercialCatalogueDTO comCatalogueDTO, CustomizedProductCollectionDTO customizedProductCollectionDTO)
+        [HttpPut("{id}/collections/")]
+        public ActionResult<CommercialCatalogueDTO> removeCollection(long id, long idC)
         {
             try
             {
-                CommercialCatalogueDTO createdComCatalogueDTO = new core.application.CommercialCatalogueController().removeCollection(comCatalogueDTO, customizedProductCollectionDTO);
+                CommercialCatalogueDTO createdComCatalogueDTO = new core.application.CommercialCatalogueController().removeCollection(id,idC);
                 if (createdComCatalogueDTO != null)
                 {
                     return Created(Request.Path, createdComCatalogueDTO);
@@ -196,6 +197,6 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(argumentException.Message));
             }
-        }  */
+        }  
     }
 }
