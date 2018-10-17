@@ -132,12 +132,12 @@ namespace backend.Controllers
         ///         <br>HTTP Response 400 Bad Request if an error occured while creating the commercialCatalogue
         ///         <br>See MyC REST API documentation for a better overview
         /// </returns>
-        [HttpPost("{id}/collections")]
-        public ActionResult<CommercialCatalogueDTO> addCollection(long idCommercialCatalogue, [FromBody]long idCollection)
+        [HttpPut("{id}/collections")]
+        public ActionResult<CommercialCatalogueDTO> addCollection(long id, [FromBody]CatalogueCollectionDTO customizedProductCollectionDTO)
         {
             try
             {
-                CommercialCatalogueDTO createdComCatalogueDTO = new core.application.CommercialCatalogueController().addCollection(idCommercialCatalogue, idCollection);
+                CommercialCatalogueDTO createdComCatalogueDTO = new core.application.CommercialCatalogueController().addCollection( id, customizedProductCollectionDTO);
                 if (createdComCatalogueDTO != null)
                 {
                     return Created(Request.Path, createdComCatalogueDTO);

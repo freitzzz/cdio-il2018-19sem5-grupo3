@@ -409,49 +409,25 @@ namespace core_tests.domain {
         }
 
         /// <summary>
-        /// Ensures that a product with a negative slot maximum size is invalid
-        /// </summary>
-        [Fact]
-        public void ensureNegativeMaxSlotSizeIsInvalid(){
-            Console.WriteLine("ensureNegativeMaxSlotCountIsInvalid");
-            string id = "Test";
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, -1, 3, 5,
-            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
-            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
-        }
-
-        /// <summary>
-        /// Ensures that a product with a negative slot minimumm size is invalid
-        /// </summary>
-        [Fact]
-        public void ensureNegativeMinSlotSizeIsInvalid(){
-            Console.WriteLine("ensureNegativeMinSlotSizeIsInvalid");
-            string id = "Test";
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, 3, -1, 5,
-            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
-            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
-        }
-
-        /// <summary>
-        /// Ensures that a product with a negative slot recommended size is invalid
-        /// </summary>
-        [Fact]
-        public void ensureNegativeRecommendedSlotSizeIsInvalid(){
-            Console.WriteLine("ensureNegativeRecommendedSlotSizeIsInvalid");
-            string id = "Test";
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, 3, 1, -1,
-            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
-            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
-        }
-
-        /// <summary>
         /// Ensures that a product with a minimum slot size larger than its maximum size is invalid
         /// </summary>
         [Fact]
         public void ensureInvalidMinToMaxSlotSizeRatioIsInvalid(){
             Console.WriteLine("ensureInvalidMinToMaxSlotSizeRatioIsInvalid");
             string id = "Test";
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, 3, 10, 1,
+            ///for height
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, CustomizedDimensions.valueOf(5, 6, 7),
+            CustomizedDimensions.valueOf(6, 6, 7), CustomizedDimensions.valueOf(5, 6, 7),
+            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
+            ///for width
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, CustomizedDimensions.valueOf(5, 6, 7),
+            CustomizedDimensions.valueOf(4, 9, 7), CustomizedDimensions.valueOf(5, 6, 7),
+            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
+            ///for depth
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, CustomizedDimensions.valueOf(5, 6, 7),
+            CustomizedDimensions.valueOf(4, 6, 9), CustomizedDimensions.valueOf(5, 6, 7),
             PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
             PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
         }
@@ -463,7 +439,19 @@ namespace core_tests.domain {
         public void ensureInvalidRecommendedToMaxSlotSizeRatioIsInvalid(){
             Console.WriteLine("ensureInvalidRecommendedToMaxSlotSizeRatioIsInvalid");
             string id = "Test";
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, 3, 1, 4,
+            ///for height
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, CustomizedDimensions.valueOf(5, 6, 7),
+            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(6, 6, 7),
+            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
+            ///for width
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, CustomizedDimensions.valueOf(5, 6, 7),
+            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(5, 9, 7),
+            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
+            ///for depth
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, CustomizedDimensions.valueOf(5, 6, 7),
+            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(5, 6, 9),
             PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
             PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
         }
@@ -475,7 +463,19 @@ namespace core_tests.domain {
         public void ensureInvalidRecommendedToMinSlotSizeRatioIsInvalid(){
             Console.WriteLine("ensureInvalidRecommendedToMinSlotSizeRatioIsInvalid");
             string id = "Test";
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, 5, 3, 2,
+            ///for height
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, CustomizedDimensions.valueOf(5, 6, 7),
+            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(2, 6, 7),
+            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
+            ///for width
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, CustomizedDimensions.valueOf(5, 6, 7),
+            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(2, 6, 7),
+            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
+            ///for depth
+            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", true, CustomizedDimensions.valueOf(5, 6, 7),
+            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(5, 6, 2),
             PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
             PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS));
         }
@@ -487,11 +487,13 @@ namespace core_tests.domain {
         public void ensureToStringWorks(){
             Console.WriteLine("ensureToStringWorks");
             string id = "Test";
-            Assert.Equal(new Product(id, "Shelf", true, 4, 2, 3, PREDEFEFINED_CATEGORY,
-            new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            Assert.Equal(new Product(id, "Shelf", true, CustomizedDimensions.valueOf(5, 6, 7),
+            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(5, 6, 6),
+            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
             PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS).ToString(),
-            new Product(id, "Shelf", true, 4, 2, 3, PREDEFEFINED_CATEGORY,
-            new List<Material>(new[] { PREDEFINED_MATERIAL }), 
+            new Product(id, "Shelf", true, CustomizedDimensions.valueOf(5, 6, 7),
+            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(5, 6, 6),
+            PREDEFEFINED_CATEGORY, new List<Material>(new[] { PREDEFINED_MATERIAL }), 
             PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS).ToString());
         }
     }
