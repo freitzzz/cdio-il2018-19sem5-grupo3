@@ -83,16 +83,14 @@ namespace core.application
         /// <param name="ID">id of the commercial catalogue</param>
         /// <param name="customizedCatalogueDTO">DTO with the customized product collection</param>
         /// <returns>DTO with the created product DTO, null if the product was not created</returns>
-        public CommercialCatalogueDTO addCollection(long id, CatalogueCollectionDTO customizedCatalogueDTO)
+        public CommercialCatalogueDTO updateCollection( UpdateCommercialCatalogueDTO customizedCatalogueDTO)
         {
 
-            CommercialCatalogue newComCatalogue = PersistenceContext.repositories().createCommercialCatalogueRepository().find(id);
+            //CommercialCatalogue newComCatalogue = PersistenceContext.repositories().createCommercialCatalogueRepository().find(id);
             //Transform CustomizedProductCollection Dto to entity
+            if(customizedCatalogueDTO.catalogueCollectionDTOToAdd != null){
 
-            long customizedProductionCollectionId = customizedCatalogueDTO.customizedProductCollectionDTO.id;
-
-            CustomizedProductCollection collection = PersistenceContext.repositories().createCustomizedProductCollectionRepository().find(customizedProductionCollectionId);
-
+            }
 
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             foreach (CustomizedProductDTO customizedProductDTO in customizedCatalogueDTO.customizedProductsDTO)
