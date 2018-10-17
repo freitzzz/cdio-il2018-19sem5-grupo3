@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using core.domain;
 using support.dto;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace core.dto
 {
@@ -18,8 +19,19 @@ namespace core.dto
         [DataMember(Order = 1)]
         public long id { get; set; }
 
+        /// <summary>
+        /// Dimension's measurement unit.
+        /// </summary>
+        /// <value>Gets/Sets the measurement unit.</value>
         [DataMember(EmitDefaultValue = false)]
         public string unit { get; set; }
+
+        /// <summary>
+        /// Dimension's list of restrictions.
+        /// </summary>
+        /// <value>Gets/Sets the list of restrictions.</value>
+        [DataMember(EmitDefaultValue = false)]
+        public List<RestrictionDTO> restrictions {get; set;}
 
         /// <summary>
         /// Builds a Dimension instance from a DimensionDTO

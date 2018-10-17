@@ -52,18 +52,8 @@ namespace core.dto {
         /// </summary>
         [DataMember(Name = "category")]
         public ProductCategoryDTO productCategory { get; set; }
-
-        /// <summary>
-        /// Product dimensions
-        /// </summary>
         [DataMember(Name = "dimensions")]
         public DimensionsListDTO dimensions { get; set; }
-
-        /// <summary>
-        /// SlotDimensionSetDTO with the Product's maximum, minimum and recommended Slot dimensions
-        /// </summary>
-        [DataMember(Name = "slots")]
-        public SlotDimensionSetDTO slotDimensions;
 
         public ProductDTO() {
             //it is necessary to instantiate the DimensionsListDTO property
@@ -101,6 +91,6 @@ namespace core.dto {
                    } */
             return null;
         }
-        //TODO: Add RestrictionDTO's & Slot's Max, Min, Recommended Dimensions
+        //TODO: Add RestrictionDTO's
     }
 }

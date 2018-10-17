@@ -2,7 +2,6 @@ using core.domain;
 using core.dto;
 using core.persistence;
 using support.persistence.repositories;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,7 +30,7 @@ namespace backend.persistence.ef
         /// <param name="entity">Product with the product being updated</param>
         /// <returns>Product with the updated product</returns>
         public override Product update(Product entity){
-            if(base.find(entity.id()).Id!=entity.Id)
+            if(find(entity.id()).Id!=entity.Id)
                 return null;
             return update(entity);
         }

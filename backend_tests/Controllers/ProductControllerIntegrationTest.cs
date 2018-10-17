@@ -126,22 +126,16 @@ namespace backend_tests.Controllers{
         public async void ensureProductReferenceCantBeUpdatedIfDuplicated(){
             //We're are going to created two different products, X & Y
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
-            createdProductDTOX.Wait();
             Task<ProductDTO> createdProductDTOY=ensureProductIsCreatedSuccesfuly();
-            createdProductDTOY.Wait();
             //Product X has different reference to Y
             //Since the reference of a product is the identity of a product
             //If we try to update it to a reference that already exists, then it should fail
-            ProductDTO productDTOX=createdProductDTOX.Result;
-            ProductDTO productDTOY=createdProductDTOY.Result;
+            createdProductDTOX.Wait();
+            createdProductDTOY.Wait();
             UpdateProductDTO updatedProductY=new UpdateProductDTO();
-            updatedProductY.reference=productDTOX.reference;
-            //DONT UNCOMMENT UNTIL INTEGRATION DATABASE PROBLEMS IS SOLVED
-            //PROBLEM HERE IS THAT SINCE WE ARE USING AN IN MEMORY DATABASE PROVIDER
-            //IT LITERALLY IS IN MEMORY SO IF WE CHANGE AN OBJECT WIHTOUT UPDATING IT
-            //WITH THE RESPECTIVE REPOSITORY, ITS STILL AN UPDATE SINCE OBJECTS HAVE THE SAME MEMORY REFERENCE
-            //:(
-            /* var updateReference=await httpClient.PutAsync(PRODUCTS_URI+"/"+productDTOY.id
+            updatedProductY.reference=createdProductDTOX.Result.reference;
+            //TODO: FIX ME (FREITAS)
+            /* var updateReference=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOY.Result.id
                                         ,HTTPContentCreator.contentAsJSON(updatedProductY));
             Assert.True(updateReference.StatusCode==HttpStatusCode.BadRequest); */
         }

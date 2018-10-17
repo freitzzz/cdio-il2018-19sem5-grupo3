@@ -99,7 +99,7 @@ namespace core.domain
             this.customizedMaterial = customizedMaterial;
             this.product = product;
             this.slots = new List<Slot>();
-        }
+        } 
 
         /// <summary>
         /// Builds a new instance of CustomizedProduct, receiving its reference,
@@ -109,22 +109,13 @@ namespace core.domain
         /// <param name = "customizedDimensions">String with the new CustomizedProduct's CustomizedDimensions</param>
         /// <param name = "customizedMaterial">String with the new CustomizedProduct's CustomizedMaterial</param>
         /// <param name = "product">String with the new CustomizedProduct's Product</param>DDD
+        /// <param name="slots">List containing instances of Slot.</param>
         /// </summary>
         public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial,
-        CustomizedDimensions customizedDimensions, Product product, List<Slot> slots)
+        CustomizedDimensions customizedDimensions, Product product, List<Slot> slots) : 
+            this(reference, designation, customizedMaterial, customizedDimensions, product)
         {
-            checkCustomizedMaterial(customizedMaterial);
-            checkCustomizedDimensions(customizedDimensions);
-            checkProduct(product);
-            checkString(reference, INVALID_PRODUCT_REFERENCE);
-            checkString(designation, INVALID_PRODUCT_DESIGNATION);
-            checkAndAddSlots(slots);
-
-            this.reference = reference;
-            this.designation = designation;
-            this.customizedDimensions = customizedDimensions;
-            this.customizedMaterial = customizedMaterial;
-            this.product = product;
+            this.slots.AddRange(slots);
         }
 
         /// <summary>
@@ -234,17 +225,6 @@ namespace core.domain
         private void checkString(string obj, string message)
         {
             if (String.IsNullOrEmpty(obj)) throw new ArgumentException(message);
-        }
-
-        /// <summary>
-        /// Checks if all Slots from a received List are valid and adds them to the CustomizedProduct's list of Slots
-        /// </summary>
-        /// <param name="slots">List of Slots to check</param>
-        private void checkAndAddSlots(List<Slot> slots)
-        {
-            foreach(Slot slot in slots){
-                this.slots.Add(slot);
-            }
         }
 
         /// <summary>

@@ -65,6 +65,9 @@ namespace backend.persistence.ef
             builder.Entity<DiscreteDimensionInterval>().HasBaseType<Dimension>();
             builder.Entity<SingleValueDimension>().HasBaseType<Dimension>();
 
+            //TODO: improve restriction mapping, since it currently has columns for various entity ids
+            builder.Entity<Dimension>().HasMany(d => d.restrictions);           //one-to-many relationship
+
             builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values); //one-to-many relationship
 
             //Configure one-to-one relationship between parent and child ProductCategory
