@@ -36,8 +36,7 @@ namespace core.domain {
         /// <summary>
         /// Algorithm aplied by this restriction
         /// </summary>
-        [NotMapped]
-        public Algorithm algorithm { get; set; }
+        public RestrictionAlgorithm algorithm { get; set; }
         /// <summary>
         /// List of inputs for the algorithm
         /// </summary>
