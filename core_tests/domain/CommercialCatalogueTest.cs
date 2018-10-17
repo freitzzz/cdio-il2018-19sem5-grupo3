@@ -1801,7 +1801,7 @@ namespace core_tests.domain
             listCollection.Add(custProCollection);
 
 
-            CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", list);
+            CommercialCatalogue comCatalogue1 = new CommercialCatalogue(reference, designation, list);
             CommercialCatalogueDTO dto = new CommercialCatalogueDTO();
             dto.reference = reference;
             dto.designation = designation;
