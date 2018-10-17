@@ -88,6 +88,10 @@ namespace backend.persistence.ef
 
             builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedDimensions); //embedded Dimensions
             builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedMaterial);   //embedded CustomizedMaterial
+            builder.Entity<CustomizedProduct>().HasMany(cp => cp.slots);        //one-to-many relationship
+
+            //!Slots have many customized products and a customized product has many slots
+            //TODO: Create a relational class
 
             builder.Entity<Slot>().OwnsOne(s => s.slotDimensions);              //embedded Dimensions
             builder.Entity<Slot>().HasMany(s => s.customizedProducts);          //one-to-many relationship
