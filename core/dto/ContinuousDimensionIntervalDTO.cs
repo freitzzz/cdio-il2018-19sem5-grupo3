@@ -47,7 +47,17 @@ namespace core.dto
 
             ContinuousDimensionInterval instanceFromDTO = new ContinuousDimensionInterval(minValue, maxValue, increment);
             instanceFromDTO.Id = id;
-            
+
+            if (this.restrictions != null)
+            {
+                IEnumerable<Restriction> restrictions = DTOUtils.reverseDTOS(this.restrictions);
+
+                foreach (Restriction restriction in restrictions)
+                {
+                    instanceFromDTO.addRestriction(restriction);
+                }
+            }
+
             return instanceFromDTO;
         }
     }
