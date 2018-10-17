@@ -33,22 +33,22 @@ namespace core.dto
         /// <summary>
         /// CustomizedMaterialDTO with the CustomizedProduct's material
         /// </summary>
-        public CustomizedMaterial customizedMaterialDTO;
+        public CustomizedMaterialDTO customizedMaterialDTO { get; set; }
 
         /// <summary>
         /// CustomizedDimensionsDTO with the CustomizedProduct's dimensions
         /// </summary>
-        public CustomizedDimensionsDTO customizedDimensionsDTO;
+        public CustomizedDimensionsDTO customizedDimensionsDTO { get; set; }
 
         /// <summary>
         /// ProductDTO with the CustomizedProduct's product
         /// </summary>
-        public ProductDTO productDTO;
+        public ProductDTO productDTO { get; set; }
 
         /// <summary>
         /// SlotListDTO with the CustomizedProduct's list of SlotDTOs with the Slots
         /// </summary>
-        public SlotListDTO slotsDTO = new SlotListDTO();
+        /* public SlotListDTO slotsDTO { get; set; } */
 
         /// <summary>
         /// Returns CustomizedProductDTO's equivalent CustomizedProduct
@@ -56,10 +56,18 @@ namespace core.dto
         /// <returns>CustomizedProductDTO's equivalent CustomizedProduct</returns>
         public CustomizedProduct toEntity()
         {
-            List<Slot> slots = DTOUtils.reverseDTOS(slotsDTO.slotDTOs).ToList();
 
-            CustomizedProduct instanceFromDTO = new CustomizedProduct(reference, designation,
-            customizedMaterialDTO, customizedDimensionsDTO.toEntity(), productDTO.toEntity(), slots);
+            CustomizedProduct instanceFromDTO;
+            /* if (slotsDTO.slotDTOs.Count == 0 || slotsDTO.slotDTOs == null)
+            {
+                instanceFromDTO = new CustomizedProduct(reference, designation, customizedMaterialDTO.toEntity(), customizedDimensionsDTO.toEntity(), productDTO.toEntity());
+            }
+            else
+            {
+                List<Slot> slots = DTOUtils.reverseDTOS(slotsDTO.slotDTOs).ToList(); */
+
+                instanceFromDTO = new CustomizedProduct(reference, designation, customizedMaterialDTO.toEntity(), customizedDimensionsDTO.toEntity(), productDTO.toEntity());
+            /*  }*/
             instanceFromDTO.Id = this.id;
             return instanceFromDTO;
         }

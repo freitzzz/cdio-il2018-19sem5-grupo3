@@ -99,7 +99,7 @@ namespace core.domain
             this.customizedMaterial = customizedMaterial;
             this.product = product;
             this.slots = new List<Slot>();
-        }
+        } 
 
         /// <summary>
         /// Builds a new instance of CustomizedProduct, receiving its reference,
@@ -110,7 +110,7 @@ namespace core.domain
         /// <param name = "customizedMaterial">String with the new CustomizedProduct's CustomizedMaterial</param>
         /// <param name = "product">String with the new CustomizedProduct's Product</param>DDD
         /// </summary>
-        public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial,
+        /* public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial,
         CustomizedDimensions customizedDimensions, Product product, List<Slot> slots)
         {
             checkCustomizedMaterial(customizedMaterial);
@@ -125,7 +125,7 @@ namespace core.domain
             this.customizedMaterial = customizedMaterial;
             this.product = product;
             this.slots = slots;
-        }
+        } */
 
         /// <summary>
         /// Returns the CustomizedProduct's identity
@@ -299,7 +299,7 @@ namespace core.domain
             dto.designation = this.designation;
             dto.productDTO = this.product.toDTO();
             dto.customizedDimensionsDTO = this.customizedDimensions.toDTO();
-            dto.customizedMaterialDTO = this.customizedMaterial;
+            dto.customizedMaterialDTO = this.customizedMaterial.toDTO();
             dto.id = this.Id;
             return dto;
         }

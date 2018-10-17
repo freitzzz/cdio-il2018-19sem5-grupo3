@@ -144,10 +144,11 @@ namespace core.domain
         public CustomizedDimensionsDTO toDTO()
         {
             CustomizedDimensionsDTO customizedDimensionsDTO = new CustomizedDimensionsDTO();
-            customizedDimensionsDTO.Id = Id;
+            
             customizedDimensionsDTO.width = width;
             customizedDimensionsDTO.depth = depth;
             customizedDimensionsDTO.height = height;
+            customizedDimensionsDTO.Id = this.Id;
             return customizedDimensionsDTO;
         }
     }
