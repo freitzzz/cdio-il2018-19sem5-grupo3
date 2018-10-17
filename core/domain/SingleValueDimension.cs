@@ -38,7 +38,7 @@ namespace core.domain
         /// <summary>
         /// Empty constructor for ORM.
         /// </summary>
-        protected SingleValueDimension(){}
+        protected SingleValueDimension() { }
 
         /// <summary>
         /// Builds a new instance of Dimension
@@ -73,7 +73,7 @@ namespace core.domain
         /// <returns>true if the objects are equal, false if otherwise</returns>
         public override bool Equals(object obj)
         {
-            if (obj == null || !obj.GetType().ToString().Equals("core.domain.SingleValueDimension"))
+            if (obj == null || obj.GetType() != typeof(SingleValueDimension))
             {
                 return false;
             }
@@ -124,14 +124,15 @@ namespace core.domain
 
         public override DimensionDTO toDTO(string unit)
         {
-            if(unit == null){
+            if (unit == null)
+            {
                 return this.toDTO();
             }
             SingleValueDimensionDTO dto = new SingleValueDimensionDTO();
 
             dto.id = Id;
             dto.unit = unit;
-            dto.value = MeasurementUnitService.convertToUnit(value,unit);
+            dto.value = MeasurementUnitService.convertToUnit(value, unit);
             dto.restrictions = DTOUtils.parseToDTOS(restrictions).ToList();
 
             return dto;

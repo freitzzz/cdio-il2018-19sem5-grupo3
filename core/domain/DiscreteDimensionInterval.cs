@@ -5,13 +5,14 @@ using support.utils;
 using core.dto;
 using System.Linq;
 using core.services;
+using support.dto;
 
 namespace core.domain
 {
     /// <summary>
     /// Class that represents a discrete dimension interval
     /// </summary>
-    public class DiscreteDimensionInterval : Dimension, ValueObject
+    public class DiscreteDimensionInterval : Dimension
     {
 
         /// <summary>
@@ -28,7 +29,7 @@ namespace core.domain
         /// List of values that make up the interval.
         /// </summary>
         //*Since EF Core 2.1 does not support collections of primitive types, a wrapper ValueObject class must be used */
-        public virtual List<DoubleValue> values { get; set; }
+        public virtual List<DoubleValue> values { get; protected set; }
 
         /// <summary>
         /// Empty constructor for ORM.
@@ -59,6 +60,7 @@ namespace core.domain
             }
 
             this.values = doubleValues;
+            this.restrictions = new List<Restriction>();
         }
 
         /// <summary>
@@ -69,7 +71,7 @@ namespace core.domain
         /// <returns>true if the objects are the same, false if otherwise</returns>
         public override bool Equals(object obj)
         {
-            if (obj == null || !obj.GetType().ToString().Equals("core.domain.DiscreteDimensionInterval"))
+            if (obj == null || obj.GetType() != typeof(DiscreteDimensionInterval))
             {
                 return false;
             }
@@ -122,13 +124,9 @@ namespace core.domain
             DiscreteDimensionIntervalDTO dto = new DiscreteDimensionIntervalDTO();
 
             dto.id = Id;
-            dto.values = new List<double>();
             dto.unit = MeasurementUnitService.getMinimumUnit();
-
-            foreach (DoubleValue doubleValue in values)
-            {
-                dto.values.Add(doubleValue);
-            }
+            dto.values = new List<double>(values.Select(dv => dv.value));
+            dto.restrictions = DTOUtils.parseToDTOS(restrictions).ToList();
 
             return dto;
         }
@@ -141,13 +139,14 @@ namespace core.domain
             DiscreteDimensionIntervalDTO dto = new DiscreteDimensionIntervalDTO();
 
             dto.id = Id;
+            dto.unit = unit;
             dto.values = new List<double>();
 
             foreach (DoubleValue doubleValue in values)
             {
                 dto.values.Add(MeasurementUnitService.convertToUnit(doubleValue.value,unit));
             }
-            dto.unit = unit;
+            dto.restrictions = DTOUtils.parseToDTOS(restrictions).ToList();
 
             return dto;
         }
