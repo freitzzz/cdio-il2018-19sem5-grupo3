@@ -40,7 +40,7 @@ namespace backend_tests.Controllers{
         /// Ensures that a customized product collection is created succesfuly
         /// </summary>
         [Fact,TestPriority(14209)]
-        public async Task<CustomizedProductDTO> ensureCustomizedProductIsCreatedSuccesfuly(){
+        public async Task<CustomizedProductDTO> ensureCustomizedProductCollectionIsCreatedSuccesfuly(){
             CustomizedProductCollectionDTO customizedProductCollectionDTO=new CustomizedProductCollectionDTO();
             //A collection of customized products requires a valid name
             customizedProductCollectionDTO.name="Braga"+Guid.NewGuid().ToString("n");
