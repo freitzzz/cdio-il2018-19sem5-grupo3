@@ -112,17 +112,17 @@ namespace core.domain {
         /// <summary>
         /// CustomizedDimensions that represents the maximum size of the slots
         /// </summary>
-        public CustomizedDimensions maxSlotSize { get; protected set; }
+        public virtual CustomizedDimensions maxSlotSize { get; protected set; }
 
         /// <summary>
         /// CustomizedDimensions that represents the minimum size of the slots
         /// </summary>
-        public CustomizedDimensions minSlotSize { get; protected set; }
+        public virtual CustomizedDimensions minSlotSize { get; protected set; }
 
         /// <summary>
         /// CustomizedDimensions that represents the recommended size of the slots
         /// </summary>
-        public CustomizedDimensions recommendedSlotSize { get; protected set; }
+        public virtual CustomizedDimensions recommendedSlotSize { get; protected set; }
 
         /// <summary>
         /// Booelan that indicates if the product can hold slots
