@@ -5,7 +5,7 @@ using support.dto;
 
 namespace core.domain
 {
-    public class CustomizedCatalogue : DTOAble<CustomizedCatalogueDTO>
+    public class CatalogueCollection : DTOAble<CatalogueCollectionDTO>
     {
         /**
         <summary>
@@ -46,14 +46,14 @@ namespace core.domain
         /// <param name="customizedProduct">list with the customized products collection name</param>
         /// <param name="customizedProductCollection">collection</param> 
         /// 
-        public CustomizedCatalogue(List<CustomizedProduct> customizedProduct, CustomizedProductCollection customizedProductCollection)
+        public CatalogueCollection(List<CustomizedProduct> customizedProduct, CustomizedProductCollection customizedProductCollection)
         {
             checkAttributes(customizedProduct, customizedProductCollection);
             this.customizedProduct = customizedProduct;
             this.customizedProductCollection = customizedProductCollection;
         }
 
-        public CustomizedCatalogue(CustomizedProductCollection customizedProductCollection)
+        public CatalogueCollection(CustomizedProductCollection customizedProductCollection)
         {
             if (customizedProductCollection == null) throw new ArgumentException(INVALID_COLLECTION);
             this.customizedProduct = new List<CustomizedProduct>();
@@ -63,7 +63,7 @@ namespace core.domain
         /// <summary>
         /// Empty constructor
         /// 
-        protected CustomizedCatalogue()
+        protected CatalogueCollection()
         {
         }
 
@@ -83,18 +83,18 @@ namespace core.domain
         /// toDTO method
         ///</summary>
         /// 
-        public CustomizedCatalogueDTO toDTO()
+        public CatalogueCollectionDTO toDTO()
         {
-            CustomizedCatalogueDTO customizedCatalogueDTO = new CustomizedCatalogueDTO();
+            CatalogueCollectionDTO CatalogueCollectionDTO = new CatalogueCollectionDTO();
             List<CustomizedProductDTO> list = new List<CustomizedProductDTO>();
             foreach (CustomizedProduct customizedProduct in this.customizedProduct)
             {
                 list.Add(customizedProduct.toDTO());
             }
-            customizedCatalogueDTO.customizedProductsDTO = list;
-            customizedCatalogueDTO.Id = this.Id;
-            customizedCatalogueDTO.customizedProductCollectionDTO = this.customizedProductCollection.toDTO();
-            return customizedCatalogueDTO;
+            CatalogueCollectionDTO.customizedProductsDTO = list;
+            CatalogueCollectionDTO.Id = this.Id;
+            CatalogueCollectionDTO.customizedProductCollectionDTO = this.customizedProductCollection.toDTO();
+            return CatalogueCollectionDTO;
         }
 
         /**
@@ -122,8 +122,8 @@ namespace core.domain
             }
             else
             {
-                CustomizedCatalogue customizedCatalogue = (CustomizedCatalogue)obj;
-                return customizedProductCollection.Equals(customizedCatalogue.customizedProductCollection) && customizedProduct.Equals(customizedCatalogue.customizedProduct);
+                CatalogueCollection CatalogueCollection = (CatalogueCollection)obj;
+                return customizedProductCollection.Equals(CatalogueCollection.customizedProductCollection) && customizedProduct.Equals(CatalogueCollection.customizedProduct);
             }
         }
 
