@@ -4,7 +4,7 @@ using support.dto;
 
 namespace core.dto
 {
-    public class CustomizedCatalogueDTO : DTO, DTOParseable<CustomizedCatalogue, CustomizedCatalogueDTO>
+    public class CatalogueCollectionDTO : DTO, DTOParseable<CatalogueCollection, CatalogueCollectionDTO>
     {
          /** 
         <summary>
@@ -26,7 +26,7 @@ namespace core.dto
        */
         public CustomizedProductCollectionDTO customizedProductCollectionDTO { get;  set; }
 
-        public CustomizedCatalogue toEntity()
+        public CatalogueCollection toEntity()
         {
             throw new System.NotImplementedException();
         }
