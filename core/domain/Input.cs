@@ -1,12 +1,21 @@
-﻿using support.utils;
+﻿using core.dto;
+using support.dto;
+using support.utils;
 using System;
 
 namespace core.domain {
     /// <summary>
     /// Class that represents an input for an algorithm
     /// </summary>
-    public class Input {
+    public class Input : DTOAble<InputDTO> {
+        /// <summary>
+        /// Message when input name is not valid
+        /// </summary>
         private const string INVALID_INPUT_NAME = "Input name is not valid!";
+        /// <summary>
+        /// Long property with the persistence iD
+        /// </summary>
+        public long Id { get; internal set; }
         /// <summary>
         /// Name of the input
         /// </summary>
@@ -36,6 +45,17 @@ namespace core.domain {
             if (Strings.isNullOrEmpty(name)) {
                 throw new ArgumentException();
             }
+        }
+        /// <summary>
+        /// Returns DTO equivalent of the Entity
+        /// </summary>
+        /// <returns>DTO equivalent of the Entity</returns>
+        public InputDTO toDTO() {
+            InputDTO dto = new InputDTO();
+            dto.id = Id;
+            dto.name = name;
+            dto.value = value;
+            return dto;
         }
     }
 }

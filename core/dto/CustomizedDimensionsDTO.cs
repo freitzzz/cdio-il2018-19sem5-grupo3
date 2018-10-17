@@ -25,25 +25,26 @@ namespace core.dto
         /// CustomizedDimensions height value
         /// </summary>
         /// <value>Gets/Sets for the height value</value>
+        [DataMember]
         public double height { get; set; }
 
         /// <summary>
         /// CustomizedDimensions width value
         /// </summary>
         /// <returns>Gets/Sets for the width value</returns>
+        [DataMember]
         public double width { get; set; }
 
         /// <summary>
         /// CustomizedDimensions depth value
         /// </summary>
         /// <returns>Gets/Sets for the depth value</returns>
+        [DataMember]
         public double depth { get; set; }
 
         public CustomizedDimensions toEntity()
         {
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(height, width, depth);
-            customizedDimensions.Id = Id;
-            return customizedDimensions;
+            return CustomizedDimensions.valueOf(height, width, depth);
         }
     }
 }

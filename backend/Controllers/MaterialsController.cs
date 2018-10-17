@@ -129,7 +129,7 @@ namespace backend.Controllers
                 MaterialDTO createdMaterialDTO = new core.application.MaterialsController().addMaterial(materialDTO);
                 if (createdMaterialDTO != null)
                 {
-                    return Created(Request.Path, createdMaterialDTO);
+                    return CreatedAtRoute("GetMaterial", new {id = createdMaterialDTO.id}, createdMaterialDTO);
                 }
                 else
                 {
