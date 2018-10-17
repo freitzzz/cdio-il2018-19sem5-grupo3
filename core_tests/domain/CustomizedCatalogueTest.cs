@@ -6,10 +6,10 @@ using core.dto;
 using Xunit;
 namespace core_tests.domain
 {
-    public class CustomizedCatalogueTest
+    public class CatalogueCollectionTest
     {
         [Fact]
-        public void ensureCustomizedCatalogueContructorIsInvalid()
+        public void ensureCatalogueCollectionContructorIsInvalid()
         {
             var category = new ProductCategory("Drawers");
 
@@ -64,13 +64,13 @@ namespace core_tests.domain
            
 
             CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Mario");
-            CustomizedCatalogue customizedCatalogue = new CustomizedCatalogue(list,customizedProductCollection);
-            Assert.Throws<ArgumentException>(() =>  new CustomizedCatalogue(list, null)); 
+            CatalogueCollection CatalogueCollection = new CatalogueCollection(list,customizedProductCollection);
+            Assert.Throws<ArgumentException>(() =>  new CatalogueCollection(list, null)); 
         }
 
         
         [Fact]
-        public void ensureCustomizedCatalogueContructorIsValid()
+        public void ensureCatalogueCollectionContructorIsValid()
         {
             var category = new ProductCategory("Drawers");
 
@@ -125,8 +125,8 @@ namespace core_tests.domain
            
 
             CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Mario");
-            CustomizedCatalogue customizedCatalogue = new CustomizedCatalogue(list,customizedProductCollection);
-            Assert.True(customizedCatalogue.Equals( new CustomizedCatalogue(list,customizedProductCollection)));
+            CatalogueCollection CatalogueCollection = new CatalogueCollection(list,customizedProductCollection);
+            Assert.True(CatalogueCollection.Equals( new CatalogueCollection(list,customizedProductCollection)));
         }
 
          [Fact]
@@ -185,10 +185,57 @@ namespace core_tests.domain
            
 
             CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Mario");
-            CustomizedCatalogue customizedCatalogue = new CustomizedCatalogue(list,customizedProductCollection);
-            Assert.True(customizedCatalogue.Equals( new CustomizedCatalogue(list,customizedProductCollection)));
+            CatalogueCollection CatalogueCollection = new CatalogueCollection(list,customizedProductCollection);
+            Assert.True(CatalogueCollection.Equals( new CatalogueCollection(list,customizedProductCollection)));
 
         }
 
+    //      /**
+    //     <summary>
+    //         Test to ensure that a null collection cannot be added to the CommercialCatalogue's.
+    //     </summary>
+    //    */
+    //     [Fact]
+    //     public void ensureCollectionCannotBeAdded()
+    //     {
+    //         Console.WriteLine("ensureCollectionCannotBeAdded");
+
+    //         List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
+    //         Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+    //         Finish finish = Finish.valueOf("Acabamento polido");
+    //         CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
+    //         CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+
+    //         ProductCategory prodCat = new ProductCategory("Category 1");
+    //         List<Double> values2 = new List<Double>();
+    //         values2.Add(500.0); //Width
+    //         DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
+    //         List<Dimension> valuest = new List<Dimension>();
+    //         valuest.Add(d2);
+    //         IEnumerable<Dimension> heightDimensions = valuest;
+    //         IEnumerable<Dimension> widthDimensions = valuest;
+    //         IEnumerable<Dimension> depthDimensions = valuest;
+    //         List<Color> colors = new List<Color>();
+    //         colors.Add(color);
+
+    //         List<Finish> finishes = new List<Finish>();
+    //         finishes.Add(finish);
+
+    //         Material material = new Material("1234", "Material", colors, finishes);
+    //         List<Material> listMaterial = new List<Material>();
+    //         listMaterial.Add(material);
+    //         IEnumerable<Material> materials = listMaterial;
+    //         Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+
+    //         CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+    //         custoProducts.Add(custProduct);
+    //         List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
+    //         CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
+    //         listCollection.Add(custProCollection);
+    //         CustomizedProductCollection collection2 = new CustomizedProductCollection("Collection2", custoProducts);
+
+    //         CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", listCollection);
+    //         Assert.True(comCatalogue.addCollection(collection2));
+    //     }
     }
 }

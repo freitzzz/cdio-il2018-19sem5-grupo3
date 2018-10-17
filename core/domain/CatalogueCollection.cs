@@ -136,5 +136,9 @@ namespace core.domain
         {
             return string.Format("List of Customized Products: {0}, Customized Product Collection {1}", customizedProduct.ToString(), customizedProductCollection.ToString());
         }
+/* 
+        public void addCustomizedProductToCollection(CustomizedProduct customizedProduct,){
+
+        } */
     }
 }
