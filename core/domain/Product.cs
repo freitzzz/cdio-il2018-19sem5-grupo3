@@ -46,21 +46,6 @@ namespace core.domain {
         private const string INVALID_PRODUCT_CATEGORY = "The product category is invalid";
 
         /// <summary>
-        /// Constant that represents the message that occurs if the slots maximum size is invalid
-        /// </summary>
-        private const string INVALID_MAX_SLOT_SIZE = "The product's maximum slot size can't be negative";
-
-        /// <summary>
-        /// Constant that represents the message that occurs if the slots minimum size is invalid
-        /// </summary>
-        private const string INVALID_MIN_SLOT_SIZE = "The product's minimum slot size can't be negative";
-
-        /// <summary>
-        /// Constant that represents the message that occurs if the slots recommended size is invalid
-        /// </summary>
-        private const string INVALID_RECOMMENDED_SLOT_SIZE = "The product's recommended slot size can't be negative";
-
-        /// <summary>
         /// Constant that represents the message that occurs if the slots minimum size is larger than the slots maximum size
         /// </summary>
         private const string INVALID_MIN_TO_MAX_SLOT_SIZE_RATIO = "The product's minimum slot size can't be larger than the maximum slot size";
@@ -125,19 +110,19 @@ namespace core.domain {
         public bool isAvailable { get; protected set; }
 
         /// <summary>
-        /// Integer that represents the maximum size of the slots
+        /// CustomizedDimensions that represents the maximum size of the slots
         /// </summary>
-        public int maxSlotSize { get; protected set; }
+        public CustomizedDimensions maxSlotSize { get; protected set; }
 
         /// <summary>
-        /// Integer that represents the minimum size of the slots
+        /// CustomizedDimensions that represents the minimum size of the slots
         /// </summary>
-        public int minSlotSize { get; protected set; }
+        public CustomizedDimensions minSlotSize { get; protected set; }
 
         /// <summary>
-        /// Integer that represents the recommended size of the slots
+        /// CustomizedDimensions that represents the recommended size of the slots
         /// </summary>
-        public int recommendedSlotSize { get; protected set; }
+        public CustomizedDimensions recommendedSlotSize { get; protected set; }
 
         /// <summary>
         /// Booelan that indicates if the product can hold slots
@@ -156,24 +141,24 @@ namespace core.domain {
         /// <param name="reference">Reference of the Product</param>
         /// <param name="designation">Designation of the Product</param>
         /// <param name="supportsSlots">Indicates if the product can hold slots</param>
-        /// <param name="maxSlotSize">Maximum slot size</param>
-        /// <param name="minSlotSize">Minimum slot size</param>
-        /// <param name="recommendedSlotSize">Recommended slot size</param>
+        /// <param name="maxSlotSize">Maximum slot dimensions</param>
+        /// <param name="minSlotSize">Minimum slot dimensions</param>
+        /// <param name="recommendedSlotSize">Recommended slot dimensions</param>
         /// <param name="productCategory">ProductCategory with the product's category</param>
         /// <param name="materials">Materials the product can be made of</param>
         /// <param name="heightDimensions">Product height dimensions</param>
         /// <param name="widthDimensions">Product width dimensions</param>
         /// <param name="depthDimensions">Product depth dimensions</param>
         public Product(string reference, string designation, bool supportsSlots,
-                        int maxSlotSize, int minSlotSize, int recommendedSlotSize,
-                        ProductCategory productCategory, IEnumerable<Material> materials,
-                        IEnumerable<Dimension> heightDimensions, IEnumerable<Dimension> widthDimensions,
-                        IEnumerable<Dimension> depthDimensions) :
+                        CustomizedDimensions maxSlotSize, CustomizedDimensions minSlotSize,
+                        CustomizedDimensions recommendedSlotSize, ProductCategory productCategory,
+                        IEnumerable<Material> materials, IEnumerable<Dimension> heightDimensions,
+                        IEnumerable<Dimension> widthDimensions, IEnumerable<Dimension> depthDimensions) :
                         this(reference,designation,productCategory,
                         materials,heightDimensions,widthDimensions,
                         depthDimensions){
                             this.supportsSlots = supportsSlots;
-                            checkProductSlotsSize(maxSlotSize, minSlotSize, recommendedSlotSize);
+                            checkProductSlotsDimensions(maxSlotSize, minSlotSize, recommendedSlotSize);
                             this.maxSlotSize = maxSlotSize;
                             this.minSlotSize = minSlotSize;
                             this.recommendedSlotSize = recommendedSlotSize;
@@ -214,9 +199,9 @@ namespace core.domain {
             this.productCategory = productCategory;
             this.isAvailable = true;
             this.supportsSlots = false;
-            this.maxSlotSize = 0;
-            this.minSlotSize = 0;
-            this.recommendedSlotSize = 0;
+            this.maxSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
+            this.minSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
+            this.recommendedSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
         }
 
         /// <summary>
@@ -257,9 +242,9 @@ namespace core.domain {
             this.productCategory = productCategory;
             this.isAvailable = true;
             this.supportsSlots = false;
-            this.maxSlotSize = 0;
-            this.minSlotSize = 0;
-            this.recommendedSlotSize = 0;
+            this.maxSlotSize = CustomizedDimensions.valueOf(0,0,0);
+            this.minSlotSize = CustomizedDimensions.valueOf(0,0,0);
+            this.recommendedSlotSize = CustomizedDimensions.valueOf(0,0,0);
         }
 
         /// <summary>
@@ -516,16 +501,18 @@ namespace core.domain {
         /// <summary>
         /// Checks if the product's slot sizes are valid (non-negative values with proper ratios between them).
         /// </summary>
-        /// <param name="maxSlotSize">Integer with the maximum size of the slots</param>
-        /// <param name="minSlotSize">Integer with the minimum size of the slots</param>
-        /// <param name="recommendedSlotSize">Integer with the recommended size of the slots</param>
-        private void checkProductSlotsSize(int maxSlotSize, int minSlotSize, int recommendedSlotSize){
-            if(maxSlotSize < 0) throw new ArgumentException(INVALID_MAX_SLOT_SIZE);
-            if(minSlotSize < 0) throw new ArgumentException(INVALID_MIN_SLOT_SIZE);
-            if(recommendedSlotSize < 0) throw new ArgumentException(INVALID_RECOMMENDED_SLOT_SIZE);
-            if(minSlotSize > maxSlotSize) throw new ArgumentException(INVALID_MIN_TO_MAX_SLOT_SIZE_RATIO);
-            if(recommendedSlotSize > maxSlotSize) throw new ArgumentException(INVALID_RECOMMENDED_TO_MAX_SLOT_SIZE_RATIO);
-            if(recommendedSlotSize < minSlotSize) throw new ArgumentException(INVALID_RECOMMENDED_TO_MIN_SLOT_SIZE_RATIO);
+        /// <param name="maxSlotSize">CustomizedDimensions with the maximum size of the slots</param>
+        /// <param name="minSlotSize">CustomizedDimensions with the minimum size of the slots</param>
+        /// <param name="recommendedSlotSize">CustomizedDimensions with the recommended size of the slots</param>
+        private void checkProductSlotsDimensions(CustomizedDimensions maxSlotSize, CustomizedDimensions minSlotSize, CustomizedDimensions recommendedSlotSize){
+            if(minSlotSize.depth > maxSlotSize.depth || minSlotSize.height > maxSlotSize.height || minSlotSize.width > maxSlotSize.width)
+                throw new ArgumentException(INVALID_MIN_TO_MAX_SLOT_SIZE_RATIO);
+
+            if(recommendedSlotSize.depth > maxSlotSize.depth || recommendedSlotSize.height > maxSlotSize.height || recommendedSlotSize.width > maxSlotSize.width)
+                throw new ArgumentException(INVALID_RECOMMENDED_TO_MAX_SLOT_SIZE_RATIO);
+
+            if(recommendedSlotSize.depth < minSlotSize.depth || recommendedSlotSize.height < minSlotSize.height || recommendedSlotSize.width < minSlotSize.width)
+                throw new ArgumentException(INVALID_RECOMMENDED_TO_MIN_SLOT_SIZE_RATIO);
         }
 
         /// <summary>
