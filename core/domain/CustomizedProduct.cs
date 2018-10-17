@@ -73,7 +73,7 @@ namespace core.domain
         /// <summary>
         /// List of Slots that the CustomizedProduct has
         /// </summary>
-        public List<Slot> slots { get; protected set; }
+        public virtual List<Slot> slots { get; protected set; }
 
         /// <summary>
         /// Builds a new instance of CustomizedProduct, receiving its reference,
