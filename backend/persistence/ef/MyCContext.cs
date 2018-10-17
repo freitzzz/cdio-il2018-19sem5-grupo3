@@ -77,7 +77,6 @@ namespace backend.persistence.ef
             //Configure many-to-many relationship between Product and Material
             builder.Entity<ProductMaterial>().HasOne(m =>m.material).WithMany();
             builder.Entity<Product>().HasMany(p => p.productMaterials).WithOne(pm =>pm.product);
-            builder.Entity<Product>().HasAlternateKey(p => p.reference).HasName("UNIQUE_PRODUCT_REFERENCE");
 
             builder.Entity<Product>().HasOne(p => p.productCategory);           //many-to-one relationship
             builder.Entity<Product>().HasMany(p => p.depthValues);              //one-to-many relationship

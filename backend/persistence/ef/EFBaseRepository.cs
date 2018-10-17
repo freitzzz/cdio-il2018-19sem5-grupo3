@@ -68,7 +68,7 @@ namespace backend.persistence.ef
             return entity;
         }
 
-        public E update(E entity)
+        public virtual E update(E entity)
         {
             dbContext.Entry(entity).State = EntityState.Modified;
             dbContext.SaveChanges();
