@@ -88,7 +88,7 @@ namespace backend.Controllers {
             try{
                 ProductDTO createdProductDTO=new core.application.ProductController().addProduct(productData);
                 if(createdProductDTO!=null){
-                    return Created(Request.Path,createdProductDTO);
+                    return CreatedAtRoute("GetProduct", new {id = createdProductDTO.id}, createdProductDTO);
                 }else{
                     //TODO:????????
                     return BadRequest();
