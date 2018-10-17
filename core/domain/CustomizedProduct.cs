@@ -14,11 +14,6 @@ namespace core.domain
     {
 
         /// <summary>
-        /// Empty constructor for ORM.
-        /// </summary>
-        protected CustomizedProduct() { }
-
-        /// <summary>
         /// Constant that represents the message that ocurrs if the CustomizedProduct's material is not valid
         /// </summary>
         private const string INVALID_CUSTOMIZED_PRODUCT_MATERIAL = "The chosen material is not valid";
@@ -73,7 +68,12 @@ namespace core.domain
         /// <summary>
         /// List of Slots that the CustomizedProduct has
         /// </summary>
-        public List<Slot> slots { get; protected set; }
+        public virtual List<Slot> slots { get; protected set; }
+
+        /// <summary>
+        /// Empty constructor for ORM.
+        /// </summary>
+        protected CustomizedProduct() { }
 
         /// <summary>
         /// Builds a new instance of CustomizedProduct, receiving its reference,
