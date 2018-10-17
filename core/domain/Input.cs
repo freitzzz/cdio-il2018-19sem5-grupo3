@@ -1,8 +1,5 @@
 ﻿using support.utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace core.domain {
     /// <summary>
@@ -31,6 +28,10 @@ namespace core.domain {
             checkName(name);
             this.name = name;
         }
+        /// <summary>
+        /// Checks if name is not null nor empty
+        /// </summary>
+        /// <param name="name">name to be checked</param>
         private void checkName(string name) {
             if (Strings.isNullOrEmpty(name)) {
                 throw new ArgumentException();
