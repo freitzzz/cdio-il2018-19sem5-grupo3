@@ -95,7 +95,7 @@ namespace core.domain {
                         throw new ArgumentException(INVALID_INPUT);
                 }
             }
-            return minPercentage >= 0 && minPercentage <= 1 && maxPercentage >= minPercentage && maxPercentage <= 1 ? true : throw new ArgumentException(INPUT_OUTSIDE_RANGE);
+            return minPercentage >= 0 && minPercentage <= 1 && maxPercentage >= minPercentage && maxPercentage <= 1 ? true : throw new ArgumentOutOfRangeException(INPUT_OUTSIDE_RANGE);
         }
     }
 }

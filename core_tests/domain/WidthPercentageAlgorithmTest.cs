@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace core_tests.domain {
@@ -25,8 +24,8 @@ namespace core_tests.domain {
         public void ensureSetInputValuesThrowsArgumentExceptionIfArgumentNull() {
             Console.WriteLine("ensureSetInputValuesThrowsArgumentExceptionIfArgumentNull");
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
-            Action setInputValuesNullArgument = () => algorithm.setInputValues(null);
-            Assert.Throws<ArgumentException>(setInputValuesNullArgument);
+            Action setValues = () => algorithm.setInputValues(null);
+            Assert.Throws<ArgumentException>(setValues);
         }
         /// <summary>
         /// Ensures setInputValues throws ArgumentException if argument is empty list
@@ -36,8 +35,8 @@ namespace core_tests.domain {
             Console.WriteLine("ensureSetInputValuesThrowsArgumentExceptionIfArgumentIsEmpty");
             List<Input> inputs = new List<Input>();
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
-            Action setInputValuesNullArgument = () => algorithm.setInputValues(inputs);
-            Assert.Throws<ArgumentException>(setInputValuesNullArgument);
+            Action setValues = () => algorithm.setInputValues(inputs);
+            Assert.Throws<ArgumentException>(setValues);
         }
         /// <summary>
         /// Ensures setInputValues throws ArgumentException if list has more than the required inputs
@@ -50,8 +49,8 @@ namespace core_tests.domain {
             inputs.Add(new Input("Vega"));
             inputs.Add(new Input("Deneb"));
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
-            Action setInputValuesNullArgument = () => algorithm.setInputValues(inputs);
-            Assert.Throws<ArgumentException>(setInputValuesNullArgument);
+            Action setValues = () => algorithm.setInputValues(inputs);
+            Assert.Throws<ArgumentException>(setValues);
         }
         /// <summary>
         /// Ensures setInputValues succeeds
@@ -75,8 +74,8 @@ namespace core_tests.domain {
         public void ensureIsWithinDataRangeThrowsArgumentExceptionIfArgumentNull() {
             Console.WriteLine("ensureIsWithinDataRangeThrowsArgumentExceptionIfArgumentNull");
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
-            Action setInputValuesNullArgument = () => algorithm.isWithinDataRange(null);
-            Assert.Throws<ArgumentException>(setInputValuesNullArgument);
+            Action withinRange = () => algorithm.isWithinDataRange(null);
+            Assert.Throws<ArgumentException>(withinRange);
         }
         /// <summary>
         /// Ensures isWithinDataRange throws ArgumentException if argument is empty list
@@ -86,8 +85,8 @@ namespace core_tests.domain {
             Console.WriteLine("ensureIsWithinDataRangeThrowsArgumentExceptionIfArgumentIsEmpty");
             List<Input> inputs = new List<Input>();
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
-            Action setInputValuesNullArgument = () => algorithm.isWithinDataRange(inputs);
-            Assert.Throws<ArgumentException>(setInputValuesNullArgument);
+            Action withinRange = () => algorithm.isWithinDataRange(inputs);
+            Assert.Throws<ArgumentException>(withinRange);
         }
         /// <summary>
         /// Ensures isWithinDataRange throws ArgumentException if list has incorrect number of inputs
@@ -100,8 +99,8 @@ namespace core_tests.domain {
             inputs.Add(new Input("Vega"));
             inputs.Add(new Input("Deneb"));
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
-            Action setInputValuesNullArgument = () => algorithm.isWithinDataRange(inputs);
-            Assert.Throws<ArgumentException>(setInputValuesNullArgument);
+            Action withinRange = () => algorithm.isWithinDataRange(inputs);
+            Assert.Throws<ArgumentException>(withinRange);
         }
         /// <summary>
         /// Ensures isWithinDataRange throws FormatException if any input value is not double
@@ -116,8 +115,8 @@ namespace core_tests.domain {
             List<Input> inputs = new List<Input>();
             inputs.Add(minInput);
             inputs.Add(maxInput);
-            Action action = () => new WidthPercentageAlgorithm().isWithinDataRange(inputs);
-            Assert.Throws<FormatException>(action);
+            Action withinRange = () => new WidthPercentageAlgorithm().isWithinDataRange(inputs);
+            Assert.Throws<FormatException>(withinRange);
         }
         /// <summary>
         /// Ensures isWithinDataRange throws ArgumentException if any input has incorrect name
@@ -129,8 +128,8 @@ namespace core_tests.domain {
             inputs.Add(new Input("Altair"));
             inputs.Add(new Input("Vega"));
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
-            Action setInputValuesNullArgument = () => algorithm.isWithinDataRange(inputs);
-            Assert.Throws<ArgumentException>(setInputValuesNullArgument);
+            Action withinRange = () => algorithm.isWithinDataRange(inputs);
+            Assert.Throws<ArgumentException>(withinRange);
         }
         /// <summary>
         /// Ensures isWithinDataRange throws ArgumentException any input name is null or empty
@@ -145,8 +144,8 @@ namespace core_tests.domain {
             inputs.Add(minInput);
             inputs.Add(maxInput);
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
-            Action setInputValuesNullArgument = () => algorithm.isWithinDataRange(inputs);
-            Assert.Throws<ArgumentException>(setInputValuesNullArgument);
+            Action withinRange = () => algorithm.isWithinDataRange(inputs);
+            Assert.Throws<ArgumentException>(withinRange);
         }
         /// <summary>
         /// Ensures isWithinDataRange throws ArgumentException input minimum percentage value is below zero
@@ -161,8 +160,8 @@ namespace core_tests.domain {
             inputs.Add(minInput);
             inputs.Add(maxInput);
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
-            Action setInputValuesNullArgument = () => algorithm.isWithinDataRange(inputs);
-            Assert.Throws<ArgumentException>(setInputValuesNullArgument);
+            Action withinRange = () => algorithm.isWithinDataRange(inputs);
+            Assert.Throws<ArgumentOutOfRangeException>(withinRange);
         }
         /// <summary>
         /// Ensures isWithinDataRange throws ArgumentException if minimum percentage value is above one
@@ -177,8 +176,8 @@ namespace core_tests.domain {
             inputs.Add(minInput);
             inputs.Add(maxInput);
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
-            Action setInputValuesNullArgument = () => algorithm.isWithinDataRange(inputs);
-            Assert.Throws<ArgumentException>(setInputValuesNullArgument);
+            Action withinRange = () => algorithm.isWithinDataRange(inputs);
+            Assert.Throws<ArgumentOutOfRangeException>(withinRange);
         }
         /// <summary>
         /// Ensures isWithinDataRange throws ArgumentException if minimum percentage is greater than maximum percentage
@@ -194,8 +193,8 @@ namespace core_tests.domain {
             inputs.Add(minInput);
             inputs.Add(maxInput);
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
-            Action setInputValuesNullArgument = () => algorithm.isWithinDataRange(inputs);
-            Assert.Throws<ArgumentException>(setInputValuesNullArgument);
+            Action withinRange = () => algorithm.isWithinDataRange(inputs);
+            Assert.Throws<ArgumentOutOfRangeException>(withinRange);
         }
         /// <summary>
         /// Ensures isWithinDataRange throws ArgumentException if maximum percentage above one
@@ -211,8 +210,8 @@ namespace core_tests.domain {
             inputs.Add(minInput);
             inputs.Add(maxInput);
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
-            Action setInputValuesNullArgument = () => algorithm.isWithinDataRange(inputs);
-            Assert.Throws<ArgumentException>(setInputValuesNullArgument);
+            Action withinRange = () => algorithm.isWithinDataRange(inputs);
+            Assert.Throws<ArgumentOutOfRangeException>(withinRange);
         }
         /// <summary>
         /// Ensures isWithinDataRange succeeds
