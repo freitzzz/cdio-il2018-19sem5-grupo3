@@ -101,12 +101,16 @@ namespace core.domain {
         public override string ToString() {
             return String.Format("Restriction:{0}", description);
         }
-
-        //TODO add algorithm & list of input values to dto
+        /// <summary>
+        /// Returns DTO equivalent of the Entity
+        /// </summary>
+        /// <returns>DTO equivalent of the Entity</returns>
         public RestrictionDTO toDTO() {
             RestrictionDTO dto = new RestrictionDTO();
             dto.id = Id;
             dto.description = description;
+            dto.algorithm = algorithm;
+            dto.inputs = (List<InputDTO>)DTOUtils.parseToDTOS(inputs);
             return dto;
         }
     }

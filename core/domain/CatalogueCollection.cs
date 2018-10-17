@@ -31,14 +31,14 @@ namespace core.domain
         List of Customized Products
        </summary>
        */
-        public List<CustomizedProduct> customizedProduct { get; protected set; }
+        public virtual List<CustomizedProduct> customizedProduct { get; protected set; }
 
         /** 
        <summary>
         Customized Product Collection
        </summary>
        */
-        public CustomizedProductCollection customizedProductCollection { get; protected set; }
+        public virtual CustomizedProductCollection customizedProductCollection { get; protected set; }
 
         /// <summary>
         /// Builds a new CustomizedProductCollection with the collection name

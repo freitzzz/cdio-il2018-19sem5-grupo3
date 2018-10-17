@@ -3,68 +3,73 @@ using System.Runtime.Serialization;
 using System.Collections.Generic;
 using core.domain;
 using support.dto;
+using System.Linq;
 
 namespace core.dto
 {
-
     /// <summary>
-    /// DTO that represents a Configured Product instance
+    /// DTO that represents a ConfiguredProduct instance
     /// </summary>
     [DataContract]
     public class CustomizedProductDTO : DTO, DTOParseable<CustomizedProduct, CustomizedProductDTO>
     {
         // <summary>
-        /// Customized Products's database identifier.
+        /// CustomizedProducts's database identifier
         /// </summary>
         /// <value>Gets/sets the value of the database identifier field.</value>
         [DataMember]
         public long id { get; set; }
 
-
-        /**
-        <summary>
-            String with the Customized Products's reference.
-        </summary>
-        */
+        /// <summary>
+        /// String with the CustomizedProduct's reference
+        /// </summary>
         public string reference { get; set; }
 
-        /** 
-        <summary>
-            String with the Customized Products's designation.
-        </summary>
-        */
+        /// <summary>
+        /// String with the CustomizedProduct's designation
+        /// </summary>
         public string designation { get; set; }
 
+        /// <summary>
+        /// CustomizedMaterialDTO with the CustomizedProduct's material
+        /// </summary>
+        public CustomizedMaterialDTO customizedMaterialDTO { get; set; }
 
-        /**
-        <summary>
-            The CustomizedProduct Customized Material
-        </summary>
-         */
-        public  CustomizedMaterial customizedMaterial;
+        /// <summary>
+        /// CustomizedDimensionsDTO with the CustomizedProduct's dimensions
+        /// </summary>
+        public CustomizedDimensionsDTO customizedDimensionsDTO { get; set; }
 
-        /**
-        <summary>
-            The CustomizedProduct Customized Dimensions
-        </summary>
-         */
-        public CustomizedDimensions customizedDimensions;
+        /// <summary>
+        /// ProductDTO with the CustomizedProduct's product
+        /// </summary>
+        public ProductDTO productDTO { get; set; }
 
-        /**
-        <summary>
-            Product from CustomizedProduct
-        </summary>
-         */
-        public ProductDTO productDTO;
+        /// <summary>
+        /// SlotListDTO with the CustomizedProduct's list of SlotDTOs with the Slots
+        /// </summary>
+        /* public SlotListDTO slotsDTO { get; set; } */
 
-        public  CustomizedProduct toEntity()
+        /// <summary>
+        /// Returns CustomizedProductDTO's equivalent CustomizedProduct
+        /// </summary>
+        /// <returns>CustomizedProductDTO's equivalent CustomizedProduct</returns>
+        public CustomizedProduct toEntity()
         {
-        
-            CustomizedProduct instanceFromDTO = new CustomizedProduct(reference, designation, customizedMaterial, customizedDimensions, productDTO.toEntity());
+
+            CustomizedProduct instanceFromDTO;
+            /* if (slotsDTO.slotDTOs.Count == 0 || slotsDTO.slotDTOs == null)
+            {
+                instanceFromDTO = new CustomizedProduct(reference, designation, customizedMaterialDTO.toEntity(), customizedDimensionsDTO.toEntity(), productDTO.toEntity());
+            }
+            else
+            {
+                List<Slot> slots = DTOUtils.reverseDTOS(slotsDTO.slotDTOs).ToList(); */
+
+                instanceFromDTO = new CustomizedProduct(reference, designation, customizedMaterialDTO.toEntity(), customizedDimensionsDTO.toEntity(), productDTO.toEntity());
+            /*  }*/
             instanceFromDTO.Id = this.id;
             return instanceFromDTO;
-            
         }
-
     }
 }

@@ -13,11 +13,10 @@ namespace core.application
         /// <summary>
         /// Adds a new CommercialCatalogue
         /// </summary>
-        /// <param name="comCatalogueAsDTO">DTO with the product information</param>
-        /// <returns>DTO with the created product DTO, null if the product was not created</returns>
+        /// <param name="comCatalogueAsDTO">DTO with the commercialCatalogue information</param>
+        /// <returns>DTO with the created commercialCatalogue DTO, null if the commercialCatalogue was not created</returns>
         public CommercialCatalogueDTO addCommercialCatalogue(CommercialCatalogueDTO comCatalogueAsDTO)
         {
-
 
 
             string reference = comCatalogueAsDTO.reference;

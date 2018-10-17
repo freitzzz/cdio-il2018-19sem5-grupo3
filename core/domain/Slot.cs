@@ -25,12 +25,12 @@ namespace core.domain
         /// <summary>
         /// DoubleValue with the width of the slot
         /// </summary>
-        public CustomizedDimensions slotDimensions;
+        public virtual CustomizedDimensions slotDimensions {get; protected set;}
 
         /// <summary>
         /// Customized Products that are inside a slot
         /// </summary>
-        public List<CustomizedProduct> customizedProducts;
+        public virtual List<CustomizedProduct> customizedProducts {get; protected set;}
 
         /// <summary>
         /// Empty constructor for ORM
