@@ -45,7 +45,7 @@ namespace core.dto
             double maxValue = MeasurementUnitService.convertFromUnit(this.maxValue, unit);
             double increment = MeasurementUnitService.convertFromUnit(this.increment, unit);
 
-            ContinuousDimensionInterval instanceFromDTO = ContinuousDimensionInterval.valueOf(minValue, maxValue, increment);
+            ContinuousDimensionInterval instanceFromDTO = new ContinuousDimensionInterval(minValue, maxValue, increment);
             instanceFromDTO.Id = id;
             
             return instanceFromDTO;

@@ -36,20 +36,10 @@ namespace core.domain
         protected DiscreteDimensionInterval() { }
 
         /// <summary>
-        /// Returns a new DiscreteDimensionInterval instance
-        /// </summary>
-        /// <param name="values">list of values that make up the interval</param>
-        /// <returns>DiscreteDimensionInterval instance</returns>
-        public static DiscreteDimensionInterval valueOf(List<double> values)
-        {
-            return new DiscreteDimensionInterval(values);
-        }
-
-        /// <summary>
         /// Builds a DiscreteDimensionInterval instance
         /// </summary>
         /// <param name="values">list of values that make up the interval</param>
-        private DiscreteDimensionInterval(List<double> values)
+        public DiscreteDimensionInterval(List<double> values)
         {
 
             if (Collections.isListNull(values))
