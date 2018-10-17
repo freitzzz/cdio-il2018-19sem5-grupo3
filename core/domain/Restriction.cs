@@ -63,6 +63,7 @@ namespace core.domain {
                 throw new ArgumentException(INVALID_DESCRIPTION);
             }
             this.description = description;
+            inputs = new List<Input>();
         }
 
         /// <summary>

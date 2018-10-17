@@ -201,9 +201,9 @@ namespace backend.Controllers
         [HttpPut("{id}/finishes")]
         public ActionResult updateFinishes(long id, [FromBody] UpdateMaterialDTO upMat)
         {
-            upMat.id = id;
             try
             {
+                upMat.id = id;
                 if (new core.application.MaterialsController().updateFinishes(upMat))
                 {
                     return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
@@ -220,12 +220,12 @@ namespace backend.Controllers
          /// <param name="id">id of the material to be updated</param>
          /// <param name="upMat">dto with the list of colors to add and remove</param>
          /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
-        [HttpPut("{id}/finishes")]
+        [HttpPut("{id}/colors")]
         public ActionResult updateColors(long id, [FromBody] UpdateMaterialDTO upMat)
         {
-            upMat.id = id;
             try
             {
+                upMat.id = id;
                 if (new core.application.MaterialsController().updateColors(upMat))
                 {
                     return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
