@@ -4,6 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using backend;
 using backend.persistence.ef;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc;
+using core.persistence;
+using System.Reflection;
+using backend.Controllers;
 
 namespace backend_tests.Setup
 {
@@ -13,29 +18,21 @@ namespace backend_tests.Setup
     /// </summary>
     public class TestStartupSQLite : Startup
     {
-        public TestStartupSQLite(IHostingEnvironment env) : base(env)
-        {
-        }
+        public TestStartupSQLite(IConfiguration configuration) : base(configuration) { }
 
-        public override void setupDatabase(IServiceCollection services)
+        public override void ConfigureServices(IServiceCollection services)
         {
-            var connectionStringBuilder = new SqliteConnectionStringBuilder
-            {
-                DataSource = ":memory:"
-            };
-            var connectionString = connectionStringBuilder.ToString();
-            var connection = new SqliteConnection(connectionString);
-            services
-              .AddEntityFrameworkSqlite()
-              .AddDbContext<MyCContext>(
-                options => options.UseSqlite(connection)
-              );
-        }
+            services.AddScoped<ProductRepository, EFProductRepository>();
+            services.AddScoped<ProductCategoryRepository, EFProductCategoryRepository>();
+            services.AddScoped<MaterialRepository, EFMaterialRepository>();
 
-        public override void ensureDatabaseIsCreated(MyCContext context)
-        {
-            context.Database.OpenConnection();
-            context.Database.EnsureCreated();
+            services.AddScoped<CommercialCatalogueRepository, EFCommercialCatalogueRepository>();
+
+            services.AddScoped<CustomizedProductRepository, EFCustomizedProductRepository>();
+            services.AddScoped<CustomizedProductCollectionRepository, EFCustomizedProductCollectionRepository>();
+            services.AddScoped<CommercialCatalogueRepository, EFCommercialCatalogueRepository>();
+
+            services.AddMvc().AddApplicationPart(Assembly.Load(typeof(MaterialsController).Assembly.GetName()));
         }
     }
 }

@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
-using System;
-using System.IO;
-using System.Net.Http;
-using Microsoft.Extensions.Configuration;
-using backend;
+using Microsoft.AspNetCore.Mvc.Testing;
+using backend.persistence.ef;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
 
 namespace backend_tests.Setup
 {
@@ -14,28 +15,72 @@ namespace backend_tests.Setup
     /// Based on this solution <a href = https://logcorner.com/asp-net-web-api-core-integration-testing-using-inmemory-entityframeworkcore-sqlite-or-localdb-and-xunit2/></a>
     /// </summary>
     /// <typeparam name="TStartup"></typeparam>
-    public class TestFixture<TStartup> : IDisposable where TStartup : class
+    public class TestFixture<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
     {
-        private readonly TestServer testServer;
-        public HttpClient httpClient { get; }
 
-        public TestFixture()
+        protected override IWebHostBuilder CreateWebHostBuilder()
         {
-            var webHostBuilder = new WebHostBuilder()
-            .UseConfiguration(new ConfigurationBuilder()
-            .SetBasePath(Path.GetFullPath(@"../../../../backend_tests"))
-            .AddJsonFile("appsettings.json", optional: false).Build())
-            .UseStartup<Startup>();
-            testServer = new TestServer(webHostBuilder);
 
-            httpClient = testServer.CreateClient();
-            httpClient.BaseAddress = new Uri("http://localhost:5001");
+            IWebHostBuilder builder = new WebHostBuilder().UseStartup<TStartup>();
+
+            return builder;
         }
-
-        public void Dispose()
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            httpClient.Dispose();
-            testServer.Dispose();
+            builder.ConfigureServices(services =>
+            {
+                //Create a new service provider
+                var serviceProvider = new ServiceCollection()
+                .AddEntityFrameworkSqlite()
+                .BuildServiceProvider();
+
+                //Add the MyCContext
+                var connectionStringBuilder = new SqliteConnectionStringBuilder
+                {
+                    DataSource = ":memory:"
+                };
+                var connectionString = connectionStringBuilder.ToString();
+                var connection = new SqliteConnection(connectionString);
+                services
+                  .AddEntityFrameworkSqlite()
+                  .AddDbContext<MyCContext>(
+                    options =>
+                    {
+                        options.UseSqlite(connection);
+                        options.UseInternalServiceProvider(serviceProvider);
+                    }
+                  );
+
+                //Build the service provider
+                var sp = services.BuildServiceProvider();
+
+                // Create a scope to obtain a reference to the database
+                // context (ApplicationDbContext).
+                using (var scope = sp.CreateScope())
+                {
+                    var scopedServices = scope.ServiceProvider;
+                    var db = scopedServices.GetRequiredService<MyCContext>();
+                    var logger = scopedServices
+                        .GetRequiredService<ILogger<TestFixture<TStartup>>>();
+
+                    // Ensure the database is created.
+                    db.Database.OpenConnection();
+                    db.Database.Migrate();
+
+                    /*                     try
+                                        {
+                                            // Seed the database with test data.
+                                            InitializeDbForTests(db);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            logger.LogError(ex, $"An error occurred seeding the " +
+                                                "database with test messages. Error: {ex.Message}");
+                                        } */
+                }
+
+            }
+            );
         }
     }
 }
