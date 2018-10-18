@@ -115,7 +115,7 @@ namespace core.domain
         CustomizedDimensions customizedDimensions, Product product, List<Slot> slots) : 
             this(reference, designation, customizedMaterial, customizedDimensions, product)
         {
-            this.slots.AddRange(slots);
+            checkAndAddSlots(slots);
         }
 
         /// <summary>
@@ -187,6 +187,16 @@ namespace core.domain
         public int numberOfSlots()
         {
             return slots.Count;
+        }
+
+        /// <summary>
+        /// Checks if all Slots from a received List are valid and adds them to the CustomizedProduct's list of Slots
+        /// </summary>
+        /// <param name="slots"></param>
+        private void checkAndAddSlots(List<Slot> slots){
+            foreach(Slot slot in slots){
+                addSlot(slot);
+            }
         }
 
         /// <summary>

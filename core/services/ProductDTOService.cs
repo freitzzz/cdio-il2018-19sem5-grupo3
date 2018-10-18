@@ -27,12 +27,48 @@ namespace core.services{
             IEnumerable<Dimension> productHeightDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.heightDimensionDTOs);
             IEnumerable<Dimension> productWidthDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.widthDimensionDTOs);
             IEnumerable<Dimension> productDepthDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.depthDimensionDTOs);
-            if(productComponents==null)
-                return new Product(reference,designation,productCategory
-                                            ,productMaterials
-                                            ,productHeightDimensions
-                                            ,productWidthDimensions
-                                            ,productDepthDimensions);
+            
+            SlotDimensionSetDTO slotDimensions = productDTO.slotDimensions;
+            if(slotDimensions != null && productComponents != null){
+                CustomizedDimensions maxSlotDimension=slotDimensions.maximumSlotDimensions.toEntity();
+                CustomizedDimensions minSlotDimension=slotDimensions.minimumSlotDimensions.toEntity();
+                CustomizedDimensions recommendedSlotDimension = slotDimensions.recommendedSlotDimensions.toEntity();
+
+                return new Product(reference, designation,true,
+                                            maxSlotDimension,
+                                            minSlotDimension,
+                                            recommendedSlotDimension,
+                                            productCategory,
+                                            productMaterials,
+                                            productComponents,
+                                            productHeightDimensions,
+                                            productWidthDimensions,
+                                            productDepthDimensions);     
+            }       
+            if(productComponents==null&&slotDimensions!=null){
+                CustomizedDimensions maxSlotDimension=slotDimensions.maximumSlotDimensions.toEntity();
+                CustomizedDimensions minSlotDimension=slotDimensions.minimumSlotDimensions.toEntity();
+                CustomizedDimensions recommendedSlotDimension = slotDimensions.recommendedSlotDimensions.toEntity();
+
+                return new Product(reference,designation,true,
+                                            maxSlotDimension,
+                                            minSlotDimension,
+                                            recommendedSlotDimension,
+                                            productCategory, 
+                                            productMaterials,
+                                            productHeightDimensions,
+                                            productWidthDimensions,
+                                            productDepthDimensions);
+            }
+            if(productComponents!=null&&slotDimensions==null){
+                return new Product(reference,designation,
+                                            productCategory, 
+                                            productMaterials,
+                                            productComponents,
+                                            productHeightDimensions,
+                                            productWidthDimensions,
+                                            productDepthDimensions);
+            }
             return new Product(reference,designation,productCategory
                                             ,productMaterials
                                             ,productComponents

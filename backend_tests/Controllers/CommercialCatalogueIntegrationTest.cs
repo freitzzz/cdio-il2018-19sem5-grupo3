@@ -53,81 +53,87 @@ namespace backend_tests.Controllers
             Assert.True(response.StatusCode == HttpStatusCode.NotFound);
         }
 
-//      [Fact, TestPriority(2)]
-//         public async Task<CommercialCatalogueDTO> ensurePostCommercialCatalogueWorks()
-//         {
-
-//             ProductCategoryDTO categoryDTO = new ProductCategoryDTO();
-//             categoryDTO.name = "Category";
-
-//             ColorDTO colorDTO = new ColorDTO();
-//             colorDTO.name = "Bule";
-//             colorDTO.alpha = 1;
-//             colorDTO.blue = 1;
-//             colorDTO.green = 1;
-//             colorDTO.red = 1;
-//             List<ColorDTO> colorsDTO = new List<ColorDTO>();
-//             colorsDTO.Add(colorDTO);
-//             FinishDTO finishDTO = new FinishDTO();
-//             finishDTO.description = "Finish";
-//             List<FinishDTO> finishesDTO = new List<FinishDTO>();
-//             finishesDTO.Add(finishDTO);
-//             MaterialDTO materialDTO = new MaterialDTO();
-//             materialDTO.reference = "1";
-//             materialDTO.designation = "Material";
-//             materialDTO.finishes = finishesDTO;
-//             materialDTO.colors = colorsDTO;
-
-//             List<MaterialDTO> materialsDTO = new List<MaterialDTO>();
-//             materialsDTO.Add(materialDTO);
-//             IEnumerable<MaterialDTO> materialsIEnum = materialsDTO;
-
-//             List<Double> values2 = new List<Double>();
-//             values2.Add(500.0); //Width
-//             DiscreteDimensionIntervalDTO d2 = new DiscreteDimensionIntervalDTO();
-//             d2.values = values2;
-//             List<DimensionDTO> valuest = new List<DimensionDTO>();
-//             valuest.Add(d2);
-
-//             IEnumerable<DimensionDTO> heightDimensions = valuest;
-//             IEnumerable<DimensionDTO> widthDimensions = valuest;
-//             IEnumerable<DimensionDTO> depthDimensions = valuest;
-//             ProductDTO productDTO = new ProductDTO();
-//             productDTO.designation = "Product";
-//             productDTO.reference = "4";
-//             productDTO.productMaterials = materialsDTO;
-//             productDTO.productCategory = categoryDTO;
-//             productDTO.dimensions =
-
-//             ("2", "Product", category, materialsIEnum, heightDimensions, widthDimensions, depthDimensions);
-
-//             CustomizedMaterialDTO custMaterialDTO = new CustomizedMaterialDTO();
-//             custMaterialDTO.color = colorDTO;
-//             custMaterialDTO.finish = finishDTO;
-
-//             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(23.4, 4.5, 6.0);
+        [Fact, TestPriority(2)]
+        public async Task<CommercialCatalogueDTO> ensurePostCommercialCatalogueWorks()
+        {
 
 
-//             CustomizedProduct custProduct = new CustomizedProduct("3", "Customized Product", custMaterial, custDimensions, product);
-//             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
-//             custProducts.Add(custProduct);
+            Task<ProductDTO> productDTOTask = new ProductControllerIntegrationTest(fixture).ensureProductIsCreatedSuccesfuly();
+            productDTOTask.Wait();
+            ProductDTO productDTO = productDTOTask.Result;
 
-//             CustomizedProductCollection productsCollection = new CustomizedProductCollection("CustomizedProductsCollection", custProducts);
 
-//             CatalogueCollection catalogueCollection = new CatalogueCollection(custProducts, productsCollection);
+            CustomizedMaterialDTO custMaterialDTO = new CustomizedMaterialDTO();
+            /* custMaterialDTO.color = colorDTO;
+            custMaterialDTO .finish = finishDTO;*/
 
-//             List<CatalogueCollection> listCatalogueCollection = new List<CatalogueCollection>();
-//             listCatalogueCollection.Add(catalogueCollection);
+            CustomizedDimensionsDTO custDimensionsDTO = new CustomizedDimensionsDTO();
+            custDimensionsDTO.height = 23.4;
+            custDimensionsDTO.width = 4.5;
+            custDimensionsDTO.depth = 6.0;
 
-//             CommercialCatalogue commercialCatalogue = new CommercialCatalogue("6", "Catalogue", listCatalogueCollection);
-//             CommercialCatalogueDTO commercialCatalogueDTO = commercialCatalogue.toDTO();
-// S            var response = await client.PostAsJsonAsync(urlBase, commercialCatalogueDTO);
 
-//             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+            CustomizedProductDTO custProduct = new CustomizedProductDTO();
+            custProduct.reference = "3";
+            custProduct.customizedDimensionsDTO = custDimensionsDTO;
+            custProduct.customizedMaterialDTO = custMaterialDTO;
+            custProduct.designation = "Customized Product";
+            custProduct.productDTO = productDTO;
 
-//             return JsonConvert.DeserializeObject<CommercialCatalogueDTO>(await response.Content.ReadAsStringAsync());
-//         }
 
+            List<CustomizedProductDTO> custProducts = new List<CustomizedProductDTO>();
+            custProducts.Add(custProduct);
+
+            CustomizedProductCollectionDTO productsCollection = new CustomizedProductCollectionDTO();
+            productsCollection.name = "CustomizedProductsCollection";
+            productsCollection.customizedProducts = new List<CustomizedProductDTO>(custProducts);
+
+            CatalogueCollectionDTO catalogueCollection = new CatalogueCollectionDTO();
+            catalogueCollection.customizedProductsDTO = new List<CustomizedProductDTO>(custProducts);
+            catalogueCollection.customizedProductCollectionDTO = productsCollection;
+
+            List<CatalogueCollectionDTO> listCatalogueCollection = new List<CatalogueCollectionDTO>();
+            listCatalogueCollection.Add(catalogueCollection);
+
+
+            CommercialCatalogueDTO commercialCatalogue = new CommercialCatalogueDTO();
+            commercialCatalogue.reference = "6";
+            commercialCatalogue.designation = " Catalogue";
+            commercialCatalogue.collectionList = listCatalogueCollection;
+
+            var response = await client.PostAsJsonAsync(urlBase, commercialCatalogue);
+
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+            return JsonConvert.DeserializeObject<CommercialCatalogueDTO>(await response.Content.ReadAsStringAsync());
+        }
+
+
+        [Fact, TestPriority(3)]
+        public async Task<CommercialCatalogueDTO> ensurePutCatalogueCollectionWorks()
+        {
+/* 
+            Task<CommercialCatalogueDTO> commercialCatalogueDTOTask = ensurePostCommercialCatalogueWorks();
+            commercialCatalogueDTOTask.Wait();
+            CommercialCatalogueDTO commercialCatalogueDTO = commercialCatalogueDTOTask.Result;
+
+            long id = commercialCatalogueDTO.id;
+            CatalogueCollectionDTO catalogueCollectionDTO = new CatalogueCollectionDTO();
+             */
+            
+            //TODO:WAIT FOR IMPLEMENTATION OF OTHER INTEGRATION TESTS
+            
+            ///catalogueCollectionDTO.customizedProductCollectionDTO = CustomizedProductCollectionIn
+            
+            //List<CustomizedProductDTO> customizedProductDTOs=new List<CustomizedProductDTO>();
+
+            //var response = await client.PutAsJsonAsync(urlBase+"/"+id+"/collections", catalogueCollectionDTO);
+
+            //Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+            //return JsonConvert.DeserializeObject<CommercialCatalogueDTO>(await response.Content.ReadAsStringAsync());
+            return null;
+        }
 
     }
 }
