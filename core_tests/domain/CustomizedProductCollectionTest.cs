@@ -43,7 +43,7 @@ namespace core_tests.domain
 
             values.Add(500.0); //Width
 
-            DiscreteDimensionInterval interval = DiscreteDimensionInterval.valueOf(values);
+            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
 
             List<Dimension> dimensions = new List<Dimension>();
             dimensions.Add(interval);
@@ -101,7 +101,7 @@ namespace core_tests.domain
 
             values.Add(500.0); //Width
 
-            DiscreteDimensionInterval interval = DiscreteDimensionInterval.valueOf(values);
+            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
 
             List<Dimension> dimensions = new List<Dimension>();
             dimensions.Add(interval);
@@ -147,7 +147,7 @@ namespace core_tests.domain
 
             values.Add(500.0); //Width
 
-            DiscreteDimensionInterval interval = DiscreteDimensionInterval.valueOf(values);
+            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
 
             List<Dimension> dimensions = new List<Dimension>();
             dimensions.Add(interval);
@@ -256,7 +256,7 @@ namespace core_tests.domain
 
             values.Add(500.0); //Width
 
-            DiscreteDimensionInterval interval = DiscreteDimensionInterval.valueOf(values);
+            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
 
             List<Dimension> dimensions = new List<Dimension>();
             dimensions.Add(interval);
@@ -309,7 +309,7 @@ namespace core_tests.domain
 
             values.Add(500.0); //Width
 
-            DiscreteDimensionInterval interval = DiscreteDimensionInterval.valueOf(values);
+            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
 
             List<Dimension> dimensions = new List<Dimension>();
             dimensions.Add(interval);
@@ -375,7 +375,7 @@ namespace core_tests.domain
 
             values.Add(500.0); //Width
 
-            DiscreteDimensionInterval interval = DiscreteDimensionInterval.valueOf(values);
+            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
 
             List<Dimension> dimensions = new List<Dimension>();
             dimensions.Add(interval);
@@ -459,7 +459,7 @@ namespace core_tests.domain
 
             values.Add(500.0); //Width
 
-            DiscreteDimensionInterval interval = DiscreteDimensionInterval.valueOf(values);
+            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
 
             List<Dimension> dimensions = new List<Dimension>();
             dimensions.Add(interval);
@@ -516,7 +516,7 @@ namespace core_tests.domain
 
             values.Add(500.0); //Width
 
-            DiscreteDimensionInterval interval = DiscreteDimensionInterval.valueOf(values);
+            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
 
             List<Dimension> dimensions = new List<Dimension>();
             dimensions.Add(interval);
@@ -572,7 +572,7 @@ namespace core_tests.domain
 
             values.Add(500.0); //Width
 
-            DiscreteDimensionInterval interval = DiscreteDimensionInterval.valueOf(values);
+            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
 
             List<Dimension> dimensions = new List<Dimension>();
             dimensions.Add(interval);
@@ -628,7 +628,7 @@ namespace core_tests.domain
 
             values.Add(500.0); //Width
 
-            DiscreteDimensionInterval interval = DiscreteDimensionInterval.valueOf(values);
+            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
 
             List<Dimension> dimensions = new List<Dimension>();
             dimensions.Add(interval);
@@ -684,7 +684,7 @@ namespace core_tests.domain
 
             values.Add(500.0); //Width
 
-            DiscreteDimensionInterval interval = DiscreteDimensionInterval.valueOf(values);
+            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
 
             List<Dimension> dimensions = new List<Dimension>();
             dimensions.Add(interval);
@@ -741,7 +741,7 @@ namespace core_tests.domain
 
             values.Add(500.0); //Width
 
-            DiscreteDimensionInterval interval = DiscreteDimensionInterval.valueOf(values);
+            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
 
             List<Dimension> dimensions = new List<Dimension>();
             dimensions.Add(interval);

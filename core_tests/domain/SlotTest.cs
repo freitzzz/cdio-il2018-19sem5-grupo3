@@ -45,7 +45,7 @@ namespace core_tests.domain
             //Creating Dimensions
             List<Double> valuesList = new List<Double>();
             valuesList.Add(500.0); //Width
-            DiscreteDimensionInterval discreteDimensionInterval = DiscreteDimensionInterval.valueOf(valuesList);
+            DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(valuesList);
             List<Dimension> dimensionList = new List<Dimension>();
             dimensionList.Add(discreteDimensionInterval);
             IEnumerable<Dimension> heightValues = dimensionList;
@@ -94,7 +94,7 @@ namespace core_tests.domain
             //Creating Dimensions
             List<Double> valuesList = new List<Double>();
             valuesList.Add(500.0); //Width
-            DiscreteDimensionInterval discreteDimensionInterval = DiscreteDimensionInterval.valueOf(valuesList);
+            DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(valuesList);
             List<Dimension> dimensionList = new List<Dimension>();
             dimensionList.Add(discreteDimensionInterval);
             IEnumerable<Dimension> heightValues = dimensionList;
@@ -132,7 +132,7 @@ namespace core_tests.domain
             //Creating Dimensions
             List<Double> valuesList = new List<Double>();
             valuesList.Add(500.0); //Width
-            DiscreteDimensionInterval discreteDimensionInterval = DiscreteDimensionInterval.valueOf(valuesList);
+            DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(valuesList);
             List<Dimension> dimensionList = new List<Dimension>();
             dimensionList.Add(discreteDimensionInterval);
             IEnumerable<Dimension> heightValues = dimensionList;
@@ -206,7 +206,7 @@ namespace core_tests.domain
             //Creating Dimensions
             List<Double> valuesList = new List<Double>();
             valuesList.Add(500.0); //Width
-            DiscreteDimensionInterval discreteDimensionInterval = DiscreteDimensionInterval.valueOf(valuesList);
+            DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(valuesList);
             List<Dimension> dimensionList = new List<Dimension>();
             dimensionList.Add(discreteDimensionInterval);
             IEnumerable<Dimension> heightValues = dimensionList;
@@ -247,7 +247,7 @@ namespace core_tests.domain
             //Creating Dimensions
             List<Double> valuesList = new List<Double>();
             valuesList.Add(500.0); //Width
-            DiscreteDimensionInterval discreteDimensionInterval = DiscreteDimensionInterval.valueOf(valuesList);
+            DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(valuesList);
             List<Dimension> dimensionList = new List<Dimension>();
             dimensionList.Add(discreteDimensionInterval);
             IEnumerable<Dimension> heightValues = dimensionList;
@@ -289,7 +289,7 @@ namespace core_tests.domain
             //Creating Dimensions
             List<Double> valuesList = new List<Double>();
             valuesList.Add(500.0); //Width
-            DiscreteDimensionInterval discreteDimensionInterval = DiscreteDimensionInterval.valueOf(valuesList);
+            DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(valuesList);
             List<Dimension> dimensionList = new List<Dimension>();
             dimensionList.Add(discreteDimensionInterval);
             IEnumerable<Dimension> heightValues = dimensionList;
@@ -331,7 +331,7 @@ namespace core_tests.domain
             //Creating Dimensions
             List<Double> valuesList = new List<Double>();
             valuesList.Add(500.0); //Width
-            DiscreteDimensionInterval discreteDimensionInterval = DiscreteDimensionInterval.valueOf(valuesList);
+            DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(valuesList);
             List<Dimension> dimensionList = new List<Dimension>();
             dimensionList.Add(discreteDimensionInterval);
             IEnumerable<Dimension> heightValues = dimensionList;
@@ -373,7 +373,7 @@ namespace core_tests.domain
             //Creating Dimensions
             List<Double> valuesList = new List<Double>();
             valuesList.Add(500.0); //Width
-            DiscreteDimensionInterval discreteDimensionInterval = DiscreteDimensionInterval.valueOf(valuesList);
+            DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(valuesList);
             List<Dimension> dimensionList = new List<Dimension>();
             dimensionList.Add(discreteDimensionInterval);
             IEnumerable<Dimension> heightValues = dimensionList;
@@ -414,7 +414,7 @@ namespace core_tests.domain
             //Creating Dimensions
             List<Double> valuesList = new List<Double>();
             valuesList.Add(500.0); //Width
-            DiscreteDimensionInterval discreteDimensionInterval = DiscreteDimensionInterval.valueOf(valuesList);
+            DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(valuesList);
             List<Dimension> dimensionList = new List<Dimension>();
             dimensionList.Add(discreteDimensionInterval);
             IEnumerable<Dimension> heightValues = dimensionList;
@@ -455,7 +455,7 @@ namespace core_tests.domain
             //Creating Dimensions
             List<Double> valuesList = new List<Double>();
             valuesList.Add(500.0); //Width
-            DiscreteDimensionInterval discreteDimensionInterval = DiscreteDimensionInterval.valueOf(valuesList);
+            DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(valuesList);
             List<Dimension> dimensionList = new List<Dimension>();
             dimensionList.Add(discreteDimensionInterval);
             IEnumerable<Dimension> heightValues = dimensionList;
@@ -496,7 +496,7 @@ namespace core_tests.domain
             //Creating Dimensions
             List<Double> valuesList = new List<Double>();
             valuesList.Add(500.0); //Width
-            DiscreteDimensionInterval discreteDimensionInterval = DiscreteDimensionInterval.valueOf(valuesList);
+            DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(valuesList);
             List<Dimension> dimensionList = new List<Dimension>();
             dimensionList.Add(discreteDimensionInterval);
             IEnumerable<Dimension> heightValues = dimensionList;

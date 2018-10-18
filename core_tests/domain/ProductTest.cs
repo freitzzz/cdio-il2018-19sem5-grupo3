@@ -21,7 +21,7 @@ namespace core_tests.domain {
 
 
         private static readonly List<Dimension> PREDEFINED_RESTRICTIONS
-                    = new List<Dimension>(new[] { SingleValueDimension.valueOf(20f) });
+                    = new List<Dimension>(new[] { new SingleValueDimension(20f) });
         private static readonly ProductCategory PREDEFEFINED_CATEGORY = new ProductCategory("Test");
 
         /// <summary>
