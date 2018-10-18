@@ -343,15 +343,15 @@ namespace core.application {
             foreach (DimensionDTO dimensionDTO in dimensionsDTOs) {
                 if (dimensionDTO.GetType() == typeof(DiscreteDimensionIntervalDTO)) {
                     DiscreteDimensionIntervalDTO ddiDTO = (DiscreteDimensionIntervalDTO)dimensionDTO;
-                    DiscreteDimensionInterval discreteInterval =  new DiscreteDimensionInterval(ddiDTO.values);
+                    DiscreteDimensionInterval discreteInterval = DiscreteDimensionInterval.valueOf(ddiDTO.values);
                     dimensions.Add(discreteInterval);
                 } else if (dimensionDTO.GetType() == typeof(ContinuousDimensionIntervalDTO) ) {
                     ContinuousDimensionIntervalDTO cdiDTO = (ContinuousDimensionIntervalDTO)dimensionDTO;
-                    ContinuousDimensionInterval continuousInterval =  new ContinuousDimensionInterval(cdiDTO.minValue, cdiDTO.maxValue, cdiDTO.increment);
+                    ContinuousDimensionInterval continuousInterval = ContinuousDimensionInterval.valueOf(cdiDTO.minValue, cdiDTO.maxValue, cdiDTO.increment);
                     dimensions.Add(continuousInterval);
                 } else if(dimensionDTO.GetType() == typeof(SingleValueDimensionDTO)){
                     SingleValueDimensionDTO svdDTO = (SingleValueDimensionDTO)dimensionDTO;
-                    SingleValueDimension dimensionValue =  new SingleValueDimension(svdDTO.value);
+                    SingleValueDimension dimensionValue = SingleValueDimension.valueOf(svdDTO.value);
                     dimensions.Add(dimensionValue);
                 }
             }

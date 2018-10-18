@@ -17,32 +17,37 @@ namespace core.dto
         /// CustomizedProducts's database identifier
         /// </summary>
         /// <value>Gets/sets the value of the database identifier field.</value>
-        [DataMember]
+        [DataMember(Name="id")]
         public long id { get; set; }
 
         /// <summary>
         /// String with the CustomizedProduct's reference
         /// </summary>
+        [DataMember(Name="reference")]
         public string reference { get; set; }
 
         /// <summary>
         /// String with the CustomizedProduct's designation
         /// </summary>
+        [DataMember(Name="designation")]
         public string designation { get; set; }
 
         /// <summary>
         /// CustomizedMaterialDTO with the CustomizedProduct's material
         /// </summary>
+        [DataMember(Name="customizedMaterial")]
         public CustomizedMaterialDTO customizedMaterialDTO { get; set; }
 
         /// <summary>
         /// CustomizedDimensionsDTO with the CustomizedProduct's dimensions
         /// </summary>
+        [DataMember(Name="customizedDimensions")]
         public CustomizedDimensionsDTO customizedDimensionsDTO { get; set; }
 
         /// <summary>
         /// ProductDTO with the CustomizedProduct's product
         /// </summary>
+        [DataMember(Name="product")]
         public ProductDTO productDTO { get; set; }
 
         /// <summary>

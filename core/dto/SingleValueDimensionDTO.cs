@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using core.domain;
 using core.services;
@@ -29,18 +28,8 @@ namespace core.dto
         {
             double value = MeasurementUnitService.convertFromUnit(this.value, unit);
 
-            SingleValueDimension instanceFromDTO = new SingleValueDimension(value);
+            SingleValueDimension instanceFromDTO = SingleValueDimension.valueOf(value);
             instanceFromDTO.Id = id;
-
-            if (this.restrictions != null)
-            {
-                IEnumerable<Restriction> restrictions = DTOUtils.reverseDTOS(this.restrictions);
-
-                foreach (Restriction restriction in restrictions)
-                {
-                    instanceFromDTO.addRestriction(restriction);
-                }
-            }
 
             return instanceFromDTO;
         }
