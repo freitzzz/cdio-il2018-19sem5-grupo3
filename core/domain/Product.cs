@@ -221,30 +221,10 @@ namespace core.domain {
                         IEnumerable<Component> complementedProducts,
                         IEnumerable<Dimension> heightValues,
                         IEnumerable<Dimension> widthValues,
-                        IEnumerable<Dimension> depthValues) {
+                        IEnumerable<Dimension> depthValues) : 
+                        this (reference, designation, productCategory, materials, heightValues, widthValues, depthValues) {
             checkProductComplementedProducts(complementedProducts);
-            checkProductMaterials(materials);
-            checkProductProperties(reference, designation);
-            checkProductDimensions(heightValues);
-            checkProductDimensions(widthValues);
-            checkProductDimensions(depthValues);
-            checkProductCategory(productCategory);
-            this.reference = reference;
-            this.designation = designation;
-            this.productMaterials = new List<ProductMaterial>();
-            foreach (Material mat in materials) {
-                this.productMaterials.Add(new ProductMaterial(this, mat));
-            }
             this.complementedProducts = new List<Component>(complementedProducts);
-            this.heightValues = new List<Dimension>(heightValues);
-            this.widthValues = new List<Dimension>(widthValues);
-            this.depthValues = new List<Dimension>(depthValues);
-            this.productCategory = productCategory;
-            this.isAvailable = true;
-            this.supportsSlots = false;
-            this.maxSlotSize = CustomizedDimensions.valueOf(0,0,0);
-            this.minSlotSize = CustomizedDimensions.valueOf(0,0,0);
-            this.recommendedSlotSize = CustomizedDimensions.valueOf(0,0,0);
         }
 
         /// <summary>

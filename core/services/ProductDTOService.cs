@@ -20,18 +20,6 @@ namespace core.services{
             string designation=productDTO.designation;
             IEnumerable<Component> productComponents=null;
             if(productDTO.complements!=null)productComponents=new ComponentDTOService().transform(productDTO.complements);
-
-            SlotDimensionSetDTO slotDimensions = productDTO.slotDimensions;
-            CustomizedDimensions maxSlotDimensions = null;
-            CustomizedDimensions minSlotDimensions = null;
-            CustomizedDimensions recommendedSlotDimensions = null;
-
-            if(slotDimensions!=null){
-                maxSlotDimensions=slotDimensions.maximumSlotDimensions.toEntity();
-                minSlotDimensions=slotDimensions.minimumSlotDimensions.toEntity();
-                recommendedSlotDimensions=slotDimensions.recommendedSlotDimensions.toEntity();
-            }
-
             ProductCategory productCategory=PersistenceContext.repositories().createProductCategoryRepository().find(productDTO.productCategory.id);
             //TODO:Check if the length of product materials is equal to product materials dtos
             IEnumerable<Material> productMaterials=PersistenceContext.repositories().createMaterialRepository().getMaterialsByIDS(productDTO.productMaterials);
@@ -39,17 +27,6 @@ namespace core.services{
             IEnumerable<Dimension> productHeightDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.heightDimensionDTOs);
             IEnumerable<Dimension> productWidthDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.widthDimensionDTOs);
             IEnumerable<Dimension> productDepthDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.depthDimensionDTOs);
-        
-            if(productDTO.slotDimensions!=null)
-            return new Product(reference,designation,true,
-                                            maxSlotDimensions,
-                                            minSlotDimensions,
-                                            recommendedSlotDimensions,
-                                            productCategory,
-                                            productMaterials,
-                                            productHeightDimensions,
-                                            productWidthDimensions,
-                                            productDepthDimensions);
             if(productComponents==null)
                 return new Product(reference,designation,productCategory
                                             ,productMaterials

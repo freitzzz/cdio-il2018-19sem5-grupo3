@@ -65,6 +65,9 @@ namespace backend.persistence.ef
             builder.Entity<DiscreteDimensionInterval>().HasBaseType<Dimension>();
             builder.Entity<SingleValueDimension>().HasBaseType<Dimension>();
 
+            //TODO: improve restriction mapping, since it currently has columns for various entity ids
+            builder.Entity<Dimension>().HasMany(d => d.restrictions);           //one-to-many relationship
+
             builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values); //one-to-many relationship
 
             //Configure one-to-one relationship between parent and child ProductCategory
@@ -86,6 +89,7 @@ namespace backend.persistence.ef
             builder.Entity<Product>().OwnsOne(p => p.maxSlotSize);              //embedded Dimensions
             builder.Entity<Product>().OwnsOne(p => p.recommendedSlotSize);      //embedded Dimensions
 
+            builder.Entity<CustomizedProduct>().HasOne(cp => cp.product);       //one-to-one relationship
             builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedDimensions); //embedded Dimensions
             builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedMaterial);   //embedded CustomizedMaterial
             builder.Entity<CustomizedProduct>().HasMany(cp => cp.slots);        //one-to-many relationship

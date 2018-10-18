@@ -14,7 +14,7 @@ namespace core.dto
     public class DiscreteDimensionIntervalDTO : DimensionDTO
     {
 
-        [DataMember (Order = 2)]
+        [DataMember(Order = 2)]
         /// <summary>
         /// List of values that the dimension can have
         /// </summary>
@@ -29,13 +29,24 @@ namespace core.dto
         {
             List<double> valuesInMilimetres = new List<double>();
 
-            foreach(double value in values){
+            foreach (double value in values)
+            {
                 valuesInMilimetres.Add(MeasurementUnitService.convertFromUnit(value, unit));
             }
 
-            DiscreteDimensionInterval instanceFromDTO = DiscreteDimensionInterval.valueOf(valuesInMilimetres);
+            DiscreteDimensionInterval instanceFromDTO = new DiscreteDimensionInterval(valuesInMilimetres);
             instanceFromDTO.Id = id;
-            
+
+            if (this.restrictions != null)
+            {
+                IEnumerable<Restriction> restrictions = DTOUtils.reverseDTOS(this.restrictions);
+
+                foreach (Restriction restriction in restrictions)
+                {
+                    instanceFromDTO.addRestriction(restriction);
+                }
+            }
+
             return instanceFromDTO;
         }
     }

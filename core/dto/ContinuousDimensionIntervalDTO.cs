@@ -45,9 +45,19 @@ namespace core.dto
             double maxValue = MeasurementUnitService.convertFromUnit(this.maxValue, unit);
             double increment = MeasurementUnitService.convertFromUnit(this.increment, unit);
 
-            ContinuousDimensionInterval instanceFromDTO = ContinuousDimensionInterval.valueOf(minValue, maxValue, increment);
+            ContinuousDimensionInterval instanceFromDTO = new ContinuousDimensionInterval(minValue, maxValue, increment);
             instanceFromDTO.Id = id;
-            
+
+            if (this.restrictions != null)
+            {
+                IEnumerable<Restriction> restrictions = DTOUtils.reverseDTOS(this.restrictions);
+
+                foreach (Restriction restriction in restrictions)
+                {
+                    instanceFromDTO.addRestriction(restriction);
+                }
+            }
+
             return instanceFromDTO;
         }
     }
