@@ -113,20 +113,20 @@ namespace backend_tests.Controllers
         [Fact, TestPriority(3)]
         public async Task<CommercialCatalogueDTO> ensurePutCatalogueCollectionWorks()
         {
-
+/* 
             Task<CommercialCatalogueDTO> commercialCatalogueDTOTask = ensurePostCommercialCatalogueWorks();
             commercialCatalogueDTOTask.Wait();
             CommercialCatalogueDTO commercialCatalogueDTO = commercialCatalogueDTOTask.Result;
 
             long id = commercialCatalogueDTO.id;
             CatalogueCollectionDTO catalogueCollectionDTO = new CatalogueCollectionDTO();
-            
+             */
             
             //TODO:WAIT FOR IMPLEMENTATION OF OTHER INTEGRATION TESTS
             
             ///catalogueCollectionDTO.customizedProductCollectionDTO = CustomizedProductCollectionIn
             
-            List<CustomizedProductDTO> customizedProductDTOs=new List<CustomizedProductDTO>();
+            //List<CustomizedProductDTO> customizedProductDTOs=new List<CustomizedProductDTO>();
 
             //var response = await client.PutAsJsonAsync(urlBase+"/"+id+"/collections", catalogueCollectionDTO);
 
