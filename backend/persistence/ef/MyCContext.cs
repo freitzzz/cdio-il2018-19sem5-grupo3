@@ -66,7 +66,7 @@ namespace backend.persistence.ef
             builder.Entity<SingleValueDimension>().HasBaseType<Dimension>();
 
             //TODO: improve restriction mapping, since it currently has columns for various entity ids
-            builder.Entity<Dimension>().HasMany(d => d.restrictions);           //one-to-many relationship
+            //builder.Entity<Dimension>().HasMany(d => d.restrictions);           //one-to-many relationship
 
             builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values); //one-to-many relationship
 
@@ -88,6 +88,11 @@ namespace backend.persistence.ef
             builder.Entity<Product>().OwnsOne(p => p.minSlotSize);              //embedded Dimensions
             builder.Entity<Product>().OwnsOne(p => p.maxSlotSize);              //embedded Dimensions
             builder.Entity<Product>().OwnsOne(p => p.recommendedSlotSize);      //embedded Dimensions
+
+            builder.Entity<Component>().HasKey(c => new {c.fatherProductId, c.complementedProductId});
+
+            builder.Entity<Component>().HasOne(c => c.fatherProduct).WithMany(p => p.complementedProducts).HasForeignKey(cp => cp.fatherProductId);
+            //builder.Entity<Component>().HasOne(c => c.complementedProduct).WithMany(p => p.complementedProducts).HasForeignKey(cp => cp.complementedProductId);
 
             builder.Entity<CustomizedProduct>().HasOne(cp => cp.product);       //one-to-one relationship
             builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedDimensions); //embedded Dimensions
