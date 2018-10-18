@@ -1,13 +1,14 @@
 using System;
 using Xunit;
 using core.domain;
+using core.dto;
 
 namespace core_tests.domain
 {
     /// <summary>
-    /// Unit testing class for Dimension
+    /// Unit testing class for SingleValueDimension
     /// </summary>
-    public class DimensionTest
+    public class SingleValueDimensionTest
     {
 
         [Fact]
@@ -106,9 +107,38 @@ namespace core_tests.domain
         public void testToDTO()
         {
             SingleValueDimension instance = new SingleValueDimension(10.0);
-            SingleValueDimension other = new SingleValueDimension(10.0);
+            SingleValueDimensionDTO dto = (SingleValueDimensionDTO)instance.toDTO();
 
-            Assert.Equal(instance.toDTO().ToString(), other.toDTO().ToString());
+            Assert.Equal("mm", dto.unit);
+            Assert.Equal(10.0, dto.value);
+        }
+
+        [Fact]
+        public void ensureToDTOWithNullUnitStringDefaultsToMilimetres()
+        {
+            SingleValueDimension instance = new SingleValueDimension(10.0);
+            SingleValueDimensionDTO dto = (SingleValueDimensionDTO)instance.toDTO(null);
+
+            Assert.Equal("mm", dto.unit);
+        }
+
+        [Fact]
+        public void ensureToDTOWithNullUnitStringDoesNotConvertValues()
+        {
+            SingleValueDimension instance = new SingleValueDimension(10.0);
+            SingleValueDimensionDTO dto = (SingleValueDimensionDTO)instance.toDTO(null);
+
+            Assert.Equal(10.0, dto.value);
+        }
+
+        [Fact]
+        public void ensureToDTOConvertsValuesToGivenUnit()
+        {
+            SingleValueDimension instance = new SingleValueDimension(10.0);
+            SingleValueDimensionDTO dto = (SingleValueDimensionDTO)instance.toDTO("cm");
+
+            Assert.Equal("cm", dto.unit);
+            Assert.Equal(1.0, dto.value);
         }
     }
 }
