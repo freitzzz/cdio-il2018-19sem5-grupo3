@@ -29,9 +29,7 @@ namespace core.services{
         public IEnumerable<Component> transform(IEnumerable<ComponentDTO> componentsDTO){
             IEnumerable<ProductDTO> productsDTO=extractProductsDTOFromComponentsDTO(componentsDTO);
             IEnumerable<Product> products=PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
-            //TODO:CHECK LISTS LENGTH
             List<Component> components=new List<Component>();
-            //TODO:RESTRICTIONS ARE STILL IN DEVELOPMENT
             foreach(Product product in products)components.Add(new Component(product));
             return components;
         }
