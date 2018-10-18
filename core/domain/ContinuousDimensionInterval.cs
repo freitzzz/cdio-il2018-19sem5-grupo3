@@ -2,16 +2,13 @@ using System;
 using support.domain.ddd;
 using core.dto;
 using core.services;
-using support.dto;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace core.domain
 {
     /// <summary>
     /// Class that represents a continuous dimension interval
     /// </summary>
-    public class ContinuousDimensionInterval : Dimension
+    public class ContinuousDimensionInterval : Dimension, ValueObject
     {
         /// <summary>
         /// Constant that represents the message that occurs if the min value is NaN
@@ -78,13 +75,26 @@ namespace core.domain
         protected ContinuousDimensionInterval() { }
 
         /// <summary>
+        /// Returns a new ContinuousDimensionInterval instance
+        /// </summary>
+        /// <param name="minValue">minimum value of the interval</param>
+        /// <param name="maxValue">maximum value of the interval</param>
+        /// <param name="increment">increment value of the interval</param>
+        /// <returns>ContinuousDimensionInterval instance</returns>
+        public static ContinuousDimensionInterval valueOf(double minValue, double maxValue, double increment)
+        {
+            return new ContinuousDimensionInterval(minValue, maxValue, increment);
+        }
+
+
+        /// <summary>
         /// Builds a ContinuousDimensionInterval instance with a minimum value, a maximum value 
         /// and an increment value
         /// </summary>
         /// <param name="minValue">minimum value of the interval</param>
         /// <param name="maxValue">maximum value of the interval</param>
         /// <param name="increment">increment value of the interval</param>
-        public ContinuousDimensionInterval(double minValue, double maxValue, double increment)
+        private ContinuousDimensionInterval(double minValue, double maxValue, double increment)
         {
             if (Double.IsNaN(minValue))
             {
@@ -134,7 +144,6 @@ namespace core.domain
             this.minValue = minValue;
             this.maxValue = maxValue;
             this.increment = increment;
-            this.restrictions = new List<Restriction>();
         }
 
         /// <summary>
@@ -145,7 +154,7 @@ namespace core.domain
         /// <returns>true if the objects are equal, false if otherwise</returns>
         public override bool Equals(object obj)
         {
-            if (obj == null || obj.GetType() != typeof(ContinuousDimensionInterval))
+            if (obj == null || !obj.GetType().ToString().Equals("core.domain.ContinuousDimensionInterval"))
             {
                 return false;
             }
@@ -197,7 +206,6 @@ namespace core.domain
             dto.minValue = minValue;
             dto.maxValue = maxValue;
             dto.increment = increment;
-            dto.restrictions = DTOUtils.parseToDTOS(restrictions).ToList();
 
             return dto;
         }
@@ -210,13 +218,13 @@ namespace core.domain
                 return this.toDTO();
             }
 
-            ContinuousDimensionIntervalDTO dto = (ContinuousDimensionIntervalDTO)toDTO();
+            ContinuousDimensionIntervalDTO dto = new ContinuousDimensionIntervalDTO();
+
             dto.id = Id;
-            dto.unit = unit;
             dto.minValue = MeasurementUnitService.convertToUnit(minValue, unit);
             dto.maxValue = MeasurementUnitService.convertToUnit(maxValue, unit);
             dto.increment = MeasurementUnitService.convertToUnit(increment, unit);
-            dto.restrictions = DTOUtils.parseToDTOS(restrictions).ToList();
+            dto.unit = unit;
 
             return dto;
         }

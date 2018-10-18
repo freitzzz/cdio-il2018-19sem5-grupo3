@@ -21,7 +21,7 @@ namespace core_tests.domain {
 
 
         private static readonly List<Dimension> PREDEFINED_RESTRICTIONS
-                    = new List<Dimension>(new[] { new SingleValueDimension(20f) });
+                    = new List<Dimension>(new[] { SingleValueDimension.valueOf(20f) });
         private static readonly ProductCategory PREDEFEFINED_CATEGORY = new ProductCategory("Test");
 
         /// <summary>
@@ -352,7 +352,7 @@ namespace core_tests.domain {
         public void ensureProductCantAddDuplicatedHeightDimension() {
             Console.WriteLine("ensureProductCantAddDuplicatedHeightDimension");
             Product product = new Product("#666", "Shelf", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
-            Dimension restriction = new SingleValueDimension(5000);
+            Dimension restriction = SingleValueDimension.valueOf(5000);
             product.addHeightDimension(restriction);
             //Since we added a duplicated restriction then it should return false
             Assert.False(product.addHeightDimension(restriction));
@@ -365,7 +365,7 @@ namespace core_tests.domain {
         public void ensureProductCantAddDuplicatedWidthDimension() {
             Console.WriteLine("ensureProductCantAddDuplicatedWidthDimension");
             Product product = new Product("#666", "Shelf", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
-            Dimension restriction = new SingleValueDimension(5000);
+            Dimension restriction = SingleValueDimension.valueOf(5000);
             product.addWidthDimension(restriction);
             //Since we added a duplicated restriction then it should return false
             Assert.False(product.addWidthDimension(restriction));
@@ -378,7 +378,7 @@ namespace core_tests.domain {
         public void ensureProductCantAddDuplicatedDepthDimension() {
             Console.WriteLine("ensureProductCantAddDuplicatedDepthDimension");
             Product product = new Product("#666", "Shelf", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS, PREDEFINED_RESTRICTIONS);
-            Dimension restriction = new SingleValueDimension(5000);
+            Dimension restriction = SingleValueDimension.valueOf(5000);
             product.addDepthDimension(restriction);
             //Since we added a duplicated restriction then it should return false
             Assert.False(product.addDepthDimension(restriction));

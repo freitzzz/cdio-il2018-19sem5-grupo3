@@ -124,9 +124,8 @@ namespace core.application {
                 IEnumerable<ProductDTO> productsDTO=extractProductsDTOFromComponentsDTO(updateProductDTO.componentsToAdd);
                 IEnumerable<Product> complementedProducts=PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
                 ensureProductsFetchWasSuccesful(productsDTO,complementedProducts);
-                //TODO:RESTRICTIONS ARE STILL IN DEVELOPMENT
-                foreach(Product product in complementedProducts)
-                    updatedWithSuccess&=productBeingUpdated.addComplementedProduct(new Component(product));
+                foreach(Product complementedProduct in complementedProducts)
+                    updatedWithSuccess&=productBeingUpdated.addComplementedProduct(complementedProduct);
                 perfomedAtLeastOneUpdate=true;
             }
 
@@ -136,8 +135,8 @@ namespace core.application {
                 IEnumerable<ProductDTO> productsDTO=extractProductsDTOFromComponentsDTO(updateProductDTO.componentsToRemove);
                 IEnumerable<Product> complementedProducts=PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
                 ensureProductsFetchWasSuccesful(productsDTO,complementedProducts);
-                foreach(Product product in complementedProducts)
-                    updatedWithSuccess&=productBeingUpdated.removeComplementedProduct(new Component(product));
+                foreach(Product complementedProduct in complementedProducts)
+                    updatedWithSuccess&=productBeingUpdated.removeComplementedProduct(complementedProduct);
                 perfomedAtLeastOneUpdate=true;
             }
 
@@ -343,15 +342,15 @@ namespace core.application {
             foreach (DimensionDTO dimensionDTO in dimensionsDTOs) {
                 if (dimensionDTO.GetType() == typeof(DiscreteDimensionIntervalDTO)) {
                     DiscreteDimensionIntervalDTO ddiDTO = (DiscreteDimensionIntervalDTO)dimensionDTO;
-                    DiscreteDimensionInterval discreteInterval =  new DiscreteDimensionInterval(ddiDTO.values);
+                    DiscreteDimensionInterval discreteInterval = DiscreteDimensionInterval.valueOf(ddiDTO.values);
                     dimensions.Add(discreteInterval);
                 } else if (dimensionDTO.GetType() == typeof(ContinuousDimensionIntervalDTO) ) {
                     ContinuousDimensionIntervalDTO cdiDTO = (ContinuousDimensionIntervalDTO)dimensionDTO;
-                    ContinuousDimensionInterval continuousInterval =  new ContinuousDimensionInterval(cdiDTO.minValue, cdiDTO.maxValue, cdiDTO.increment);
+                    ContinuousDimensionInterval continuousInterval = ContinuousDimensionInterval.valueOf(cdiDTO.minValue, cdiDTO.maxValue, cdiDTO.increment);
                     dimensions.Add(continuousInterval);
                 } else if(dimensionDTO.GetType() == typeof(SingleValueDimensionDTO)){
                     SingleValueDimensionDTO svdDTO = (SingleValueDimensionDTO)dimensionDTO;
-                    SingleValueDimension dimensionValue =  new SingleValueDimension(svdDTO.value);
+                    SingleValueDimension dimensionValue = SingleValueDimension.valueOf(svdDTO.value);
                     dimensions.Add(dimensionValue);
                 }
             }

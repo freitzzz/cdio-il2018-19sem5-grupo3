@@ -10,7 +10,7 @@ namespace core_tests.domain {
         private static readonly Material PREDEFINED_MATERIAL = new Material("#444", "Tinta Branca", new List<Color>(new[] { Color.valueOf("White", 0, 0, 0, 0) }), new List<Finish>(new[] { Finish.valueOf("Matte") }));
         private static readonly Material PREDEFINED_MATERIAL2 = new Material("#445", "Tinta Preta", new List<Color>(new[] { Color.valueOf("Black", 255, 255, 255, 255) }), new List<Finish>(new[] { Finish.valueOf("Matte") }));
         private static readonly List<Material> PREDEFINED_MATERIALS = new List<Material>(new[] { PREDEFINED_MATERIAL });
-        private static readonly List<Dimension> PREDEFINED_RESTRICTIONS = new List<Dimension>(new[] { new SingleValueDimension(20f) });
+        private static readonly List<Dimension> PREDEFINED_RESTRICTIONS = new List<Dimension>(new[] { SingleValueDimension.valueOf(20f) });
         private static readonly ProductCategory PREDEFEFINED_CATEGORY = new ProductCategory("Test");
         /// <summary>
         /// Ensures addRestriction returns false when argument is null

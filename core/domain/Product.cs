@@ -218,13 +218,16 @@ namespace core.domain {
         public Product(string reference, string designation,
                         ProductCategory productCategory, 
                         IEnumerable<Material> materials,
-                        IEnumerable<Component> complementedProducts,
+                        IEnumerable<Product> complementedProducts,
                         IEnumerable<Dimension> heightValues,
                         IEnumerable<Dimension> widthValues,
                         IEnumerable<Dimension> depthValues) : 
                         this (reference, designation, productCategory, materials, heightValues, widthValues, depthValues) {
             checkProductComplementedProducts(complementedProducts);
-            this.complementedProducts = new List<Component>(complementedProducts);
+            this.complementedProducts = new List<Component>();
+            foreach(Product complementedProduct in complementedProducts){
+                this.complementedProducts.Add(new Component(this,complementedProduct));
+            }
         }
 
         /// <summary>
@@ -249,7 +252,7 @@ namespace core.domain {
                         CustomizedDimensions recommendedSlotSize,
                         ProductCategory productCategory, 
                         IEnumerable<Material> materials,
-                        IEnumerable<Component> complementedProducts,
+                        IEnumerable<Product> complementedProducts,
                         IEnumerable<Dimension> heightValues,
                         IEnumerable<Dimension> widthValues,
                         IEnumerable<Dimension> depthValues) : 
@@ -257,7 +260,10 @@ namespace core.domain {
                         recommendedSlotSize, productCategory, materials, heightValues, widthValues,
                         depthValues) {
             checkProductComplementedProducts(complementedProducts);
-            this.complementedProducts = new List<Component>(complementedProducts);
+            this.complementedProducts = new List<Component>();
+            foreach(Product complementedProduct in complementedProducts){
+                this.complementedProducts.Add(new Component(this,complementedProduct));
+            }
         }
 
         /// <summary>
@@ -265,10 +271,10 @@ namespace core.domain {
         /// </summary>
         /// <param name="complementedProduct">Product with the complemented product</param>
         /// <returns>boolean true if the complemented product was added with success, false if not</returns>
-        public bool addComplementedProduct(Component complementedProduct) {
+        public bool addComplementedProduct(Product complementedProduct) {
             if (!isComplementedProductValidForAddition(complementedProduct))
                 return false;
-            complementedProducts.Add(complementedProduct);
+            complementedProducts.Add(new Component(this,complementedProduct));
             return true;
         }
 
@@ -384,11 +390,11 @@ namespace core.domain {
         public bool removeMaterial(Material material) { return !Collections.isEnumerableNullOrEmpty(productMaterials) && productMaterials.Remove(new ProductMaterial(this, material)); }
 
         /// <summary>
-        /// Removes a component which the current product can be complemented with
+        /// Removes a complemented which the current product can be complemented with
         /// </summary>
-        /// <param name="component">Component with the component being removed</param>
-        /// <returns>boolean true if the component was removed with success, false if not</returns>
-        public bool removeComplementedProduct(Component component) { return complementedProducts.Remove(component); }
+        /// <param name="complementedProduct">Product with the complemented product being removed</param>
+        /// <returns>boolean true if the complemented product was removed with success, false if not</returns>
+        public bool removeComplementedProduct(Product complementedProduct) { return complementedProducts.Remove(new Component(this,complementedProduct)); }
 
         /// <summary>
         /// Disables the current product
@@ -423,10 +429,13 @@ namespace core.domain {
             dto.id = this.Id;
             dto.designation = this.designation;
             dto.reference = this.reference;
-            dto.dimensions.heightDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
-            dto.dimensions.widthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
-            dto.dimensions.depthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
+            DimensionsListDTO dimensionsListDTO=new DimensionsListDTO();
+            dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
+            dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
+            dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
+            dto.dimensions=dimensionsListDTO;
             dto.productCategory = productCategory.toDTO();
+            dto.productMaterials=new List<MaterialDTO>();
             foreach (ProductMaterial pm in this.productMaterials) {
                 dto.productMaterials.Add(pm.material.toDTO());
             }
@@ -482,9 +491,9 @@ namespace core.domain {
         /// </summary>
         /// <param name="complementedProduct">Product with the complemented product being validated</param>
         /// <returns>boolean true if the complemented product is valid for addition, false if not</returns>
-        private bool isComplementedProductValidForAddition(Component complementedProduct) {
-            if (complementedProduct == null || complementedProduct.product.Equals(this)) return false;
-            return !complementedProducts.Contains(complementedProduct);
+        private bool isComplementedProductValidForAddition(Product complementedProduct) {
+            if (complementedProduct == null || complementedProduct.Equals(this)) return false;
+            return !complementedProducts.Contains(new Component(this,complementedProduct));
         }
 
         /// <summary>
@@ -545,7 +554,7 @@ namespace core.domain {
         /// Checks if the products which a product can be complemented by are valid
         /// </summary>
         /// <param name="complementedProducts">IEnumerable with the complemented products</param>
-        private void checkProductComplementedProducts(IEnumerable<Component> complementedProducts) {
+        private void checkProductComplementedProducts(IEnumerable<Product> complementedProducts) {
             if (Collections.isEnumerableNullOrEmpty(complementedProducts))
                 throw new ArgumentException(INVALID_PRODUCT_COMPLEMENTED_PRODUCTS);
             checkDuplicatedComplementedProducts(complementedProducts);
@@ -583,10 +592,10 @@ namespace core.domain {
         /// Checks if a enumerable of products has duplicates
         /// </summary>
         /// <param name="complementedProducts">IEnumerable with the complemented products</param>
-        private void checkDuplicatedComplementedProducts(IEnumerable<Component> complementedProducts) {
-            HashSet<Product> complementedProductsRefereces = new HashSet<Product>();
-            IEnumerator<Component> complementedProductsEnumerator = complementedProducts.GetEnumerator();
-            Component complementedProduct = complementedProductsEnumerator.Current;
+        private void checkDuplicatedComplementedProducts(IEnumerable<Product> complementedProducts) {
+            HashSet<string> complementedProductsRefereces = new HashSet<string>();
+            IEnumerator<Product> complementedProductsEnumerator = complementedProducts.GetEnumerator();
+            Product complementedProduct = complementedProductsEnumerator.Current;
             while (complementedProductsEnumerator.MoveNext()) {
                 complementedProduct = complementedProductsEnumerator.Current;
                 if (!complementedProductsRefereces.Add(complementedProduct.id())) {

@@ -15,7 +15,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureConstructorDetectsEmptyList()
         {
-            Action act = () => new DiscreteDimensionInterval(new List<double>());
+            Action act = () => DiscreteDimensionInterval.valueOf(new List<double>());
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -23,7 +23,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureConstructorDetectsNullValue()
         {
-            Action act = () => new DiscreteDimensionInterval(null);
+            Action act = () => DiscreteDimensionInterval.valueOf(null);
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -34,7 +34,7 @@ namespace core_tests.domain
             var list = new List<double>();
             list.Add(1.0);
 
-            Assert.NotNull(new DiscreteDimensionInterval(list));
+            Assert.NotNull(DiscreteDimensionInterval.valueOf(list));
         }
 
         [Fact]
@@ -42,7 +42,7 @@ namespace core_tests.domain
         {
             var list = new List<double>();
             list.Add(4.0);
-            DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
+            DiscreteDimensionInterval instance = DiscreteDimensionInterval.valueOf(list);
 
             Assert.False(instance.Equals(null));
         }
@@ -52,7 +52,7 @@ namespace core_tests.domain
         {
             var list = new List<double>();
             list.Add(2.0);
-            DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
+            DiscreteDimensionInterval instance = DiscreteDimensionInterval.valueOf(list);
 
             Assert.False(instance.Equals("Lil Pump"));
         }
@@ -64,8 +64,8 @@ namespace core_tests.domain
             var otherList = new List<double>();
             list.Add(6.9);
             otherList.Add(4.20);
-            DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
-            DiscreteDimensionInterval other = new DiscreteDimensionInterval(otherList);
+            DiscreteDimensionInterval instance = DiscreteDimensionInterval.valueOf(list);
+            DiscreteDimensionInterval other = DiscreteDimensionInterval.valueOf(otherList);
 
             Assert.False(instance.Equals(other));
         }
@@ -75,8 +75,8 @@ namespace core_tests.domain
         {
             var list = new List<double>();
             list.Add(33.0);
-            DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
-            DiscreteDimensionInterval other = new DiscreteDimensionInterval(list);
+            DiscreteDimensionInterval instance = DiscreteDimensionInterval.valueOf(list);
+            DiscreteDimensionInterval other = DiscreteDimensionInterval.valueOf(list);
 
             Assert.True(instance.Equals(other));
         }
@@ -86,7 +86,7 @@ namespace core_tests.domain
         {
             var list = new List<double>();
             list.Add(3.0);
-            DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
+            DiscreteDimensionInterval instance = DiscreteDimensionInterval.valueOf(list);
 
             Assert.True(instance.Equals(instance));
         }
@@ -96,13 +96,10 @@ namespace core_tests.domain
         {
             var list = new List<double>();
             list.Add(30.0);
-            DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
-            DiscreteDimensionInterval other = new DiscreteDimensionInterval(list);
+            DiscreteDimensionInterval instance = DiscreteDimensionInterval.valueOf(list);
+            DiscreteDimensionInterval other = DiscreteDimensionInterval.valueOf(list);
 
-            int instanceHash = instance.GetHashCode();
-            int otherHash = other.GetHashCode();
-
-            Assert.Equal(instanceHash, otherHash);
+            Assert.Equal(instance.GetHashCode(), other.GetHashCode());
         }
 
         [Fact]
@@ -110,8 +107,8 @@ namespace core_tests.domain
         {
             var list = new List<double>();
             list.Add(30.3);
-            DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
-            DiscreteDimensionInterval other = new DiscreteDimensionInterval(list);
+            DiscreteDimensionInterval instance = DiscreteDimensionInterval.valueOf(list);
+            DiscreteDimensionInterval other = DiscreteDimensionInterval.valueOf(list);
 
             Assert.Equal(instance.ToString(), other.ToString());
         }
@@ -121,8 +118,8 @@ namespace core_tests.domain
         {
             var list = new List<double>();
             list.Add(1.234);
-            DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
-            DiscreteDimensionInterval other = new DiscreteDimensionInterval(list);
+            DiscreteDimensionInterval instance = DiscreteDimensionInterval.valueOf(list);
+            DiscreteDimensionInterval other = DiscreteDimensionInterval.valueOf(list);
 
             Assert.Equal(instance.toDTO().ToString(), other.toDTO().ToString());
         }
