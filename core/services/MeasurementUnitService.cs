@@ -10,6 +10,10 @@ namespace core.services
     /// </summary>
     public sealed class MeasurementUnitService
     {
+        /// <summary>
+        /// Constant representing error when the given unit has not matched any measurement unit.
+        /// </summary>
+        private const string ERROR_UNIT_NOT_FOUND = "Unable to convert to the specified unit";
 
         /// <summary>
         /// Converts the dimension's measurement value in milimetres to the equivalent in the given units.
@@ -29,7 +33,7 @@ namespace core.services
             }
             if (!unitMap.TryGetValue(newUnit, out conversionValue))
             {
-                throw new KeyNotFoundException();   //throw exception if value does not exist
+                throw new KeyNotFoundException(ERROR_UNIT_NOT_FOUND);   //throw exception if value does not exist
             }
 
             return value / conversionValue;
@@ -54,7 +58,7 @@ namespace core.services
 
             if (!unitMap.TryGetValue(oldUnit, out conversionValue))
             {
-                throw new KeyNotFoundException();   //throw exception if value does not exist
+                throw new KeyNotFoundException(ERROR_UNIT_NOT_FOUND);   //throw exception if value does not exist
             }
 
             return value * conversionValue;
