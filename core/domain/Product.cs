@@ -228,6 +228,39 @@ namespace core.domain {
         }
 
         /// <summary>
+        /// Builds a new product with its reference, designation and complemented products
+        /// </summary>
+        /// <param name="reference">String with the product reference</param>
+        /// <param name="designation">String with the product designation</param>
+        /// <param name="supportsSlots">Indicates if the product can hold slots</param>
+        /// <param name="maxSlotSize">Maximum slot dimensions</param>
+        /// <param name="minSlotSize">Minimum slot dimensions</param>
+        /// <param name="recommendedSlotSize">Recommended slot dimensions</param>
+        /// <param name="productCategory">ProductCategory with the product category</param>
+        /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
+        /// <param name="complementedProducts">IEnumerable with the product complemented products</param>
+        /// <param name="heightDimensions">IEnumerable with the product height dimensions</param>
+        /// <param name="widthDimensions">IEnumerable with the product width dimensions</param>
+        /// <param name="depthDimensions">IEnumerable with the product depth dimensions</param>
+        public Product(string reference, string designation,
+                        bool supportsSlots,
+                        CustomizedDimensions maxSlotSize,
+                        CustomizedDimensions minSlotSize,
+                        CustomizedDimensions recommendedSlotSize,
+                        ProductCategory productCategory, 
+                        IEnumerable<Material> materials,
+                        IEnumerable<Component> complementedProducts,
+                        IEnumerable<Dimension> heightValues,
+                        IEnumerable<Dimension> widthValues,
+                        IEnumerable<Dimension> depthValues) : 
+                        this (reference, designation, supportsSlots, maxSlotSize, minSlotSize,
+                        recommendedSlotSize, productCategory, materials, heightValues, widthValues,
+                        depthValues) {
+            checkProductComplementedProducts(complementedProducts);
+            this.complementedProducts = new List<Component>(complementedProducts);
+        }
+
+        /// <summary>
         /// Adds a new product which the current product can be complemented by
         /// </summary>
         /// <param name="complementedProduct">Product with the complemented product</param>
@@ -408,8 +441,11 @@ namespace core.domain {
                 dto.complements = complementDTOList;
             }
 
-            //TODO: add missing DTO's
-
+            if(this.supportsSlots){
+                dto.slotDimensions.maximumSlotDimensions = this.maxSlotSize.toDTO();
+                dto.slotDimensions.minimumSlotDimensions = this.minSlotSize.toDTO();
+                dto.slotDimensions.recommendedSlotDimensions = this.recommendedSlotSize.toDTO();
+            }
 
             return dto;
         }

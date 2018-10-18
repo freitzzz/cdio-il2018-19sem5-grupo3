@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace core.domain {
     /// <summary>
@@ -60,10 +61,10 @@ namespace core.domain {
             foreach (Input input in inputs) {
                 switch (input.name) {
                     case MINIMUM_PERCENTAGE_INPUT_NAME:
-                        minPercentage = Convert.ToDouble(input.value);
+                        minPercentage = Convert.ToDouble(input.value,CultureInfo.InvariantCulture);
                         break;
                     case MAXIMUM_PERCENTAGE_INPUT_NAME:
-                        maxPercentage = Convert.ToDouble(input.value);
+                        maxPercentage = Convert.ToDouble(input.value,CultureInfo.InvariantCulture);
                         break;
                 }
             }
@@ -86,10 +87,10 @@ namespace core.domain {
                 }
                 switch (input.name) {
                     case MINIMUM_PERCENTAGE_INPUT_NAME:
-                        minPercentage = Convert.ToDouble(input.value);
+                        minPercentage = Convert.ToDouble(input.value,CultureInfo.InvariantCulture);
                         break;
                     case MAXIMUM_PERCENTAGE_INPUT_NAME:
-                        maxPercentage = Convert.ToDouble(input.value);
+                        maxPercentage = Convert.ToDouble(input.value,CultureInfo.InvariantCulture);
                         break;
                     default:
                         throw new ArgumentException(INVALID_INPUT);

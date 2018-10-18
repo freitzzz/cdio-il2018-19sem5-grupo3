@@ -89,6 +89,7 @@ namespace backend.persistence.ef
             builder.Entity<Product>().OwnsOne(p => p.maxSlotSize);              //embedded Dimensions
             builder.Entity<Product>().OwnsOne(p => p.recommendedSlotSize);      //embedded Dimensions
 
+            builder.Entity<CustomizedProduct>().HasOne(cp => cp.product);       //one-to-one relationship
             builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedDimensions); //embedded Dimensions
             builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedMaterial);   //embedded CustomizedMaterial
             builder.Entity<CustomizedProduct>().HasMany(cp => cp.slots);        //one-to-many relationship

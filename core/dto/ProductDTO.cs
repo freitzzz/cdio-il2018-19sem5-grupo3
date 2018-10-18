@@ -46,7 +46,11 @@ namespace core.dto {
         /// <value>Gets/sets the value of the complements field.</value>
         [DataMember(Name = "components", EmitDefaultValue = false)]  //no data field data is presented if it's null
         public List<ComponentDTO> complements { get; set; }
-
+        /// <summary>
+        ///  SlotDimensionSetDTO with the Product's maximum, minimum and recommended Slot dimensions
+        /// </summary>
+        [DataMember(Name = "slots")]
+        public SlotDimensionSetDTO slotDimensions;
         /// <summary>
         /// Product category
         /// </summary>
@@ -56,7 +60,7 @@ namespace core.dto {
         public DimensionsListDTO dimensions { get; set; }
 
         public ProductDTO() {
-            //it is necessary to instantiate the DimensionsListDTO property
+            slotDimensions = new SlotDimensionSetDTO();
             dimensions = new DimensionsListDTO();
             productMaterials = new List<MaterialDTO>();
         }
@@ -91,6 +95,6 @@ namespace core.dto {
                    } */
             return null;
         }
-        //TODO: Add RestrictionDTO's
+        //TODO: Add RestrictionDTO's & SlotDimensionSetDTO
     }
 }
