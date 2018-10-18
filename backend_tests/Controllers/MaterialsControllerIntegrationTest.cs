@@ -80,7 +80,7 @@ namespace backend_tests.Controllers
 
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             Assert.NotNull(response.Content.ReadAsStringAsync());
-            Assert.NotNull(materialDTO.id);
+            Assert.True(materialDTO.id != -1);
             Assert.Equal(materialDTO.reference, materialDTOFromPost.reference);
 
             return materialDTOFromPost;

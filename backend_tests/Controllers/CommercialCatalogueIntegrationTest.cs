@@ -53,7 +53,7 @@ namespace backend_tests.Controllers
             Assert.True(response.StatusCode == HttpStatusCode.NotFound);
         }
 
-        [Fact, TestPriority(2)]
+//      [Fact, TestPriority(2)]
 //         public async Task<CommercialCatalogueDTO> ensurePostCommercialCatalogueWorks()
 //         {
 
