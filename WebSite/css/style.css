@@ -86,6 +86,15 @@ hr {
 #menu.navbar-default .navbar-nav > li > a:hover {
 	color: #0ba2db;
 }
+.container {
+	width: 500px;
+	clear: both;
+  }
+  
+  .container input {
+	width: 100%;
+	clear: both;
+  }
 .on {
 	background-color: #f6f6f6 !important;
 	border-bottom: 1px solid #ddd !important;
@@ -413,4 +422,5 @@ a:focus, .btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:acti
 	float: left;
 	margin-bottom: 20px;
 }
+
 }
