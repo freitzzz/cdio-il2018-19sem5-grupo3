@@ -137,16 +137,22 @@ namespace backend_tests.Controllers{
         public async void ensureProductReferenceCantBeUpdatedIfDuplicated(){
             //We're are going to created two different products, X & Y
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
             Task<ProductDTO> createdProductDTOY=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOY.Wait();
             //Product X has different reference to Y
             //Since the reference of a product is the identity of a product
             //If we try to update it to a reference that already exists, then it should fail
-            createdProductDTOX.Wait();
-            createdProductDTOY.Wait();
+            ProductDTO productDTOX=createdProductDTOX.Result;
+            ProductDTO productDTOY=createdProductDTOY.Result;
             UpdateProductDTO updatedProductY=new UpdateProductDTO();
-            updatedProductY.reference=createdProductDTOX.Result.reference;
-            //TODO: FIX ME (FREITAS)
-            /* var updateReference=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOY.Result.id
+            updatedProductY.reference=productDTOX.reference;
+            //DONT UNCOMMENT UNTIL INTEGRATION DATABASE PROBLEMS IS SOLVED
+            //PROBLEM HERE IS THAT SINCE WE ARE USING AN IN MEMORY DATABASE PROVIDER
+            //IT LITERALLY IS IN MEMORY SO IF WE CHANGE AN OBJECT WIHTOUT UPDATING IT
+            //WITH THE RESPECTIVE REPOSITORY, ITS STILL AN UPDATE SINCE OBJECTS HAVE THE SAME MEMORY REFERENCE
+            //:(
+            /* var updateReference=await httpClient.PutAsync(PRODUCTS_URI+"/"+productDTOY.id
                                         ,HTTPContentCreator.contentAsJSON(updatedProductY));
             Assert.True(updateReference.StatusCode==HttpStatusCode.BadRequest); */
         }
@@ -378,9 +384,11 @@ namespace backend_tests.Controllers{
             productDTO.designation=designation;
             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
             productDTO.productCategory=categoryDTO.Result;
-            productDTO.dimensions.depthDimensionDTOs=new List<DimensionDTO>(new[]{discreteDimensionIntervalDTO});
-            productDTO.dimensions.heightDimensionDTOs=new List<DimensionDTO>(new[]{continuousDimensionIntervalDTO});
-            productDTO.dimensions.widthDimensionDTOs=new List<DimensionDTO>(new[]{singleValueDimensionDTO});
+            DimensionsListDTO dimensionsListDTO=new DimensionsListDTO();
+            dimensionsListDTO.depthDimensionDTOs=new List<DimensionDTO>(new[]{discreteDimensionIntervalDTO});
+            dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(new[]{continuousDimensionIntervalDTO});
+            dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>(new[]{singleValueDimensionDTO});
+            productDTO.dimensions=dimensionsListDTO;
             var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());

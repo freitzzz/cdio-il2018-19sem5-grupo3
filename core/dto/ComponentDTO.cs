@@ -17,18 +17,18 @@ namespace core.dto
         /// Component's database identifier.
         /// </summary>
         /// <value>Gets/sets the value of the database identifier field.</value>
-        [DataMember]
+        [DataMember(Name="id")]
         public long id {get; set;}
         /// <summary>
         /// Component's product.
         /// </summary>
-        [DataMember]
+        [DataMember(Name="complementedProduct")]
         public ProductDTO product {get; set;}
         /// <summary>
         /// Component's list restrictions.
         /// </summary>
         /// <value>Gets/sets the value of the restrictions field.</value>
-        [DataMember(EmitDefaultValue = false)]  //no data field data is presented if it's null
+        [DataMember(Name="restrictions",EmitDefaultValue = false)]  //no data field data is presented if it's null
         public List<RestrictionDTO> restrictions {get; set;}
         public Component toEntity()
         {

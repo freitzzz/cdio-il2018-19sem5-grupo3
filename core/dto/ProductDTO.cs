@@ -50,7 +50,7 @@ namespace core.dto {
         ///  SlotDimensionSetDTO with the Product's maximum, minimum and recommended Slot dimensions
         /// </summary>
         [DataMember(Name = "slots")]
-        public SlotDimensionSetDTO slotDimensions;
+        public SlotDimensionSetDTO slotDimensions{get;set;}
         /// <summary>
         /// Product category
         /// </summary>
@@ -58,13 +58,6 @@ namespace core.dto {
         public ProductCategoryDTO productCategory { get; set; }
         [DataMember(Name = "dimensions")]
         public DimensionsListDTO dimensions { get; set; }
-
-        public ProductDTO() {
-            slotDimensions = new SlotDimensionSetDTO();
-            dimensions = new DimensionsListDTO();
-            productMaterials = new List<MaterialDTO>();
-        }
-
         /// <summary>
         /// Returns this DTO's equivalent Entity
         /// </summary>
