@@ -14,17 +14,17 @@ namespace core.dto
         /// Slots Minimum Dimensions
         /// </summary>
         [DataMember(Name = "minSize")]
-        public CustomizedDimensionsDTO minimumSlotDimensions;
+        public CustomizedDimensionsDTO minimumSlotDimensions { get; set; }
         /// <summary>
         /// Slots Maximum Dimensions
         /// </summary>
         [DataMember(Name = "maxSize")]
-        public CustomizedDimensionsDTO maximumSlotDimensions;
+        public CustomizedDimensionsDTO maximumSlotDimensions { get; set; }
         /// <summary>
         /// Slots Recommended Dimensions
         /// </summary>
         [DataMember(Name = "recommendedSize")]
-        public CustomizedDimensionsDTO recommendedSlotDimensions;
+        public CustomizedDimensionsDTO recommendedSlotDimensions { get; set; }
 
     }
 }
