@@ -423,10 +423,13 @@ namespace core.domain {
             dto.id = this.Id;
             dto.designation = this.designation;
             dto.reference = this.reference;
-            dto.dimensions.heightDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
-            dto.dimensions.widthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
-            dto.dimensions.depthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
+            DimensionsListDTO dimensionsListDTO=new DimensionsListDTO();
+            dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
+            dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
+            dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
+            dto.dimensions=dimensionsListDTO;
             dto.productCategory = productCategory.toDTO();
+            dto.productMaterials=new List<MaterialDTO>();
             foreach (ProductMaterial pm in this.productMaterials) {
                 dto.productMaterials.Add(pm.material.toDTO());
             }

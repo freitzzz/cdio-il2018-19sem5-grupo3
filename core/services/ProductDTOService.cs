@@ -27,8 +27,10 @@ namespace core.services{
             IEnumerable<Dimension> productHeightDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.heightDimensionDTOs);
             IEnumerable<Dimension> productWidthDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.widthDimensionDTOs);
             IEnumerable<Dimension> productDepthDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.depthDimensionDTOs);
-            
-            SlotDimensionSetDTO slotDimensions = productDTO.slotDimensions;
+            SlotDimensionSetDTO slotDimensions=null;
+            if(productDTO.slotDimensions!=null)
+                slotDimensions=productDTO.slotDimensions;
+            Console.WriteLine("1");
             if(slotDimensions != null && productComponents != null){
                 CustomizedDimensions maxSlotDimension=slotDimensions.maximumSlotDimensions.toEntity();
                 CustomizedDimensions minSlotDimension=slotDimensions.minimumSlotDimensions.toEntity();
@@ -44,7 +46,8 @@ namespace core.services{
                                             productHeightDimensions,
                                             productWidthDimensions,
                                             productDepthDimensions);     
-            }       
+            }
+            Console.WriteLine("2");     
             if(productComponents==null&&slotDimensions!=null){
                 CustomizedDimensions maxSlotDimension=slotDimensions.maximumSlotDimensions.toEntity();
                 CustomizedDimensions minSlotDimension=slotDimensions.minimumSlotDimensions.toEntity();
@@ -60,6 +63,7 @@ namespace core.services{
                                             productWidthDimensions,
                                             productDepthDimensions);
             }
+            Console.WriteLine("3");
             if(productComponents!=null&&slotDimensions==null){
                 return new Product(reference,designation,
                                             productCategory, 
@@ -69,9 +73,9 @@ namespace core.services{
                                             productWidthDimensions,
                                             productDepthDimensions);
             }
+            Console.WriteLine("4");
             return new Product(reference,designation,productCategory
                                             ,productMaterials
-                                            ,productComponents
                                             ,productHeightDimensions
                                             ,productWidthDimensions
                                             ,productDepthDimensions); 

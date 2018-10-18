@@ -373,9 +373,11 @@ namespace backend_tests.Controllers{
             productDTO.designation=designation;
             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
             productDTO.productCategory=categoryDTO.Result;
-            productDTO.dimensions.depthDimensionDTOs=new List<DimensionDTO>(new[]{discreteDimensionIntervalDTO});
-            productDTO.dimensions.heightDimensionDTOs=new List<DimensionDTO>(new[]{continuousDimensionIntervalDTO});
-            productDTO.dimensions.widthDimensionDTOs=new List<DimensionDTO>(new[]{singleValueDimensionDTO});
+            DimensionsListDTO dimensionsListDTO=new DimensionsListDTO();
+            dimensionsListDTO.depthDimensionDTOs=new List<DimensionDTO>(new[]{discreteDimensionIntervalDTO});
+            dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(new[]{continuousDimensionIntervalDTO});
+            dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>(new[]{singleValueDimensionDTO});
+            productDTO.dimensions=dimensionsListDTO;
             var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
