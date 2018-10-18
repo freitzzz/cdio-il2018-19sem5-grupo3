@@ -39,16 +39,16 @@ namespace backend.Controllers {
         /// <summary>
         /// Constant that represents the message that ocurres if the update of a product fails
         /// </summary>
-        private const string INVALID_PRODUCT_UPDATE_MESSAGE="An error occured while updating the product";
+        private const string INVALID_PRODUCT_UPDATE_MESSAGE = "An error occured while updating the product";
 
         /// <summary>
         /// Constant that represents the message that ocurres if the update of a product is successful
         /// </summary>
-        private const string VALID_PRODUCT_UPDATE_MESSAGE="Product was updated with success";
+        private const string VALID_PRODUCT_UPDATE_MESSAGE = "Product was updated with success";
         /// <summary>
         /// Constant that represents the message that ocurres if a client attemps to create a product with an invalid request body
         /// </summary>
-        private const string INVALID_REQUEST_BODY_MESSAGE="The request body is invalid! Check documentation for more information";
+        private const string INVALID_REQUEST_BODY_MESSAGE = "The request body is invalid! Check documentation for more information";
 
         private readonly ProductRepository productRepository;
 
@@ -84,20 +84,20 @@ namespace backend.Controllers {
         ///         <br>See MyC REST API documentation for a better overview
         /// </returns>
         [HttpPost]
-        public ActionResult<ProductDTO> addProduct([FromBody]ProductDTO productData){
-            try{
-                ProductDTO createdProductDTO=new core.application.ProductController().addProduct(productData);
-                if(createdProductDTO!=null){
-                    return CreatedAtRoute("GetProduct", new {id = createdProductDTO.id}, createdProductDTO);
-                }else{
+        public ActionResult<ProductDTO> addProduct([FromBody]ProductDTO productData) {
+            try {
+                ProductDTO createdProductDTO = new core.application.ProductController().addProduct(productData);
+                if (createdProductDTO != null) {
+                    return CreatedAtRoute("GetProduct", new { id = createdProductDTO.id }, createdProductDTO);
+                } else {
                     //TODO:????????
                     return BadRequest();
                 }
-            }catch(NullReferenceException){
+            } catch (NullReferenceException) {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
-            }catch(InvalidOperationException invalidOperationException){
+            } catch (InvalidOperationException invalidOperationException) {
                 return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
-            }catch(ArgumentException argumentException){
+            } catch (ArgumentException argumentException) {
                 return BadRequest(new SimpleJSONMessageService(argumentException.Message));
             }
         }
@@ -108,17 +108,17 @@ namespace backend.Controllers {
         /// <param name="id"> id of the product</param>
         /// <returns>HTTP Response 400 Bad Request if a product with the id isn't found;
         /// HTTP Response 200 Ok with the product's info in JSON format </returns>
-        [HttpGet("{id}",Name="GetProduct")]
+        [HttpGet("{id}", Name = "GetProduct")]
         public ActionResult<ProductDTO> findById(long id) {
-            ProductDTO productDTOX=new ProductDTO();
-            productDTOX.id=id;
-            try{
+            ProductDTO productDTOX = new ProductDTO();
+            productDTOX.id = id;
+            try {
                 ProductDTO productDTOY = new core.application.ProductController().findProductByID(productDTOX);
                 if (productDTOY == null) {
                     return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
                 }
                 return Ok(productDTOY);
-            }catch(NullReferenceException){
+            } catch (NullReferenceException) {
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
             }
         }
@@ -131,9 +131,9 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
         /// </returns>
         [HttpPut("{id}")]
-        public ActionResult updateProductBasicInformation(long id,[FromBody] UpdateProductDTO updateProductData) {
-            updateProductData.id=id;
-            if(new core.application.ProductController().updateProductBasicInformation(updateProductData))
+        public ActionResult updateProductBasicInformation(long id, [FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id = id;
+            if (new core.application.ProductController().updateProductBasicInformation(updateProductData))
                 return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
@@ -146,14 +146,14 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
         /// </returns>
         [HttpPut("{id}/materials")]
-        public ActionResult updateProductMaterials(long id,[FromBody] UpdateProductDTO updateProductData) {
-            updateProductData.id=id;
-            try{
-                if(new core.application.ProductController().updateProductMaterials(updateProductData))
+        public ActionResult updateProductMaterials(long id, [FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id = id;
+            try {
+                if (new core.application.ProductController().updateProductMaterials(updateProductData))
                     return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
-            }catch(NullReferenceException){
+            } catch (NullReferenceException) {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
-            }catch(InvalidOperationException invalidOperationException){
+            } catch (InvalidOperationException invalidOperationException) {
                 return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
             }
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
@@ -167,14 +167,14 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
         /// </returns>
         [HttpPut("{id}/components")]
-        public ActionResult updateProductComponents(long id,[FromBody] UpdateProductDTO updateProductData) {
-            updateProductData.id=id;
-            try{
-                if(new core.application.ProductController().updateProductComponents(updateProductData))
+        public ActionResult updateProductComponents(long id, [FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id = id;
+            try {
+                if (new core.application.ProductController().updateProductComponents(updateProductData))
                     return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
-            }catch(NullReferenceException){
+            } catch (NullReferenceException) {
                 return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
-            }catch(InvalidOperationException invalidOperationException){
+            } catch (InvalidOperationException invalidOperationException) {
                 return BadRequest(invalidOperationException.Message);
             }
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
@@ -188,14 +188,14 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
         /// </returns>
         [HttpPut("{id}/dimensions")]
-        public ActionResult updateProductDimensions(long id,[FromBody] UpdateProductDTO updateProductData) {
-            updateProductData.id=id;
-            try{
-                if(new core.application.ProductController().updateProductDimensions(updateProductData))
+        public ActionResult updateProductDimensions(long id, [FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id = id;
+            try {
+                if (new core.application.ProductController().updateProductDimensions(updateProductData))
                     return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
-            }catch(NullReferenceException){
+            } catch (NullReferenceException) {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
-            }catch(InvalidOperationException invalidOperationException){
+            } catch (InvalidOperationException invalidOperationException) {
                 return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
             }
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
@@ -209,14 +209,14 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
         /// </returns>
         [HttpPut("{id}/category")]
-        public ActionResult updateProductCategory(long id,[FromBody] UpdateProductDTO updateProductData) {
-            updateProductData.id=id;
-            try{
-                if(new core.application.ProductController().updateProductCategory(updateProductData))
+        public ActionResult updateProductCategory(long id, [FromBody] UpdateProductDTO updateProductData) {
+            updateProductData.id = id;
+            try {
+                if (new core.application.ProductController().updateProductCategory(updateProductData))
                     return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
-            }catch(NullReferenceException){
+            } catch (NullReferenceException) {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
-            }catch(InvalidOperationException invalidOperationException){
+            } catch (InvalidOperationException invalidOperationException) {
                 return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
             }
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
@@ -231,15 +231,26 @@ namespace backend.Controllers {
         /// </returns>
         /// 
         [HttpDelete("{id}")]
-        public ActionResult disableProduct(long id){
-            ProductDTO productDTO=new ProductDTO();
-            productDTO.id=id;
-            bool disabledWithSuccess=new core.application.ProductController().disableProduct(productDTO);
-            if(disabledWithSuccess){
+        public ActionResult disableProduct(long id) {
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.id = id;
+            bool disabledWithSuccess = new core.application.ProductController().disableProduct(productDTO);
+            if (disabledWithSuccess) {
                 return NoContent();
-            }else{
+            } else {
                 return BadRequest();
             }
+        }
+        [HttpPut("{productID}/components/{componentID}/restrictions")]
+        public ActionResult addComponentRestriction(long productID, long componentID, [FromBody] RestrictionDTO restrictionDTO) {
+            try {
+                new core.application.ProductController().addComponentRestriction(productID, componentID, restrictionDTO);
+            } catch (ArgumentOutOfRangeException rangeEx) {
+                return BadRequest(new SimpleJSONMessageService(rangeEx.Message));
+            } catch (ArgumentException argEx) {
+                return BadRequest(new SimpleJSONMessageService(argEx.Message));
+            }
+            return null;
         }
     }
 }
