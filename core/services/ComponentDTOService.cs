@@ -29,7 +29,7 @@ namespace core.services{
         /// <returns>IEnumerable with the transformed components dto</returns>
         public IEnumerable<Product> transform(IEnumerable<ComponentDTO> componentsDTO){
             IEnumerable<ProductDTO> productsDTO=extractProductsDTOFromComponentsDTO(componentsDTO);
-            IEnumerable<Product> products=PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
+            List<Product> products=new List<Product>(PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO));
             return products;
         }
 
