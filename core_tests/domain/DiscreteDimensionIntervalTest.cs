@@ -123,5 +123,42 @@ namespace core_tests.domain
 
             Assert.Equal(instance.toDTO().ToString(), other.toDTO().ToString());
         }
+
+        [Fact]
+        public void ensureToDTOWithNullUnitStringDefaultsToMilimetres()
+        {
+            var values = new List<double>() { 12.5, 13, 13.5, 14, 14.5, 15, 16, 17 };
+
+            DiscreteDimensionInterval instance = new DiscreteDimensionInterval(values);
+            DiscreteDimensionIntervalDTO dto = (DiscreteDimensionIntervalDTO)instance.toDTO(null);
+
+            Assert.Equal("mm", dto.unit);
+        }
+
+        [Fact]
+        public void ensureToDTOWithNullStringDoesNotConvertValues()
+        {
+            var values = new List<double>() { 12.5, 13, 13.5, 14, 14.5, 15, 16, 17 };
+
+            DiscreteDimensionInterval instance = new DiscreteDimensionInterval(values);
+            DiscreteDimensionIntervalDTO dto = (DiscreteDimensionIntervalDTO)instance.toDTO(null);
+
+            var expectedValues = new List<double>() { 12.5, 13, 13.5, 14, 14.5, 15, 16, 17 };
+
+            Assert.Equal(expectedValues, dto.values);
+        }
+
+        [Fact]
+        public void ensureToDTOConvertsValuesToGivenUnit()
+        {
+            var values = new List<double>() { 12.5, 13, 13.5, 14, 14.5, 15, 16, 17 };
+
+            DiscreteDimensionInterval instance = new DiscreteDimensionInterval(values);
+            DiscreteDimensionIntervalDTO dto = (DiscreteDimensionIntervalDTO)instance.toDTO("cm");
+
+            var expectedValues = new List<double>() { 1.25, 1.3, 1.35, 1.4, 1.45, 1.5, 1.6, 1.7 };
+
+            Assert.Equal(expectedValues, dto.values);
+        }
     }
 }

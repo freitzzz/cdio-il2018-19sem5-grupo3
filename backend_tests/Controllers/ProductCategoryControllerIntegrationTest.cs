@@ -7,6 +7,7 @@ using System.Web;
 using backend_tests.Setup;
 using backend_tests.utils;
 using core.dto;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -23,9 +24,17 @@ namespace backend_tests.Controllers
 
         private HttpClient client;
 
+        private TestFixture<TestStartupSQLite> fixture;
+
         public ProductCategoryControllerIntegrationTest(TestFixture<TestStartupSQLite> fixture)
         {
-            client = fixture.httpClient;
+            this.fixture = fixture;
+            this.client = fixture.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false,
+                BaseAddress =  new Uri("http://localhost:5001") 
+            });
+
         }
 
         [Fact, TestPriority(0)]

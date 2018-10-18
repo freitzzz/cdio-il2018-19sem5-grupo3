@@ -9,6 +9,7 @@ using System.Net;
 using backend_tests.utils;
 using core.dto;
 using core.domain;
+using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace backend_tests.Controllers
 {
@@ -41,8 +42,12 @@ namespace backend_tests.Controllers
         /// <param name="fixture">injected mocked server</param>
         public CommercialCatalogueIntegrationTest(TestFixture<TestStartupSQLite> fixture)
         {
-            client = fixture.httpClient;
-            this.fixture = fixture;
+                            this.fixture = fixture;
+                client = fixture.CreateClient(new WebApplicationFactoryClientOptions
+                {
+                    AllowAutoRedirect = false,
+                    BaseAddress =  new Uri("http://localhost:5001")
+                });
         }
 
         [Fact, TestPriority(1)]
