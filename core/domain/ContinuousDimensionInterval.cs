@@ -75,26 +75,13 @@ namespace core.domain
         protected ContinuousDimensionInterval() { }
 
         /// <summary>
-        /// Returns a new ContinuousDimensionInterval instance
-        /// </summary>
-        /// <param name="minValue">minimum value of the interval</param>
-        /// <param name="maxValue">maximum value of the interval</param>
-        /// <param name="increment">increment value of the interval</param>
-        /// <returns>ContinuousDimensionInterval instance</returns>
-        public static ContinuousDimensionInterval valueOf(double minValue, double maxValue, double increment)
-        {
-            return new ContinuousDimensionInterval(minValue, maxValue, increment);
-        }
-
-
-        /// <summary>
         /// Builds a ContinuousDimensionInterval instance with a minimum value, a maximum value 
         /// and an increment value
         /// </summary>
         /// <param name="minValue">minimum value of the interval</param>
         /// <param name="maxValue">maximum value of the interval</param>
         /// <param name="increment">increment value of the interval</param>
-        private ContinuousDimensionInterval(double minValue, double maxValue, double increment)
+        public ContinuousDimensionInterval(double minValue, double maxValue, double increment)
         {
             if (Double.IsNaN(minValue))
             {

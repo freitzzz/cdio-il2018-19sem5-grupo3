@@ -38,20 +38,10 @@ namespace core.domain
         protected SingleValueDimension(){}
 
         /// <summary>
-        /// Returns a new instance of Dimension
-        /// </summary>
-        /// <param name="value">value that the dimension has</param>
-        /// <returns>Dimension instance</returns>
-        public static SingleValueDimension valueOf(double value)
-        {
-            return new SingleValueDimension(value);
-        }
-
-        /// <summary>
         /// Builds a new instance of Dimension
         /// </summary>
         /// <param name="value">value that the dimension has</param>
-        private SingleValueDimension(double value)
+        public SingleValueDimension(double value)
         {
             if (Double.IsNaN(value))
             {

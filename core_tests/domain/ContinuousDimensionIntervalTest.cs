@@ -15,7 +15,7 @@ namespace core_tests.domain
         public void ensureConstructorDetectsNegativeMinValue()
         {
 
-            Action act = () => ContinuousDimensionInterval.valueOf(-5.0, 4.0, 1.0);
+            Action act = () => new ContinuousDimensionInterval(-5.0, 4.0, 1.0);
 
             Assert.Throws<ArgumentException>(act);
 
@@ -25,7 +25,7 @@ namespace core_tests.domain
         public void ensureConstructorDetectsNegativeMaxValue()
         {
 
-            Action act = () => ContinuousDimensionInterval.valueOf(5.0, -10, 1.0);
+            Action act = () => new ContinuousDimensionInterval(5.0, -10, 1.0);
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -34,7 +34,7 @@ namespace core_tests.domain
         public void ensureConstructorDetectsNegativeIncrementValue()
         {
 
-            Action act = () => ContinuousDimensionInterval.valueOf(5.0, 10.0, -3.0);
+            Action act = () => new ContinuousDimensionInterval(5.0, 10.0, -3.0);
 
             Assert.Throws<ArgumentException>(act);
         }

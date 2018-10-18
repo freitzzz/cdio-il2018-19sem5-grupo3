@@ -38,11 +38,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -100,11 +96,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -163,11 +155,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -228,11 +216,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -293,11 +277,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -356,11 +336,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -420,11 +396,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -488,11 +460,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -557,11 +525,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -622,11 +586,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -682,11 +642,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -742,11 +698,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -802,11 +754,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -894,11 +842,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -957,11 +901,7 @@ namespace core_tests.domain
         //         ProductCategory prodCat = new ProductCategory("Category 1");
         //         List<Double> values2 = new List<Double>();
         //         values2.Add(500.0); //Width
-<<<<<<< HEAD
-        //         DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
         //         DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
         //         List<Dimension> valuest = new List<Dimension>();
         //         valuest.Add(d2);
         //         IEnumerable<Dimension> heightDimensions = valuest;
@@ -1016,11 +956,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -1077,11 +1013,7 @@ namespace core_tests.domain
         //         ProductCategory prodCat = new ProductCategory("Category 1");
         //         List<Double> values2 = new List<Double>();
         //         values2.Add(500.0); //Width
-<<<<<<< HEAD
-        //         DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
         //         DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
         //         List<Dimension> valuest = new List<Dimension>();
         //         valuest.Add(d2);
         //         IEnumerable<Dimension> heightDimensions = valuest;
@@ -1133,11 +1065,7 @@ namespace core_tests.domain
         //         ProductCategory prodCat = new ProductCategory("Category 1");
         //         List<Double> values2 = new List<Double>();
         //         values2.Add(500.0); //Width
-<<<<<<< HEAD
-        //         DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
         //         DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
         //         List<Dimension> valuest = new List<Dimension>();
         //         valuest.Add(d2);
         //         IEnumerable<Dimension> heightDimensions = valuest;
@@ -1186,11 +1114,7 @@ namespace core_tests.domain
         //         ProductCategory prodCat = new ProductCategory("Category 1");
         //         List<Double> values2 = new List<Double>();
         //         values2.Add(500.0); //Width
-<<<<<<< HEAD
-        //         DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
         //         DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
         //         List<Dimension> valuest = new List<Dimension>();
         //         valuest.Add(d2);
         //         IEnumerable<Dimension> heightDimensions = valuest;
@@ -1240,11 +1164,7 @@ namespace core_tests.domain
         //         ProductCategory prodCat = new ProductCategory("Category 1");
         //         List<Double> values2 = new List<Double>();
         //         values2.Add(500.0); //Width
-<<<<<<< HEAD
-        //         DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
         //         DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
         //         List<Dimension> valuest = new List<Dimension>();
         //         valuest.Add(d2);
         //         IEnumerable<Dimension> heightDimensions = valuest;
@@ -1295,11 +1215,7 @@ namespace core_tests.domain
         //         ProductCategory prodCat = new ProductCategory("Category 1");
         //         List<Double> values2 = new List<Double>();
         //         values2.Add(500.0); //Width
-<<<<<<< HEAD
-        //         DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
         //         DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
         //         List<Dimension> valuest = new List<Dimension>();
         //         valuest.Add(d2);
         //         IEnumerable<Dimension> heightDimensions = valuest;
@@ -1347,11 +1263,7 @@ namespace core_tests.domain
         //     ProductCategory prodCat = new ProductCategory("Category 1");
         //     List<Double> values2 = new List<Double>();
         //     values2.Add(500.0); //Width
-<<<<<<< HEAD
-        //     DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
         //     DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
         //     List<Dimension> valuest = new List<Dimension>();
         //     valuest.Add(d2);
         //     IEnumerable<Dimension> heightDimensions = valuest;
@@ -1402,11 +1314,7 @@ namespace core_tests.domain
         //     ProductCategory prodCat = new ProductCategory("Category 1");
         //     List<Double> values2 = new List<Double>();
         //     values2.Add(500.0); //Width
-<<<<<<< HEAD
-        //     DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
         //     DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
         //     List<Dimension> valuest = new List<Dimension>();
         //     valuest.Add(d2);
         //     IEnumerable<Dimension> heightDimensions = valuest;
@@ -1456,11 +1364,7 @@ namespace core_tests.domain
         //     ProductCategory prodCat = new ProductCategory("Category 1");
         //     List<Double> values2 = new List<Double>();
         //     values2.Add(500.0); //Width
-<<<<<<< HEAD
-        //     DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
         //     DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
         //     List<Dimension> valuest = new List<Dimension>();
         //     valuest.Add(d2);
         //     IEnumerable<Dimension> heightDimensions = valuest;
@@ -1510,11 +1414,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -1574,11 +1474,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -1639,11 +1535,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -1704,11 +1596,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -1766,11 +1654,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -1831,11 +1715,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
@@ -1888,11 +1768,7 @@ namespace core_tests.domain
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
             values2.Add(500.0); //Width
-<<<<<<< HEAD
-            DiscreteDimensionInterval d2 = DiscreteDimensionInterval.valueOf(values2);
-=======
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
->>>>>>> 8b672b5af612af8070ac812e09b7c9c3cba57566
             List<Dimension> valuest = new List<Dimension>();
             valuest.Add(d2);
             IEnumerable<Dimension> heightDimensions = valuest;
