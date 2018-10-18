@@ -18,7 +18,8 @@ namespace core.services{
             ProductDTO productDTO=componentDTO.product;
             Product product=PersistenceContext.repositories().createProductRepository().find(productDTO.id);
             //TODO:RESTRICTIONS ARE STILL IN DEVELOPMENT
-            return new Component(product);
+            // new Component(product);
+            return null;
         }
 
         /// <summary>
@@ -26,12 +27,10 @@ namespace core.services{
         /// </summary>
         /// <param name="componentsDTO">IEnumerable with the components dto</param>
         /// <returns>IEnumerable with the transformed components dto</returns>
-        public IEnumerable<Component> transform(IEnumerable<ComponentDTO> componentsDTO){
+        public IEnumerable<Product> transform(IEnumerable<ComponentDTO> componentsDTO){
             IEnumerable<ProductDTO> productsDTO=extractProductsDTOFromComponentsDTO(componentsDTO);
-            IEnumerable<Product> products=PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
-            List<Component> components=new List<Component>();
-            foreach(Product product in products)components.Add(new Component(product));
-            return components;
+            List<Product> products=new List<Product>(PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO));
+            return products;
         }
 
         /// <summary>

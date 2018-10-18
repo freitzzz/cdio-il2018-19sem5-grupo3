@@ -28,14 +28,24 @@ namespace core.domain
         private const string INVALID_COMPONENT_RESTRICTIONS = "The Component's restrictions is not valid!";
 
         /// <summary>
-        /// Long with the persistence ID
+        /// Long with the product which has the complemented product ID
         /// </summary>
-        public long Id { get; private set; }
+        public long fatherProductId { get; private set; }
 
         /// <summary>
-        /// Product with the product 
+        /// Product with the product which has the current complemented product
         /// </summary>
-        public virtual Product product { get; set; }
+        public virtual Product fatherProduct{get;set;}
+
+        /// <summary>
+        /// Long with the product which has the complemented product ID
+        /// </summary>
+        public long complementedProductId {get; private set;}
+
+        /// <summary>
+        /// Product with the complemented product 
+        /// </summary>
+        public virtual Product complementedProduct { get; set; }
         /// <summary>
         /// List with the restrictions which the current component can be have
         /// </summary>
@@ -53,18 +63,22 @@ namespace core.domain
         public Component(Product product, List<Restriction> restrictions)
         {
             checkComponentProperties(product, restrictions);
-            this.product = product;
+            this.complementedProduct = product;
             this.restrictions = restrictions;
 
         }
+
         /// <summary>
-        /// Builds a new component with its product and list of the restrictions.
+        /// Builds a new Component with the father and complemented product
         /// </summary>
-        /// <param name="restricitions">List with the restrictions of the component</param>
-        public Component(Product product)
+        /// <param name="fatherProduct">Product with the father product</param>
+        /// <param name="complementedProduct">Product with the complemented product</param>
+        public Component(Product fatherProduct,Product complementedProduct)
         {
-            checkComponentProduct(product);
-            this.product = product;
+            checkComponentProduct(complementedProduct);
+            checkComponentProduct(fatherProduct);
+            this.fatherProduct=fatherProduct;
+            this.complementedProduct = complementedProduct;
         }
         /**
        <summary>
@@ -92,7 +106,7 @@ namespace core.domain
         /// Returns the component identity
         /// </summary>
         /// <returns>Product with the component identity</returns>
-        public Product id() { return product; }
+        public Product id() { return complementedProduct; }
 
         /// <summary>
         /// Checks if a certain component entity is the same as the current component
@@ -107,7 +121,7 @@ namespace core.domain
         public ComponentDTO toDTO()
         {
             ComponentDTO dto = new ComponentDTO();
-            dto.product=product.toDTO();
+            dto.product=complementedProduct.toDTO();
 
             if (this.restrictions != null)
             {

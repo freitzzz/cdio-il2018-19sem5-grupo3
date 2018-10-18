@@ -18,8 +18,9 @@ namespace core.services{
         public Product transform(ProductDTO productDTO){
             string reference=productDTO.reference;
             string designation=productDTO.designation;
-            IEnumerable<Component> productComponents=null;
-            if(productDTO.complements!=null)productComponents=new ComponentDTOService().transform(productDTO.complements);
+            IEnumerable<Product> productComplementedProducts=null;
+            if(productDTO.complements!=null)
+                productComplementedProducts=new ComponentDTOService().transform(productDTO.complements);
             ProductCategory productCategory=PersistenceContext.repositories().createProductCategoryRepository().find(productDTO.productCategory.id);
             //TODO:Check if the length of product materials is equal to product materials dtos
             IEnumerable<Material> productMaterials=PersistenceContext.repositories().createMaterialRepository().getMaterialsByIDS(productDTO.productMaterials);
@@ -30,7 +31,7 @@ namespace core.services{
             SlotDimensionSetDTO slotDimensions=null;
             if(productDTO.slotDimensions!=null)
                 slotDimensions=productDTO.slotDimensions;
-            if(slotDimensions != null && productComponents != null){
+            if(slotDimensions != null && productComplementedProducts != null){
                 CustomizedDimensions maxSlotDimension=slotDimensions.maximumSlotDimensions.toEntity();
                 CustomizedDimensions minSlotDimension=slotDimensions.minimumSlotDimensions.toEntity();
                 CustomizedDimensions recommendedSlotDimension = slotDimensions.recommendedSlotDimensions.toEntity();
@@ -41,12 +42,12 @@ namespace core.services{
                                             recommendedSlotDimension,
                                             productCategory,
                                             productMaterials,
-                                            productComponents,
+                                            productComplementedProducts,
                                             productHeightDimensions,
                                             productWidthDimensions,
                                             productDepthDimensions);     
             }   
-            if(productComponents==null&&slotDimensions!=null){
+            if(productComplementedProducts==null&&slotDimensions!=null){
                 CustomizedDimensions maxSlotDimension=slotDimensions.maximumSlotDimensions.toEntity();
                 CustomizedDimensions minSlotDimension=slotDimensions.minimumSlotDimensions.toEntity();
                 CustomizedDimensions recommendedSlotDimension = slotDimensions.recommendedSlotDimensions.toEntity();
@@ -61,11 +62,11 @@ namespace core.services{
                                             productWidthDimensions,
                                             productDepthDimensions);
             }
-            if(productComponents!=null&&slotDimensions==null){
+            if(productComplementedProducts!=null&&slotDimensions==null){
                 return new Product(reference,designation,
                                             productCategory, 
                                             productMaterials,
-                                            productComponents,
+                                            productComplementedProducts,
                                             productHeightDimensions,
                                             productWidthDimensions,
                                             productDepthDimensions);
