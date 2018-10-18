@@ -124,9 +124,8 @@ namespace core.application {
                 IEnumerable<ProductDTO> productsDTO=extractProductsDTOFromComponentsDTO(updateProductDTO.componentsToAdd);
                 IEnumerable<Product> complementedProducts=PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
                 ensureProductsFetchWasSuccesful(productsDTO,complementedProducts);
-                //TODO:RESTRICTIONS ARE STILL IN DEVELOPMENT
-                foreach(Product product in complementedProducts)
-                    updatedWithSuccess&=productBeingUpdated.addComplementedProduct(new Component(product));
+                foreach(Product complementedProduct in complementedProducts)
+                    updatedWithSuccess&=productBeingUpdated.addComplementedProduct(complementedProduct);
                 perfomedAtLeastOneUpdate=true;
             }
 
@@ -136,8 +135,8 @@ namespace core.application {
                 IEnumerable<ProductDTO> productsDTO=extractProductsDTOFromComponentsDTO(updateProductDTO.componentsToRemove);
                 IEnumerable<Product> complementedProducts=PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
                 ensureProductsFetchWasSuccesful(productsDTO,complementedProducts);
-                foreach(Product product in complementedProducts)
-                    updatedWithSuccess&=productBeingUpdated.removeComplementedProduct(new Component(product));
+                foreach(Product complementedProduct in complementedProducts)
+                    updatedWithSuccess&=productBeingUpdated.removeComplementedProduct(complementedProduct);
                 perfomedAtLeastOneUpdate=true;
             }
 
