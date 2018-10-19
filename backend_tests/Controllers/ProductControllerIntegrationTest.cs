@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace backend_tests.Controllers{
     
@@ -34,10 +35,20 @@ namespace backend_tests.Controllers{
         /// Builds a new ProductControllerIntegrationTest with the mocked server injected by parameters
         /// </summary>
         /// <param name="fixture">Injected Mocked Server</param>
-        public ProductControllerIntegrationTest(TestFixture<TestStartupSQLite> fixture){
+/*         public ProductControllerIntegrationTest(TestFixture<TestStartupSQLite> fixture){
             this.fixture=fixture;
             this.httpClient=fixture.httpClient;
-        }
+        } */
+
+            public ProductControllerIntegrationTest(TestFixture<TestStartupSQLite> fixture)
+            {
+                this.fixture = fixture;
+                this.httpClient = fixture.CreateClient(new WebApplicationFactoryClientOptions
+                {
+                    AllowAutoRedirect = false,
+                    BaseAddress =  new Uri("http://localhost:5001")
+                });
+            }
 
         /// <summary>
         /// Ensures that the product collection fetch is empty

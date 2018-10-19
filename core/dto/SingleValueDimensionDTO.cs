@@ -28,7 +28,7 @@ namespace core.dto
         {
             double value = MeasurementUnitService.convertFromUnit(this.value, unit);
 
-            SingleValueDimension instanceFromDTO = SingleValueDimension.valueOf(value);
+            SingleValueDimension instanceFromDTO = new SingleValueDimension(value);
             instanceFromDTO.Id = id;
 
             return instanceFromDTO;

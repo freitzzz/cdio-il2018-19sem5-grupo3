@@ -9,6 +9,7 @@ using System.Net;
 using backend_tests.utils;
 using System.Linq;
 using core.dto;
+using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace backend_tests.Controllers
 {
@@ -31,13 +32,21 @@ namespace backend_tests.Controllers
         /// </summary>
         private HttpClient client;
 
+        private TestFixture<TestStartupSQLite> fixture;
+
+
         /// <summary>
         /// Builds a MaterialsControllerIntegrationTest instance with an injected mocked server
         /// </summary>
         /// <param name="fixture">injected mocked server</param>
         public MaterialsControllerIntegrationTest(TestFixture<TestStartupSQLite> fixture)
         {
-            client = fixture.httpClient;
+                this.fixture = fixture;
+                this.client = fixture.CreateClient(new WebApplicationFactoryClientOptions
+                {
+                    AllowAutoRedirect = false,
+                    BaseAddress =  new Uri("http://localhost:5001")
+                });
         }
 
         [Fact, TestPriority(0)]
