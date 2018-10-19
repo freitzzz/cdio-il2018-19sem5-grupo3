@@ -5,6 +5,7 @@ using support.utils;
 using core.dto;
 using System.Linq;
 using core.services;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace core.domain
 {
@@ -28,7 +29,8 @@ namespace core.domain
         /// List of values that make up the interval.
         /// </summary>
         //*Since EF Core 2.1 does not support collections of primitive types, a wrapper ValueObject class must be used */
-        public virtual List<DoubleValue> values { get; set; }
+        private List<DoubleValue> _values;
+        public List<DoubleValue> values { get => LazyLoader.Load(this, ref _values); set =>_values = value;}
 
         /// <summary>
         /// Empty constructor for ORM.

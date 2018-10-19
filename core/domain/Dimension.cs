@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using core.dto;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using support.domain.ddd;
 using support.dto;
 
@@ -20,7 +21,22 @@ namespace core.domain
         /// List containing instances of Restriction.
         /// </summary>
         /// <value>Gets/sets the list.</value>
-        public virtual List<Restriction> restrictions { get; protected set; }
+        private List<Restriction> _restrictions;
+        public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); protected set => _restrictions = value; }
+
+        /// <summary>
+        /// LazyLoader being injected by the framework.
+        /// </summary>
+        /// <value>Protected Gets/Sets the value of the LazyLoader.</value>
+        protected ILazyLoader LazyLoader { get; set; }
+
+        /// <summary>
+        /// Constructor for injecting the LazyLoader.
+        /// </summary>
+        /// <param name="lazyLoader">LazyLoader being injected.</param>
+        protected Dimension(ILazyLoader lazyLoader){
+            this.LazyLoader = lazyLoader;
+        }
 
         /// <summary>
         /// Empty constructor for ORM.

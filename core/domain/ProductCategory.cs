@@ -5,6 +5,7 @@ using support.dto;
 using core.dto;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace core.domain
 {
@@ -52,8 +53,27 @@ namespace core.domain
         /// <value></value>
         public long? parentId { get; internal set; }
 
+        /// <summary>
+        /// The ProductCategory's parent ProductCategory
+        /// </summary>
+        private ProductCategory _parent;
+        
         [ForeignKey("parentId")]
-        public virtual ProductCategory parent { get; protected set; }
+        public ProductCategory parent { get => LazyLoader.Load(this, ref _parent); protected set => _parent = value; }
+
+        /// <summary>
+        /// Injected LazyLoader.
+        /// </summary>
+        /// <value>Gets/Sets the value of the LazyLoader</value>
+        private ILazyLoader LazyLoader {get; set;}
+
+        /// <summary>
+        /// Constructor used for injecting the LazyLoader.
+        /// </summary>
+        /// <param name="lazyLoader">LazyLoader being injected.</param>
+        private ProductCategory(ILazyLoader lazyLoader){
+            this.LazyLoader = lazyLoader;
+        }
 
         /// <summary>
         /// Empty constructor for ORM.
