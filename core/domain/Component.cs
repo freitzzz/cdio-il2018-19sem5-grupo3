@@ -45,7 +45,7 @@ namespace core.domain
         /// Product with the complemented product 
         /// </summary>
         private Product _complementedProduct;
-        public Product complementedProduct { get; set; }
+        public Product complementedProduct { get => LazyLoader.Load(this, ref _complementedProduct); set => _complementedProduct = value; }
         /// <summary>
         /// List with the restrictions which the current component can be have
         /// </summary>
