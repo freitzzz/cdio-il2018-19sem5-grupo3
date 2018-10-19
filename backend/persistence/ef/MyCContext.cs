@@ -108,7 +108,7 @@ namespace backend.persistence.ef
 
             builder.Entity<CommercialCatalogue>().HasMany(c => c.collectionList); //one-to-many relationship
             
-            builder.Entity<CatalogueCollection>().HasMany(c => c.customizedProduct);
+            builder.Entity<CatalogueCollection>().HasMany(c => c.customizedProducts);
             builder.Entity<CatalogueCollection>().HasOne(c => c.customizedProductCollection);   //one-to-one relationship
         }
     }
