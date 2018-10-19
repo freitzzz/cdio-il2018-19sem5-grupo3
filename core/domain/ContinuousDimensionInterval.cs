@@ -1,14 +1,15 @@
 using System;
-using support.domain.ddd;
 using core.dto;
 using core.services;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Collections.Generic;
 
 namespace core.domain
 {
     /// <summary>
     /// Class that represents a continuous dimension interval
     /// </summary>
-    public class ContinuousDimensionInterval : Dimension, ValueObject
+    public class ContinuousDimensionInterval : Dimension
     {
         /// <summary>
         /// Constant that represents the message that occurs if the min value is NaN
@@ -68,6 +69,8 @@ namespace core.domain
         /// Increment value of the interval
         /// </summary>
         public double increment { get; set; }
+
+        private ContinuousDimensionInterval(ILazyLoader lazyLoader) : base(lazyLoader) {}
 
         /// <summary>
         /// Empty constructor for ORM.
@@ -131,6 +134,7 @@ namespace core.domain
             this.minValue = minValue;
             this.maxValue = maxValue;
             this.increment = increment;
+            this.restrictions = new List<Restriction>();
         }
 
         /// <summary>

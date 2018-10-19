@@ -6,13 +6,14 @@ using core.dto;
 using System.Linq;
 using core.services;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace core.domain
 {
     /// <summary>
     /// Class that represents a discrete dimension interval
     /// </summary>
-    public class DiscreteDimensionInterval : Dimension, ValueObject
+    public class DiscreteDimensionInterval : Dimension
     {
 
         /// <summary>
@@ -30,7 +31,9 @@ namespace core.domain
         /// </summary>
         //*Since EF Core 2.1 does not support collections of primitive types, a wrapper ValueObject class must be used */
         private List<DoubleValue> _values;
-        public List<DoubleValue> values { get => LazyLoader.Load(this, ref _values); set =>_values = value;}
+        public List<DoubleValue> values { get => LazyLoader.Load(this, ref _values); set => _values = value; }
+
+        private DiscreteDimensionInterval(ILazyLoader lazyLoader) : base(lazyLoader) {}
 
         /// <summary>
         /// Empty constructor for ORM.
@@ -61,6 +64,7 @@ namespace core.domain
             }
 
             this.values = doubleValues;
+            this.restrictions = new List<Restriction>();
         }
 
         /// <summary>
@@ -137,7 +141,8 @@ namespace core.domain
 
         public override DimensionDTO toDTO(string unit)
         {
-            if(unit == null){
+            if (unit == null)
+            {
                 return this.toDTO();
             }
             DiscreteDimensionIntervalDTO dto = new DiscreteDimensionIntervalDTO();
@@ -147,7 +152,7 @@ namespace core.domain
 
             foreach (DoubleValue doubleValue in values)
             {
-                dto.values.Add(MeasurementUnitService.convertToUnit(doubleValue.value,unit));
+                dto.values.Add(MeasurementUnitService.convertToUnit(doubleValue.value, unit));
             }
             dto.unit = unit;
 

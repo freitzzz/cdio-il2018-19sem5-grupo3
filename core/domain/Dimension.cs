@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using core.dto;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using support.domain.ddd;
@@ -28,6 +29,7 @@ namespace core.domain
         /// LazyLoader being injected by the framework.
         /// </summary>
         /// <value>Protected Gets/Sets the value of the LazyLoader.</value>
+        [NotMapped]
         protected ILazyLoader LazyLoader { get; set; }
 
         /// <summary>

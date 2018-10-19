@@ -453,7 +453,7 @@ namespace core.domain {
             DimensionsListDTO dimensionsListDTO=new DimensionsListDTO();
             dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
             dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
-            dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
+            dimensionsListDTO.depthDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
             dto.dimensions=dimensionsListDTO;
             dto.productCategory = productCategory.toDTO();
             dto.productMaterials=new List<MaterialDTO>();
