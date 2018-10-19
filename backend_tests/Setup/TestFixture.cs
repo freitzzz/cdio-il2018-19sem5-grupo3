@@ -6,13 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-
 namespace backend_tests.Setup
 {
     //!All test classes must inherit from this generic TestFixture class
     /// <summary>
     /// Generic test context class.
-    /// Based on this solution <a href = https://logcorner.com/asp-net-web-api-core-integration-testing-using-inmemory-entityframeworkcore-sqlite-or-localdb-and-xunit2/></a>
     /// </summary>
     /// <typeparam name="TStartup"></typeparam>
     public class TestFixture<TStartup> : WebApplicationFactory<TStartup> where TStartup : class

@@ -14,7 +14,6 @@ namespace backend_tests.Setup
 {
     /// <summary>
     /// Class that starts the SQLite InMemory database that is used by integration test classes
-    /// Based on this solution <a href = https://logcorner.com/asp-net-web-api-core-integration-testing-using-inmemory-entityframeworkcore-sqlite-or-localdb-and-xunit2/></a>
     /// </summary>
     public class TestStartupSQLite : Startup
     {
@@ -32,6 +31,8 @@ namespace backend_tests.Setup
             services.AddScoped<CustomizedProductCollectionRepository, EFCustomizedProductCollectionRepository>();
             services.AddScoped<CommercialCatalogueRepository, EFCommercialCatalogueRepository>();
 
+            //Due to a bug with the mock test server, the MVC controller assemblies must be specified
+            ///<a href="https://stackoverflow.com/questions/43669633/why-is-testserver-not-able-to-find-controllers-when-controller-is-in-separate-as?noredirect=1#comment74386164_43669633"</a>
             services.AddMvc().AddApplicationPart(Assembly.Load(typeof(MaterialsController).Assembly.GetName()));
         }
     }

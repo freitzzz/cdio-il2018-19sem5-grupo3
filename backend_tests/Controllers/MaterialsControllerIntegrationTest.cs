@@ -41,12 +41,12 @@ namespace backend_tests.Controllers
         /// <param name="fixture">injected mocked server</param>
         public MaterialsControllerIntegrationTest(TestFixture<TestStartupSQLite> fixture)
         {
-                this.fixture = fixture;
-                this.client = fixture.CreateClient(new WebApplicationFactoryClientOptions
-                {
-                    AllowAutoRedirect = false,
-                    BaseAddress =  new Uri("http://localhost:5001")
-                });
+            this.fixture = fixture;
+            this.client = fixture.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false,
+                BaseAddress = new Uri("http://localhost:5001")
+            });
         }
 
         [Fact, TestPriority(0)]
@@ -91,6 +91,9 @@ namespace backend_tests.Controllers
             Assert.NotNull(response.Content.ReadAsStringAsync());
             Assert.True(materialDTO.id != -1);
             Assert.Equal(materialDTO.reference, materialDTOFromPost.reference);
+            Assert.NotNull(materialDTOFromPost.colors);
+            Assert.NotNull(materialDTOFromPost.finishes);
+            Assert.Equal(materialDTO.designation, materialDTOFromPost.designation);
 
             return materialDTOFromPost;
         }
