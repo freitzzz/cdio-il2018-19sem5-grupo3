@@ -63,7 +63,18 @@ namespace backend_tests.Setup
 
                     // Ensure the database is created.
                     db.Database.OpenConnection();
-                    db.Database.EnsureCreated();
+                    db.Database.Migrate();
+
+                    /*                     try
+                                        {
+                                            // Seed the database with test data.
+                                            InitializeDbForTests(db);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            logger.LogError(ex, $"An error occurred seeding the " +
+                                                "database with test messages. Error: {ex.Message}");
+                                        } */
                 }
 
             }
