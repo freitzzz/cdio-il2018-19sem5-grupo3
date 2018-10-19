@@ -23,19 +23,19 @@ namespace core.domain
         /// </summary>
         /// 
         private Material _material;//!private field used for lazy loading, do not use this for storing or fetching data
-        public virtual Material material { get => LazyLoader.Load(this, ref _material); set => _material = value; }
+        public Material material { get => LazyLoader.Load(this, ref _material); set => _material = value; }
 
         /// <summary>
         /// List of restrictions in this relation
         /// </summary>
         private List<Restriction> _restrictions;//!private field used for lazy loading, do not use this for storing or fetching data
-        public virtual List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); set => _restrictions = value; }
+        public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); set => _restrictions = value; }
 
         /// <summary>
         /// Product
         /// </summary>
         private Product _product;//!private field used for lazy loading, do not use this for storing or fetching data
-        public virtual Product product { get => LazyLoader.Load(this, ref _product); set => _product = value; }
+        public Product product { get => LazyLoader.Load(this, ref _product); set => _product = value; }
 
         /// <summary>
         /// LazyLoader injected by the framework.
