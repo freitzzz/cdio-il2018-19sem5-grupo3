@@ -62,7 +62,7 @@ namespace backend.config
         private static void configureMySQL(IConfiguration configuration, IServiceCollection services)
         {
             services.AddDbContext<MyCContext>(options =>
-                        options.UseLazyLoadingProxies().UseMySql(configuration.GetConnectionString(DatabaseProviders.MySQL.ToString())));
+                        options.UseMySql(configuration.GetConnectionString(DatabaseProviders.MySQL.ToString())));
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace backend.config
         private static void configureSQLServer(IConfiguration configuration, IServiceCollection services)
         {
             services.AddDbContext<MyCContext>(options =>
-                        options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString(DatabaseProviders.SQLServer.ToString())));
+                        options.UseSqlServer(configuration.GetConnectionString(DatabaseProviders.SQLServer.ToString())));
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace backend.config
         private static void configureSQLite(IConfiguration configuration, IServiceCollection services)
         {
             services.AddDbContext<MyCContext>(options =>
-                        options.UseLazyLoadingProxies().UseSqlite(configuration.GetConnectionString(DatabaseProviders.SQLite.ToString())));
+                        options.UseSqlite(configuration.GetConnectionString(DatabaseProviders.SQLite.ToString())));
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace backend.config
         private static void configureInMemory(IConfiguration configuration, IServiceCollection services)
         {
             services.AddDbContext<MyCContext>(options =>
-                        options.UseLazyLoadingProxies().UseInMemoryDatabase(configuration.GetConnectionString(DatabaseProviders.InMemory.ToString())));
+                        options.UseInMemoryDatabase(configuration.GetConnectionString(DatabaseProviders.InMemory.ToString())));
         }
 
     }
