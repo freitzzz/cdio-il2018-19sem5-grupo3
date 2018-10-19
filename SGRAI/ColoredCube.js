@@ -63,7 +63,7 @@ function main() {
                                            //ASPECT ?
                                            //NEAR Distancia entre a "Camera" e a parte de frente do objeto
                                            //FAR Distancia entre a "Camera" e a parte de "tras" do objecto
-  mvpMatrix.lookAt(2, 0, 10, 0, 0, 0, 1, 0, 0); //lookAt(eyeX,eyeY,eyeZ,aimX,aimY,aimZ,upX,upY,upZ)
+  mvpMatrix.lookAt(3, 0, 10, 0, 0, 0, 0, 1, 0); //lookAt(eyeX,eyeY,eyeZ,aimX,aimY,aimZ,upX,upY,upZ)
                                                //EYE (Olho) "Camera"
                                                //UP ("Altura" do olho ou camera)
                                                //AIM (Posicao do objeto que o olho ou camera esta a olhar)
@@ -89,15 +89,24 @@ function initVertexBuffers(gl) {
   //  |/      |/
   //  v2------v3
 
-  var vertices = new Float32Array([   // Vertex coordinates
-     1.0, 1.0, 1.0,  -1.0, 1.0, 1.0,  -1.0,-1.0, 1.0,   1.0,-1.0, 1.0,  // v0-v1-v2-v3 front
-     1.0, 1.0, 1.0,   1.0,-1.0, 1.0,   1.0,-1.0,-1.0,   1.0, 1.0,-1.0,  // v0-v3-v4-v5 right
-     1.0, 1.0, 1.0,   1.0, 1.0,-1.0,  -1.0, 1.0,-1.0,  -1.0, 1.0, 1.0,  // v0-v5-v6-v1 up
-    -1.0, 1.0, 1.0,  -1.0, 1.0,-1.0,  -1.0,-1.0,-1.0,  -1.0,-1.0, 1.0,  // v1-v6-v7-v2 left
-    -1.0,-1.0,-1.0,   1.0,-1.0,-1.0,   1.0,-1.0, 1.0,  -1.0,-1.0, 1.0,  // v7-v4-v3-v2 down
-     1.0,-1.0,-1.0,  -1.0,-1.0,-1.0,  -1.0, 1.0,-1.0,   1.0, 1.0,-1.0   // v4-v7-v6-v5 back
-  ]);
+  var x1=1;
+  var x2=1;
 
+  var y1=1;
+  var y2=1;
+
+  var z1=1;
+  var z2=1;
+
+   var vertices = new Float32Array([   // Vertex coordinates
+     x1, y1, z1,  -x2, y1, z1,  -x2,-y2, z1,   x1,-y2, z1,  // v0-v1-v2-v3 front
+     x1, y1, z1,   x1,-y2, z1,   x1,-y2,-z2,   x1, y1,-z2,  // v0-v3-v4-v5 right
+     x1, y1, z1,   x1, y1,-z2,  -x2, y1,-z2,  -x2, y1, z1,  // v0-v5-v6-v1 up
+     -x2, y1, z1,  -x2, y1,-z2,  -x2,-y2,-z2,   -x2,-y2, z1,  // v1-v6-v7-v2 left
+     -x2,-y2,-z2,   x1,-y2,-z2,    x1,-y2, z1,  -x2,-y2, z1,  // v7-v4-v3-v2 down
+     x1,-y2,-z2,  -x2,-y2,-z2,  -x2, y1,-z2,   x1, y1,-z2   // v4-v7-v6-v5 back
+  ]); 
+  //CORES VERTICES
   var colors = new Float32Array([     // Colors
     0.4, 0.4, 1.0,  0.4, 0.4, 1.0,  0.4, 0.4, 1.0,  0.4, 0.4, 1.0,  // v0-v1-v2-v3 front(blue)
     0.4, 1.0, 0.4,  0.4, 1.0, 0.4,  0.4, 1.0, 0.4,  0.4, 1.0, 0.4,  // v0-v3-v4-v5 right(green)
@@ -106,14 +115,14 @@ function initVertexBuffers(gl) {
     1.0, 1.0, 1.0,  1.0, 1.0, 1.0,  1.0, 1.0, 1.0,  1.0, 1.0, 1.0,  // v7-v4-v3-v2 down
     0.4, 1.0, 1.0,  0.4, 1.0, 1.0,  0.4, 1.0, 1.0,  0.4, 1.0, 1.0   // v4-v7-v6-v5 back
   ]);
-
+    //ARESTAS
   var indices = new Uint8Array([       // Indices of the vertices
-     0, 1, 2,   0, 2, 3,    // front
-     4, 5, 6,   4, 6, 7,    // right
-     8, 9,10,   8,10,11,    // up
-    12,13,14,  12,14,15,    // left
-    16,17,18,  16,18,19,    // down
-    20,21,22,  20,22,23     // back
+     0, 1, 2,   2, 3, 0,    // front
+     4, 5, 6,   6, 7, 4,    // right
+     8, 9,10,   10,11,8,    // up
+    12,13,14,  15,16,13,    // left
+    16,17,18,  18,19,16,    // down
+    20,21,22,  22,23,20     // back
   ]);
 
   // Create a buffer object
