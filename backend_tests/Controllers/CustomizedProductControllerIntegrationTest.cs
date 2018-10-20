@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace backend_tests.Controllers
 {
-
+    [Collection("Integration Collection")]
     [TestCaseOrderer(TestPriorityOrderer.TYPE_NAME, TestPriorityOrderer.ASSEMBLY_NAME)]
     public sealed class CustomizedProductControllerIntegrationTest : IClassFixture<TestFixture<TestStartupSQLite>>
     {
@@ -47,35 +47,49 @@ namespace backend_tests.Controllers
         /// <summary>
         /// Ensures that a customized product is created succesfuly
         /// </summary>
-        [Fact, TestPriority(14209)]
+        [Fact, TestPriority(1)]
         public async Task<CustomizedProductDTO> ensureCustomizedProductIsCreatedSuccesfuly()
         {
+            //CustomizedDimensionsDTO creation
+            CustomizedDimensionsDTO customizedDimensionsDTO = new CustomizedDimensionsDTO();
+            customizedDimensionsDTO.height = 200.0;
+            customizedDimensionsDTO.width = 230.0;
+            customizedDimensionsDTO.depth = 120.0;
+
+            FinishDTO finishDTO = new FinishDTO();
+            finishDTO.description = "MDF";
+
+            ColorDTO colorDTO = new ColorDTO();
+            colorDTO.name = "White";
+            colorDTO.red = 0XFF;
+            colorDTO.green = 0XFF;
+            colorDTO.blue = 0XFF;
+            colorDTO.alpha = 0XFF;
+
+            //CustomizedMaterialDTO creation
+            CustomizedMaterialDTO customizedMaterialDTO = new CustomizedMaterialDTO();
+            customizedMaterialDTO.finish = finishDTO;
+            customizedMaterialDTO.color = colorDTO;
+
+            ProductControllerIntegrationTest productControllerTest = new ProductControllerIntegrationTest(fixture);
+            ProductDTO productDTO = await productControllerTest.ensureProductIsCreatedSuccesfuly();
+
+        
+            //CustomizedProductDTO creation with the previously created dimensions and material
             CustomizedProductDTO customizedProductDTO = new CustomizedProductDTO();
             //A customized product requires a valid reference
             customizedProductDTO.reference = "#CP4445" + Guid.NewGuid().ToString("n");
             //A customized product requires a valid designation
             customizedProductDTO.designation = "Pride Closet";
-            Task<ProductDTO> productDTO = new ProductControllerIntegrationTest(fixture).ensureProductIsCreatedSuccesfuly();
-            productDTO.Wait();
-            //A customized product references a product which is being customized
-            customizedProductDTO.productDTO = productDTO.Result;
-            CustomizedMaterialDTO customizedMaterialDTO = new CustomizedMaterialDTO();
-            ColorDTO colorDTO = new ColorDTO();
-            FinishDTO finishDTO = new FinishDTO();
-            colorDTO.name = "White";
-            colorDTO.red = 0xFF;
-            colorDTO.green = 0xFF;
-            colorDTO.blue = 0xFF;
-            finishDTO.description = "MDF";
-            //A customized product requires a customized material
-            customizedMaterialDTO.color = colorDTO;
-            customizedMaterialDTO.finish = finishDTO;
+            customizedProductDTO.customizedDimensionsDTO = customizedDimensionsDTO;
+            customizedProductDTO.customizedMaterialDTO = customizedMaterialDTO;
+            customizedProductDTO.productDTO = productDTO;
+
+
             //TODO:SLOTS
-            //var createCustomizedProduct=await httpClient.PostAsJsonAsync(CUSTOMIZED_PRODUCTS_URI,customizedProductDTO);
-            //Uncomment when slots creation is fixed
-            //Assert.True(createCustomizedProduct.StatusCode==HttpStatusCode.Created);
-            //return JsonConvert.DeserializeObject<CustomizedProductDTO>(await createCustomizedProduct.Content.ReadAsStringAsync());
-            return null;
+            var createCustomizedProduct=await httpClient.PostAsJsonAsync(CUSTOMIZED_PRODUCTS_URI,customizedProductDTO);
+            Assert.True(createCustomizedProduct.StatusCode==HttpStatusCode.Created);
+            return JsonConvert.DeserializeObject<CustomizedProductDTO>(await createCustomizedProduct.Content.ReadAsStringAsync());
         }
 
     }
