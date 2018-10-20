@@ -57,8 +57,6 @@ namespace core.domain
         /// The ProductCategory's parent ProductCategory
         /// </summary>
         private ProductCategory _parent;
-        
-        [ForeignKey("parentId")]
         public ProductCategory parent { get => LazyLoader.Load(this, ref _parent); protected set => _parent = value; }
 
         /// <summary>

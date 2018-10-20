@@ -70,9 +70,8 @@ namespace backend.persistence.ef
 
             builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values); //one-to-many relationship
 
-            //Configure one-to-one relationship between parent and child ProductCategory
-            //*Change to many-to-one??? */
-            builder.Entity<ProductCategory>().HasOne(c => c.parent).WithOne().HasForeignKey<ProductCategory>(c => c.parentId);
+            //Configure many-to-one relationship between parent and child ProductCategory
+            builder.Entity<ProductCategory>().HasOne(c => c.parent).WithMany().HasForeignKey(c => c.parentId);
 
             builder.Entity<Material>().HasMany(m => m.Colors);                  //one-to-many relationship
             builder.Entity<Material>().HasMany(m => m.Finishes);                //one-to-many relationship
