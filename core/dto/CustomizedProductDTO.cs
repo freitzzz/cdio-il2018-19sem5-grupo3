@@ -17,38 +17,45 @@ namespace core.dto
         /// CustomizedProducts's database identifier
         /// </summary>
         /// <value>Gets/sets the value of the database identifier field.</value>
-        [DataMember(Name="id")]
+        [DataMember(Name = "id")]
         public long id { get; set; }
 
         /// <summary>
         /// String with the CustomizedProduct's reference
         /// </summary>
-        [DataMember(Name="reference")]
+        [DataMember(Name = "reference")]
         public string reference { get; set; }
 
         /// <summary>
         /// String with the CustomizedProduct's designation
         /// </summary>
-        [DataMember(Name="designation")]
+        [DataMember(Name = "designation")]
         public string designation { get; set; }
 
         /// <summary>
         /// CustomizedMaterialDTO with the CustomizedProduct's material
         /// </summary>
-        [DataMember(Name="customizedMaterial")]
+        [DataMember(Name = "customizedMaterial")]
         public CustomizedMaterialDTO customizedMaterialDTO { get; set; }
 
         /// <summary>
         /// CustomizedDimensionsDTO with the CustomizedProduct's dimensions
         /// </summary>
-        [DataMember(Name="customizedDimensions")]
+        [DataMember(Name = "customizedDimensions")]
         public CustomizedDimensionsDTO customizedDimensionsDTO { get; set; }
 
         /// <summary>
         /// ProductDTO with the CustomizedProduct's product
         /// </summary>
-        [DataMember(Name="product")]
+        [DataMember(Name = "product")]
         public ProductDTO productDTO { get; set; }
+
+        /// <summary>
+        /// List of SlotDTO with the CustomizedProduct's list of slots.
+        /// </summary>
+        /// <value>Gets/sets the value of the slot list.</value>
+        [DataMember(Name = "slots")]
+        public List<SlotDTO> slotListDTO { get; set; }
 
         /// <summary>
         /// SlotListDTO with the CustomizedProduct's list of SlotDTOs with the Slots
@@ -63,16 +70,16 @@ namespace core.dto
         {
 
             CustomizedProduct instanceFromDTO;
-            /* if (slotsDTO.slotDTOs.Count == 0 || slotsDTO.slotDTOs == null)
+            if (slotListDTO == null || slotListDTO.Count == 0)
             {
                 instanceFromDTO = new CustomizedProduct(reference, designation, customizedMaterialDTO.toEntity(), customizedDimensionsDTO.toEntity(), productDTO.toEntity());
             }
             else
             {
-                List<Slot> slots = DTOUtils.reverseDTOS(slotsDTO.slotDTOs).ToList(); */
+                List<Slot> slots = DTOUtils.reverseDTOS(slotListDTO).ToList();
 
-                instanceFromDTO = new CustomizedProduct(reference, designation, customizedMaterialDTO.toEntity(), customizedDimensionsDTO.toEntity(), productDTO.toEntity());
-            /*  }*/
+                instanceFromDTO = new CustomizedProduct(reference, designation, customizedMaterialDTO.toEntity(), customizedDimensionsDTO.toEntity(), productDTO.toEntity(), slots);
+            }
             instanceFromDTO.Id = this.id;
             return instanceFromDTO;
         }

@@ -320,6 +320,7 @@ namespace core.domain
             dto.productDTO = this.product.toDTO();
             dto.customizedDimensionsDTO = this.customizedDimensions.toDTO();
             dto.customizedMaterialDTO = this.customizedMaterial.toDTO();
+            dto.slotListDTO = DTOUtils.parseToDTOS(this.slots).ToList();
             dto.id = this.Id;
             return dto;
         }
