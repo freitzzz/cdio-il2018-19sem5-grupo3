@@ -40,51 +40,10 @@ var indices=0;
  */
 var scales=[1,1,1];  
 
+/**
+ * Current mouse positions relatively to X and Y axes
+ */
 var mouseX,mouseY;
-
-function degreesToRadians(degrees) {
-    return degrees * Math.PI / 180.0;
-}
-
-function radiansToDegrees(radians) {
-    return radians * 180.0 / Math.PI;
-}
-
-function size(fov, distance) {
-    return 2.0 * Math.tan(degreesToRadians(fov / 2.0)) * distance;
-}
-
-function fov(size, distance) {
-    return 2.0 * radiansToDegrees(Math.atan2(size / 2.0, distance));
-}
-
-function distance(size, fov) {
-    return size / 2.0 / Math.tan(degreesToRadians(fov / 2.0));
-}
-
-
-// Specify the current projection type, the left, right, bottom and top clipping planes (when applicable), the field of view (when applicable); and the front and back clipping planes
-  // Orthographic projection: the zoom effect is achieved by changing the values of the left, right, bottom and top clipping planes
-  // Perspective projection: the zoom effect is achieved by changing either the field of view or the distance between the camera and the target
-  // The field of view is expressed in degrees
-  var projection = {type: 'ortho',
-                    size: 10.0,
-                    sizeMin: 4.0,
-                    sizeMax: 16.0,
-                    fovMin: 30.0,
-                    fovMax: 60.0,
-                    near: 0.1,
-                    far: 30.0};
-
-// Specify the camera distance and orientation
-  // The horizontal and vertical orientation are expressed in degrees
-  var camera = {target: [0.0, 0.0, 0.0],
-    distance: 15.0,
-    distanceMin: distance(projection.sizeMin, projection.fovMin),
-    distanceMax: distance(projection.sizeMax, projection.fovMax),
-    orientation: [45.0, 45.0]};
-
-
 
 
 /**
@@ -123,7 +82,7 @@ function main(){
   webGL.enable(webGL.DEPTH_TEST)
 
   // Get the storage location of u_MvpMatrix
-u_MvpMatrix = webGL.getUniformLocation(webGL.program, 'u_MvpMatrix');
+  u_MvpMatrix = webGL.getUniformLocation(webGL.program, 'u_MvpMatrix');
   if (!u_MvpMatrix) {
       console.log('Failed to get the storage location of u_MvpMatrix');
       return;
@@ -141,7 +100,7 @@ u_MvpMatrix = webGL.getUniformLocation(webGL.program, 'u_MvpMatrix');
   document.onkeydown=function(keyDownEvent){onKeyDown(keyDownEvent,webGL,n,mvpMatrix,u_MvpMatrix);};
   canvas.onmousedown=function(ev){mouseDown(ev);}
   canvas.onmousemove=function(ev){mouseMove(ev);}
-
+  canvas.onwheel=function(ev){mouseWheel(ev);}
   
 }
 
@@ -192,6 +151,14 @@ function drawScene(webGL,indices,u_MvpMatrix,mvpMatrix){
     //Initial Product perspective
     mvpMatrix.setPerspective(30, 1, 1, 100);
 
+
+
+
+
+
+
+
+
     
     // Specify the viewing transformation (positive Z-semi-axis up)
     //   Z
@@ -230,7 +197,7 @@ function drawScene(webGL,indices,u_MvpMatrix,mvpMatrix){
     webGL.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
   
     // Draw the cube
-    webGL.drawElements(webGL.LINE_STRIP, indices, webGL.UNSIGNED_BYTE, 0); //Desenha o cubo com linhas (wireframe)
+    webGL.drawElements(webGL.TRIANGLES, indices, webGL.UNSIGNED_BYTE, 0); //Desenha o cubo com linhas (wireframe)
 
 }
 
@@ -269,4 +236,20 @@ function mouseMove(ev) {
     matrix=matrixes.pop();
     drawScene(webGL,indices,u_MvpMatrix,matrix);
     matrixes.push(matrix);
+}
+
+function mouseWheel(ev) {
+  if (ev.deltaY < 0) { // Roll up
+    camera.distance /= 1.1;
+    if (camera.distance < camera.distanceMin) {
+      camera.distance = camera.distanceMin;
+    }
+  } else if (ev.deltaY > 0) { // Roll down
+    camera.distance *= 1.1;
+    if (camera.distance > camera.distanceMax) {
+      camera.distance = camera.distanceMax;
+    }
+  } else {
+    return;
+  }
 }
