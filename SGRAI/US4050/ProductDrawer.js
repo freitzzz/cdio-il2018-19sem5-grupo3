@@ -241,7 +241,7 @@ function drawScene(){
     webGL.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
   
     // Draw the cube
-    webGL.drawElements(webGL.TRIANGLES, indices, webGL.UNSIGNED_BYTE, 0); //Desenha o cubo com linhas (wireframe)
+    webGL.drawElements(webGL.LINE_STRIP, indices, webGL.UNSIGNED_BYTE, 0); //Desenha o cubo com linhas (wireframe)
     matrixes.push(mvpMatrix);
 }
 
