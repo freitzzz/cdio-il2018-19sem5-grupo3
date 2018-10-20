@@ -22,10 +22,18 @@ var FSHADER_SOURCE =
   '}\n';
 
 /**
+ * Current broswer canvas
+ */
+var canvas=null;
+
+/**
  * Array which keeps all product matrixes
  */
 var matrixes=[];
 
+/**
+ * Current u_MvpMatrix
+ */
 var u_MvpMatrix=null;
 
 /**
@@ -52,7 +60,7 @@ var mouseX,mouseY;
 function main(){
 
   // Retrieve <canvas> element from HTML document
-  var canvas = document.getElementById('webgl');
+  canvas = document.getElementById('webgl');
   // Get the rendering context for WebGL
   webGL = getWebGLContext(canvas);
   
@@ -93,15 +101,9 @@ function main(){
 
   matrixes.push(mvpMatrix); //Store the current product matrix
   
-  drawScene(webGL,n,u_MvpMatrix,mvpMatrix); //Draws initial scene
-
   indices=n;
-
-  document.onkeydown=function(keyDownEvent){onKeyDown(keyDownEvent,webGL,n,mvpMatrix,u_MvpMatrix);};
-  canvas.onmousedown=function(ev){mouseDown(ev);}
-  canvas.onmousemove=function(ev){mouseMove(ev);}
-  canvas.onwheel=function(ev){mouseWheel(ev);}
-  
+  drawScene(); //Draws initial scene
+  registerEvents();
 }
 
 /**
@@ -112,7 +114,7 @@ function main(){
  * @param {Matrix4} productView Current product view
  * @param {u_MvpMatrix} u_MvpMatrix Current model view projection product matrix
  */
-function onKeyDown(keyEvent,webGL,indices,productViewMatrix,u_MvpMatrix){
+function onKeyDown(keyEvent){
     switch(keyEvent.keyCode){
       case 37: //Left
         scales[0]-=0.2;
@@ -129,17 +131,78 @@ function onKeyDown(keyEvent,webGL,indices,productViewMatrix,u_MvpMatrix){
       default:
         break;
     }
-    drawScene(webGL,indices,u_MvpMatrix,productViewMatrix);
+    drawScene();
+}
+
+/**
+ * Treats mouse button clicked events
+ * @param {MouseEvent} mouseEvent MouseEvent with the mouse clicked event
+ */
+function mouseDown(mouseEvent) {
+    if (mouseEvent.buttons == 1) { // Left button
+      mouseX = mouseEvent.clientX; // Mouse X coordinate
+      mouseY = mouseEvent.clientY; // Mouse Y coordinate
+    }
+  }
+
+/**
+ * Treats mouse moved events
+ * @param {MouseEvent} mouseEvent MouseEvent with the mouse moved event
+ */
+function mouseMove(mouseEvent) {
+    if (mouseEvent.buttons == 1) { // Left button
+      var deltaX = mouseEvent.clientX - mouseX;
+      var deltaY = mouseEvent.clientY - mouseY;
+      if (deltaX != 0) {
+        camera.orientation[0] -= 0.5 * deltaX; // Horizontal orientation: -0.5 or +0.5 degree/horizontal pixel
+        while (camera.orientation[0] < -180.0) {
+          camera.orientation[0] += 360.0;
+        }
+        while (camera.orientation[0] >= 180.0) {
+          camera.orientation[0] -= 360.0;
+        }
+      }
+      if (deltaY != 0) {
+        camera.orientation[1] += 0.5 * deltaY; // Vertical orientation: -0.5 or +0.5 degree/vertical pixel
+        while (camera.orientation[1] < -180.0) {
+          camera.orientation[1] += 360.0;
+        }
+        while (camera.orientation[1] >= 180.0) {
+          camera.orientation[1] -= 360.0;
+        }
+      }
+      mouseX = mouseEvent.clientX;
+      mouseY = mouseEvent.clientY;
+    }
+    drawScene();
+}
+
+/**
+ * Treats mouse wheel events
+ * @param {MouseEvent} mouseEvent MouseEvent with the mouse wheel event
+ */
+function mouseWheel(mouseEvent) {
+  if (mouseEvent.deltaY < 0) { // Roll up
+    camera.distance /= 1.1;
+    if (camera.distance < camera.distanceMin) {
+      camera.distance = camera.distanceMin;
+    }
+  } else if (mouseEvent.deltaY > 0) { // Roll down
+    camera.distance *= 1.1;
+    if (camera.distance > camera.distanceMax) {
+      camera.distance = camera.distanceMax;
+    }
+  } else {
+    return;
+  }
+  drawScene();
 }
 
 /**
  * Draws the product scene
- * @param {WebGL} webGL Current WebGL context 
- * @param {number} indices Object number of indices
- * @param {u_MvpMatrix} u_MvpMatrix Object u_MvpMatrix
- * @param {Matrix4} mvpMatrix Object Matrix
  */
-function drawScene(webGL,indices,u_MvpMatrix,mvpMatrix){
+function drawScene(){
+    var mvpMatrix=matrixes.pop();
     //Clear color and depth buffer
     webGL.clear(webGL.COLOR_BUFFER_BIT | webGL.DEPTH_BUFFER_BIT);
   
@@ -151,15 +214,6 @@ function drawScene(webGL,indices,u_MvpMatrix,mvpMatrix){
     //Initial Product perspective
     mvpMatrix.setPerspective(30, 1, 1, 100);
 
-
-
-
-
-
-
-
-
-    
     // Specify the viewing transformation (positive Z-semi-axis up)
     //   Z
     //   |
@@ -181,16 +235,6 @@ function drawScene(webGL,indices,u_MvpMatrix,mvpMatrix){
     var upZ = Math.sin(degreesToRadians(camera.orientation[1] + 90.0));
     mvpMatrix.lookAt(cameraX, cameraY, cameraZ, targetX, targetY, targetZ, upX, upY, upZ);
 
-
-
-
-
-
-    
-  
-    //Initial Product view
-    //mvpMatrix.lookAt(3, 0, 10, 0, 0, 0, 0, 1, 0);
-  
     mvpMatrix.scale(scales[0],scales[1],scales[2]);
     
     // Pass the model, view and projection matrix to u_MvpMatrix
@@ -198,58 +242,15 @@ function drawScene(webGL,indices,u_MvpMatrix,mvpMatrix){
   
     // Draw the cube
     webGL.drawElements(webGL.TRIANGLES, indices, webGL.UNSIGNED_BYTE, 0); //Desenha o cubo com linhas (wireframe)
-
+    matrixes.push(mvpMatrix);
 }
 
-function mouseDown(ev) {
-    if (ev.buttons == 1) { // Left button
-      mouseX = ev.clientX; // Mouse X coordinate
-      mouseY = ev.clientY; // Mouse Y coordinate
-    }
-  }
-
-function mouseMove(ev) {
-    if (ev.buttons == 1) { // Left button
-      var deltaX = ev.clientX - mouseX;
-      var deltaY = ev.clientY - mouseY;
-      if (deltaX != 0) {
-        camera.orientation[0] -= 0.5 * deltaX; // Horizontal orientation: -0.5 or +0.5 degree/horizontal pixel
-        while (camera.orientation[0] < -180.0) {
-          camera.orientation[0] += 360.0;
-        }
-        while (camera.orientation[0] >= 180.0) {
-          camera.orientation[0] -= 360.0;
-        }
-      }
-      if (deltaY != 0) {
-        camera.orientation[1] += 0.5 * deltaY; // Vertical orientation: -0.5 or +0.5 degree/vertical pixel
-        while (camera.orientation[1] < -180.0) {
-          camera.orientation[1] += 360.0;
-        }
-        while (camera.orientation[1] >= 180.0) {
-          camera.orientation[1] -= 360.0;
-        }
-      }
-      mouseX = ev.clientX;
-      mouseY = ev.clientY;
-    }
-    matrix=matrixes.pop();
-    drawScene(webGL,indices,u_MvpMatrix,matrix);
-    matrixes.push(matrix);
-}
-
-function mouseWheel(ev) {
-  if (ev.deltaY < 0) { // Roll up
-    camera.distance /= 1.1;
-    if (camera.distance < camera.distanceMin) {
-      camera.distance = camera.distanceMin;
-    }
-  } else if (ev.deltaY > 0) { // Roll down
-    camera.distance *= 1.1;
-    if (camera.distance > camera.distanceMax) {
-      camera.distance = camera.distanceMax;
-    }
-  } else {
-    return;
-  }
+/**
+ * Registers all events
+ */
+function registerEvents(){
+  document.onkeydown=function(keyDownEvent){onKeyDown(keyDownEvent);}
+  canvas.onmousedown=function(mouseEvent){mouseDown(mouseEvent);}
+  canvas.onmousemove=function(mouseEvent){mouseMove(mouseEvent);}
+  canvas.onwheel=function(mouseEvent){mouseWheel(mouseEvent);}
 }
