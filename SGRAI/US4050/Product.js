@@ -21,6 +21,9 @@ var FSHADER_SOURCE =
   '  gl_FragColor = v_Color;\n' +
   '}\n';
 
+  var scaleX=1;
+  var scaleY=1;
+  var scaleZ=1;
   /**
    * Graphic Representation of a Customized Product main function 
    */
@@ -79,6 +82,8 @@ function main(){
     
     // Draw the cube
     webGL.drawElements(webGL.LINE_STRIP, n, webGL.UNSIGNED_BYTE, 0); //Desenha o cubo com linhas (wireframe) 
+
+    document.onkeydown=function(keyDownEvent){onKeyDown(keyDownEvent,webGL,n,mvpMatrix,u_MvpMatrix);};
 }
 
 /**
@@ -172,4 +177,55 @@ function initArrayBuffer(webGL, data, num, type, attribute) {
     webGL.enableVertexAttribArray(a_attribute);
   
     return true;
+}
+
+/**
+ * Function which executes if a keyboard event is triggered
+ * @param {*} keyEvent Keyboard Event
+ * @param {*} webGL Current WebGL context
+ * @param {*} productView Current productv view
+ * @param {*} u_MvpMatrix Current model view projection product matrix
+ */
+function onKeyDown(keyEvent,webGL,n,productViewMatrix,u_MvpMatrix){
+  switch(keyEvent.keyCode){
+    case 37: //Left
+      scaleX-=0.2;
+      break;
+    case 38: //Up
+    scaleY+=0.2;
+      break;
+    case 39: //Right
+      scaleX+=0.2;
+      break;
+    case 40: //Down
+      scaleY-=0.2;
+      break;
+    default:
+      break;
   }
+  drawScene(webGL,n,u_MvpMatrix,productViewMatrix);
+}
+
+function drawScene(webGL,vertexes,u_MvpMatrix,mvpMatrix){
+  //Clear color and depth buffer
+  webGL.clear(webGL.COLOR_BUFFER_BIT | webGL.DEPTH_BUFFER_BIT);
+
+  // Set the clear color and enable the depth test
+  webGL.clearColor(0.0, 0.0, 0.0, 1.0); //# 00 00 00 BLACK
+  webGL.enable(webGL.DEPTH_TEST)
+
+  //Initial Product perspective
+  mvpMatrix.setPerspective(30, 1, 1, 100);
+
+  //Initial Product view
+  mvpMatrix.lookAt(3, 0, 10, 0, 0, 0, 0, 1, 0);
+
+  mvpMatrix.scale(scaleX,scaleY,scaleZ);
+  
+  // Pass the model, view and projection matrix to u_MvpMatrix
+  webGL.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
+
+  // Draw the cube
+  webGL.drawElements(webGL.LINE_STRIP, vertexes, webGL.UNSIGNED_BYTE, 0); //Desenha o cubo com linhas (wireframe) 
+
+}
