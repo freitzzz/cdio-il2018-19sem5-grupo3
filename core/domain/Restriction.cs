@@ -41,7 +41,7 @@ namespace core.domain {
         /// <summary>
         /// List of inputs for the algorithm
         /// </summary>
-        private List<Input> _inputs;
+        private List<Input> _inputs;    //!private field used for lazy loading, do not use this for storing or fetching data
         public List<Input> inputs { get => LazyLoader.Load(this, ref _inputs); set => _inputs = value; }
 
         /// <summary>

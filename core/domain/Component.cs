@@ -33,7 +33,7 @@ namespace core.domain
         /// <summary>
         /// Product with the product which has the current complemented product
         /// </summary>
-        private Product _fatherProduct;
+        private Product _fatherProduct;             //!private field used for lazy loading, do not use this for storing or fetching data
         public Product fatherProduct{get => LazyLoader.Load(this, ref _fatherProduct) ;set => _fatherProduct = value;}
 
         /// <summary>
@@ -44,13 +44,13 @@ namespace core.domain
         /// <summary>
         /// Product with the complemented product 
         /// </summary>
-        private Product _complementedProduct;
+        private Product _complementedProduct;       //!private field used for lazy loading, do not use this for storing or fetching data
         public Product complementedProduct { get => LazyLoader.Load(this, ref _complementedProduct); set => _complementedProduct = value; }
         /// <summary>
         /// List with the restrictions which the current component can be have
         /// </summary>
         [NotMapped] //!remove this annotation once we figure out how to persist interfaces
-        private List<Restriction> _restrictions; 
+        private List<Restriction> _restrictions;    //!private field used for lazy loading, do not use this for storing or fetching data
         public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); set => _restrictions = value;}
 
         /// <summary>

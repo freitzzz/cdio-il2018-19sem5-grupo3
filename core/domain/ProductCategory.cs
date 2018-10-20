@@ -56,9 +56,7 @@ namespace core.domain
         /// <summary>
         /// The ProductCategory's parent ProductCategory
         /// </summary>
-        private ProductCategory _parent;
-        
-        [ForeignKey("parentId")]
+        private ProductCategory _parent;    //!private field used for lazy loading, do not use this for storing or fetching data
         public ProductCategory parent { get => LazyLoader.Load(this, ref _parent); protected set => _parent = value; }
 
         /// <summary>
