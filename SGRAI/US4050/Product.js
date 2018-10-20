@@ -24,9 +24,10 @@ var FSHADER_SOURCE =
   var scaleX=1;
   var scaleY=1;
   var scaleZ=1;
-  /**
-   * Graphic Representation of a Customized Product main function 
-   */
+/**
+ * 
+ * Graphic Representation of a Customized Product main function 
+ */
 function main(){
     // Retrieve <canvas> element from HTML document
     var canvas = document.getElementById('webgl');
@@ -88,7 +89,7 @@ function main(){
 
 /**
  * Initializes 3D wireframed module of a parellepiped
- * @param {WebGL Context} webGL WebGL Context
+ * @param {WebGL Context} webGL Current Product WebGL Context
  */
 function initVertexBuffers(webGL) {
     // Create a cube
