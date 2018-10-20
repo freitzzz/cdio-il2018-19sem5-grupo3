@@ -22,7 +22,7 @@ namespace core.domain
         /// List containing instances of Restriction.
         /// </summary>
         /// <value>Gets/sets the list.</value>
-        private List<Restriction> _restrictions;
+        private List<Restriction> _restrictions;    //!private field used for lazy loading, do not use this for storing or fetching data
         public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); protected set => _restrictions = value; }
 
         /// <summary>

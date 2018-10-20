@@ -52,27 +52,27 @@ namespace core.domain
         /// <summary>
         /// CustomizedMaterial that represents the CustomizedProduct's material
         /// </summary>
-        private CustomizedMaterial _customizedMaterial;
+        private CustomizedMaterial _customizedMaterial; //!private field used for lazy loading, do not use this for storing or fetching data
         public CustomizedMaterial customizedMaterial { get => LazyLoader.Load(this, ref _customizedMaterial); protected set => _customizedMaterial = value; }
 
 
         /// <summary>
         /// CustomizedDimensions that represents the CustomizedProduct's dimensions
         /// </summary>
-        private CustomizedDimensions _customizedDimensions;
+        private CustomizedDimensions _customizedDimensions; //!private field used for lazy loading, do not use this for storing or fetching data
         public CustomizedDimensions customizedDimensions { get => LazyLoader.Load(this, ref _customizedDimensions); protected set => _customizedDimensions = value; }
 
         /// <summary>
         /// Product that represents the product that the CustomizedProduct refers to
         /// </summary>
         /// <value></value>
-        private Product _product;
+        private Product _product;   //!private field used for lazy loading, do not use this for storing or fetching data
         public Product product { get => LazyLoader.Load(this, ref _product); protected set => _product = value; }
 
         /// <summary>
         /// List of Slots that the CustomizedProduct has
         /// </summary>
-        private List<Slot> _slots;
+        private List<Slot> _slots;  //!private field used for lazy loading, do not use this for storing or fetching data
         public List<Slot> slots { get => LazyLoader.Load(this, ref _slots); protected set => _slots = value; }
 
         /// <summary>

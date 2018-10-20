@@ -30,7 +30,7 @@ namespace core.domain
         /// List of values that make up the interval.
         /// </summary>
         //*Since EF Core 2.1 does not support collections of primitive types, a wrapper ValueObject class must be used */
-        private List<DoubleValue> _values;
+        private List<DoubleValue> _values;  //!private field used for lazy loading, do not use this for storing or fetching data
         public List<DoubleValue> values { get => LazyLoader.Load(this, ref _values); set => _values = value; }
 
         private DiscreteDimensionInterval(ILazyLoader lazyLoader) : base(lazyLoader) {}

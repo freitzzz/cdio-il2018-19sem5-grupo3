@@ -26,13 +26,13 @@ namespace core.domain
         /// <summary>
         /// DoubleValue with the width of the slot
         /// </summary>
-        private CustomizedDimensions _slotDimensions;
+        private CustomizedDimensions _slotDimensions;   //!private field used for lazy loading, do not use this for storing or fetching data
         public CustomizedDimensions slotDimensions {get => LazyLoader.Load(this, ref _slotDimensions); protected set => _slotDimensions = value;}
 
         /// <summary>
         /// Customized Products that are inside a slot
         /// </summary>
-        private List<CustomizedProduct> _customizedProducts;
+        private List<CustomizedProduct> _customizedProducts;    //!private field used for lazy loading, do not use this for storing or fetching data
         public List<CustomizedProduct> customizedProducts {get => LazyLoader.Load(this, ref _customizedProducts); protected set => _customizedProducts = value;}
 
         /// <summary>
