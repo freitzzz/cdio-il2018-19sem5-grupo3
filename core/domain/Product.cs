@@ -2,12 +2,14 @@ using support.builders;
 using support.domain;
 using support.domain.ddd;
 using support.dto;
+using support.options;
 using support.utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using core.dto;
+using core.dto.options;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace core.domain {
@@ -20,7 +22,7 @@ namespace core.domain {
     /// <typeparam name="Product"></typeparam>
     /// <typeparam name="ProductDTO">Type of DTO being used</typeparam>
     /// <typeparam name="string">Generic-Type of the Product entity identifier</typeparam>
-    public class Product : AggregateRoot<string>, DTOAble<ProductDTO> {
+    public class Product : AggregateRoot<string>, DTOAble<ProductDTO>,DTOAbleOptions<ProductDTO,ProductDTOOptions> {
         /// <summary>
         /// Constant that represents the message that occurs if the product reference is invalid
         /// </summary>
@@ -445,22 +447,41 @@ namespace core.domain {
         /// </summary>
         /// <returns>DTO with the current DTO representation of the product</returns>
         public ProductDTO toDTO() {
+            return toDTO(new ProductDTOOptions());
+        }
+
+        /// <summary>
+        /// Returns the DTO representation of the current product with a set of options
+        /// </summary>
+        /// <param name="dtoOptions">O with the set of options being applied</param>
+        /// <returns>D with the DTO of the current product with the applied options</returns>
+        public ProductDTO toDTO(ProductDTOOptions dtoOptions){
             ProductDTO dto = new ProductDTO();
 
             dto.id = this.Id;
             dto.designation = this.designation;
             dto.reference = this.reference;
-            DimensionsListDTO dimensionsListDTO=new DimensionsListDTO();
-            dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
-            dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
-            dimensionsListDTO.depthDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
-            dto.dimensions=dimensionsListDTO;
             dto.productCategory = productCategory.toDTO();
+
+            DimensionsListDTO dimensionsListDTO=new DimensionsListDTO();
+            if(dtoOptions.requiredUnit==null){
+                dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
+                dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
+                dimensionsListDTO.depthDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
+            }else{
+                dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>();
+                dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>();
+                dimensionsListDTO.depthDimensionDTOs=new List<DimensionDTO>();
+                foreach(Dimension dimension in heightValues)dimensionsListDTO.heightDimensionDTOs.Add(dimension.toDTO(dtoOptions.requiredUnit));
+                foreach(Dimension dimension in widthValues)dimensionsListDTO.widthDimensionDTOs.Add(dimension.toDTO(dtoOptions.requiredUnit));
+                foreach(Dimension dimension in depthValues)dimensionsListDTO.depthDimensionDTOs.Add(dimension.toDTO(dtoOptions.requiredUnit));
+            }
+            dto.dimensions=dimensionsListDTO;
+            
             dto.productMaterials=new List<MaterialDTO>();
             foreach (ProductMaterial pm in this.productMaterials) {
                 dto.productMaterials.Add(pm.material.toDTO());
             }
-
             //TODO: remove null check once complement database mappping is complete
             if (complementedProducts != null && complementedProducts.Count >= 0) {
                 List<ComponentDTO> complementDTOList = new List<ComponentDTO>();
@@ -478,6 +499,7 @@ namespace core.domain {
             }
 
             return dto;
+            
         }
 
         /// <summary>

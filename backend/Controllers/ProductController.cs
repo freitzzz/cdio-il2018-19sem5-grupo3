@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using core.application;
 using core.domain;
+using core.dto.options;
 using support.dto;
 using System.Web;
 using Newtonsoft.Json;
@@ -109,11 +110,13 @@ namespace backend.Controllers {
         /// <returns>HTTP Response 400 Bad Request if a product with the id isn't found;
         /// HTTP Response 200 Ok with the product's info in JSON format </returns>
         [HttpGet("{id}",Name="GetProduct")]
-        public ActionResult<ProductDTO> findById(long id) {
-            ProductDTO productDTOX=new ProductDTO();
-            productDTOX.id=id;
+        public ActionResult<ProductDTO> findById(long id,[FromQuery]string unit) {
+            FetchProductDTO fetchProductDTO=new FetchProductDTO();
+            fetchProductDTO.id=id;
+            fetchProductDTO.productDTOOptions=new ProductDTOOptions();
+            fetchProductDTO.productDTOOptions.requiredUnit=unit;
             try{
-                ProductDTO productDTOY = new core.application.ProductController().findProductByID(productDTOX);
+                ProductDTO productDTOY = new core.application.ProductController().findProductByID(fetchProductDTO);
                 if (productDTOY == null) {
                     return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
                 }
