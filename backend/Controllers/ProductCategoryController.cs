@@ -14,21 +14,10 @@ namespace backend.Controllers
     [Route("myc/api/categories")]
     public class ProductCategoryController : Controller
     {
-
         /// <summary>
-        /// Constant representing an error that occurred when attempting to add a ProductCategory.
+        /// Constant representing an error that occured when attempting to add a ProductCategory with an empty request body.
         /// </summary>
-        private const string ERROR_ADD_CATEGORY = "The category could not be added";
-
-        /// <summary>
-        /// Constant representing an error that occured when attempting to remove a ProductCategory
-        /// </summary>
-        private const string ERROR_REMOVE_CATEGORY = "The category could not be removed.";
-
-        /// <summary>
-        /// Constant representing an error that occured when attempting to find instance(s) of ProductCategory.
-        /// </summary>
-        private const string ERROR_NO_CATEGORIES = "No categories were found.";
+        private const string ERROR_EMPTY_BODY = "Unable to add a category with an empty body";
 
         /// <summary>
         /// Repository being used to store instances of ProductCategory.
@@ -54,22 +43,15 @@ namespace backend.Controllers
         [HttpPost]
         public ActionResult addProductCategory([FromBody] ProductCategoryDTO categoryAsJson)
         {
-
             if (categoryAsJson == null)
             {
-                return BadRequest(new { error = ERROR_ADD_CATEGORY });
+                return BadRequest(new { error = ERROR_EMPTY_BODY });
             }
 
             try
             {
                 ProductCategoryDTO createdCategory = new core.application.ProductCategoryController().
                 addProductCategory(categoryAsJson);
-
-                //category was not added (probably due to a duplicate business identifier)
-                if (createdCategory == null)
-                {
-                    return BadRequest(new { error = ERROR_ADD_CATEGORY });
-                }
 
                 return CreatedAtRoute("GetCategory", new { id = createdCategory.id }, createdCategory);
 
@@ -89,15 +71,16 @@ namespace backend.Controllers
         [HttpDelete("{id}")]
         public ActionResult removeProductCategory(long id)
         {
-            ProductCategoryDTO removedCategory = new core.application.
-                ProductCategoryController().removeProductCategory(id);
-
-            if (removedCategory == null)
+            try
             {
-                return NotFound(new { error = ERROR_REMOVE_CATEGORY });
-            }
+                ProductCategoryDTO removedCategory = new core.application.ProductCategoryController().removeProductCategory(id);
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (ArgumentException e)
+            {
+                return NotFound(new { error = e.Message });
+            }
         }
 
         /// <summary>
@@ -109,15 +92,17 @@ namespace backend.Controllers
         [HttpGet("{id}", Name = "GetCategory")]
         public ActionResult findById(long id)
         {
-            ProductCategoryDTO result = new core.application.
-                ProductCategoryController().findByDatabaseId(id);
-
-            if (result == null)
+            try
             {
-                return NotFound(new { error = ERROR_NO_CATEGORIES });
-            }
+                ProductCategoryDTO result = new core.application.
+                    ProductCategoryController().findByDatabaseId(id);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (ArgumentException e)
+            {
+                return NotFound(new { error = e.Message });
+            }
         }
 
         /// <summary>
@@ -142,15 +127,18 @@ namespace backend.Controllers
         /// <returns>ActionResult with the 200 HTTP code with any instance of ProductCategory was found</returns>
         private ActionResult findAll()
         {
-            List<ProductCategoryDTO> result = new core.application.
-                ProductCategoryController().findAllCategories();
-
-            if (result.Count == 0)
+            try
             {
-                return NotFound(new { error = ERROR_NO_CATEGORIES });
-            }
+                List<ProductCategoryDTO> result = new core.application.
+                    ProductCategoryController().findAllCategories();
 
-            return Ok(result);
+                return Ok(result);
+
+            }
+            catch (ArgumentException e)
+            {
+                return NotFound(new { error = e.Message });
+            }
         }
 
         /// <summary>
@@ -161,15 +149,17 @@ namespace backend.Controllers
         /// business identifier was found or 404 HTTP code if no ProductCategory was found.</returns>
         private ActionResult findByName(string name)
         {
-            ProductCategoryDTO result = new core.application.
-                ProductCategoryController().findByName(name);
-
-            if (result == null)
+            try
             {
-                return NotFound(new { error = ERROR_NO_CATEGORIES });
-            }
+                ProductCategoryDTO result = new core.application.
+                    ProductCategoryController().findByName(name);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (ArgumentException e)
+            {
+                return NotFound(new { error = e.Message });
+            }
         }
 
     }
