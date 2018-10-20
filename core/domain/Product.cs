@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using core.dto;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace core.domain {
 
@@ -77,32 +78,37 @@ namespace core.domain {
         /// List with the components which the current product can be complemented by
         /// </summary>
         //TODO: Should complemented products be a list and not a set?
-        public virtual List<Component> complementedProducts { get; protected set; }
+        private List<Component> _complementedProducts;//!private field used for lazy loading, do not use this for storing or fetching data
+        public List<Component> complementedProducts{get=>LazyLoader.Load(this,ref _complementedProducts);protected set=>_complementedProducts=value;}
         /// <summary>
         /// List with the materials which the product can be made of
         /// </summary>
         //TODO: Should product materials be a list or a set?
-        
-        public virtual List<ProductMaterial> productMaterials { get; protected set; }
+        private List<ProductMaterial> _productMaterials;//!private field used for lazy loading, do not use this for storing or fetching data
+        public List<ProductMaterial> productMaterials{get=>LazyLoader.Load(this,ref _productMaterials);protected set=>_productMaterials=value;}
         /// <summary>
         /// List with the product heigth dimensions
         /// </summary>
         //TODO: Should product dimensions be a list or a set
-        public virtual List<Dimension> heightValues { get; protected set; }
+        private List<Dimension> _heightValues;//!private field used for lazy loading, do not use this for storing or fetching data
+        public List<Dimension> heightValues{get=>LazyLoader.Load(this,ref _heightValues);protected set=>_heightValues=value;}
         /// <summary>
         /// List with the product width dimensions
         /// </summary>
         //TODO: Should product dimensions be a list or a set
-        public virtual List<Dimension> widthValues { get; protected set; }
+        private List<Dimension> _widthValues;//!private field used for lazy loading, do not use this for storing or fetching data
+        public List<Dimension> widthValues{get=>LazyLoader.Load(this,ref _widthValues);protected set=>_widthValues=value;}
         /// <summary>
         /// List with the product depth dimensions
         /// </summary>
         //TODO: Should product restrinctions be a list or a set
-        public virtual List<Dimension> depthValues { get; protected set; }
+        private List<Dimension> _depthValues;//!private field used for lazy loading, do not use this for storing or fetching data
+        public List<Dimension> depthValues{get=>LazyLoader.Load(this,ref _depthValues);protected set=>_depthValues=value;}
         /// <summary>
         /// ProductCategory with the category which the product belongs to
         /// </summary>
-        public virtual ProductCategory productCategory { get; protected set; }
+        private ProductCategory _productCategory;//!private field used for lazy loading, do not use this for storing or fetching data
+        public ProductCategory productCategory{get=>LazyLoader.Load(this,ref _productCategory);protected set=>_productCategory=value;}
 
         /// <summary>
         /// Boolean that controls if the current product is available or not
@@ -112,27 +118,42 @@ namespace core.domain {
         /// <summary>
         /// CustomizedDimensions that represents the maximum size of the slots
         /// </summary>
-        public virtual CustomizedDimensions maxSlotSize { get; protected set; }
+        private CustomizedDimensions _maxSlotSize;//!private field used for lazy loading, do not use this for storing or fetching data
+        public  CustomizedDimensions maxSlotSize{get=>LazyLoader.Load(this,ref _maxSlotSize);protected set=>_maxSlotSize=value;}
 
         /// <summary>
         /// CustomizedDimensions that represents the minimum size of the slots
         /// </summary>
-        public virtual CustomizedDimensions minSlotSize { get; protected set; }
+        private CustomizedDimensions _minSlotSize;//!private field used for lazy loading, do not use this for storing or fetching data
+        public  CustomizedDimensions minSlotSize{get=>LazyLoader.Load(this,ref _minSlotSize);protected set=>_minSlotSize=value;}
 
         /// <summary>
         /// CustomizedDimensions that represents the recommended size of the slots
         /// </summary>
-        public virtual CustomizedDimensions recommendedSlotSize { get; protected set; }
+        private CustomizedDimensions _recommendedSlotSize;//!private field used for lazy loading, do not use this for storing or fetching data
+        public  CustomizedDimensions recommendedSlotSize{get=>LazyLoader.Load(this,ref _recommendedSlotSize);protected set=>_recommendedSlotSize=value;}
 
         /// <summary>
         /// Booelan that indicates if the product can hold slots
         /// </summary>
-        public bool supportsSlots { get; protected set; }
+        public bool supportsSlots {get;protected set;}
+
+        /// <summary>
+        /// LazyLoader injected by the framework.
+        /// </summary>
+        /// <value>Private Gets/Sets the LazyLoader.</value>
+        private ILazyLoader LazyLoader{get;set;}
 
         /// <summary>
         /// Empty constructor used by ORM.
         /// </summary>
         protected Product() { }
+
+        /// <summary>
+        /// Constructor used for injecting the LazyLoader.
+        /// </summary>
+        /// <param name="lazyLoader">LazyLoader being injected.</param>
+        private Product(ILazyLoader lazyLoader){this.LazyLoader=lazyLoader;}
 
         /// <summary>
         /// Builds a new product with its reference, designation, maximum number of slots, its category,
@@ -432,7 +453,7 @@ namespace core.domain {
             DimensionsListDTO dimensionsListDTO=new DimensionsListDTO();
             dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
             dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
-            dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
+            dimensionsListDTO.depthDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
             dto.dimensions=dimensionsListDTO;
             dto.productCategory = productCategory.toDTO();
             dto.productMaterials=new List<MaterialDTO>();
