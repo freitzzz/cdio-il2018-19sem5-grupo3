@@ -277,14 +277,19 @@ namespace core.application {
         /// <summary>
         /// Returns a product which has a certain persistence id
         /// </summary>
-        /// <param name="productDTO">ProductDTO with the product information</param>
+        /// <param name="productDTO">FetchProductDTO with the product fetch information</param>
         /// <returns>ProductDTO with the product which has a certain persistence id</returns>
-        public ProductDTO findProductByID(ProductDTO productDTO) {
-            return PersistenceContext.repositories().createProductRepository().find(productDTO.id).toDTO();
+        public ProductDTO findProductByID(FetchProductDTO fetchProductDTO) {
+            return PersistenceContext.repositories().createProductRepository().find(fetchProductDTO.id).toDTO(fetchProductDTO.productDTOOptions);
         }
 
-        public ProductDTO findByReference(string reference) {
-            return PersistenceContext.repositories().createProductRepository().find(reference).toDTO();
+        /// <summary>
+        /// Returns a product which has a certain reference
+        /// </summary>
+        /// <param name="productDTO">FetchProductDTO with the product fetch information</param>
+        /// <returns>ProductDTO with the product which has a certain reference</returns>
+        public ProductDTO findByReference(FetchProductDTO fetchProductDTO) {
+            return PersistenceContext.repositories().createProductRepository().find(fetchProductDTO.reference).toDTO(fetchProductDTO.productDTOOptions);
         }
 
         public bool defineProductDimensions(ProductDTO productDTO){
