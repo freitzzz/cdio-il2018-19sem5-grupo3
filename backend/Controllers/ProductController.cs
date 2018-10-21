@@ -123,6 +123,8 @@ namespace backend.Controllers {
                 return Ok(productDTOY);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(ArgumentException e){
+                return BadRequest(new {error = e.Message}); //this exception should happen when converting to an unknown unit
             }
         }
 
