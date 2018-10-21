@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using support.domain.ddd;
 using support.dto;
 using support.utils;
+using System.Linq;
 
 namespace core.domain
 {
@@ -48,8 +49,8 @@ namespace core.domain
         /// <summary>
         /// List with the collection customized products
         /// </summary>
-        private List<CustomizedProduct> _customizedProducts; //!private field used for lazy loading, do not use this for storing or fetching data
-        public List<CustomizedProduct> customizedProducts { get => LazyLoader.Load(this, ref _customizedProducts); protected set => _customizedProducts = value; }
+        private List<CollectionProduct> _collectionProducts; //!private field used for lazy loading, do not use this for storing or fetching data
+        public List<CollectionProduct> collectionProducts { get => LazyLoader.Load(this, ref _collectionProducts); protected set => _collectionProducts = value; }
 
         /// <summary>
         /// Boolean which tells if the current collection of customized products is available
@@ -85,7 +86,7 @@ namespace core.domain
             checkCustomizedProductCollectionProperties(name);
             this.name = name;
             this.available = true;
-            this.customizedProducts = new List<CustomizedProduct>();
+            this.collectionProducts = new List<CollectionProduct>();
         }
 
         /// <summary>
@@ -96,7 +97,11 @@ namespace core.domain
         public CustomizedProductCollection(string name, IEnumerable<CustomizedProduct> customizedProducts) : this(name)
         {
             checkCollectionCustomizedProducts(customizedProducts);
-            this.customizedProducts = new List<CustomizedProduct>(customizedProducts);
+            this.collectionProducts = new List<CollectionProduct>();
+            foreach (CustomizedProduct customizedProduct in customizedProducts)
+            {
+                this.collectionProducts.Add(new CollectionProduct(this, customizedProduct));
+            }
         }
 
         /// <summary>
@@ -108,7 +113,7 @@ namespace core.domain
         {
             if (!isCustomizedProductValidForAddition(customizedProduct))
                 return false;
-            customizedProducts.Add(customizedProduct);
+            collectionProducts.Add(new CollectionProduct(this, customizedProduct));
             return true;
         }
 
@@ -129,7 +134,10 @@ namespace core.domain
         /// </summary>
         /// <param name="customizedProduct">CustomizedProduct with the customized product being removed</param>
         /// <returns>boolean true if the customized product was removed with success, false if not</returns>
-        public bool removeCustomizedProduct(CustomizedProduct customizedProduct) { return customizedProducts.Remove(customizedProduct); }
+        public bool removeCustomizedProduct(CustomizedProduct customizedProduct) {
+            //remove the instace of CollectionProduct with a matching CustomizedProduct     
+            return collectionProducts.Remove(collectionProducts.Where(cc => cc.customizedProduct.Equals(customizedProduct)).FirstOrDefault()); 
+        }
 
         /// <summary>
         /// Disables the current customized products collection
@@ -164,6 +172,7 @@ namespace core.domain
             CustomizedProductCollectionDTO dto = new CustomizedProductCollectionDTO();
             dto.name = this.name;
             dto.id = this.Id;
+            IEnumerable<CustomizedProduct> customizedProducts = collectionProducts.Select(cc => cc.customizedProduct);
             dto.customizedProducts = new List<CustomizedProductDTO>(DTOUtils.parseToDTOS(customizedProducts));
             return dto;
         }
@@ -202,7 +211,7 @@ namespace core.domain
         /// <returns>boolean true if the customized product is valid for addition, false if not</returns>
         private bool isCustomizedProductValidForAddition(CustomizedProduct customizedProduct)
         {
-            return customizedProduct != null && !customizedProducts.Contains(customizedProduct);
+            return customizedProduct != null && !collectionProducts.Select(cc => cc.customizedProduct).Contains(customizedProduct);
         }
 
         /// <summary>
