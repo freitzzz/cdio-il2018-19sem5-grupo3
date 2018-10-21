@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using core.dto;
 using System;
-using backend.utils;
-using static backend.utils.JSONStringFormatter;
 using Microsoft.Extensions.Logging;
 
 namespace backend.Controllers
