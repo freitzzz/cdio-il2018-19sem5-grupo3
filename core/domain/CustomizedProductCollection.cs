@@ -187,15 +187,6 @@ namespace core.domain
             return id().GetHashCode();
         }
 
-        /// <summary>
-        /// Makes a clone of a CustomizedProductCollection instance
-        /// </summary>
-        /// <returns>CustomizedProductCollection instance clone</returns>
-        public CustomizedProductCollection clone()
-        {
-            return new CustomizedProductCollection(this.name, this.customizedProducts);
-        }
-
         ///<summary>
         ///Returns a textual description of the Collection.
         ///</summary>
