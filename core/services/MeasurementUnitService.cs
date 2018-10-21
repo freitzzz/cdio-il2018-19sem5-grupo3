@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using System.Linq;
+using System;
 
 namespace core.services
 {
@@ -33,7 +34,7 @@ namespace core.services
             }
             if (!unitMap.TryGetValue(newUnit, out conversionValue))
             {
-                throw new KeyNotFoundException(ERROR_UNIT_NOT_FOUND);   //throw exception if value does not exist
+                throw new ArgumentException(ERROR_UNIT_NOT_FOUND);   //throw exception if value does not exist
             }
 
             return value / conversionValue;
@@ -58,7 +59,7 @@ namespace core.services
 
             if (!unitMap.TryGetValue(oldUnit, out conversionValue))
             {
-                throw new KeyNotFoundException(ERROR_UNIT_NOT_FOUND);   //throw exception if value does not exist
+                throw new ArgumentException(ERROR_UNIT_NOT_FOUND);   //throw exception if value does not exist
             }
 
             return value * conversionValue;
