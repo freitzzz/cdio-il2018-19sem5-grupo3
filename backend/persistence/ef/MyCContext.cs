@@ -76,6 +76,7 @@ namespace backend.persistence.ef
             builder.Entity<Material>().HasMany(m => m.Colors);                  //one-to-many relationship
             builder.Entity<Material>().HasMany(m => m.Finishes);                //one-to-many relationship
 
+            //TODO: change pk to compound pk
             //Configure many-to-many relationship between Product and Material
             builder.Entity<ProductMaterial>().HasOne(m =>m.material).WithMany();
             builder.Entity<ProductMaterial>().HasMany(pm => pm.restrictions);
@@ -94,10 +95,20 @@ namespace backend.persistence.ef
             builder.Entity<Component>().HasOne(c => c.fatherProduct).WithMany(p => p.complementedProducts).HasForeignKey(cp => cp.fatherProductId);
             //builder.Entity<Component>().HasOne(c => c.complementedProduct).WithMany(p => p.complementedProducts).HasForeignKey(cp => cp.complementedProductId);
 
+            //Compound key for CollectionProduct
+            builder.Entity<CollectionProduct>().HasKey(cp => new {cp.customizedProductId, cp.customizedProductCollectionId});
+
+            //Many-to-many relationship between CustomizedProductCollection and CustomizedProduct
+            builder.Entity<CollectionProduct>().HasOne(cp => cp.customizedProductCollection).WithMany(c => c.collectionProducts).HasForeignKey(cp => cp.customizedProductCollectionId);
+            builder.Entity<CollectionProduct>().HasOne(cp => cp.customizedProduct).WithMany().HasForeignKey(cp => cp.customizedProductId);
+
+            
             builder.Entity<CustomizedProduct>().HasOne(cp => cp.product);       //one-to-one relationship
             builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedDimensions); //embedded Dimensions
-            builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedMaterial);   //embedded CustomizedMaterial
-            builder.Entity<CustomizedProduct>().HasMany(cp => cp.slots);        //one-to-many relationship
+            builder.Entity<CustomizedProduct>().HasOne(cp => cp.customizedMaterial);   
+            builder.Entity<CustomizedMaterial>().HasOne(cm => cm.finish);
+            builder.Entity<CustomizedMaterial>().HasOne(cm => cm.color);
+            builder.Entity<CustomizedProduct>().HasMany(cp => cp.slots).WithOne();        //one-to-many relationship
 
             //!Slots have many customized products and a customized product has many slots
             //TODO: Create a relational class
