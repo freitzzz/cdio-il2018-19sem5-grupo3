@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 namespace backend_tests.Controllers
 {
 
+    [Collection("Integration Collection")]
     [TestCaseOrderer(TestPriorityOrderer.TYPE_NAME, TestPriorityOrderer.ASSEMBLY_NAME)]
     public sealed class CustomizedProductsCollectionControllerIntegrationTest : IClassFixture<TestFixture<TestStartupSQLite>>
     {
@@ -47,8 +48,8 @@ namespace backend_tests.Controllers
         /// <summary>
         /// Ensures that a customized product collection is created succesfuly
         /// </summary>
-        [Fact, TestPriority(14209)]
-        public async Task<CustomizedProductDTO> ensureCustomizedProductCollectionIsCreatedSuccesfuly()
+        [Fact, TestPriority(1)]
+        public async Task<CustomizedProductCollectionDTO> ensureCustomizedProductCollectionIsCreatedSuccesfuly()
         {
             CustomizedProductCollectionDTO customizedProductCollectionDTO = new CustomizedProductCollectionDTO();
             //A collection of customized products requires a valid name
@@ -61,7 +62,27 @@ namespace backend_tests.Controllers
             var createCustomizedProductsCollection = await httpClient.PostAsJsonAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI, customizedProductCollectionDTO);
             //Uncomment when slots creation is fixed
             Assert.True(createCustomizedProductsCollection.StatusCode == HttpStatusCode.Created);
-            return JsonConvert.DeserializeObject<CustomizedProductDTO>(await createCustomizedProductsCollection.Content.ReadAsStringAsync());
+            return JsonConvert.DeserializeObject<CustomizedProductCollectionDTO>(await createCustomizedProductsCollection.Content.ReadAsStringAsync());
+        }
+
+
+        [Fact, TestPriority(2)]
+        public async Task<CustomizedProductCollectionDTO> ensureCustomizedProductCollectionWithCustomizedProductsIsCreatedSuccessfully()
+        {
+            //Create a new CustomizedProduct that will be added to the Collection
+            CustomizedProductDTO customizedProductDTO = await new CustomizedProductControllerIntegrationTest(fixture).ensureCustomizedProductIsCreatedSuccesfuly();
+
+            //when adding new customized products to the collection, only the id is specified.
+            CustomizedProductDTO customizedProductDTOWithJustID = new CustomizedProductDTO {id = customizedProductDTO.id};
+
+
+            CustomizedProductCollectionDTO customizedProductCollectionDTO = new CustomizedProductCollectionDTO();
+            customizedProductCollectionDTO.name = "Porto" + Guid.NewGuid().ToString("n");
+            customizedProductCollectionDTO.customizedProducts = new List<CustomizedProductDTO>() {customizedProductDTOWithJustID};
+
+            var createCustomizedProductsCollection = await httpClient.PostAsJsonAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI, customizedProductCollectionDTO);
+            Assert.True(createCustomizedProductsCollection.StatusCode == HttpStatusCode.Created);
+            return JsonConvert.DeserializeObject<CustomizedProductCollectionDTO>(await createCustomizedProductsCollection.Content.ReadAsStringAsync());
         }
 
     }
