@@ -5,6 +5,7 @@ using core.dto;
 using System;
 using backend.utils;
 using static backend.utils.JSONStringFormatter;
+using Microsoft.Extensions.Logging;
 
 namespace backend.Controllers
 {
@@ -25,12 +26,19 @@ namespace backend.Controllers
         private readonly ProductCategoryRepository categoryRepository;
 
         /// <summary>
+        /// Controllers Logger
+        /// </summary>
+        readonly ILogger<ProductCategoryController> logger;
+
+        /// <summary>
         /// Constructor with injected type of repository.
         /// </summary>
         /// <param name="categoryRepository">Repository to be used when storing instances of ProductCategory.</param>
-        public ProductCategoryController(ProductCategoryRepository categoryRepository)
+        /// <param name="logger"> Controllers logger to log any information about HTTP Requests and Responses</param>
+        public ProductCategoryController(ProductCategoryRepository categoryRepository, ILogger<ProductCategoryController> logger)
         {
             this.categoryRepository = categoryRepository;
+            this.logger = logger;
         }
 
 
@@ -52,7 +60,7 @@ namespace backend.Controllers
             {
                 ProductCategoryDTO createdCategory = new core.application.ProductCategoryController().
                 addProductCategory(categoryAsJson);
-
+                logger.LogInformation("Category {@Category} was created on {Timestamp}",createdCategory,DateTime.Now);
                 return CreatedAtRoute("GetCategory", new { id = createdCategory.id }, createdCategory);
 
             }
