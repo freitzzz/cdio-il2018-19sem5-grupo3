@@ -96,6 +96,7 @@ namespace core.domain
         /// <param name="customizedProducts">IEnumerable with the collection customized products</param>
         public CustomizedProductCollection(string name, IEnumerable<CustomizedProduct> customizedProducts) : this(name)
         {
+            checkCustomizedProductCollectionProperties(name);
             checkCollectionCustomizedProducts(customizedProducts);
             this.collectionProducts = new List<CollectionProduct>();
             foreach (CustomizedProduct customizedProduct in customizedProducts)
