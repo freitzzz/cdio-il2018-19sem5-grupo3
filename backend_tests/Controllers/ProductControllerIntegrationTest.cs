@@ -350,12 +350,32 @@ namespace backend_tests.Controllers{
             //Then the response should be a Bad Request
             Assert.True(createProductNoDimensions.StatusCode==HttpStatusCode.BadRequest);
         }
-        
+
+        /// <summary>
+        /// Ensures that a product cant be created with invalid components
+        /// </summary>
+        [Fact,TestPriority(19)]
+        public async void ensureProductCantBeCreatedWithInvalidComponents(){
+            ProductDTO productDTO=createProductWithValidProperties();
+            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryDTO.Wait();
+            //Materials must previously exist as they can be shared in various products
+            Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
+            materialDTO.Wait();
+            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
+            productDTO.productCategory=categoryDTO.Result;
+            //Our invalid component is a "blank" component
+            ComponentDTO componentDTO=new ComponentDTO();
+            productDTO.complements=new List<ComponentDTO>();
+            var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
         /// <summary>
         /// Ensures that a product is created succesfuly
         /// </summary>
         /// <returns>ProductDTO with the created product</returns>
-        [Fact, TestPriority(19)]
+        [Fact, TestPriority(20)]
         public async Task<ProductDTO> ensureProductIsCreatedSuccesfuly(){
             //We are going to create a valid product
             //A valid product creation requires a valid reference, a valid desgination
@@ -376,7 +396,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can be created with componets
         /// </summary>
-        [Fact,TestPriority(20)]
+        [Fact,TestPriority(21)]
         public async Task<ProductDTO> ensureProductWithComponentsIsCreatedSuccesfuly(){
             //We are going to create a product which will serve as complemented product for a product (component)
             Task<ProductDTO> complementedProductDTOTask=ensureProductIsCreatedSuccesfuly();
@@ -398,6 +418,7 @@ namespace backend_tests.Controllers{
             Assert.Equal(HttpStatusCode.Created,response.StatusCode);
             return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
         }
+        
         /// <summary>
         /// Creates a product with valid properties (reference, designation and dimensions)
         /// </summary>
