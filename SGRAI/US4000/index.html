@@ -4,20 +4,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MasterCloset</title>
+  <title>MYC</title>
   <meta name="description" content="">
   <meta name="author" content="">
 
   <!-- Favicons
     ================================================== -->
   <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="img/apple-touch-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="img/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" href="img/wardrobe.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="img/wardrobe.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="img/wardrobe.png">
+
 
   <!-- Bootstrap -->
   <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="fonts/font-awesome/css/font-awesome.css">
+
 
   <!-- Stylesheet
     ================================================== -->
@@ -30,6 +32,19 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+  <script>
+    function reloadCube(){
+      
+      var event = new CustomEvent("reloadCoordinates",{
+        detail:{
+        heightY: document.getElementById("height").value,
+        widthX : document.getElementById("width").value,
+        depthZ : document.getElementById("depth").value
+        }
+      });
+      document.dispatchEvent(event);
+    }
+  </script>
 </head>
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
@@ -42,12 +57,13 @@
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
           <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span>
           <span class="icon-bar"></span> </button>
-        <a class="navbar-brand page-scroll" href="#page-top"><i class="fa fa-bookmark-o"></i> Master Closet</a> </div>
+        <a class="navbar-brand page-scroll" href="#page-top"><i class="fa fa-bookmark-o"></i> Make your closet</a>
+      </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#about" class="page-scroll">About</a></li>
+          <li><a href="#closet" class="page-scroll">Create a closet</a></li>
           <li><a href="#contact" class="page-scroll">Contact</a></li>
         </ul>
       </div>
@@ -62,8 +78,8 @@
         <div class="container">
           <div class="row">
             <div class="intro-text">
-              <h1>Master Closet</h1>
-              <p>Make your dream closet now.</p>
+              <h1>Make your closet</h1>
+              <p>Start now and make the closet of your dreams.</p>
               <a href="#closet" class="btn btn-custom btn-lg page-scroll">Get Started</a>
             </div>
           </div>
@@ -79,48 +95,72 @@
     }
     .left {
       width: 25%;
+      align-content: left;
     }
 
     .right {
       width: 75%;
+      align-content: right;
+
     }
 
   </style>
   <div id="closet">
     <div class="container">
       <div class="section-title text-center center">
-        <h2>Dimensions</h2>
+ 
+        <h2><p></p> <p></p> Dimensions <p></p></h2>
         <hr>
       </div>
       <div class="row">
-        <div class="column left">
+        <div class="column left" align="left">
+          <br><br><br><br><br><br>
           <form>
             Height:<br>
-            <input type="text" name="height"> <select>
+            <input type="number" min="0" name="height" value="1" id="height" onclick="reloadCube();">
+            <select>
+              <option value="mm">Milimeters</option>
               <option value="m">Meters</option>
               <option value="cm">Centimeters</option>
               <option value="km">kilometers</option>
             </select>
             <br>
             Length:<br>
-            <input type="text" name="length"><select>
+            <input type="number" min="0" name="width" value="1" id="width" onclick="reloadCube();"><select>
+              <option value="mm">Milimeters</option>
               <option value="m">Meters</option>
               <option value="cm">Centimeters</option>
               <option value="km">kilometers</option>
             </select><br>
             Depth:<br>
-            <input type="text" name="depth"><select>
+            <input type="number" min="0" name="depth" value="1" id="depth" onclick="reloadCube();"><select>
+              <option value="mm">Milimeters</option>
               <option value="m">Meters</option>
               <option value="cm">Centimeters</option>
               <option value="km">kilometers</option>
             </select><br>
           </form>
-          <a class="btn btn-custom btn-lg page-scroll">Submit</a>
+          <!--<a class="btn btn-custom btn-lg page-scroll" onclick="reloadCube();">Submit</a>--->
 
         </div>
-        <div class="column right"> <img src="img/img1.jpg" class="img-responsive thumbnail" alt=""></div>
-         
-        
+        <div class="column right" align="right">
+
+          <canvas id="webgl" width="400" height="400">
+            Please use a browser that supports "canvas"
+          </canvas>
+          <script src="lib/webgl-utils.js"></script>
+          <script src="lib/webgl-debug.js"></script>
+          <script src="lib/cuon-utils.js"></script>
+          <script src="lib/cuon-matrix.js"></script>
+          <script src="US4050/ProductDrawer.js"></script>
+          <script src="US4050/Parellepiped.js"></script>
+          <script src="US4050/Maths.js"></script>
+          <script src="US4050/Projection.js"></script>
+          <script src="US4050/Camera.js"></script>
+          <script> main();</script>
+        </div>
+
+
       </div>
     </div>
   </div>
@@ -176,7 +216,7 @@
   </div>
   <script type="text/javascript" src="js/jquery.1.11.1.js"></script>
   <script type="text/javascript" src="js/bootstrap.js"></script>
-  <script type="text/javascript" src="js/SmoothScroll.js"></script>
+  <!--<script type="text/javascript" src="js/SmoothScroll.js"></script>-->
   <script type="text/javascript" src="js/jqBootstrapValidation.js"></script>
   <script type="text/javascript" src="js/contact_me.js"></script>
   <script type="text/javascript" src="js/main.js"></script>

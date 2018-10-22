@@ -8,10 +8,12 @@ body, html {
 	height: 100% !important;
 }
 h2 {
+	white-space: pre;
 	margin: 0 0 20px 0;
 	font-weight: 300;
 	font-size: 42px;
 	color: #444;
+	
 }
 h3, h4 {
 	font-size: 22px;
@@ -87,14 +89,20 @@ hr {
 	color: #0ba2db;
 }
 .container {
-	width: 500px;
+	width: 800px;
 	clear: both;
   }
   
   .container input {
-	width: 100%;
+	width: 40%;
 	clear: both;
   }
+
+  .container select {
+	width: 40%;
+	clear: both;
+  }
+
 .on {
 	background-color: #f6f6f6 !important;
 	border-bottom: 1px solid #ddd !important;
@@ -170,92 +178,7 @@ header .intro-text {
 	padding-bottom: 200px;
 	text-align: center;
 }
-/* About Section */
-#about {
-	padding: 120px 0;
-}
-#about h3 {
-	font-size: 22px;
-}
-#about .about-text {
-	margin-left: 10px;
-	margin-top: 20px;
-}
-#about img {
-	display: inline-block;
-	border-color: #0ba2db;
-	border-radius: 20px;
-	padding: 20px;
-}
-#about .about-text li {
-	font-size: 16px;
-	margin-bottom: 6px;
-	margin-left: 10px;
-	list-style: none;
-	padding: 0;
-}
-#about .about-text li:before {
-	content: "✓";
-	color: #0ba2db;
-	padding-right: 10px;
-}
-#about p {
-	line-height: 24px;
-	margin: 30px 0;
-}
-/* Services Section */
-#services {
-	padding: 120px 0;
-	background: #f6f6f6;
-}
-#services h4 {
-	text-transform: uppercase;
-}
-#services .fa {
-	font-size: 48px;
-	margin: 20px 0;
-	color: #0ba2db;
-}
-/* Pricing Section */
-#pricing {
-	padding: 120px 0 140px 0;
-}
-#pricing .pricing-table {
-	border: 1px solid #e4e4e4;
-	text-align: center;
-	position: relative;
-	background-color: #fff;
-	border-radius: 4px;
-}
-#pricing .row {
-	margin-top: 100px;
-}
-#pricing .pricing-table:hover {
-	z-index: 2;
-	box-shadow: 0 0 20px rgba(0,0,0,0.1);
-}
-#pricing .highlight-plan {
-	margin: -15px 0;
-	margin-right: -1px;
-	z-index: 1;
-}
-#pricing .pricing-table.highlight-plan .plan-name {
-	background-color: #0ba2db;
-	padding: 25px 0;
-	border-radius: 4px 4px 0 0;
-}
-#pricing .pricing-table.highlight-plan .plan-name h3 {
-	color: #fff;
-}
-#pricing .pricing-table.highlight-plan .plan-signup {
-	background-color: #0ba2db;
-	padding: 30px 0;
-	border-radius: 0 0 4px 4px;
-}
-#pricing .pricing-table.highlight-plan .plan-signup .btn-system.border-btn {
-	border-color: #fff;
-	color: #fff;
-}
+
 .pricing-table .plan-name {
 	padding: 15px 0;
 	box-shadow: 0 0 20px rgba(0,0,0,0.05) inset;

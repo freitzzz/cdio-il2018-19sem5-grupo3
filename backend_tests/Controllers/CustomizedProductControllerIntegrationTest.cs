@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Xunit;
 using Microsoft.AspNetCore.Mvc.Testing;
+using System.Linq;
 
 namespace backend_tests.Controllers
 {
@@ -50,45 +51,46 @@ namespace backend_tests.Controllers
         [Fact, TestPriority(1)]
         public async Task<CustomizedProductDTO> ensureCustomizedProductIsCreatedSuccesfuly()
         {
+            ProductControllerIntegrationTest productControllerTest = new ProductControllerIntegrationTest(fixture);
+            ProductDTO productDTO = await productControllerTest.ensureProductIsCreatedSuccesfuly();
+
             //CustomizedDimensionsDTO creation
+            //Please note that these dimensions reflect those specified in the product
             CustomizedDimensionsDTO customizedDimensionsDTO = new CustomizedDimensionsDTO();
-            customizedDimensionsDTO.height = 200.0;
-            customizedDimensionsDTO.width = 230.0;
-            customizedDimensionsDTO.depth = 120.0;
+            customizedDimensionsDTO.height = 30.0;
+            customizedDimensionsDTO.width = 50.0;
+            customizedDimensionsDTO.depth = 95.0;
+
+            MaterialDTO materialDTO = productDTO.productMaterials.First();
+            FinishDTO materialFinishDTO = materialDTO.finishes.First();
+            ColorDTO materialColorDTO = materialDTO.colors.First();
 
             FinishDTO finishDTO = new FinishDTO();
-            finishDTO.description = "MDF";
+            finishDTO.description = materialFinishDTO.description;
 
-            ColorDTO colorDTO = new ColorDTO();
-            colorDTO.name = "White";
-            colorDTO.red = 0XFF;
-            colorDTO.green = 0XFF;
-            colorDTO.blue = 0XFF;
-            colorDTO.alpha = 0XFF;
+            ColorDTO colorDTO = new ColorDTO()
+                    {red = materialColorDTO.red, green = materialColorDTO.green, blue = materialColorDTO.blue, alpha = materialColorDTO.alpha};
 
             //CustomizedMaterialDTO creation
             CustomizedMaterialDTO customizedMaterialDTO = new CustomizedMaterialDTO();
             customizedMaterialDTO.finish = finishDTO;
             customizedMaterialDTO.color = colorDTO;
 
-            ProductControllerIntegrationTest productControllerTest = new ProductControllerIntegrationTest(fixture);
-            ProductDTO productDTO = await productControllerTest.ensureProductIsCreatedSuccesfuly();
 
-        
             //CustomizedProductDTO creation with the previously created dimensions and material
             CustomizedProductDTO customizedProductDTO = new CustomizedProductDTO();
             //A customized product requires a valid reference
-            customizedProductDTO.reference = "#CP4445" + Guid.NewGuid().ToString("n");
+            customizedProductDTO.reference = productDTO.reference;
             //A customized product requires a valid designation
-            customizedProductDTO.designation = "Pride Closet";
+            customizedProductDTO.designation = productDTO.designation;
             customizedProductDTO.customizedDimensionsDTO = customizedDimensionsDTO;
             customizedProductDTO.customizedMaterialDTO = customizedMaterialDTO;
             customizedProductDTO.productDTO = productDTO;
 
 
             //TODO:SLOTS
-            var createCustomizedProduct=await httpClient.PostAsJsonAsync(CUSTOMIZED_PRODUCTS_URI,customizedProductDTO);
-            Assert.True(createCustomizedProduct.StatusCode==HttpStatusCode.Created);
+            var createCustomizedProduct = await httpClient.PostAsJsonAsync(CUSTOMIZED_PRODUCTS_URI, customizedProductDTO);
+            Assert.True(createCustomizedProduct.StatusCode == HttpStatusCode.Created);
             return JsonConvert.DeserializeObject<CustomizedProductDTO>(await createCustomizedProduct.Content.ReadAsStringAsync());
         }
 

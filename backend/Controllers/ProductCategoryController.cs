@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using core.dto;
 using System;
-using backend.utils;
-using static backend.utils.JSONStringFormatter;
+using Microsoft.Extensions.Logging;
 
 namespace backend.Controllers
 {
@@ -14,21 +13,90 @@ namespace backend.Controllers
     [Route("myc/api/categories")]
     public class ProductCategoryController : Controller
     {
+        /// <summary>
+        /// Constant representing an error that occured when attempting to add a ProductCategory with an empty request body.
+        /// </summary>
+        private const string ERROR_EMPTY_BODY = "Unable to add a category with an empty body";
 
         /// <summary>
-        /// Constant representing an error that occurred when attempting to add a ProductCategory.
+        /// Constant representing the log message for when a POST Request starts
         /// </summary>
-        private const string ERROR_ADD_CATEGORY = "The category could not be added";
+        private const string LOG_POST_START = "POST Request started";
 
         /// <summary>
-        /// Constant representing an error that occured when attempting to remove a ProductCategory
+        /// Constant representing the log message for when a DELETE Request starts
         /// </summary>
-        private const string ERROR_REMOVE_CATEGORY = "The category could not be removed.";
+        private const string LOG_DELETE_START = "DELETE Request started";
 
         /// <summary>
-        /// Constant representing an error that occured when attempting to find instance(s) of ProductCategory.
+        /// Constant representing the log message for when a GET By ID Request starts
         /// </summary>
-        private const string ERROR_NO_CATEGORIES = "No categories were found.";
+        private const string LOG_GET_BY_ID_START = "GET By ID Request started";
+
+        /// <summary>
+        /// Constant representing the log message for when a GET All Request starts
+        /// </summary>
+        private const string LOG_GET_ALL_START = "GET All request started";
+
+        /// <summary>
+        /// Constant representing the log message for when a GET By Name Request starts
+        /// </summary>
+        private const string LOG_GET_BY_NAME_START = "GET By Name request started";
+
+        /// <summary>
+        /// Constant representing the log message for when a POST Request with an empty body occurs
+        /// </summary>
+        private const string LOG_POST_EMPTY_BODY = "POST Request with empty body";
+
+        /// <summary>
+        /// Constant representing the log message for when a POST Request is successful
+        /// </summary>
+        private const string LOG_POST_SUCCESS = "Product Category {@Category} created";
+
+        /// <summary>
+        /// Constant representing the log message for when a DELETE Request is successful
+        /// </summary>
+        private const string LOG_DELETE_SUCCESS = "Product Category {@Category} soft deleted";
+
+        /// <summary>
+        /// Constant representing the log message for when a GET By ID Request is successful
+        /// </summary>
+        private const string LOG_GET_BY_ID_SUCCESS = "Product Category {@Category} retrieved";
+
+        /// <summary>
+        /// Constant representing the log message for when a GET All Request is successful
+        /// </summary>
+        private const string LOG_GET_ALL_SUCCESS = "Product Categories {@list} retrieved";
+
+        /// <summary>
+        /// Constant representing the log message for when a GET By Name Request is successful
+        /// </summary>
+        private const string LOG_GET_BY_NAME_SUCCESS = "Product Category {@Category} retrieved";
+
+        /// <summary>
+        /// Constant representing the log message for when a POST Request returns a BadRequest
+        /// </summary>
+        private const string LOG_POST_BAD_REQUEST = "POST {@category} BadRequest";
+
+        /// <summary>
+        /// Constant representing the log message for when a DELETE Request returns NotFound
+        /// </summary>
+        private const string LOG_DELETE_NOT_FOUND = "DELETE({categoryID}) NOT FOUND";
+
+        /// <summary>
+        /// Constant representing the log message for when a GET By ID Request returns NotFound
+        /// </summary>
+        private const string LOG_GET_BY_ID_NOT_FOUND = "GETByID({categoryID}) NOT FOUND";
+
+        /// <summary>
+        /// Constant representing the log message for when a GET All Request returns NotFound
+        /// </summary>
+        private const string LOG_GET_ALL_NOT_FOUND = "GET All NOT FOUND";
+
+        /// <summary>
+        /// Constant representing the log message for when a GET All Request returns NotFound
+        /// </summary>
+        private const string LOG_GET_BY_NAME_NOT_FOUND = "GETByName({name}) NOT FOUND";
 
         /// <summary>
         /// Repository being used to store instances of ProductCategory.
@@ -36,12 +104,19 @@ namespace backend.Controllers
         private readonly ProductCategoryRepository categoryRepository;
 
         /// <summary>
+        /// Controllers Logger
+        /// </summary>
+        readonly ILogger<ProductCategoryController> logger;
+
+        /// <summary>
         /// Constructor with injected type of repository.
         /// </summary>
         /// <param name="categoryRepository">Repository to be used when storing instances of ProductCategory.</param>
-        public ProductCategoryController(ProductCategoryRepository categoryRepository)
+        /// <param name="logger"> Controllers logger to log any information about HTTP Requests and Responses</param>
+        public ProductCategoryController(ProductCategoryRepository categoryRepository, ILogger<ProductCategoryController> logger)
         {
             this.categoryRepository = categoryRepository;
+            this.logger = logger;
         }
 
 
@@ -54,28 +129,24 @@ namespace backend.Controllers
         [HttpPost]
         public ActionResult addProductCategory([FromBody] ProductCategoryDTO categoryAsJson)
         {
-
+            logger.LogInformation(LOG_POST_START);
             if (categoryAsJson == null)
             {
-                return BadRequest(new { error = ERROR_ADD_CATEGORY });
+                logger.LogWarning(LOG_POST_EMPTY_BODY);
+                return BadRequest(new { error = ERROR_EMPTY_BODY });
             }
 
             try
             {
                 ProductCategoryDTO createdCategory = new core.application.ProductCategoryController().
                 addProductCategory(categoryAsJson);
-
-                //category was not added (probably due to a duplicate business identifier)
-                if (createdCategory == null)
-                {
-                    return BadRequest(new { error = ERROR_ADD_CATEGORY });
-                }
-
+                logger.LogInformation(LOG_POST_SUCCESS, createdCategory);
                 return CreatedAtRoute("GetCategory", new { id = createdCategory.id }, createdCategory);
 
             }
             catch (ArgumentException e)
             {
+                logger.LogWarning(e, LOG_POST_BAD_REQUEST,categoryAsJson);
                 return BadRequest(new { error = e.Message });
             }
         }
@@ -89,15 +160,18 @@ namespace backend.Controllers
         [HttpDelete("{id}")]
         public ActionResult removeProductCategory(long id)
         {
-            ProductCategoryDTO removedCategory = new core.application.
-                ProductCategoryController().removeProductCategory(id);
-
-            if (removedCategory == null)
+            logger.LogInformation(LOG_DELETE_START);
+            try
             {
-                return NotFound(new { error = ERROR_REMOVE_CATEGORY });
+                ProductCategoryDTO removedCategory = new core.application.ProductCategoryController().removeProductCategory(id);
+                logger.LogInformation(LOG_DELETE_SUCCESS, removedCategory);
+                return NoContent();
             }
-
-            return NoContent();
+            catch (ArgumentException e)
+            {
+                logger.LogWarning(e, LOG_DELETE_NOT_FOUND, id);
+                return NotFound(new { error = e.Message });
+            }
         }
 
         /// <summary>
@@ -109,15 +183,19 @@ namespace backend.Controllers
         [HttpGet("{id}", Name = "GetCategory")]
         public ActionResult findById(long id)
         {
-            ProductCategoryDTO result = new core.application.
-                ProductCategoryController().findByDatabaseId(id);
-
-            if (result == null)
+            logger.LogInformation(LOG_GET_BY_ID_START);
+            try
             {
-                return NotFound(new { error = ERROR_NO_CATEGORIES });
+                ProductCategoryDTO result = new core.application.
+                    ProductCategoryController().findByDatabaseId(id);
+                logger.LogInformation(LOG_GET_BY_ID_SUCCESS, result);
+                return Ok(result);
             }
-
-            return Ok(result);
+            catch (ArgumentException e)
+            {
+                logger.LogWarning(e, LOG_GET_BY_ID_NOT_FOUND, id);
+                return NotFound(new { error = e.Message });
+            }
         }
 
         /// <summary>
@@ -142,15 +220,20 @@ namespace backend.Controllers
         /// <returns>ActionResult with the 200 HTTP code with any instance of ProductCategory was found</returns>
         private ActionResult findAll()
         {
-            List<ProductCategoryDTO> result = new core.application.
-                ProductCategoryController().findAllCategories();
-
-            if (result.Count == 0)
+            logger.LogInformation(LOG_GET_ALL_START);
+            try
             {
-                return NotFound(new { error = ERROR_NO_CATEGORIES });
-            }
+                List<ProductCategoryDTO> result = new core.application.
+                    ProductCategoryController().findAllCategories();
+                logger.LogInformation(LOG_GET_ALL_SUCCESS, result);
+                return Ok(result);
 
-            return Ok(result);
+            }
+            catch (ArgumentException e)
+            {
+                logger.LogInformation(LOG_GET_ALL_NOT_FOUND);
+                return NotFound(new { error = e.Message });
+            }
         }
 
         /// <summary>
@@ -161,15 +244,19 @@ namespace backend.Controllers
         /// business identifier was found or 404 HTTP code if no ProductCategory was found.</returns>
         private ActionResult findByName(string name)
         {
-            ProductCategoryDTO result = new core.application.
-                ProductCategoryController().findByName(name);
-
-            if (result == null)
+            logger.LogInformation(LOG_GET_BY_NAME_START);
+            try
             {
-                return NotFound(new { error = ERROR_NO_CATEGORIES });
+                ProductCategoryDTO result = new core.application.
+                    ProductCategoryController().findByName(name);
+                logger.LogInformation(LOG_GET_BY_NAME_SUCCESS, result);
+                return Ok(result);
             }
-
-            return Ok(result);
+            catch (ArgumentException e)
+            {
+                logger.LogWarning(e, LOG_GET_BY_NAME_NOT_FOUND, name);
+                return NotFound(new { error = e.Message });
+            }
         }
 
     }

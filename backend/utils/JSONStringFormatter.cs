@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -9,6 +10,7 @@ namespace backend.utils
     /// <summary>
     /// Static class used for formatting messages to JSON.
     /// </summary>
+    [Obsolete("This class does not truly convert strings into json when responses are being sent, either use anonymous type or create POCO's to send messages")]
     public static class JSONStringFormatter
     {
 

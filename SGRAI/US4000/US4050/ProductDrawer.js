@@ -56,12 +56,18 @@ var scales=[1,1,1];
  */
 var mouseX,mouseY;
 
+var initialEyeX,initialEyeY=0;
+
+var initialAimX,initialAimY=0;
+
+var movedMouse=false;
+
 
 /**
  * Graphic Representation of a Customized Product main function 
  */
 function main(){
-
+ 
   // Retrieve <canvas> element from HTML document
   canvas = document.getElementById('webgl');
   // Get the rendering context for WebGL
@@ -89,7 +95,7 @@ function main(){
   }
 
   // Set the clear color and enable the depth test
-  webGL.clearColor(0.0, 0.0, 0.0, 1.0); //# 00 00 00 BLACK
+  webGL.clearColor(0.0, 0.0, 0.0, 0.0); //# 00 00 00 White
   webGL.enable(webGL.DEPTH_TEST)
 
   // Get the storage location of u_MvpMatrix
@@ -119,6 +125,7 @@ function main(){
  */
 function onKeyDown(keyEvent){
     switch(keyEvent.keyCode){
+      
       case 37: //Left
         scales[0]-=0.2;
         break;
@@ -154,6 +161,7 @@ function mouseDown(mouseEvent) {
  */
 function mouseMove(mouseEvent) {
     if (mouseEvent.buttons == 1) { // Left button
+      movedMouse=true;
       var deltaX = mouseEvent.clientX - mouseX;
       var deltaY = mouseEvent.clientY - mouseY;
       if (deltaX != 0) {
@@ -210,7 +218,7 @@ function drawScene(){
     webGL.clear(webGL.COLOR_BUFFER_BIT | webGL.DEPTH_BUFFER_BIT);
   
     // Set the clear color and enable the depth test
-    webGL.clearColor(0.0, 0.0, 0.0, 1.0); //# 00 00 00 BLACK
+    webGL.clearColor(0.0, 0.0, 0.0, 0.0); //# 00 00 00 WHITE
     webGL.enable(webGL.DEPTH_TEST)
   
 
@@ -236,7 +244,12 @@ function drawScene(){
     var upX = Math.cos(degreesToRadians(camera.orientation[0])) * Math.cos(degreesToRadians(camera.orientation[1] + 90.0));
     var upY = Math.sin(degreesToRadians(camera.orientation[0])) * Math.cos(degreesToRadians(camera.orientation[1] + 90.0));
     var upZ = Math.sin(degreesToRadians(camera.orientation[1] + 90.0));
-    mvpMatrix.lookAt(cameraX, cameraY, cameraZ, targetX, targetY, targetZ, upX, upY, upZ);
+    
+    if(!movedMouse){
+      mvpMatrix.lookAt(0, 0, cameraZ, 0, 0, targetZ, upX, upY, upZ);
+    }else{
+      mvpMatrix.lookAt(cameraX,cameraY,cameraZ,targetX,targetY,targetZ,upX,upY,upZ);
+    }
 
     mvpMatrix.scale(scales[0],scales[1],scales[2]);
     
@@ -252,6 +265,15 @@ function drawScene(){
  * Registers all events
  */
 function registerEvents(){
+  document.addEventListener("reloadCoordinates",function(e){
+    var heightY = e.detail.heightY;
+    var widthX = e.detail.widthX;
+    var depthZ = e.detail.depthZ;
+    scales[0] = widthX;
+    scales[1] = heightY;
+    scales[2] = depthZ;
+    drawScene();
+  })
   document.onkeydown=function(keyDownEvent){onKeyDown(keyDownEvent);}
   canvas.onmousedown=function(mouseEvent){mouseDown(mouseEvent);}
   canvas.onmousemove=function(mouseEvent){mouseMove(mouseEvent);}

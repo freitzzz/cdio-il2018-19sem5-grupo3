@@ -14,12 +14,18 @@ namespace core.services
     /// </summary>
     public sealed class CustomizedProductDTOService
     {
+        
+        /// <summary>
+        /// Private constructor used for hiding the implicit public one.
+        /// </summary>
+        private CustomizedProductDTOService(){}
+
         /// <summary>
         /// Transforms a customized product dto into a customized product via service
         /// </summary>
         /// <param name="customizedProductDTO">CustomizedProductDTO with the customized product dto being transformed</param>
         /// <returns>CustomizedProduct with the of customized products transformed from the dto</returns>
-        public CustomizedProduct transform(CustomizedProductDTO customizedProductDTO)
+        public static CustomizedProduct transform(CustomizedProductDTO customizedProductDTO)
         {
             CustomizedProduct customizedProduct = null;
 
