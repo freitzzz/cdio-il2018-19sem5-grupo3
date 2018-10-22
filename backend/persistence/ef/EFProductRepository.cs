@@ -44,7 +44,7 @@ namespace backend.persistence.ef
         public override Product update(Product entity){
             if(base.find(entity.id()).Id!=entity.Id)
                 return null;
-            return update(entity);
+            return base.update(entity);
         }
     }
 }

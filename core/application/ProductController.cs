@@ -341,10 +341,10 @@ namespace core.application {
         /// Adds a restriction to a product's component and returns the restriction's algorithm list of inputs
         /// </summary>
         /// <param name="productID">product's id</param>
-        /// <param name="componentID">product's component id</param>
+        /// <param name="productComponentID">product's component id</param>
         /// <param name="restDTO">Data Transfer Object of the restriction to add</param>
         /// <returns>list of inputs for the restriction's algorithm</returns>
-        public RestrictionDTO addComponentRestriction(long productID, long componentID, RestrictionDTO restDTO) {
+        public RestrictionDTO addComponentRestriction(long productID, long productComponentID, RestrictionDTO restDTO) {
             if (Collections.isEnumerableNullOrEmpty(restDTO.inputs)) {
                 List<InputDTO> inputDTOs = (List<InputDTO>)DTOUtils.parseToDTOS(new AlgorithmFactory().createAlgorithm(restDTO.algorithm).getRequiredInputs());
                 RestrictionDTO restrictionDTO = new RestrictionDTO();
@@ -355,13 +355,11 @@ namespace core.application {
             } else {
                 ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
                 Product product = productRepository.find(productID);
-                Component component = productRepository.fetchProductComponent(productID, componentID);
+                Product component = productRepository.find(productComponentID);
                 List<Input> inputs = new List<Input>(DTOUtils.reverseDTOS(restDTO.inputs));
                 if (new AlgorithmFactory().createAlgorithm(restDTO.algorithm).isWithinDataRange(inputs)) {
                     Restriction restriction = restDTO.toEntity();
-                    //TODO: create addRestriction method in component class
-                    component.restrictions = new List<Restriction>();
-                    component.restrictions.Add(restriction);
+                    product.addComponentRestriction(component, restriction);
                     productRepository.update(product);
                 }
                 return restDTO;

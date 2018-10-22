@@ -380,6 +380,8 @@ namespace backend.Controllers {
                 return Ok(new core.application.ProductController().addComponentRestriction(productID, productComponentID, restrictionDTO));
             } catch (ArgumentOutOfRangeException rangeEx) {
                 return BadRequest(new SimpleJSONMessageService(rangeEx.Message));
+            } catch (ArgumentNullException nullEx) {
+                return BadRequest(new SimpleJSONMessageService(nullEx.Message));
             } catch (ArgumentException argEx) {
                 return BadRequest(new SimpleJSONMessageService(argEx.Message));
             }
