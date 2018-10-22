@@ -495,6 +495,61 @@ namespace backend_tests.Controllers{
 
             Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
         }
+        
+        /// <summary>
+        /// Ensures that its not possible to remove an invalid component (null / empty) to a product
+        /// </summary>
+        [Fact,TestPriority(19)]
+        public async void ensureCantRemoveInvalidComponentsToProduct(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            //First lets test to add components to the product with no components (empty list)
+            updatedProductX.componentsToRemove=new List<ComponentDTO>();
+            
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/components"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
+
+            //Now lets add an empty component (empty body)
+            updatedProductX.componentsToRemove=new List<ComponentDTO>(new []{new ComponentDTO()});
+            updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/components"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
+        }
+
+        /// <summary>
+        /// Ensures that a product cant be disabled if it doesn't exist (resource doesn't exist)
+        /// </summary>
+        [Fact,TestPriority(20)]
+        public async void ensureCantDisableAProductWhichDoesntExist(){
+            var disableProduct=await httpClient.DeleteAsync(PRODUCTS_URI+"/"+"0");
+            Assert.Equal(HttpStatusCode.BadRequest,disableProduct.StatusCode);
+        }
+
+        /// <summary>
+        /// Ensures that a product cant be disabled if its already disabled
+        /// </summary>
+        [Fact,TestPriority(21)]
+        public async void ensureCantDisableAProductWhichIsAlreadyDisabled(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            //First lets disable the product we just created
+            var disableProduct=await httpClient.DeleteAsync(PRODUCTS_URI+"/"+createdProductDTOX.Result.id);
+            Assert.Equal(HttpStatusCode.NoContent,disableProduct.StatusCode);
+
+            //Now lets try to disable the product we just disabled
+            disableProduct=await httpClient.DeleteAsync(PRODUCTS_URI+"/"+createdProductDTOX.Result.id);
+            Assert.Equal(HttpStatusCode.BadRequest,disableProduct.StatusCode);
+        }
 
         /// <summary>
         /// Ensures that a product can't be created if the request body is empty
