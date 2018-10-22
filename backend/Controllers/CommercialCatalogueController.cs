@@ -225,7 +225,7 @@ namespace backend.Controllers
         ///         <br>See MyC REST API documentation for a better overview
         /// </returns>
         [HttpPut("{id}/collections")]
-        public ActionResult<CommercialCatalogueDTO> addCollection(long id, [FromBody]UpdateCommercialCatalogueDTO updateCatalogueCollectionDTO)
+        public ActionResult<CommercialCatalogueDTO> updateCollection(long id, [FromBody]UpdateCommercialCatalogueDTO updateCatalogueCollectionDTO)
         {
             logger.LogInformation(LOG_PUT_START);
             try
