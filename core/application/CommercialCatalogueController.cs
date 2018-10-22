@@ -17,29 +17,8 @@ namespace core.application
         /// <returns>DTO with the created commercialCatalogue DTO, null if the commercialCatalogue was not created</returns>
         public CommercialCatalogueDTO addCommercialCatalogue(CommercialCatalogueDTO comCatalogueAsDTO)
         {
-
-
-            string reference = comCatalogueAsDTO.reference;
-            string designation = comCatalogueAsDTO.designation;
-            List<CatalogueCollection> collections = new List<CatalogueCollection>();
-
-            if (comCatalogueAsDTO.collectionList != null)
-            {
-                foreach (CatalogueCollectionDTO collection in comCatalogueAsDTO.collectionList)
-                {
-                    collections.Add(collection.toEntity());
-                }
-            }
-            CommercialCatalogue newComCatalogue;
-            if (comCatalogueAsDTO.collectionList.Count == 0)
-            {
-                newComCatalogue = new CommercialCatalogue(reference, designation);
-            }
-            else
-            {
-                newComCatalogue = new CommercialCatalogue(reference, designation, collections);
-            }
-            CommercialCatalogue createdComCatalogue = PersistenceContext.repositories().createCommercialCatalogueRepository().save(newComCatalogue);
+            CommercialCatalogue commercialCatalogue = CommercialCatalogueDTOService.transform(comCatalogueAsDTO);
+            CommercialCatalogue createdComCatalogue = PersistenceContext.repositories().createCommercialCatalogueRepository().save(commercialCatalogue);
             if (createdComCatalogue == null) return null;
             return createdComCatalogue.toDTO();
         }
@@ -112,7 +91,7 @@ namespace core.application
 
         }
 
-
+        //!UPDATE THIS DOC
         /// <summary>
         /// Removes a new Collection to a CommercialCatalogue
         /// </summary>
@@ -127,7 +106,7 @@ namespace core.application
             bool flag = false;
             foreach (CatalogueCollection catalogueCollection in newComCatalogue.collectionList)
             {
-                if (catalogueCollection.Id == idC)
+                if (catalogueCollection.customizedProductCollectionId == idC)
                 {
                     newComCatalogue.removeCollection(catalogueCollection);
                     flag = true;
