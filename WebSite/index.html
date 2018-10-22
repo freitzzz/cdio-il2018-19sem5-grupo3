@@ -47,7 +47,7 @@
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#about" class="page-scroll">About</a></li>
+          <li><a href="#closet" class="page-scroll">Create a closet</a></li>
           <li><a href="#contact" class="page-scroll">Contact</a></li>
         </ul>
       </div>
@@ -79,10 +79,13 @@
     }
     .left {
       width: 25%;
+      align-content: left;
     }
 
     .right {
       width: 75%;
+      align-content: right;
+
     }
 
   </style>
@@ -93,23 +96,25 @@
         <hr>
       </div>
       <div class="row">
-        <div class="column left">
+        <div class="column left" align="left">
+            <br><br><br><br><br><br>
           <form>
             Height:<br>
-            <input type="text" name="height"> <select>
+            <input type="number" name="height">
+            <select>
               <option value="m">Meters</option>
               <option value="cm">Centimeters</option>
               <option value="km">kilometers</option>
             </select>
             <br>
             Length:<br>
-            <input type="text" name="length"><select>
+            <input type="number" name="length"><select>
               <option value="m">Meters</option>
               <option value="cm">Centimeters</option>
               <option value="km">kilometers</option>
             </select><br>
             Depth:<br>
-            <input type="text" name="depth"><select>
+            <input type="number" name="depth"><select>
               <option value="m">Meters</option>
               <option value="cm">Centimeters</option>
               <option value="km">kilometers</option>
@@ -118,9 +123,9 @@
           <a class="btn btn-custom btn-lg page-scroll">Submit</a>
 
         </div>
-        <div class="column right"> <img src="img/img1.jpg" class="img-responsive thumbnail" alt=""></div>
-         
-        
+        <div class="column right" align="right"> <img src="img/img1.jpg" class="img-responsive thumbnail" alt=""></div>
+
+
       </div>
     </div>
   </div>

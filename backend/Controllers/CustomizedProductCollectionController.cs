@@ -4,6 +4,7 @@ using support.utils;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace backend.Controllers{
     /// <summary>
@@ -12,30 +13,110 @@ namespace backend.Controllers{
     [Route("/myc/api/collections")]
     public class CustomizedProductCollectionController:Controller{
         /// <summary>
-        /// Constant that represents the message that ocurres if there are no collections available
+        /// Constant that represents the message that occurs if there are no collections available
         /// </summary>
         private const string NO_COLLECTIONS_AVAILABLE="There are no customized products collections available";
 
         /// <summary>
-        /// Constant that represents the message that ocurres if a client attemps to create a product with an invalid request body
+        /// Constant that represents the message that occurs if a client attemps to create a product with an invalid request body
         /// </summary>
         private const string INVALID_REQUEST_BODY_MESSAGE="The request body is invalid! Check documentation for more information";
 
         /// <summary>
-        /// Constant that represents the message that ocurres if a client attemps to fetch a resource which doesn't exist or is not available
+        /// Constant that represents the message that occurs if a client attemps to fetch a resource which doesn't exist or is not available
         /// </summary>
         private const string RESOURCE_NOT_FOUND_MESSAGE="The resource being fetched could not be found";
 
         /// <summary>
-        /// Constant that represents the message that ocurres if an update is invalid
+        /// Constant that represents the message that occurs if an update is invalid
         /// </summary>
         private const string INVALID_UPDATE_MESSAGE="An error ocurred during the update of the resource";
 
         /// <summary>
-        /// Constant that represents the message that ocurres if an update is valid
+        /// Constant that represents the message that occurs if an update is valid
         /// </summary>
         private const string VALID_UPDATE_MESSAGE="The resource was updated with success";
 
+        /// <summary>
+        /// Constant that represents the log message for when a GET All Request starts
+        /// </summary>
+        private const string LOG_GET_ALL_START="GET All Request started";
+
+        /// <summary>
+        /// Constant that represents the log message for when a GET By ID Request starts
+        /// </summary>
+        private const string LOG_GET_BY_ID_START="GET By ID Request started";
+
+        /// <summary>
+        /// Constant that represents the log message for when a POST Request starts
+        /// </summary>
+        private const string LOG_POST_START="POST Request started";
+
+        /// <summary>
+        /// Constant that represents the log message for when a PUT Basic Info Request starts
+        /// </summary>
+        private const string LOG_PUT_BASIC_INFO_START="PUT Basic Info Request started";
+
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Request starts
+        /// </summary>
+        private const string LOG_DELETE_START="DELETE Request started";
+
+        /// <summary>
+        /// Constant that represents the log message for when a PUT Customized Products Request starts
+        /// </summary>
+        private const string LOG_PUT_CUSTOMIZED_PRODUCTS_START="PUT Customized Products Request started";
+
+        /// <summary>
+        /// Constant that represents the log message for when a GET All Request returns a BadRequest
+        /// </summary>
+        private const string LOG_GET_ALL_BAD_REQUEST="GET All BadRequest (No Customized Product Collections Found)";
+
+        /// <summary>
+        /// Constant that represents the log message for when a GET By ID Request returns a BadRequest
+        /// </summary>
+        private const string LOG_GET_BY_ID_BAD_REQUEST="GETByID({id}) BadRequest";
+
+        /// <summary>
+        /// Constant that represents the log message for when a POST Request returns a BadRequest
+        /// </summary>
+        private const string LOG_POST_BAD_REQUEST="POST {@collection} BadRequest";
+
+        /// <summary>
+        /// Constant that represents the log message for when a PUT Request returns a BadRequest
+        /// </summary>
+        private const string LOG_PUT_BAD_REQUEST="Customized Product Collection with id {id} PUT {@updateInfo} BadRequest";
+
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Request returns a BadRequest
+        /// </summary>
+        private const string LOG_DELETE_BAD_REQUEST="DELETE({id}) BadRequest";
+
+        /// <summary>
+        /// Constant that represents the log message for when a GET All Request is successful
+        /// </summary>
+        private const string LOG_GET_ALL_SUCCESS="Customized Product Collections {@collectionList} retrieved";
+
+        /// <summary>
+        /// Constant that represents the log message for when a GET By ID Request is successful
+        /// </summary>
+        private const string LOG_GET_BY_ID_SUCCESS="Customized Product Collection {@collection} retrieved";
+
+        /// <summary>
+        /// Constant that represents the log message for when a POST Request is successful
+        /// </summary>
+       private const string LOG_POST_SUCCESS="Customized Product Collection {@collection} created";
+
+        /// <summary>
+        /// Constant that represents the log message for when a PUT Request is successful
+        /// </summary>
+       private const string LOG_PUT_SUCCESS="Customized Product Collection with id {id} updated with info {@updateInfo}";
+
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Request is successful
+        /// </summary>
+        private const string LOG_DELETE_SUCCESS="Customized Product Collection with id {id} soft deleted";
+        
         /// <summary>
         /// This repository attribute is only here due to entity framework injection
         /// </summary>
@@ -47,13 +128,20 @@ namespace backend.Controllers{
         private readonly CustomizedProductRepository customizedProductRepository;
 
         /// <summary>
+        /// Controllers logger
+        /// </summary>
+        private readonly ILogger<CustomizedProductCollectionController> logger;
+
+        /// <summary>
         /// This constructor is only here due to entity framework injection
         /// </summary>
         /// <param name="customizedProductCollectionRepository">Injected repository of customized products collections</param>
         /// <param name="customizedProductRepository">Injected repository of customized products</param>
-        public CustomizedProductCollectionController(CustomizedProductCollectionRepository customizedProductCollectionRepository,CustomizedProductRepository customizedProductRepository){
+        /// <param name="logger">Controllers logger to log any information regarding HTTP Requests and Responses</param>
+        public CustomizedProductCollectionController(CustomizedProductCollectionRepository customizedProductCollectionRepository,CustomizedProductRepository customizedProductRepository, ILogger<CustomizedProductCollectionController> logger){
             this.customizedProductCollectionRepository=customizedProductCollectionRepository;
             this.customizedProductRepository=customizedProductRepository;
+            this.logger=logger;
         }
 
         /// <summary>
@@ -62,9 +150,14 @@ namespace backend.Controllers{
         /// <returns>ActionResult with all available customized products</returns>
         [HttpGet]
         public ActionResult<List<CustomizedProductCollectionDTO>> findAll(){
+            logger.LogInformation(LOG_GET_ALL_START);
             List<CustomizedProductCollectionDTO> customizedProductCollectionDTOS=new core.application.CustomizedProductCollectionController().findAllCollections();
             if(!Collections.isEnumerableNullOrEmpty(customizedProductCollectionDTOS))
+            {
+                logger.LogInformation(LOG_GET_ALL_SUCCESS,customizedProductCollectionDTOS);
                 return Ok(customizedProductCollectionDTOS);
+            }
+            logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
             return BadRequest(NO_COLLECTIONS_AVAILABLE);
         }
 
@@ -75,14 +168,20 @@ namespace backend.Controllers{
         /// <returns>ActionResult with the customized product collection information</returns>
         [HttpGet("{id}")]
         public ActionResult<CustomizedProductCollectionDTO> findByID(long id){
+            logger.LogInformation(LOG_GET_BY_ID_START);
             try{
                 CustomizedProductCollectionDTO customizedProductCollectionDTO=new CustomizedProductCollectionDTO();
                 customizedProductCollectionDTO.id=id;
                 CustomizedProductCollectionDTO customizedProductCollection=new core.application.CustomizedProductCollectionController().findCollectionByID(customizedProductCollectionDTO);
                 if(customizedProductCollection!=null)
+                {
+                    logger.LogInformation(LOG_GET_BY_ID_SUCCESS,customizedProductCollection);
                     return Ok(customizedProductCollection);
+                }
+                logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST,id);
                 return BadRequest(RESOURCE_NOT_FOUND_MESSAGE);
-            }catch(NullReferenceException){
+            }catch(NullReferenceException nullReferenceException){
+                logger.LogWarning(nullReferenceException,LOG_GET_BY_ID_BAD_REQUEST,id);
                 return BadRequest(RESOURCE_NOT_FOUND_MESSAGE);
             }
         }
@@ -94,14 +193,19 @@ namespace backend.Controllers{
         /// <returns>ActionResult with the created collection of customized products</returns>
         [HttpPost]
         public ActionResult<CustomizedProductCollectionDTO> addCustomizedProductCollection([FromBody]CustomizedProductCollectionDTO customizedProductCollectionDTO){
+            logger.LogInformation(LOG_POST_START);
             try{
                 CustomizedProductCollectionDTO customizedProductCollection=new core.application.CustomizedProductCollectionController().addCollection(customizedProductCollectionDTO);
+                logger.LogInformation(LOG_POST_SUCCESS,customizedProductCollection);
                 return Created(Request.Path,customizedProductCollection);
-            }catch(NullReferenceException){
+            }catch(NullReferenceException nullReferenceException){
+                logger.LogWarning(nullReferenceException,LOG_POST_BAD_REQUEST,customizedProductCollectionDTO);
                 return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
             }catch(InvalidOperationException invalidOperationException){
+                logger.LogWarning(invalidOperationException,LOG_POST_BAD_REQUEST,customizedProductCollectionDTO);
                 return BadRequest(invalidOperationException.Message);
             }catch(ArgumentException invalidArgumentsException){
+                logger.LogWarning(invalidArgumentsException,LOG_POST_BAD_REQUEST,customizedProductCollectionDTO);
                 return BadRequest(invalidArgumentsException.Message);
             }
         }
@@ -114,17 +218,25 @@ namespace backend.Controllers{
         /// <returns>ActionResult with the information success about update</returns>
         [HttpPut("{id}")]
         public ActionResult<CustomizedProductCollectionDTO> updateCustomizedProductCollection(long id,[FromBody]UpdateCustomizedProductCollectionDTO updateCustomizedProductCollectionDTO){
+            logger.LogInformation(LOG_PUT_BASIC_INFO_START);
             try{
                 updateCustomizedProductCollectionDTO.id=id;
                 bool updatedWithSuccess=new core.application.CustomizedProductCollectionController().updateCollectionBasicInformation(updateCustomizedProductCollectionDTO);
                 if(updatedWithSuccess)
+                {
+                    logger.LogInformation(LOG_PUT_SUCCESS,id,updateCustomizedProductCollectionDTO);
                     return Ok(VALID_UPDATE_MESSAGE);
+                }
+                logger.LogWarning(LOG_PUT_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
                 return BadRequest(INVALID_UPDATE_MESSAGE);
-            }catch(NullReferenceException){
+            }catch(NullReferenceException nullReferenceException){
+                logger.LogWarning(nullReferenceException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
                 return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
             }catch(InvalidOperationException invalidOperationException){
+                logger.LogWarning(invalidOperationException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
                 return BadRequest(invalidOperationException.Message);
             }catch(ArgumentException invalidArgumentsException){
+                logger.LogWarning(invalidArgumentsException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
                 return BadRequest(invalidArgumentsException.Message);
             }
         }
@@ -137,17 +249,24 @@ namespace backend.Controllers{
         /// <returns>ActionResult with the information success about update</returns>
         [HttpPut("{id}/customizedproducts")]
         public ActionResult<CustomizedProductCollectionDTO> updateCustomizedProductCollectionCustomizedProducts(long id,[FromBody]UpdateCustomizedProductCollectionDTO updateCustomizedProductCollectionDTO){
+            logger.LogInformation(LOG_PUT_CUSTOMIZED_PRODUCTS_START);
             try{
                 updateCustomizedProductCollectionDTO.id=id;
                 bool updatedWithSuccess=new core.application.CustomizedProductCollectionController().updateCollectionCustomizedProducts(updateCustomizedProductCollectionDTO);
                 if(updatedWithSuccess)
+                {
+                    logger.LogInformation(LOG_PUT_SUCCESS,id,updateCustomizedProductCollectionDTO);
                     return Ok(VALID_UPDATE_MESSAGE);
+                }
                 return BadRequest(INVALID_UPDATE_MESSAGE);
-            }catch(NullReferenceException){
+            }catch(NullReferenceException nullReferenceException){
+                logger.LogWarning(nullReferenceException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
                 return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
             }catch(InvalidOperationException invalidOperationException){
+                logger.LogWarning(invalidOperationException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
                 return BadRequest(invalidOperationException.Message);
             }catch(ArgumentException invalidArgumentsException){
+                logger.LogWarning(invalidArgumentsException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
                 return BadRequest(invalidArgumentsException.Message);
             }
         }
@@ -159,16 +278,22 @@ namespace backend.Controllers{
         /// <returns>ActionResult with the information success about the remove</returns>
         [HttpDelete("{id}")]
         public ActionResult<CustomizedProductCollectionDTO> remove(long id){
+            logger.LogInformation(LOG_DELETE_START);
             try{
                 CustomizedProductCollectionDTO customizedProductCollectionDTO=new CustomizedProductCollectionDTO();
                 customizedProductCollectionDTO.id=id;
                 bool disabledWithSuccess=new core.application.CustomizedProductCollectionController().disableCustomizedProductCollection(customizedProductCollectionDTO);
-                if(disabledWithSuccess)
+                if(disabledWithSuccess){
+                    logger.LogWarning(LOG_DELETE_SUCCESS,id);
                     return NoContent();
+                }
+                logger.LogWarning(LOG_DELETE_BAD_REQUEST,id);
                 return BadRequest(INVALID_UPDATE_MESSAGE);
-            }catch(NullReferenceException){
+            }catch(NullReferenceException nullReferenceException){
+                logger.LogWarning(nullReferenceException,LOG_DELETE_BAD_REQUEST,id);
                 return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
             }catch(InvalidOperationException invalidOperationException){
+                logger.LogWarning(invalidOperationException,LOG_DELETE_BAD_REQUEST,id);
                 return BadRequest(invalidOperationException.Message);
             }
         }

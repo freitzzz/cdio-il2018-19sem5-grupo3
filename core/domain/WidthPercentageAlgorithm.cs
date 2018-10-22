@@ -61,10 +61,10 @@ namespace core.domain {
             foreach (Input input in inputs) {
                 switch (input.name) {
                     case MINIMUM_PERCENTAGE_INPUT_NAME:
-                        minPercentage = Convert.ToDouble(input.value,CultureInfo.InvariantCulture);
+                        minPercentage = Convert.ToDouble(input.value, CultureInfo.InvariantCulture);
                         break;
                     case MAXIMUM_PERCENTAGE_INPUT_NAME:
-                        maxPercentage = Convert.ToDouble(input.value,CultureInfo.InvariantCulture);
+                        maxPercentage = Convert.ToDouble(input.value, CultureInfo.InvariantCulture);
                         break;
                 }
             }
@@ -87,16 +87,73 @@ namespace core.domain {
                 }
                 switch (input.name) {
                     case MINIMUM_PERCENTAGE_INPUT_NAME:
-                        minPercentage = Convert.ToDouble(input.value,CultureInfo.InvariantCulture);
+                        minPercentage = Convert.ToDouble(input.value, CultureInfo.InvariantCulture);
                         break;
                     case MAXIMUM_PERCENTAGE_INPUT_NAME:
-                        maxPercentage = Convert.ToDouble(input.value,CultureInfo.InvariantCulture);
+                        maxPercentage = Convert.ToDouble(input.value, CultureInfo.InvariantCulture);
                         break;
                     default:
                         throw new ArgumentException(INVALID_INPUT);
                 }
             }
             return minPercentage >= 0 && minPercentage <= 1 && maxPercentage >= minPercentage && maxPercentage <= 1 ? true : throw new ArgumentOutOfRangeException(INPUT_OUTSIDE_RANGE);
+        }
+
+        public Product apply(CustomizedProduct customProduct, Product product) {
+            double width = customProduct.customizedDimensions.width;
+            double minWidth = width * minPercentage;
+            double maxWidth = width * maxPercentage;
+            List<Dimension> dimensionsToRemove = new List<Dimension>();
+            List<Dimension> dimensionsToAdd = new List<Dimension>();
+            foreach (Dimension dimension in product.widthValues) {
+                if (dimension.GetType() == typeof(SingleValueDimension)) {
+                    SingleValueDimension single = (SingleValueDimension)dimension;
+                    if (single.value < minWidth || single.value > maxWidth) {
+                        dimensionsToRemove.Add(single);
+                    }
+                } else if (dimension.GetType() == typeof(DiscreteDimensionInterval)) {
+                    DiscreteDimensionInterval discrete = (DiscreteDimensionInterval)dimension;
+                    List<DoubleValue> valToRemove = new List<DoubleValue>();
+                    foreach (double value in discrete.values) {
+                        if (value < minWidth || value > maxWidth) {
+                            valToRemove.Add(value);
+                        }
+                    }
+                    foreach (double val in valToRemove) {
+                        discrete.values.Remove(val);
+                    }
+                    if (discrete.values.Count == 0) {
+                        dimensionsToRemove.Add(discrete);
+                    } else if (discrete.values.Count == 1) {
+                        dimensionsToAdd.Add(new SingleValueDimension(discrete.values[0]));
+                        dimensionsToRemove.Add(discrete);
+                    }
+                } else if (dimension.GetType() == typeof(ContinuousDimensionInterval)) {
+                    ContinuousDimensionInterval continuous = (ContinuousDimensionInterval)dimension;
+                    if (continuous.minValue > maxWidth || continuous.maxValue < minWidth) {
+                        dimensionsToRemove.Add(continuous);
+                    } else {
+                        if (continuous.minValue < minWidth) {
+                            continuous.minValue = minWidth;
+                        }
+                        if (continuous.maxValue > maxWidth) {
+                            continuous.maxValue = maxWidth;
+                        }
+                        if (continuous.maxValue == continuous.minValue) {
+                            SingleValueDimension single = new SingleValueDimension(continuous.maxValue);
+                            dimensionsToRemove.Add(continuous);
+                            dimensionsToAdd.Add(single);
+                        }
+                    }
+                }
+            }
+            foreach (Dimension dimension in dimensionsToRemove) {
+                product.removeWidthDimension(dimension);
+            }
+            foreach (Dimension dimension in dimensionsToAdd) {
+                product.addWidthDimension(dimension);
+            }
+            return product;
         }
     }
 }
