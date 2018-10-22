@@ -554,7 +554,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if the request body is empty
         /// </summary>
-        [Fact, TestPriority(14)]
+        [Fact, TestPriority(22)]
         public async void ensureProductCantBeCreatedWithEmptyRequestBody(){
             //We are attempting to create an object with an empty request body
             var createProductEmptyRequestBody=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON("{}"));
@@ -566,7 +566,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no reference
         /// </summary>
-        [Fact, TestPriority(14)]
+        [Fact, TestPriority(23)]
         public async void ensureProductCantBeCreatedWithNoReference(){
             //We are attempting to created a product with no referene
             ProductDTO productDTO=new ProductDTO();
@@ -580,7 +580,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no designation
         /// </summary>
-        [Fact, TestPriority(15)]
+        [Fact, TestPriority(24)]
         public async void ensureProductCantBeCreatedWithNoDesignation(){
             //We are attempting to created a product with no designation
             ProductDTO productDTO=new ProductDTO();
@@ -594,7 +594,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no category
         /// </summary>
-        [Fact, TestPriority(16)]
+        [Fact, TestPriority(25)]
         public async void ensureProductCantBeCreatedWithNoCategory(){
             //We are attempting to created a product with no category
             ProductDTO productDTO=new ProductDTO();
@@ -609,7 +609,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no materials
         /// </summary>
-        [Fact, TestPriority(17)]
+        [Fact, TestPriority(26)]
         public async void ensureProductCantBeCreatedWithNoMaterials(){
             //We are attempting to created a product with no materials
             ProductDTO productDTO=new ProductDTO();
@@ -627,7 +627,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no dimensions
         /// </summary>
-        [Fact, TestPriority(18)]
+        [Fact, TestPriority(27)]
         public async void ensureProductCantBeCreatedWithNoDimensions(){
             //We are attempting to created a product with no dimensions
             ProductDTO productDTO=new ProductDTO();
@@ -649,7 +649,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product cant be created with invalid components
         /// </summary>
-        [Fact,TestPriority(19)]
+        [Fact,TestPriority(28)]
         public async void ensureProductCantBeCreatedWithInvalidComponents(){
             ProductDTO productDTO=createProductWithValidProperties();
             Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
@@ -667,10 +667,29 @@ namespace backend_tests.Controllers{
         }
 
         /// <summary>
+        /// Ensures that a product cant be created with invalid slots (null)
+        /// </summary>
+        [Fact,TestPriority(29)]
+        public async void ensureProductCantBeCreatedWithInvalidSlots(){
+            ProductDTO productDTO=createProductWithValidProperties();
+            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryDTO.Wait();
+            //Materials must previously exist as they can be shared in various products
+            Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
+            materialDTO.Wait();
+            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
+            productDTO.productCategory=categoryDTO.Result;
+            //Our invalid slots are "empty" slots
+            productDTO.slotDimensions=new SlotDimensionSetDTO();
+            var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        /// <summary>
         /// Ensures that a product is created succesfuly
         /// </summary>
         /// <returns>ProductDTO with the created product</returns>
-        [Fact, TestPriority(20)]
+        [Fact, TestPriority(30)]
         public async Task<ProductDTO> ensureProductIsCreatedSuccesfuly(){
             //We are going to create a valid product
             //A valid product creation requires a valid reference, a valid desgination
@@ -688,14 +707,12 @@ namespace backend_tests.Controllers{
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
         }
+
         /// <summary>
         /// Ensures that a product can be created with componets
         /// </summary>
-        [Fact,TestPriority(21)]
+        [Fact,TestPriority(31)]
         public async Task<ProductDTO> ensureProductWithComponentsIsCreatedSuccesfuly(){
-            //We are going to create a product which will serve as complemented product for a product (component)
-            Task<ProductDTO> complementedProductDTOTask=ensureProductIsCreatedSuccesfuly();
-            complementedProductDTOTask.Wait();
             //To save time lets just create a new product which will serve as the aggregate
             ProductDTO productDTO=createProductWithValidProperties();
             Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
@@ -706,10 +723,76 @@ namespace backend_tests.Controllers{
             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
             productDTO.productCategory=categoryDTO.Result; 
             //Lets now adds the components to the product
+            //We are going to create a product which will serve as complemented product for a product (component)
+            Task<ProductDTO> complementedProductDTOTask=ensureProductIsCreatedSuccesfuly();
+            complementedProductDTOTask.Wait();
             ComponentDTO componentDTO=new ComponentDTO();
             componentDTO.product=complementedProductDTOTask.Result;
             productDTO.complements=new List<ComponentDTO>(new []{componentDTO});
             var response=await httpClient.PostAsJsonAsync(PRODUCTS_URI,productDTO);
+            Assert.Equal(HttpStatusCode.Created,response.StatusCode);
+            return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
+        }
+
+        /// <summary>
+        /// Ensures that a product can be created with slots
+        /// </summary>
+        [Fact,TestPriority(32)]
+        public async Task<ProductDTO> ensureProductWithSlotsIsCreatedSuccesfuly(){
+            ProductDTO productDTO=createProductWithValidProperties();
+            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryDTO.Wait();
+            //Materials must previously exist as they can be shared in various products
+            Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
+            materialDTO.Wait();
+            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
+            productDTO.productCategory=categoryDTO.Result;
+            //Now lets create valid slot dimensions and add it to the product
+            SlotDimensionSetDTO slotDimensionSetDTO=new SlotDimensionSetDTO();
+            CustomizedDimensionsDTO customizedDimensionsDTO=new CustomizedDimensionsDTO();
+            customizedDimensionsDTO.width=10;
+            customizedDimensionsDTO.height=10;
+            customizedDimensionsDTO.depth=10;
+            slotDimensionSetDTO.recommendedSlotDimensions=customizedDimensionsDTO;
+            slotDimensionSetDTO.minimumSlotDimensions=customizedDimensionsDTO;
+            slotDimensionSetDTO.maximumSlotDimensions=customizedDimensionsDTO;
+            productDTO.slotDimensions=slotDimensionSetDTO;
+             var response=await httpClient.PostAsJsonAsync(PRODUCTS_URI,productDTO);
+            Assert.Equal(HttpStatusCode.Created,response.StatusCode);
+            return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
+        }
+
+        /// <summary>
+        /// Ensures that a product can be created with slots and components
+        /// </summary>
+        [Fact,TestPriority(33)]
+        public async Task<ProductDTO> ensureProductWithSlotAndComponentsIsCreatedSuccesfuly(){
+            ProductDTO productDTO=createProductWithValidProperties();
+            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryDTO.Wait();
+            //Materials must previously exist as they can be shared in various products
+            Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
+            materialDTO.Wait();
+            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
+            productDTO.productCategory=categoryDTO.Result;
+            //Now lets create valid slot dimensions and add it to the product
+            SlotDimensionSetDTO slotDimensionSetDTO=new SlotDimensionSetDTO();
+            CustomizedDimensionsDTO customizedDimensionsDTO=new CustomizedDimensionsDTO();
+            customizedDimensionsDTO.width=10;
+            customizedDimensionsDTO.height=10;
+            customizedDimensionsDTO.depth=10;
+            slotDimensionSetDTO.recommendedSlotDimensions=customizedDimensionsDTO;
+            slotDimensionSetDTO.minimumSlotDimensions=customizedDimensionsDTO;
+            slotDimensionSetDTO.maximumSlotDimensions=customizedDimensionsDTO;
+            productDTO.slotDimensions=slotDimensionSetDTO;
+            //Lets now adds the components to the product
+            //We are going to create a product which will serve as complemented product for a product (component)
+            Task<ProductDTO> complementedProductDTOTask=ensureProductIsCreatedSuccesfuly();
+            complementedProductDTOTask.Wait();
+            ComponentDTO componentDTO=new ComponentDTO();
+            componentDTO.product=complementedProductDTOTask.Result;
+            productDTO.complements=new List<ComponentDTO>(new []{componentDTO});
+             var response=await httpClient.PostAsJsonAsync(PRODUCTS_URI,productDTO);
             Assert.Equal(HttpStatusCode.Created,response.StatusCode);
             return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
         }
