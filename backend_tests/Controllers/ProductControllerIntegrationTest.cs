@@ -436,6 +436,67 @@ namespace backend_tests.Controllers{
         }
 
         /// <summary>
+        /// Ensures that its not possible to add an invalid component (null / empty) to a product
+        /// </summary>
+        [Fact,TestPriority(17)]
+        public async void ensureCantAddInvalidComponentsToProduct(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            //First lets test to add components to the product with no components (empty list)
+            updatedProductX.componentsToAdd=new List<ComponentDTO>();
+            
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/components"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
+
+            //Now lets add an empty component (empty body)
+            updatedProductX.componentsToAdd=new List<ComponentDTO>(new []{new ComponentDTO()});
+            updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/components"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
+        }
+
+        /// <summary>
+        /// Ensures that its not possible to add a duplicated component (null / empty) to a product
+        /// </summary>
+        [Fact,TestPriority(18)]
+        public async void ensureCantAddDuplicatedComponentsToProduct(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            //First lets add a valid component to the product
+            Task<ProductDTO> complementedProductDTOTask=ensureProductIsCreatedSuccesfuly();
+            complementedProductDTOTask.Wait();
+            ComponentDTO componentDTO=new ComponentDTO();
+            componentDTO.product=complementedProductDTOTask.Result;
+            updatedProductX.componentsToAdd=new List<ComponentDTO>(new []{componentDTO});
+            
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/components"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.OK,updateProductX.StatusCode);
+
+            //Now lets send the same request so we try to add the same component
+            updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/components"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
+        }
+
+        /// <summary>
         /// Ensures that a product can't be created if the request body is empty
         /// </summary>
         [Fact, TestPriority(14)]
