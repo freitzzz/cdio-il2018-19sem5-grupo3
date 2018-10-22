@@ -493,9 +493,11 @@ namespace core.domain {
             }
 
             if(this.supportsSlots){
-                dto.slotDimensions.maximumSlotDimensions = this.maxSlotSize.toDTO();
-                dto.slotDimensions.minimumSlotDimensions = this.minSlotSize.toDTO();
-                dto.slotDimensions.recommendedSlotDimensions = this.recommendedSlotSize.toDTO();
+                SlotDimensionSetDTO slotDimensionSetDTO=new SlotDimensionSetDTO();
+                slotDimensionSetDTO.maximumSlotDimensions = this.maxSlotSize.toDTO();
+                slotDimensionSetDTO.minimumSlotDimensions = this.minSlotSize.toDTO();
+                slotDimensionSetDTO.recommendedSlotDimensions = this.recommendedSlotSize.toDTO();
+                dto.slotDimensions=slotDimensionSetDTO;
             }
 
             return dto;

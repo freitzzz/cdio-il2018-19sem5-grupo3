@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using core.domain;
+using core.services;
 using support.dto;
 
 namespace core.dto
@@ -25,28 +26,40 @@ namespace core.dto
         /// CustomizedDimensions height value
         /// </summary>
         /// <value>Gets/Sets for the height value</value>
-        [DataMember]
+        [DataMember(Name="height")]
         public double height { get; set; }
 
         /// <summary>
         /// CustomizedDimensions width value
         /// </summary>
         /// <returns>Gets/Sets for the width value</returns>
-        [DataMember]
+        [DataMember(Name="width")]
         public double width { get; set; }
 
         /// <summary>
         /// CustomizedDimensions depth value
         /// </summary>
         /// <returns>Gets/Sets for the depth value</returns>
-        [DataMember]
+        [DataMember(Name="depth")]
         public double depth { get; set; }
+
+        /// <summary>
+        /// String with the customized dimensions unit
+        /// </summary>
+        [DataMember(Name="unit")]
+        public string unit{get;set;}
 
         public CustomizedDimensions toEntity()
         {
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(height, width, depth);
-            custDimensions.Id=this.Id;
-             return custDimensions;
+            if(unit==null){
+                CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(height, width, depth);
+                custDimensions.Id=this.Id;
+                return custDimensions;
+            }else{
+                return CustomizedDimensions.valueOf(MeasurementUnitService.convertFromUnit(this.height, unit)
+                                                    ,MeasurementUnitService.convertFromUnit(this.depth, unit)
+                                                    ,MeasurementUnitService.convertFromUnit(this.width, unit));
+            }
         }
     }
 }
