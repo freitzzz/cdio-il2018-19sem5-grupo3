@@ -361,64 +361,52 @@ namespace backend_tests.Controllers{
             //A valid product creation requires a valid reference, a valid desgination
             //A valid category, valid dimensions and valid materials
             //Components are not required
-            //To ensure atomicity, our reference will be generated with a timestamp (We have no bussiness rules so far as how they should be so its valid at this point)
-            string reference="#666"+Guid.NewGuid().ToString("n");
-            //Designation can be whatever we decide
-            string designation="Time N Place";
-            //Categories must previously exist as they can be shared in various products
+            ProductDTO productDTO=createProductWithValidProperties();
             Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
             categoryDTO.Wait();
             //Materials must previously exist as they can be shared in various products
             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
             materialDTO.Wait();
-            DiscreteDimensionIntervalDTO discreteDimensionIntervalDTO=new DiscreteDimensionIntervalDTO();
-            discreteDimensionIntervalDTO.values=new List<double>(new[]{1.0,2.0,30.0});
-            ContinuousDimensionIntervalDTO continuousDimensionIntervalDTO=new ContinuousDimensionIntervalDTO();
-            continuousDimensionIntervalDTO.increment=1;
-            continuousDimensionIntervalDTO.minValue=10;
-            continuousDimensionIntervalDTO.maxValue=100;
-            SingleValueDimensionDTO singleValueDimensionDTO=new SingleValueDimensionDTO();
-            singleValueDimensionDTO.value=50;
-            ComponentDTO componentDTO=new ComponentDTO();
-            Task<ProductDTO> asd=asdsda();
-            asd.Wait();
-            ProductDTO produasd=asd.Result;
-            componentDTO.product=produasd;
-            ProductDTO productDTO=new ProductDTO();
-            productDTO.reference=reference;
-            productDTO.designation=designation;
             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-            productDTO.productCategory=categoryDTO.Result;
-            DimensionsListDTO dimensionsListDTO=new DimensionsListDTO();
-            dimensionsListDTO.depthDimensionDTOs=new List<DimensionDTO>(new[]{discreteDimensionIntervalDTO});
-            dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(new[]{continuousDimensionIntervalDTO});
-            dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>(new[]{singleValueDimensionDTO});
-            productDTO.dimensions=dimensionsListDTO;
-            productDTO.complements=new List<ComponentDTO>(new []{componentDTO});
+            productDTO.productCategory=categoryDTO.Result; 
             var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
         }
         /// <summary>
-        /// Ensures that a product is created succesfuly
+        /// Ensures that a product can be created with componets
         /// </summary>
-        /// <returns>ProductDTO with the created product</returns>
-        [Fact, TestPriority(129)]
-        public async Task<ProductDTO> asdsda(){
-            //We are going to create a valid product
-            //A valid product creation requires a valid reference, a valid desgination
-            //A valid category, valid dimensions and valid materials
-            //Components are not required
-            //To ensure atomicity, our reference will be generated with a timestamp (We have no bussiness rules so far as how they should be so its valid at this point)
-            string reference="#666"+Guid.NewGuid().ToString("n");
-            //Designation can be whatever we decide
-            string designation="Time N Place";
-            //Categories must previously exist as they can be shared in various products
+        [Fact,TestPriority(20)]
+        public async Task<ProductDTO> ensureProductWithComponentsIsCreatedSuccesfuly(){
+            //We are going to create a product which will serve as complemented product for a product (component)
+            Task<ProductDTO> complementedProductDTOTask=ensureProductIsCreatedSuccesfuly();
+            complementedProductDTOTask.Wait();
+            //To save time lets just create a new product which will serve as the aggregate
+            ProductDTO productDTO=createProductWithValidProperties();
             Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
             categoryDTO.Wait();
             //Materials must previously exist as they can be shared in various products
             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
             materialDTO.Wait();
+            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
+            productDTO.productCategory=categoryDTO.Result; 
+            //Lets now adds the components to the product
+            ComponentDTO componentDTO=new ComponentDTO();
+            componentDTO.product=complementedProductDTOTask.Result;
+            productDTO.complements=new List<ComponentDTO>(new []{componentDTO});
+            var response=await httpClient.PostAsJsonAsync(PRODUCTS_URI,productDTO);
+            Assert.Equal(HttpStatusCode.Created,response.StatusCode);
+            return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
+        }
+        /// <summary>
+        /// Creates a product with valid properties (reference, designation and dimensions)
+        /// </summary>
+        /// <returns>ProductDTO with the product with valid properties</returns>
+        private ProductDTO createProductWithValidProperties(){
+            //To ensure atomicity, our reference will be generated with a timestamp (We have no bussiness rules so far as how they should be so its valid at this point)
+            string reference="#666"+Guid.NewGuid().ToString("n");
+            //Designation can be whatever we decide
+            string designation="Time N Place";
             DiscreteDimensionIntervalDTO discreteDimensionIntervalDTO=new DiscreteDimensionIntervalDTO();
             discreteDimensionIntervalDTO.values=new List<double>(new[]{1.0,2.0,30.0});
             ContinuousDimensionIntervalDTO continuousDimensionIntervalDTO=new ContinuousDimensionIntervalDTO();
@@ -430,16 +418,12 @@ namespace backend_tests.Controllers{
             ProductDTO productDTO=new ProductDTO();
             productDTO.reference=reference;
             productDTO.designation=designation;
-            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-            productDTO.productCategory=categoryDTO.Result;
             DimensionsListDTO dimensionsListDTO=new DimensionsListDTO();
             dimensionsListDTO.depthDimensionDTOs=new List<DimensionDTO>(new[]{discreteDimensionIntervalDTO});
             dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(new[]{continuousDimensionIntervalDTO});
             dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>(new[]{singleValueDimensionDTO});
             productDTO.dimensions=dimensionsListDTO;
-            var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
-            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-            return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
+            return productDTO;
         }
     }
 }
