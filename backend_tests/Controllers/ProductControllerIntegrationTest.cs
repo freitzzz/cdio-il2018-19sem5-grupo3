@@ -299,27 +299,105 @@ namespace backend_tests.Controllers{
             Assert.True(updateProductY.StatusCode==HttpStatusCode.BadRequest);
         }
 
-        /* /// <summary>
-        /// Ensures that the dimensions of a product cant be removed if the dimensions don't exist/are not found
+        /// <summary>
+        /// Ensures that the dimensions of a product cant be added if they are duplicated
         /// </summary>
-        [Fact,TestPriority(11)]
-        public async void ensureProductDimensionsCantBeRemovedIfNotFound(){
+        [Fact,TestPriority(12)]
+        public async void ensureProductDimensionsCantBeAddedIfDuplicated(){
             //We need to create a product for the test
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
             createdProductDTOX.Wait();
             UpdateProductDTO updatedProductX=new UpdateProductDTO();
-            updatedProductX.dimensionsToRemove=new List<MaterialDTO>(new []{new DimensionDTO()});
-            var updateProduct=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+            //First lets add some valid depth dimensions to the product
+            SingleValueDimensionDTO singleValueDimensionDTO=new SingleValueDimensionDTO();
+            singleValueDimensionDTO.value=1500;
+            DimensionsListDTO dimensionsListDTOToAdd=new DimensionsListDTO();
+            dimensionsListDTOToAdd.depthDimensionDTOs=new List<DimensionDTO>(new []{singleValueDimensionDTO});
+            updatedProductX.dimensionsToAdd=dimensionsListDTOToAdd;
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
                                                                             .Result.id
                                                                         +"/dimensions"
                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-            Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
-        } */
+            Assert.True(updateProductX.StatusCode==HttpStatusCode.OK);
+
+            //Now lets try to send the same request (with the same dimension to add)
+            var updateProductY=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductY.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that the dimensions of a product cant be removied if they are invalid
+        /// </summary>
+        [Fact,TestPriority(13)]
+        public async void ensureProductDimensionsCantBeRemovedIfDuplicated(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            DimensionsListDTO dimensionsListDTOToRemove=new DimensionsListDTO();
+            //First lets try with empty dimensions to remove
+            updatedProductX.dimensionsToRemove=dimensionsListDTOToRemove;
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductX.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that the dimensions of a product cant be removed if they are non existing
+        /// </summary>
+        [Fact,TestPriority(13)]
+        public async void ensureProductDimensionsCantBeRemovedIfNonExistent(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            //First lets add some valid depth dimensions to the product
+            SingleValueDimensionDTO singleValueDimensionDTOX=new SingleValueDimensionDTO();
+            SingleValueDimensionDTO singleValueDimensionDTOY=new SingleValueDimensionDTO();
+            //We need at least 2 dimensions to try to remove
+            singleValueDimensionDTOX.value=1500;
+            singleValueDimensionDTOY.value=1600;
+            DimensionsListDTO dimensionsListDTOToAdd=new DimensionsListDTO();
+            dimensionsListDTOToAdd.depthDimensionDTOs=new List<DimensionDTO>(new []{singleValueDimensionDTOX});
+            updatedProductX.dimensionsToAdd=dimensionsListDTOToAdd;
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.True(updateProductX.StatusCode==HttpStatusCode.OK);
+            updatedProductX.dimensionsToAdd=null;
+
+            DimensionsListDTO dimensionsListDTOToRemove=new DimensionsListDTO();
+            singleValueDimensionDTOX.value=1600;
+            dimensionsListDTOToRemove.depthDimensionDTOs=new List<DimensionDTO>(new[]{singleValueDimensionDTOX});
+            //Now lets try to remove a dimension which is nonexisting
+            updatedProductX.dimensionsToRemove=dimensionsListDTOToRemove;
+            var updateProductY=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductY.StatusCode==HttpStatusCode.BadRequest);
+
+            //Now lets try to remove a dimension which doesnt exist on the height values
+            dimensionsListDTOToRemove.depthDimensionDTOs=null;
+            dimensionsListDTOToRemove.heightDimensionDTOs=new List<DimensionDTO>(new[]{singleValueDimensionDTOX});
+            var updateProductZ=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductZ.StatusCode==HttpStatusCode.BadRequest);
+        }
 
         /// <summary>
         /// Ensures that a product can't be created if the request body is empty
         /// </summary>
-        [Fact, TestPriority(13)]
+        [Fact, TestPriority(14)]
         public async void ensureProductCantBeCreatedWithEmptyRequestBody(){
             //We are attempting to create an object with an empty request body
             var createProductEmptyRequestBody=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON("{}"));
