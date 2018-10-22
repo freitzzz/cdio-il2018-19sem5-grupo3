@@ -239,6 +239,66 @@ namespace backend_tests.Controllers{
             Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
         }
 
+        /// <summary>
+        /// Ensures that a product cant add dimensions which are "empty"
+        /// </summary>
+        [Fact,TestPriority(10)]
+        public async void ensureProductDimensionsCantBeAddedIfEmpty(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            DimensionsListDTO dimensionsDTOToAdd=new DimensionsListDTO();
+            //First lets test with "null" dimensions
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductX.StatusCode==HttpStatusCode.BadRequest);
+            //Now lets test with empty dimensions
+            updatedProductX.dimensionsToAdd=dimensionsDTOToAdd;
+            var updateProductY=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductY.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that a product cant add dimensions if they are invalid
+        /// </summary>
+        [Fact,TestPriority(11)]
+        public async void ensureProductDimensionsCantBeAddedIfInvalid(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            DimensionsListDTO dimensionsDTOToAdd=new DimensionsListDTO();
+            //First lets test with empty height dimensions
+            dimensionsDTOToAdd.heightDimensionDTOs=new List<DimensionDTO>();
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductX.StatusCode==HttpStatusCode.BadRequest);
+
+            dimensionsDTOToAdd.depthDimensionDTOs=new List<DimensionDTO>();
+            //Now lets test with empty depth dimensions
+            var updateProductY=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductY.StatusCode==HttpStatusCode.BadRequest);
+
+            dimensionsDTOToAdd.widthDimensionDTOs=new List<DimensionDTO>();
+            //Now lets test with empty depth dimensions
+            var updateProductZ=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductY.StatusCode==HttpStatusCode.BadRequest);
+        }
+
         /* /// <summary>
         /// Ensures that the dimensions of a product cant be removed if the dimensions don't exist/are not found
         /// </summary>
@@ -418,7 +478,7 @@ namespace backend_tests.Controllers{
             Assert.Equal(HttpStatusCode.Created,response.StatusCode);
             return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
         }
-        
+
         /// <summary>
         /// Creates a product with valid properties (reference, designation and dimensions)
         /// </summary>
