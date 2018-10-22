@@ -107,7 +107,7 @@ namespace backend.Controllers {
         /// <summary>
         /// Constant that represents the log message for when a DELETE Request returns a BadRequest
         /// </summary>
-        private const string LOG_DELETE_BAD_REQUEST = "DELETE Product {@product} Bad Request";
+        private const string LOG_DELETE_BAD_REQUEST = "DELETE({id}) Bad Request";
         /// <summary>
         /// Constant that represents the log message for when a GET All Request is successful
         /// </summary>
@@ -115,11 +115,12 @@ namespace backend.Controllers {
         /// <summary>
         /// Constant that represents the log message for when a POST Request is successful
         /// </summary>
-        private const string LOG_POST_SUCCESS = "Product {product} created";
+
+        private const string LOG_POST_SUCCESS = "Product {@product} created";
         /// <summary>
         /// Constant that represents the log message for when a GET By ID Request is successful
         /// </summary>
-        private const string LOG_GET_BY_ID_SUCCESS = "Product {product} retrieved";
+        private const string LOG_GET_BY_ID_SUCCESS = "Product {@product} retrieved";
         /// <summary>
         /// Constant that represents the log message for when a PUT Request is successful
         /// </summary>
@@ -127,7 +128,7 @@ namespace backend.Controllers {
         /// <summary>
         /// Constant that represents the log message for when a DELETE Request is successful
         /// </summary>
-        private const string LOG_DELETE_SUCCESS = "Product {@product} soft deleted";
+        private const string LOG_DELETE_SUCCESS = "Product with ID {id} soft deleted";
 
         private readonly ProductRepository productRepository;
 
@@ -255,9 +256,10 @@ namespace backend.Controllers {
             logger.LogInformation(LOG_PUT_MATERIALS_START);
             updateProductData.id = id;
             try {
-                if (new core.application.ProductController().updateProductMaterials(updateProductData))
+                if (new core.application.ProductController().updateProductMaterials(updateProductData)) {
                     logger.LogInformation(LOG_PUT_SUCCESS, id, updateProductData);
-                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+                    return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+                }
             } catch (NullReferenceException nullReferenceException) {
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, id, updateProductData);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
@@ -265,6 +267,8 @@ namespace backend.Controllers {
                 logger.LogWarning(invalidOperationException, LOG_PUT_BAD_REQUEST, id, updateProductData);
                 return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
             }
+            logger.LogInformation(LOG_PUT_BAD_REQUEST, id, updateProductData);
+            return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
 
         /// <summary>
@@ -279,9 +283,10 @@ namespace backend.Controllers {
             logger.LogInformation(LOG_PUT_COMPONENTS_START);
             updateProductData.id = id;
             try {
-                if (new core.application.ProductController().updateProductComponents(updateProductData))
+                if (new core.application.ProductController().updateProductComponents(updateProductData)) {
                     logger.LogInformation(LOG_PUT_SUCCESS, id, updateProductData);
-                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+                    return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+                }
             } catch (NullReferenceException nullReferenceException) {
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, id, updateProductData);
                 return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
@@ -289,6 +294,8 @@ namespace backend.Controllers {
                 logger.LogWarning(invalidOperationException, LOG_PUT_BAD_REQUEST, id, updateProductData);
                 return BadRequest(invalidOperationException.Message);
             }
+            logger.LogInformation(LOG_PUT_BAD_REQUEST, id, updateProductData);
+            return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
 
         /// <summary>
@@ -303,9 +310,10 @@ namespace backend.Controllers {
             logger.LogInformation(LOG_PUT_DIMENSIONS_START);
             updateProductData.id = id;
             try {
-                if (new core.application.ProductController().updateProductDimensions(updateProductData))
+                if (new core.application.ProductController().updateProductDimensions(updateProductData)) {
                     logger.LogInformation(LOG_PUT_SUCCESS, id, updateProductData);
-                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+                    return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+                }
             } catch (NullReferenceException nullReferenceException) {
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, id, updateProductData);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
@@ -313,6 +321,8 @@ namespace backend.Controllers {
                 logger.LogWarning(invalidOperationException, LOG_PUT_BAD_REQUEST, id, updateProductData);
                 return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
             }
+            logger.LogInformation(LOG_PUT_BAD_REQUEST, id, updateProductData);
+            return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
 
         /// <summary>
@@ -327,9 +337,10 @@ namespace backend.Controllers {
             logger.LogInformation(LOG_PUT_PRODUCT_CATEGORY_START);
             updateProductData.id = id;
             try {
-                if (new core.application.ProductController().updateProductCategory(updateProductData))
+                if (new core.application.ProductController().updateProductCategory(updateProductData)) {
                     logger.LogInformation(LOG_PUT_SUCCESS, id, updateProductData);
-                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+                    return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+                }
             } catch (NullReferenceException nullReferenceException) {
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, id, updateProductData);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
@@ -337,6 +348,8 @@ namespace backend.Controllers {
                 logger.LogWarning(invalidOperationException, LOG_PUT_BAD_REQUEST, id, updateProductData);
                 return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
             }
+            logger.LogInformation(LOG_PUT_BAD_REQUEST, id, updateProductData);
+            return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
 
         /// <summary>
@@ -354,10 +367,10 @@ namespace backend.Controllers {
             productDTO.id = id;
             bool disabledWithSuccess = new core.application.ProductController().disableProduct(productDTO);
             if (disabledWithSuccess) {
-                logger.LogInformation(LOG_DELETE_SUCCESS, productDTO);
+                logger.LogInformation(LOG_DELETE_SUCCESS, id);
                 return NoContent();
             } else {
-                logger.LogWarning(LOG_DELETE_BAD_REQUEST, productDTO);
+                logger.LogWarning(LOG_DELETE_BAD_REQUEST, id);
                 return BadRequest();
             }
         }
