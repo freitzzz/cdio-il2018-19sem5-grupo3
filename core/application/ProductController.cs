@@ -420,7 +420,7 @@ namespace core.application {
         /// <param name="componentsToFetch">IEnumerable with the components dtos to fetch</param>
         /// <param name="fetchedComponents">IEnumerable with the fetched components</param>
         private void ensureProductsComponentsFetchWasSuccesful(IEnumerable<ComponentDTO> componentsToFetch, IEnumerable<Component> fetchedComponents) {
-            if (Collections.getEnumerableSize(componentsToFetch) != Collections.getEnumerableSize(fetchedComponents))
+            if (Collections.isEnumerableNullOrEmpty(componentsToFetch)||Collections.getEnumerableSize(componentsToFetch) != Collections.getEnumerableSize(fetchedComponents))
                 throw new InvalidOperationException(INVALID_COMPONENTS_FETCH);
         }
 
@@ -430,7 +430,7 @@ namespace core.application {
         /// <param name="productsToFetch">IEnumerable with the products dtos to fetch</param>
         /// <param name="fetchedProducts">IEnumerable with the fetched products</param>
         private void ensureProductsFetchWasSuccesful(IEnumerable<ProductDTO> productsToFetch, IEnumerable<Product> fetchedProducts) {
-            if (Collections.getEnumerableSize(productsToFetch) != Collections.getEnumerableSize(fetchedProducts))
+            if (Collections.isEnumerableNullOrEmpty(productsToFetch)||Collections.getEnumerableSize(productsToFetch) != Collections.getEnumerableSize(fetchedProducts))
                 throw new InvalidOperationException(INVALID_PRODUCTS_FETCH);
         }
 
@@ -440,7 +440,7 @@ namespace core.application {
         /// <param name="dimensionsToFetch">IEnumerable with the dimensions dtos to fetch</param>
         /// <param name="fetchedDimensions">IEnumerable with the fetched dimensions</param>
         private void ensureProductsDimensionsFetchWasSuccesful(IEnumerable<DimensionDTO> dimensionsToFetch, IEnumerable<Dimension> fetchedDimensions) {
-            if (Collections.getEnumerableSize(dimensionsToFetch) != Collections.getEnumerableSize(fetchedDimensions))
+            if (Collections.isEnumerableNullOrEmpty(dimensionsToFetch)||Collections.getEnumerableSize(dimensionsToFetch) != Collections.getEnumerableSize(fetchedDimensions))
                 throw new InvalidOperationException(INVALID_DIMENSIONS_FETCH);
         }
     }
