@@ -350,7 +350,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that the dimensions of a product cant be removed if they are non existing
         /// </summary>
-        [Fact,TestPriority(13)]
+        [Fact,TestPriority(14)]
         public async void ensureProductDimensionsCantBeRemovedIfNonExistent(){
             //We need to create a product for the test
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
@@ -392,6 +392,47 @@ namespace backend_tests.Controllers{
                                                                         +"/dimensions"
                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
             Assert.True(updateProductZ.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that a product category can't be updated if invalid (null/empty category)
+        /// </summary>
+        [Fact,TestPriority(15)]
+        public async void ensureCantUpdateTheCategoryOfAProductIfInvalid(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            //Our category will be an "empty" category
+            updatedProductX.productCategoryToUpdate=new ProductCategoryDTO();
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/category"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
+        }
+
+        /// <summary>
+        /// Ensures that a product category can't be updated if the category is nonexisting
+        /// </summary>
+        [Fact,TestPriority(16)]
+        public async void ensureCantUpdateTheCategoryOfAProductIfNonExisting(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            //Our category will be a non existing category (still not persisted)
+            ProductCategoryDTO productCategoryDTO=new ProductCategoryDTO();
+            productCategoryDTO.id=0;
+            updatedProductX.productCategoryToUpdate=productCategoryDTO;
+            
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/category"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
         }
 
         /// <summary>
