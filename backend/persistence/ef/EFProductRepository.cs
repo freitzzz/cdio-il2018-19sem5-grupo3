@@ -12,6 +12,17 @@ namespace backend.persistence.ef
     {
         public EFProductRepository(MyCContext dbContext) : base(dbContext){}
         /// <summary>
+        /// Fetches product component by their ids
+        /// </summary>
+        /// <param name="productID">product id</param>
+        /// <param name="componentID">component id</param>
+        /// <returns>product component with respective id</returns>
+        public Component fetchProductComponent(long productID, long componentID) {
+            Product product = find(productID);
+            return product.complementedProducts.SingleOrDefault(c => c.complementedProductId == componentID);
+        }
+
+        /// <summary>
         /// Fetches an enumerable of products by their ids
         /// </summary>
         /// <param name="productsDTO">IEnumerable with the products information</param>
@@ -33,7 +44,7 @@ namespace backend.persistence.ef
         public override Product update(Product entity){
             if(base.find(entity.id()).Id!=entity.Id)
                 return null;
-            return update(entity);
+            return base.update(entity);
         }
     }
 }

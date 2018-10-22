@@ -76,7 +76,7 @@ namespace backend.Controllers
         /// <summary>
         /// Constant representing the log message for when a POST Request returns a BadRequest
         /// </summary>
-        private const string LOG_POST_BAD_REQUEST = "POST BadRequest";
+        private const string LOG_POST_BAD_REQUEST = "POST {@category} BadRequest";
 
         /// <summary>
         /// Constant representing the log message for when a DELETE Request returns NotFound
@@ -146,7 +146,7 @@ namespace backend.Controllers
             }
             catch (ArgumentException e)
             {
-                logger.LogWarning(e, LOG_POST_BAD_REQUEST);
+                logger.LogWarning(e, LOG_POST_BAD_REQUEST,categoryAsJson);
                 return BadRequest(new { error = e.Message });
             }
         }
