@@ -16,7 +16,7 @@ using support.utils;
 using core.persistence;
 using core.dto;
 using backend.utils;
-using static backend.utils.JSONStringFormatter;
+using Microsoft.Extensions.Logging;
 
 namespace backend.Controllers
 {
@@ -35,14 +35,6 @@ namespace backend.Controllers
         /// Constant that represents the 400 Bad Request message for when a Material is not found.
         /// </summary>
         private const string MATERIAL_NOT_FOUND_REFERENCE = "Material not found";
-
-
-        private readonly MaterialRepository materialRepository;
-
-        public MaterialsController(MaterialRepository materialRepository)
-        {
-            this.materialRepository = materialRepository;
-        }
 
         /// <summary>
         /// Constant that represents the 400 Bad Request message for when a Material is not removed.
@@ -68,6 +60,112 @@ namespace backend.Controllers
         private const string INVALID_REQUEST_BODY_MESSAGE = "The request body is invalid\nCheck documentation for more information";
 
         /// <summary>
+        /// Constant that represents the log message for when a GET All Request starts
+        /// </summary>
+        private const string LOG_GET_ALL_START = "GET All Request started";
+
+        /// <summary>
+        /// Constant that represents the log message for when a GET By ID Request starts
+        /// </summary>
+        private const string LOG_GET_BY_ID_START = "GET By ID Request started";
+
+        /// <summary>
+        /// Constant that represents the log message for when a POST Request starts
+        /// </summary>
+        private const string LOG_POST_START = "POST Request started";
+
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Request starts
+        /// </summary>
+        private const string LOG_DELETE_START = "DELETE Request started";
+
+        /// <summary>
+        /// Constant that represents the log message for when a PUT Basic Info Request starts
+        /// </summary>
+        private const string LOG_PUT_BASIC_INFO_START = "PUT Basic Info Request started";
+
+        /// <summary>
+        /// Constant that represents the log message for when a PUT Finishes Request starts
+        /// </summary>
+        private const string LOG_PUT_FINISHES_START = "PUT Finishes Request started";
+
+        /// <summary>
+        /// Constant that represents the log message for when a PUT Colors Request starts
+        /// </summary>
+        private const string LOG_PUT_COLORS_START = "PUT Colors Request started";
+
+        /// <summary>
+        /// Constant that represents the log message for when a GET All Request returns a BadRequest
+        /// </summary>
+        private const string LOG_GET_ALL_BAD_REQUEST = "GET All BadRequest (No Materials Found)";
+
+        /// <summary>
+        /// Constant that represents the log message for when a GET By ID Request returns a BadRequest
+        /// </summary>
+        private const string LOG_GET_BY_ID_BAD_REQUEST = "GETByID({id}) BadRequest";
+
+        /// <summary>
+        /// Constant that represents the log message for when a POST Request returns a BadRequest
+        /// </summary>
+        private const string LOG_POST_BAD_REQUEST = "POST {@material} BadRequest";
+
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Request returns a BadRequest
+        /// </summary>
+        private const string LOG_DELETE_BAD_REQUEST = "DELETE({id}) BadRequest";
+
+        /// <summary>
+        /// Constant that represents the log message for when a PUT Request returns a BadRequest
+        /// </summary>
+        private const string LOG_PUT_BAD_REQUEST = "Material with id {id} PUT {@updateInfo} BadRequest";
+
+        /// <summary>
+        /// Constant that represents the log message for when a GET All Request is successful
+        /// </summary>
+        private const string LOG_GET_ALL_SUCCESS = "Materials {@materials} retrieved";
+
+        /// <summary>
+        /// Constant that represents the log message for when a GET By ID Request is successful
+        /// </summary>
+        private const string LOG_GET_BY_ID_SUCCESS = "Material {@material} retrieved";
+
+        /// <summary>
+        /// Constant that represents the log message for when a POST Request is successful
+        /// </summary>
+        private const string LOG_POST_SUCCESS = "Material {@material} created";
+
+        /// <summary>
+        /// Constant that represents the log message for when a POST Request is successful
+        /// </summary>
+        private const string LOG_DELETE_SUCCESS = "Material with id {id} soft deleted";
+
+        /// <summary>
+        /// Constant that represents the log message for when a PUT Request is successful
+        /// </summary>
+        private const string LOG_PUT_SUCCESS = "Material with id {id} updated with info {@updateInfo}";
+
+        /// <summary>
+        /// Repository used to manipulate Material instances
+        /// </summary>
+        private readonly MaterialRepository materialRepository;
+
+        /// <summary>
+        /// MaterialsControllers logger
+        /// </summary>
+        private readonly ILogger<MaterialsController> logger;
+
+        /// <summary>
+        /// Constructor with injected type of repository
+        /// </summary>
+        /// <param name="materialRepository">Repository to be used to manipulate Material instances</param>
+        /// <param name="logger">Controllers logger to log any information regarding HTTP Requests and Responses</param>
+        public MaterialsController(MaterialRepository materialRepository, ILogger<MaterialsController> logger)
+        {
+            this.materialRepository = materialRepository;
+            this.logger = logger;
+        }
+
+        /// <summary>
         /// Finds all Materials.
         /// </summary>
         /// <returns>
@@ -77,14 +175,15 @@ namespace backend.Controllers
         [HttpGet]
         public ActionResult<List<MaterialDTO>> findAll()
         {
+            logger.LogInformation(LOG_GET_ALL_START);
             List<MaterialDTO> materials = new core.application.MaterialsController().findAllMaterials();
 
             if (Collections.isListEmpty(materials))
             {
-                string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, NO_MATERIALS_FOUND_REFERENCE);
-                return BadRequest(jsonFormattedMessage);
+                logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
+                return BadRequest(new SimpleJSONMessageService(NO_MATERIALS_FOUND_REFERENCE));
             }
-
+            logger.LogInformation(LOG_GET_ALL_SUCCESS, materials);
             return Ok(materials);
         }
 
@@ -99,16 +198,21 @@ namespace backend.Controllers
         [HttpGet("{id}", Name = "GetMaterial")]
         public ActionResult<MaterialDTO> findById(long id)
         {
+            logger.LogInformation(LOG_GET_BY_ID_START);
             try
             {
                 MaterialDTO materialDTO = new core.application.MaterialsController().findMaterialByID(id);
                 if (materialDTO == null)
                 {
-                    string jsonFormattedMessage = JSONStringFormatter.formatMessageToJson(MessageTypes.ERROR_MSG, MATERIAL_NOT_FOUND_REFERENCE);
-                    return BadRequest(jsonFormattedMessage);
+                    logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST, id);
+                    return BadRequest(new SimpleJSONMessageService(MATERIAL_NOT_FOUND_REFERENCE));
                 }
+                logger.LogInformation(LOG_GET_BY_ID_SUCCESS, materialDTO);
                 return Ok(materialDTO);
-            }catch(NullReferenceException){
+            }
+            catch (NullReferenceException nullReferenceException)
+            {
+                logger.LogWarning(nullReferenceException, LOG_GET_BY_ID_BAD_REQUEST, id);
                 return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
             }
         }
@@ -124,12 +228,14 @@ namespace backend.Controllers
         [HttpPost]
         public ActionResult<MaterialDTO> addMaterial([FromBody]MaterialDTO materialDTO)
         {
+            logger.LogInformation(LOG_POST_START);
             try
             {
                 MaterialDTO createdMaterialDTO = new core.application.MaterialsController().addMaterial(materialDTO);
                 if (createdMaterialDTO != null)
                 {
-                    return CreatedAtRoute("GetMaterial", new {id = createdMaterialDTO.id}, createdMaterialDTO);
+                    logger.LogInformation(LOG_POST_SUCCESS, createdMaterialDTO);
+                    return CreatedAtRoute("GetMaterial", new { id = createdMaterialDTO.id }, createdMaterialDTO);
                 }
                 else
                 {
@@ -137,12 +243,14 @@ namespace backend.Controllers
                     return BadRequest();
                 }
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException nullReferenceException)
             {
+                logger.LogWarning(nullReferenceException, LOG_POST_BAD_REQUEST, materialDTO);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
             catch (ArgumentException argumentException)
             {
+                logger.LogWarning(argumentException, LOG_POST_BAD_REQUEST, materialDTO);
                 return BadRequest(new SimpleJSONMessageService(argumentException.Message));
             }
         }
@@ -158,15 +266,18 @@ namespace backend.Controllers
         [HttpDelete("{id}")]
         public ActionResult disableMaterial(long id)
         {
+            logger.LogInformation(LOG_DELETE_START);
             MaterialDTO materialDTO = new MaterialDTO();
             materialDTO.id = id;
             bool disabledWithSuccess = new core.application.MaterialsController().disableMaterial(materialDTO);
             if (disabledWithSuccess)
             {
+                logger.LogInformation(LOG_DELETE_SUCCESS, id);
                 return NoContent();
             }
             else
             {
+                logger.LogWarning(LOG_DELETE_BAD_REQUEST, id);
                 return BadRequest();
             }
         }
@@ -180,18 +291,25 @@ namespace backend.Controllers
         [HttpPut("{id}")]
         public ActionResult updateMaterialBasicInformation(long id, [FromBody] UpdateMaterialDTO updateMaterialData)
         {
+            logger.LogInformation(LOG_PUT_BASIC_INFO_START);
             try
             {
-                 updateMaterialData.id = id;
+                updateMaterialData.id = id;
                 if (new core.application.MaterialsController().updateMaterialBasicInformation(updateMaterialData))
+                {
+                    logger.LogInformation(LOG_PUT_SUCCESS, id, updateMaterialData);
                     return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
+                }
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException nullReferenceException)
             {
+                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, id, updateMaterialData);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
+            logger.LogWarning(LOG_PUT_BAD_REQUEST, id, updateMaterialData);
             return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
         }
+
         /// <summary>
         /// Updates finishes of a material
         /// </summary>
@@ -201,48 +319,56 @@ namespace backend.Controllers
         [HttpPut("{id}/finishes")]
         public ActionResult updateFinishes(long id, [FromBody] UpdateMaterialDTO upMat)
         {
+            logger.LogInformation(LOG_PUT_FINISHES_START);
             try
             {
                 upMat.id = id;
                 if (new core.application.MaterialsController().updateFinishes(upMat))
                 {
+                    logger.LogInformation(LOG_PUT_SUCCESS, id, upMat);
                     return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
                 }
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException nullReferenceException)
             {
+                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, id, upMat);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
+            logger.LogWarning(LOG_PUT_BAD_REQUEST, id, upMat);
             return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
-        }/// <summary>
-         /// Updates colors of a material
-         /// </summary>
-         /// <param name="id">id of the material to be updated</param>
-         /// <param name="upMat">dto with the list of colors to add and remove</param>
-         /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
+        }
+
+        /// <summary>
+        /// Updates colors of a material
+        /// </summary>
+        /// <param name="id">id of the material to be updated</param>
+        /// <param name="upMat">dto with the list of colors to add and remove</param>
+        /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
         [HttpPut("{id}/colors")]
         public ActionResult updateColors(long id, [FromBody] UpdateMaterialDTO upMat)
         {
+            logger.LogInformation(LOG_PUT_COLORS_START);
             try
             {
                 upMat.id = id;
                 if (new core.application.MaterialsController().updateColors(upMat))
                 {
+                    logger.LogInformation(LOG_PUT_SUCCESS, id, upMat);
                     return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
                 }
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException nullReferenceException)
             {
+                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, id, upMat);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
             catch (InvalidOperationException invalidOperationException)
             {
+                logger.LogWarning(invalidOperationException, LOG_PUT_BAD_REQUEST, id, upMat);
                 return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
             }
+            logger.LogWarning(LOG_PUT_BAD_REQUEST, id, upMat);
             return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
         }
-
-
-
     }
 }
