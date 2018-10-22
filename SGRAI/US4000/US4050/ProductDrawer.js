@@ -41,6 +41,9 @@ var u_MvpMatrix=null;
  */
 var webGL=null;
 
+/**
+ * Current product indices
+ */
 var indices=0;
 
 /**

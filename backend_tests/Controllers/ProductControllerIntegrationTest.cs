@@ -239,27 +239,322 @@ namespace backend_tests.Controllers{
             Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
         }
 
-        /* /// <summary>
-        /// Ensures that the dimensions of a product cant be removed if the dimensions don't exist/are not found
+        /// <summary>
+        /// Ensures that a product cant add dimensions which are "empty"
         /// </summary>
-        [Fact,TestPriority(11)]
-        public async void ensureProductDimensionsCantBeRemovedIfNotFound(){
+        [Fact,TestPriority(10)]
+        public async void ensureProductDimensionsCantBeAddedIfEmpty(){
             //We need to create a product for the test
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
             createdProductDTOX.Wait();
             UpdateProductDTO updatedProductX=new UpdateProductDTO();
-            updatedProductX.dimensionsToRemove=new List<MaterialDTO>(new []{new DimensionDTO()});
-            var updateProduct=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+            DimensionsListDTO dimensionsDTOToAdd=new DimensionsListDTO();
+            //First lets test with "null" dimensions
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
                                                                             .Result.id
                                                                         +"/dimensions"
                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-            Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
-        } */
+            Assert.True(updateProductX.StatusCode==HttpStatusCode.BadRequest);
+            //Now lets test with empty dimensions
+            updatedProductX.dimensionsToAdd=dimensionsDTOToAdd;
+            var updateProductY=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductY.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that a product cant add dimensions if they are invalid
+        /// </summary>
+        [Fact,TestPriority(11)]
+        public async void ensureProductDimensionsCantBeAddedIfInvalid(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            DimensionsListDTO dimensionsDTOToAdd=new DimensionsListDTO();
+            //First lets test with empty height dimensions
+            dimensionsDTOToAdd.heightDimensionDTOs=new List<DimensionDTO>();
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductX.StatusCode==HttpStatusCode.BadRequest);
+
+            dimensionsDTOToAdd.depthDimensionDTOs=new List<DimensionDTO>();
+            //Now lets test with empty depth dimensions
+            var updateProductY=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductY.StatusCode==HttpStatusCode.BadRequest);
+
+            dimensionsDTOToAdd.widthDimensionDTOs=new List<DimensionDTO>();
+            //Now lets test with empty depth dimensions
+            var updateProductZ=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductY.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that the dimensions of a product cant be added if they are duplicated
+        /// </summary>
+        [Fact,TestPriority(12)]
+        public async void ensureProductDimensionsCantBeAddedIfDuplicated(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            //First lets add some valid depth dimensions to the product
+            SingleValueDimensionDTO singleValueDimensionDTO=new SingleValueDimensionDTO();
+            singleValueDimensionDTO.value=1500;
+            DimensionsListDTO dimensionsListDTOToAdd=new DimensionsListDTO();
+            dimensionsListDTOToAdd.depthDimensionDTOs=new List<DimensionDTO>(new []{singleValueDimensionDTO});
+            updatedProductX.dimensionsToAdd=dimensionsListDTOToAdd;
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductX.StatusCode==HttpStatusCode.OK);
+
+            //Now lets try to send the same request (with the same dimension to add)
+            var updateProductY=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductY.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that the dimensions of a product cant be removied if they are invalid
+        /// </summary>
+        [Fact,TestPriority(13)]
+        public async void ensureProductDimensionsCantBeRemovedIfDuplicated(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            DimensionsListDTO dimensionsListDTOToRemove=new DimensionsListDTO();
+            //First lets try with empty dimensions to remove
+            updatedProductX.dimensionsToRemove=dimensionsListDTOToRemove;
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductX.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that the dimensions of a product cant be removed if they are non existing
+        /// </summary>
+        [Fact,TestPriority(14)]
+        public async void ensureProductDimensionsCantBeRemovedIfNonExistent(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            //First lets add some valid depth dimensions to the product
+            SingleValueDimensionDTO singleValueDimensionDTOX=new SingleValueDimensionDTO();
+            SingleValueDimensionDTO singleValueDimensionDTOY=new SingleValueDimensionDTO();
+            //We need at least 2 dimensions to try to remove
+            singleValueDimensionDTOX.value=1500;
+            singleValueDimensionDTOY.value=1600;
+            DimensionsListDTO dimensionsListDTOToAdd=new DimensionsListDTO();
+            dimensionsListDTOToAdd.depthDimensionDTOs=new List<DimensionDTO>(new []{singleValueDimensionDTOX});
+            updatedProductX.dimensionsToAdd=dimensionsListDTOToAdd;
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.True(updateProductX.StatusCode==HttpStatusCode.OK);
+            updatedProductX.dimensionsToAdd=null;
+
+            DimensionsListDTO dimensionsListDTOToRemove=new DimensionsListDTO();
+            singleValueDimensionDTOX.value=1600;
+            dimensionsListDTOToRemove.depthDimensionDTOs=new List<DimensionDTO>(new[]{singleValueDimensionDTOX});
+            //Now lets try to remove a dimension which is nonexisting
+            updatedProductX.dimensionsToRemove=dimensionsListDTOToRemove;
+            var updateProductY=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductY.StatusCode==HttpStatusCode.BadRequest);
+
+            //Now lets try to remove a dimension which doesnt exist on the height values
+            dimensionsListDTOToRemove.depthDimensionDTOs=null;
+            dimensionsListDTOToRemove.heightDimensionDTOs=new List<DimensionDTO>(new[]{singleValueDimensionDTOX});
+            var updateProductZ=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/dimensions"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+            Assert.True(updateProductZ.StatusCode==HttpStatusCode.BadRequest);
+        }
+
+        /// <summary>
+        /// Ensures that a product category can't be updated if invalid (null/empty category)
+        /// </summary>
+        [Fact,TestPriority(15)]
+        public async void ensureCantUpdateTheCategoryOfAProductIfInvalid(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            //Our category will be an "empty" category
+            updatedProductX.productCategoryToUpdate=new ProductCategoryDTO();
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/category"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
+        }
+
+        /// <summary>
+        /// Ensures that a product category can't be updated if the category is nonexisting
+        /// </summary>
+        [Fact,TestPriority(16)]
+        public async void ensureCantUpdateTheCategoryOfAProductIfNonExisting(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            //Our category will be a non existing category (still not persisted)
+            ProductCategoryDTO productCategoryDTO=new ProductCategoryDTO();
+            productCategoryDTO.id=0;
+            updatedProductX.productCategoryToUpdate=productCategoryDTO;
+            
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/category"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
+        }
+
+        /// <summary>
+        /// Ensures that its not possible to add an invalid component (null / empty) to a product
+        /// </summary>
+        [Fact,TestPriority(17)]
+        public async void ensureCantAddInvalidComponentsToProduct(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            //First lets test to add components to the product with no components (empty list)
+            updatedProductX.componentsToAdd=new List<ComponentDTO>();
+            
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/components"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
+
+            //Now lets add an empty component (empty body)
+            updatedProductX.componentsToAdd=new List<ComponentDTO>(new []{new ComponentDTO()});
+            updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/components"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
+        }
+
+        /// <summary>
+        /// Ensures that its not possible to add a duplicated component (null / empty) to a product
+        /// </summary>
+        [Fact,TestPriority(18)]
+        public async void ensureCantAddDuplicatedComponentsToProduct(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            //First lets add a valid component to the product
+            Task<ProductDTO> complementedProductDTOTask=ensureProductIsCreatedSuccesfuly();
+            complementedProductDTOTask.Wait();
+            ComponentDTO componentDTO=new ComponentDTO();
+            componentDTO.product=complementedProductDTOTask.Result;
+            updatedProductX.componentsToAdd=new List<ComponentDTO>(new []{componentDTO});
+            
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/components"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.OK,updateProductX.StatusCode);
+
+            //Now lets send the same request so we try to add the same component
+            updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/components"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
+        }
+        
+        /// <summary>
+        /// Ensures that its not possible to remove an invalid component (null / empty) to a product
+        /// </summary>
+        [Fact,TestPriority(19)]
+        public async void ensureCantRemoveInvalidComponentsToProduct(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            //First lets test to add components to the product with no components (empty list)
+            updatedProductX.componentsToRemove=new List<ComponentDTO>();
+            
+            var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/components"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
+
+            //Now lets add an empty component (empty body)
+            updatedProductX.componentsToRemove=new List<ComponentDTO>(new []{new ComponentDTO()});
+            updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
+                                                                            .Result.id
+                                                                        +"/components"
+                                        ,HTTPContentCreator.contentAsJSON(updatedProductX));
+
+            Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
+        }
+
+        /// <summary>
+        /// Ensures that a product cant be disabled if it doesn't exist (resource doesn't exist)
+        /// </summary>
+        [Fact,TestPriority(20)]
+        public async void ensureCantDisableAProductWhichDoesntExist(){
+            var disableProduct=await httpClient.DeleteAsync(PRODUCTS_URI+"/"+"0");
+            Assert.Equal(HttpStatusCode.BadRequest,disableProduct.StatusCode);
+        }
+
+        /// <summary>
+        /// Ensures that a product cant be disabled if its already disabled
+        /// </summary>
+        [Fact,TestPriority(21)]
+        public async void ensureCantDisableAProductWhichIsAlreadyDisabled(){
+            //We need to create a product for the test
+            Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
+            createdProductDTOX.Wait();
+            //First lets disable the product we just created
+            var disableProduct=await httpClient.DeleteAsync(PRODUCTS_URI+"/"+createdProductDTOX.Result.id);
+            Assert.Equal(HttpStatusCode.NoContent,disableProduct.StatusCode);
+
+            //Now lets try to disable the product we just disabled
+            disableProduct=await httpClient.DeleteAsync(PRODUCTS_URI+"/"+createdProductDTOX.Result.id);
+            Assert.Equal(HttpStatusCode.BadRequest,disableProduct.StatusCode);
+        }
 
         /// <summary>
         /// Ensures that a product can't be created if the request body is empty
         /// </summary>
-        [Fact, TestPriority(13)]
+        [Fact, TestPriority(22)]
         public async void ensureProductCantBeCreatedWithEmptyRequestBody(){
             //We are attempting to create an object with an empty request body
             var createProductEmptyRequestBody=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON("{}"));
@@ -271,7 +566,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no reference
         /// </summary>
-        [Fact, TestPriority(14)]
+        [Fact, TestPriority(23)]
         public async void ensureProductCantBeCreatedWithNoReference(){
             //We are attempting to created a product with no referene
             ProductDTO productDTO=new ProductDTO();
@@ -285,7 +580,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no designation
         /// </summary>
-        [Fact, TestPriority(15)]
+        [Fact, TestPriority(24)]
         public async void ensureProductCantBeCreatedWithNoDesignation(){
             //We are attempting to created a product with no designation
             ProductDTO productDTO=new ProductDTO();
@@ -299,7 +594,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no category
         /// </summary>
-        [Fact, TestPriority(16)]
+        [Fact, TestPriority(25)]
         public async void ensureProductCantBeCreatedWithNoCategory(){
             //We are attempting to created a product with no category
             ProductDTO productDTO=new ProductDTO();
@@ -314,7 +609,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no materials
         /// </summary>
-        [Fact, TestPriority(17)]
+        [Fact, TestPriority(26)]
         public async void ensureProductCantBeCreatedWithNoMaterials(){
             //We are attempting to created a product with no materials
             ProductDTO productDTO=new ProductDTO();
@@ -332,7 +627,7 @@ namespace backend_tests.Controllers{
         /// <summary>
         /// Ensures that a product can't be created if it has no dimensions
         /// </summary>
-        [Fact, TestPriority(18)]
+        [Fact, TestPriority(27)]
         public async void ensureProductCantBeCreatedWithNoDimensions(){
             //We are attempting to created a product with no dimensions
             ProductDTO productDTO=new ProductDTO();
@@ -350,75 +645,167 @@ namespace backend_tests.Controllers{
             //Then the response should be a Bad Request
             Assert.True(createProductNoDimensions.StatusCode==HttpStatusCode.BadRequest);
         }
-        
+
+        /// <summary>
+        /// Ensures that a product cant be created with invalid components
+        /// </summary>
+        [Fact,TestPriority(28)]
+        public async void ensureProductCantBeCreatedWithInvalidComponents(){
+            ProductDTO productDTO=createProductWithValidProperties();
+            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryDTO.Wait();
+            //Materials must previously exist as they can be shared in various products
+            Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
+            materialDTO.Wait();
+            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
+            productDTO.productCategory=categoryDTO.Result;
+            //Our invalid component is a "blank" component
+            ComponentDTO componentDTO=new ComponentDTO();
+            productDTO.complements=new List<ComponentDTO>();
+            var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        /// <summary>
+        /// Ensures that a product cant be created with invalid slots (null)
+        /// </summary>
+        [Fact,TestPriority(29)]
+        public async void ensureProductCantBeCreatedWithInvalidSlots(){
+            ProductDTO productDTO=createProductWithValidProperties();
+            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryDTO.Wait();
+            //Materials must previously exist as they can be shared in various products
+            Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
+            materialDTO.Wait();
+            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
+            productDTO.productCategory=categoryDTO.Result;
+            //Our invalid slots are "empty" slots
+            productDTO.slotDimensions=new SlotDimensionSetDTO();
+            var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
         /// <summary>
         /// Ensures that a product is created succesfuly
         /// </summary>
         /// <returns>ProductDTO with the created product</returns>
-        [Fact, TestPriority(19)]
+        [Fact, TestPriority(30)]
         public async Task<ProductDTO> ensureProductIsCreatedSuccesfuly(){
             //We are going to create a valid product
             //A valid product creation requires a valid reference, a valid desgination
             //A valid category, valid dimensions and valid materials
             //Components are not required
-            //To ensure atomicity, our reference will be generated with a timestamp (We have no bussiness rules so far as how they should be so its valid at this point)
-            string reference="#666"+Guid.NewGuid().ToString("n");
-            //Designation can be whatever we decide
-            string designation="Time N Place";
-            //Categories must previously exist as they can be shared in various products
+            ProductDTO productDTO=createProductWithValidProperties();
             Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
             categoryDTO.Wait();
             //Materials must previously exist as they can be shared in various products
             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
             materialDTO.Wait();
-            DiscreteDimensionIntervalDTO discreteDimensionIntervalDTO=new DiscreteDimensionIntervalDTO();
-            discreteDimensionIntervalDTO.values=new List<double>(new[]{1.0,2.0,30.0});
-            ContinuousDimensionIntervalDTO continuousDimensionIntervalDTO=new ContinuousDimensionIntervalDTO();
-            continuousDimensionIntervalDTO.increment=1;
-            continuousDimensionIntervalDTO.minValue=10;
-            continuousDimensionIntervalDTO.maxValue=100;
-            SingleValueDimensionDTO singleValueDimensionDTO=new SingleValueDimensionDTO();
-            singleValueDimensionDTO.value=50;
-            ComponentDTO componentDTO=new ComponentDTO();
-            Task<ProductDTO> asd=asdsda();
-            asd.Wait();
-            ProductDTO produasd=asd.Result;
-            componentDTO.product=produasd;
-            ProductDTO productDTO=new ProductDTO();
-            productDTO.reference=reference;
-            productDTO.designation=designation;
             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-            productDTO.productCategory=categoryDTO.Result;
-            DimensionsListDTO dimensionsListDTO=new DimensionsListDTO();
-            dimensionsListDTO.depthDimensionDTOs=new List<DimensionDTO>(new[]{discreteDimensionIntervalDTO});
-            dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(new[]{continuousDimensionIntervalDTO});
-            dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>(new[]{singleValueDimensionDTO});
-            productDTO.dimensions=dimensionsListDTO;
-            productDTO.complements=new List<ComponentDTO>(new []{componentDTO});
+            productDTO.productCategory=categoryDTO.Result; 
             var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
         }
+
         /// <summary>
-        /// Ensures that a product is created succesfuly
+        /// Ensures that a product can be created with componets
         /// </summary>
-        /// <returns>ProductDTO with the created product</returns>
-        [Fact, TestPriority(129)]
-        public async Task<ProductDTO> asdsda(){
-            //We are going to create a valid product
-            //A valid product creation requires a valid reference, a valid desgination
-            //A valid category, valid dimensions and valid materials
-            //Components are not required
-            //To ensure atomicity, our reference will be generated with a timestamp (We have no bussiness rules so far as how they should be so its valid at this point)
-            string reference="#666"+Guid.NewGuid().ToString("n");
-            //Designation can be whatever we decide
-            string designation="Time N Place";
-            //Categories must previously exist as they can be shared in various products
+        [Fact,TestPriority(31)]
+        public async Task<ProductDTO> ensureProductWithComponentsIsCreatedSuccesfuly(){
+            //To save time lets just create a new product which will serve as the aggregate
+            ProductDTO productDTO=createProductWithValidProperties();
             Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
             categoryDTO.Wait();
             //Materials must previously exist as they can be shared in various products
             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
             materialDTO.Wait();
+            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
+            productDTO.productCategory=categoryDTO.Result; 
+            //Lets now adds the components to the product
+            //We are going to create a product which will serve as complemented product for a product (component)
+            Task<ProductDTO> complementedProductDTOTask=ensureProductIsCreatedSuccesfuly();
+            complementedProductDTOTask.Wait();
+            ComponentDTO componentDTO=new ComponentDTO();
+            componentDTO.product=complementedProductDTOTask.Result;
+            productDTO.complements=new List<ComponentDTO>(new []{componentDTO});
+            var response=await httpClient.PostAsJsonAsync(PRODUCTS_URI,productDTO);
+            Assert.Equal(HttpStatusCode.Created,response.StatusCode);
+            return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
+        }
+
+        /// <summary>
+        /// Ensures that a product can be created with slots
+        /// </summary>
+        [Fact,TestPriority(32)]
+        public async Task<ProductDTO> ensureProductWithSlotsIsCreatedSuccesfuly(){
+            ProductDTO productDTO=createProductWithValidProperties();
+            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryDTO.Wait();
+            //Materials must previously exist as they can be shared in various products
+            Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
+            materialDTO.Wait();
+            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
+            productDTO.productCategory=categoryDTO.Result;
+            //Now lets create valid slot dimensions and add it to the product
+            SlotDimensionSetDTO slotDimensionSetDTO=new SlotDimensionSetDTO();
+            CustomizedDimensionsDTO customizedDimensionsDTO=new CustomizedDimensionsDTO();
+            customizedDimensionsDTO.width=10;
+            customizedDimensionsDTO.height=10;
+            customizedDimensionsDTO.depth=10;
+            slotDimensionSetDTO.recommendedSlotDimensions=customizedDimensionsDTO;
+            slotDimensionSetDTO.minimumSlotDimensions=customizedDimensionsDTO;
+            slotDimensionSetDTO.maximumSlotDimensions=customizedDimensionsDTO;
+            productDTO.slotDimensions=slotDimensionSetDTO;
+             var response=await httpClient.PostAsJsonAsync(PRODUCTS_URI,productDTO);
+            Assert.Equal(HttpStatusCode.Created,response.StatusCode);
+            return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
+        }
+
+        /// <summary>
+        /// Ensures that a product can be created with slots and components
+        /// </summary>
+        [Fact,TestPriority(33)]
+        public async Task<ProductDTO> ensureProductWithSlotAndComponentsIsCreatedSuccesfuly(){
+            ProductDTO productDTO=createProductWithValidProperties();
+            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryDTO.Wait();
+            //Materials must previously exist as they can be shared in various products
+            Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
+            materialDTO.Wait();
+            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
+            productDTO.productCategory=categoryDTO.Result;
+            //Now lets create valid slot dimensions and add it to the product
+            SlotDimensionSetDTO slotDimensionSetDTO=new SlotDimensionSetDTO();
+            CustomizedDimensionsDTO customizedDimensionsDTO=new CustomizedDimensionsDTO();
+            customizedDimensionsDTO.width=10;
+            customizedDimensionsDTO.height=10;
+            customizedDimensionsDTO.depth=10;
+            slotDimensionSetDTO.recommendedSlotDimensions=customizedDimensionsDTO;
+            slotDimensionSetDTO.minimumSlotDimensions=customizedDimensionsDTO;
+            slotDimensionSetDTO.maximumSlotDimensions=customizedDimensionsDTO;
+            productDTO.slotDimensions=slotDimensionSetDTO;
+            //Lets now adds the components to the product
+            //We are going to create a product which will serve as complemented product for a product (component)
+            Task<ProductDTO> complementedProductDTOTask=ensureProductIsCreatedSuccesfuly();
+            complementedProductDTOTask.Wait();
+            ComponentDTO componentDTO=new ComponentDTO();
+            componentDTO.product=complementedProductDTOTask.Result;
+            productDTO.complements=new List<ComponentDTO>(new []{componentDTO});
+             var response=await httpClient.PostAsJsonAsync(PRODUCTS_URI,productDTO);
+            Assert.Equal(HttpStatusCode.Created,response.StatusCode);
+            return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
+        }
+
+        /// <summary>
+        /// Creates a product with valid properties (reference, designation and dimensions)
+        /// </summary>
+        /// <returns>ProductDTO with the product with valid properties</returns>
+        private ProductDTO createProductWithValidProperties(){
+            //To ensure atomicity, our reference will be generated with a timestamp (We have no bussiness rules so far as how they should be so its valid at this point)
+            string reference="#666"+Guid.NewGuid().ToString("n");
+            //Designation can be whatever we decide
+            string designation="Time N Place";
             DiscreteDimensionIntervalDTO discreteDimensionIntervalDTO=new DiscreteDimensionIntervalDTO();
             discreteDimensionIntervalDTO.values=new List<double>(new[]{1.0,2.0,30.0});
             ContinuousDimensionIntervalDTO continuousDimensionIntervalDTO=new ContinuousDimensionIntervalDTO();
@@ -430,16 +817,12 @@ namespace backend_tests.Controllers{
             ProductDTO productDTO=new ProductDTO();
             productDTO.reference=reference;
             productDTO.designation=designation;
-            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-            productDTO.productCategory=categoryDTO.Result;
             DimensionsListDTO dimensionsListDTO=new DimensionsListDTO();
             dimensionsListDTO.depthDimensionDTOs=new List<DimensionDTO>(new[]{discreteDimensionIntervalDTO});
             dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(new[]{continuousDimensionIntervalDTO});
             dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>(new[]{singleValueDimensionDTO});
             productDTO.dimensions=dimensionsListDTO;
-            var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
-            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-            return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
+            return productDTO;
         }
     }
 }
