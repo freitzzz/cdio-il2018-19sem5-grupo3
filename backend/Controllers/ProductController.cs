@@ -115,11 +115,11 @@ namespace backend.Controllers {
         /// <summary>
         /// Constant that represents the log message for when a POST Request is successful
         /// </summary>
-        private const string LOG_POST_SUCCESS="Product {product} created";
+        private const string LOG_POST_SUCCESS="Product {@product} created";
         /// <summary>
         /// Constant that represents the log message for when a GET By ID Request is successful
         /// </summary>
-        private const string LOG_GET_BY_ID_SUCCESS="Product {product} retrieved";
+        private const string LOG_GET_BY_ID_SUCCESS="Product {@product} retrieved";
         /// <summary>
         /// Constant that represents the log message for when a PUT Request is successful
         /// </summary>
