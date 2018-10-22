@@ -33,7 +33,7 @@ namespace core.dto
                 valuesInMilimetres.Add(MeasurementUnitService.convertFromUnit(value, unit));
             }
 
-            DiscreteDimensionInterval instanceFromDTO = DiscreteDimensionInterval.valueOf(valuesInMilimetres);
+            DiscreteDimensionInterval instanceFromDTO = new DiscreteDimensionInterval(valuesInMilimetres);
             instanceFromDTO.Id = id;
             
             return instanceFromDTO;

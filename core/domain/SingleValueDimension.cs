@@ -2,6 +2,9 @@ using System;
 using support.domain.ddd;
 using core.dto;
 using core.services;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace core.domain
 {
@@ -9,7 +12,7 @@ namespace core.domain
     /// <summary>
     /// Class that represents a dimension and its value (e.g. width - 20 cm)
     /// </summary>
-    public class SingleValueDimension : Dimension, ValueObject
+    public class SingleValueDimension : Dimension
     {
 
         /// <summary>
@@ -32,26 +35,18 @@ namespace core.domain
         /// </summary>
         public double value { get; set; }
 
+        private SingleValueDimension(ILazyLoader lazyLoader) : base(lazyLoader) {}
+
         /// <summary>
         /// Empty constructor for ORM.
         /// </summary>
-        protected SingleValueDimension(){}
-
-        /// <summary>
-        /// Returns a new instance of Dimension
-        /// </summary>
-        /// <param name="value">value that the dimension has</param>
-        /// <returns>Dimension instance</returns>
-        public static SingleValueDimension valueOf(double value)
-        {
-            return new SingleValueDimension(value);
-        }
+        protected SingleValueDimension() { }
 
         /// <summary>
         /// Builds a new instance of Dimension
         /// </summary>
         /// <param name="value">value that the dimension has</param>
-        private SingleValueDimension(double value)
+        public SingleValueDimension(double value)
         {
             if (Double.IsNaN(value))
             {
@@ -69,6 +64,7 @@ namespace core.domain
             }
 
             this.value = value;
+            this.restrictions = new List<Restriction>();
         }
 
         /// <summary>
@@ -129,13 +125,14 @@ namespace core.domain
 
         public override DimensionDTO toDTO(string unit)
         {
-            if(unit == null){
+            if (unit == null)
+            {
                 return this.toDTO();
             }
             SingleValueDimensionDTO dto = new SingleValueDimensionDTO();
 
             dto.id = Id;
-            dto.value = MeasurementUnitService.convertToUnit(value,unit);
+            dto.value = MeasurementUnitService.convertToUnit(value, unit);
             dto.unit = unit;
 
             return dto;

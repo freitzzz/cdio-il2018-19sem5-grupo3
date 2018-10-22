@@ -4,6 +4,7 @@ using System;
 using support.dto;
 using core.dto;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace core.domain
 {
@@ -51,24 +52,42 @@ namespace core.domain
         /// <summary>
         /// CustomizedMaterial that represents the CustomizedProduct's material
         /// </summary>
-        public virtual CustomizedMaterial customizedMaterial { get; protected set; }
+        private CustomizedMaterial _customizedMaterial; //!private field used for lazy loading, do not use this for storing or fetching data
+        public CustomizedMaterial customizedMaterial { get => LazyLoader.Load(this, ref _customizedMaterial); protected set => _customizedMaterial = value; }
 
 
         /// <summary>
         /// CustomizedDimensions that represents the CustomizedProduct's dimensions
         /// </summary>
-        public virtual CustomizedDimensions customizedDimensions { get; protected set; }
+        private CustomizedDimensions _customizedDimensions; //!private field used for lazy loading, do not use this for storing or fetching data
+        public CustomizedDimensions customizedDimensions { get => LazyLoader.Load(this, ref _customizedDimensions); protected set => _customizedDimensions = value; }
 
         /// <summary>
         /// Product that represents the product that the CustomizedProduct refers to
         /// </summary>
         /// <value></value>
-        public virtual Product product { get; protected set; }
+        private Product _product;   //!private field used for lazy loading, do not use this for storing or fetching data
+        public Product product { get => LazyLoader.Load(this, ref _product); protected set => _product = value; }
 
         /// <summary>
         /// List of Slots that the CustomizedProduct has
         /// </summary>
-        public virtual List<Slot> slots { get; protected set; }
+        private List<Slot> _slots;  //!private field used for lazy loading, do not use this for storing or fetching data
+        public List<Slot> slots { get => LazyLoader.Load(this, ref _slots); protected set => _slots = value; }
+
+        /// <summary>
+        /// LazyLoader being injected by the framework.
+        /// </summary>
+        /// <value>Private Gets/Sets the value of the LazyLoader.</value>
+        private ILazyLoader LazyLoader { get; set; }
+        
+        /// <summary>
+        /// Private constructor used for injecting the LazyLoader.
+        /// </summary>
+        /// <param name="lazyLoader">LazyLoader being injected.</param>
+        private CustomizedProduct(ILazyLoader lazyLoader){
+            this.LazyLoader = lazyLoader;
+        }
 
         /// <summary>
         /// Empty constructor for ORM.
@@ -301,6 +320,7 @@ namespace core.domain
             dto.productDTO = this.product.toDTO();
             dto.customizedDimensionsDTO = this.customizedDimensions.toDTO();
             dto.customizedMaterialDTO = this.customizedMaterial.toDTO();
+            dto.slotListDTO = DTOUtils.parseToDTOS(this.slots).ToList();
             dto.id = this.Id;
             return dto;
         }
