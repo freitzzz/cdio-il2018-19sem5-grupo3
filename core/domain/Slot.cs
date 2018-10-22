@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using support.dto;
 using core.dto;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace core.domain
 {
@@ -25,12 +26,28 @@ namespace core.domain
         /// <summary>
         /// DoubleValue with the width of the slot
         /// </summary>
-        public virtual CustomizedDimensions slotDimensions {get; protected set;}
+        private CustomizedDimensions _slotDimensions;   //!private field used for lazy loading, do not use this for storing or fetching data
+        public CustomizedDimensions slotDimensions {get => LazyLoader.Load(this, ref _slotDimensions); protected set => _slotDimensions = value;}
 
         /// <summary>
         /// Customized Products that are inside a slot
         /// </summary>
-        public virtual List<CustomizedProduct> customizedProducts {get; protected set;}
+        private List<CustomizedProduct> _customizedProducts;    //!private field used for lazy loading, do not use this for storing or fetching data
+        public List<CustomizedProduct> customizedProducts {get => LazyLoader.Load(this, ref _customizedProducts); protected set => _customizedProducts = value;}
+
+        /// <summary>
+        /// Injected LazyLoader.
+        /// </summary>
+        /// <value>Gets/sets the value of the LazyLoader.</value>
+        private ILazyLoader LazyLoader{get; set;}
+
+        /// <summary>
+        /// Constructor used for injecting the LazyLoader.
+        /// </summary>
+        /// <param name="lazyLoader">LazyLoader being injected.</param>
+        private Slot(ILazyLoader lazyLoader){
+            this.LazyLoader = lazyLoader;
+        }
 
         /// <summary>
         /// Empty constructor for ORM

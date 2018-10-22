@@ -40,7 +40,7 @@ namespace core.application{
         /// <param name="customizedProductDTO">CustomizedProductDTO with the customized product information</param>
         /// <returns>CustomizedProductDTO with the created customized product information</returns>
         public CustomizedProductDTO addCustomizedProduct(CustomizedProductDTO customizedProductDTO){
-            CustomizedProduct customizedProduct=new CustomizedProductDTOService().transform(customizedProductDTO);
+            CustomizedProduct customizedProduct=CustomizedProductDTOService.transform(customizedProductDTO);
             return PersistenceContext.repositories().createCustomizedProductRepository().save(customizedProduct).toDTO();
         }
     }

@@ -9,6 +9,7 @@ using System.Net;
 using backend_tests.utils;
 using System.Linq;
 using core.dto;
+using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace backend_tests.Controllers
 {
@@ -31,13 +32,21 @@ namespace backend_tests.Controllers
         /// </summary>
         private HttpClient client;
 
+        private TestFixture<TestStartupSQLite> fixture;
+
+
         /// <summary>
         /// Builds a MaterialsControllerIntegrationTest instance with an injected mocked server
         /// </summary>
         /// <param name="fixture">injected mocked server</param>
         public MaterialsControllerIntegrationTest(TestFixture<TestStartupSQLite> fixture)
         {
-            client = fixture.httpClient;
+            this.fixture = fixture;
+            this.client = fixture.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false,
+                BaseAddress = new Uri("http://localhost:5001")
+            });
         }
 
         [Fact, TestPriority(0)]
@@ -82,6 +91,9 @@ namespace backend_tests.Controllers
             Assert.NotNull(response.Content.ReadAsStringAsync());
             Assert.True(materialDTO.id != -1);
             Assert.Equal(materialDTO.reference, materialDTOFromPost.reference);
+            Assert.NotNull(materialDTOFromPost.colors);
+            Assert.NotNull(materialDTOFromPost.finishes);
+            Assert.Equal(materialDTO.designation, materialDTOFromPost.designation);
 
             return materialDTOFromPost;
         }

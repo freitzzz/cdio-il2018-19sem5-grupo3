@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using core.dto;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace core.domain
 {
@@ -63,19 +64,18 @@ namespace core.domain
         */
         public string designation { get; protected set; }
 
-        /**
-        <summary>
-            List with all the Material's colors.
-        </summary>
-        **/
-        public virtual List<Color> Colors { get; protected set; }
+        ///<summary>
+        ///List with all the Material's colors.
+        ///</summary>
+        private List<Color> _colors;     //!private field used for lazy loading, do not use this for storing or fetching data
+        public List<Color> Colors { get => LazyLoader.Load(this, ref _colors); protected set => _colors = value; }
 
-        /**
-         <summary>
-             List with all the Material's finishes.
-         </summary>
-         **/
-        public virtual List<Finish> Finishes { get; protected set; }
+        /// <summary>
+        /// List with all the Material's finishes.
+        ///</summary>
+        private List<Finish> _finishes;  //!private field used for lazy loading, do not use this for storing or fetching data
+        public List<Finish> Finishes { get => LazyLoader.Load(this, ref _finishes); protected set => _finishes = value; }
+        
         /// <summary>
         /// Boolean that controls if the current material is available or not
         /// </summary>
@@ -86,6 +86,19 @@ namespace core.domain
         /// Empty constructor used by ORM.
         /// </summary>
         protected Material() { }
+
+        /// <summary>
+        /// LazyLoader injected by the framework.
+        /// </summary>
+        /// <value>Private Gets/Sets the LazyLoader.</value>
+        private ILazyLoader LazyLoader { get; set; }
+        /// <summary>
+        /// Constructor used for injecting the LazyLoader.
+        /// </summary>
+        /// <param name="lazyLoader">LazyLoader being injected.</param>
+        private Material(ILazyLoader lazyLoader){
+            this.LazyLoader = lazyLoader;
+        }
 
         /**
         <summary>
@@ -132,7 +145,7 @@ namespace core.domain
          */
         public bool changeReference(string reference)
         {
-            if(Strings.isNullOrEmpty(reference)||this.reference.Equals(reference))return false;
+            if (Strings.isNullOrEmpty(reference) || this.reference.Equals(reference)) return false;
             this.reference = reference;
             return true;
         }
@@ -142,7 +155,7 @@ namespace core.domain
          */
         public bool changeDesignation(string designation)
         {
-            if(Strings.isNullOrEmpty(designation)||this.designation.Equals(designation))return false;
+            if (Strings.isNullOrEmpty(designation) || this.designation.Equals(designation)) return false;
             this.designation = designation;
             return true;
         }
@@ -275,18 +288,25 @@ namespace core.domain
             dto.id = this.Id;
 
             List<ColorDTO> dtoColors = new List<ColorDTO>();
-            foreach (Color color in Colors)
+
+            if (Colors != null)
             {
-                dtoColors.Add(color.toDTO());
+                foreach (Color color in Colors)
+                {
+                    dtoColors.Add(color.toDTO());
+                }
+                dto.colors = dtoColors;
             }
-            dto.colors = dtoColors;
 
             List<FinishDTO> dtoFinishes = new List<FinishDTO>();
-            foreach (Finish finish in Finishes)
+            if (Finishes != null)
             {
-                dtoFinishes.Add(finish.toDTO());
+                foreach (Finish finish in Finishes)
+                {
+                    dtoFinishes.Add(finish.toDTO());
+                }
+                dto.finishes = dtoFinishes;
             }
-            dto.finishes = dtoFinishes;
 
             return dto;
         }

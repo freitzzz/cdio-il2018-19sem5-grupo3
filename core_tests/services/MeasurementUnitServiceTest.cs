@@ -29,14 +29,14 @@ namespace core_tests.services {
             Assert.Equal(value, MeasurementUnitService.convertToUnit(value, null), 1);
         }
         /// <summary>
-        /// Ensures convertToUnit throws KeyNotFoundException if key is not in the file
+        /// Ensures convertToUnit throws ArgumentException if key is not in the file
         /// </summary>
         [Fact]
-        public void ensureConvertToUnitThrowsKeyNotFoundException() {
-            Console.WriteLine("ensureConvertToUnitThrowsKeyNotFoundException");
+        public void ensureConvertToUnitThrowsArgumentException() {
+            Console.WriteLine("ensureConvertToUnitThrowsArgumentException");
             double value = 1;
             Action action = () => MeasurementUnitService.convertToUnit(value, "der alte würfelt nicht");
-            Assert.Throws<KeyNotFoundException>(action);
+            Assert.Throws<ArgumentException>(action);
         }
         /// <summary>
         /// Ensures convertFromUnit returns the correct values
@@ -58,14 +58,14 @@ namespace core_tests.services {
             Assert.Equal(100,MeasurementUnitService.convertFromUnit(value, null),1);
         }
         /// <summary>
-        /// Ensures convertFromUnit throws KeyNotFoundException if key is not in the file
+        /// Ensures convertFromUnit throws ArgumentException if key is not in the file
         /// </summary>
         [Fact]
-        public void ensureConvertFromUnitThrowsKeyNotFoundException() {
-            Console.WriteLine("ensureConvertToUnitThrowsKeyNotFoundException");
+        public void ensureConvertFromUnitThrowsArgumentException() {
+            Console.WriteLine("ensureConvertToUnitThrowsArgumentException");
             double value = 1;
             Action action = () => MeasurementUnitService.convertFromUnit(value, "der alte würfelt nicht");
-            Assert.Throws<KeyNotFoundException>(action);
+            Assert.Throws<ArgumentException>(action);
         }
         /// <summary>
         /// Ensures getMinimumUnit succeeds

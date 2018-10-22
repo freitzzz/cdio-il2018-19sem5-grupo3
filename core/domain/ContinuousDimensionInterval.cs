@@ -1,14 +1,15 @@
 using System;
-using support.domain.ddd;
 using core.dto;
 using core.services;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Collections.Generic;
 
 namespace core.domain
 {
     /// <summary>
     /// Class that represents a continuous dimension interval
     /// </summary>
-    public class ContinuousDimensionInterval : Dimension, ValueObject
+    public class ContinuousDimensionInterval : Dimension
     {
         /// <summary>
         /// Constant that represents the message that occurs if the min value is NaN
@@ -69,23 +70,12 @@ namespace core.domain
         /// </summary>
         public double increment { get; set; }
 
+        private ContinuousDimensionInterval(ILazyLoader lazyLoader) : base(lazyLoader) {}
+
         /// <summary>
         /// Empty constructor for ORM.
         /// </summary>
         protected ContinuousDimensionInterval() { }
-
-        /// <summary>
-        /// Returns a new ContinuousDimensionInterval instance
-        /// </summary>
-        /// <param name="minValue">minimum value of the interval</param>
-        /// <param name="maxValue">maximum value of the interval</param>
-        /// <param name="increment">increment value of the interval</param>
-        /// <returns>ContinuousDimensionInterval instance</returns>
-        public static ContinuousDimensionInterval valueOf(double minValue, double maxValue, double increment)
-        {
-            return new ContinuousDimensionInterval(minValue, maxValue, increment);
-        }
-
 
         /// <summary>
         /// Builds a ContinuousDimensionInterval instance with a minimum value, a maximum value 
@@ -94,7 +84,7 @@ namespace core.domain
         /// <param name="minValue">minimum value of the interval</param>
         /// <param name="maxValue">maximum value of the interval</param>
         /// <param name="increment">increment value of the interval</param>
-        private ContinuousDimensionInterval(double minValue, double maxValue, double increment)
+        public ContinuousDimensionInterval(double minValue, double maxValue, double increment)
         {
             if (Double.IsNaN(minValue))
             {
@@ -144,6 +134,7 @@ namespace core.domain
             this.minValue = minValue;
             this.maxValue = maxValue;
             this.increment = increment;
+            this.restrictions = new List<Restriction>();
         }
 
         /// <summary>

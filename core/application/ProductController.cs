@@ -278,14 +278,19 @@ namespace core.application {
         /// <summary>
         /// Returns a product which has a certain persistence id
         /// </summary>
-        /// <param name="productDTO">ProductDTO with the product information</param>
+        /// <param name="productDTO">FetchProductDTO with the product fetch information</param>
         /// <returns>ProductDTO with the product which has a certain persistence id</returns>
-        public ProductDTO findProductByID(ProductDTO productDTO) {
-            return PersistenceContext.repositories().createProductRepository().find(productDTO.id).toDTO();
+        public ProductDTO findProductByID(FetchProductDTO fetchProductDTO) {
+            return PersistenceContext.repositories().createProductRepository().find(fetchProductDTO.id).toDTO(fetchProductDTO.productDTOOptions);
         }
 
-        public ProductDTO findByReference(string reference) {
-            return PersistenceContext.repositories().createProductRepository().find(reference).toDTO();
+        /// <summary>
+        /// Returns a product which has a certain reference
+        /// </summary>
+        /// <param name="productDTO">FetchProductDTO with the product fetch information</param>
+        /// <returns>ProductDTO with the product which has a certain reference</returns>
+        public ProductDTO findByReference(FetchProductDTO fetchProductDTO) {
+            return PersistenceContext.repositories().createProductRepository().find(fetchProductDTO.reference).toDTO(fetchProductDTO.productDTOOptions);
         }
 
         public bool defineProductDimensions(ProductDTO productDTO) {
@@ -373,15 +378,15 @@ namespace core.application {
             foreach (DimensionDTO dimensionDTO in dimensionsDTOs) {
                 if (dimensionDTO.GetType() == typeof(DiscreteDimensionIntervalDTO)) {
                     DiscreteDimensionIntervalDTO ddiDTO = (DiscreteDimensionIntervalDTO)dimensionDTO;
-                    DiscreteDimensionInterval discreteInterval = DiscreteDimensionInterval.valueOf(ddiDTO.values);
+                    DiscreteDimensionInterval discreteInterval = new DiscreteDimensionInterval(ddiDTO.values);
                     dimensions.Add(discreteInterval);
                 } else if (dimensionDTO.GetType() == typeof(ContinuousDimensionIntervalDTO)) {
                     ContinuousDimensionIntervalDTO cdiDTO = (ContinuousDimensionIntervalDTO)dimensionDTO;
-                    ContinuousDimensionInterval continuousInterval = ContinuousDimensionInterval.valueOf(cdiDTO.minValue, cdiDTO.maxValue, cdiDTO.increment);
+                    ContinuousDimensionInterval continuousInterval = new ContinuousDimensionInterval(cdiDTO.minValue, cdiDTO.maxValue, cdiDTO.increment);
                     dimensions.Add(continuousInterval);
                 } else if (dimensionDTO.GetType() == typeof(SingleValueDimensionDTO)) {
                     SingleValueDimensionDTO svdDTO = (SingleValueDimensionDTO)dimensionDTO;
-                    SingleValueDimension dimensionValue = SingleValueDimension.valueOf(svdDTO.value);
+                    SingleValueDimension dimensionValue = new SingleValueDimension(svdDTO.value);
                     dimensions.Add(dimensionValue);
                 }
             }

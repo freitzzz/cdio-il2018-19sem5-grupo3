@@ -8,21 +8,19 @@ using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using core.dto;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace core.domain {
     public class Component : AggregateRoot<Product>, DTOAble<ComponentDTO> {
-        /**
-           <summary>
-               Constant that represents the message that ocurrs if the Component's product is not valid.
-           </summary>
-           */
+
+        /// <summary>
+        /// Constant that represents the message that ocurrs if the Component's product is not valid.
+        /// </summary>
         private const string INVALID_COMPONENT_PRODUCT = "The Component's product is not valid!";
 
-        /**
-        <summary>
-            Constant that represents the message that ocurrs if the Component's restrictions is not valid.
-        </summary>
-        */
+        ///<summary>
+        ///Constant that represents the message that ocurrs if the Component's restrictions is not valid.
+        ///</summary>
         private const string INVALID_COMPONENT_RESTRICTIONS = "The Component's restrictions is not valid!";
 
         /// <summary>
@@ -33,7 +31,8 @@ namespace core.domain {
         /// <summary>
         /// Product with the product which has the current complemented product
         /// </summary>
-        public virtual Product fatherProduct { get; set; }
+        private Product _fatherProduct;             //!private field used for lazy loading, do not use this for storing or fetching data
+        public Product fatherProduct { get => LazyLoader.Load(this, ref _fatherProduct); set => _fatherProduct = value; }
 
         /// <summary>
         /// Long with the product which has the complemented product ID
@@ -43,12 +42,28 @@ namespace core.domain {
         /// <summary>
         /// Product with the complemented product 
         /// </summary>
-        public virtual Product complementedProduct { get; set; }
+        private Product _complementedProduct;       //!private field used for lazy loading, do not use this for storing or fetching data
+        public Product complementedProduct { get => LazyLoader.Load(this, ref _complementedProduct); set => _complementedProduct = value; }
         /// <summary>
         /// List with the restrictions which the current component can be have
         /// </summary>
         [NotMapped] //!remove this annotation once we figure out how to persist interfaces
-        public virtual List<Restriction> restrictions { get; set; }
+        private List<Restriction> _restrictions;    //!private field used for lazy loading, do not use this for storing or fetching data
+        public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); set => _restrictions = value; }
+
+        /// <summary>
+        /// LazyLoader being injected by the Framework.
+        /// </summary>
+        /// <value>Private Gets/Sets the LazyLoader.</value>
+        private ILazyLoader LazyLoader { get; set; }
+
+        /// <summary>
+        /// Private constructor used for injecting a LazyLoader.
+        /// </summary>
+        /// <param name="lazyLoader">LazyLoader being injected.</param>
+        private Component(ILazyLoader lazyLoader) {
+            this.LazyLoader = lazyLoader;
+        }
 
         /// <summary>
         /// Empty constructor for ORM.
@@ -77,23 +92,21 @@ namespace core.domain {
             this.complementedProduct = complementedProduct;
             this.restrictions = new List<Restriction>();
         }
-        /**
-       <summary>
-           Checks if the Component's properties are valid.
-       </summary>
-       <param name = "product">Product with the Material's product</param>
-       <param name = "restrictions">List of the restrictions of the Component.</param>
-       */
+
+        /// <summary>
+        /// Checks if the Component's properties are valid.
+        /// </summary>
+        /// <param name="product">Product with the Material's product</param>
+        /// <param name="restrictions">List of the restrictions of the Component.</param>
         private void checkComponentProperties(Product product, List<Restriction> restrictions) {
             checkComponentProduct(product);
             if (Collections.isListNull(restrictions) || Collections.isListEmpty(restrictions)) throw new ArgumentException(INVALID_COMPONENT_RESTRICTIONS);
         }
-        /**
-       <summary>
-           Checks if the Component's product are valid.
-       </summary>
-       <param name = "product">Product with the Material's product</param>
-       */
+
+        /// <summary>
+        /// Checks if the Component's product are valid.
+        /// </summary>
+        /// <param name="product">Product with the Material's product</param>
         private void checkComponentProduct(Product product) {
             if (product == null) throw new ArgumentException(INVALID_COMPONENT_PRODUCT);
         }

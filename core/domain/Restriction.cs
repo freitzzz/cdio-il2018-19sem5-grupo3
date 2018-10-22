@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using core.dto;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace core.domain {
     /// <summary>
@@ -40,11 +41,22 @@ namespace core.domain {
         /// <summary>
         /// List of inputs for the algorithm
         /// </summary>
-        public virtual List<Input> inputs { get; set; }
+        private List<Input> _inputs;    //!private field used for lazy loading, do not use this for storing or fetching data
+        public List<Input> inputs { get => LazyLoader.Load(this, ref _inputs); set => _inputs = value; }
+
         /// <summary>
-        /// Returns DTO equivalent of the Restriction
+        /// Injected LazyLoader.
         /// </summary>
-        /// <returns>DTO equivalent of the Restriction</returns>
+        /// <value>Gets/sets the value of the injected LazyLoader.</value>
+        private ILazyLoader LazyLoader {get; set;}
+        
+        /// <summary>
+        /// Constructor used for injecting the LazyLoader.
+        /// </summary>
+        /// <param name="lazyLoader">LazyLoader being injected.</param>
+        private Restriction(ILazyLoader lazyLoader){
+            this.LazyLoader = lazyLoader;
+        }
 
         /// <summary>
         /// Empty constructor for ORM

@@ -9,7 +9,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureValueOfCreatesInstance()
         {
-            var doubleValue = DoubleValue.valueOf(21);
+            DoubleValue doubleValue = DoubleValue.valueOf(21);
 
             Assert.NotNull(doubleValue);
         }
@@ -18,7 +18,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureImplicitOperatorCreatesInstance()
         {
-            var doubleValue = 21;
+            DoubleValue doubleValue = 21;
 
             Assert.NotNull(doubleValue);
         }
