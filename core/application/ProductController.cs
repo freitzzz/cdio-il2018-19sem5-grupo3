@@ -114,31 +114,31 @@ namespace core.application {
         /// </summary>
         /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
         /// <returns>boolean true if the update was successful, fasle if not</returns>
-        public bool updateProductComponents(UpdateProductDTO updateProductDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productBeingUpdated=productRepository.find(updateProductDTO.id);
-            bool updatedWithSuccess=true;
-            bool perfomedAtLeastOneUpdate=false;
+        public bool updateProductComponents(UpdateProductDTO updateProductDTO) {
+            ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
+            Product productBeingUpdated = productRepository.find(updateProductDTO.id);
+            bool updatedWithSuccess = true;
+            bool perfomedAtLeastOneUpdate = false;
 
-            if(updateProductDTO.componentsToAdd!=null){
-                IEnumerable<ProductDTO> productsDTO=extractProductsDTOFromComponentsDTO(updateProductDTO.componentsToAdd);
-                IEnumerable<Product> complementedProducts=PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
-                ensureProductsFetchWasSuccesful(productsDTO,complementedProducts);
-                foreach(Product complementedProduct in complementedProducts)
-                    updatedWithSuccess&=productBeingUpdated.addComplementedProduct(complementedProduct);
-                perfomedAtLeastOneUpdate=true;
+            if (updateProductDTO.componentsToAdd != null) {
+                IEnumerable<ProductDTO> productsDTO = extractProductsDTOFromComponentsDTO(updateProductDTO.componentsToAdd);
+                IEnumerable<Product> complementedProducts = PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
+                ensureProductsFetchWasSuccesful(productsDTO, complementedProducts);
+                foreach (Product complementedProduct in complementedProducts)
+                    updatedWithSuccess &= productBeingUpdated.addComplementedProduct(complementedProduct);
+                perfomedAtLeastOneUpdate = true;
             }
 
             if (!updatedWithSuccess) return false;
 
 
-            if(updateProductDTO.componentsToRemove!=null){
-                IEnumerable<ProductDTO> productsDTO=extractProductsDTOFromComponentsDTO(updateProductDTO.componentsToRemove);
-                IEnumerable<Product> complementedProducts=PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
-                ensureProductsFetchWasSuccesful(productsDTO,complementedProducts);
-                foreach(Product complementedProduct in complementedProducts)
-                    updatedWithSuccess&=productBeingUpdated.removeComplementedProduct(complementedProduct);
-                perfomedAtLeastOneUpdate=true;
+            if (updateProductDTO.componentsToRemove != null) {
+                IEnumerable<ProductDTO> productsDTO = extractProductsDTOFromComponentsDTO(updateProductDTO.componentsToRemove);
+                IEnumerable<Product> complementedProducts = PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
+                ensureProductsFetchWasSuccesful(productsDTO, complementedProducts);
+                foreach (Product complementedProduct in complementedProducts)
+                    updatedWithSuccess &= productBeingUpdated.removeComplementedProduct(complementedProduct);
+                perfomedAtLeastOneUpdate = true;
             }
 
             if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
@@ -355,6 +355,7 @@ namespace core.application {
                 if (new AlgorithmFactory().createAlgorithm(restDTO.algorithm).isWithinDataRange(inputs)) {
                     Restriction restriction = restDTO.toEntity();
                     //TODO: create addRestriction method in component class
+                    component.restrictions = new List<Restriction>();
                     component.restrictions.Add(restriction);
                     productRepository.update(product);
                 }

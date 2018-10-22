@@ -244,13 +244,12 @@ namespace backend.Controllers {
         [HttpPut("{productID}/components/{componentID}/restrictions")]
         public ActionResult addComponentRestriction(long productID, long componentID, [FromBody] RestrictionDTO restrictionDTO) {
             try {
-                new core.application.ProductController().addComponentRestriction(productID, componentID, restrictionDTO);
+                return Ok(new core.application.ProductController().addComponentRestriction(productID, componentID, restrictionDTO));
             } catch (ArgumentOutOfRangeException rangeEx) {
                 return BadRequest(new SimpleJSONMessageService(rangeEx.Message));
             } catch (ArgumentException argEx) {
                 return BadRequest(new SimpleJSONMessageService(argEx.Message));
             }
-            return null;
         }
     }
 }

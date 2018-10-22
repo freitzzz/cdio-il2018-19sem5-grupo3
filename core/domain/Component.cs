@@ -9,10 +9,8 @@ using System.Collections.Generic;
 using core.dto;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace core.domain
-{
-    public class Component : AggregateRoot<Product>, DTOAble<ComponentDTO>
-    {
+namespace core.domain {
+    public class Component : AggregateRoot<Product>, DTOAble<ComponentDTO> {
         /**
            <summary>
                Constant that represents the message that ocurrs if the Component's product is not valid.
@@ -35,12 +33,12 @@ namespace core.domain
         /// <summary>
         /// Product with the product which has the current complemented product
         /// </summary>
-        public virtual Product fatherProduct{get;set;}
+        public virtual Product fatherProduct { get; set; }
 
         /// <summary>
         /// Long with the product which has the complemented product ID
         /// </summary>
-        public long complementedProductId {get; private set;}
+        public long complementedProductId { get; private set; }
 
         /// <summary>
         /// Product with the complemented product 
@@ -60,8 +58,7 @@ namespace core.domain
         /// Builds a new component with its product and list of the restrictions.
         /// </summary>
         /// <param name="restricitions">List with the restrictions of the component</param>
-        public Component(Product product, List<Restriction> restrictions)
-        {
+        public Component(Product product, List<Restriction> restrictions) {
             checkComponentProperties(product, restrictions);
             this.complementedProduct = product;
             this.restrictions = restrictions;
@@ -73,12 +70,12 @@ namespace core.domain
         /// </summary>
         /// <param name="fatherProduct">Product with the father product</param>
         /// <param name="complementedProduct">Product with the complemented product</param>
-        public Component(Product fatherProduct,Product complementedProduct)
-        {
+        public Component(Product fatherProduct, Product complementedProduct) {
             checkComponentProduct(complementedProduct);
             checkComponentProduct(fatherProduct);
-            this.fatherProduct=fatherProduct;
+            this.fatherProduct = fatherProduct;
             this.complementedProduct = complementedProduct;
+            this.restrictions = new List<Restriction>();
         }
         /**
        <summary>
@@ -87,8 +84,7 @@ namespace core.domain
        <param name = "product">Product with the Material's product</param>
        <param name = "restrictions">List of the restrictions of the Component.</param>
        */
-        private void checkComponentProperties(Product product, List<Restriction> restrictions)
-        {
+        private void checkComponentProperties(Product product, List<Restriction> restrictions) {
             checkComponentProduct(product);
             if (Collections.isListNull(restrictions) || Collections.isListEmpty(restrictions)) throw new ArgumentException(INVALID_COMPONENT_RESTRICTIONS);
         }
@@ -98,8 +94,7 @@ namespace core.domain
        </summary>
        <param name = "product">Product with the Material's product</param>
        */
-        private void checkComponentProduct(Product product)
-        {
+        private void checkComponentProduct(Product product) {
             if (product == null) throw new ArgumentException(INVALID_COMPONENT_PRODUCT);
         }
         /// <summary>
@@ -118,17 +113,14 @@ namespace core.domain
         /// Returns the current component as a DTO
         /// </summary>
         /// <returns>DTO with the current DTO representation of the component</returns>
-        public ComponentDTO toDTO()
-        {
+        public ComponentDTO toDTO() {
             ComponentDTO dto = new ComponentDTO();
-            dto.product=complementedProduct.toDTO();
+            dto.product = complementedProduct.toDTO();
 
-            if (this.restrictions != null)
-            {
+            if (this.restrictions != null) {
                 List<RestrictionDTO> complementDTOList = new List<RestrictionDTO>();
 
-                foreach (Restriction restriction in restrictions)
-                {
+                foreach (Restriction restriction in restrictions) {
                     complementDTOList.Add(restriction.toDTO());
                 }
                 dto.restrictions = complementDTOList;
@@ -141,8 +133,7 @@ namespace core.domain
         /// </summary>
         /// <param name="comparingComponent">Component with the component being compared to the current one</param>
         /// <returns>boolean true if both components are equal, false if not</returns>
-        public override bool Equals(object comparingComponent)
-        {
+        public override bool Equals(object comparingComponent) {
             if (this == comparingComponent) return true;
             return comparingComponent is Component && this.id().Equals(((Component)comparingComponent).id());
         }
@@ -151,16 +142,14 @@ namespace core.domain
         /// Represents the component hashcode
         /// </summary>
         /// <returns>Integer with the current component hashcode</returns>
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             return id().GetHashCode();
         }
         /// <summary>
         /// Represents the textual information of the Component
         /// </summary>
         /// <returns>String with the textual representation of the component</returns>
-        public override string ToString()
-        {
+        public override string ToString() {
             //Should ToString List the Component Complemented Component?
             return String.Format("Component Information\n- List of restrictions: {0}\n", restrictions);
         }

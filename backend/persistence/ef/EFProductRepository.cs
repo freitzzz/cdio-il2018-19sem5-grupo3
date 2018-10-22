@@ -19,7 +19,7 @@ namespace backend.persistence.ef
         /// <returns>product component with respective id</returns>
         public Component fetchProductComponent(long productID, long componentID) {
             Product product = find(productID);
-            return product.complementedProducts.SingleOrDefault(c => c.Id == componentID);
+            return product.complementedProducts.SingleOrDefault(c => c.complementedProductId == componentID);
         }
 
         /// <summary>
