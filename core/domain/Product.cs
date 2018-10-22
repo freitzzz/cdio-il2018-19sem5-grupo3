@@ -22,7 +22,7 @@ namespace core.domain {
     /// <typeparam name="Product"></typeparam>
     /// <typeparam name="ProductDTO">Type of DTO being used</typeparam>
     /// <typeparam name="string">Generic-Type of the Product entity identifier</typeparam>
-    public class Product : AggregateRoot<string>, DTOAble<ProductDTO>,DTOAbleOptions<ProductDTO,ProductDTOOptions> {
+    public class Product : AggregateRoot<string>, DTOAble<ProductDTO>, DTOAbleOptions<ProductDTO, ProductDTOOptions> {
         /// <summary>
         /// Constant that represents the message that occurs if the product reference is invalid
         /// </summary>
@@ -35,6 +35,10 @@ namespace core.domain {
         /// Constant that represents the message that occurs if the product complemented products are invalid
         /// </summary>
         private const string INVALID_PRODUCT_COMPLEMENTED_PRODUCTS = "The products which the product can be complemented by are invalid";
+        /// <summary>
+        /// Constant that represents the message that occurs if the product component is not valid
+        /// </summary>
+        private const string INVALID_COMPONENT = "The component is not valid!";
         /// <summary>
         /// Constant that represents the message that occurs if the product complemented products are invalid
         /// </summary>
@@ -81,36 +85,36 @@ namespace core.domain {
         /// </summary>
         //TODO: Should complemented products be a list and not a set?
         private List<Component> _complementedProducts;//!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Component> complementedProducts{get=>LazyLoader.Load(this,ref _complementedProducts);protected set=>_complementedProducts=value;}
+        public List<Component> complementedProducts { get => LazyLoader.Load(this, ref _complementedProducts); protected set => _complementedProducts = value; }
         /// <summary>
         /// List with the materials which the product can be made of
         /// </summary>
         //TODO: Should product materials be a list or a set?
         private List<ProductMaterial> _productMaterials;//!private field used for lazy loading, do not use this for storing or fetching data
-        public List<ProductMaterial> productMaterials{get=>LazyLoader.Load(this,ref _productMaterials);protected set=>_productMaterials=value;}
+        public List<ProductMaterial> productMaterials { get => LazyLoader.Load(this, ref _productMaterials); protected set => _productMaterials = value; }
         /// <summary>
         /// List with the product heigth dimensions
         /// </summary>
         //TODO: Should product dimensions be a list or a set
         private List<Dimension> _heightValues;//!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Dimension> heightValues{get=>LazyLoader.Load(this,ref _heightValues);protected set=>_heightValues=value;}
+        public List<Dimension> heightValues { get => LazyLoader.Load(this, ref _heightValues); protected set => _heightValues = value; }
         /// <summary>
         /// List with the product width dimensions
         /// </summary>
         //TODO: Should product dimensions be a list or a set
         private List<Dimension> _widthValues;//!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Dimension> widthValues{get=>LazyLoader.Load(this,ref _widthValues);protected set=>_widthValues=value;}
+        public List<Dimension> widthValues { get => LazyLoader.Load(this, ref _widthValues); protected set => _widthValues = value; }
         /// <summary>
         /// List with the product depth dimensions
         /// </summary>
         //TODO: Should product restrinctions be a list or a set
         private List<Dimension> _depthValues;//!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Dimension> depthValues{get=>LazyLoader.Load(this,ref _depthValues);protected set=>_depthValues=value;}
+        public List<Dimension> depthValues { get => LazyLoader.Load(this, ref _depthValues); protected set => _depthValues = value; }
         /// <summary>
         /// ProductCategory with the category which the product belongs to
         /// </summary>
         private ProductCategory _productCategory;//!private field used for lazy loading, do not use this for storing or fetching data
-        public ProductCategory productCategory{get=>LazyLoader.Load(this,ref _productCategory);protected set=>_productCategory=value;}
+        public ProductCategory productCategory { get => LazyLoader.Load(this, ref _productCategory); protected set => _productCategory = value; }
 
         /// <summary>
         /// Boolean that controls if the current product is available or not
@@ -121,30 +125,30 @@ namespace core.domain {
         /// CustomizedDimensions that represents the maximum size of the slots
         /// </summary>
         private CustomizedDimensions _maxSlotSize;//!private field used for lazy loading, do not use this for storing or fetching data
-        public  CustomizedDimensions maxSlotSize{get=>LazyLoader.Load(this,ref _maxSlotSize);protected set=>_maxSlotSize=value;}
+        public CustomizedDimensions maxSlotSize { get => LazyLoader.Load(this, ref _maxSlotSize); protected set => _maxSlotSize = value; }
 
         /// <summary>
         /// CustomizedDimensions that represents the minimum size of the slots
         /// </summary>
         private CustomizedDimensions _minSlotSize;//!private field used for lazy loading, do not use this for storing or fetching data
-        public  CustomizedDimensions minSlotSize{get=>LazyLoader.Load(this,ref _minSlotSize);protected set=>_minSlotSize=value;}
+        public CustomizedDimensions minSlotSize { get => LazyLoader.Load(this, ref _minSlotSize); protected set => _minSlotSize = value; }
 
         /// <summary>
         /// CustomizedDimensions that represents the recommended size of the slots
         /// </summary>
         private CustomizedDimensions _recommendedSlotSize;//!private field used for lazy loading, do not use this for storing or fetching data
-        public  CustomizedDimensions recommendedSlotSize{get=>LazyLoader.Load(this,ref _recommendedSlotSize);protected set=>_recommendedSlotSize=value;}
+        public CustomizedDimensions recommendedSlotSize { get => LazyLoader.Load(this, ref _recommendedSlotSize); protected set => _recommendedSlotSize = value; }
 
         /// <summary>
         /// Booelan that indicates if the product can hold slots
         /// </summary>
-        public bool supportsSlots {get;protected set;}
+        public bool supportsSlots { get; protected set; }
 
         /// <summary>
         /// LazyLoader injected by the framework.
         /// </summary>
         /// <value>Private Gets/Sets the LazyLoader.</value>
-        private ILazyLoader LazyLoader{get;set;}
+        private ILazyLoader LazyLoader { get; set; }
 
         /// <summary>
         /// Empty constructor used by ORM.
@@ -155,7 +159,7 @@ namespace core.domain {
         /// Constructor used for injecting the LazyLoader.
         /// </summary>
         /// <param name="lazyLoader">LazyLoader being injected.</param>
-        private Product(ILazyLoader lazyLoader){this.LazyLoader=lazyLoader;}
+        private Product(ILazyLoader lazyLoader) { this.LazyLoader = lazyLoader; }
 
         /// <summary>
         /// Builds a new product with its reference, designation, maximum number of slots, its category,
@@ -177,15 +181,15 @@ namespace core.domain {
                         CustomizedDimensions recommendedSlotSize, ProductCategory productCategory,
                         IEnumerable<Material> materials, IEnumerable<Dimension> heightDimensions,
                         IEnumerable<Dimension> widthDimensions, IEnumerable<Dimension> depthDimensions) :
-                        this(reference,designation,productCategory,
-                        materials,heightDimensions,widthDimensions,
-                        depthDimensions){
-                            this.supportsSlots = supportsSlots;
-                            checkProductSlotsDimensions(maxSlotSize, minSlotSize, recommendedSlotSize);
-                            this.maxSlotSize = maxSlotSize;
-                            this.minSlotSize = minSlotSize;
-                            this.recommendedSlotSize = recommendedSlotSize;
-                        }
+                        this(reference, designation, productCategory,
+                        materials, heightDimensions, widthDimensions,
+                        depthDimensions) {
+            this.supportsSlots = supportsSlots;
+            checkProductSlotsDimensions(maxSlotSize, minSlotSize, recommendedSlotSize);
+            this.maxSlotSize = maxSlotSize;
+            this.minSlotSize = minSlotSize;
+            this.recommendedSlotSize = recommendedSlotSize;
+        }
 
         /// <summary>
         /// Builds a new product with its reference, designation and materials which it can be made of
@@ -239,17 +243,17 @@ namespace core.domain {
         /// <param name="widthDimensions">IEnumerable with the product width dimensions</param>
         /// <param name="depthDimensions">IEnumerable with the product depth dimensions</param>
         public Product(string reference, string designation,
-                        ProductCategory productCategory, 
+                        ProductCategory productCategory,
                         IEnumerable<Material> materials,
                         IEnumerable<Product> complementedProducts,
                         IEnumerable<Dimension> heightValues,
                         IEnumerable<Dimension> widthValues,
-                        IEnumerable<Dimension> depthValues) : 
-                        this (reference, designation, productCategory, materials, heightValues, widthValues, depthValues) {
+                        IEnumerable<Dimension> depthValues) :
+                        this(reference, designation, productCategory, materials, heightValues, widthValues, depthValues) {
             checkProductComplementedProducts(complementedProducts);
             this.complementedProducts = new List<Component>();
-            foreach(Product complementedProduct in complementedProducts){
-                this.complementedProducts.Add(new Component(this,complementedProduct));
+            foreach (Product complementedProduct in complementedProducts) {
+                this.complementedProducts.Add(new Component(this, complementedProduct));
             }
         }
 
@@ -273,19 +277,19 @@ namespace core.domain {
                         CustomizedDimensions maxSlotSize,
                         CustomizedDimensions minSlotSize,
                         CustomizedDimensions recommendedSlotSize,
-                        ProductCategory productCategory, 
+                        ProductCategory productCategory,
                         IEnumerable<Material> materials,
                         IEnumerable<Product> complementedProducts,
                         IEnumerable<Dimension> heightValues,
                         IEnumerable<Dimension> widthValues,
-                        IEnumerable<Dimension> depthValues) : 
-                        this (reference, designation, supportsSlots, maxSlotSize, minSlotSize,
+                        IEnumerable<Dimension> depthValues) :
+                        this(reference, designation, supportsSlots, maxSlotSize, minSlotSize,
                         recommendedSlotSize, productCategory, materials, heightValues, widthValues,
                         depthValues) {
             checkProductComplementedProducts(complementedProducts);
             this.complementedProducts = new List<Component>();
-            foreach(Product complementedProduct in complementedProducts){
-                this.complementedProducts.Add(new Component(this,complementedProduct));
+            foreach (Product complementedProduct in complementedProducts) {
+                this.complementedProducts.Add(new Component(this, complementedProduct));
             }
         }
 
@@ -297,7 +301,7 @@ namespace core.domain {
         public bool addComplementedProduct(Product complementedProduct) {
             if (!isComplementedProductValidForAddition(complementedProduct))
                 return false;
-            complementedProducts.Add(new Component(this,complementedProduct));
+            complementedProducts.Add(new Component(this, complementedProduct));
             return true;
         }
 
@@ -417,7 +421,7 @@ namespace core.domain {
         /// </summary>
         /// <param name="complementedProduct">Product with the complemented product being removed</param>
         /// <returns>boolean true if the complemented product was removed with success, false if not</returns>
-        public bool removeComplementedProduct(Product complementedProduct) { return complementedProducts.Remove(new Component(this,complementedProduct)); }
+        public bool removeComplementedProduct(Product complementedProduct) { return complementedProducts.Remove(new Component(this, complementedProduct)); }
 
         /// <summary>
         /// Disables the current product
@@ -455,7 +459,7 @@ namespace core.domain {
         /// </summary>
         /// <param name="dtoOptions">O with the set of options being applied</param>
         /// <returns>D with the DTO of the current product with the applied options</returns>
-        public ProductDTO toDTO(ProductDTOOptions dtoOptions){
+        public ProductDTO toDTO(ProductDTOOptions dtoOptions) {
             ProductDTO dto = new ProductDTO();
 
             dto.id = this.Id;
@@ -463,22 +467,22 @@ namespace core.domain {
             dto.reference = this.reference;
             dto.productCategory = productCategory.toDTO();
 
-            DimensionsListDTO dimensionsListDTO=new DimensionsListDTO();
-            if(dtoOptions.requiredUnit==null){
-                dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
-                dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
-                dimensionsListDTO.depthDimensionDTOs=new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
-            }else{
-                dimensionsListDTO.heightDimensionDTOs=new List<DimensionDTO>();
-                dimensionsListDTO.widthDimensionDTOs=new List<DimensionDTO>();
-                dimensionsListDTO.depthDimensionDTOs=new List<DimensionDTO>();
-                foreach(Dimension dimension in heightValues)dimensionsListDTO.heightDimensionDTOs.Add(dimension.toDTO(dtoOptions.requiredUnit));
-                foreach(Dimension dimension in widthValues)dimensionsListDTO.widthDimensionDTOs.Add(dimension.toDTO(dtoOptions.requiredUnit));
-                foreach(Dimension dimension in depthValues)dimensionsListDTO.depthDimensionDTOs.Add(dimension.toDTO(dtoOptions.requiredUnit));
+            DimensionsListDTO dimensionsListDTO = new DimensionsListDTO();
+            if (dtoOptions.requiredUnit == null) {
+                dimensionsListDTO.heightDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
+                dimensionsListDTO.widthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
+                dimensionsListDTO.depthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
+            } else {
+                dimensionsListDTO.heightDimensionDTOs = new List<DimensionDTO>();
+                dimensionsListDTO.widthDimensionDTOs = new List<DimensionDTO>();
+                dimensionsListDTO.depthDimensionDTOs = new List<DimensionDTO>();
+                foreach (Dimension dimension in heightValues) dimensionsListDTO.heightDimensionDTOs.Add(dimension.toDTO(dtoOptions.requiredUnit));
+                foreach (Dimension dimension in widthValues) dimensionsListDTO.widthDimensionDTOs.Add(dimension.toDTO(dtoOptions.requiredUnit));
+                foreach (Dimension dimension in depthValues) dimensionsListDTO.depthDimensionDTOs.Add(dimension.toDTO(dtoOptions.requiredUnit));
             }
-            dto.dimensions=dimensionsListDTO;
-            
-            dto.productMaterials=new List<MaterialDTO>();
+            dto.dimensions = dimensionsListDTO;
+
+            dto.productMaterials = new List<MaterialDTO>();
             foreach (ProductMaterial pm in this.productMaterials) {
                 dto.productMaterials.Add(pm.material.toDTO());
             }
@@ -492,14 +496,14 @@ namespace core.domain {
                 dto.complements = complementDTOList;
             }
 
-            if(this.supportsSlots){
+            if (this.supportsSlots) {
                 dto.slotDimensions.maximumSlotDimensions = this.maxSlotSize.toDTO();
                 dto.slotDimensions.minimumSlotDimensions = this.minSlotSize.toDTO();
                 dto.slotDimensions.recommendedSlotDimensions = this.recommendedSlotSize.toDTO();
             }
 
             return dto;
-            
+
         }
 
         /// <summary>
@@ -536,7 +540,7 @@ namespace core.domain {
         /// <returns>boolean true if the complemented product is valid for addition, false if not</returns>
         private bool isComplementedProductValidForAddition(Product complementedProduct) {
             if (complementedProduct == null || complementedProduct.Equals(this)) return false;
-            return !complementedProducts.Contains(new Component(this,complementedProduct));
+            return !complementedProducts.Contains(new Component(this, complementedProduct));
         }
 
         /// <summary>
@@ -572,14 +576,14 @@ namespace core.domain {
         /// <param name="maxSlotSize">CustomizedDimensions with the maximum size of the slots</param>
         /// <param name="minSlotSize">CustomizedDimensions with the minimum size of the slots</param>
         /// <param name="recommendedSlotSize">CustomizedDimensions with the recommended size of the slots</param>
-        private void checkProductSlotsDimensions(CustomizedDimensions maxSlotSize, CustomizedDimensions minSlotSize, CustomizedDimensions recommendedSlotSize){
-            if(minSlotSize.depth > maxSlotSize.depth || minSlotSize.height > maxSlotSize.height || minSlotSize.width > maxSlotSize.width)
+        private void checkProductSlotsDimensions(CustomizedDimensions maxSlotSize, CustomizedDimensions minSlotSize, CustomizedDimensions recommendedSlotSize) {
+            if (minSlotSize.depth > maxSlotSize.depth || minSlotSize.height > maxSlotSize.height || minSlotSize.width > maxSlotSize.width)
                 throw new ArgumentException(INVALID_MIN_TO_MAX_SLOT_SIZE_RATIO);
 
-            if(recommendedSlotSize.depth > maxSlotSize.depth || recommendedSlotSize.height > maxSlotSize.height || recommendedSlotSize.width > maxSlotSize.width)
+            if (recommendedSlotSize.depth > maxSlotSize.depth || recommendedSlotSize.height > maxSlotSize.height || recommendedSlotSize.width > maxSlotSize.width)
                 throw new ArgumentException(INVALID_RECOMMENDED_TO_MAX_SLOT_SIZE_RATIO);
 
-            if(recommendedSlotSize.depth < minSlotSize.depth || recommendedSlotSize.height < minSlotSize.height || recommendedSlotSize.width < minSlotSize.width)
+            if (recommendedSlotSize.depth < minSlotSize.depth || recommendedSlotSize.height < minSlotSize.height || recommendedSlotSize.width < minSlotSize.width)
                 throw new ArgumentException(INVALID_RECOMMENDED_TO_MIN_SLOT_SIZE_RATIO);
         }
 
@@ -677,6 +681,23 @@ namespace core.domain {
                     throw new ArgumentException(INVALID_PRODUCT_DIMENSIONS);
                 }
             }
+        }
+        /// <summary>
+        /// Adds a restriction to a component
+        /// </summary>
+        /// <param name="component">component to add restriction to</param>
+        /// <param name="restriction">restriction to be added</param>
+        /// <returns></returns>
+        public bool addComponentRestriction(Product component, Restriction restriction) {
+            if (component == null) {
+                throw new ArgumentNullException(INVALID_COMPONENT);
+            }
+            foreach (Component comp in complementedProducts) {
+                if (comp.complementedProduct.Equals(component)) {
+                    comp.addRestriction(restriction);
+                }
+            }
+            return true;
         }
 
         /*

@@ -111,6 +111,18 @@ namespace core.domain {
             if (product == null) throw new ArgumentException(INVALID_COMPONENT_PRODUCT);
         }
         /// <summary>
+        /// Adds a restriction to the list of restrictions
+        /// </summary>
+        /// <param name="restriction">restriction to be added</param>
+        /// <returns>true if restriction was added successfully</returns>
+        public bool addRestriction(Restriction restriction) {
+            if (restriction == null || restrictions.Contains(restriction)) {
+                throw new ArgumentException(INVALID_COMPONENT_RESTRICTIONS);
+            }
+            restrictions.Add(restriction);
+            return true;
+        }
+        /// <summary>
         /// Returns the component identity
         /// </summary>
         /// <returns>Product with the component identity</returns>
