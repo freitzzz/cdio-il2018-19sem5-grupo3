@@ -361,10 +361,10 @@ namespace backend.Controllers {
                 return BadRequest();
             }
         }
-        [HttpPut("{productID}/components/{componentID}/restrictions")]
-        public ActionResult addComponentRestriction(long productID, long componentID, [FromBody] RestrictionDTO restrictionDTO) {
+        [HttpPut("{productID}/components/{productComponentID}/restrictions")]
+        public ActionResult addComponentRestriction(long productID, long productComponentID, [FromBody] RestrictionDTO restrictionDTO) {
             try {
-                return Ok(new core.application.ProductController().addComponentRestriction(productID, componentID, restrictionDTO));
+                return Ok(new core.application.ProductController().addComponentRestriction(productID, productComponentID, restrictionDTO));
             } catch (ArgumentOutOfRangeException rangeEx) {
                 return BadRequest(new SimpleJSONMessageService(rangeEx.Message));
             } catch (ArgumentException argEx) {
