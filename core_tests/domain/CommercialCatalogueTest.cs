@@ -66,7 +66,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -124,7 +124,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -184,7 +184,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -244,7 +244,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -302,7 +302,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -361,7 +361,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -421,7 +421,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -484,7 +484,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -547,7 +547,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -607,7 +607,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -662,7 +662,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -717,7 +717,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -772,7 +772,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -860,7 +860,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -973,7 +973,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -1432,7 +1432,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -1492,7 +1492,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -1553,7 +1553,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -1614,7 +1614,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -1672,7 +1672,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -1733,7 +1733,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -1785,7 +1785,7 @@ namespace core_tests.domain
             List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
             list.Add(catalogueCollection);
 
             listCollection.Add(custProCollection);
@@ -1795,7 +1795,7 @@ namespace core_tests.domain
             CommercialCatalogueDTO dto = new CommercialCatalogueDTO();
             dto.reference = reference;
             dto.designation = designation;
-            dto.collectionList = new List<CatalogueCollectionDTO>(DTOUtils.parseToDTOS(list));
+            dto.catalogueCollectionDTOs = new List<CatalogueCollectionDTO>(DTOUtils.parseToDTOS(list));
             CommercialCatalogueDTO dto2 = comCatalogue1.toDTO();
             Assert.Equal(dto.reference, dto2.reference);
             Assert.Equal(dto.designation, dto2.designation);
