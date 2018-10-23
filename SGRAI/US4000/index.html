@@ -45,6 +45,32 @@
       document.dispatchEvent(event);
     }
   </script>
+
+  <script>
+    function openTab(evt, elem) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("btn-custom");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(elem).style.display = "block";
+    evt.currentTarget.className += " active";
+    }
+</script>
+  <script>
+    document.getElementById("dimensions").click();
+  </script>
 </head>
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
@@ -108,61 +134,64 @@
   <div id="closet">
     <div class="container">
       <div class="section-title text-center center">
- 
-        <h2><p></p> <p></p> Dimensions <p></p></h2>
+          <h2><p></p> <p></p> Create <p></p></h2>
         <hr>
       </div>
-      <div class="row">
-        <div class="column left" align="left">
-          <br><br><br><br><br><br>
-          <form>
-            Height:<br>
-            <input type="number" min="0" name="height" value="1" id="height" onclick="reloadCube();">
-            <select>
-              <option value="mm">Milimeters</option>
-              <option value="m">Meters</option>
-              <option value="cm">Centimeters</option>
-              <option value="km">kilometers</option>
-            </select>
-            <br>
-            Length:<br>
-            <input type="number" min="0" name="width" value="1" id="width" onclick="reloadCube();"><select>
-              <option value="mm">Milimeters</option>
-              <option value="m">Meters</option>
-              <option value="cm">Centimeters</option>
-              <option value="km">kilometers</option>
-            </select><br>
-            Depth:<br>
-            <input type="number" min="0" name="depth" value="1" id="depth" onclick="reloadCube();"><select>
-              <option value="mm">Milimeters</option>
-              <option value="m">Meters</option>
-              <option value="cm">Centimeters</option>
-              <option value="km">kilometers</option>
-            </select><br>
-          </form>
-          <!--<a class="btn btn-custom btn-lg page-scroll" onclick="reloadCube();">Submit</a>--->
 
-        </div>
-        <div class="column right" align="right">
-
-          <canvas id="webgl" width="400" height="400">
-            Please use a browser that supports "canvas"
-          </canvas>
-          <script src="lib/webgl-utils.js"></script>
-          <script src="lib/webgl-debug.js"></script>
-          <script src="lib/cuon-utils.js"></script>
-          <script src="lib/cuon-matrix.js"></script>
-          <script src="US4050/ProductDrawer.js"></script>
-          <script src="US4050/Parellepiped.js"></script>
-          <script src="US4050/Maths.js"></script>
-          <script src="US4050/Projection.js"></script>
-          <script src="US4050/Camera.js"></script>
-          <script> main();</script>
-        </div>
-
+      <br><br><br>
+      <div class="tab">
+        <button class="btn-custom" onclick="openTab(event, 'dimensions')">Dimensions</button>
+        <button class="btn-custom" disabled>Slots</button>
 
       </div>
+      <div id="dimensions" class="tabcontent">
+        <br><br>
+        Height:<br>
+        <input type="number" min="0" name="height" value="1" id="height" onclick="reloadCube();">
+        <br>
+        Length:<br>
+        <input type="number" min="0" name="width" value="1" id="width" onclick="reloadCube();"><br>
+        Depth:<br>
+        <input type="number" min="0" name="depth" value="1" id="depth" onclick="reloadCube();"><br><br>
+        <select>
+          <option value="mm">Milimeters</option>
+          <option value="m">Meters</option>
+          <option value="cm">Centimeters</option>
+          <option value="km">kilometers</option>
+        </select><br>
+        <br><br>
+        <a class="btn-custom" onclick="openTab(event, 'slots')">Next</a>
+      </div>
+      <div id="slots" class="tabcontent">
+        <br><br>
+        Number of slots:<br>
+        <input type="number" min="0" name="slot" value="1" id="slots" onclick="reloadCube();">
+        <br>
+        <a href="#slots" class="btn btn-custom btn-lg ">Next</a>
+      </div>
+      <!--<a class="btn btn-custom btn-lg page-scroll" onclick="reloadCube();">Submit</a>--->
+
+
+      <div class="column right" allign="right">
+
+        <canvas id="webgl" width="400" height="400">
+          Please use a browser that supports "canvas"
+        </canvas>
+        <script src="lib/webgl-utils.js"></script>
+        <script src="lib/webgl-debug.js"></script>
+        <script src="lib/cuon-utils.js"></script>
+        <script src="lib/cuon-matrix.js"></script>
+        <script src="US4050/ProductDrawer.js"></script>
+        <script src="US4050/Parellepiped.js"></script>
+        <script src="US4050/Maths.js"></script>
+        <script src="US4050/Projection.js"></script>
+        <script src="US4050/Camera.js"></script>
+        <script> main();</script>
+      </div>
+
+
     </div>
+  </div>
   </div>
 
   <!-- Contact Section -->

@@ -227,12 +227,12 @@ namespace core.domain
             dto.reference = this.reference;
             dto.designation = this.designation;
             dto.id = this.Id;
-            List<CatalogueCollectionDTO> dtoCustoProducts = new List<CatalogueCollectionDTO>();
+            List<CatalogueCollectionDTO> catalogueCollectionDTOs = new List<CatalogueCollectionDTO>();
             foreach (CatalogueCollection c in collectionList)
             {
-                dtoCustoProducts.Add(c.toDTO());
+                catalogueCollectionDTOs.Add(c.toDTO());
             }
-            dto.collectionList = dtoCustoProducts;
+            dto.catalogueCollectionDTOs = catalogueCollectionDTOs;
 
             return dto;
         }
