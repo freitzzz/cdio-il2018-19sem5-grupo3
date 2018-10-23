@@ -19,16 +19,10 @@ namespace core.domain
         private const string ERROR_NULL_CUSTOMIZED_PRODUCT = "The Customized Product can not be null";
 
         /// <summary>
-        /// CommercialCatalogue's database identifier which is part of the CatalogueCollection's primary key.
+        /// CatalogueCollection's database identifier.
         /// </summary>
-        /// <value>Gets/sets the CommercialCatalogue's database identifier.</value>
-        public long commercialCatalogueId { get; protected set; }
-
-        /// <summary>
-        /// CustomizedProductCollection's database identifier which is part of the CatalogueCollection's primary key.
-        /// </summary>
-        /// <value>Gets/sets the CustomizedProductCollection's database identifier.</value>
-        public long customizedProductCollectionId { get; protected set; }
+        /// <value>Gets/sets the the CatalogueCollection database identifier.</value>
+        public long catalogueCollectionId { get; protected set; }
 
         /// <summary>
         /// CatalogueCollection in which the CustomizedProduct is included.
@@ -93,12 +87,15 @@ namespace core.domain
         /// </summary>
         /// <param name="catalogueCollection">Instance of CatalogueCollection being checked.</param>
         /// <param name="customizedProduct">Instance of CustomizedProduct being checked.</param>
-        private void checkParameters(CatalogueCollection catalogueCollection, CustomizedProduct customizedProduct){
-            if(catalogueCollection == null){
-                throw new ArgumentException();
+        private void checkParameters(CatalogueCollection catalogueCollection, CustomizedProduct customizedProduct)
+        {
+            if (catalogueCollection == null)
+            {
+                throw new ArgumentException(ERROR_NULL_CATALOGUE_COLLECTION);
             }
-            if(customizedProduct == null){
-                throw new ArgumentException();
+            if (customizedProduct == null)
+            {
+                throw new ArgumentException(ERROR_NULL_CUSTOMIZED_PRODUCT);
             }
         }
     }
