@@ -1,6 +1,7 @@
-var express = require('express');
-var ordersRoute = express.Router();
-var Order = require('../models/order');
+const express = require('express');
+const ordersRoute = express.Router();
+const Order = require('../models/order');
+const http = require('http');
 
 //Get all orders in the database
 ordersRoute.route('/orders').get(function (req, res, next) {
@@ -23,7 +24,6 @@ ordersRoute.route('/orders/:id').get(function (req, res, next) {
 })
 
 ordersRoute.route('/orders').post(function (req, res, next) {
-    //Communicate with MYCM
     Order.create(function (err, order) {
         if (err) {
             return next(new Error(err));
@@ -31,7 +31,6 @@ ordersRoute.route('/orders').post(function (req, res, next) {
         res.status(201).json(order);
     })
 })
-
 
 
 module.exports = ordersRoute;
