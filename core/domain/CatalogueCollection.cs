@@ -189,17 +189,33 @@ namespace core.domain
         }
 
         ///<summary>
-        ///Returns the generated hash code of the CommercialCatalogue.
+        ///Returns the generated hash code of the CatalogueCollection.
         ///</summary>
         public override int GetHashCode()
         {
-            return customizedProductCollection.GetHashCode() + catalogueCollectionProducts.GetHashCode();
+            unchecked
+            {
+                int hash = 29;
+
+                hash = hash * 31 + customizedProductCollection.GetHashCode();
+
+                foreach (CatalogueCollectionProduct catalogueCollectionProduct in this.catalogueCollectionProducts)
+                {
+                    hash = hash * 47 + catalogueCollectionProduct.customizedProduct.GetHashCode();
+                }
+
+                return hash;
+            }
+
+
+
+            //return customizedProductCollection.GetHashCode() + catalogueCollectionProducts.GetHashCode();
         }
 
         ///<summary>
         ///Checks if a certain Customized is the same as a received object.
         ///</summary>
-        ///<param name = "obj">object to compare to the current Customized Catalogue</param>
+        ///<param name = "obj">object to compare to the current CatalogueCollection</param>
         public override bool Equals(object obj)
         {
             //Check for null and compare run-time types.
