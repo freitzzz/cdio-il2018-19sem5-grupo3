@@ -116,6 +116,7 @@ namespace core.domain
             checkCustomizedMaterialMaterial(material);
             checkCustomizedMaterialColor(color);
             checkCustomizedMaterialFinish(finish);
+            this.material = material;
             this.color = color;
             this.finish = finish;
         }
@@ -129,6 +130,7 @@ namespace core.domain
         {
             checkCustomizedMaterialMaterial(material);
             checkCustomizedMaterialColor(color);
+            this.material = material;
             this.color = color;
             this.finish = null;
         }
@@ -142,6 +144,7 @@ namespace core.domain
         {
             checkCustomizedMaterialMaterial(material);
             checkCustomizedMaterialFinish(finish);
+            this.material = material;
             this.finish = finish;
             this.color = null;
         }
