@@ -86,10 +86,14 @@ namespace core.application
         public CommercialCatalogueDTO updateCollection( UpdateCommercialCatalogueDTO customizedCatalogueDTO)
         {
 
-            //CommercialCatalogue newComCatalogue = PersistenceContext.repositories().createCommercialCatalogueRepository().find(id);
+            //
             //Transform CustomizedProductCollection Dto to entity
-            if(customizedCatalogueDTO.catalogueCollectionDTOToAdd != null){
+            if(customizedCatalogueDTO.catalogueCollectionDTOToAdd != null){ //Necessity to add a catallogue collection
+                CommercialCatalogue newComCatalogue = PersistenceContext.repositories().createCommercialCatalogueRepository().find(customizedCatalogueDTO.id);
 
+                foreach(CatalogueCollectionDTO catalogueCollectionDTO in customizedCatalogueDTO.catalogueCollectionDTOToAdd){
+                    
+                }
             }
 
            /*  List<CustomizedProduct> list = new List<CustomizedProduct>();
