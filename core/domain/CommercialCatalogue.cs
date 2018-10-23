@@ -1,13 +1,11 @@
 using support.domain.ddd;
-using core.domain;
 using support.utils;
 using support.dto;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using core.dto;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Linq;
 
 namespace core.domain
 {
@@ -57,8 +55,11 @@ namespace core.domain
         ///<summary>
         ///List with all the CommercialCatalogue's<Collection.
         ///</summary>
-        private List<CatalogueCollection> _collectionList; //!private field used for lazy loading, do not use this for storing or fetching data
-        public List<CatalogueCollection> collectionList { get => LazyLoader.Load(this, ref _collectionList); protected set => _collectionList = value; }
+        private List<CommercialCatalogueCatalogueCollection> _catalogueCollectionList; //!private field used for lazy loading, do not use this for storing or fetching data
+        public List<CommercialCatalogueCatalogueCollection> catalogueCollectionList
+        {
+            get => LazyLoader.Load(this, ref _catalogueCollectionList); protected set => _catalogueCollectionList = value;
+        }
 
         /// <summary>
         /// LazyLoader injected by the framework
@@ -92,7 +93,11 @@ namespace core.domain
             checkCommercialCatalogueProperties(reference, designation, custoProduct);
             this.reference = reference;
             this.designation = designation;
-            this.collectionList = custoProduct;
+            this.catalogueCollectionList = new List<CommercialCatalogueCatalogueCollection>();
+            foreach (CatalogueCollection catalogueCollection in custoProduct)
+            {
+                catalogueCollectionList.Add(new CommercialCatalogueCatalogueCollection(this, catalogueCollection));
+            }
         }
 
         ///<summary>
@@ -105,7 +110,7 @@ namespace core.domain
             checkCommercialCatalogueProperties(reference, designation);
             this.reference = reference;
             this.designation = designation;
-            this.collectionList = new List<CatalogueCollection>();
+            this.catalogueCollectionList = new List<CommercialCatalogueCatalogueCollection>();
         }
 
         /// <summary>
@@ -168,8 +173,8 @@ namespace core.domain
         ///<returns>True if the<Collection is successfully added, false if not</returns>
         public bool addCollection(CatalogueCollection collection)
         {
-            if (collection == null || collectionList.Contains(collection)) return false;
-            collectionList.Add(collection);
+            if (collection == null || catalogueCollectionList.Select(cc => cc.catalogueCollection).ToList().Contains(collection)) return false;
+            catalogueCollectionList.Add(new CommercialCatalogueCatalogueCollection(this, collection));
             return true;
         }
 
@@ -182,7 +187,11 @@ namespace core.domain
         public bool removeCollection(CatalogueCollection collection)
         {
             if (collection == null) return false;
-            return collectionList.Remove(collection);
+
+            CommercialCatalogueCatalogueCollection commercialCatalogueCatalogueCollection =
+                catalogueCollectionList.Where(cc => cc.catalogueCollection.Equals(collection)).FirstOrDefault();
+
+            return catalogueCollectionList.Remove(commercialCatalogueCatalogueCollection);
         }
 
 
@@ -196,9 +205,9 @@ namespace core.domain
         public bool hasCollection(CustomizedProductCollection collection)
         {
             if (collection == null) return false;
-            foreach (CatalogueCollection customizedCatalogue in collectionList)
+            foreach (CommercialCatalogueCatalogueCollection customizedCatalogue in catalogueCollectionList)
             {
-                if (customizedCatalogue.customizedProductCollection.Equals(collection))
+                if (customizedCatalogue.catalogueCollection.customizedProductCollection.Equals(collection))
                 {
                     return true;
                 }
@@ -228,9 +237,9 @@ namespace core.domain
             dto.designation = this.designation;
             dto.id = this.Id;
             List<CatalogueCollectionDTO> catalogueCollectionDTOs = new List<CatalogueCollectionDTO>();
-            foreach (CatalogueCollection c in collectionList)
+            foreach (CommercialCatalogueCatalogueCollection c in catalogueCollectionList)
             {
-                catalogueCollectionDTOs.Add(c.toDTO());
+                catalogueCollectionDTOs.Add(c.catalogueCollection.toDTO());
             }
             dto.catalogueCollectionDTOs = catalogueCollectionDTOs;
 
