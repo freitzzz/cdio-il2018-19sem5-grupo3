@@ -71,12 +71,12 @@ namespace core.domain
         /// <summary>
         /// Builds a new instance of CommercialCatalogueCatalogueCollection for a given CommercialCatalogue and CatalogueCollection.
         /// </summary>
-        /// <param name="catalogue">CommercialCatalogue to which this instance will be associated.</param>
+        /// <param name="commercialCatalogue">CommercialCatalogue to which this instance will be associated.</param>
         /// <param name="catalogueCollection">CatalogueCollection to which this instance will be associated.</param>
-        public CommercialCatalogueCatalogueCollection(CommercialCatalogue catalogue, CatalogueCollection catalogueCollection)
+        public CommercialCatalogueCatalogueCollection(CommercialCatalogue commercialCatalogue, CatalogueCollection catalogueCollection)
         {
             checkParameters(commercialCatalogue, catalogueCollection);
-            this.commercialCatalogue = catalogue;
+            this.commercialCatalogue = commercialCatalogue;
             this.catalogueCollection = catalogueCollection;
         }
 
