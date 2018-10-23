@@ -25,16 +25,10 @@ namespace core.domain
         private const string INVALID_COLLECTION = "The Customized Product Collection is not valid!";
 
         /// <summary>
-        /// CommercialCatalogue's foreign key, which is part of the CatalogueCollection's compound primary key.
+        /// CatalogueCollection's database identifier.
         /// </summary>
-        /// <value>Gets/sets the value of the CatalogueCollection's CommercialCatalogue foreign key.</value>
-        public long catalogueId { get; internal set; }
-
-        /// <summary>
-        /// CustomizedProductCollection's foreign key, which is part of the CatalogueCollection's compound primary key.
-        /// </summary>
-        /// <value>Gets/sets the value of the CatalogueCollection's CustomizedProductCollection foreign key.</value>
-        public long customizedProductCollectionId { get; internal set; }
+        /// <value>Gets/sets the value of the database identifier.</value>
+        public long Id { get; internal set; }
 
         ///<summary>
         ///CustomizedProductCollection being added to the CommercialCatalogue.
@@ -152,9 +146,7 @@ namespace core.domain
             {
                 customizedProductDTOs.Add(catalogueCollectionProduct.customizedProduct.toDTO());
             }
-            CatalogueCollectionDTO.customizedProductsDTO = customizedProductDTOs;
-            CatalogueCollectionDTO.catalogueId = this.catalogueId;
-            CatalogueCollectionDTO.collectionId = this.customizedProductCollectionId;
+            CatalogueCollectionDTO.customizedProductDTOs = customizedProductDTOs;
             CatalogueCollectionDTO.customizedProductCollectionDTO = this.customizedProductCollection.toDTO();
             return CatalogueCollectionDTO;
         }
@@ -177,10 +169,6 @@ namespace core.domain
 
                 return hash;
             }
-
-
-
-            //return customizedProductCollection.GetHashCode() + catalogueCollectionProducts.GetHashCode();
         }
 
         ///<summary>
