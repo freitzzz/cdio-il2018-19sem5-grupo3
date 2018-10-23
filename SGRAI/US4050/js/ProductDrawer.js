@@ -1,10 +1,6 @@
 var camera, controls, scene, renderer;
 
-var base_face_dimensions_axes=[200,0,100,0,0,0];
-var top_face_dimensions_axes=[200,0,100,0,100,0];
-var left_face_dimensions_axes=[0,100,100,100,50,0];
-var right_face_dimensions_axes=[0,100,100,-100,50,0];
-var back_face_dimensions_axes=[200,100,0,0,50,-50];
+var closet=null;
 
 var faces=[base_face_dimensions_axes,top_face_dimensions_axes,left_face_dimensions_axes,right_face_dimensions_axes,back_face_dimensions_axes];
 var faces_ids=[];
@@ -42,9 +38,27 @@ function main() {
 
     var group=new THREE.Group();
 
+    closet=new Closet();
+
+    faces=closet.closet_faces;
+
     for(var i=0;i<faces.length;i++){
-        faces_ids.push(generateCube(faces[i][0],faces[i][1],faces[i][2],faces[i][3],faces[i][4],faces[i][5],new THREE.MeshNormalMaterial(),group));
+        closet.closet_faces_ids.push(generateCube(faces[i][0],faces[i][1],faces[i][2]
+                                    ,faces[i][3],faces[i][4],faces[i][5]
+                                    ,new THREE.MeshNormalMaterial(),group));
     }
+    var face=closet.addSlot();
+
+    console.log("->>>>>>>>>>>> "+face);
+
+    closet.closet_slots_faces_ids.push(generateCube(face[0],face[1],face[2]
+                                                ,face[3],face[4],face[5]
+                                                ,new THREE.MeshNormalMaterial(),group));
+
+                                                face=closet.addSlot();
+                                                closet.closet_slots_faces_ids.push(generateCube(face[0],face[1],face[2]
+                                                    ,face[3],face[4],face[5]
+                                                    ,new THREE.MeshNormalMaterial(),group));
 
     scene.add(group);
 
