@@ -76,7 +76,7 @@ namespace backend_tests.Controllers
         public async void ensureCantCreateACustomizedProductCollectionIfItAlreadyExists(){
             //We are attempting to create a customized product collection which already exists
             //First we need to grant that a product with a certain name already exists
-            Task<CustomizedProductCollectionDTO> validCustomizedProductCollectionDTOTask=ensureCustomizedProductCollectionIsCreatedSuccesfuly();
+            Task<CustomizedProductCollectionDTO> validCustomizedProductCollectionDTOTask=ensureCanCreateACustomizedProductCollectionIfItHasAValidName();
             validCustomizedProductCollectionDTOTask.Wait();
             
             CustomizedProductCollectionDTO customizedProductCollectionDTO=new CustomizedProductCollectionDTO();
@@ -120,23 +120,29 @@ namespace backend_tests.Controllers
         }
 
         /// <summary>
-        /// Ensures that a customized product collection is created succesfuly
+        /// Ensures that's possible to create a customized product collection with a valid name
         /// </summary>
         [Fact, TestPriority(3)]
-        public async Task<CustomizedProductCollectionDTO> ensureCustomizedProductCollectionIsCreatedSuccesfuly()
+        public async Task<CustomizedProductCollectionDTO> ensureCanCreateACustomizedProductCollectionIfItHasAValidName()
         {
+            //First we will generate an atomic name for the customized products collection
+            string name="Braga" + Guid.NewGuid().ToString("n");
+            //Now we will grant that there are no customized product collection with that name
+            grantNoCustomizedProductCollectionExistWithName(name);
+            //Now let's add that name to the customized product collection
             CustomizedProductCollectionDTO customizedProductCollectionDTO = new CustomizedProductCollectionDTO();
-            //A collection of customized products requires a valid name
-            customizedProductCollectionDTO.name = "Braga" + Guid.NewGuid().ToString("n");
-            //A collection of customized products can be created with only a name
-            //But if needed customized products for it, uncomment the lines below
-            //Task<CustomizedProductDTO> customizedProductDTO=new CustomizedProductControllerIntegrationTest(fixture).ensureCustomizedProductIsCreatedSuccesfuly();
-            //customizedProductDTO.Wait();
-            //customizedProductCollectionDTO.customizedProducts=new List<CustomizedProductDTO>(new []{customizedProductDTO.Result});
+            customizedProductCollectionDTO.name = name;
+
+            //We will try to create a customized product collection with the generated name
             var createCustomizedProductsCollection = await httpClient.PostAsJsonAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI, customizedProductCollectionDTO);
-            //Uncomment when slots creation is fixed
-            Assert.True(createCustomizedProductsCollection.StatusCode == HttpStatusCode.Created);
-            return JsonConvert.DeserializeObject<CustomizedProductCollectionDTO>(await createCustomizedProductsCollection.Content.ReadAsStringAsync());
+            //Since there were no customized product collection with the generated name, then the result should tell us that it was created (sucessfuly)
+            Assert.Equal(HttpStatusCode.Created,createCustomizedProductsCollection.StatusCode);
+            CustomizedProductCollectionDTO createdCustomizedProductCollectionDTO=JsonConvert.DeserializeObject<CustomizedProductCollectionDTO>(await createCustomizedProductsCollection.Content.ReadAsStringAsync());
+            //To ensure that the creation was sucessful we will fetch the customized product collection by its name
+            grantExistsCustomizedProductCollectionExistWithName(name);
+            //We can also grant that its possible to fetch the customized product collection by its ID
+            grantExistsCustomizedProductCollectionExistWithResourceID(createCustomizedProductsCollection.)
+            return createdCustomizedProductCollectionDTO;
         }
 
 
@@ -159,5 +165,31 @@ namespace backend_tests.Controllers
             return JsonConvert.DeserializeObject<CustomizedProductCollectionDTO>(await createCustomizedProductsCollection.Content.ReadAsStringAsync());
         }
 
+        /// <summary>
+        /// Ensures that there is no customized product collection with a certain name
+        /// </summary>
+        /// <param name="name">string with the customized product collection name</param>
+        private async void grantNoCustomizedProductCollectionExistWithName(string name){
+            var customizedProductCollection=await httpClient.GetAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI+"/?name="+name);
+            Assert.Equal(HttpStatusCode.NotFound,customizedProductCollection.StatusCode);
+        }
+
+        /// <summary>
+        /// Ensures that there is a customized product collection with a certain name
+        /// </summary>
+        /// <param name="name">string with the customized product collection name</param>
+        private async void grantExistsCustomizedProductCollectionExistWithName(string name){
+            var customizedProductCollection=await httpClient.GetAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI+"/?name="+name);
+            Assert.Equal(HttpStatusCode.OK,customizedProductCollection.StatusCode);
+        }
+
+        /// <summary>
+        /// Ensures that there is a customized product collection with a certain resource ID
+        /// </summary>
+        /// <param name="id">long with the customized product collection resource ID</param>
+        private async void grantExistsCustomizedProductCollectionExistWithResourceID(long id){
+            var customizedProductCollection=await httpClient.GetAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI+"/"+id);
+            Assert.Equal(HttpStatusCode.OK,customizedProductCollection.StatusCode);
+        }
     }
 }
