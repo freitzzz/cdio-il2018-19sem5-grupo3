@@ -69,7 +69,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material,color1, finish2);
             CustomizedProduct customizedProduct = new CustomizedProduct("#666", "Shelf", customizedMaterial, customizedDimensions, product);
 
             //Add customized product to slot
@@ -118,7 +118,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material,color1, finish2);
             CustomizedProduct customizedProduct = new CustomizedProduct("#666", "Shelf", customizedMaterial, customizedDimensions, product);
 
             Assert.False(instance.removeCustomizedProduct(customizedProduct));
@@ -156,7 +156,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material,color1, finish2);
             CustomizedProduct customizedProduct = new CustomizedProduct("#666", "Shelf", customizedMaterial, customizedDimensions, product);
 
             instance.addCustomizedProduct(customizedProduct);
@@ -230,7 +230,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material,color1, finish2);
             CustomizedProduct customizedProduct = new CustomizedProduct("#666", "Shelf", customizedMaterial, customizedDimensions, product);
 
             instance.addCustomizedProduct(customizedProduct);
@@ -271,7 +271,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material,color1, finish2);
             CustomizedProduct customizedProduct = new CustomizedProduct("#666", "Shelf", customizedMaterial, customizedDimensions, product);
 
             instance.addCustomizedProduct(customizedProduct);
@@ -313,7 +313,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material,color1, finish2);
             CustomizedProduct customizedProduct = new CustomizedProduct("#666", "Shelf", customizedMaterial, customizedDimensions, product);
 
             instance.addCustomizedProduct(customizedProduct);
@@ -355,7 +355,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material,color1, finish2);
             CustomizedProduct customizedProduct = new CustomizedProduct("#666", "Shelf", customizedMaterial, customizedDimensions, product);
 
             instance.addCustomizedProduct(customizedProduct);
@@ -397,7 +397,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material,color1, finish2);
             CustomizedProduct customizedProduct = new CustomizedProduct("#666", "Shelf", customizedMaterial, customizedDimensions, product);
 
             instance.addCustomizedProduct(customizedProduct);
@@ -438,7 +438,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material,color1, finish2);
             CustomizedProduct customizedProduct = new CustomizedProduct("#666", "Shelf", customizedMaterial, customizedDimensions, product);
 
             instance.addCustomizedProduct(customizedProduct);
@@ -479,7 +479,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material,color1, finish2);
             CustomizedProduct customizedProduct = new CustomizedProduct("#666", "Shelf", customizedMaterial, customizedDimensions, product);
 
             instance.addCustomizedProduct(customizedProduct);
@@ -520,7 +520,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material,color1, finish2);
             CustomizedProduct customizedProduct = new CustomizedProduct("#666", "Shelf", customizedMaterial, customizedDimensions, product);
 
             instance.addCustomizedProduct(customizedProduct);

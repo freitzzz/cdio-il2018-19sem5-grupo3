@@ -393,28 +393,28 @@ namespace core.domain {
         /// </summary>
         /// <param name="widthDimension">Dimension with the width dimension being removed</param>
         /// <returns>boolean true if the dimension was removed with success, false if not</returns>
-        public bool removeWidthDimension(Dimension widthDimension) { return !Collections.isEnumerableNullOrEmpty(widthValues) && widthValues.Remove(widthDimension); }
+        public bool removeWidthDimension(Dimension widthDimension) { return widthValues.Count>1 && widthValues.Remove(widthDimension); }
 
         /// <summary>
         /// Removes a specified height dimension from the current product
         /// </summary>
         /// <param name="heightDimension">Dimension with the height dimension being removed</param>
         /// <returns>boolean true if the dimension was removed with success, false if not</returns>
-        public bool removeHeightDimension(Dimension heightDimension) { return !Collections.isEnumerableNullOrEmpty(heightValues) && heightValues.Remove(heightDimension); }
+        public bool removeHeightDimension(Dimension heightDimension) { return heightValues.Count>1 && heightValues.Remove(heightDimension); }
 
         /// <summary>
         /// Removes a specified depth dimension from the current product
         /// </summary>
         /// <param name="depthDimension">Dimension with the depth dimension being removed</param>
         /// <returns>boolean true if the dimension was removed with success, false if not</returns>
-        public bool removeDepthDimension(Dimension depthDimension) { return !Collections.isEnumerableNullOrEmpty(depthValues) && depthValues.Remove(depthDimension); }
+        public bool removeDepthDimension(Dimension depthDimension) { return depthValues.Count>1 && depthValues.Remove(depthDimension); }
 
         /// <summary>
         /// Removes a material which the current product can be made of
         /// </summary>
         /// <param name="material">Material with the material being removed</param>
         /// <returns>boolean true if the material was removed with success, false if not</returns>
-        public bool removeMaterial(Material material) { return !Collections.isEnumerableNullOrEmpty(productMaterials) && productMaterials.Remove(new ProductMaterial(this, material)); }
+        public bool removeMaterial(Material material) { return productMaterials.Count>1 && productMaterials.Remove(new ProductMaterial(this, material)); }
 
         /// <summary>
         /// Removes a complemented which the current product can be complemented with
@@ -496,10 +496,12 @@ namespace core.domain {
                 dto.complements = complementDTOList;
             }
 
-            if (this.supportsSlots) {
-                dto.slotDimensions.maximumSlotDimensions = this.maxSlotSize.toDTO();
-                dto.slotDimensions.minimumSlotDimensions = this.minSlotSize.toDTO();
-                dto.slotDimensions.recommendedSlotDimensions = this.recommendedSlotSize.toDTO();
+            if(this.supportsSlots){
+                SlotDimensionSetDTO slotDimensionSetDTO=new SlotDimensionSetDTO();
+                slotDimensionSetDTO.maximumSlotDimensions = this.maxSlotSize.toDTO();
+                slotDimensionSetDTO.minimumSlotDimensions = this.minSlotSize.toDTO();
+                slotDimensionSetDTO.recommendedSlotDimensions = this.recommendedSlotSize.toDTO();
+                dto.slotDimensions=slotDimensionSetDTO;
             }
 
             return dto;

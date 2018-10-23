@@ -21,8 +21,13 @@ namespace core_tests.domain
         {
             Color color = Color.valueOf("Azul",1,1,1,1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial cuntMaterial1 = CustomizedMaterial.valueOf(color,finish);
-            CustomizedMaterial cuntMaterial2 = CustomizedMaterial.valueOf(color,finish);
+             List<Color> colors = new List<Color>();
+            colors.Add(color);
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+            Material material = new Material("1234", "Material", colors, finishes);
+            CustomizedMaterial cuntMaterial1 = CustomizedMaterial.valueOf(material, color,finish);
+            CustomizedMaterial cuntMaterial2 = CustomizedMaterial.valueOf(material, color,finish);
 
             Assert.Equal(cuntMaterial1.GetHashCode(), cuntMaterial2.GetHashCode());
         }
@@ -68,8 +73,13 @@ namespace core_tests.domain
         {
             Color color = Color.valueOf("Azul",1,1,1,1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(color,finish);
-            CustomizedMaterial custMaterial2 = CustomizedMaterial.valueOf(color,finish);
+             List<Color> colors = new List<Color>();
+            colors.Add(color);
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+            Material material = new Material("1234", "Material", colors, finishes);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color,finish);
+            CustomizedMaterial custMaterial2 = CustomizedMaterial.valueOf(material, color,finish);
 
             Assert.True(custMaterial1.Equals(custMaterial2));
         }
@@ -83,7 +93,12 @@ namespace core_tests.domain
         {
             Color color = Color.valueOf("Azul",1,1,1,1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(color,finish);
+             List<Color> colors = new List<Color>();
+            colors.Add(color);
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+            Material material = new Material("1234", "Material", colors, finishes);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material,color,finish);
 
             Assert.False(custMaterial1.Equals(null));
         }
@@ -98,7 +113,12 @@ namespace core_tests.domain
 
             Finish finish = Finish.valueOf("Acabamento polido");
             Color color = Color.valueOf("Azul",1,1,1,1);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color,finish);
+             List<Color> colors = new List<Color>();
+            colors.Add(color);
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+            Material material = new Material("1234", "Material", colors, finishes);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color,finish);
 
             Assert.False(finish.Equals(custMaterial));
         }
@@ -112,8 +132,13 @@ namespace core_tests.domain
         {
             Color color = Color.valueOf("Azul",1,1,1,1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(color,finish);
-            CustomizedMaterial custMaterial2 = CustomizedMaterial.valueOf(color,finish);
+             List<Color> colors = new List<Color>();
+            colors.Add(color);
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+            Material material = new Material("1234", "Material", colors, finishes);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color,finish);
+            CustomizedMaterial custMaterial2 = CustomizedMaterial.valueOf(material, color,finish);
 
             Assert.Equal(custMaterial1.ToString(), custMaterial2.ToString());
         }

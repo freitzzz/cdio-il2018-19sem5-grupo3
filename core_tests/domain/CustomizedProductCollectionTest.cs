@@ -77,7 +77,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
             Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial mat = CustomizedMaterial.valueOf(material, color1, finish2);
 
 
             CustomizedProduct cp = new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);
@@ -290,7 +290,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
             Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
 
 
             Assert.True(new CustomizedProductCollection("Mario").addCustomizedProduct(
@@ -343,7 +343,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
             Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
 
             CustomizedProduct customizedProduct = new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);
             List<CustomizedProduct> list = new List<CustomizedProduct>();
@@ -409,7 +409,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
             Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
 
             CustomizedProduct cp = new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);
             List<CustomizedProduct> list = new List<CustomizedProduct>();
@@ -493,7 +493,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
             Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
 
 
             CustomizedProduct cp = new CustomizedProduct("Mushrooms", "Are deadly", mat, customizedDimensions, product);
@@ -550,7 +550,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
             Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
 
 
             CustomizedProduct cp = new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);
@@ -606,7 +606,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
             Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
 
 
             CustomizedProduct cp = new CustomizedProduct("Luigi", "Peach", mat, customizedDimensions, product);
@@ -662,7 +662,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
             Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
 
 
             CustomizedProduct cp = new CustomizedProduct("Mushrooms", "Are deadly", mat, customizedDimensions, product);
@@ -718,7 +718,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
             Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
 
 
             CustomizedProduct cp = new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);
@@ -775,7 +775,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
             Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
 
 
             CustomizedProduct cp = new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);

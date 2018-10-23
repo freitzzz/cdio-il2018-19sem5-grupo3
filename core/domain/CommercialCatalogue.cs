@@ -89,7 +89,7 @@ namespace core.domain
         public CommercialCatalogue(string reference, string designation,
         List<CatalogueCollection> custoProduct)
         {
-            checkComCatalogueProperties(reference, designation, custoProduct);
+            checkCommercialCatalogueProperties(reference, designation, custoProduct);
             this.reference = reference;
             this.designation = designation;
             this.collectionList = custoProduct;
@@ -102,9 +102,21 @@ namespace core.domain
         ///<param name = "designation">string with the new CommercialCatalogue's designation</param>
         public CommercialCatalogue(string reference, string designation)
         {
+            checkCommercialCatalogueProperties(reference, designation);
             this.reference = reference;
             this.designation = designation;
             this.collectionList = new List<CatalogueCollection>();
+        }
+
+        /// <summary>
+        /// Checks if the CommercialCatalogue's properties are valid.
+        /// </summary>
+        /// <param name="reference">String with the CommercialCatalogue's reference</param>
+        /// <param name="designation">String with the CommercialCatalogue's designation</param>
+        private void checkCommercialCatalogueProperties(string reference, string designation)
+        {
+            if (Strings.isNullOrEmpty(reference)) throw new ArgumentException(INVALID_COM_CATALOGUE_REFERENCE);
+            if (Strings.isNullOrEmpty(designation)) throw new ArgumentException(INVALID_COM_CATALOGUE_DESIGNATION);
         }
 
         ///<summary>
@@ -113,11 +125,10 @@ namespace core.domain
         ///<param name = "reference">String with the CommercialCatalogue's reference</param>
         ///<param name = "designation">String with the CommercialCatalogue's designation</param>
         ///<param name = "custoProduct">List with the new CommercialCatalogue's custoProduct</param>
-        private void checkComCatalogueProperties(string reference,
+        private void checkCommercialCatalogueProperties(string reference,
         string designation, List<CatalogueCollection> custoProduct)
         {
-            if (Strings.isNullOrEmpty(reference)) throw new ArgumentException(INVALID_COM_CATALOGUE_REFERENCE);
-            if (Strings.isNullOrEmpty(designation)) throw new ArgumentException(INVALID_COM_CATALOGUE_DESIGNATION);
+            checkCommercialCatalogueProperties(reference, designation);
             if (Collections.isListNull(custoProduct) || Collections.isListEmpty(custoProduct)) throw new ArgumentException(INVALID_COM_CATALOGUE_CUST_PRODUCTS);
         }
 
