@@ -137,12 +137,10 @@ namespace backend_tests.Controllers
             var createCustomizedProductsCollection = await httpClient.PostAsJsonAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI, customizedProductCollectionDTO);
             //Since there were no customized product collection with the generated name, then the result should tell us that it was created (sucessfuly)
             Assert.Equal(HttpStatusCode.Created,createCustomizedProductsCollection.StatusCode);
-            CustomizedProductCollectionDTO createdCustomizedProductCollectionDTO=JsonConvert.DeserializeObject<CustomizedProductCollectionDTO>(await createCustomizedProductsCollection.Content.ReadAsStringAsync());
             //To ensure that the creation was sucessful we will fetch the customized product collection by its name
             grantExistsCustomizedProductCollectionExistWithName(name);
             //We can also grant that its possible to fetch the customized product collection by its ID
-            grantExistsCustomizedProductCollectionExistWithResourceID(createCustomizedProductsCollection.)
-            return createdCustomizedProductCollectionDTO;
+            return JsonConvert.DeserializeObject<CustomizedProductCollectionDTO>(await createCustomizedProductsCollection.Content.ReadAsStringAsync());
         }
 
 
@@ -169,27 +167,27 @@ namespace backend_tests.Controllers
         /// Ensures that there is no customized product collection with a certain name
         /// </summary>
         /// <param name="name">string with the customized product collection name</param>
-        private async void grantNoCustomizedProductCollectionExistWithName(string name){
-            var customizedProductCollection=await httpClient.GetAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI+"/?name="+name);
-            Assert.Equal(HttpStatusCode.NotFound,customizedProductCollection.StatusCode);
+        private void grantNoCustomizedProductCollectionExistWithName(string name){
+            var customizedProductCollection=httpClient.GetAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI+"/?name="+name);
+            Assert.Equal(HttpStatusCode.NotFound,customizedProductCollection.Result.StatusCode);
         }
 
         /// <summary>
         /// Ensures that there is a customized product collection with a certain name
         /// </summary>
         /// <param name="name">string with the customized product collection name</param>
-        private async void grantExistsCustomizedProductCollectionExistWithName(string name){
-            var customizedProductCollection=await httpClient.GetAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI+"/?name="+name);
-            Assert.Equal(HttpStatusCode.OK,customizedProductCollection.StatusCode);
+        private void grantExistsCustomizedProductCollectionExistWithName(string name){
+            var customizedProductCollection=httpClient.GetAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI+"/?name="+name);
+            Assert.Equal(HttpStatusCode.OK,customizedProductCollection.Result.StatusCode);
         }
 
         /// <summary>
         /// Ensures that there is a customized product collection with a certain resource ID
         /// </summary>
         /// <param name="id">long with the customized product collection resource ID</param>
-        private async void grantExistsCustomizedProductCollectionExistWithResourceID(long id){
-            var customizedProductCollection=await httpClient.GetAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI+"/"+id);
-            Assert.Equal(HttpStatusCode.OK,customizedProductCollection.StatusCode);
+        private void grantExistsCustomizedProductCollectionExistWithResourceID(long id){
+            var customizedProductCollection=httpClient.GetAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI+"/"+id);
+            Assert.Equal(HttpStatusCode.OK,customizedProductCollection.Result.StatusCode);
         }
     }
 }

@@ -163,10 +163,11 @@ namespace backend.Controllers{
                 return BadRequest(NO_COLLECTIONS_AVAILABLE);
             }else{
                 try{
-                    CustomizedProductCollectionDTO customizedProductCollectionDTO=new CustomizedProductCollectionDTO();
                     logger.LogInformation(LOG_GET_BY_ID_START);
+                    CustomizedProductCollectionDTO customizedProductCollectionDTO=new CustomizedProductCollectionDTO();
+                    customizedProductCollectionDTO.name=name;
                     CustomizedProductCollectionDTO customizedProductCollection=new core.application.CustomizedProductCollectionController().findCollectionByEID(customizedProductCollectionDTO);
-                    if(customizedProductCollection==null){
+                    if(customizedProductCollection!=null){
                         logger.LogInformation(LOG_GET_BY_ID_SUCCESS,customizedProductCollection);
                         return Ok(customizedProductCollection);
                     }else{
