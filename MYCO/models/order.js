@@ -2,8 +2,8 @@ var mongoose = require('mongoose');
 
 var orderSchema = new mongoose.Schema({
     
-    orderContents: {
-        type: Map
+    orderContents: {type: Map,
+                    of: Number
     },
 
     status: {
