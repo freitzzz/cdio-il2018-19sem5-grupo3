@@ -144,22 +144,33 @@ namespace backend_tests.Controllers
         }
 
 
+        /// <summary>
+        /// Ensures that's possible to create a customized product collection with a valid name and valid customized products
+        /// </summary>
         [Fact, TestPriority(4)]
-        public async Task<CustomizedProductCollectionDTO> ensureCustomizedProductCollectionWithCustomizedProductsIsCreatedSuccessfully()
+        public async Task<CustomizedProductCollectionDTO> ensureCanCreateACustomizedProductCollectionIfItHasAValidNameAndValidCustomizedProducts()
         {
-            //Create a new CustomizedProduct that will be added to the Collection
-            CustomizedProductDTO customizedProductDTO = await new CustomizedProductControllerIntegrationTest(fixture).ensureCustomizedProductIsCreatedSuccesfuly();
-
-            //when adding new customized products to the collection, only the id is specified.
-            CustomizedProductDTO customizedProductDTOWithJustID = new CustomizedProductDTO {id = customizedProductDTO.id};
-
-
+            //First we will generate an atomic name for the customized products collection
+            string name="Braga" + Guid.NewGuid().ToString("n");
+            //Now we will grant that there are no customized product collection with that name
+            grantNoCustomizedProductCollectionExistWithName(name);
+            //Now let's add that name to the customized product collection
             CustomizedProductCollectionDTO customizedProductCollectionDTO = new CustomizedProductCollectionDTO();
-            customizedProductCollectionDTO.name = "Porto" + Guid.NewGuid().ToString("n");
-            customizedProductCollectionDTO.customizedProducts = new List<CustomizedProductDTO>() {customizedProductDTOWithJustID};
+            customizedProductCollectionDTO.name = name;
+            CustomizedProductDTO customizedProductDTO=new CustomizedProductDTO();
+            //We need a valid customized product so lets create one
+            //Task<CustomizedProductDTO> customizedProductDTOTask=new CustomizedProductControllerIntegrationTest(fixture).ensureCustomizedProductIsCreatedSuccesfuly();
+            //customizedProductDTOTask.Wait();
+            //Now let's add the customized product to the customized product collection
+            //customizedProductCollectionDTO.customizedProducts=new List<CustomizedProductDTO>(new []{customizedProductDTO});
 
+            //We will try to create a customized product collection with the generated name and customized products
             var createCustomizedProductsCollection = await httpClient.PostAsJsonAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI, customizedProductCollectionDTO);
-            Assert.True(createCustomizedProductsCollection.StatusCode == HttpStatusCode.Created);
+            //Since there were no customized product collection with the generated name and customized products then the result should tell us that it was created (sucessfuly)
+            Assert.Equal(HttpStatusCode.Created,createCustomizedProductsCollection.StatusCode);
+            //To ensure that the creation was sucessful we will fetch the customized product collection by its name
+            grantExistsCustomizedProductCollectionExistWithName(name);
+            //We can also grant that its possible to fetch the customized product collection by its ID
             return JsonConvert.DeserializeObject<CustomizedProductCollectionDTO>(await createCustomizedProductsCollection.Content.ReadAsStringAsync());
         }
 
