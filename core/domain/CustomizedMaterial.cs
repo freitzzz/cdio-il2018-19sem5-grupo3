@@ -13,6 +13,11 @@ namespace core.domain
     ///</summary>
     public class CustomizedMaterial : ValueObject, DTOAble<CustomizedMaterialDTO>
     {
+        /// <summary>
+        /// Constant that represents the message that ocurrs if the CustomizedMaterial's matterial are not valid.
+        /// </summary>
+        private const string INVALID_CUSTOMIZED_MATERIAL_MATERIAL = "The CustomizedMaterial's material are not valid!";
+
 
         /// <summary>
         /// Constant that represents the message that ocurrs if the CustomizedMaterial's color are not valid.
@@ -29,6 +34,12 @@ namespace core.domain
         /// </summary>
         /// <value>Gets/sets the value of the database identifier.</value>
         public long Id { get; internal set; }
+
+        ///<summary>
+        ///The CustomizedMaterial's material.
+        ///</summary>
+        private Material _material;   //!private field used for lazy loading, do not use this for storing or fetching data
+        public Material material { get => LazyLoader.Load(this, ref _material); protected set => _material = value; }
 
         ///<summary>
         ///The CustomizedMaterial's color.
@@ -66,38 +77,43 @@ namespace core.domain
         ///<summary>
         ///Builds a new instance of CustomizedMaterial, receiving its color and finish.
         ///</summary>
+        ///<param name = "material">material with the new CustomizedMaterial's material</param>
         ///<param name = "color">string with the new CustomizedMaterial's color</param>
         ///<param name = "finish">string with the new CustomizedMaterial's finish</param>
-        public static CustomizedMaterial valueOf(Color color, Finish finish)
+        public static CustomizedMaterial valueOf(Material material, Color color, Finish finish)
         {
-            return new CustomizedMaterial(color, finish);
+            return new CustomizedMaterial(material, color, finish);
         }
 
         ///<summary>
         ///Builds a new instance of CustomizedMaterial, receiving its color.
         ///</summary>
+        ///<param name = "material">material with the new CustomizedMaterial's material</param>
         ///<param name = "color">string with the new CustomizedMaterial's color</param>
-        public static CustomizedMaterial valueOf(Color color)
+        public static CustomizedMaterial valueOf(Material material, Color color)
         {
-            return new CustomizedMaterial(color);
+            return new CustomizedMaterial(material, color);
         }
 
         ///<summary>
         ///Builds a new instance of CustomizedMaterial, receiving its finish.
         ///</summary>
+        ///<param name = "material">material with the new CustomizedMaterial's material</param>
         ///<param name = "finish">string with the new CustomizedMaterial's finish</param>
-        public static CustomizedMaterial valueOf(Finish finish)
+        public static CustomizedMaterial valueOf(Material material, Finish finish)
         {
-            return new CustomizedMaterial(finish);
+            return new CustomizedMaterial(material, finish);
         }
 
         ///<summary>
         ///Builds a new instance of CustomizedMaterial, receiving its color and finish.
         ///</summary>
+        ///<param name = "material">material with the new CustomizedMaterial's material</param>
         ///<param name = "color">The new CustomizedMaterial's color</param>
         ///<param name = "finish">The new CustomizedMaterial's finishe</param>
-        private CustomizedMaterial(Color color, Finish finish)
+        private CustomizedMaterial(Material material, Color color, Finish finish)
         {
+            checkCustomizedMaterialMaterial(material);
             checkCustomizedMaterialColor(color);
             checkCustomizedMaterialFinish(finish);
             this.color = color;
@@ -107,9 +123,11 @@ namespace core.domain
         ///<summary>
         ///Builds a new instance of CustomizedMaterial, receiving its color.
         ///</summary>
+        ///<param name = "material">material with the new CustomizedMaterial's material</param>
         ///<param name = "color">The new CustomizedMaterial's color</param>
-        private CustomizedMaterial(Color color)
+        private CustomizedMaterial(Material material, Color color)
         {
+            checkCustomizedMaterialMaterial(material);
             checkCustomizedMaterialColor(color);
             this.color = color;
             this.finish = null;
@@ -118,14 +136,24 @@ namespace core.domain
         ///<summary>
         ///Builds a new instance of ConfiguredMaterial, receiving its finish.
         ///</summary>
+        ///<param name = "material">material with the new CustomizedMaterial's material</param>
         ///<param name = "finish">The new ConfiguredMaterial's finishe</param>
-        private CustomizedMaterial(Finish finish)
+        private CustomizedMaterial(Material material, Finish finish)
         {
+            checkCustomizedMaterialMaterial(material);
             checkCustomizedMaterialFinish(finish);
             this.finish = finish;
             this.color = null;
         }
 
+        ///<summary>
+        ///Checks if the CustomizedMaterial's material is valid.
+        ///</summary>
+        ///<param name = "material">The CustomizedMaterial's material</param>
+        private void checkCustomizedMaterialMaterial(Material material)
+        {
+            if (material == null|| String.IsNullOrEmpty(material.ToString())) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_MATERIAL);
+        }
         ///<summary>
         ///Checks if the CustomizedMaterial's color is valid.
         ///</summary>
@@ -145,11 +173,11 @@ namespace core.domain
         }
 
         ///<summary>
-        ///Returns a textual with the color and finish of the Customized Material.
+        ///Returns a textual with the material, color and finish of the Customized Material.
         ///</summary>
         public override string ToString()
         {
-            return string.Format("Color: {0}, Finish {1}", color, finish);
+            return string.Format("Material: {0}, Color: {1}, Finish {2}",material ,  color, finish);
         }
 
         ///<summary>
@@ -158,6 +186,7 @@ namespace core.domain
         public override int GetHashCode()
         {
             int hashCode = 17;
+            hashCode = (hashCode * 23) + this.material.GetHashCode();
             hashCode = (hashCode * 23) + this.color.GetHashCode();
             hashCode = (hashCode * 23) + this.finish.GetHashCode();
 
@@ -178,7 +207,7 @@ namespace core.domain
             else
             {
                 CustomizedMaterial configMaterial = (CustomizedMaterial)obj;
-                return finish.Equals(configMaterial.finish) && color.Equals(configMaterial.color);
+                return material.Equals(configMaterial.material) && finish.Equals(configMaterial.finish) && color.Equals(configMaterial.color);
             }
         }
         /// <summary>
@@ -189,6 +218,7 @@ namespace core.domain
         {
             CustomizedMaterialDTO dto = new CustomizedMaterialDTO();
             dto.id = this.Id;
+            dto.material = this.material.toDTO();
             dto.color = this.color.toDTO();
             dto.finish = this.finish.toDTO();
             return dto;

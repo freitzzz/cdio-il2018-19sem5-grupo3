@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -217,7 +216,7 @@ namespace backend.Controllers
         }
 
         /// <summary>
-        /// Adds a new collection 
+        /// Adds or removes a collection 
         /// </summary>
         /// <param name="jsonData">JObject with the commercialCatalogue information in JSON</param>
         /// <returns>HTTP Response 200 Ok if the commercialCatalogue was created with successs
@@ -231,8 +230,7 @@ namespace backend.Controllers
             try
             {
                 updateCatalogueCollectionDTO.id = id;
-                CommercialCatalogueDTO createdComCatalogueDTO = new core.application.CommercialCatalogueController().updateCollection(updateCatalogueCollectionDTO);
-                if (createdComCatalogueDTO != null)
+                if (new core.application.CommercialCatalogueController().updateCollection(updateCatalogueCollectionDTO))
                 {
                     logger.LogInformation(LOG_PUT_SUCCESS,id,updateCatalogueCollectionDTO);
                     return Ok(new SimpleJSONMessageService(VALID_COMMERCIAL_CATALOGUE_UPDATE_MESSAGE));
@@ -255,44 +253,6 @@ namespace backend.Controllers
             catch (ArgumentException argumentException)
             {
                 logger.LogWarning(argumentException,LOG_PUT_BAD_REQUEST,id,updateCatalogueCollectionDTO);
-                return BadRequest(new SimpleJSONMessageService(argumentException.Message));
-            }
-        }
-
-        /// <summary>
-        /// Removes a collection.
-        /// </summary>
-        /// <param name="jsonData">JObject with the commercialCatalogue information in JSON</param>
-        /// <returns>HTTP Response 200 Ok if the commercialCatalogue was created with success
-        ///         <br>HTTP Response 400 Bad Request if an error occured while creating the commercialCatalogue
-        ///         <br>See MyC REST API documentation for a better overview
-        /// </returns>
-        //!This method needs to be refactored because there are TWO PUT Requests with the same path
-        [HttpPut("{id}/collections/")]
-        public ActionResult<CommercialCatalogueDTO> removeCollection(long id, long idC)
-        {
-            try
-            {
-                CommercialCatalogueDTO createdComCatalogueDTO = new core.application.CommercialCatalogueController().removeCollection(id, idC);
-                if (createdComCatalogueDTO != null)
-                {
-                    return Created(Request.Path, createdComCatalogueDTO);
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            catch (NullReferenceException)
-            {
-                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
-            }
-            catch (InvalidOperationException invalidOperationException)
-            {
-                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
-            }
-            catch (ArgumentException argumentException)
-            {
                 return BadRequest(new SimpleJSONMessageService(argumentException.Message));
             }
         }

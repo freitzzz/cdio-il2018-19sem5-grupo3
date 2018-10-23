@@ -42,12 +42,12 @@ namespace backend_tests.Controllers
         /// <param name="fixture">injected mocked server</param>
         public CommercialCatalogueIntegrationTest(TestFixture<TestStartupSQLite> fixture)
         {
-                            this.fixture = fixture;
-                client = fixture.CreateClient(new WebApplicationFactoryClientOptions
-                {
-                    AllowAutoRedirect = false,
-                    BaseAddress =  new Uri("http://localhost:5001")
-                });
+            this.fixture = fixture;
+            client = fixture.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false,
+                BaseAddress = new Uri("http://localhost:5001")
+            });
         }
 
         [Fact, TestPriority(1)]
@@ -66,11 +66,14 @@ namespace backend_tests.Controllers
             Task<ProductDTO> productDTOTask = new ProductControllerIntegrationTest(fixture).ensureProductIsCreatedSuccesfuly();
             productDTOTask.Wait();
             ProductDTO productDTO = productDTOTask.Result;
-
+            Color color = Color.valueOf("Rosa", 1, 1, 1, 1);
+            ColorDTO colorDTO = color.toDTO();
+            Finish finish = Finish.valueOf("Finish");
+            FinishDTO finishDTO = finish.toDTO();
 
             CustomizedMaterialDTO custMaterialDTO = new CustomizedMaterialDTO();
-            /* custMaterialDTO.color = colorDTO;
-            custMaterialDTO .finish = finishDTO;*/
+            custMaterialDTO.color = colorDTO;
+            custMaterialDTO.finish = finishDTO;
 
             CustomizedDimensionsDTO custDimensionsDTO = new CustomizedDimensionsDTO();
             custDimensionsDTO.height = 23.4;
@@ -117,19 +120,19 @@ namespace backend_tests.Controllers
         [Fact, TestPriority(3)]
         public async Task<CommercialCatalogueDTO> ensurePutCatalogueCollectionWorks()
         {
-/* 
-            Task<CommercialCatalogueDTO> commercialCatalogueDTOTask = ensurePostCommercialCatalogueWorks();
-            commercialCatalogueDTOTask.Wait();
-            CommercialCatalogueDTO commercialCatalogueDTO = commercialCatalogueDTOTask.Result;
+            /* 
+                        Task<CommercialCatalogueDTO> commercialCatalogueDTOTask = ensurePostCommercialCatalogueWorks();
+                        commercialCatalogueDTOTask.Wait();
+                        CommercialCatalogueDTO commercialCatalogueDTO = commercialCatalogueDTOTask.Result;
 
-            long id = commercialCatalogueDTO.id;
-            CatalogueCollectionDTO catalogueCollectionDTO = new CatalogueCollectionDTO();
-             */
-            
+                        long id = commercialCatalogueDTO.id;
+                        CatalogueCollectionDTO catalogueCollectionDTO = new CatalogueCollectionDTO();
+                         */
+
             //TODO:WAIT FOR IMPLEMENTATION OF OTHER INTEGRATION TESTS
-            
+
             ///catalogueCollectionDTO.customizedProductCollectionDTO = CustomizedProductCollectionIn
-            
+
             //List<CustomizedProductDTO> customizedProductDTOs=new List<CustomizedProductDTO>();
 
             //var response = await client.PutAsJsonAsync(urlBase+"/"+id+"/collections", catalogueCollectionDTO);

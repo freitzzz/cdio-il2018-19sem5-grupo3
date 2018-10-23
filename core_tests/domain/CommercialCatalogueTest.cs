@@ -32,7 +32,7 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
+
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -56,6 +56,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
@@ -90,7 +91,7 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
+
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -113,7 +114,7 @@ namespace core_tests.domain
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -149,7 +150,6 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -172,6 +172,7 @@ namespace core_tests.domain
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
@@ -210,7 +211,6 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -233,7 +233,7 @@ namespace core_tests.domain
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -271,7 +271,6 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -294,7 +293,7 @@ namespace core_tests.domain
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -330,7 +329,6 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -353,7 +351,7 @@ namespace core_tests.domain
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
@@ -390,7 +388,6 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -413,7 +410,7 @@ namespace core_tests.domain
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -453,7 +450,6 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -477,7 +473,7 @@ namespace core_tests.domain
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -518,7 +514,6 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -542,7 +537,7 @@ namespace core_tests.domain
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -579,7 +574,6 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -603,7 +597,7 @@ namespace core_tests.domain
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
@@ -635,7 +629,6 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -659,7 +652,7 @@ namespace core_tests.domain
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -691,7 +684,6 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -715,7 +707,7 @@ namespace core_tests.domain
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
 
@@ -748,7 +740,6 @@ namespace core_tests.domain
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -771,7 +762,7 @@ namespace core_tests.domain
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -835,7 +826,6 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -860,7 +850,7 @@ namespace core_tests.domain
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -950,7 +940,6 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -974,6 +963,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -1408,7 +1398,6 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -1432,6 +1421,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
@@ -1467,7 +1457,6 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -1492,6 +1481,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
@@ -1528,7 +1518,6 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -1553,6 +1542,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
@@ -1589,7 +1579,6 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -1614,6 +1603,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
@@ -1647,7 +1637,6 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -1672,6 +1661,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
@@ -1708,7 +1698,6 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
 
@@ -1733,14 +1722,15 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
-             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
             listCollection.Add(custProCollection);
 
-             List<CatalogueCollection> list = new List<CatalogueCollection>();
+            List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
             CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
@@ -1763,7 +1753,6 @@ namespace core_tests.domain
             string designation = "Commercial Catalogue 2019";
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
             ProductCategory prodCat = new ProductCategory("Category 1");
             List<Double> values2 = new List<Double>();
@@ -1784,15 +1773,16 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
 
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-             CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
 
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
             listCollection.Add(custProCollection);
 
-             List<CatalogueCollection> list = new List<CatalogueCollection>();
+            List<CatalogueCollection> list = new List<CatalogueCollection>();
             List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
             listCustomizedProducts.Add(custProduct);
             CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);

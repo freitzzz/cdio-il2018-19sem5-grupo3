@@ -53,7 +53,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
 
 
 
@@ -114,7 +114,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
 
 
 
@@ -174,7 +174,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
 
 
 
