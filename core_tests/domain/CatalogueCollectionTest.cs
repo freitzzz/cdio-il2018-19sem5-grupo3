@@ -65,7 +65,10 @@ namespace core_tests.domain
 
             CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Mario");
             CatalogueCollection CatalogueCollection = new CatalogueCollection(customizedProductCollection, list);
-            Assert.Throws<ArgumentException>(() => new CatalogueCollection(null, list));
+
+            Action action = () => new CatalogueCollection(null, list);
+
+            Assert.Throws<ArgumentException>(action);
         }
 
 
@@ -73,7 +76,6 @@ namespace core_tests.domain
         public void ensureCatalogueCollectionContructorIsValid()
         {
             var category = new ProductCategory("Drawers");
-
 
 
             //Creating Dimensions
@@ -126,7 +128,7 @@ namespace core_tests.domain
 
             CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Mario");
             CatalogueCollection CatalogueCollection = new CatalogueCollection(customizedProductCollection, list);
-            Assert.True(CatalogueCollection.Equals(new CatalogueCollection(customizedProductCollection, list)));
+            Assert.NotNull(CatalogueCollection);
         }
 
         [Fact]
