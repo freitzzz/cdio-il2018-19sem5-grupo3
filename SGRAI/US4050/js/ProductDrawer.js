@@ -1,11 +1,20 @@
 var camera, controls, scene, renderer;
 
+var base_face_dimensions_axes=[200,0,100,0,0,0];
+var top_face_dimensions_axes=[200,0,100,0,100,0];
+var left_face_dimensions_axes=[0,100,100,100,50,0];
+var right_face_dimensions_axes=[0,100,100,-100,50,0];
+var back_face_dimensions_axes=[200,100,0,0,50,-50];
+
+var faces=[base_face_dimensions_axes,top_face_dimensions_axes,left_face_dimensions_axes,right_face_dimensions_axes,back_face_dimensions_axes];
+var faces_ids=[];
+
 /**
  * Initial Product Draw function
  */
-function main(){
-    renderer=new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth,window.innerHeight);
+function main() {
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
@@ -15,7 +24,7 @@ function main(){
 
     // controls
 
-    controls = new THREE.OrbitControls( camera, renderer.domElement );
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
 
     //controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
 
@@ -29,25 +38,38 @@ function main(){
 
     controls.maxPolarAngle = Math.PI / 2;
 
-    
-
     scene=new THREE.Scene();
-    var cube=new THREE.Mesh(new THREE.CubeGeometry(200,100,100),new THREE.MeshNormalMaterial());
 
-    cube.rotation.z=0.5;
+    var group=new THREE.Group();
 
-    scene.add(cube);
+    for(var i=0;i<faces.length;i++){
+        faces_ids.push(generateCube(faces[i][0],faces[i][1],faces[i][2],faces[i][3],faces[i][4],faces[i][5],new THREE.MeshNormalMaterial(),group));
+    }
 
-    update();
+    scene.add(group);
+
+    animate();
 
 }
 
-function update(){
-    requestAnimationFrame(update);
+
+function generateCube(width,height,depth,x,y,z,materia1,group){
+    var cubeGeometry=new THREE.CubeGeometry(width,height,depth);
+    var cube=new THREE.Mesh(cubeGeometry,materia1);
+    cube.add(new THREE.AxesHelper(200));
+    cube.position.x=x;
+    cube.position.y=y;
+    cube.position.z=z;
+    group.add(cube);
+    return cube.id;
+}
+
+function animate() {
+    requestAnimationFrame(animate);
     controls.update();
     render();
 }
 
-function render(){
-    renderer.render(scene,camera);
+function render() {
+    renderer.render(scene, camera);
 }
