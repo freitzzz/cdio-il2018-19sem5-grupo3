@@ -26,12 +26,21 @@ namespace core.application{
         }
 
         /// <summary>
-        /// Fetches a customized product collection by its id
+        /// Fetches a customized product collection by its persistence id
         /// </summary>
         /// <param name="customizedProductCollectionDTO">CustomizedProductCollectionDTO with the customized product collection information</param>
         /// <returns>CustomizedProductCollectionDTO with the fetched customized product collection information</returns>
         public CustomizedProductCollectionDTO findCollectionByID(CustomizedProductCollectionDTO customizedProductCollectionDTO){
             return PersistenceContext.repositories().createCustomizedProductCollectionRepository().find(customizedProductCollectionDTO.id).toDTO();
+        }
+
+        /// <summary>
+        /// Fetches a customized product collection by its entity identifier
+        /// </summary>
+        /// <param name="customizedProductCollectionDTO">CustomizedProductCollectionDTO with the customized product collection information</param>
+        /// <returns>CustomizedProductCollectionDTO with the fetched customized product collection information</returns>
+        public CustomizedProductCollectionDTO findCollectionByEID(CustomizedProductCollectionDTO customizedProductCollectionDTO){
+            return PersistenceContext.repositories().createCustomizedProductCollectionRepository().find(customizedProductCollectionDTO.name).toDTO();
         }
 
         /// <summary>

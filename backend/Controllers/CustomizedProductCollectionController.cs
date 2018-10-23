@@ -146,19 +146,38 @@ namespace backend.Controllers{
 
         /// <summary>
         /// Fetches all available collections of customized products
+        /// <br>Additionaly it can fetch a customized product collection by query params
         /// </summary>
-        /// <returns>ActionResult with all available customized products</returns>
+        /// <returns>ActionResult with all available customized products or a customized product collection by query params</returns>
         [HttpGet]
-        public ActionResult<List<CustomizedProductCollectionDTO>> findAll(){
-            logger.LogInformation(LOG_GET_ALL_START);
-            List<CustomizedProductCollectionDTO> customizedProductCollectionDTOS=new core.application.CustomizedProductCollectionController().findAllCollections();
-            if(!Collections.isEnumerableNullOrEmpty(customizedProductCollectionDTOS))
-            {
-                logger.LogInformation(LOG_GET_ALL_SUCCESS,customizedProductCollectionDTOS);
-                return Ok(customizedProductCollectionDTOS);
+        public ActionResult<List<CustomizedProductCollectionDTO>> findAll([FromQuery]string name){
+            if(name==null){
+                logger.LogInformation(LOG_GET_ALL_START);
+                List<CustomizedProductCollectionDTO> customizedProductCollectionDTOS=new core.application.CustomizedProductCollectionController().findAllCollections();
+                if(!Collections.isEnumerableNullOrEmpty(customizedProductCollectionDTOS))
+                {
+                    logger.LogInformation(LOG_GET_ALL_SUCCESS,customizedProductCollectionDTOS);
+                    return Ok(customizedProductCollectionDTOS);
+                }
+                logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
+                return BadRequest(NO_COLLECTIONS_AVAILABLE);
+            }else{
+                try{
+                    CustomizedProductCollectionDTO customizedProductCollectionDTO=new CustomizedProductCollectionDTO();
+                    logger.LogInformation(LOG_GET_BY_ID_START);
+                    CustomizedProductCollectionDTO customizedProductCollection=new core.application.CustomizedProductCollectionController().findCollectionByEID(customizedProductCollectionDTO);
+                    if(customizedProductCollection==null){
+                        logger.LogInformation(LOG_GET_BY_ID_SUCCESS,customizedProductCollection);
+                        return Ok(customizedProductCollection);
+                    }else{
+                        logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST,name);
+                        return NotFound(RESOURCE_NOT_FOUND_MESSAGE);
+                    }
+                }catch(NullReferenceException){
+                    logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST,name);
+                    return NotFound(RESOURCE_NOT_FOUND_MESSAGE);
+                }
             }
-            logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
-            return BadRequest(NO_COLLECTIONS_AVAILABLE);
         }
 
         /// <summary>
@@ -179,10 +198,10 @@ namespace backend.Controllers{
                     return Ok(customizedProductCollection);
                 }
                 logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST,id);
-                return BadRequest(RESOURCE_NOT_FOUND_MESSAGE);
+                return NotFound(RESOURCE_NOT_FOUND_MESSAGE);
             }catch(NullReferenceException nullReferenceException){
                 logger.LogWarning(nullReferenceException,LOG_GET_BY_ID_BAD_REQUEST,id);
-                return BadRequest(RESOURCE_NOT_FOUND_MESSAGE);
+                return NotFound(RESOURCE_NOT_FOUND_MESSAGE);
             }
         }
 
