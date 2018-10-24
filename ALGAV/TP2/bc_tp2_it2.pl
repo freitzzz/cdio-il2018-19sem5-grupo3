@@ -3,13 +3,16 @@ carregar:-['cdio-tsp.pl'],['intersept.pl'].
 
 %Caminho heurístico (vizinho mais próximo)
 
-tsp2(Orig,L,NCPorVisitar,DistanciaTotal):-percorrerCircuito(Orig,L1,NCPorVisitar,DistanciaTotal1,[Orig]),  %Inicialmente percorremos o circuito hamiltoniano
+tsp2(Orig,L,DistanciaTotal):- todasAsCidades(NCidades), NCPorVisitar is NCidades - 1, %Começa-se por descobrir o nº de cidades (sem considerar a origem)
+													percorrerCircuito(Orig,L1,NCPorVisitar,DistanciaTotal1,[Orig]),  %De seguida percorremos o circuito hamiltoniano
 													reverse(L1,[H|_]), %Obtemos a ultima cidade a ser percorrida
 													dist_cities(H,Orig,Distancia), %Calculamos a distancia entre essa cidade e a origem
 													DistanciaTotal is DistanciaTotal1 + Distancia, %Calculo da distancia final com base na distancia do circuito hamiltoniano com a distancia do destino à origem
 													append([Orig],L1,L2), %Adicionamos a origem à lista do circuito hamiltoniano
 													append(L2,[Orig],L),%Finalmente,adicionamos a origem à cauda do caminho hamiltoniano
 													!.%Cut no final serve para evitar encontrar mais soluções
+													
+todasAsCidades(NCidades):- findall(X, city(X, _, _), L), length(L, NCidades). %Percorre a BC e retorna o número de cidades existente
 													
 
 percorrerCircuito(_,[],0,0,_). %Condição de paragem: Quando o número de cidades por visitar for 0, foi alcançado o objetivo
