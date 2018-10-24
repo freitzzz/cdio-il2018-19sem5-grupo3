@@ -64,9 +64,12 @@ Closet=function(){
      * Removes a slot from the closet
      */
     this.removeSlot=function(){
-        this.closet_slots--;
-        this.closet_slots_faces.pop();
-        updateClosetSlots(this);
+        if(this.closet_slots>1){
+            this.closet_slots--;
+            this.closet_slots_faces.pop();
+            this.initial_closet_slots_faces.pop();
+            updateClosetSlots(this);
+        }
     }
     
     /**
