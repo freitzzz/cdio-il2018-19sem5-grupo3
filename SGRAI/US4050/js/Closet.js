@@ -29,11 +29,6 @@ Closet=function(){
     this.closet_faces=[this.closet_base_face_dimensions_axes,this.closet_top_face_dimensions_axes,this.closet_left_face_dimensions_axes,this.closet_right_face_dimensions_axes,this.closet_back_face_dimensions_axes];
 
     /**
-     * Array with the closet faces ids (used for dynamic scale)
-     */
-    this.closet_faces_ids=[];
-
-    /**
      * Current closet slots
      */
     this.closet_slots=1;
@@ -43,21 +38,15 @@ Closet=function(){
      */
     this.closet_slots_faces=[];
 
-    /**
-     * Current closet slots faces ids (used for dynamci scale)
-     */
-    this.closet_slots_faces_ids=[];
-
 
     /**
      * Adds a slot to the closet
      */
     this.addSlot=function(){
         this.closet_slots++;
-        this.closet_slots_faces.push(this.closet_right_face_dimensions_axes.copyWithin(-1,0,this.closet_right_face_dimensions_axes.length));
+        this.closet_slots_faces.push(this.closet_right_face_dimensions_axes.slice());
         updateClosetSlots(this);
-        var asdd=this.closet_slots_faces[this.closet_slots_faces.length-1];
-        return asdd;
+        return this.closet_slots_faces[this.closet_slots_faces.length-1];
     }
 
     /**
@@ -77,7 +66,11 @@ Closet=function(){
         var distance_per_slot=(closet.closet_right_face_dimensions_axes[3]-closet.closet_left_face_dimensions_axes[3])/closet.closet_slots;
         var left_closet_face_x_value=closet.closet_left_face_dimensions_axes[3];
         for(var i=0;i<closet.closet_slots_faces.length;i++){
-            closet.closet_slots_faces[i][3]=left_closet_face_x_value+(distance_per_slot*(i+1));
+            if(i==0){
+                closet.closet_slots_faces[i][3]=left_closet_face_x_value+(distance_per_slot);
+            }else{
+                closet.closet_slots_faces[i][3]=closet.closet_slots_faces[i-1][3]+(distance_per_slot);
+            }
         }
     }
 }
