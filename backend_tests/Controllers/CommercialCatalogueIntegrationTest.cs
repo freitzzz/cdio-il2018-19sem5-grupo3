@@ -76,7 +76,7 @@ namespace backend_tests.Controllers
         public async Task<CommercialCatalogueDTO> ensurePostCommercialCatalogueWithCollectionsReturnsCreated()
         {
 
-            CustomizedProductCollectionDTO collectionDTO = await new CustomizedProductsCollectionControllerIntegrationTest(fixture).ensureCustomizedProductCollectionWithCustomizedProductsIsCreatedSuccessfully();
+            CustomizedProductCollectionDTO collectionDTO = await new CustomizedProductsCollectionControllerIntegrationTest(fixture).ensureCanCreateACustomizedProductCollectionIfItHasAValidNameAndValidCustomizedProducts();
 
             //only the collection's ID needs to be specified in the DTO
             CustomizedProductCollectionDTO collectionDTOWithJustID = new CustomizedProductCollectionDTO() { id = collectionDTO.id };

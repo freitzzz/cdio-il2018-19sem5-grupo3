@@ -389,5 +389,9 @@ a:focus, .btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:acti
     border: 1px solid #ccc;
     border-top: none;
 }
+.tabcontent input {
+	width: 40%;
+	clear: both;
+  }
 
 }
