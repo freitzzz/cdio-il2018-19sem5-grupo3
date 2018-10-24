@@ -32,7 +32,7 @@ Closet=function(){
     /**
      * Array with the initial closet faces values
      */
-    this.initial_closet_faces=this.closet_faces.slice();
+    this.initial_closet_faces=[this.closet_base_face_dimensions_axes.slice(),this.closet_top_face_dimensions_axes.slice(),this.closet_left_face_dimensions_axes.slice(),this.closet_right_face_dimensions_axes.slice(),this.closet_back_face_dimensions_axes.slice()];
 
     /**
      * Current closet slots
@@ -48,6 +48,60 @@ Closet=function(){
      * Array with the initial closet faces values
      */
     this.initial_closet_slots_faces=this.closet_slots_faces.slice();
+
+    /**
+     * Changes the closet width
+     */
+    this.changeClosetWidth=function(width){
+        if(width>0){
+            var axesWidth=width/2;
+            this.closet_base_face_dimensions_axes[0]=width;
+            this.closet_top_face_dimensions_axes[0]=width;
+            this.closet_back_face_dimensions_axes[0]=width;
+            this.closet_left_face_dimensions_axes[3]=-axesWidth;
+            this.closet_right_face_dimensions_axes[3]=axesWidth;
+        }else{
+            //THROW ERROR
+        }
+    }
+
+    /**
+     * Changes the closet height
+     */
+    this.changeClosetHeight=function(height){
+        if(height>0){
+            var axesHeight=height/2;
+            this.closet_top_face_dimensions_axes[4]=axesHeight+(this.closet_left_face_dimensions_axes[1]/2);
+            this.closet_base_face_dimensions_axes[4]=-axesHeight+(this.closet_left_face_dimensions_axes[1]/2);
+            this.closet_left_face_dimensions_axes[1]=height;
+            this.closet_right_face_dimensions_axes[1]=height;
+            this.closet_back_face_dimensions_axes[1]=height;
+            for(var i=0;i<this.closet_slots_faces.length;i++){
+                this.closet_slots_faces[i][1]=height;
+            }
+        }else{
+            //THROW ERROR
+        }
+    }   
+
+    /**
+     * Changes the closet depth
+     */
+    this.changeClosetDepth=function(depth){
+        if(depth>0){
+            var axesDepth=depth/2;
+            this.closet_base_face_dimensions_axes[2]=depth;
+            this.closet_top_face_dimensions_axes[2]=depth;
+            this.closet_back_face_dimensions_axes[5]=-axesDepth;
+            this.closet_left_face_dimensions_axes[2]=depth;
+            this.closet_right_face_dimensions_axes[2]=depth;
+            for(var i=0;i<this.closet_slots_faces.length;i++){
+                this.closet_slots_faces[i][2]=depth;
+            }
+        }else{
+            //THROW ERROR
+        }
+    }
 
     /**
      * Adds a slot to the closet
