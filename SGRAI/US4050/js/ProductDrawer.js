@@ -18,10 +18,6 @@ var closet_faces_ids=[];
  */
 var closet_slots_faces_ids=[];
 
-var material = new THREE.MeshNormalMaterial( );
-
-
-
 
 /**
  * Initial Product Draw function
@@ -30,21 +26,13 @@ function main() {
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
-
     initCamera();
-
     initControls();
-
     initCloset();
-
     scene.add(group);
-
-    addSlotNumbered(5);
-
-    
-
+    addSlotNumbered(1);
+    registerEvents();
     animate();
-
 }
 
 /**
@@ -59,9 +47,10 @@ function initCloset(){
     for(var i=0;i<faces.length;i++){
         closet_faces_ids.push(generateParellepiped(faces[i][0],faces[i][1],faces[i][2]
                                     ,faces[i][3],faces[i][4],faces[i][5]
-                                    ,material,group));
+                                    ,createMaterialWithTexture(),group));
     }
     scene.add(group);
+    renderer.setClearColor(0xFFFFFF,1);
 }
 
 /**
@@ -105,7 +94,7 @@ function addSlotNumbered(slotsToAdd){
         var slotFace=closet.addSlot();
         closet_slots_faces_ids.push(generateParellepiped(slotFace[0],slotFace[1],slotFace[2]
                                     ,slotFace[3],slotFace[4],slotFace[5]
-                                    ,material,group));
+                                    ,createMaterialWithTexture(),group));
     }
     updateClosetGV();
 }
@@ -127,18 +116,18 @@ function removeSlot(){
  * @param {number} x Number with the parellepiped position relatively to the X axe
  * @param {number} y Number with the parellepiped position relatively to the Y axe
  * @param {number} z Number with the parellepiped position relatively to the Z axe
- * @param {THREE.Material} materia1 THREE.Material with the parellepiped material
+ * @param {THREE.Material} material THREE.Material with the parellepiped material
  * @param {THREE.Group} group THREE.Group with the group where the parellepied will be putted
  */
-function generateParellepiped(width,height,depth,x,y,z,materia1,group){
-    var cubeGeometry=new THREE.CubeGeometry(width,height,depth);
-    var cube=new THREE.Mesh(cubeGeometry,materia1);
-    cube.add(new THREE.AxesHelper(200));
-    cube.position.x=x;
-    cube.position.y=y;
-    cube.position.z=z;
-    group.add(cube);
-    return cube.id;
+function generateParellepiped(width,height,depth,x,y,z,material,group){
+    var parellepipedGeometry=new THREE.CubeGeometry(width,height,depth);
+    var parellepiped=new THREE.Mesh(parellepipedGeometry,material);
+    //cube.add(new THREE.AxesHelper(200)); Displays the parellepiped axes
+    parellepiped.position.x=x;
+    parellepiped.position.y=y;
+    parellepiped.position.z=z;
+    group.add(parellepiped);
+    return parellepiped.id;
 }
 
 /**
@@ -146,7 +135,7 @@ function generateParellepiped(width,height,depth,x,y,z,materia1,group){
  */
 function animate() {
     requestAnimationFrame(animate);
-    controls.update();
+    controls.update()
     render();
 }
 
@@ -197,4 +186,21 @@ function initCamera(){
 function getNewScaleValue(initialScaleValue,newScaleValue,currentScaleValue){
     if(initialScaleValue==0)return 0;
     return (newScaleValue*currentScaleValue)/initialScaleValue;
+}
+
+
+/**
+ * Register the events that can be communicated through the HTML
+ */
+function registerEvents(){}
+
+/**
+ * Remove when found a better way
+ */
+function createMaterialWithTexture(){
+
+    var texture = new THREE.TextureLoader().load( '../textures/cherry_wood_cabinets.jpg' );
+    var material = new THREE.MeshBasicMaterial( { map: texture } );
+    
+    return material;
 }
