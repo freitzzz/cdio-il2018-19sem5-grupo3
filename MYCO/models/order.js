@@ -1,10 +1,13 @@
 var mongoose = require('mongoose');
 
+var orderContentsSchemas = new mongoose.Schema({
+    customizedproduct: Number,
+    quantity: Number
+}, { _id: false });
+
 var orderSchema = new mongoose.Schema({
-    
-    orderContents: {
-        type: Map
-    },
+
+    orderContents: [orderContentsSchemas],
 
     status: {
         type: String,

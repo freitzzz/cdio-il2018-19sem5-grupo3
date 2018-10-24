@@ -98,9 +98,11 @@ namespace backend.persistence.ef
             builder.Entity<CustomizedProduct>().HasOne(cp => cp.product);       //one-to-one relationship
             builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedDimensions); //embedded Dimensions
             builder.Entity<CustomizedProduct>().HasOne(cp => cp.customizedMaterial);
+            builder.Entity<CustomizedProduct>().HasMany(cp => cp.slots).WithOne();        //one-to-many relationship
+
+            builder.Entity<CustomizedMaterial>().HasOne(cm => cm.material).WithMany();
             builder.Entity<CustomizedMaterial>().HasOne(cm => cm.finish);
             builder.Entity<CustomizedMaterial>().HasOne(cm => cm.color);
-            builder.Entity<CustomizedProduct>().HasMany(cp => cp.slots).WithOne();        //one-to-many relationship
 
             //!Slots have many customized products and a customized product has many slots
             //TODO: Create a relational class
@@ -118,21 +120,17 @@ namespace backend.persistence.ef
 
 
             //Compound key for CatalogueCollectionProduct
-            builder.Entity<CatalogueCollectionProduct>().HasKey(ccp => new { ccp.commercialCatalogueId, ccp.customizedProductCollectionId, ccp.customizedProductId });
             //Many-to-Many relationship between CatalogueCollection and CustomizedProduct
+            builder.Entity<CatalogueCollectionProduct>().HasKey(ccp => new { ccp.catalogueCollectionId, ccp.customizedProductId });
             builder.Entity<CatalogueCollectionProduct>().HasOne(ccp => ccp.customizedProduct)
                 .WithMany().HasForeignKey(ccp => ccp.customizedProductId);
             builder.Entity<CatalogueCollectionProduct>().HasOne(ccp => ccp.catalogueCollection)
-                .WithMany(cc => cc.catalogueCollectionProducts).HasForeignKey(ccp => new { ccp.commercialCatalogueId, ccp.customizedProductCollectionId});
+                .WithMany(cc => cc.catalogueCollectionProducts).HasForeignKey(ccp => ccp.catalogueCollectionId);
 
-
-            //Compound key for CatalogueCollection
-            builder.Entity<CatalogueCollection>().HasKey(cc => new { cc.catalogueId, cc.customizedProductCollectionId });
-            //Many-to-many relationship between CommercialCatalogue and CustomizedProductCollection
-            builder.Entity<CatalogueCollection>().HasOne(cc => cc.customizedProductCollection)
-                .WithMany().HasForeignKey(cc => cc.customizedProductCollectionId);
-            builder.Entity<CatalogueCollection>().HasOne(cc => cc.catalogue)
-                .WithMany(catalogue => catalogue.collectionList).HasForeignKey(cc => cc.catalogueId);
+            builder.Entity<CommercialCatalogueCatalogueCollection>().HasKey(cccc => new { cccc.commercialCatalogueId, cccc.catalogueCollectionId });
+            builder.Entity<CommercialCatalogueCatalogueCollection>()
+                .HasOne(cccc => cccc.commercialCatalogue).WithMany(cc => cc.catalogueCollectionList).HasForeignKey(cccc => cccc.commercialCatalogueId);
+            builder.Entity<CommercialCatalogueCatalogueCollection>().HasOne(cccc => cccc.catalogueCollection).WithOne();
 
             //TODO: DISABLE CASCADE DELETION FROM JOIN TABLES
         }

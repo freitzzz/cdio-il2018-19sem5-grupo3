@@ -14,11 +14,6 @@ namespace core.domain
     /// <typeparam name="CatalogueCollectionDTO">DTO Type</typeparam>
     public class CatalogueCollection : DTOAble<CatalogueCollectionDTO>
     {
-        /// <summary>
-        /// Constant that represents the message that is presented if the CommercialCatalogue is not valid.
-        /// </summary>
-        private const string INVALID_CATALOGUE = "The Commercial Catalogue is not valid.";
-
         ///<summary>
         ///Constant that represents the message that is presented if the Customized Products are not valid
         ///</summary>
@@ -30,26 +25,10 @@ namespace core.domain
         private const string INVALID_COLLECTION = "The Customized Product Collection is not valid!";
 
         /// <summary>
-        /// CommercialCatalogue's foreign key, which is part of the CatalogueCollection's compound primary key.
+        /// CatalogueCollection's database identifier.
         /// </summary>
-        /// <value>Gets/sets the value of the CatalogueCollection's CommercialCatalogue foreign key.</value>
-        public long catalogueId { get; internal set; }
-
-        /// <summary>
-        /// CommercialCatalogue to which this CatalogueCollection belongs.
-        /// </summary>
-        /// <value>Gets/sets the CommercialCatalogue.</value>
-        private CommercialCatalogue _catalogue; //!private field used for lazy loading, do not use this for storing or fetching data
-        public CommercialCatalogue catalogue
-        {
-            get => LazyLoader.Load(this, ref _catalogue); protected set => _catalogue = value;
-        }
-
-        /// <summary>
-        /// CustomizedProductCollection's foreign key, which is part of the CatalogueCollection's compound primary key.
-        /// </summary>
-        /// <value>Gets/sets the value of the CatalogueCollection's CustomizedProductCollection foreign key.</value>
-        public long customizedProductCollectionId { get; internal set; }
+        /// <value>Gets/sets the value of the database identifier.</value>
+        public long Id { get; internal set; }
 
         ///<summary>
         ///CustomizedProductCollection being added to the CommercialCatalogue.
@@ -93,61 +72,48 @@ namespace core.domain
         /// <summary>
         /// Builds a new CatalogueCollection instance with a CustomizedProductCollection.
         /// </summary>
-        /// <param name="commercialCatalogue">CommercialCatalogue to which the collection will be added.</param>
         /// <param name="customizedProductCollection">CustomizedProductCollection being added to the CommercialCatalogue.</param>
-        public CatalogueCollection(CommercialCatalogue commercialCatalogue, CustomizedProductCollection customizedProductCollection)
+        public CatalogueCollection(CustomizedProductCollection customizedProductCollection)
         {
-            checkAttributes(commercialCatalogue, customizedProductCollection);
-            this.catalogue = commercialCatalogue;
+            checkAttributes(customizedProductCollection);
             this.customizedProductCollection = customizedProductCollection;
 
             //*If no list of CustomizedProduct is specified, then assume all instances of CustomizedProduct that belong to the collection are to be added */
 
-            IEnumerable<CustomizedProduct> customizedProductsFromCollection = customizedProductCollection.collectionProducts.Select(cp => cp.customizedProduct);
+            this.catalogueCollectionProducts = new List<CatalogueCollectionProduct>();
 
-            List<CatalogueCollectionProduct> catalogueCollectionProducts = new List<CatalogueCollectionProduct>();
+            IEnumerable<CustomizedProduct> customizedProductsFromCollection = customizedProductCollection.collectionProducts.Select(cp => cp.customizedProduct);
 
             foreach (CustomizedProduct customizedProduct in customizedProductsFromCollection)
             {
-                catalogueCollectionProducts.Add(new CatalogueCollectionProduct(this, customizedProduct));
+                this.catalogueCollectionProducts.Add(new CatalogueCollectionProduct(this, customizedProduct));
             }
-
-            this.catalogueCollectionProducts = new List<CatalogueCollectionProduct>(catalogueCollectionProducts);
         }
 
         /// <summary>
         /// Builds a new CatologueCollection instance with a list of CustomizedProduct and a CustomizedProductCollection.
         /// </summary>
-        /// <param name="commercialCatalogue">CommercialCatalogue to which the collection will be added.</param>
         /// <param name="customizedProductCollection">CustomizedProductCollection being added to the CommercialCatalogue.</param>
         /// <param name="customizedProducts">List containing all the instances of CustomizedProduct being added to the CommercialCatalogue.</param>
-        public CatalogueCollection(CommercialCatalogue commercialCatalogue, CustomizedProductCollection customizedProductCollection, List<CustomizedProduct> customizedProducts)
+        public CatalogueCollection(CustomizedProductCollection customizedProductCollection, List<CustomizedProduct> customizedProducts)
         {
             //Please note that this constructor does not chain with the other constructor in order to avoid filling the product list and then dereferencing it
-            checkAttributes(commercialCatalogue, customizedProductCollection, customizedProducts);
+            checkAttributes(customizedProductCollection, customizedProducts);
+            this.customizedProductCollection = customizedProductCollection;
             this.catalogueCollectionProducts = new List<CatalogueCollectionProduct>();
 
             foreach (CustomizedProduct customizedProduct in customizedProducts)
             {
                 this.catalogueCollectionProducts.Add(new CatalogueCollectionProduct(this, customizedProduct));
             }
-
-
-            this.customizedProductCollection = customizedProductCollection;
         }
 
         /// <summary>
         /// Checks if constructor parameters are valid.
         /// </summary>
-        /// <param name="commercialCatalogue">CommercialCatalogue being checked.</param>
         /// <param name="customizedProductCollection">CustomizedProductCollection being checked.</param>
-        private void checkAttributes(CommercialCatalogue commercialCatalogue, CustomizedProductCollection customizedProductCollection)
+        private void checkAttributes(CustomizedProductCollection customizedProductCollection)
         {
-            if (commercialCatalogue == null)
-            {
-                throw new ArgumentException(INVALID_CATALOGUE);
-            }
-
             if (customizedProductCollection == null)
             {
                 throw new ArgumentException(INVALID_COLLECTION);
@@ -157,12 +123,11 @@ namespace core.domain
         /// <summary>
         /// Checks if constructor parameters are valid.
         /// </summary>
-        /// <param name="commercialCatalogue">CommercialCatalogue being checked.</param>
         /// <param name="customizedProductCollection">CustomizedProductCollection being checked.</param>
         /// <param name="customizedProducts">List of CustomizedProduct being checked.</param>
-        private void checkAttributes(CommercialCatalogue commercialCatalogue, CustomizedProductCollection customizedProductCollection, List<CustomizedProduct> customizedProducts)
+        private void checkAttributes(CustomizedProductCollection customizedProductCollection, List<CustomizedProduct> customizedProducts)
         {
-            checkAttributes(commercialCatalogue, customizedProductCollection);
+            checkAttributes(customizedProductCollection);
             //TODO: check if all the specified customized products belong to the given collection
             if (customizedProducts == null || customizedProducts.Count == 0)
             {
@@ -181,25 +146,35 @@ namespace core.domain
             {
                 customizedProductDTOs.Add(catalogueCollectionProduct.customizedProduct.toDTO());
             }
-            CatalogueCollectionDTO.customizedProductsDTO = customizedProductDTOs;
-            CatalogueCollectionDTO.catalogueId = this.catalogueId;
-            CatalogueCollectionDTO.collectionId = this.customizedProductCollectionId;
+            CatalogueCollectionDTO.customizedProductDTOs = customizedProductDTOs;
             CatalogueCollectionDTO.customizedProductCollectionDTO = this.customizedProductCollection.toDTO();
             return CatalogueCollectionDTO;
         }
 
         ///<summary>
-        ///Returns the generated hash code of the CommercialCatalogue.
+        ///Returns the generated hash code of the CatalogueCollection.
         ///</summary>
         public override int GetHashCode()
         {
-            return customizedProductCollection.GetHashCode() + catalogueCollectionProducts.GetHashCode();
+            unchecked
+            {
+                int hash = 29;
+
+                hash = hash * 31 + customizedProductCollection.GetHashCode();
+
+                foreach (CatalogueCollectionProduct catalogueCollectionProduct in this.catalogueCollectionProducts)
+                {
+                    hash = hash * 47 + catalogueCollectionProduct.customizedProduct.GetHashCode();
+                }
+
+                return hash;
+            }
         }
 
         ///<summary>
         ///Checks if a certain Customized is the same as a received object.
         ///</summary>
-        ///<param name = "obj">object to compare to the current Customized Catalogue</param>
+        ///<param name = "obj">object to compare to the current CatalogueCollection</param>
         public override bool Equals(object obj)
         {
             //Check for null and compare run-time types.

@@ -88,20 +88,22 @@ namespace backend_tests.Controllers
             //Build a CatalogueCollectionDTO with just the identifiers
             CatalogueCollectionDTO catalogueCollectionDTO = new CatalogueCollectionDTO();
             catalogueCollectionDTO.customizedProductCollectionDTO = collectionDTOWithJustID;
-            catalogueCollectionDTO.customizedProductsDTO = new List<CustomizedProductDTO>() { customizedProductDTOWithJustID };
+            catalogueCollectionDTO.customizedProductDTOs = new List<CustomizedProductDTO>() { customizedProductDTOWithJustID };
 
 
             //Build CommercialCatalogueDTO with the previously built CatalogueCollectionDTO
             CommercialCatalogueDTO commercialCatalogue = new CommercialCatalogueDTO();
             commercialCatalogue.reference = "7" + Guid.NewGuid().ToString("n");
             commercialCatalogue.designation = " Catalogue" + Guid.NewGuid().ToString("n");
-            commercialCatalogue.collectionList = new List<CatalogueCollectionDTO>() { catalogueCollectionDTO };
+            commercialCatalogue.catalogueCollectionDTOs = new List<CatalogueCollectionDTO>() { catalogueCollectionDTO };
 
             var response = await client.PostAsJsonAsync(urlBase, commercialCatalogue);
 
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
-            return JsonConvert.DeserializeObject<CommercialCatalogueDTO>(await response.Content.ReadAsStringAsync());
+            CommercialCatalogueDTO createdCatalogueDTO = JsonConvert.DeserializeObject<CommercialCatalogueDTO>(await response.Content.ReadAsStringAsync());
+
+            return createdCatalogueDTO;
         }
 
 

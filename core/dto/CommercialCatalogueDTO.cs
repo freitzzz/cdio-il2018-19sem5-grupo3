@@ -37,8 +37,10 @@ namespace core.dto
         /// CommercialCatalogue's list of customized products.
         /// </summary>
         /// <value>Gets/sets the value of the customized products field.</value>
-        [DataMember]
-        public List<CatalogueCollectionDTO> collectionList { get; set; }
+        [DataMember(Name = "catalogueCollections")]
+        public List<CatalogueCollectionDTO> catalogueCollectionDTOs { get; set; }
+
+
         /// <summary>
         /// Returns this DTO's equivalent Entity
         /// </summary>
@@ -47,7 +49,7 @@ namespace core.dto
         {
             List<CatalogueCollection> custProducts = new List<CatalogueCollection>();
 
-            foreach (CatalogueCollectionDTO dto in this.collectionList)
+            foreach (CatalogueCollectionDTO dto in this.catalogueCollectionDTOs)
             {
                 custProducts.Add(dto.toEntity());
             }

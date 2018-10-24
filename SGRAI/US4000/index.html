@@ -137,22 +137,20 @@
           <h2><p></p> <p></p> Create <p></p></h2>
         <hr>
       </div>
-
-      <br><br><br>
-      <div class="tab">
-        <button class="btn-custom" onclick="openTab(event, 'dimensions')">Dimensions</button>
-        <button class="btn-custom" disabled>Slots</button>
-
-      </div>
-      <div id="dimensions" class="tabcontent">
-        <br><br>
+      <!--<div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'dimensions')">Dimensions</button>
+        <button class="tablinks" onclick="openTab(event, 'slots')">Slots</button>
+      </div>-->
+      <div id="dimensions" class="column left tabcontent active" >
+        <h2>Dimensions</h2>
+        <br>
         Height:<br>
-        <input type="number" min="0" name="height" value="1" id="height" onclick="reloadCube();">
+        <input type="number" min="1" name="height" value="1" id="height" onclick="reloadCube();">
         <br>
         Length:<br>
-        <input type="number" min="0" name="width" value="1" id="width" onclick="reloadCube();"><br>
+        <input type="number" min="1" name="width" value="1" id="width" onclick="reloadCube();"><br>
         Depth:<br>
-        <input type="number" min="0" name="depth" value="1" id="depth" onclick="reloadCube();"><br><br>
+        <input type="number" min="1" name="depth" value="1" id="depth" onclick="reloadCube();"><br><br>
         <select>
           <option value="mm">Milimeters</option>
           <option value="m">Meters</option>
@@ -162,16 +160,18 @@
         <br><br>
         <a class="btn-custom" onclick="openTab(event, 'slots')">Next</a>
       </div>
-      <div id="slots" class="tabcontent">
-        <br><br>
+      <div id="slots" class="column left tabcontent" style="display:none" >
+          <h2>Slots</h2>
+        <br>        
         Number of slots:<br>
-        <input type="number" min="0" name="slot" value="1" id="slots" onclick="reloadCube();">
+        <input type="number" min="1" name="slot" value="1" id="slots" onclick="reloadSlots();">
         <br>
-        <a href="#slots" class="btn btn-custom btn-lg ">Next</a>
+        <br>
+        <br>
+        <a class="btn-custom" onclick="openTab(event, 'dimensions')">Back</a>
+        <a class="btn-custom" disabled >Next</a>
       </div>
       <!--<a class="btn btn-custom btn-lg page-scroll" onclick="reloadCube();">Submit</a>--->
-
-
       <div class="column right" allign="right">
 
         <canvas id="webgl" width="400" height="400">
@@ -188,8 +188,6 @@
         <script src="US4050/Camera.js"></script>
         <script> main();</script>
       </div>
-
-
     </div>
   </div>
   </div>

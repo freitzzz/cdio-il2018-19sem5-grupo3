@@ -54,6 +54,9 @@ namespace backend_tests.Controllers
             ProductControllerIntegrationTest productControllerTest = new ProductControllerIntegrationTest(fixture);
             ProductDTO productDTO = await productControllerTest.ensureProductIsCreatedSuccesfuly();
 
+            //When creating a customized product, only the product's id is defined
+            ProductDTO productDTOWithJustID = new ProductDTO() { id = productDTO.id };
+
             //CustomizedDimensionsDTO creation
             //Please note that these dimensions reflect those specified in the product
             CustomizedDimensionsDTO customizedDimensionsDTO = new CustomizedDimensionsDTO();
@@ -69,10 +72,12 @@ namespace backend_tests.Controllers
             finishDTO.description = materialFinishDTO.description;
 
             ColorDTO colorDTO = new ColorDTO()
-                    {red = materialColorDTO.red, green = materialColorDTO.green, blue = materialColorDTO.blue, alpha = materialColorDTO.alpha};
+            { red = materialColorDTO.red, green = materialColorDTO.green, blue = materialColorDTO.blue, alpha = materialColorDTO.alpha };
 
             //CustomizedMaterialDTO creation
             CustomizedMaterialDTO customizedMaterialDTO = new CustomizedMaterialDTO();
+            MaterialDTO materialDTOWithJustID = new MaterialDTO() { id = materialDTO.id };
+            customizedMaterialDTO.material = materialDTOWithJustID;
             customizedMaterialDTO.finish = finishDTO;
             customizedMaterialDTO.color = colorDTO;
 
@@ -85,7 +90,7 @@ namespace backend_tests.Controllers
             customizedProductDTO.designation = productDTO.designation;
             customizedProductDTO.customizedDimensionsDTO = customizedDimensionsDTO;
             customizedProductDTO.customizedMaterialDTO = customizedMaterialDTO;
-            customizedProductDTO.productDTO = productDTO;
+            customizedProductDTO.productDTO = productDTOWithJustID;
 
 
             //TODO:SLOTS
