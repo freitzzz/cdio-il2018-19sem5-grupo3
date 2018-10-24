@@ -44,7 +44,6 @@ namespace core_tests.domain {
         public void testEqualFinishsAreEqual() {
             Finish finish1 = Finish.valueOf("Acabamento polido");
             Finish finish2 = Finish.valueOf("Acabamento polido");
-
             Assert.True(finish2.Equals(finish1));
         }
         /**
