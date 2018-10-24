@@ -223,4 +223,10 @@ function registerEvents(){
                               ,changeClosetDimensions.detail.height
                               ,changeClosetDimensions.detail.depth);
     });
+    document.addEventListener("addSlot",function(addSlotEvent){
+        addSlotNumbered(addSlotEvent.detail.slots);
+    });
+    document.addEventListener("removeSlot",function(removeSlotEvent){
+        addSlotNumbered(removeSlotEvent.detail.slots);
+    });
 }
