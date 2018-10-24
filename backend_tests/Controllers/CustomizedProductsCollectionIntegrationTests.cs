@@ -159,10 +159,10 @@ namespace backend_tests.Controllers
             customizedProductCollectionDTO.name = name;
             CustomizedProductDTO customizedProductDTO=new CustomizedProductDTO();
             //We need a valid customized product so lets create one
-            //Task<CustomizedProductDTO> customizedProductDTOTask=new CustomizedProductControllerIntegrationTest(fixture).ensureCustomizedProductIsCreatedSuccesfuly();
-            //customizedProductDTOTask.Wait();
+            Task<CustomizedProductDTO> customizedProductDTOTask=new CustomizedProductControllerIntegrationTest(fixture).ensureCustomizedProductIsCreatedSuccesfuly();
+            customizedProductDTOTask.Wait();
             //Now let's add the customized product to the customized product collection
-            //customizedProductCollectionDTO.customizedProducts=new List<CustomizedProductDTO>(new []{customizedProductDTO});
+            customizedProductCollectionDTO.customizedProducts=new List<CustomizedProductDTO>(new []{customizedProductDTOTask.Result});
 
             //We will try to create a customized product collection with the generated name and customized products
             var createCustomizedProductsCollection = await httpClient.PostAsJsonAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI, customizedProductCollectionDTO);

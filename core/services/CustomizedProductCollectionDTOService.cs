@@ -18,7 +18,7 @@ namespace core.services{
             string name=customizedProductCollectionDTO.name;
             if(customizedProductCollectionDTO.customizedProducts==null)
                 return new CustomizedProductCollection(name);
-            IEnumerable<CustomizedProduct> customizedProducts=PersistenceContext.repositories().createCustomizedProductRepository().findCustomizedProductsByTheirPIDS(customizedProductCollectionDTO.customizedProducts);
+            List<CustomizedProduct> customizedProducts=new List<CustomizedProduct>(PersistenceContext.repositories().createCustomizedProductRepository().findCustomizedProductsByTheirPIDS(customizedProductCollectionDTO.customizedProducts));
             
             return new CustomizedProductCollection(name,customizedProducts);
         }
