@@ -30,7 +30,7 @@ function main() {
     initControls();
     initCloset();
     scene.add(group);
-    addSlotNumbered(1);
+    addSlotNumbered(1);    
     registerEvents();
     animate();
 }
@@ -79,6 +79,8 @@ function updateClosetGV(){
     }
 }
 
+
+
 /**
  * Adds a slot to the current closet
  */
@@ -105,6 +107,19 @@ function addSlotNumbered(slotsToAdd){
 function removeSlot(){
     closet.removeSlot();
     closet_slots_faces_ids.pop();
+    updateClosetGV();
+}
+
+/**
+ * Changes the dimensions of the closet
+ * @param {number} width Number with the closet width
+ * @param {number} height Number with the closet height
+ * @param {number} depth Number with the closet depth
+ */
+function changeClosetDimensions(width,height,depth){
+    closet.changeClosetWidth(width);
+    closet.changeClosetHeight(height);
+    closet.changeClosetDepth(depth);
     updateClosetGV();
 }
 
@@ -188,12 +203,6 @@ function getNewScaleValue(initialScaleValue,newScaleValue,currentScaleValue){
     return (newScaleValue*currentScaleValue)/initialScaleValue;
 }
 
-
-/**
- * Register the events that can be communicated through the HTML
- */
-function registerEvents(){}
-
 /**
  * Remove when found a better way
  */
@@ -203,4 +212,15 @@ function createMaterialWithTexture(){
     var material = new THREE.MeshBasicMaterial( { map: texture } );
     
     return material;
+}
+
+/**
+ * Register the events that can be communicated through the document
+ */
+function registerEvents(){
+    document.addEventListener("changeDimensions",function(changeDimensionsEvent){
+        changeClosetDimensions(changeClosetDimensions.detail.width
+                              ,changeClosetDimensions.detail.height
+                              ,changeClosetDimensions.detail.depth);
+    });
 }

@@ -47,7 +47,7 @@ Closet=function(){
     /**
      * Array with the initial closet faces values
      */
-    this.initial_closet_slots_faces=this.closet_slots_faces.slice();
+    this.initial_closet_slots_faces=[];
 
     /**
      * Changes the closet width
