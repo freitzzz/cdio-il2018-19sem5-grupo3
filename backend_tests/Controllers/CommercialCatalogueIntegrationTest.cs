@@ -10,6 +10,7 @@ using backend_tests.utils;
 using core.dto;
 using core.domain;
 using Microsoft.AspNetCore.Mvc.Testing;
+using System.Linq;
 
 namespace backend_tests.Controllers
 {
@@ -42,69 +43,27 @@ namespace backend_tests.Controllers
         /// <param name="fixture">injected mocked server</param>
         public CommercialCatalogueIntegrationTest(TestFixture<TestStartupSQLite> fixture)
         {
-                            this.fixture = fixture;
-                client = fixture.CreateClient(new WebApplicationFactoryClientOptions
-                {
-                    AllowAutoRedirect = false,
-                    BaseAddress =  new Uri("http://localhost:5001")
-                });
+            this.fixture = fixture;
+            client = fixture.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false,
+                BaseAddress = new Uri("http://localhost:5001")
+            });
         }
 
         [Fact, TestPriority(1)]
         public async Task ensurePostCommercialCatalogueFailsWithEmptyRequestBody()
         {
             var response = await client.PostAsJsonAsync(urlBase, "{}");
-            Console.WriteLine(response.StatusCode);
-            Assert.True(response.StatusCode == HttpStatusCode.NotFound);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [Fact, TestPriority(2)]
-        public async Task<CommercialCatalogueDTO> ensurePostCommercialCatalogueWorks()
+        public async Task<CommercialCatalogueDTO> ensurePostCommercialCatalogueWithNoCollectionsReturnsCreated()
         {
-
-
-            Task<ProductDTO> productDTOTask = new ProductControllerIntegrationTest(fixture).ensureProductIsCreatedSuccesfuly();
-            productDTOTask.Wait();
-            ProductDTO productDTO = productDTOTask.Result;
-
-
-            CustomizedMaterialDTO custMaterialDTO = new CustomizedMaterialDTO();
-            /* custMaterialDTO.color = colorDTO;
-            custMaterialDTO .finish = finishDTO;*/
-
-            CustomizedDimensionsDTO custDimensionsDTO = new CustomizedDimensionsDTO();
-            custDimensionsDTO.height = 23.4;
-            custDimensionsDTO.width = 4.5;
-            custDimensionsDTO.depth = 6.0;
-
-
-            CustomizedProductDTO custProduct = new CustomizedProductDTO();
-            custProduct.reference = "3";
-            custProduct.customizedDimensionsDTO = custDimensionsDTO;
-            custProduct.customizedMaterialDTO = custMaterialDTO;
-            custProduct.designation = "Customized Product";
-            custProduct.productDTO = productDTO;
-
-
-            List<CustomizedProductDTO> custProducts = new List<CustomizedProductDTO>();
-            custProducts.Add(custProduct);
-
-            CustomizedProductCollectionDTO productsCollection = new CustomizedProductCollectionDTO();
-            productsCollection.name = "CustomizedProductsCollection";
-            productsCollection.customizedProducts = new List<CustomizedProductDTO>(custProducts);
-
-            CatalogueCollectionDTO catalogueCollection = new CatalogueCollectionDTO();
-            catalogueCollection.customizedProductsDTO = new List<CustomizedProductDTO>(custProducts);
-            catalogueCollection.customizedProductCollectionDTO = productsCollection;
-
-            List<CatalogueCollectionDTO> listCatalogueCollection = new List<CatalogueCollectionDTO>();
-            listCatalogueCollection.Add(catalogueCollection);
-
-
             CommercialCatalogueDTO commercialCatalogue = new CommercialCatalogueDTO();
-            commercialCatalogue.reference = "6";
-            commercialCatalogue.designation = " Catalogue";
-            commercialCatalogue.collectionList = listCatalogueCollection;
+            commercialCatalogue.reference = "6" + Guid.NewGuid().ToString("n");
+            commercialCatalogue.designation = " Catalogue" + Guid.NewGuid().ToString("n");
 
             var response = await client.PostAsJsonAsync(urlBase, commercialCatalogue);
 
@@ -113,23 +72,57 @@ namespace backend_tests.Controllers
             return JsonConvert.DeserializeObject<CommercialCatalogueDTO>(await response.Content.ReadAsStringAsync());
         }
 
-
         [Fact, TestPriority(3)]
+        public async Task<CommercialCatalogueDTO> ensurePostCommercialCatalogueWithCollectionsReturnsCreated()
+        {
+
+            CustomizedProductCollectionDTO collectionDTO = await new CustomizedProductsCollectionControllerIntegrationTest(fixture).ensureCustomizedProductCollectionWithCustomizedProductsIsCreatedSuccessfully();
+
+            //only the collection's ID needs to be specified in the DTO
+            CustomizedProductCollectionDTO collectionDTOWithJustID = new CustomizedProductCollectionDTO() { id = collectionDTO.id };
+
+            //only the customized product's ID needst to be specified in the DTO
+            CustomizedProductDTO customizedProductDTOWithJustID = new CustomizedProductDTO() { id = collectionDTO.customizedProducts.FirstOrDefault().id };
+
+
+            //Build a CatalogueCollectionDTO with just the identifiers
+            CatalogueCollectionDTO catalogueCollectionDTO = new CatalogueCollectionDTO();
+            catalogueCollectionDTO.customizedProductCollectionDTO = collectionDTOWithJustID;
+            catalogueCollectionDTO.customizedProductDTOs = new List<CustomizedProductDTO>() { customizedProductDTOWithJustID };
+
+
+            //Build CommercialCatalogueDTO with the previously built CatalogueCollectionDTO
+            CommercialCatalogueDTO commercialCatalogue = new CommercialCatalogueDTO();
+            commercialCatalogue.reference = "7" + Guid.NewGuid().ToString("n");
+            commercialCatalogue.designation = " Catalogue" + Guid.NewGuid().ToString("n");
+            commercialCatalogue.catalogueCollectionDTOs = new List<CatalogueCollectionDTO>() { catalogueCollectionDTO };
+
+            var response = await client.PostAsJsonAsync(urlBase, commercialCatalogue);
+
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+            CommercialCatalogueDTO createdCatalogueDTO = JsonConvert.DeserializeObject<CommercialCatalogueDTO>(await response.Content.ReadAsStringAsync());
+
+            return createdCatalogueDTO;
+        }
+
+
+        [Fact, TestPriority(4)]
         public async Task<CommercialCatalogueDTO> ensurePutCatalogueCollectionWorks()
         {
-/* 
-            Task<CommercialCatalogueDTO> commercialCatalogueDTOTask = ensurePostCommercialCatalogueWorks();
-            commercialCatalogueDTOTask.Wait();
-            CommercialCatalogueDTO commercialCatalogueDTO = commercialCatalogueDTOTask.Result;
+            /* 
+                        Task<CommercialCatalogueDTO> commercialCatalogueDTOTask = ensurePostCommercialCatalogueWorks();
+                        commercialCatalogueDTOTask.Wait();
+                        CommercialCatalogueDTO commercialCatalogueDTO = commercialCatalogueDTOTask.Result;
 
-            long id = commercialCatalogueDTO.id;
-            CatalogueCollectionDTO catalogueCollectionDTO = new CatalogueCollectionDTO();
-             */
-            
+                        long id = commercialCatalogueDTO.id;
+                        CatalogueCollectionDTO catalogueCollectionDTO = new CatalogueCollectionDTO();
+                         */
+
             //TODO:WAIT FOR IMPLEMENTATION OF OTHER INTEGRATION TESTS
-            
+
             ///catalogueCollectionDTO.customizedProductCollectionDTO = CustomizedProductCollectionIn
-            
+
             //List<CustomizedProductDTO> customizedProductDTOs=new List<CustomizedProductDTO>();
 
             //var response = await client.PutAsJsonAsync(urlBase+"/"+id+"/collections", catalogueCollectionDTO);

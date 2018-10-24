@@ -94,12 +94,12 @@ hr {
   }
   
   .container input {
-	width: 40%;
+	width: 50%;
 	clear: both;
   }
 
   .container select {
-	width: 40%;
+	width: 50%;
 	clear: both;
   }
 
@@ -345,5 +345,53 @@ a:focus, .btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:acti
 	float: left;
 	margin-bottom: 20px;
 }
+
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+	text-transform: uppercase;
+	color: #fff;
+	background-color: #0ba2db;
+	border: 0;
+	padding: 14px 20px;
+	margin: 0;
+	font-size: 16px;
+	border-radius: 2px;
+	margin-top: 20px;
+	transition: all 0.3s;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+.tabcontent input {
+	width: 40%;
+	clear: both;
+  }
 
 }

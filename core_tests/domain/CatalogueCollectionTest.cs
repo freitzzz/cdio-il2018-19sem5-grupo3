@@ -53,7 +53,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
 
 
 
@@ -61,21 +61,23 @@ namespace core_tests.domain
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(cp);
 
-           
+
 
             CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Mario");
-            CatalogueCollection CatalogueCollection = new CatalogueCollection(list,customizedProductCollection);
-            Assert.Throws<ArgumentException>(() =>  new CatalogueCollection(list, null)); 
+            CatalogueCollection CatalogueCollection = new CatalogueCollection(customizedProductCollection, list);
+
+            Action action = () => new CatalogueCollection(null, list);
+
+            Assert.Throws<ArgumentException>(action);
         }
 
-        
+
         [Fact]
         public void ensureCatalogueCollectionContructorIsValid()
         {
             var category = new ProductCategory("Drawers");
 
 
-
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
 
@@ -114,7 +116,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
 
 
 
@@ -122,20 +124,18 @@ namespace core_tests.domain
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(cp);
 
-           
+
 
             CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Mario");
-            CatalogueCollection CatalogueCollection = new CatalogueCollection(list,customizedProductCollection);
-            Assert.True(CatalogueCollection.Equals( new CatalogueCollection(list,customizedProductCollection)));
+            CatalogueCollection CatalogueCollection = new CatalogueCollection(customizedProductCollection, list);
+            Assert.NotNull(CatalogueCollection);
         }
 
-         [Fact]
+        [Fact]
         public void ensureHashCodeIsEqual()
         {
             var category = new ProductCategory("Drawers");
 
-
-
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
 
@@ -174,7 +174,7 @@ namespace core_tests.domain
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
 
 
 
@@ -182,17 +182,22 @@ namespace core_tests.domain
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(cp);
 
-           
 
             CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Mario");
-            CatalogueCollection CatalogueCollection = new CatalogueCollection(list,customizedProductCollection);
-            Assert.True(CatalogueCollection.Equals( new CatalogueCollection(list,customizedProductCollection)));
+            CatalogueCollection CatalogueCollection = new CatalogueCollection(customizedProductCollection, list);
 
+            CatalogueCollection copyCatalogueCollection = new CatalogueCollection(customizedProductCollection, list);
+
+            int hashCode1 = CatalogueCollection.GetHashCode();
+            int hashCode2 = copyCatalogueCollection.GetHashCode();
+
+            Assert.Equal(hashCode1, hashCode2);
         }
         //ensureSameCustomizedProductCantBeAdded
         [Fact]
-        public void ensureSameCustomizedProductCantBeAdded(){
-            
+        public void ensureSameCustomizedProductCantBeAdded()
+        {
+
         }
     }
 }

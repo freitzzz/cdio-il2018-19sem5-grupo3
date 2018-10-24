@@ -18,6 +18,12 @@ namespace core.dto
         public long id { get; set; }
 
         /// <summary>
+        /// CustomizedMaterial's of material.
+        /// </summary>
+        /// <value>Gets/sets the value of the material field.</value>
+        [DataMember]
+        public MaterialDTO material { get; set; }
+        /// <summary>
         /// CustomizedMaterial's of color.
         /// </summary>
         /// <value>Gets/sets the value of the color field.</value>
@@ -37,7 +43,7 @@ namespace core.dto
         public CustomizedMaterial toEntity()
         {
 
-            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(color.toEntity(), finish.toEntity());
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material.toEntity(), color.toEntity(), finish.toEntity());
             customizedMaterial.Id = this.id;
 
             return customizedMaterial;

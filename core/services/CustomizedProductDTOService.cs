@@ -14,11 +14,11 @@ namespace core.services
     /// </summary>
     public sealed class CustomizedProductDTOService
     {
-        
+
         /// <summary>
         /// Private constructor used for hiding the implicit public one.
         /// </summary>
-        private CustomizedProductDTOService(){}
+        private CustomizedProductDTOService() { }
 
         /// <summary>
         /// Transforms a customized product dto into a customized product via service
@@ -31,12 +31,20 @@ namespace core.services
 
             string reference = customizedProductDTO.reference;
             string designation = customizedProductDTO.designation;
-            CustomizedMaterial customizedMaterial = customizedProductDTO.customizedMaterialDTO.toEntity();
-            CustomizedDimensions customizedDimensions = customizedProductDTO.customizedDimensionsDTO.toEntity();
-            
+
             //Fetch the product associated to this customized product by its id
             long productId = customizedProductDTO.productDTO.id;
             Product product = PersistenceContext.repositories().createProductRepository().find(productId);
+
+            //Fetch the material associated to the customized material
+            long materialId = customizedProductDTO.customizedMaterialDTO.material.id;
+            Material material = PersistenceContext.repositories().createMaterialRepository().find(materialId);
+
+            Finish customizedFinish = customizedProductDTO.customizedMaterialDTO.finish.toEntity();
+            Color customizedColor = customizedProductDTO.customizedMaterialDTO.color.toEntity();
+
+            CustomizedDimensions customizedDimensions = customizedProductDTO.customizedDimensionsDTO.toEntity();
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, customizedColor, customizedFinish);
 
             //check if the dto contains slot information
             if (customizedProductDTO.slotListDTO == null)
