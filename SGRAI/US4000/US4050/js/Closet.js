@@ -1,4 +1,4 @@
-/**
+ /**
  * Represents a "Closet" object
  */
 Closet=function(){

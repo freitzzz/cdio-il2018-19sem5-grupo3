@@ -52,13 +52,12 @@
     }
 
     function reloadClosetSlots(){
-      console.log("!!!!!!!!!!");
+     
       var eventX=new CustomEvent("changeSlots",{
         detail:{
           slots:document.getElementById("slotsInput").value
         }
       });
-      console.log("!!!!!!!!!!1!!");
       document.dispatchEvent(eventX);
     }
 
@@ -147,12 +146,12 @@
       width: 100%;
     }
     .left {
-      width: 25%;
+      width: 30%;
       align-content: left;
     }
 
     .right {
-      width: 75%;
+      width: 10%;
       align-content: right;
 
     }
@@ -199,9 +198,9 @@
         <a class="btn-custom" disabled >Next</a>
       </div>
       <!--<a class="btn btn-custom btn-lg page-scroll" onclick="reloadCube();">Submit</a>--->
-      <div class="column right" allign="right">
+      <div class="column right" >
 
-        <canvas id="webgl" width="400" height="400">
+        <canvas id="webgl" width="1000" height="600">
           Please use a browser that supports "canvas"
         </canvas>
         <script src="../US4050/js/three.js"></script>
