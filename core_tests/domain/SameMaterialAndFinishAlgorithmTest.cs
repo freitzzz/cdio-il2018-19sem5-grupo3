@@ -1,0 +1,107 @@
+﻿using core.domain;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Xunit;
+
+namespace core_tests.domain {
+    public class SameMaterialAndFinishAlgorithmTest {
+        /// <summary>
+        /// Ensures getRequiredInputs returns an empty list due to the algorithm not needing any inputs
+        /// </summary>
+        [Fact]
+        public void ensureGetRequiredInputsReturnsEmptyList() {
+            Console.WriteLine("ensureGetRequiredInputsReturnsNull");
+            Algorithm alg = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
+            Assert.Empty(alg.getRequiredInputs());
+        }
+        /// <summary>
+        /// Ensures isWithinDataRange returns true due to the algorithm not needing any inputs
+        /// </summary>
+        [Fact]
+        public void ensureIsWithinDataRangeReturnsTrue() {
+            Console.WriteLine("ensureIsWithinDataRangeReturnsTrue");
+            Algorithm alg = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
+            Assert.True(alg.isWithinDataRange(null));
+        }
+        /// <summary>
+        /// Ensures setInputValues returns true due to the algorithm not needing any inputs
+        /// </summary>
+        [Fact]
+        public void ensureSetInputValuesReturnsTrue() {
+            Console.WriteLine("ensureSetInputValuesReturnsTrue");
+            Algorithm alg = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
+            Assert.True(alg.setInputValues(null));
+        }
+        /// <summary>
+        /// Ensure apply method returns null if the component does not have the material required
+        /// </summary>
+        [Fact]
+        public void ensureApplyReturnsNullIfComponentDoesNotHaveRequiredMaterial() {
+            Console.WriteLine("ensureApplyReturnsNullIfComponentDoesNotHaveRequiredMaterial");
+            Material material = new Material("#24", "K6205", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
+            Material material1 = new Material("#22", "Amadeus", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
+            ProductCategory cat = new ProductCategory("AI");
+            DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 90.0, 100.0, 150.0 }));
+            List<Dimension> dimensions = new List<Dimension>();
+            dimensions.Add(discrete);
+            Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
+            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", cat, new List<Material>(new[] { material1 }), dimensions, dimensions, dimensions);
+            CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht")), CustomizedDimensions.valueOf(100, 100, 100), product);
+            Algorithm algorithm = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
+            Assert.Null(algorithm.apply(custom, component));
+        }
+        /// <summary>
+        /// Ensures apply method returns null if component material does not have the required finish
+        /// </summary>
+        [Fact]
+        public void ensureApplyReturnsNullIfComponentDoesNotHaveRequiredFinish() {
+            Console.WriteLine("ensureApplyReturnsNullIfComponentDoesNotHaveRequiredFinish");
+            Material material = new Material("#24", "K6205", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht"), Finish.valueOf("schrödinger's box") }));
+            ProductCategory cat = new ProductCategory("AI");
+            DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 90.0, 100.0, 150.0 }));
+            List<Dimension> dimensions = new List<Dimension>();
+            dimensions.Add(discrete);
+            Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
+            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
+            CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("alea jacta est")), CustomizedDimensions.valueOf(100, 100, 100), product);
+            Algorithm algorithm = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
+            Assert.Null(algorithm.apply(custom, component));
+        }
+        /// <summary>
+        /// Ensure apply method removes all unnecessary materials from component
+        /// </summary>
+        [Fact]
+        public void ensureApplyRemovesUnnecessaryMaterials() {
+            Console.WriteLine("ensureApplyRemovesUnnecessaryMaterials");
+            Material material = new Material("#24", "K6205", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
+            Material material1 = new Material("#22", "Amadeus", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
+            ProductCategory cat = new ProductCategory("AI");
+            DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 90.0, 100.0, 150.0 }));
+            List<Dimension> dimensions = new List<Dimension>();
+            dimensions.Add(discrete);
+            Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
+            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", cat, new List<Material>(new[] { material1, material }), dimensions, dimensions, dimensions);
+            CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht")), CustomizedDimensions.valueOf(100, 100, 100), product);
+            Algorithm algorithm = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
+            Assert.True(algorithm.apply(custom, component).productMaterials[0].material.Equals(material));
+        }
+        /// <summary>
+        /// Ensures apply method removes all unnecessary finishes from component's material
+        /// </summary>
+        [Fact]
+        public void ensureApplyRemovesUnnecessaryFinishes() {
+            Console.WriteLine("ensureApplyRemovesUnnecessaryFinishes");
+            Material material = new Material("#24", "K6205", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht"), Finish.valueOf("schrödinger's box") }));
+            ProductCategory cat = new ProductCategory("AI");
+            DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 90.0, 100.0, 150.0 }));
+            List<Dimension> dimensions = new List<Dimension>();
+            dimensions.Add(discrete);
+            Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
+            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
+            CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("schrödinger's box")), CustomizedDimensions.valueOf(100, 100, 100), product);
+            Algorithm algorithm = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
+            Assert.Equal("schrödinger's box", algorithm.apply(custom, component).productMaterials[0].material.Finishes[0].description);
+        }
+    }
+}
