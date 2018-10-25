@@ -108,8 +108,7 @@ Closet=function(){
      * Changes the current closet slots
      */
     this.computeNewClosetSlots=function(slots){
-        slots++;
-        if(slots>1){
+        if(slots>=1){
             return (slots)-this.closet_slots;
         }else{
             //THROW ERROR

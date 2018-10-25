@@ -29,7 +29,7 @@ function main() {
     initCamera();
     initControls();
     initCloset();
-    changeClosetSlots(0);
+    //changeClosetSlots(0);
     scene.add(group);
     registerEvents();
     animate();
@@ -106,7 +106,8 @@ function addSlotNumbered(slotsToAdd){
  */
 function removeSlot(){
     closet.removeSlot();
-    closet_slots_faces_ids.pop();
+    var closet_slot_face_id=closet_slots_faces_ids.pop();
+    group.remove(group.getObjectById(closet_slot_face_id));
     updateClosetGV();
 }
 
@@ -135,6 +136,7 @@ function changeClosetSlots(slots){
         }
     }else{
         newSlots=-newSlots;
+        if(newSlots==0)removeSlot();
         for(var i=0;i<newSlots;i++){
             removeSlot();
         }
@@ -156,7 +158,6 @@ function changeClosetSlots(slots){
 function generateParellepiped(width,height,depth,x,y,z,material,group){
     var parellepipedGeometry=new THREE.CubeGeometry(width,height,depth);
     var parellepiped=new THREE.Mesh(parellepipedGeometry,material);
-    //cube.add(new THREE.AxesHelper(200)); Displays the parellepiped axes
     parellepiped.position.x=x;
     parellepiped.position.y=y;
     parellepiped.position.z=z;
@@ -219,7 +220,7 @@ function initCamera(){
  */
 function getNewScaleValue(initialScaleValue,newScaleValue,currentScaleValue){
     if(initialScaleValue==0)return 0;
-    return (newScaleValue*currentScaleValue)/initialScaleValue;
+    return (newScaleValue*1)/initialScaleValue;
 }
 
 /**
@@ -227,10 +228,11 @@ function getNewScaleValue(initialScaleValue,newScaleValue,currentScaleValue){
  */
 function createMaterialWithTexture(){
 
-    var texture = new THREE.TextureLoader().load( '../textures/cherry_wood_cabinets.jpg' );
+    /* var texture = new THREE.TextureLoader().load( '../textures/cherry_wood_cabinets.jpg' );
     var material = new THREE.MeshBasicMaterial( { map: texture } );
     
-    return material;
+    return material; */
+    return new THREE.MeshNormalMaterial();
 }
 
 /**
@@ -238,15 +240,12 @@ function createMaterialWithTexture(){
  */
 function registerEvents(){
     document.addEventListener("changeDimensions",function(changeDimensionsEvent){
-        changeClosetDimensions(changeClosetDimensions.detail.width
-                              ,changeClosetDimensions.detail.height
-                              ,changeClosetDimensions.detail.depth);
+        changeClosetDimensions(changeDimensionsEvent.detail.width
+                              ,changeDimensionsEvent.detail.height
+                              ,changeDimensionsEvent.detail.depth);
     });
-    document.addEventListener("addSlot",function(addSlotEvent){
-        addSlotNumbered(addSlotEvent.detail.slots);
-    });
-    document.addEventListener("removeSlot",function(removeSlotEvent){
-        addSlotNumbered(removeSlotEvent.detail.slots);
+    document.addEventListener("changeSlots",function(changeSlotsEvent){
+        changeClosetSlots(changeSlotsEvent.detail.slots);
     });
 }
 
