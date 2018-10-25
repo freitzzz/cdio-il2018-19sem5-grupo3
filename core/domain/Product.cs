@@ -540,7 +540,19 @@ namespace core.domain {
         public override int GetHashCode() {
             return id().GetHashCode();
         }
-
+        /// <summary>
+        /// Checks if the Product already has a material
+        /// </summary>
+        /// <param name="material">material to be checked for</param>
+        /// <returns>true if the product has the material, false if not</returns>
+        public bool containsMaterial(Material material) {
+            foreach (ProductMaterial prodM in this.productMaterials) {
+                if (prodM.hasMaterial(material)) {
+                    return true;
+                }
+            }
+            return false;
+        }
         /// <summary>
         /// Checks if a complemented product is valid for additon on the current product
         /// </summary>
@@ -560,12 +572,7 @@ namespace core.domain {
             if (productMaterial == null) {
                 return false;
             }
-            foreach (ProductMaterial prodM in this.productMaterials) {
-                if (prodM.hasMaterial(productMaterial)) {
-                    return false;
-                }
-            }
-            return true;
+            return !containsMaterial(productMaterial);
         }
 
         /// <summary>
