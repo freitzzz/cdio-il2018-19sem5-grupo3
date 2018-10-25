@@ -27,6 +27,10 @@ namespace core.domain {
         /// Long with the product which has the complemented product ID
         /// </summary>
         public long fatherProductId { get; private set; }
+        /// <summary>
+        /// Boolean value that dictates whether the component is mandatory or not
+        /// </summary>
+        public bool mandatory { get; private set; }
 
         /// <summary>
         /// Product with the product which has the current complemented product
@@ -77,7 +81,7 @@ namespace core.domain {
             checkComponentProperties(product, restrictions);
             this.complementedProduct = product;
             this.restrictions = restrictions;
-
+            this.mandatory = false;
         }
 
         /// <summary>
@@ -91,6 +95,31 @@ namespace core.domain {
             this.fatherProduct = fatherProduct;
             this.complementedProduct = complementedProduct;
             this.restrictions = new List<Restriction>();
+            this.mandatory = false;
+        }
+        /// <summary>
+        /// Builds a new component with its product ,list of the restrictions and the obligatoriness.
+        /// </summary>
+        /// <param name="restricitions">List with the restrictions of the component</param>
+        public Component(Product product, List<Restriction> restrictions, bool mandatory) {
+            checkComponentProperties(product, restrictions);
+            this.complementedProduct = product;
+            this.restrictions = restrictions;
+            this.mandatory = mandatory;
+        }
+
+        /// <summary>
+        /// Builds a new Component with the father ,complemented product and the obligatoriness
+        /// </summary>
+        /// <param name="fatherProduct">Product with the father product</param>
+        /// <param name="complementedProduct">Product with the complemented product</param>
+        public Component(Product fatherProduct, Product complementedProduct, bool mandatory) {
+            checkComponentProduct(complementedProduct);
+            checkComponentProduct(fatherProduct);
+            this.fatherProduct = fatherProduct;
+            this.complementedProduct = complementedProduct;
+            this.restrictions = new List<Restriction>();
+            this.mandatory = mandatory;
         }
 
         /// <summary>
@@ -141,6 +170,7 @@ namespace core.domain {
         public ComponentDTO toDTO() {
             ComponentDTO dto = new ComponentDTO();
             dto.product = complementedProduct.toDTO();
+            dto.mandatory = mandatory;
 
             if (this.restrictions != null) {
                 List<RestrictionDTO> complementDTOList = new List<RestrictionDTO>();
