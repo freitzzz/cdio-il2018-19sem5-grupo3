@@ -33,16 +33,42 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   <script>
+    window.onload=function(){
+      loadHeight();
+      loadWidth();
+      loadDepth();
+    }
+    //loadDepth();
     function reloadCube(){
       
-      var event = new CustomEvent("reloadCoordinates",{
+      var event = new CustomEvent("changeDimensions",{
         detail:{
-        heightY: document.getElementById("height").value,
-        widthX : document.getElementById("width").value,
-        depthZ : document.getElementById("depth").value
+        height: document.getElementById("height").value,
+        width : document.getElementById("width").value,
+        depth : document.getElementById("depth").value
         }
       });
       document.dispatchEvent(event);
+    }
+
+    function reloadClosetSlots(){
+     
+      var eventX=new CustomEvent("changeSlots",{
+        detail:{
+          slots:document.getElementById("slotsInput").value
+        }
+      });
+      document.dispatchEvent(eventX);
+    }
+
+    function loadWidth(){
+      document.getElementById("width").value=getCurrentClosetWidth();
+    }
+    function loadHeight(){
+      document.getElementById("height").value=getCurrentClosetHeight();
+    }
+    function loadDepth(){
+      document.getElementById("depth").value=getCurrentClosetDepth();
     }
   </script>
 
@@ -69,7 +95,7 @@
     }
 </script>
   <script>
-    document.getElementById("dimensions").click();
+    //document.getElementById("dimensions").click();
   </script>
 </head>
 
@@ -120,12 +146,12 @@
       width: 100%;
     }
     .left {
-      width: 25%;
+      width: 30%;
       align-content: left;
     }
 
     .right {
-      width: 75%;
+      width: 10%;
       align-content: right;
 
     }
@@ -145,16 +171,16 @@
         <h2>Dimensions</h2>
         <br>
         Height:<br>
-        <input type="number" min="1" name="height" value="1" id="height" onclick="reloadCube();">
+        <input type="number" min="1" name="height" id="height" onclick="reloadCube();">
         <br>
-        Length:<br>
-        <input type="number" min="1" name="width" value="1" id="width" onclick="reloadCube();"><br>
+        Width:<br>
+        <input type="number" min="1" name="width"  id="width" onclick="reloadCube();"><br>
         Depth:<br>
-        <input type="number" min="1" name="depth" value="1" id="depth" onclick="reloadCube();"><br><br>
+        <input type="number" min="1" name="depth"  id="depth" onclick="reloadCube();"><br><br>
         <select>
+          <option value="cm">Centimeters</option>
           <option value="mm">Milimeters</option>
           <option value="m">Meters</option>
-          <option value="cm">Centimeters</option>
           <option value="km">kilometers</option>
         </select><br>
         <br><br>
@@ -164,7 +190,7 @@
           <h2>Slots</h2>
         <br>        
         Number of slots:<br>
-        <input type="number" min="1" name="slot" value="1" id="slots" onclick="reloadSlots();">
+        <input type="number" min="1" name="slot" value="1" id="slotsInput" onclick="reloadClosetSlots();">
         <br>
         <br>
         <br>
@@ -172,20 +198,16 @@
         <a class="btn-custom" disabled >Next</a>
       </div>
       <!--<a class="btn btn-custom btn-lg page-scroll" onclick="reloadCube();">Submit</a>--->
-      <div class="column right" allign="right">
+      <div class="column right" >
 
-        <canvas id="webgl" width="400" height="400">
+        <canvas id="webgl" width="1000" height="600">
           Please use a browser that supports "canvas"
         </canvas>
-        <script src="lib/webgl-utils.js"></script>
-        <script src="lib/webgl-debug.js"></script>
-        <script src="lib/cuon-utils.js"></script>
-        <script src="lib/cuon-matrix.js"></script>
-        <script src="US4050/ProductDrawer.js"></script>
-        <script src="US4050/Parellepiped.js"></script>
-        <script src="US4050/Maths.js"></script>
-        <script src="US4050/Projection.js"></script>
-        <script src="US4050/Camera.js"></script>
+        <script src="../US4050/js/three.js"></script>
+        <script src="../US4050/js/SceneUtils.js"></script>
+        <script src="../US4050/js/OrbitControls.js"></script>
+        <script src="../US4050/js/ProductDrawer.js"></script>
+        <script src="../US4050/js/Closet.js"></script>
         <script> main();</script>
       </div>
     </div>

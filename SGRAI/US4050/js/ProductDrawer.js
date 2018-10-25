@@ -23,14 +23,14 @@ var closet_slots_faces_ids=[];
  * Initial Product Draw function
  */
 function main() {
-    renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    var canvasWebGL=document.getElementById("webgl");
+    renderer = new THREE.WebGLRenderer({canvas:canvasWebGL});
+    //renderer.setSize(window.innerWidth, window.innerHeight);
     initCamera();
     initControls();
     initCloset();
+    //changeClosetSlots(0);
     scene.add(group);
-    addSlotNumbered(1);    
     registerEvents();
     animate();
 }
@@ -106,7 +106,8 @@ function addSlotNumbered(slotsToAdd){
  */
 function removeSlot(){
     closet.removeSlot();
-    closet_slots_faces_ids.pop();
+    var closet_slot_face_id=closet_slots_faces_ids.pop();
+    group.remove(group.getObjectById(closet_slot_face_id));
     updateClosetGV();
 }
 
@@ -124,6 +125,26 @@ function changeClosetDimensions(width,height,depth){
 }
 
 /**
+ * Changes the current closet slots
+ * @param {number} slots Number with the new closet slots
+ */
+function changeClosetSlots(slots){
+    var newSlots=closet.computeNewClosetSlots(slots);
+    if(newSlots>0){
+        for(var i=0;i<newSlots;i++){
+            addSlot();
+        }
+    }else{
+        newSlots=-newSlots;
+        if(newSlots==0)removeSlot();
+        for(var i=0;i<newSlots;i++){
+            removeSlot();
+        }
+    }
+    updateClosetGV();
+}
+
+/**
  * Generates a parellepiped with a certain dimensions (width, height, depth) and on a certain position relatively to axes (x,y,z)
  * @param {number} width Number with the parellepiped width
  * @param {number} height Number with the parellepiped height
@@ -137,7 +158,6 @@ function changeClosetDimensions(width,height,depth){
 function generateParellepiped(width,height,depth,x,y,z,material,group){
     var parellepipedGeometry=new THREE.CubeGeometry(width,height,depth);
     var parellepiped=new THREE.Mesh(parellepipedGeometry,material);
-    //cube.add(new THREE.AxesHelper(200)); Displays the parellepiped axes
     parellepiped.position.x=x;
     parellepiped.position.y=y;
     parellepiped.position.z=z;
@@ -200,7 +220,7 @@ function initCamera(){
  */
 function getNewScaleValue(initialScaleValue,newScaleValue,currentScaleValue){
     if(initialScaleValue==0)return 0;
-    return (newScaleValue*currentScaleValue)/initialScaleValue;
+    return (newScaleValue*1)/initialScaleValue;
 }
 
 /**
@@ -208,10 +228,11 @@ function getNewScaleValue(initialScaleValue,newScaleValue,currentScaleValue){
  */
 function createMaterialWithTexture(){
 
-    var texture = new THREE.TextureLoader().load( '../textures/cherry_wood_cabinets.jpg' );
-    var material = new THREE.MeshBasicMaterial( { map: texture } );
+     var texture = new THREE.TextureLoader().load( '../textures/cherry_wood_cabinets.jpg' );
+     var material = new THREE.MeshBasicMaterial( { map: texture } );
     
-    return material;
+     return material; 
+   // return new  THREE.MeshBasicMaterial( { color: 0x968d81,wireframe: true} );
 }
 
 /**
@@ -219,14 +240,26 @@ function createMaterialWithTexture(){
  */
 function registerEvents(){
     document.addEventListener("changeDimensions",function(changeDimensionsEvent){
-        changeClosetDimensions(changeClosetDimensions.detail.width
-                              ,changeClosetDimensions.detail.height
-                              ,changeClosetDimensions.detail.depth);
+        changeClosetDimensions(changeDimensionsEvent.detail.width
+                              ,changeDimensionsEvent.detail.height
+                              ,changeDimensionsEvent.detail.depth);
     });
-    document.addEventListener("addSlot",function(addSlotEvent){
-        addSlotNumbered(addSlotEvent.detail.slots);
-    });
-    document.addEventListener("removeSlot",function(removeSlotEvent){
-        addSlotNumbered(removeSlotEvent.detail.slots);
+    document.addEventListener("changeSlots",function(changeSlotsEvent){
+        changeClosetSlots(changeSlotsEvent.detail.slots);
     });
 }
+
+/**
+ * Returns the current closet width
+ */
+function getCurrentClosetWidth(){return closet.getClosetWidth();}
+
+/**
+ * Returns the current closet height
+ */
+function getCurrentClosetHeight(){return closet.getClosetHeight();}
+
+/**
+ * Returns the current closet depth
+ */
+function getCurrentClosetDepth(){return closet.getClosetDepth();}

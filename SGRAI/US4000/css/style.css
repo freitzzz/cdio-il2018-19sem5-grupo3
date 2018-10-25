@@ -103,6 +103,7 @@ hr {
 	clear: both;
   }
 
+ 
 .on {
 	background-color: #f6f6f6 !important;
 	border-bottom: 1px solid #ddd !important;
@@ -393,5 +394,6 @@ a:focus, .btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:acti
 	width: 40%;
 	clear: both;
   }
+
 
 }
