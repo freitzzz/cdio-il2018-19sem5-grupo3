@@ -104,6 +104,18 @@ Closet=function(){
     }
 
     /**
+     * Changes the current closet slots
+     */
+    this.computeNewClosetSlots=function(slots){
+        slots++;
+        if(slots>1){
+            return (slots)-this.closet_slots;
+        }else{
+            //THROW ERROR
+        }
+    }
+
+    /**
      * Returns the current width of the closet
      */
     this.getClosetWidth=function(){return this.closet_base_face_dimensions_axes[0];}
@@ -117,8 +129,6 @@ Closet=function(){
      * Returns the current depth of the closet
      */
     this.getClosetDepth=function(){return this.closet_base_face_dimensions_axes[2];}
-
-
 
     /**
      * Adds a slot to the closet

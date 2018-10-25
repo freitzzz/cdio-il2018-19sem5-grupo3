@@ -29,6 +29,7 @@ function main() {
     initCamera();
     initControls();
     initCloset();
+    changeClosetSlots(0);
     scene.add(group);
     registerEvents();
     animate();
@@ -119,6 +120,25 @@ function changeClosetDimensions(width,height,depth){
     closet.changeClosetWidth(width);
     closet.changeClosetHeight(height);
     closet.changeClosetDepth(depth);
+    updateClosetGV();
+}
+
+/**
+ * Changes the current closet slots
+ * @param {number} slots Number with the new closet slots
+ */
+function changeClosetSlots(slots){
+    var newSlots=closet.computeNewClosetSlots(slots);
+    if(newSlots>0){
+        for(var i=0;i<newSlots;i++){
+            addSlot();
+        }
+    }else{
+        newSlots=-newSlots;
+        for(var i=0;i<newSlots;i++){
+            removeSlot();
+        }
+    }
     updateClosetGV();
 }
 
