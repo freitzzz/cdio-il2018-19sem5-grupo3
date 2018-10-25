@@ -5,7 +5,7 @@ Closet=function(){
     /**
      * Dimensions and Axes values for the closet base face
      */
-    this.closet_base_face_dimensions_axes=[215,4.20,100,0,0,0];
+    this.closet_base_face_dimensions_axes=[204.5,4.20,100,0,0,0];
 
     /**
      * Dimensions and Axes values for the closet top face
@@ -71,8 +71,9 @@ Closet=function(){
     this.changeClosetHeight=function(height){
         if(height>0){
             var axesHeight=height/2;
-            this.closet_top_face_dimensions_axes[4]=axesHeight+(this.closet_left_face_dimensions_axes[1]/2);
-            this.closet_base_face_dimensions_axes[4]=-axesHeight+(this.closet_left_face_dimensions_axes[1]/2);
+            var heighpos =this.closet_top_face_dimensions_axes[4];
+            this.closet_top_face_dimensions_axes[4]=(this.closet_top_face_dimensions_axes[4]-this.closet_left_face_dimensions_axes[1]/2)+axesHeight;
+            this.closet_base_face_dimensions_axes[4]=(this.closet_base_face_dimensions_axes[4]+this.closet_left_face_dimensions_axes[1]/2)-axesHeight;
             this.closet_left_face_dimensions_axes[1]=height;
             this.closet_right_face_dimensions_axes[1]=height;
             this.closet_back_face_dimensions_axes[1]=height;
