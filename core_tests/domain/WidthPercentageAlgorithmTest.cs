@@ -1,8 +1,8 @@
-﻿using core.domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
+﻿// using core.domain;
+// using System;
+// using System.Collections.Generic;
+// using System.Linq;
+// using Xunit;
 
 namespace core_tests.domain {
     public class WidthPercentageAlgorithmTest {
