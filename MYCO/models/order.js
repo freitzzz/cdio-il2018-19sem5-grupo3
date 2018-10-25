@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 var orderContentsSchemas = new mongoose.Schema({
     customizedproduct: {
@@ -25,7 +26,7 @@ var orderContentsSchemas = new mongoose.Schema({
     _id: false
 });
 
-var orderSchema = new mongoose.Schema({
+var orderSchema = new Schema({
 
     orderContents: {type : [orderContentsSchemas], required : true},
 
