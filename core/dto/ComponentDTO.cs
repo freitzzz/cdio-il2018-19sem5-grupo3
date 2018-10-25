@@ -21,7 +21,7 @@ namespace core.dto {
         /// Component's obligatoriness.
         /// </summary>
         /// <value>Gets/sets the value of obligatoriness.</value>
-        [DataMember(Name = "id")]
+        [DataMember(Name = "mandatory")]
         public bool mandatory { get; set; }
         /// <summary>
         /// Component's product.
