@@ -98,7 +98,12 @@ namespace core.domain {
             }
             return minPercentage >= 0 && minPercentage <= 1 && maxPercentage >= minPercentage && maxPercentage <= 1 ? true : throw new ArgumentOutOfRangeException(INPUT_OUTSIDE_RANGE);
         }
-
+        /// <summary>
+        /// Applies the algorithm that restricts a component's width to a certain percentage of the customized father product's width
+        /// </summary>
+        /// <param name="customProduct">customized product</param>
+        /// <param name="product">component product</param>
+        /// <returns>component with restricted dimensions, null if the component is not compatible with any of the allowed dimensions</returns>
         public Product apply(CustomizedProduct customProduct, Product product) {
             double width = customProduct.customizedDimensions.width;
             double minWidth = width * minPercentage;
@@ -147,11 +152,14 @@ namespace core.domain {
                     }
                 }
             }
-            foreach (Dimension dimension in dimensionsToRemove) {
-                product.removeWidthDimension(dimension);
-            }
             foreach (Dimension dimension in dimensionsToAdd) {
                 product.addWidthDimension(dimension);
+            }
+            foreach (Dimension dimension in dimensionsToRemove) {
+                bool res = product.removeWidthDimension(dimension);
+                if (!res) {
+                    return null;
+                }
             }
             return product;
         }

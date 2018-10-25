@@ -23,7 +23,7 @@ app.listen(port);
 console.log('App listening on port ' + port);
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/api/myco', ordersRouter);
+app.use('/myco/api', ordersRouter);
 
 app.use(function (req, res, next) {
   // Website you wish to allow to connect

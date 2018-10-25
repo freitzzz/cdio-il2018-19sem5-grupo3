@@ -14,43 +14,65 @@ ordersRoute.route('/orders').get(function (req, res, next) {
     })
 })
 
+//Express request
 ordersRoute.route('/orders/:id').get(/*async*/ function (req, res, next) {
     var id = req.params.id;
     //Communicate with MYCM
-    var customizedProductsInfo = '';
-    Order.findById(id, function (err, order) {
-        console.log('hello');
 
-        console.log(res.json(order));
-        for (var orderContentSchema in order.orderContents) {
-            console.log('ola');
-            //TODO dinamically change localhosts
-            http.get('http://localhost:5000/myc/api/customizedProduct/' + orderContentSchema.customizedproduct, (resp) => {
-                let data = '';
+    //Mongoose query
+    Order.findById(id, async function (err, order) {
 
-                resp.on('data', (chunk) => {
-                    data += chunk;
-                });
+        var orderContentsList = order.orderContents;
 
-                resp.on('end', () => {
-                    customizedProductsInfo += JSON.parse(data + orderContentSchema.quantity);
-                });
+        var result = await fetchOrderContents(orderContentsList);
 
-            }).on("error", (err) => {
-                //TODO don't log on console
-                console.log("Error: " + err.message);
-            });
-
-        }
-        //customizedProductsInfo += JSON.parse(order.status);
-        console.log(customizedProductsInfo);
         if (err) {
             return next(new Error(err));
         }
-        console.log('123');
-        //res.status(200).json(customizedProductsInfo);
+        res.status(200).json(result);
     });
 })
+
+async function fetchOrderContents(orderContents) {
+
+    var stringResult = '';
+
+    var orderContentsSize = orderContents.length;
+
+    for (var i = 0; i < orderContentsSize; i++) {
+
+        var currentOrderContent = orderContents[i];
+        var currentOrderContentCustomizedProductId = currentOrderContent.customizedproduct;
+
+        var customizedProduct = await getCustomizedProduct(currentOrderContentCustomizedProductId);
+
+        stringResult += JSON.stringify(customizedProduct);
+    }
+
+    return stringResult;
+}
+
+function getCustomizedProduct(customizedProductId) {
+
+    return new Promise((resolve, reject) => {
+
+        var req = http.get('http://localhost:5000/myc/api/customizedproducts/' + customizedProductId, (resp) => {
+            let data = '';
+
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            resp.on('end', () => {
+                resolve(JSON.parse(data));
+            });
+
+        }).on("error", reject);
+
+
+        req.end();
+    })
+}
 
 //TODO Pretty things up
 ordersRoute.route('/orders').post(function (req, res, next) {

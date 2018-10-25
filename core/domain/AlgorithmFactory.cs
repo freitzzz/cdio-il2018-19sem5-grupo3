@@ -13,7 +13,6 @@ namespace core.domain {
         /// Empty constructor
         /// </summary>
         public AlgorithmFactory() {
-
         }
         /// <summary>
         /// Creates an Algorithm using the data received by parameter
@@ -25,6 +24,9 @@ namespace core.domain {
             switch (reAlg) {
                 case RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM:
                     algorithm = new WidthPercentageAlgorithm();
+                    break;
+                case RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM:
+                    algorithm = new SameMaterialAndFinishAlgorithm();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(ALGORITHM_DOES_NOT_EXIST_MESSAGE);
