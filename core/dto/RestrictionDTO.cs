@@ -32,7 +32,9 @@ namespace core.dto {
             restriction.Id = id;
             restriction.description = description;
             restriction.algorithm = algorithm;
-            restriction.inputs = (List<Input>)DTOUtils.reverseDTOS(inputs);
+            if (this.inputs != null) {
+                restriction.inputs = (List<Input>)DTOUtils.reverseDTOS(inputs);
+            }
             return restriction;
         }
     }

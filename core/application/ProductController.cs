@@ -239,10 +239,10 @@ namespace core.application {
         /// </summary>
         /// <param name="productDTO">ProductDTO with the product data being disabled</param>
         /// <returns>boolean true if the product was disabled with success, false if not</returns>
-        public bool disableProduct(ProductDTO productDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productBeingDisabled=productRepository.find(productDTO.id);
-            return productBeingDisabled!=null && productBeingDisabled.disable() && productRepository.update(productBeingDisabled)!=null;
+        public bool disableProduct(ProductDTO productDTO) {
+            ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
+            Product productBeingDisabled = productRepository.find(productDTO.id);
+            return productBeingDisabled != null && productBeingDisabled.disable() && productRepository.update(productBeingDisabled) != null;
         }
 
         /// <summary>
@@ -318,7 +318,19 @@ namespace core.application {
         /// <returns>list of inputs for the restriction's algorithm</returns>
         public RestrictionDTO addComponentRestriction(long productID, long productComponentID, RestrictionDTO restDTO) {
             if (Collections.isEnumerableNullOrEmpty(restDTO.inputs)) {
-                List<InputDTO> inputDTOs = (List<InputDTO>)DTOUtils.parseToDTOS(new AlgorithmFactory().createAlgorithm(restDTO.algorithm).getRequiredInputs());
+                //gets required list of inputs for the algorithm
+                List<Input> inputs = new AlgorithmFactory().createAlgorithm(restDTO.algorithm).getRequiredInputs();
+                //if the algorithm did not need any inputs then persist
+                if (Collections.isEnumerableNullOrEmpty(inputs)) {
+                    ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
+                    Product product = productRepository.find(productID);
+                    Product component = productRepository.find(productComponentID);
+                    Restriction restriction = restDTO.toEntity();
+                    product.addComponentRestriction(component, restriction);
+                    productRepository.update(product);
+                    return restDTO;
+                }
+                List<InputDTO> inputDTOs = (List<InputDTO>)DTOUtils.parseToDTOS(inputs);
                 RestrictionDTO restrictionDTO = new RestrictionDTO();
                 restrictionDTO.algorithm = restDTO.algorithm;
                 restrictionDTO.description = restDTO.description;
@@ -337,7 +349,7 @@ namespace core.application {
                 return restDTO;
             }
         }
-        
+
         /// <summary>
         /// Returns an enumerable of dimensions found on a product DTO
         /// </summary>
@@ -409,8 +421,8 @@ namespace core.application {
         /// </summary>
         /// <param name="materialsToFetch">IEnumerable with the materials dtos to fetch</param>
         /// <param name="fetchedMaterials">IEnumerable with the fetched materials</param>
-        private void ensureMaterialsFetchWasSuccessful(IEnumerable<MaterialDTO> materialsToFetch,IEnumerable<Material> fetchedMaterials){
-            if(Collections.isEnumerableNullOrEmpty(materialsToFetch)||Collections.getEnumerableSize(materialsToFetch)!=Collections.getEnumerableSize(fetchedMaterials))
+        private void ensureMaterialsFetchWasSuccessful(IEnumerable<MaterialDTO> materialsToFetch, IEnumerable<Material> fetchedMaterials) {
+            if (Collections.isEnumerableNullOrEmpty(materialsToFetch) || Collections.getEnumerableSize(materialsToFetch) != Collections.getEnumerableSize(fetchedMaterials))
                 throw new InvalidOperationException(INVALID_MATERIALS_FETCH);
         }
 
@@ -420,7 +432,7 @@ namespace core.application {
         /// <param name="componentsToFetch">IEnumerable with the components dtos to fetch</param>
         /// <param name="fetchedComponents">IEnumerable with the fetched components</param>
         private void ensureProductsComponentsFetchWasSuccesful(IEnumerable<ComponentDTO> componentsToFetch, IEnumerable<Component> fetchedComponents) {
-            if (Collections.isEnumerableNullOrEmpty(componentsToFetch)||Collections.getEnumerableSize(componentsToFetch) != Collections.getEnumerableSize(fetchedComponents))
+            if (Collections.isEnumerableNullOrEmpty(componentsToFetch) || Collections.getEnumerableSize(componentsToFetch) != Collections.getEnumerableSize(fetchedComponents))
                 throw new InvalidOperationException(INVALID_COMPONENTS_FETCH);
         }
 
@@ -430,7 +442,7 @@ namespace core.application {
         /// <param name="productsToFetch">IEnumerable with the products dtos to fetch</param>
         /// <param name="fetchedProducts">IEnumerable with the fetched products</param>
         private void ensureProductsFetchWasSuccesful(IEnumerable<ProductDTO> productsToFetch, IEnumerable<Product> fetchedProducts) {
-            if (Collections.isEnumerableNullOrEmpty(productsToFetch)||Collections.getEnumerableSize(productsToFetch) != Collections.getEnumerableSize(fetchedProducts))
+            if (Collections.isEnumerableNullOrEmpty(productsToFetch) || Collections.getEnumerableSize(productsToFetch) != Collections.getEnumerableSize(fetchedProducts))
                 throw new InvalidOperationException(INVALID_PRODUCTS_FETCH);
         }
 
@@ -440,7 +452,7 @@ namespace core.application {
         /// <param name="dimensionsToFetch">IEnumerable with the dimensions dtos to fetch</param>
         /// <param name="fetchedDimensions">IEnumerable with the fetched dimensions</param>
         private void ensureProductsDimensionsFetchWasSuccesful(IEnumerable<DimensionDTO> dimensionsToFetch, IEnumerable<Dimension> fetchedDimensions) {
-            if (Collections.isEnumerableNullOrEmpty(dimensionsToFetch)||Collections.getEnumerableSize(dimensionsToFetch) != Collections.getEnumerableSize(fetchedDimensions))
+            if (Collections.isEnumerableNullOrEmpty(dimensionsToFetch) || Collections.getEnumerableSize(dimensionsToFetch) != Collections.getEnumerableSize(fetchedDimensions))
                 throw new InvalidOperationException(INVALID_DIMENSIONS_FETCH);
         }
     }
