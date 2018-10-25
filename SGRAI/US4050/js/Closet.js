@@ -104,6 +104,23 @@ Closet=function(){
     }
 
     /**
+     * Returns the current width of the closet
+     */
+    this.getClosetWidth=function(){return this.closet_base_face_dimensions_axes[0];}
+
+    /**
+     * Returns the current height of the closet
+     */
+    this.getClosetHeight=function(){return this.closet_left_face_dimensions_axes[1];}
+
+    /**
+     * Returns the current depth of the closet
+     */
+    this.getClosetDepth=function(){return this.closet_base_face_dimensions_axes[2];}
+
+
+
+    /**
      * Adds a slot to the closet
      */
     this.addSlot=function(){

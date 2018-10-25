@@ -23,14 +23,13 @@ var closet_slots_faces_ids=[];
  * Initial Product Draw function
  */
 function main() {
-    renderer = new THREE.WebGLRenderer();
+    var canvasWebGL=document.getElementById("webgl");
+    renderer = new THREE.WebGLRenderer({canvas:canvasWebGL});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
     initCamera();
     initControls();
     initCloset();
     scene.add(group);
-    addSlotNumbered(1);    
     registerEvents();
     animate();
 }
@@ -230,3 +229,18 @@ function registerEvents(){
         addSlotNumbered(removeSlotEvent.detail.slots);
     });
 }
+
+/**
+ * Returns the current closet width
+ */
+function getCurrentClosetWidth(){return closet.getClosetWidth();}
+
+/**
+ * Returns the current closet height
+ */
+function getCurrentClosetHeight(){return closet.getClosetHeight();}
+
+/**
+ * Returns the current closet depth
+ */
+function getCurrentClosetDepth(){return closet.getClosetDepth();}
