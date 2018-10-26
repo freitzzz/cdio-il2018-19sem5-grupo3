@@ -228,11 +228,11 @@ function getNewScaleValue(initialScaleValue,newScaleValue,currentScaleValue){
  */
 function createMaterialWithTexture(){
 
-     var texture = new THREE.TextureLoader().load( '../textures/cherry_wood_cabinets.jpg' );
-     var material = new THREE.MeshBasicMaterial( { map: texture } );
+    //  var texture = new THREE.TextureLoader().load( '../textures/cherry_wood_cabinets.jpg' );
+    //  var material = new THREE.MeshBasicMaterial( { map: texture } );
     
-     return material; 
-   // return new  THREE.MeshBasicMaterial( { color: 0x968d81,wireframe: true} );
+    //  return material; 
+    return new THREE.MeshNormalMaterial();
 }
 
 /**
