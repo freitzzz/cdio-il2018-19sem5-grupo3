@@ -4,38 +4,57 @@ const Order = require('../models/order');
 const http = require('http');
 
 //Get all orders in the database
-//TODO Pretty things up
+//Handle errors by using the ones available in the mongoose schema
 ordersRoute.route('/orders').get(function (req, res, next) {
     Order.find(function (err, orders) {
-        if (err) {
-            return next(new Error(err));
+        if (!orders) {
+            return next(res.status(404).json({
+                Error: 'No orders found'
+            }));
+        } else if (err) {
+            return next(res.status(500).json({
+                Error: 'An unexpected error occurred. Please try again'
+            }));
+        } else {
+            res.status(200).json(orders); //return all orders
         }
-        res.status(200).json(orders); //return all orders
     })
 })
 
-//Express request
-ordersRoute.route('/orders/:id').get(/*async*/ function (req, res, next) {
+//Gets an order and its details by its id
+//TODO Handle errors by using the ones available in the mongoose schema
+//TODO add query to route path to know if the order has to be detailed or not
+ordersRoute.route('/orders/:id').get( /*async*/ function (req, res, next) {
     var id = req.params.id;
     //Communicate with MYCM
 
     //Mongoose query
     Order.findById(id, async function (err, order) {
+        if (!order) {
+            return next(res.status(404).json({
+                Error: 'Order not found'
+            }));
+        } else if (err) {
+            return next(res.status(500).json({
+                Error: 'An unexpected error occurred. Please try again'
+            }));
+        } else {
+            var orderContentsList = order.orderContents;
 
-        var orderContentsList = order.orderContents;
-
-        var result = await fetchOrderContents(orderContentsList);
-
-        if (err) {
-            return next(new Error(err));
+            var result = await fetchOrderContents(orderContentsList);
+            var detailedOrder = {
+                status: order.status,
+                orderContents: result
+            };
+            res.status(200).json(detailedOrder);
         }
-        res.status(200).json(result);
     });
 })
 
+//Fetches an orders contents
 async function fetchOrderContents(orderContents) {
 
-    var stringResult = '';
+    var customizedProductArray = [];
 
     var orderContentsSize = orderContents.length;
 
@@ -43,15 +62,16 @@ async function fetchOrderContents(orderContents) {
 
         var currentOrderContent = orderContents[i];
         var currentOrderContentCustomizedProductId = currentOrderContent.customizedproduct;
-
+        var currentOrderContentCustomizedProductQuantity = currentOrderContent.quantity;
         var customizedProduct = await getCustomizedProduct(currentOrderContentCustomizedProductId);
-
-        stringResult += JSON.stringify(customizedProduct);
+        customizedProduct.quantity = currentOrderContentCustomizedProductQuantity;
+        customizedProductArray.push(customizedProduct);
     }
 
-    return stringResult;
+    return customizedProductArray;
 }
 
+//Fetches a CustomizedProduct DTO by making a GET Request to MYCMs API
 function getCustomizedProduct(customizedProductId) {
 
     return new Promise((resolve, reject) => {
@@ -74,14 +94,21 @@ function getCustomizedProduct(customizedProductId) {
     })
 }
 
-//TODO Pretty things up
+//Creates a new Order
+//TODO Handle errors by using the ones available in the mongoose schema
 ordersRoute.route('/orders').post(function (req, res, next) {
-    Order.create(function (err, order) {
-        if (err) {
-            return next(new Error(err));
-        }
-        res.status(201).json(order);
-    })
+    Order.create({
+            orderContents: req.body.orderContents,
+        },
+        function (error, order) {
+            if (error) {
+                res.status(400).json({
+                    Error: 'The order body is invalid. Please try again'
+                });
+            } else {
+                res.status(201).json(order);
+            }
+        })
 })
 
 

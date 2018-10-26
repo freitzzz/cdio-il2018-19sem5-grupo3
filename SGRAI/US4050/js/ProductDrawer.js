@@ -25,7 +25,7 @@ var closet_slots_faces_ids=[];
 function main() {
     var canvasWebGL=document.getElementById("webgl");
     renderer = new THREE.WebGLRenderer({canvas:canvasWebGL});
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    //renderer.setSize(window.innerWidth, window.innerHeight);
     initCamera();
     initControls();
     initCloset();
@@ -228,10 +228,10 @@ function getNewScaleValue(initialScaleValue,newScaleValue,currentScaleValue){
  */
 function createMaterialWithTexture(){
 
-    /* var texture = new THREE.TextureLoader().load( '../textures/cherry_wood_cabinets.jpg' );
-    var material = new THREE.MeshBasicMaterial( { map: texture } );
+    //  var texture = new THREE.TextureLoader().load( '../textures/cherry_wood_cabinets.jpg' );
+    //  var material = new THREE.MeshBasicMaterial( { map: texture } );
     
-    return material; */
+    //  return material; 
     return new THREE.MeshNormalMaterial();
 }
 
