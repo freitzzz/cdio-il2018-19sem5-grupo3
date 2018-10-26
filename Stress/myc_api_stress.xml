@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tsung SYSTEM "/usr/share/tsung/tsung-1.0.dtd">
+<tsung loglevel="warning">
+
+  <clients>
+    <client host="localhost" use_controller_vm="true"/>
+  </clients>
+
+  <servers>
+    <server host="127.0.0.1" port="5000" type="tcp"/>
+  </servers>
+
+  <load>
+    <arrivalphase phase="1" duration="1" unit="minute">
+      <users arrivalrate="100" unit="second"/>
+    </arrivalphase>
+  </load>
+
+  <sessions>
+  <!-- Vulnerability POST COLLECTIONS -->
+    <session name="collections" weight="1" type="ts_http">
+      <request>
+        <http url="/myc/api/collections" method="POST" version="1.1" contents="{&quot;name&quot;:&quot;nome&quot;}" content_type="application/json">
+        </http>
+      </request>
+    </session>
+    <!-- Vulnerability POST CATEGORIES-->
+    <session name="collections" weight="2" type="ts_http">
+      <request>
+        <http url="/myc/api/categories" method="POST" version="1.1" contents="{&quot;name&quot;:&quot;nome&quot;}" content_type="application/json">
+        </http>
+      </request>
+    </session>
+    <!-- Stress for all categories -->
+    <session name="fetch_categories" weight="3" type="ts_http">
+      <request>
+        <http url="/myc/api/categories" method="GET" version="1.1" >
+        </http>
+      </request>
+    </session>
+    <!-- Stress for all products -->
+    <session name="fetch_products" weight="4" type="ts_http">
+      <request>
+        <http url="/myc/api/products" method="GET" version="1.1" >
+        </http>
+      </request>
+    </session>
+    <!-- Stress for all collections -->
+    <session name="fetch_collections" weight="5" type="ts_http">
+      <request>
+        <http url="/myc/api/collections" method="GET" version="1.1" >
+        </http>
+      </request>
+    </session>
+  </sessions>
+</tsung>
