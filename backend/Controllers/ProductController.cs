@@ -374,10 +374,19 @@ namespace backend.Controllers {
                 return BadRequest();
             }
         }
+        /// <summary>
+        /// Adds a restriction to product component
+        /// </summary>
+        /// <param name="productID">id of the product</param>
+        /// <param name="productComponentID">id of the product component</param>
+        /// <param name="restrictionDTO">restriction to add</param>
+        /// <returns>restriction added or list of required inputs</returns>
         [HttpPut("{productID}/components/{productComponentID}/restrictions")]
         public ActionResult addComponentRestriction(long productID, long productComponentID, [FromBody] RestrictionDTO restrictionDTO) {
             try {
                 return Ok(new core.application.ProductController().addComponentRestriction(productID, productComponentID, restrictionDTO));
+            } catch (NullReferenceException) {
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             } catch (ArgumentOutOfRangeException rangeEx) {
                 return BadRequest(new SimpleJSONMessageService(rangeEx.Message));
             } catch (ArgumentNullException nullEx) {
