@@ -1,58 +1,83 @@
 /**
- * Represents a "Closet" object
+ * Represents the internal core of a Closet
  */
-Closet=function(){
+class Closet{
     /**
      * Dimensions and Axes values for the closet base face
      */
-    this.closet_base_face_dimensions_axes=[204.5,4.20,100,0,0,0];
+    closet_base_face_dimensions_axes=[204.5,4.20,100,0,0,0];
 
     /**
      * Dimensions and Axes values for the closet top face
      */
-    this.closet_top_face_dimensions_axes=[204.5,4.20,100,0,100,0];
+    closet_top_face_dimensions_axes=[204.5,4.20,100,0,100,0];
     /**
      * Dimensions and Axes values for the closet left face
      */
-    this.closet_left_face_dimensions_axes=[4.20,100,100,-100,50,0];
+    closet_left_face_dimensions_axes=[4.20,100,100,-100,50,0];
     /**
      * Dimensions and Axes values for the closet right face
      */
-    this.closet_right_face_dimensions_axes=[4.20,100,100,100,50,0];
+    closet_right_face_dimensions_axes=[4.20,100,100,100,50,0];
     /**
      * Dimensions and Axes values for the closet back face
      */
-    this.closet_back_face_dimensions_axes=[200,100,0,0,50,-50];
+    closet_back_face_dimensions_axes=[200,100,0,0,50,-50];
 
     /**
      * Array with all closet faces
      */
-    this.closet_faces=[this.closet_base_face_dimensions_axes,this.closet_top_face_dimensions_axes,this.closet_left_face_dimensions_axes,this.closet_right_face_dimensions_axes,this.closet_back_face_dimensions_axes];
+    closet_faces=[this.closet_base_face_dimensions_axes,this.closet_top_face_dimensions_axes,this.closet_left_face_dimensions_axes,this.closet_right_face_dimensions_axes,this.closet_back_face_dimensions_axes];
 
     /**
      * Array with the initial closet faces values
      */
-    this.initial_closet_faces=[this.closet_base_face_dimensions_axes.slice(),this.closet_top_face_dimensions_axes.slice(),this.closet_left_face_dimensions_axes.slice(),this.closet_right_face_dimensions_axes.slice(),this.closet_back_face_dimensions_axes.slice()];
+    initial_closet_faces=[this.closet_base_face_dimensions_axes.slice(),this.closet_top_face_dimensions_axes.slice(),this.closet_left_face_dimensions_axes.slice(),this.closet_right_face_dimensions_axes.slice(),this.closet_back_face_dimensions_axes.slice()];
 
     /**
      * Current closet slots
      */
-    this.closet_slots=1;
+    closet_slots=1;
 
     /**
      * Current closet slots faces
      */
-    this.closet_slots_faces=[];
+    closet_slots_faces=[];
 
     /**
      * Array with the initial closet faces values
      */
-    this.initial_closet_slots_faces=[];
+    initial_closet_slots_faces=[];
+    /**
+     * Builds a new Closet with the dimensions and axes values for all faces
+     * @param {Array} closet_base_face_dimensions_axes Array with the base face dimensions and axes values
+     * @param {Array} closet_top_face_dimensions_axes Array with the top face dimensions and axes values
+     * @param {Array} closet_left_face_dimensions_axes Array with the left face dimensions and axes values
+     * @param {Array} closet_right_face_dimensions_axes Array with the right face dimensions and axes values
+     * @param {Array} closet_back_face_dimensions_axes Array with the back face dimensions and axes values
+     */
+    constructor(closet_base_face_dimensions_axes
+               ,closet_top_face_dimensions_axes
+               ,closet_left_face_dimensions_axes
+               ,closet_right_face_dimensions_axes
+               ,closet_back_face_dimensions_axes){
+        this._checkClosetFace(closet_base_face_dimensions_axes);
+        this._checkClosetFace(closet_top_face_dimensions_axes);
+        this._checkClosetFace(closet_left_face_dimensions_axes);
+        this._checkClosetFace(closet_right_face_dimensions_axes);
+        this._checkClosetFace(closet_back_face_dimensions_axes);
+        this.closet_back_face_dimensions_axes=closet_base_face_dimensions_axes.slice();
+        this.closet_top_face_dimensions_axes=closet_top_face_dimensions_axes.slice();
+        this.closet_left_face_dimensions_axes=closet_left_face_dimensions_axes.slice();
+        this.closet_right_face_dimensions_axes=closet_right_face_dimensions_axes.slice();
+        this.closet_back_face_dimensions_axes=closet_back_face_dimensions_axes.slice();
+        this._prepare_closet_init();
+    }
 
     /**
      * Changes the closet width
      */
-    this.changeClosetWidth=function(width){
+    changeClosetWidth=function(width){
         if(width>0){
             var axesWidth=width/2;
             this.closet_base_face_dimensions_axes[0]=width;
@@ -68,7 +93,7 @@ Closet=function(){
     /**
      * Changes the closet height
      */
-    this.changeClosetHeight=function(height){
+    changeClosetHeight=function(height){
         if(height>0){
             var axesHeight=height/2;
             var heighpos =this.closet_top_face_dimensions_axes[4];
@@ -88,7 +113,7 @@ Closet=function(){
     /**
      * Changes the closet depth
      */
-    this.changeClosetDepth=function(depth){
+    changeClosetDepth=function(depth){
         if(depth>0){
             var axesDepth=depth/2;
             this.closet_base_face_dimensions_axes[2]=depth;
@@ -107,7 +132,7 @@ Closet=function(){
     /**
      * Changes the current closet slots
      */
-    this.computeNewClosetSlots=function(slots){
+    computeNewClosetSlots=function(slots){
         if(slots>=1){
             return (slots)-this.closet_slots;
         }else{
@@ -116,56 +141,70 @@ Closet=function(){
     }
 
     /**
-     * Returns the current width of the closet
-     */
-    this.getClosetWidth=function(){return this.closet_base_face_dimensions_axes[0];}
-
-    /**
-     * Returns the current height of the closet
-     */
-    this.getClosetHeight=function(){return this.closet_left_face_dimensions_axes[1];}
-
-    /**
-     * Returns the current depth of the closet
-     */
-    this.getClosetDepth=function(){return this.closet_base_face_dimensions_axes[2];}
-
-    /**
      * Adds a slot to the closet
      */
-    this.addSlot=function(){
+    addSlot=function(){
         this.closet_slots++;
         this.closet_slots_faces.push(this.closet_right_face_dimensions_axes.slice());
         this.initial_closet_slots_faces.push(this.closet_right_face_dimensions_axes.slice());
-        updateClosetSlots(this);
+        _updateClosetSlots(this);
         return this.closet_slots_faces[this.closet_slots_faces.length-1];
     }
 
     /**
      * Removes a slot from the closet
      */
-    this.removeSlot=function(){
+    removeSlot=function(){
         if(this.closet_slots>1){
             this.closet_slots--;
             this.closet_slots_faces.pop();
             this.initial_closet_slots_faces.pop();
-            updateClosetSlots(this);
+            _updateClosetSlots(this);
         }
     }
     
     /**
-     * Updates the closet slots size
-     * @param {MYC.Closet} closet MYC.Closet with the closet which slots will be updated
+     * Returns the current width of the closet
      */
-    function updateClosetSlots(closet){
-        var distance_per_slot=(closet.closet_right_face_dimensions_axes[3]-closet.closet_left_face_dimensions_axes[3])/closet.closet_slots;
-        var left_closet_face_x_value=closet.closet_left_face_dimensions_axes[3];
-        for(var i=0;i<closet.closet_slots_faces.length;i++){
+    getClosetWidth=function(){return this.closet_base_face_dimensions_axes[0];}
+
+    /**
+     * Returns the current height of the closet
+     */
+    getClosetHeight=function(){return this.closet_left_face_dimensions_axes[1];}
+
+    /**
+     * Returns the current depth of the closet
+     */
+    getClosetDepth=function(){return this.closet_base_face_dimensions_axes[2];}
+
+    /**
+     * Updates the closet slots size
+     */
+    _updateClosetSlots=function(){
+        var distance_per_slot=(this.closet_right_face_dimensions_axes[3]-this.closet_left_face_dimensions_axes[3])/closet.closet_slots;
+        var left_closet_face_x_value=this.closet_left_face_dimensions_axes[3];
+        for(var i=0;i<this.closet_slots_faces.length;i++){
             if(i==0){
-                closet.closet_slots_faces[i][3]=left_closet_face_x_value+(distance_per_slot);
+                this.closet_slots_faces[i][3]=left_closet_face_x_value+(distance_per_slot);
             }else{
-                closet.closet_slots_faces[i][3]=closet.closet_slots_faces[i-1][3]+(distance_per_slot);
+                this.closet_slots_faces[i][3]=this.closet_slots_faces[i-1][3]+(distance_per_slot);
             }
         }
+    }
+
+    /**
+     * Prepare the closet initialization
+     */
+    _prepare_closet_init=function(){
+        this.closet_faces=[this.closet_base_face_dimensions_axes,this.closet_top_face_dimensions_axes,this.closet_left_face_dimensions_axes,this.closet_right_face_dimensions_axes,this.closet_back_face_dimensions_axes];
+        this.initial_closet_faces=[this.closet_base_face_dimensions_axes.slice(),this.closet_top_face_dimensions_axes.slice(),this.closet_left_face_dimensions_axes.slice(),this.closet_right_face_dimensions_axes.slice(),this.closet_back_face_dimensions_axes.slice()];
+    }
+
+    /**
+     * Checks if a closet face is valid
+     */
+    _checkClosetFace=function(){
+        //TODO: Implement method
     }
 }
