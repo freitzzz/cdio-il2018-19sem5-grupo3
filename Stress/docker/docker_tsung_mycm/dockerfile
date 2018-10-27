@@ -1,0 +1,47 @@
+# This dockerfile uses the latest alpine image as the base image
+# And the latest Erlang version
+# Tsung Version: 1.7.0
+# Approximated docker image size ~92.4 MB
+
+# This dockerfile is heavily inspired by @opticaline dockerfile (https://github.com/opticaline/tsung)
+
+FROM alpine:latest
+
+# Copies all Tsung XML files which can be run and puts them on tsung_myc
+COPY tsung_myc tsung_myc
+
+# Installs latest Erlang version and dependencies
+RUN apk --update add \
+		alpine-sdk \
+		erlang \
+		erlang-ssl \
+		erlang-dev \
+		erlang-snmp \
+		erlang-eunit \
+		erlang-xmerl \
+		erlang-inets \
+		erlang-os-mon \
+		erlang-crypto \
+		gnuplot \
+		bash \
+		perl \
+		perl-template-toolkit \
+# Installs Tsung 1.7.0
+	&& wget http://tsung.erlang-projects.org/dist/tsung-1.7.0.tar.gz \
+	&& tar zvxf tsung-1.7.0.tar.gz \
+	&& cd tsung-1.7.0/ \
+	&& cd /tsung-1.7.0 \
+	&& ./configure \
+	&& make \
+	&& make install \
+# Cleans downloaded files
+	&& cd .. \
+	&& rm -rf tsung-1.7.0.tar.gz tsung-1.7.0/ \
+	&& apk del alpine-sdk \
+&& rm -rf /var/cache/apk/*
+
+# Exposes port 8091 which is required for Tsung to export logs as an Web Application
+EXPOSE 8091
+
+# Entrypoint is Tsung starting the stress test for MYCM API
+ENTRYPOINT ["tsung", "-f" ,"tsung_myc/mycm/mycm_api_stress.xml", "start"]
