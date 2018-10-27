@@ -163,6 +163,13 @@
           <h2><p></p> <p></p> Create <p></p></h2>
         <hr>
       </div>
+     
+      <div class="progress  left">
+        <div class="progress-bar progress-bar-striped active row" role="progressbar" aria-valuenow="25"
+        aria-valuemin="0" aria-valuemax="100" style="width:25%" id="progress">
+        <div id="percentage">25%</div>
+        </div>
+      </div>
       <!--<div class="tab">
         <button class="tablinks" onclick="openTab(event, 'dimensions')">Dimensions</button>
         <button class="tablinks" onclick="openTab(event, 'slots')">Slots</button>
@@ -190,12 +197,13 @@
           <h2>Slots</h2>
         <br>        
         Number of slots:<br>
-        <input type="number" min="1" name="slot" value="1" id="slotsInput" onchange="reloadClosetSlots();">
+        <input type="number" min="1" name="slot" value="3" id="slotsInput" onchange="reloadClosetSlots();">
         <br>
         <br>
         <br>
         <a class="btn-custom" onclick="openTab(event, 'dimensions')">Back</a>
         <a class="btn-custom" disabled >Next</a>
+
       </div>
       <!--<a class="btn btn-custom btn-lg page-scroll" onclick="reloadCube();">Submit</a>--->
       <div class="column right" >
@@ -213,6 +221,8 @@
     </div>
   </div>
   </div>
+
+  
 
   <!-- Contact Section -->
   <div id="contact" class="text-center">
