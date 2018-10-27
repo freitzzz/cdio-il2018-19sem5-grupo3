@@ -41,7 +41,11 @@ function main() {
 function initCloset(){
     scene=new THREE.Scene();
     group=new THREE.Group();
-    closet=new Closet();
+    closet=new Closet([204.5,4.20,100,0,0,0]
+                     ,[204.5,4.20,100,0,100,0]
+                     ,[4.20,100,100,-100,50,0]
+                     ,[4.20,100,100,100,50,0]
+                     ,[200,100,0,0,50,-50]);
     var faces=closet.closet_faces;
     
     for(var i=0;i<faces.length;i++){
@@ -60,22 +64,22 @@ function updateClosetGV(){
     
     for(var i=0;i<closet_faces_ids.length;i++){
         var closet_face=group.getObjectById(closet_faces_ids[i]);
-        closet_face.scale.x=getNewScaleValue(closet.initial_closet_faces[i][0],closet.closet_faces[i][0],closet_face.scale.x);
-        closet_face.scale.y=getNewScaleValue(closet.initial_closet_faces[i][1],closet.closet_faces[i][1],closet_face.scale.y);
-        closet_face.scale.z=getNewScaleValue(closet.initial_closet_faces[i][2],closet.closet_faces[i][2],closet_face.scale.z);
-        closet_face.position.x=closet.closet_faces[i][3];
-        closet_face.position.y=closet.closet_faces[i][4];
-        closet_face.position.z=closet.closet_faces[i][5];
+        closet_face.scale.x=getNewScaleValue(closet.getInitialClosetFaces()[i][0],closet.getClosetFaces()[i][0],closet_face.scale.x);
+        closet_face.scale.y=getNewScaleValue(closet.getInitialClosetFaces()[i][1],closet.getClosetFaces()[i][1],closet_face.scale.y);
+        closet_face.scale.z=getNewScaleValue(closet.getInitialClosetFaces()[i][2],closet.getClosetFaces()[i][2],closet_face.scale.z);
+        closet_face.position.x=closet.getClosetFaces()[i][3];
+        closet_face.position.y=closet.getClosetFaces()[i][4];
+        closet_face.position.z=closet.getClosetFaces()[i][5];
     }
 
     for(var i=0;i<closet_slots_faces_ids.length;i++){
         var closet_face=group.getObjectById(closet_slots_faces_ids[i]);
-        closet_face.scale.x=getNewScaleValue(closet.initial_closet_slots_faces[i][0],closet.closet_slots_faces[i][0],closet_face.scale.x);
-        closet_face.scale.y=getNewScaleValue(closet.initial_closet_slots_faces[i][1],closet.closet_slots_faces[i][1],closet_face.scale.y);
-        closet_face.scale.z=getNewScaleValue(closet.initial_closet_slots_faces[i][2],closet.closet_slots_faces[i][2],closet_face.scale.z);
-        closet_face.position.x=closet.closet_slots_faces[i][3];
-        closet_face.position.y=closet.closet_slots_faces[i][4];
-        closet_face.position.z=closet.closet_slots_faces[i][5];
+        closet_face.scale.x=getNewScaleValue(closet.getInitialClosetSlotFaces()[i][0],closet.getClosetSlotFaces()[i][0],closet_face.scale.x);
+        closet_face.scale.y=getNewScaleValue(closet.getInitialClosetSlotFaces()[i][1],closet.getClosetSlotFaces()[i][1],closet_face.scale.y);
+        closet_face.scale.z=getNewScaleValue(closet.getInitialClosetSlotFaces()[i][2],closet.getClosetSlotFaces()[i][2],closet_face.scale.z);
+        closet_face.position.x=closet.getClosetSlotFaces()[i][3];
+        closet_face.position.y=closet.getClosetSlotFaces()[i][4];
+        closet_face.position.z=closet.getClosetSlotFaces()[i][5];
     }
 }
 
