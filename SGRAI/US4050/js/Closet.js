@@ -80,9 +80,10 @@ class Closet{
         this.closet_left_face_dimensions_axes=closet_left_face_dimensions_axes.slice();
         this.closet_right_face_dimensions_axes=closet_right_face_dimensions_axes.slice();
         this.closet_back_face_dimensions_axes=closet_back_face_dimensions_axes.slice();
-        console.log(this.closet_back_face_dimensions_axes);
         this._prepare_closet_init();
     }
+
+    //Closet Logic
 
     /**
      * Changes the closet width
@@ -139,6 +140,8 @@ class Closet{
         }
     }
 
+    //Slots Logic
+
     /**
      * Changes the current closet slots
      */
@@ -157,7 +160,7 @@ class Closet{
         this.closet_slots++;
         this.closet_slots_faces.push(this.closet_right_face_dimensions_axes.slice());
         this.initial_closet_slots_faces.push(this.closet_right_face_dimensions_axes.slice());
-        _updateClosetSlots(this);
+        this._updateClosetSlots(this);
         return this.closet_slots_faces[this.closet_slots_faces.length-1];
     }
 
@@ -169,10 +172,12 @@ class Closet{
             this.closet_slots--;
             this.closet_slots_faces.pop();
             this.initial_closet_slots_faces.pop();
-            _updateClosetSlots(this);
+            this._updateClosetSlots(this);
         }
     }
     
+    //Accessors
+
     /**
      * Returns the current width of the closet
      */
@@ -187,6 +192,28 @@ class Closet{
      * Returns the current depth of the closet
      */
     getClosetDepth(){return this.closet_base_face_dimensions_axes[2];}
+
+    /**
+     * Returns all current closet initial faces
+     */
+    getInitialClosetFaces(){return this.initial_closet_faces;}
+    
+    /**
+     * Returns all current closet faces
+     */
+    getClosetFaces(){return this.closet_faces;}
+
+    /**
+     * Returns all current closet initial faces
+     */
+    getInitialClosetSlotFaces(){return this.initial_closet_slots_faces;}
+    
+    /**
+     * Returns all current closet faces
+     */
+    getClosetSlotFaces(){return this.closet_slots_faces;}
+
+    //Private Methods
 
     /**
      * Updates the closet slots size
@@ -211,7 +238,7 @@ class Closet{
         this.initial_closet_faces=[this.closet_base_face_dimensions_axes.slice(),this.closet_top_face_dimensions_axes.slice(),this.closet_left_face_dimensions_axes.slice(),this.closet_right_face_dimensions_axes.slice(),this.closet_back_face_dimensions_axes.slice()];
         this.closet_slots=1;
         this.closet_slots_faces=[];
-        this.initial_closet_faces=[];
+        this.initial_closet_slots_faces=[];
     }
 
     /**
