@@ -92,6 +92,14 @@
     // Show the current tab, and add an "active" class to the button that opened the tab
     document.getElementById(elem).style.display = "block";
     evt.currentTarget.className += " active";
+
+    //Progress bar
+
+    var pro = document.getElementById("progress");
+    pro.style.width += 25+'%';
+    var status = document.getElementById("percentage");
+    status = pro.style.width;
+    
     }
 </script>
   <script>
