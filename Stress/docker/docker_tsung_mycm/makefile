@@ -19,4 +19,4 @@ build:
 	cd $(TSUNG_INPUT) && docker build -t $(DOCKER_REPO):$(DOCKER_REPO_TAG) -f $(DOCKERFILE) .
 
 run:
-	docker run $(DOCKER_REPO):$(DOCKER_REPO_TAG)
+	docker run --network="host" $(DOCKER_REPO):$(DOCKER_REPO_TAG) 
