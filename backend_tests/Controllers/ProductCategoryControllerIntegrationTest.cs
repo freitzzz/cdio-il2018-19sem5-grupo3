@@ -20,7 +20,7 @@ namespace backend_tests.Controllers
 
         //!Do not compare response's DTO's ids since they may be different from expected depending on the used provider
 
-        private const string baseUrl = "/myc/api/categories";
+        private const string baseUrl = "/mycm/api/categories";
 
         private HttpClient client;
 

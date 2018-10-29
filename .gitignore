@@ -1,3 +1,6 @@
+###Configuration JSON File for NodeJS Integration Tests###
+MYCO/tests/globalConfig.json
+
 ###Backend Logs Folder###
 backend/Logs/*
 
