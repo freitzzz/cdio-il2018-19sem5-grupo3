@@ -21,6 +21,11 @@ namespace core.services{
         /// are invalid
         /// </summary>
         private const string INVALID_COMPONENTS_FETCH = "The components being fetched are invalid";
+        /// <summary>
+        /// Constant that represents the message that occures if the product category being fetched 
+        /// is invalid
+        /// </summary>
+        private const string INVALID_PRODUCT_CATEGORY_FETCH = "The product category being fetched is invalid";
 
         /// <summary>
         /// Transforms a product dto into a product via service
@@ -35,7 +40,10 @@ namespace core.services{
                 productComplementedProducts=new ComponentDTOService().transform(productDTO.complements);
                 ensureProductsComponentsFetchWasSuccesful(productDTO.complements,productComplementedProducts);
             }
+
             ProductCategory productCategory=PersistenceContext.repositories().createProductCategoryRepository().find(productDTO.productCategory.id);
+            ensureProductCategoryIsLeaf(productCategory);
+
             IEnumerable<Material> productMaterials=PersistenceContext.repositories().createMaterialRepository().getMaterialsByIDS(productDTO.productMaterials);
             ensureMaterialsFetchWasSuccessful(productDTO.productMaterials,productMaterials);
 
@@ -110,6 +118,17 @@ namespace core.services{
         private void ensureProductsComponentsFetchWasSuccesful(IEnumerable<ComponentDTO> componentsToFetch, IEnumerable<Product> fetchedComponents) {
             if (Collections.isEnumerableNullOrEmpty(componentsToFetch) || Collections.getEnumerableSize(componentsToFetch) != Collections.getEnumerableSize(fetchedComponents))
                 throw new InvalidOperationException(INVALID_COMPONENTS_FETCH);
+        }
+
+        /// <summary>
+        /// Ensures that a product category is a leaf
+        /// </summary>
+        /// <param name="productCategory">ProductCategory with the product category being ensured that is leaf</param>
+        private void ensureProductCategoryIsLeaf(ProductCategory productCategory){
+            IEnumerable<ProductCategory> productCategories=PersistenceContext.repositories().createProductCategoryRepository().findSubCategories(productCategory);
+            if(!Collections.isEnumerableNullOrEmpty(productCategories)){
+                throw new InvalidOperationException(INVALID_PRODUCT_CATEGORY_FETCH);
+            }
         }
     }
 }
