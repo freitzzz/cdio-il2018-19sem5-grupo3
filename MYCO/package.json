@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "jest --detectOpenHandles"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
@@ -12,8 +13,18 @@
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
     "mongodb": "^3.1.8",
+    "mongodb-memory-server": "^2.6.2",
     "mongoose": "^5.3.5",
     "morgan": "~1.9.0",
     "pug": "2.0.0-beta11"
+  },
+  "devDependencies": {
+    "jest": "^23.6.0",
+    "mongodb-memory-server": "^2.6.2"
+  },
+  "jest":{
+    "testEnvironment":"./tests/mongo-environment.js",
+    "globalSetup":"./tests/setup.js",
+    "globalTeardown":"./tests/teardown.js"
   }
 }
