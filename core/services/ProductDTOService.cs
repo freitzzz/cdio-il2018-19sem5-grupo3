@@ -1,6 +1,7 @@
 using core.domain;
 using core.dto;
 using core.persistence;
+using core.services.ensurance;
 using support.dto;
 using support.utils;
 using System.Collections.Generic;
@@ -11,21 +12,6 @@ namespace core.services{
     /// Service class that helps the transformation of ProductDTO into Product since some information needs to be accessed on the persistence context
     /// </summary>
     public sealed class ProductDTOService{
-        /// <summary>
-        /// Constant that represents the message that occures if the materials being fetched 
-        /// are invalid
-        /// </summary>
-        private const string INVALID_MATERIALS_FETCH = "The materials being fetched are invalid";
-        /// <summary>
-        /// Constant that represents the message that occures if the components being fetched 
-        /// are invalid
-        /// </summary>
-        private const string INVALID_COMPONENTS_FETCH = "The components being fetched are invalid";
-        /// <summary>
-        /// Constant that represents the message that occures if the product category being fetched 
-        /// is invalid
-        /// </summary>
-        private const string INVALID_PRODUCT_CATEGORY_FETCH = "The product category being fetched is invalid";
 
         /// <summary>
         /// Transforms a product dto into a product via service
@@ -38,14 +24,14 @@ namespace core.services{
             IEnumerable<Product> productComplementedProducts=null;
             if(productDTO.complements!=null){
                 productComplementedProducts=new ComponentDTOService().transform(productDTO.complements);
-                ensureProductsComponentsFetchWasSuccesful(productDTO.complements,productComplementedProducts);
+                FetchEnsurance.ensureProductsComponentsFetchWasSuccesful(productDTO.complements,productComplementedProducts);
             }
 
             ProductCategory productCategory=PersistenceContext.repositories().createProductCategoryRepository().find(productDTO.productCategory.id);
-            ensureProductCategoryIsLeaf(productCategory);
+            ProductCategoryEnsurance.ensureProductCategoryIsLeaf(productCategory);
 
             IEnumerable<Material> productMaterials=PersistenceContext.repositories().createMaterialRepository().getMaterialsByIDS(productDTO.productMaterials);
-            ensureMaterialsFetchWasSuccessful(productDTO.productMaterials,productMaterials);
+            FetchEnsurance.ensureMaterialsFetchWasSuccessful(productDTO.productMaterials,productMaterials);
 
             IEnumerable<Dimension> productHeightDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.heightDimensionDTOs);
             IEnumerable<Dimension> productWidthDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.widthDimensionDTOs);
@@ -98,37 +84,6 @@ namespace core.services{
                                             ,productHeightDimensions
                                             ,productWidthDimensions
                                             ,productDepthDimensions); 
-        }
-        
-        /// <summary>
-        /// Ensures that the materials fetch was successful
-        /// </summary>
-        /// <param name="materialsToFetch">IEnumerable with the materials dtos to fetch</param>
-        /// <param name="fetchedMaterials">IEnumerable with the fetched materials</param>
-        private void ensureMaterialsFetchWasSuccessful(IEnumerable<MaterialDTO> materialsToFetch, IEnumerable<Material> fetchedMaterials) {
-            if (Collections.isEnumerableNullOrEmpty(materialsToFetch) || Collections.getEnumerableSize(materialsToFetch) != Collections.getEnumerableSize(fetchedMaterials))
-                throw new InvalidOperationException(INVALID_MATERIALS_FETCH);
-        }
-
-        /// <summary>
-        /// Ensures that the produts components fetch was successful
-        /// </summary>
-        /// <param name="componentsToFetch">IEnumerable with the components dtos to fetch</param>
-        /// <param name="fetchedComponents">IEnumerable with the fetched components</param>
-        private void ensureProductsComponentsFetchWasSuccesful(IEnumerable<ComponentDTO> componentsToFetch, IEnumerable<Product> fetchedComponents) {
-            if (Collections.isEnumerableNullOrEmpty(componentsToFetch) || Collections.getEnumerableSize(componentsToFetch) != Collections.getEnumerableSize(fetchedComponents))
-                throw new InvalidOperationException(INVALID_COMPONENTS_FETCH);
-        }
-
-        /// <summary>
-        /// Ensures that a product category is a leaf
-        /// </summary>
-        /// <param name="productCategory">ProductCategory with the product category being ensured that is leaf</param>
-        private void ensureProductCategoryIsLeaf(ProductCategory productCategory){
-            IEnumerable<ProductCategory> productCategories=PersistenceContext.repositories().createProductCategoryRepository().findSubCategories(productCategory);
-            if(!Collections.isEnumerableNullOrEmpty(productCategories)){
-                throw new InvalidOperationException(INVALID_PRODUCT_CATEGORY_FETCH);
-            }
         }
     }
 }
