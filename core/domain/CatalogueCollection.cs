@@ -17,12 +17,18 @@ namespace core.domain
         ///<summary>
         ///Constant that represents the message that is presented if the Customized Products are not valid
         ///</summary>
-        private const string INVALID_LIST = "The Customized Product List is not valid!";
+        private const string ERROR_NULL_LIST = "The Customized Product list can not be null.";
 
         ///<summary>
         ///Constant that represents the message that is presented if the Customized Product Collection is not valid
         ///</summary>
-        private const string INVALID_COLLECTION = "The Customized Product Collection is not valid!";
+        private const string ERROR_NULL_COLLECTION = "The Customized Product Collection can not be null.";
+
+        /// <summary>
+        /// Constant that represents the message that is presented if the Customized Product Collection does not 
+        /// contain atleast one of the specified Customized Product in the list.
+        /// </summary>
+        private const string ERROR_COLLECTION_OWNERSHIP = "The Customized Product Collection does not own all the specified Customized Products.";
 
         /// <summary>
         /// CatalogueCollection's database identifier.
@@ -99,6 +105,7 @@ namespace core.domain
         {
             //Please note that this constructor does not chain with the other constructor in order to avoid filling the product list and then dereferencing it
             checkAttributes(customizedProductCollection, customizedProducts);
+            checkCustomizedProductsOwnership(customizedProductCollection, customizedProducts);
             this.customizedProductCollection = customizedProductCollection;
             this.catalogueCollectionProducts = new List<CatalogueCollectionProduct>();
 
@@ -109,29 +116,52 @@ namespace core.domain
         }
 
         /// <summary>
-        /// Checks if constructor parameters are valid.
+        /// Checks if constructor parameters are not null.
         /// </summary>
         /// <param name="customizedProductCollection">CustomizedProductCollection being checked.</param>
         private void checkAttributes(CustomizedProductCollection customizedProductCollection)
         {
             if (customizedProductCollection == null)
             {
-                throw new ArgumentException(INVALID_COLLECTION);
+                throw new ArgumentException(ERROR_NULL_COLLECTION);
             }
         }
 
         /// <summary>
-        /// Checks if constructor parameters are valid.
+        /// Checks if constructor parameters are not null.
         /// </summary>
         /// <param name="customizedProductCollection">CustomizedProductCollection being checked.</param>
         /// <param name="customizedProducts">List of CustomizedProduct being checked.</param>
         private void checkAttributes(CustomizedProductCollection customizedProductCollection, List<CustomizedProduct> customizedProducts)
         {
             checkAttributes(customizedProductCollection);
-            //TODO: check if all the specified customized products belong to the given collection
             if (customizedProducts == null || customizedProducts.Count == 0)
             {
-                throw new ArgumentException(INVALID_LIST);
+                throw new ArgumentException(ERROR_NULL_LIST);
+            }
+        }
+
+        /// <summary>
+        /// Checks if all the members in the list of CustomizedProduct belong to the CustomizedProductCollection.
+        /// </summary>
+        /// <param name="customizedProductCollection">CustomizedProductCollection being checked.</param>
+        /// <param name="customizedProducts">List of CustomizedProduct being checked.</param>
+        private void checkCustomizedProductsOwnership(CustomizedProductCollection customizedProductCollection, List<CustomizedProduct> customizedProducts)
+        {
+            bool ownsAll = true;
+
+            foreach (CustomizedProduct customizedProduct in customizedProducts)
+            {
+                if (!customizedProductCollection.hasCustomizedProduct(customizedProduct))
+                {
+                    ownsAll = false;
+                    break;
+                }
+            }
+
+            if (!ownsAll)
+            {
+                throw new ArgumentException(ERROR_COLLECTION_OWNERSHIP);
             }
         }
 
