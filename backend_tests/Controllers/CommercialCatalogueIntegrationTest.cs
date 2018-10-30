@@ -110,14 +110,47 @@ namespace backend_tests.Controllers
         [Fact, TestPriority(4)]
         public async Task<CommercialCatalogueDTO> ensurePutCatalogueCollectionWorks()
         {
-            /* 
-                        Task<CommercialCatalogueDTO> commercialCatalogueDTOTask = ensurePostCommercialCatalogueWorks();
-                        commercialCatalogueDTOTask.Wait();
-                        CommercialCatalogueDTO commercialCatalogueDTO = commercialCatalogueDTOTask.Result;
+            //Create new Commercial Catalogue
+            Task<CommercialCatalogueDTO> commercialCatalogueDTOTask = ensurePostCommercialCatalogueWithCollectionsReturnsCreated();
+            commercialCatalogueDTOTask.Wait();
+            CommercialCatalogueDTO commercialCatalogueDTO = commercialCatalogueDTOTask.Result;
 
-                        long id = commercialCatalogueDTO.id;
-                        CatalogueCollectionDTO catalogueCollectionDTO = new CatalogueCollectionDTO();
-                         */
+
+            long id = commercialCatalogueDTO.id;
+
+            CustomizedProductCollectionDTO collectionDTO = await new CustomizedProductsCollectionControllerIntegrationTest(fixture).ensureCanCreateACustomizedProductCollectionIfItHasAValidNameAndValidCustomizedProducts();
+
+            //only the collection's ID needs to be specified in the DTO
+            CustomizedProductCollectionDTO collectionDTOWithJustID = new CustomizedProductCollectionDTO() { id = collectionDTO.id };
+            collectionDTOWithJustID.name = "1234";
+            CustomizedProductDTO customizedProductDTO = new CustomizedProductDTO(){ id = collectionDTO.customizedProducts.FirstOrDefault().id };
+            customizedProductDTO.reference = "OLAA";
+            customizedProductDTO.designation = "testetstetss";
+            collectionDTOWithJustID.customizedProducts = new List<CustomizedProductDTO>()
+            {
+                customizedProductDTO
+            };
+
+
+            //only the customized product's ID needst to be specified in the DTO
+            CustomizedProductDTO customizedProductDTOWithJustID = new CustomizedProductDTO() { id = collectionDTO.customizedProducts.FirstOrDefault().id };
+            customizedProductDTOWithJustID.reference = "teste";
+            customizedProductDTOWithJustID.designation = "123";
+
+            //Build a CatalogueCollectionDTO with just the identifiers
+            CatalogueCollectionDTO catalogueCollectionDTO = new CatalogueCollectionDTO();
+            catalogueCollectionDTO.customizedProductCollectionDTO = collectionDTOWithJustID;
+            catalogueCollectionDTO.customizedProductDTOs = new List<CustomizedProductDTO>() { customizedProductDTOWithJustID };
+
+
+            List<CatalogueCollectionDTO> catalogueCollectionDTOList = new List<CatalogueCollectionDTO>();
+            catalogueCollectionDTOList.Add(catalogueCollectionDTO);
+
+           /*  UpdateCommercialCatalogueDTO updateCommercialCatalogueDTO = new UpdateCommercialCatalogueDTO();
+            updateCommercialCatalogueDTO.catalogueCollectionDTOToAdd = catalogueCollectionDTOList;
+            //updateCommercialCatalogueDTO.reference = catalogueCollectionDTOList
+ */
+
 
             //TODO:WAIT FOR IMPLEMENTATION OF OTHER INTEGRATION TESTS
 
@@ -125,11 +158,12 @@ namespace backend_tests.Controllers
 
             //List<CustomizedProductDTO> customizedProductDTOs=new List<CustomizedProductDTO>();
 
-            //var response = await client.PutAsJsonAsync(urlBase+"/"+id+"/collections", catalogueCollectionDTO);
+           // var response = await client.PutAsJsonAsync(urlBase + "/" + id + "/collections", updateCommercialCatalogueDTO);
 
             //Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
-            //return JsonConvert.DeserializeObject<CommercialCatalogueDTO>(await response.Content.ReadAsStringAsync());
+           // return JsonConvert.DeserializeObject<CommercialCatalogueDTO>(await response.Content.ReadAsStringAsync());
+
             return null;
         }
 
