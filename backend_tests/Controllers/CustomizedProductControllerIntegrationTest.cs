@@ -72,7 +72,7 @@ namespace backend_tests.Controllers
             finishDTO.description = materialFinishDTO.description;
 
             ColorDTO colorDTO = new ColorDTO()
-            { red = materialColorDTO.red, green = materialColorDTO.green, blue = materialColorDTO.blue, alpha = materialColorDTO.alpha };
+            { name = materialColorDTO.name, red = materialColorDTO.red, green = materialColorDTO.green, blue = materialColorDTO.blue, alpha = materialColorDTO.alpha };
 
             //CustomizedMaterialDTO creation
             CustomizedMaterialDTO customizedMaterialDTO = new CustomizedMaterialDTO();
