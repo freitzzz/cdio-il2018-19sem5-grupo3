@@ -224,7 +224,7 @@ namespace backend.Controllers {
                 return BadRequest(new { error = e.Message }); //this exception should happen when converting to an unknown unit
             }
         }
-
+        
         /// <summary>
         /// Updates a product basic information
         /// </summary>
@@ -272,6 +272,29 @@ namespace backend.Controllers {
         }
 
         /// <summary>
+        /// Adds a new material to a product
+        /// </summary>
+        /// <param name="id">Long with the product resource ID which material is being added</param>
+        /// <param name="addMaterialToProductDTO">AddMaterialToProductDTO with the information about the material being added</param>
+        /// <returns>HTTP Response 201; Created if the material was added with success to the product
+        ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
+        /// </returns>
+        [HttpPost("{id}/materials")]
+        public ActionResult addMaterialToProduct(long id,[FromBody]AddComponentToProductDTO addMaterialToProductDTO){
+            addMaterialToProductDTO.productID=id;
+            try{
+                MaterialDTO materialDTO=new core.application.ProductController().addMaterialToProduct();
+                return Created(Request.Path,materialDTO);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
         /// Updates the components which a product can be complemented with
         /// </summary>
         /// <param name="updateProductData">UpdateProductDTO with the information of the product being updated</param>
@@ -299,6 +322,29 @@ namespace backend.Controllers {
         }
 
         /// <summary>
+        /// Adds a new component to a product
+        /// </summary>
+        /// <param name="id">Long with the product resource ID which component is being added</param>
+        /// <param name="addComponentToProductDTO">AddComponentToProductDTO with the information about the component being added</param>
+        /// <returns>HTTP Response 201; Created if the component was added with success to the product
+        ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
+        /// </returns>
+        [HttpPost("{id}/components")]
+        public ActionResult addComponentToProduct(long id,[FromBody]AddComponentToProductDTO addComponentToProductDTO){
+            addComponentToProductDTO.productID=id;
+            try{
+                ComponentDTO componentDTO=new core.application.ProductController().addProductComponent();
+                return Created(Request.Path,componentDTO);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
         /// Updates the dimensions of a product
         /// </summary>
         /// <param name="updateProductData">UpdateProductDTO with the information of the product being updated</param>
@@ -323,6 +369,29 @@ namespace backend.Controllers {
             }
             logger.LogInformation(LOG_PUT_BAD_REQUEST, id, updateProductData);
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
+        }
+
+        /// <summary>
+        /// Adds a new dimension to a product
+        /// </summary>
+        /// <param name="id">Long with the product resource ID which dimension is being added</param>
+        /// <param name="addDimensionToProductDTO">AddDimensionToProductDTO with the information about the dimension being added</param>
+        /// <returns>HTTP Response 201; Created if the dimension was added with success to the product
+        ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
+        /// </returns>
+        [HttpPost("{id}/dimensions")]
+        public ActionResult addDimensionToProduct(long id,[FromBody]AddDimensionToProductDTO addDimensionToProductDTO){
+            addDimensionToProductDTO.productID=id;
+            try{
+                DimensionDTO dimensionDTO=new core.application.ProductController().addProductDimension();
+                return Created(Request.Path,dimensionDTO);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
         }
 
         /// <summary>
