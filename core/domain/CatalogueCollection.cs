@@ -6,14 +6,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using support.dto;
 using System.Linq;
 
-namespace core.domain
-{
+namespace core.domain {
     /// <summary>
     /// Represents a Catalogue Collection (list of customized products and customized product collections)
     /// </summary>
     /// <typeparam name="CatalogueCollectionDTO">DTO Type</typeparam>
-    public class CatalogueCollection : DTOAble<CatalogueCollectionDTO>
-    {
+    public class CatalogueCollection : DTOAble<CatalogueCollectionDTO> {
         ///<summary>
         ///Constant that represents the message that is presented if the Customized Products are not valid
         ///</summary>
@@ -40,8 +38,7 @@ namespace core.domain
         ///CustomizedProductCollection being added to the CommercialCatalogue.
         ///</summary>
         private CustomizedProductCollection _customizedProductCollection; //!private field used for lazy loading, do not use this for storing or fetching data
-        public CustomizedProductCollection customizedProductCollection
-        {
+        public CustomizedProductCollection customizedProductCollection {
             get => LazyLoader.Load(this, ref _customizedProductCollection); protected set => _customizedProductCollection = value;
         }
 
@@ -50,8 +47,7 @@ namespace core.domain
         ///List of CustomizedProduct being added to the CommercialCatalogue.
         ///</summary>
         private List<CatalogueCollectionProduct> _catalogueCollectionProducts; //!private field used for lazy loading, do not use this for storing or fetching data
-        public List<CatalogueCollectionProduct> catalogueCollectionProducts
-        {
+        public List<CatalogueCollectionProduct> catalogueCollectionProducts {
             get => LazyLoader.Load(this, ref _catalogueCollectionProducts); protected set => _catalogueCollectionProducts = value;
         }
 
@@ -70,8 +66,7 @@ namespace core.domain
         /// Constructor used for injecting the LazyLoader.
         /// </summary>
         /// <param name="lazyLoader">LazyLoader being injected.</param>
-        private CatalogueCollection(ILazyLoader lazyLoader)
-        {
+        private CatalogueCollection(ILazyLoader lazyLoader) {
             this.LazyLoader = lazyLoader;
         }
 
@@ -79,8 +74,7 @@ namespace core.domain
         /// Builds a new CatalogueCollection instance with a CustomizedProductCollection.
         /// </summary>
         /// <param name="customizedProductCollection">CustomizedProductCollection being added to the CommercialCatalogue.</param>
-        public CatalogueCollection(CustomizedProductCollection customizedProductCollection)
-        {
+        public CatalogueCollection(CustomizedProductCollection customizedProductCollection) {
             checkAttributes(customizedProductCollection);
             this.customizedProductCollection = customizedProductCollection;
 
@@ -90,8 +84,7 @@ namespace core.domain
 
             IEnumerable<CustomizedProduct> customizedProductsFromCollection = customizedProductCollection.collectionProducts.Select(cp => cp.customizedProduct);
 
-            foreach (CustomizedProduct customizedProduct in customizedProductsFromCollection)
-            {
+            foreach (CustomizedProduct customizedProduct in customizedProductsFromCollection) {
                 this.catalogueCollectionProducts.Add(new CatalogueCollectionProduct(this, customizedProduct));
             }
         }
@@ -101,16 +94,14 @@ namespace core.domain
         /// </summary>
         /// <param name="customizedProductCollection">CustomizedProductCollection being added to the CommercialCatalogue.</param>
         /// <param name="customizedProducts">List containing all the instances of CustomizedProduct being added to the CommercialCatalogue.</param>
-        public CatalogueCollection(CustomizedProductCollection customizedProductCollection, List<CustomizedProduct> customizedProducts)
-        {
+        public CatalogueCollection(CustomizedProductCollection customizedProductCollection, List<CustomizedProduct> customizedProducts) {
             //Please note that this constructor does not chain with the other constructor in order to avoid filling the product list and then dereferencing it
             checkAttributes(customizedProductCollection, customizedProducts);
             checkCustomizedProductsOwnership(customizedProductCollection, customizedProducts);
             this.customizedProductCollection = customizedProductCollection;
             this.catalogueCollectionProducts = new List<CatalogueCollectionProduct>();
 
-            foreach (CustomizedProduct customizedProduct in customizedProducts)
-            {
+            foreach (CustomizedProduct customizedProduct in customizedProducts) {
                 this.catalogueCollectionProducts.Add(new CatalogueCollectionProduct(this, customizedProduct));
             }
         }
@@ -119,10 +110,8 @@ namespace core.domain
         /// Checks if constructor parameters are not null.
         /// </summary>
         /// <param name="customizedProductCollection">CustomizedProductCollection being checked.</param>
-        private void checkAttributes(CustomizedProductCollection customizedProductCollection)
-        {
-            if (customizedProductCollection == null)
-            {
+        private void checkAttributes(CustomizedProductCollection customizedProductCollection) {
+            if (customizedProductCollection == null) {
                 throw new ArgumentException(ERROR_NULL_COLLECTION);
             }
         }
@@ -132,11 +121,9 @@ namespace core.domain
         /// </summary>
         /// <param name="customizedProductCollection">CustomizedProductCollection being checked.</param>
         /// <param name="customizedProducts">List of CustomizedProduct being checked.</param>
-        private void checkAttributes(CustomizedProductCollection customizedProductCollection, List<CustomizedProduct> customizedProducts)
-        {
+        private void checkAttributes(CustomizedProductCollection customizedProductCollection, List<CustomizedProduct> customizedProducts) {
             checkAttributes(customizedProductCollection);
-            if (customizedProducts == null || customizedProducts.Count == 0)
-            {
+            if (customizedProducts == null || customizedProducts.Count == 0) {
                 throw new ArgumentException(ERROR_NULL_LIST);
             }
         }
@@ -146,21 +133,17 @@ namespace core.domain
         /// </summary>
         /// <param name="customizedProductCollection">CustomizedProductCollection being checked.</param>
         /// <param name="customizedProducts">List of CustomizedProduct being checked.</param>
-        private void checkCustomizedProductsOwnership(CustomizedProductCollection customizedProductCollection, List<CustomizedProduct> customizedProducts)
-        {
+        private void checkCustomizedProductsOwnership(CustomizedProductCollection customizedProductCollection, List<CustomizedProduct> customizedProducts) {
             bool ownsAll = true;
 
-            foreach (CustomizedProduct customizedProduct in customizedProducts)
-            {
-                if (!customizedProductCollection.hasCustomizedProduct(customizedProduct))
-                {
+            foreach (CustomizedProduct customizedProduct in customizedProducts) {
+                if (!customizedProductCollection.hasCustomizedProduct(customizedProduct)) {
                     ownsAll = false;
                     break;
                 }
             }
 
-            if (!ownsAll)
-            {
+            if (!ownsAll) {
                 throw new ArgumentException(ERROR_COLLECTION_OWNERSHIP);
             }
         }
@@ -168,32 +151,40 @@ namespace core.domain
         /// <summary>
         /// toDTO method
         ///</summary>
-        public CatalogueCollectionDTO toDTO()
-        {
+        public CatalogueCollectionDTO toDTO() {
             CatalogueCollectionDTO CatalogueCollectionDTO = new CatalogueCollectionDTO();
             List<CustomizedProductDTO> customizedProductDTOs = new List<CustomizedProductDTO>();
-            foreach (CatalogueCollectionProduct catalogueCollectionProduct in this.catalogueCollectionProducts)
-            {
+            foreach (CatalogueCollectionProduct catalogueCollectionProduct in this.catalogueCollectionProducts) {
                 customizedProductDTOs.Add(catalogueCollectionProduct.customizedProduct.toDTO());
             }
             CatalogueCollectionDTO.customizedProductDTOs = customizedProductDTOs;
             CatalogueCollectionDTO.customizedProductCollectionDTO = this.customizedProductCollection.toDTO();
             return CatalogueCollectionDTO;
         }
+        /// <summary>
+        /// Checks if the collection contains a specific custom product
+        /// </summary>
+        /// <param name="custom">custom product to be checked for</param>
+        /// <returns>true if the custom product exists in the collection, false if not</returns>
+        public bool hasCustomizedProduct(CustomizedProduct custom) {
+            foreach (CatalogueCollectionProduct collectionProduct in catalogueCollectionProducts) {
+                if (custom.Equals(collectionProduct.customizedProduct)) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         ///<summary>
         ///Returns the generated hash code of the CatalogueCollection.
         ///</summary>
-        public override int GetHashCode()
-        {
-            unchecked
-            {
+        public override int GetHashCode() {
+            unchecked {
                 int hash = 29;
 
                 hash = hash * 31 + customizedProductCollection.GetHashCode();
 
-                foreach (CatalogueCollectionProduct catalogueCollectionProduct in this.catalogueCollectionProducts)
-                {
+                foreach (CatalogueCollectionProduct catalogueCollectionProduct in this.catalogueCollectionProducts) {
                     hash = hash * 47 + catalogueCollectionProduct.customizedProduct.GetHashCode();
                 }
 
@@ -205,25 +196,31 @@ namespace core.domain
         ///Checks if a certain Customized is the same as a received object.
         ///</summary>
         ///<param name = "obj">object to compare to the current CatalogueCollection</param>
-        public override bool Equals(object obj)
-        {
-            //Check for null and compare run-time types.
-            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
-            {
-                return false;
+        public override bool Equals(object obj) {
+            if (this == obj) {
+                return true;
             }
-            else
-            {
-                CatalogueCollection CatalogueCollection = (CatalogueCollection)obj;
-                return customizedProductCollection.Equals(CatalogueCollection.customizedProductCollection) && catalogueCollectionProducts.Equals(CatalogueCollection.catalogueCollectionProducts);
+            //Check for null and compare run-time types.
+            if ((obj == null) || !this.GetType().Equals(obj.GetType())) {
+                return false;
+            } else {
+                CatalogueCollection catalogueCollection = (CatalogueCollection)obj;
+                if (catalogueCollection.catalogueCollectionProducts.Count() != catalogueCollectionProducts.Count()) {
+                    return false;
+                }
+                foreach (CatalogueCollectionProduct catColProd in catalogueCollection.catalogueCollectionProducts) {
+                    if (!hasCustomizedProduct(catColProd.customizedProduct)) {
+                        return false;
+                    }
+                }
+                return customizedProductCollection.Equals(catalogueCollection.customizedProductCollection);
             }
         }
 
         ///<summary>
         ///Returns a textual description of the CommercialCatalogue.
         ///</summary>
-        public override string ToString()
-        {
+        public override string ToString() {
             return string.Format("List of Customized Products: {0}, Customized Product Collection {1}", catalogueCollectionProducts.ToString(), customizedProductCollection.ToString());
         }
 
