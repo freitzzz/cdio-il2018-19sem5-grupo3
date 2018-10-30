@@ -63,11 +63,6 @@ namespace core_tests.domain
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(cp);
 
-
-
-            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Mario");
-            CatalogueCollection CatalogueCollection = new CatalogueCollection(customizedProductCollection, list);
-
             Action action = () => new CatalogueCollection(null, list);
 
             Assert.Throws<ArgumentException>(action);
@@ -131,6 +126,8 @@ namespace core_tests.domain
 
 
             CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Mario");
+            customizedProductCollection.addCustomizedProduct(cp);
+
             CatalogueCollection CatalogueCollection = new CatalogueCollection(customizedProductCollection, list);
             Assert.NotNull(CatalogueCollection);
         }
@@ -190,6 +187,7 @@ namespace core_tests.domain
 
 
             CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Mario");
+            customizedProductCollection.addCustomizedProduct(cp);
             CatalogueCollection CatalogueCollection = new CatalogueCollection(customizedProductCollection, list);
 
             CatalogueCollection copyCatalogueCollection = new CatalogueCollection(customizedProductCollection, list);

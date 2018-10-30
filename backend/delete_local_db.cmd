@@ -1,2 +1,2 @@
-rm -r Migrations
-rm local_myc.sqlite
+del Migrations
+del local_myc.sqlite
