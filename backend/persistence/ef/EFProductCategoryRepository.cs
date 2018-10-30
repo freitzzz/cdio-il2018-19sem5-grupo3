@@ -10,31 +10,6 @@ namespace backend.persistence.ef
     {
         public EFProductCategoryRepository(MyCContext dbContext) : base(dbContext) { }
 
-
-        public override IEnumerable<ProductCategory> findAll()
-        {
-            return dbContext.ProductCategory.Where(c => c.active).ToList();
-        }
-
-        public override ProductCategory find(string entityID)
-        {
-            return dbContext.ProductCategory.Where(c => c.active).Where(c => c.sameAs(entityID)).SingleOrDefault();
-        }
-
-        public override ProductCategory find(long entityPersistenceID)
-        {
-            return dbContext.ProductCategory.Where(c => c.active).Where(c => c.Id == entityPersistenceID).SingleOrDefault();
-        }
-
-        public override ProductCategory remove(ProductCategory entity)
-        {
-
-            entity.deactivate();
-            dbContext.SaveChanges();
-
-            return entity;
-        }
-
         /// <summary>
         /// Finds all ProductCategories' sub-categories (ProductCategories that have the received category as a parent).
         /// </summary>
@@ -42,7 +17,7 @@ namespace backend.persistence.ef
         /// <returns>List with all ProductCategory sub-categories</returns>
         public IEnumerable<ProductCategory> findSubCategories(ProductCategory category)
         {
-            return dbContext.ProductCategory.Where(c => c.parentId == category.Id).Where(c => c.active).ToList();
+            return dbContext.ProductCategory.Where(c => c.parentId == category.Id).Where(c => c.activated).ToList();
         }
 
         /// <summary>
