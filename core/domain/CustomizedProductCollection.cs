@@ -96,9 +96,7 @@ namespace core.domain
         /// <param name="customizedProducts">IEnumerable with the collection customized products</param>
         public CustomizedProductCollection(string name, IEnumerable<CustomizedProduct> customizedProducts) : this(name)
         {
-            checkCustomizedProductCollectionProperties(name);
             checkCollectionCustomizedProducts(customizedProducts);
-            this.collectionProducts = new List<CollectionProduct>();
             foreach (CustomizedProduct customizedProduct in customizedProducts)
             {
                 this.collectionProducts.Add(new CollectionProduct(this, customizedProduct));
@@ -138,6 +136,16 @@ namespace core.domain
         public bool removeCustomizedProduct(CustomizedProduct customizedProduct) {
             //remove the instace of CollectionProduct with a matching CustomizedProduct     
             return collectionProducts.Remove(collectionProducts.Where(cc => cc.customizedProduct.Equals(customizedProduct)).FirstOrDefault()); 
+        }
+
+        /// <summary>
+        /// Checks if the CustomizedProductCollection contains the given CustomizedProduct.
+        /// </summary>
+        /// <param name="customizedProduct">CustomizedProduct being checked.</param>
+        /// <returns>true if the CustomizedProductCollection contains the CustomizedProduct; otherwise, false.</returns>
+        public bool hasCustomizedProduct(CustomizedProduct customizedProduct)
+        {
+            return collectionProducts.Select(cp => cp.customizedProduct).Contains(customizedProduct);
         }
 
         /// <summary>
