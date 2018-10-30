@@ -45,9 +45,7 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
@@ -276,9 +274,7 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
@@ -324,9 +320,7 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
@@ -373,9 +367,7 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
@@ -422,9 +414,7 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
@@ -471,9 +461,7 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
@@ -520,9 +508,7 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
@@ -571,9 +557,7 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             CustomizedProduct cp2 = new CustomizedProduct("#619", "Sherfu", custMaterial1, customizedDimensions, product);
@@ -623,9 +607,7 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             CustomizedProduct cp2 = new CustomizedProduct("#619", "Sherfu", custMaterial1, customizedDimensions, product);
@@ -676,9 +658,7 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
@@ -725,9 +705,7 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
@@ -775,9 +753,7 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
@@ -826,9 +802,7 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             CustomizedProduct cp2 = new CustomizedProduct("#619", "Sherfu", custMaterial1, customizedDimensions, product);
@@ -875,9 +849,7 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
