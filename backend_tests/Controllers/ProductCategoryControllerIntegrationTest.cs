@@ -42,8 +42,6 @@ namespace backend_tests.Controllers
         {
             var response = await client.GetAsync(baseUrl);
 
-            var bodyContent = response.Content.ReadAsStringAsync();
-
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
