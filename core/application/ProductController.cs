@@ -13,6 +13,10 @@ namespace core.application {
     /// </summary>
     public class ProductController {
         /// <summary>
+        /// Constant that represents the message that occurs if the user does not provide inputs
+        /// </summary>
+        private const string LIST_OF_INPUTS_MISSING = "The selected algorithm requires inputs!";
+        /// <summary>
         /// Constant that represents the message that occures if the materials being fetched 
         /// are invalid
         /// </summary>
@@ -330,12 +334,7 @@ namespace core.application {
                     productRepository.update(product);
                     return restDTO;
                 }
-                List<InputDTO> inputDTOs = (List<InputDTO>)DTOUtils.parseToDTOS(inputs);
-                RestrictionDTO restrictionDTO = new RestrictionDTO();
-                restrictionDTO.algorithm = restDTO.algorithm;
-                restrictionDTO.description = restDTO.description;
-                restrictionDTO.inputs = inputDTOs;
-                return restrictionDTO;
+                throw new ArgumentException(LIST_OF_INPUTS_MISSING);
             } else {
                 ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
                 Product product = productRepository.find(productID);
