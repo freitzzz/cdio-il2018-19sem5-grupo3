@@ -283,7 +283,7 @@ namespace backend.Controllers {
         public ActionResult addMaterialToProduct(long id,[FromBody]AddComponentToProductDTO addMaterialToProductDTO){
             addMaterialToProductDTO.productID=id;
             try{
-                MaterialDTO materialDTO=new core.application.ProductController().addMaterialToProduct();
+                MaterialDTO materialDTO=new core.application.ProductController().addMaterialToProduct(addMaterialToProduct);
                 return Created(Request.Path,materialDTO);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
@@ -408,7 +408,7 @@ namespace backend.Controllers {
         public ActionResult addComponentToProduct(long id,[FromBody]AddComponentToProductDTO addComponentToProductDTO){
             addComponentToProductDTO.productID=id;
             try{
-                ComponentDTO componentDTO=new core.application.ProductController().addProductComponent();
+                ComponentDTO componentDTO=new core.application.ProductController().addProductComponent(addComponentToProductDTO);
                 return Created(Request.Path,componentDTO);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
@@ -434,6 +434,7 @@ namespace backend.Controllers {
             deleteComponentFromProductDTO.componentID=componentID;
             try{
                 new core.application.ProductController().deleteComponentFromProduct(deleteComponentFromProductDTO);
+                return NoContent();
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
             }catch(InvalidOperationException invalidOperationException){
@@ -532,7 +533,7 @@ namespace backend.Controllers {
         public ActionResult addDimensionToProduct(long id,[FromBody]AddDimensionToProductDTO addDimensionToProductDTO){
             addDimensionToProductDTO.productID=id;
             try{
-                DimensionDTO dimensionDTO=new core.application.ProductController().addProductDimension();
+                DimensionDTO dimensionDTO=new core.application.ProductController().addProductDimension(addDimensionToProductDTO);
                 return Created(Request.Path,dimensionDTO);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
@@ -558,6 +559,7 @@ namespace backend.Controllers {
             deletedDimensionFromProductDTO.dimensionID=dimensionID;
             try{
                 new core.application.ProductController().deleteDimensionFromProduct(deleteMaterialFromProduct);
+                return NoContent();
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
             }catch(InvalidOperationException invalidOperationException){
