@@ -114,7 +114,7 @@ namespace core.application{
         public bool disableCustomizedProductCollection(CustomizedProductCollectionDTO customizedProductCollectionDTO){
             CustomizedProductCollectionRepository customizedProductCollectionRepository=PersistenceContext.repositories().createCustomizedProductCollectionRepository();
             CustomizedProductCollection customizedProductCollection=customizedProductCollectionRepository.find(customizedProductCollectionDTO.id);
-            return customizedProductCollection!=null && customizedProductCollection.disable() && customizedProductCollectionRepository.update(customizedProductCollection)!=null;
+            return customizedProductCollection!=null && customizedProductCollection.deactivate() && customizedProductCollectionRepository.update(customizedProductCollection)!=null;
         }
     }
 }

@@ -66,7 +66,7 @@ namespace core.application
         public bool disableMaterial(MaterialDTO materialDTO)
         {
             Material materialBeingDisabled = PersistenceContext.repositories().createMaterialRepository().find(materialDTO.id);
-            return materialBeingDisabled != null && materialBeingDisabled.disable();
+            return materialBeingDisabled != null && materialBeingDisabled.deactivate();
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace core.application
         {
             MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
             Material materialBeingRemoved = materialRepository.find(materialDTO.id);
-            return materialBeingRemoved != null && materialBeingRemoved.disable() && materialRepository.update(materialBeingRemoved) != null;
+            return materialBeingRemoved != null && materialBeingRemoved.deactivate() && materialRepository.update(materialBeingRemoved) != null;
         }
 
         /// <summary>

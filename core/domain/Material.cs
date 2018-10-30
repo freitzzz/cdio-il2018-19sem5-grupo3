@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using core.dto;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using support.domain;
 
 namespace core.domain {
     /**
@@ -17,7 +18,7 @@ namespace core.domain {
     </summary>
     <typeparam name = "string">Generic-Type of the Material entity identifier</typeparam>
     */
-    public class Material : AggregateRoot<string>, DTOAble<MaterialDTO> {
+    public class Material : Activatable, AggregateRoot<string>, DTOAble<MaterialDTO> {
         /**
         <summary>
             Constant that represents the message that ocurrs if the Material's reference is not valid.
@@ -74,11 +75,6 @@ namespace core.domain {
         private List<Finish> _finishes;  //!private field used for lazy loading, do not use this for storing or fetching data
         public List<Finish> Finishes { get => LazyLoader.Load(this, ref _finishes); protected set => _finishes = value; }
 
-        /// <summary>
-        /// Boolean that controls if the current material is available or not
-        /// </summary>
-        public bool isAvailable { get; protected set; }
-
 
         /// <summary>
         /// Empty constructor used by ORM.
@@ -116,7 +112,6 @@ namespace core.domain {
             this.Finishes = new List<Finish>();
             this.Colors.AddRange(colors);
             this.Finishes.AddRange(finishes);
-            isAvailable = true;
         }
 
         /**
@@ -154,15 +149,6 @@ namespace core.domain {
             return true;
         }
 
-        /// <summary>
-        /// Disables the current material
-        /// </summary>
-        /// <returns>boolean true if the material was disabled with success, false if not</returns>
-        public bool disable() {
-            if (!isAvailable) return false;
-            isAvailable = false;
-            return true;
-        }
         /**
         <summary>
             Returns the Material's identity.

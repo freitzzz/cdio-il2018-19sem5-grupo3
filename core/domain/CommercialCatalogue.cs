@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using core.dto;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Linq;
+using support.domain;
 
 namespace core.domain
 {
@@ -16,7 +17,7 @@ namespace core.domain
     ///</summary>
     ///<typeparam name = "string">Generic-Type of the CommercialCatalogue entity identifier</typeparam>
 
-    public class CommercialCatalogue : AggregateRoot<string>, DTOAble<CommercialCatalogueDTO>
+    public class CommercialCatalogue : Activatable, AggregateRoot<string>, DTOAble<CommercialCatalogueDTO>
     {
 
         ///<summary>

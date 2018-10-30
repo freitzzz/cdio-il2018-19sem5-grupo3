@@ -243,7 +243,7 @@ namespace core.application{
         public bool disableProduct(ProductDTO productDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productBeingDisabled=productRepository.find(productDTO.id);
-            return productBeingDisabled!=null && productBeingDisabled.disable() && productRepository.update(productBeingDisabled)!=null;
+            return productBeingDisabled!=null && productBeingDisabled.deactivate() && productRepository.update(productBeingDisabled)!=null;
         }
 
         /// <summary>
@@ -254,7 +254,7 @@ namespace core.application{
         public bool removeProduct(ProductDTO productDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productBeingRemoved=productRepository.find(productDTO.id);
-            return productBeingRemoved!=null && productBeingRemoved.disable() && productRepository.update(productBeingRemoved)!=null;
+            return productBeingRemoved!=null && productBeingRemoved.deactivate() && productRepository.update(productBeingRemoved)!=null;
         }
 
         /// <summary>

@@ -6,6 +6,7 @@ using core.dto;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using support.domain;
 
 namespace core.domain
 {
@@ -14,7 +15,7 @@ namespace core.domain
     /// Class used for categorizing all the available products.
     /// </summary>
     /// <typeparam name="string">ProductCategory's identifier</typeparam>
-    public class ProductCategory : AggregateRoot<string>, DTOAble<ProductCategoryDTO>
+    public class ProductCategory : Activatable, AggregateRoot<string>, DTOAble<ProductCategoryDTO>
     {
         /// <summary>
         /// Constant that represents the message being presented when a ProductCategory with an empty name is attempted to be created. 
@@ -36,11 +37,6 @@ namespace core.domain
         /// </summary>
         /// <value></value>
         public long Id { get; internal set; } //the id should have an internal set, since DTO's have to be able to set them
-
-        /// <summary>
-        /// Boolean that represents the ProductCategory's state (for soft delete purposes)
-        /// </summary>
-        public bool active { get; protected set; }
 
         /// <summary>
         /// The ProductCategory's name e.g.: "Shelves", Drawers", "Handles".
@@ -90,7 +86,7 @@ namespace core.domain
                 throw new ArgumentException(ERROR_EMPTY_NAME);
             }
             this.name = name;
-            this.active = true;
+            this.activated = true;
         }
 
         /// <summary>
@@ -145,23 +141,7 @@ namespace core.domain
         /// <returns>true if the ProductCategory is active, false if not</returns>
         public bool isActive()
         {
-            return this.active == true;
-        }
-
-        /// <summary>
-        /// Deactivates the ProductCategory
-        /// </summary>
-        public void deactivate()
-        {
-            this.active = false;
-        }
-
-        /// <summary>
-        /// Activates the ProductCategory
-        /// </summary>
-        public void activate()
-        {
-            this.active = true;
+            return this.activated == true;
         }
 
         public override bool Equals(object obj)
