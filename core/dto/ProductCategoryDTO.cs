@@ -26,19 +26,10 @@ namespace core.dto
         [DataMember]
         public string name { get; set; }
 
-        /// <summary>
-        /// ProductCategory's parent ID.
-        /// </summary>
-        /// <value>Gets/sets the value of the ID.</value>
-        [DataMember(EmitDefaultValue = false)]
-        public long? parentId { get; set; }
-
         public ProductCategory toEntity()
         {
             ProductCategory category = new ProductCategory(this.name);
             category.Id = id;
-            category.parentId = parentId;
-
             return category;
         }
     }

@@ -63,13 +63,14 @@ namespace core.domain
         /// Injected LazyLoader.
         /// </summary>
         /// <value>Gets/Sets the value of the LazyLoader</value>
-        private ILazyLoader LazyLoader {get; set;}
+        private ILazyLoader LazyLoader { get; set; }
 
         /// <summary>
         /// Constructor used for injecting the LazyLoader.
         /// </summary>
         /// <param name="lazyLoader">LazyLoader being injected.</param>
-        private ProductCategory(ILazyLoader lazyLoader){
+        private ProductCategory(ILazyLoader lazyLoader)
+        {
             this.LazyLoader = lazyLoader;
         }
 
@@ -214,8 +215,6 @@ namespace core.domain
         public ProductCategoryDTO toDTO()
         {
             ProductCategoryDTO dto = new ProductCategoryDTO();
-
-            dto.parentId = parentId;
             dto.id = Id;
             dto.name = name;
 
