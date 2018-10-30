@@ -73,7 +73,6 @@ namespace backend_tests.Controllers
             ProductCategoryDTO expected = new ProductCategoryDTO() { name = categoryName };
 
             Assert.Equal(expected.name, actual.name);
-            Assert.Equal(expected.parentId, actual.parentId);
         }
 
 
