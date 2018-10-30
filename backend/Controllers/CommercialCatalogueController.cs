@@ -223,16 +223,15 @@ namespace backend.Controllers
         ///         <br>HTTP Response 400 Bad Request if an error occured while creating the commercialCatalogue
         ///         <br>See MyC REST API documentation for a better overview
         /// </returns>
-        [HttpPut("{id}/collections")]
-        public ActionResult<CommercialCatalogueDTO> updateCollection(long id, [FromBody]UpdateCommercialCatalogueDTO updateCatalogueCollectionDTO)
+        [HttpPost("{id}/collections")]
+        public ActionResult<CommercialCatalogueDTO> addCollection(long id,[FromBody]List<CatalogueCollectionDTO> catalogueCollectionDTOToAdd)
         {
             logger.LogInformation(LOG_PUT_START);
             try
             {
-                updateCatalogueCollectionDTO.id = id;
-                if (new core.application.CommercialCatalogueController().updateCollection(updateCatalogueCollectionDTO))
+                if (new core.application.CommercialCatalogueController().addCollection(id,catalogueCollectionDTOToAdd))
                 {
-                    logger.LogInformation(LOG_PUT_SUCCESS,id,updateCatalogueCollectionDTO);
+                    logger.LogInformation(LOG_PUT_SUCCESS,id,catalogueCollectionDTOToAdd);
                     return Ok(new SimpleJSONMessageService(VALID_COMMERCIAL_CATALOGUE_UPDATE_MESSAGE));
                 }
                 else
@@ -242,17 +241,17 @@ namespace backend.Controllers
             }
             catch (NullReferenceException nullReferenceException)
             {
-                logger.LogWarning(nullReferenceException,LOG_PUT_BAD_REQUEST,id,updateCatalogueCollectionDTO);
+                logger.LogWarning(nullReferenceException,LOG_PUT_BAD_REQUEST,id,catalogueCollectionDTOToAdd);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
             catch (InvalidOperationException invalidOperationException)
             {
-                logger.LogWarning(invalidOperationException,LOG_PUT_BAD_REQUEST,id,updateCatalogueCollectionDTO);
+                logger.LogWarning(invalidOperationException,LOG_PUT_BAD_REQUEST,id,catalogueCollectionDTOToAdd);
                 return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
             }
             catch (ArgumentException argumentException)
             {
-                logger.LogWarning(argumentException,LOG_PUT_BAD_REQUEST,id,updateCatalogueCollectionDTO);
+                logger.LogWarning(argumentException,LOG_PUT_BAD_REQUEST,id,catalogueCollectionDTOToAdd);
                 return BadRequest(new SimpleJSONMessageService(argumentException.Message));
             }
         }
