@@ -295,6 +295,28 @@ namespace backend.Controllers {
         }
 
         /// <summary>
+        /// Deletes a material from a product
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which material will be deleted from</param>
+        /// <param name="dimensionID">Long with the material resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the material was deleted with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the material
+        /// </returns>
+        [HttpDelete("{productID}/materials/{materialID}")]
+        public ActionResult deleteMaterialFromProduct(long productID,long materialID){
+            DeleteMaterialFromProductDTO deleteMaterialFromProductDTO=new DeleteMaterialFromProductDTO();
+            deleteMaterialFromProductDTO.productID=productID;
+            deleteMaterialFromProductDTO.materialID=dimensionID;
+            try{
+                new core.application.ProductController().deleteMaterialFromProduct(deleteMaterialFromProductDTO);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+
+        /// <summary>
         /// Updates the components which a product can be complemented with
         /// </summary>
         /// <param name="updateProductData">UpdateProductDTO with the information of the product being updated</param>
@@ -345,6 +367,28 @@ namespace backend.Controllers {
         }
 
         /// <summary>
+        /// Deletes a component from a product
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which component will be deleted from</param>
+        /// <param name="componentID">Long with the component resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the component was deleted with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the component
+        /// </returns>
+        [HttpDelete("{productID}/components/{componentID}")]
+        public ActionResult deleteComponentFromProduct(long productID,long componentID){
+            DeleteComponentFromProductDTO deleteComponentFromProductDTO=new DeleteComponentFromProductDTO();
+            deleteComponentFromProductDTO.productID=productID;
+            deleteComponentFromProductDTO.componentID=componentID;
+            try{
+                new core.application.ProductController().deleteComponentFromProduct(deleteComponentFromProductDTO);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+
+        /// <summary>
         /// Updates the dimensions of a product
         /// </summary>
         /// <param name="updateProductData">UpdateProductDTO with the information of the product being updated</param>
@@ -391,6 +435,28 @@ namespace backend.Controllers {
                 return BadRequest(invalidOperationException.Message);
             }catch(ArgumentException argumentException){
                 return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a dimension from a product
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which dimension will be deleted from</param>
+        /// <param name="dimensionID">Long with the dimension resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the dimension was deleted with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the dimension
+        /// </returns>
+        [HttpDelete("{productID}/materials/{dimensionID}")]
+        public ActionResult deleteDimensionFromProduct(long productID,long dimensionID){
+            DeleteDimensionFromProductDTO deletedDimensionFromProductDTO=new DeleteDimensionFromProductDTO();
+            deletedDimensionFromProductDTO.productID=productID;
+            deletedDimensionFromProductDTO.dimensionID=dimensionID;
+            try{
+                new core.application.ProductController().deleteDimensionFromProduct(deleteMaterialFromProduct);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
             }
         }
 
