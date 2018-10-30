@@ -77,11 +77,15 @@ namespace core_tests.domain {
 
             List<Color> colors = new List<Color>();
             Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
+            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             colors.Add(color);
+            colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
             Finish finish = Finish.valueOf("Amém");
+            Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
+            finishes.Add(finish2);
 
             Material material = new Material(reference, designation, colors, finishes);
             List<Material> materials = new List<Material>();
@@ -93,8 +97,6 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
 
 
@@ -134,11 +136,15 @@ namespace core_tests.domain {
 
             List<Color> colors = new List<Color>();
             Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
+            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             colors.Add(color);
+            colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
             Finish finish = Finish.valueOf("Amém");
+            Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
+            finishes.Add(finish2);
 
             Material material = new Material(reference, designation, colors, finishes);
             List<Material> materials = new List<Material>();
@@ -150,8 +156,6 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
 
 
@@ -193,11 +197,15 @@ namespace core_tests.domain {
 
             List<Color> colors = new List<Color>();
             Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
+            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
             colors.Add(color);
+            colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
             Finish finish = Finish.valueOf("Amém");
+            Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
+            finishes.Add(finish2);
 
             Material material = new Material(reference, designation, colors, finishes);
             List<Material> materials = new List<Material>();
@@ -209,8 +217,6 @@ namespace core_tests.domain {
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
 
 

@@ -230,11 +230,15 @@ namespace core_tests.domain
 
             List<Color> colors = new List<Color>();
             Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
+            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
             colors.Add(color);
+            colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
             Finish finish = Finish.valueOf("Prayin'");
+            Finish finish2 = Finish.valueOf("Estragado");
             finishes.Add(finish);
+            finishes.Add(finish2);
 
             Material material = new Material(reference, designation, colors, finishes);
             List<Material> materials = new List<Material>();
@@ -246,9 +250,7 @@ namespace core_tests.domain
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
-            Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
 
 
             CustomizedProduct cp = new CustomizedProduct("Mushrooms", "Are deadly", mat, customizedDimensions, product);
@@ -382,11 +384,15 @@ namespace core_tests.domain
 
             List<Color> colors = new List<Color>();
             Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
+            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
             colors.Add(color);
+            colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
             Finish finish = Finish.valueOf("Prayin'");
+            Finish finish2 = Finish.valueOf("Estragado");
             finishes.Add(finish);
+            finishes.Add(finish2);
 
             Material material = new Material(reference, designation, colors, finishes);
             List<Material> materials = new List<Material>();
@@ -398,9 +404,8 @@ namespace core_tests.domain
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
-            Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(material, color1, finish2);
+            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
+
 
 
             return new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);

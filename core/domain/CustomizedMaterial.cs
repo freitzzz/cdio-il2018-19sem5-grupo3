@@ -114,8 +114,8 @@ namespace core.domain
         private CustomizedMaterial(Material material, Color color, Finish finish)
         {
             checkCustomizedMaterialMaterial(material);
-            checkCustomizedMaterialColor(color);
-            checkCustomizedMaterialFinish(finish);
+            checkCustomizedMaterialColor(material, color);
+            checkCustomizedMaterialFinish(material, finish);
             this.material = material;
             this.color = color;
             this.finish = finish;
@@ -129,7 +129,7 @@ namespace core.domain
         private CustomizedMaterial(Material material, Color color)
         {
             checkCustomizedMaterialMaterial(material);
-            checkCustomizedMaterialColor(color);
+            checkCustomizedMaterialColor(material, color);
             this.material = material;
             this.color = color;
             this.finish = null;
@@ -143,7 +143,7 @@ namespace core.domain
         private CustomizedMaterial(Material material, Finish finish)
         {
             checkCustomizedMaterialMaterial(material);
-            checkCustomizedMaterialFinish(finish);
+            checkCustomizedMaterialFinish(material, finish);
             this.material = material;
             this.finish = finish;
             this.color = null;
@@ -155,24 +155,26 @@ namespace core.domain
         ///<param name = "material">The CustomizedMaterial's material</param>
         private void checkCustomizedMaterialMaterial(Material material)
         {
-            if (material == null|| String.IsNullOrEmpty(material.ToString())) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_MATERIAL);
+            if (material == null) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_MATERIAL);
         }
         ///<summary>
         ///Checks if the CustomizedMaterial's color is valid.
         ///</summary>
         ///<param name = "color">The CustomizedMaterial's color</param>
-        private void checkCustomizedMaterialColor(Color color)
+        private void checkCustomizedMaterialColor(Material material, Color color)
         {
-            if (color == null || String.IsNullOrEmpty(color.ToString())) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_COLOR);
+             if (color == null) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_COLOR);
+            if (!material.hasColor(color)) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_COLOR);
         }
 
         ///<summary>
         ///Checks if the CustomizedMaterial's finish is valid.
         ///</summary>
         ///<param name = "finish">The CustomizedMaterial's finish</param>
-        private void checkCustomizedMaterialFinish(Finish finish)
+        private void checkCustomizedMaterialFinish(Material material, Finish finish)
         {
-            if (finish == null || String.IsNullOrEmpty(finish.ToString())) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_FINISH);
+            if (finish == null) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_FINISH);
+            if (!material.hasFinish(finish)) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_FINISH);
         }
 
         ///<summary>
@@ -180,7 +182,7 @@ namespace core.domain
         ///</summary>
         public override string ToString()
         {
-            return string.Format("Material: {0}, Color: {1}, Finish {2}",material ,  color, finish);
+            return string.Format("Material: {0}, Color: {1}, Finish {2}", material, color, finish);
         }
 
         ///<summary>
@@ -202,6 +204,12 @@ namespace core.domain
         ///<param name = "obj">object to compare to the current Customized Material</param>
         public override bool Equals(object obj)
         {
+
+            if (this == obj)
+            {
+                return true;
+            }
+
             //Check for null and compare run-time types.
             if ((obj == null) || !this.GetType().Equals(obj.GetType()))
             {
@@ -210,9 +218,21 @@ namespace core.domain
             else
             {
                 CustomizedMaterial configMaterial = (CustomizedMaterial)obj;
+
+                if (this.color != null && configMaterial.color != null && configMaterial.finish == null)
+                {
+                    return material.Equals(configMaterial.material) && color.Equals(configMaterial.color);
+                }
+
+                if (configMaterial.color == null && configMaterial.finish != null && this.finish != null)
+                {
+                    return material.Equals(configMaterial.material) && finish.Equals(configMaterial.finish);
+                }
+
                 return material.Equals(configMaterial.material) && finish.Equals(configMaterial.finish) && color.Equals(configMaterial.color);
             }
         }
+
         /// <summary>
         /// Returns the DTO equivalent of the current instance
         /// </summary>
@@ -226,6 +246,5 @@ namespace core.domain
             dto.finish = this.finish.toDTO();
             return dto;
         }
-
     }
 }
