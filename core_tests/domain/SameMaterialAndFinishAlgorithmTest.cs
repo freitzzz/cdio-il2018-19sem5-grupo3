@@ -57,14 +57,17 @@ namespace core_tests.domain {
         [Fact]
         public void ensureApplyReturnsNullIfComponentDoesNotHaveRequiredFinish() {
             Console.WriteLine("ensureApplyReturnsNullIfComponentDoesNotHaveRequiredFinish");
-            Material material = new Material("#24", "K6205", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht"), Finish.valueOf("schrödinger's box") }));
+            Color color = Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100);
+            Finish finish = Finish.valueOf("der alte wurfelt nicht");
+            Material material = new Material("#24", "K6205", new List<Color>(new[] { color }), new List<Finish>(new[] { finish, Finish.valueOf("schrödinger's box") }));
+            Material otherMaterial = new Material("#24", "K6205", new List<Color>(new[] { color }), new List<Finish>(new[] { Finish.valueOf("schrödinger's box") }));
             ProductCategory cat = new ProductCategory("AI");
             DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 90.0, 100.0, 150.0 }));
             List<Dimension> dimensions = new List<Dimension>();
             dimensions.Add(discrete);
             Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
-            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
-            CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("alea jacta est")), CustomizedDimensions.valueOf(100, 100, 100), product);
+            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", cat, new List<Material>(new[] { otherMaterial }), dimensions, dimensions, dimensions);
+            CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, color,finish), CustomizedDimensions.valueOf(100, 100, 100), product);
             Algorithm algorithm = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
             Assert.Null(algorithm.apply(custom, component));
         }
