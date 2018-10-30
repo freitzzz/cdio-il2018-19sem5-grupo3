@@ -111,6 +111,24 @@ namespace core.application{
         }
 
         /// <summary>
+        /// Adds a material to a product
+        /// </summary>
+        /// <param name="addComponentToProductDTO">AddMaterialToProductDTO with the material addition information</param>
+        /// <returns>MaterialDTO with the material that was added to the product</returns>
+        public MaterialDTO addMaterialToProduct(AddMaterialToProductDTO addMaterialToProductDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productToAddMaterial=productRepository.find(addMaterialToProductDTO.productID);
+            //TODO:CHECK PRODUCT EXISTENCE
+            Material materialBeingAdded=PersistenceContext.repositories().createMaterialRepository().find(addMaterialToProductDTO.materialID);
+            //TODO:CHECK MATERIAL EXISTENCE
+            productToAddMaterial.addMaterial(materialBeingAdded);
+            //TODO:CHECK PRODUCT UPDATE SUCCESS
+            productRepository.update(productToAddMaterial);
+            //TODO:REPLACE toDTO() WITH MODEL VIEW DTO (MaterialDetailsDTO)
+            return materialBeingAdded.toDTO();
+        }
+
+        /// <summary>
         /// Updates the components of a product
         /// </summary>
         /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
@@ -146,6 +164,25 @@ namespace core.application{
 
             updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
+        }
+
+        /// <summary>
+        /// Adds a component to a product
+        /// </summary>
+        /// <param name="addComponentToProductDTO">AddComponentToProductDTO with the component addition information</param>
+        /// <returns>ComponentDTO with the component that was added to the product</returns>
+        public ComponentDTO addComponentToProduct(AddComponentToProductDTO addComponentToProductDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productToAddComponent=productRepository.find(addComponentToProductDTO.productID);
+            //TODO:CHECK PRODUCT EXISTENCE
+            Product componentBeingAdded=productRepository.find(addComponentToProductDTO.complementedProductID);
+            //TODO:CHECK COMPLEMENTED PRODUCT EXISTENCE
+            productToAddComponent.addComplementedProduct(componentBeingAdded);
+            //TODO:CHECK PRODUCT UPDATE SUCCESS
+            productRepository.update(productToAddComponent);
+            //TODO:REPLACE WITH MODEL VIEW DTO (ComponentDetailsDTO)
+            //return componentBeingAdded.toDTO();
+            return null;
         }
 
         /// <summary>
@@ -213,6 +250,30 @@ namespace core.application{
 
             updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
+        }
+
+        /// <summary>
+        /// Adds a dimension to a product
+        /// </summary>
+        /// <param name="addDimensionToProductDTO">AddDimensionToProductDTO with the dimension addition information</param>
+        /// <returns>DimensionDTO with the dimension that was added to the product</returns>
+        public DimensionDTO addDimensionToProduct(AddDimensionToProductDTO addDimensionToProductDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productToAddMaterial=productRepository.find(addDimensionToProductDTO.productID);
+            //TODO:CHECK PRODUCT EXISTENCE
+            
+            if(addDimensionToProductDTO.widthDimension!=null){
+                productToAddMaterial.addWidthDimension(addDimensionToProductDTO.widthDimension.toEntity());
+            }else if(addDimensionToProductDTO.heightDimension!=null){
+                productToAddMaterial.addHeightDimension(addDimensionToProductDTO.heightDimension.toEntity());
+            }else{
+                productToAddMaterial.addDepthDimension(addDimensionToProductDTO.depthDimension.toEntity());
+            }
+            
+            //TODO:CHECK PRODUCT UPDATE SUCCESS
+            productRepository.update(productToAddMaterial);
+            //TODO:REPLACE WITH MODEL VIEW DTO (DimensionsDetailsDTO)
+            return null;
         }
 
         /// <summary>
