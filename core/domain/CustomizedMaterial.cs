@@ -163,8 +163,8 @@ namespace core.domain
         ///<param name = "color">The CustomizedMaterial's color</param>
         private void checkCustomizedMaterialColor(Material material, Color color)
         {
+             if (color == null) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_COLOR);
             if (!material.hasColor(color)) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_COLOR);
-            if (color == null) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_COLOR);
         }
 
         ///<summary>
@@ -173,8 +173,8 @@ namespace core.domain
         ///<param name = "finish">The CustomizedMaterial's finish</param>
         private void checkCustomizedMaterialFinish(Material material, Finish finish)
         {
-            if (!material.hasFinish(finish)) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_FINISH);
             if (finish == null) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_FINISH);
+            if (!material.hasFinish(finish)) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_FINISH);
         }
 
         ///<summary>
