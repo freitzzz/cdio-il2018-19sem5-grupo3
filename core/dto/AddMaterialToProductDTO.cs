@@ -7,9 +7,14 @@ namespace core.dto{
     /// </summary>
     public sealed class AddMaterialToProductDTO{
         /// <summary>
+        /// Long with the resource ID of the product which will be complemented
+        /// </summary>
+        public long productID{get;set;}
+
+        /// <summary>
         /// Long with the resource ID of the material being added
         /// </summary>
         [DataMember(Name="id")]
-        public long id{get;set;}
+        public long materialID{get;set;}
     }
 }

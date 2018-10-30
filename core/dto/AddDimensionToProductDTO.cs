@@ -7,6 +7,11 @@ namespace core.dto{
     /// </summary>
     public sealed class AddDimensionToProductDTO{
         /// <summary>
+        /// Long with the resource ID of the product which will be complemented
+        /// </summary>
+        public long productID{get;set;}
+        
+        /// <summary>
         /// DimensionDTO with the width dimension which will be added to the product
         /// </summary>
         [DataMember(Name="widthDimension")]
