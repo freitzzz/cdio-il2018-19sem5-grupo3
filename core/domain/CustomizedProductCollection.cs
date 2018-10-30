@@ -145,7 +145,7 @@ namespace core.domain
         /// <returns>true if the CustomizedProductCollection contains the CustomizedProduct; otherwise, false.</returns>
         public bool hasCustomizedProduct(CustomizedProduct customizedProduct)
         {
-            return collectionProducts.Select(cp => cp.customizedProduct).Contains(customizedProduct);
+            return customizedProduct != null && collectionProducts.Select(cp => cp.customizedProduct).Contains(customizedProduct);
         }
 
         /// <summary>
