@@ -811,7 +811,7 @@ namespace core_tests.domain
             Assert.Throws<ArgumentException>(() => new CommercialCatalogue("Goodbye", "See you later", list));
         }
 
-        /* //addCustomizedProduct tests
+        /* //addCollection tests
 
         /**
         <summary>
@@ -819,7 +819,7 @@ namespace core_tests.domain
         </summary>
        */
         [Fact]
-        public void ensureAlreadyExistentCustProductCollectionCannotBeAdded()
+        public void ensureAlreadyExistCollectionCannotBeAdded()
         {
             Console.WriteLine("ensureAlreadyExistentCustProducCannotBeAdded");
 
@@ -871,67 +871,69 @@ namespace core_tests.domain
 
             Assert.False(comCatalogue.addCollection(catalogueCollection));
         }
-
-        //     /**
-        //     <summary>
-        //         Test to ensure that a null collection cannot be added to the CommercialCatalogue's list of customizedProduct.
-        //     </summary>
-        //    */
-        //     [Fact]
-        //     public void ensureNullCollectionCannotBeAddedProducts()
-        //     {
-        //         Console.WriteLine("ensureNullCollectionCannotBeAddedProducts");
-
-        //         List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-        //         Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-        //         Finish finish = Finish.valueOf("Acabamento polido");
-        //         CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
-        //         CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
-
-        //         ProductCategory prodCat = new ProductCategory("Category 1");
-        //         List<Double> values2 = new List<Double>();
-        //         values2.Add(500.0); //Width
-        //         DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-        //         List<Dimension> valuest = new List<Dimension>();
-        //         valuest.Add(d2);
-        //         IEnumerable<Dimension> heightDimensions = valuest;
-        //         IEnumerable<Dimension> widthDimensions = valuest;
-        //         IEnumerable<Dimension> depthDimensions = valuest;
-        //         List<Color> colors = new List<Color>();
-        //         colors.Add(color);
-
-        //         List<Finish> finishes = new List<Finish>();
-        //         finishes.Add(finish);
-
-        //         Material material = new Material("1234", "Material", colors, finishes);
-        //         List<Material> listMaterial = new List<Material>();
-        //         listMaterial.Add(material);
-        //         IEnumerable<Material> materials = listMaterial;
-        //         Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-        //         CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
-        //         custoProducts.Add(custProduct);
-        //         List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-        //         CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-        //         listCollection.Add(custProCollection);
-
-
-        //          List<CatalogueCollection> list = new List<CatalogueCollection>();
-        //         List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-        //         listCustomizedProducts.Add(custProduct);
-        //         CatalogueCollection catalogueCollection = new CatalogueCollection(listCustomizedProducts, custProCollection);
-        //         list.Add(catalogueCollection);
-
-        //         listCollection.Add(custProCollection);
-
-        //         CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
-        //         Assert.False(comCatalogue.addCustomizedProductToCollection(null, custProduct));
-        //     }
         /**
         <summary>
-            Test to ensure that a null collection cannot be added to the CommercialCatalogue's.
+            Test to ensure that an Collections can be added to the CommercialCataloguev's list of customizedProduct.
         </summary>
        */
+        [Fact]
+        public void ensureaddCollectionCanBeAdded()
+        {
+            Console.WriteLine("ensureaddCollectionCanBeAdded");
+
+            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+
+            ProductCategory prodCat = new ProductCategory("Category 1");
+            List<Double> values2 = new List<Double>();
+            values2.Add(500.0); //Width
+            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            List<Dimension> valuest = new List<Dimension>();
+            valuest.Add(d2);
+            IEnumerable<Dimension> heightDimensions = valuest;
+            IEnumerable<Dimension> widthDimensions = valuest;
+            IEnumerable<Dimension> depthDimensions = valuest;
+
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+
+            Material material = new Material("1234", "Material", colors, finishes);
+            List<Material> listMaterial = new List<Material>();
+            listMaterial.Add(material);
+            IEnumerable<Material> materials = listMaterial;
+            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            custoProducts.Add(custProduct);
+            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
+            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
+            listCollection.Add(custProCollection);
+
+
+            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
+            listCustomizedProducts.Add(custProduct);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
+
+
+            listCollection.Add(custProCollection);
+
+            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One");
+
+
+
+            Assert.True(comCatalogue.addCollection(catalogueCollection));
+        }
+
+        ///<summary>
+        /// Test to ensure that a null collection cannot be added to the CommercialCatalogue's.
+        ///</summary>
+
         [Fact]
         public void ensureNullCollectionCannotBeAdded()
         {
@@ -981,407 +983,278 @@ namespace core_tests.domain
             CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
             Assert.False(comCatalogue.addCollection(null));
         }
-
-
-        //     /**
-        //     <summary>
-        //         Test to ensure that a valid customizedProduct can be added to the CommercialCatalogue's list of customizedProduct.
-        //     </summary>
-        //    */
-        //     [Fact]
-        //     public void ensureValidCustProducCanBeAdded()
-        //     {
-        //         Console.WriteLine("ensureValidCustProducCanBeAdded");
-
-
-        //         Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-        //         Finish finish = Finish.valueOf("Acabamento polido");
-        //         CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
-
-        //         CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
-
-        //         ProductCategory prodCat = new ProductCategory("Category 1");
-        //         List<Double> values2 = new List<Double>();
-        //         values2.Add(500.0); //Width
-        //         DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-        //         List<Dimension> valuest = new List<Dimension>();
-        //         valuest.Add(d2);
-        //         IEnumerable<Dimension> heightDimensions = valuest;
-        //         IEnumerable<Dimension> widthDimensions = valuest;
-        //         IEnumerable<Dimension> depthDimensions = valuest;
-        //         List<Color> colors = new List<Color>();
-        //         colors.Add(color);
-
-        //         List<Finish> finishes = new List<Finish>();
-        //         finishes.Add(finish);
-
-        //         Material material = new Material("1234", "Material", colors, finishes);
-        //         List<Material> listMaterial = new List<Material>();
-        //         listMaterial.Add(material);
-        //         IEnumerable<Material> materials = listMaterial;
-        //         Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-        //         List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-        //         CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
-
-        //         custoProducts.Add(custProduct);
-        //         List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-        //         CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-        //         listCollection.Add(custProCollection);
-
-        //         CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", listCollection);
-
-        //         Assert.True(comCatalogue.addCustomizedProductToCollection(custProCollection, new CustomizedProduct("566", "CustomizedProduct2", custMaterial, custDimensions, product)));
-        //     }
-
-        //     //removeCustomizedProduct tests
-
-        //     /**
-        //     <summary>
-        //         Test to ensure that a non-existent customizedProduct cannot be removed from the CommercialCatalogue's list of customizedProduct.
-        //     </summary>
-        //    */
-        //     [Fact]
-        //     public void ensureNonExistentCustProducCannotBeRemoved()
-        //     {
-        //         Console.WriteLine("ensureNonExistentCustProducCannotBeRemoved");
-
-        //         List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-        //         Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-        //         Finish finish = Finish.valueOf("Acabamento polido");
-        //         CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
-
-        //         CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
-
-        //         ProductCategory prodCat = new ProductCategory("Category 1");
-        //         List<Double> values2 = new List<Double>();
-        //         values2.Add(500.0); //Width
-        //         DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-        //         List<Dimension> valuest = new List<Dimension>();
-        //         valuest.Add(d2);
-        //         IEnumerable<Dimension> heightDimensions = valuest;
-        //         IEnumerable<Dimension> widthDimensions = valuest;
-        //         IEnumerable<Dimension> depthDimensions = valuest;
-        //         List<Color> colors = new List<Color>();
-        //         colors.Add(color);
-
-        //         List<Finish> finishes = new List<Finish>();
-        //         finishes.Add(finish);
-
-        //         Material material = new Material("1234", "Material", colors, finishes);
-        //         List<Material> listMaterial = new List<Material>();
-        //         listMaterial.Add(material);
-        //         IEnumerable<Material> materials = listMaterial;
-        //         Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-        //         CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
-
-        //         custoProducts.Add(custProduct);
-        //         List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-        //         CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-        //         listCollection.Add(custProCollection);
-
-        //         CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", listCollection);
-
-        //         Assert.False(comCatalogue.removeCustomizedProductFromCollection(custProCollection, new CustomizedProduct("Tira", "CustomizedProduct3", custMaterial, custDimensions, product)));
-        //     }
-        //     /**
-        //             <summary>
-        //                 Test to ensure that a non-existent collestion cannot be removed from the CommercialCatalogue's.
-        //             </summary>
-        //            */
-        //     [Fact]
-        //     public void ensureNonExistentCollectionCannotBeRemoved()
-        //     {
-        //         Console.WriteLine("ensureNonExistentCollectionCannotBeRemoved");
-
-        //         List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-        //         Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-        //         Finish finish = Finish.valueOf("Acabamento polido");
-        //         CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
-
-        //         CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
-
-        //         ProductCategory prodCat = new ProductCategory("Category 1");
-        //         List<Double> values2 = new List<Double>();
-        //         values2.Add(500.0); //Width
-        //         DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-        //         List<Dimension> valuest = new List<Dimension>();
-        //         valuest.Add(d2);
-        //         IEnumerable<Dimension> heightDimensions = valuest;
-        //         IEnumerable<Dimension> widthDimensions = valuest;
-        //         IEnumerable<Dimension> depthDimensions = valuest;
-        //         List<Color> colors = new List<Color>();
-        //         colors.Add(color);
-
-        //         List<Finish> finishes = new List<Finish>();
-        //         finishes.Add(finish);
-
-        //         Material material = new Material("1234", "Material", colors, finishes);
-        //         List<Material> listMaterial = new List<Material>();
-        //         listMaterial.Add(material);
-        //         IEnumerable<Material> materials = listMaterial;
-        //         Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-        //         CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
-
-        //         custoProducts.Add(custProduct);
-        //         List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-        //         CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-        //         listCollection.Add(custProCollection);
-
-        //         CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", listCollection);
-
-        //         Assert.False(comCatalogue.removeCollection(new CustomizedProductCollection("Collection2", custoProducts)));
-
-        //     }
-        //     /**
-        //     <summary>
-        //         Test to ensure that a existent collestion cannot be removed from the CommercialCatalogue's.
-        //     </summary>
-        //    */
-        //     [Fact]
-        //     public void ensureExistentCollectionCannotBeRemoved()
-        //     {
-        //         Console.WriteLine("ensureNonExistentCollectionCannotBeRemoved");
-
-        //         List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-        //         Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-        //         Finish finish = Finish.valueOf("Acabamento polido");
-        //         CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
-
-        //         CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
-
-        //         ProductCategory prodCat = new ProductCategory("Category 1");
-        //         List<Double> values2 = new List<Double>();
-        //         values2.Add(500.0); //Width
-        //         DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-        //         List<Dimension> valuest = new List<Dimension>();
-        //         valuest.Add(d2);
-        //         IEnumerable<Dimension> heightDimensions = valuest;
-        //         IEnumerable<Dimension> widthDimensions = valuest;
-        //         IEnumerable<Dimension> depthDimensions = valuest;
-        //         List<Color> colors = new List<Color>();
-        //         colors.Add(color);
-
-        //         List<Finish> finishes = new List<Finish>();
-        //         finishes.Add(finish);
-
-        //         Material material = new Material("1234", "Material", colors, finishes);
-        //         List<Material> listMaterial = new List<Material>();
-        //         listMaterial.Add(material);
-        //         IEnumerable<Material> materials = listMaterial;
-        //         Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-        //         CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
-
-        //         custoProducts.Add(custProduct);
-        //         List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-        //         CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-        //         listCollection.Add(custProCollection);
-
-        //         CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", listCollection);
-
-        //         Assert.False(comCatalogue.removeCollection(null));
-
-        //     }
-
-        //     /**
-        //     <summary>
-        //         Test to ensure that a null customizedProduct cannot be removed from the CommercialCatalogue's list of customizedProduct.
-        //     </summary>
-        //    */
-        //     [Fact]
-        //     public void ensureNullCustProducCannotBeRemoved()
-        //     {
-        //         Console.WriteLine("ensureNullCustProducCannotBeRemoved");
-
-        //         List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-        //         Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-        //         Finish finish = Finish.valueOf("Acabamento polido");
-        //         CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
-
-        //         CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
-
-        //         ProductCategory prodCat = new ProductCategory("Category 1");
-        //         List<Double> values2 = new List<Double>();
-        //         values2.Add(500.0); //Width
-        //         DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-        //         List<Dimension> valuest = new List<Dimension>();
-        //         valuest.Add(d2);
-        //         IEnumerable<Dimension> heightDimensions = valuest;
-        //         IEnumerable<Dimension> widthDimensions = valuest;
-        //         IEnumerable<Dimension> depthDimensions = valuest;
-        //         List<Color> colors = new List<Color>();
-        //         colors.Add(color);
-
-        //         List<Finish> finishes = new List<Finish>();
-        //         finishes.Add(finish);
-
-        //         Material material = new Material("1234", "Material", colors, finishes);
-        //         List<Material> listMaterial = new List<Material>();
-        //         listMaterial.Add(material);
-        //         IEnumerable<Material> materials = listMaterial;
-        //         Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-        //         CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
-
-        //         custoProducts.Add(custProduct);
-        //         List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-        //         CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-        //         listCollection.Add(custProCollection);
-        //         CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", listCollection);
-
-        //         Assert.False(comCatalogue.removeCustomizedProductFromCollection(null, custProduct));
-        //     }
-
-        // /**
-        //  <summary>
-        //      Test to ensure that a valid customizedProduct can be removed from the CommercialCatalogue's list of customizedProduct.
-        //  </summary>
-        // */
-        // [Fact]
-        // public void ensureValidCustProducCanBeRemoved()
-        // {
-        //     Console.WriteLine("ensureValidCustProducCanBeRemoved");
-
-        //     List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-        //     Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-        //     Finish finish = Finish.valueOf("Acabamento polido");
-        //     CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
-
-        //     CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
-
-        //     ProductCategory prodCat = new ProductCategory("Category 1");
-        //     List<Double> values2 = new List<Double>();
-        //     values2.Add(500.0); //Width
-        //     DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-        //     List<Dimension> valuest = new List<Dimension>();
-        //     valuest.Add(d2);
-        //     IEnumerable<Dimension> heightDimensions = valuest;
-        //     IEnumerable<Dimension> widthDimensions = valuest;
-        //     IEnumerable<Dimension> depthDimensions = valuest;
-        //     List<Color> colors = new List<Color>();
-        //     colors.Add(color);
-
-        //     List<Finish> finishes = new List<Finish>();
-        //     finishes.Add(finish);
-
-        //     Material material = new Material("1234", "Material", colors, finishes);
-        //     List<Material> listMaterial = new List<Material>();
-        //     listMaterial.Add(material);
-        //     IEnumerable<Material> materials = listMaterial;
-        //     Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-        //     CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
-
-        //     custoProducts.Add(custProduct);
-        //     List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-        //     CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-        //     listCollection.Add(custProCollection);
-        //     CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", listCollection);
-
-        //     Assert.True(comCatalogue.removeCustomizedProductFromCollection(custProCollection, custProduct));
-        // }
-
-        // //hasCustomizedProduct tests
-
-        // /**
-        // <summary>
-        //     Test to ensure that an existent customizedProduct is found in the CommercialCatalogue's list of customizedProduct.
-        // </summary>
-        // */
-        // [Fact]
-        // public void ensureValidCustoProductExists()
-        // {
-        //     Console.WriteLine("ensureValidCustoProductExists");
-
-        //     List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-        //     Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-        //     Finish finish = Finish.valueOf("Acabamento polido");
-        //     CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
-
-        //     CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
-
-        //     ProductCategory prodCat = new ProductCategory("Category 1");
-        //     List<Double> values2 = new List<Double>();
-        //     values2.Add(500.0); //Width
-        //     DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-        //     List<Dimension> valuest = new List<Dimension>();
-        //     valuest.Add(d2);
-        //     IEnumerable<Dimension> heightDimensions = valuest;
-        //     IEnumerable<Dimension> widthDimensions = valuest;
-        //     IEnumerable<Dimension> depthDimensions = valuest;
-        //     List<Color> colors = new List<Color>();
-        //     colors.Add(color);
-
-        //     List<Finish> finishes = new List<Finish>();
-        //     finishes.Add(finish);
-
-        //     Material material = new Material("1234", "Material", colors, finishes);
-        //     List<Material> listMaterial = new List<Material>();
-        //     listMaterial.Add(material);
-        //     IEnumerable<Material> materials = listMaterial;
-        //     Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-        //     CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
-
-        //     custoProducts.Add(custProduct);
-        //     List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-        //     CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-        //     listCollection.Add(custProCollection);
-
-        //     CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", listCollection);
-
-        //     Assert.True(comCatalogue.hasCollection(custProCollection));
-        // }
-
-        // /**
-        // <summary>
-        //     Test to ensure that a null customizedProduct is not found in the CommercialCatalogue's list of customizedProduct.
-        // </summary>
-        // */
-        // [Fact]
-        // public void ensureNullComCatalogueDoesNotExist()
-        // {
-        //     Console.WriteLine("ensureNullComCatalogueDoesNotExist");
-
-        //     List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-        //     Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-        //     Finish finish = Finish.valueOf("Acabamento polido");
-        //     CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(color, finish);
-
-        //     CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
-
-        //     ProductCategory prodCat = new ProductCategory("Category 1");
-        //     List<Double> values2 = new List<Double>();
-        //     values2.Add(500.0); //Width
-        //     DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-        //     List<Dimension> valuest = new List<Dimension>();
-        //     valuest.Add(d2);
-        //     IEnumerable<Dimension> heightDimensions = valuest;
-        //     IEnumerable<Dimension> widthDimensions = valuest;
-        //     IEnumerable<Dimension> depthDimensions = valuest;
-        //     List<Color> colors = new List<Color>();
-        //     colors.Add(color);
-
-        //     List<Finish> finishes = new List<Finish>();
-        //     finishes.Add(finish);
-        //     Material material = new Material("1234", "Material", colors, finishes);
-        //     List<Material> listMaterial = new List<Material>();
-        //     listMaterial.Add(material);
-        //     IEnumerable<Material> materials = listMaterial;
-        //     Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-        //     CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
-
-        //     custoProducts.Add(custProduct);
-        //     List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-        //     CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-        //     listCollection.Add(custProCollection);
-
-        //     CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", listCollection);
-
-        //     Assert.False(comCatalogue.hasCollection(null));
-        // }
+        /**
+                <summary>
+                    Test to ensure that a non-existent collestion cannot be removed from the CommercialCatalogue's.
+                </summary>
+               */
+        [Fact]
+        public void ensureNonExistentCollectionCannotBeRemoved()
+        {
+            Console.WriteLine("ensureNonExistentCollectionCannotBeRemoved");
+
+            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+
+
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+
+            ProductCategory prodCat = new ProductCategory("Category 1");
+            List<Double> values2 = new List<Double>();
+            values2.Add(500.0); //Width
+            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            List<Dimension> valuest = new List<Dimension>();
+            valuest.Add(d2);
+            IEnumerable<Dimension> heightDimensions = valuest;
+            IEnumerable<Dimension> widthDimensions = valuest;
+            IEnumerable<Dimension> depthDimensions = valuest;
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+
+            Material material = new Material("1234", "Material", colors, finishes);
+            List<Material> listMaterial = new List<Material>();
+            listMaterial.Add(material);
+            IEnumerable<Material> materials = listMaterial;
+            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+
+            custoProducts.Add(custProduct);
+            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
+            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
+            listCollection.Add(custProCollection);
+
+            List<CatalogueCollection> list = new List<CatalogueCollection>();
+            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
+            listCustomizedProducts.Add(custProduct);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
+            list.Add(catalogueCollection);
+
+            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
+
+            Assert.False(comCatalogue.removeCollection(new CatalogueCollection(custProCollection, listCustomizedProducts)));
+
+        }
+        /**
+        <summary>
+            Test to ensure that a existent collestion cannot be removed from the CommercialCatalogue's.
+        </summary>
+       */
+        [Fact]
+        public void ensureExistentCollectionCannotBeRemoved()
+        {
+            Console.WriteLine("ensureNonExistentCollectionCannotBeRemoved");
+
+            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+
+
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+
+            ProductCategory prodCat = new ProductCategory("Category 1");
+            List<Double> values2 = new List<Double>();
+            values2.Add(500.0); //Width
+            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            List<Dimension> valuest = new List<Dimension>();
+            valuest.Add(d2);
+            IEnumerable<Dimension> heightDimensions = valuest;
+            IEnumerable<Dimension> widthDimensions = valuest;
+            IEnumerable<Dimension> depthDimensions = valuest;
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+
+            Material material = new Material("1234", "Material", colors, finishes);
+            List<Material> listMaterial = new List<Material>();
+            listMaterial.Add(material);
+            IEnumerable<Material> materials = listMaterial;
+            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+
+            custoProducts.Add(custProduct);
+            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
+            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
+            listCollection.Add(custProCollection);
+            List<CatalogueCollection> list = new List<CatalogueCollection>();
+            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
+            listCustomizedProducts.Add(custProduct);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
+            list.Add(catalogueCollection);
+
+            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
+
+            Assert.False(comCatalogue.removeCollection(null));
+
+        }
+
+        //hasCollection tests
+
+        /**
+        <summary>
+            Test to ensure that an existent customizedProduct is found in the CommercialCatalogue's list of customizedProduct.
+        </summary>
+        */
+        [Fact]
+        public void ensureValidCollectionExists()
+        {
+            Console.WriteLine("ensureValidCollectionExists");
+
+            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+
+
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+
+            ProductCategory prodCat = new ProductCategory("Category 1");
+            List<Double> values2 = new List<Double>();
+            values2.Add(500.0); //Width
+            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            List<Dimension> valuest = new List<Dimension>();
+            valuest.Add(d2);
+            IEnumerable<Dimension> heightDimensions = valuest;
+            IEnumerable<Dimension> widthDimensions = valuest;
+            IEnumerable<Dimension> depthDimensions = valuest;
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+
+            Material material = new Material("1234", "Material", colors, finishes);
+            List<Material> listMaterial = new List<Material>();
+            listMaterial.Add(material);
+            IEnumerable<Material> materials = listMaterial;
+            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+
+            custoProducts.Add(custProduct);
+            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
+            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
+            listCollection.Add(custProCollection);
+            List<CatalogueCollection> list = new List<CatalogueCollection>();
+            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
+            listCustomizedProducts.Add(custProduct);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
+            list.Add(catalogueCollection);
+
+            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
+
+            Assert.True(comCatalogue.hasCollection(custProCollection));
+        }
+        /**
+        <summary>
+            Test to ensure that an existent collection is found in the CommercialCatalogue's.
+        </summary>
+        */
+        [Fact]
+        public void ensureValidCollectionNotExists()
+        {
+            Console.WriteLine("ensureValidCollectionNotExists");
+
+            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+
+
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+
+            ProductCategory prodCat = new ProductCategory("Category 1");
+            List<Double> values2 = new List<Double>();
+            values2.Add(500.0); //Width
+            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            List<Dimension> valuest = new List<Dimension>();
+            valuest.Add(d2);
+            IEnumerable<Dimension> heightDimensions = valuest;
+            IEnumerable<Dimension> widthDimensions = valuest;
+            IEnumerable<Dimension> depthDimensions = valuest;
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+
+            Material material = new Material("1234", "Material", colors, finishes);
+            List<Material> listMaterial = new List<Material>();
+            listMaterial.Add(material);
+            IEnumerable<Material> materials = listMaterial;
+            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+
+            custoProducts.Add(custProduct);
+            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
+
+            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
+            listCustomizedProducts.Add(custProduct);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
+            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One");
+
+            Assert.False(comCatalogue.hasCollection(custProCollection));
+        }
+
+        /**
+        <summary>
+            Test to ensure that a null customizedProduct is not found in the CommercialCatalogue's list of customizedProduct.
+        </summary>
+        */
+        [Fact]
+        public void ensureNullComCatalogueDoesNotExist()
+        {
+            Console.WriteLine("ensureNullComCatalogueDoesNotExist");
+
+            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+
+
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+
+            ProductCategory prodCat = new ProductCategory("Category 1");
+            List<Double> values2 = new List<Double>();
+            values2.Add(500.0); //Width
+            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            List<Dimension> valuest = new List<Dimension>();
+            valuest.Add(d2);
+            IEnumerable<Dimension> heightDimensions = valuest;
+            IEnumerable<Dimension> widthDimensions = valuest;
+            IEnumerable<Dimension> depthDimensions = valuest;
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+            Material material = new Material("1234", "Material", colors, finishes);
+            List<Material> listMaterial = new List<Material>();
+            listMaterial.Add(material);
+            IEnumerable<Material> materials = listMaterial;
+            Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
+            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
+            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+
+            custoProducts.Add(custProduct);
+            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
+            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
+            listCollection.Add(custProCollection);
+            List<CatalogueCollection> list = new List<CatalogueCollection>();
+            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
+            listCustomizedProducts.Add(custProduct);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
+            list.Add(catalogueCollection);
+
+            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
+
+            Assert.False(comCatalogue.hasCollection(null));
+        }
 
         //GetHashCode tests
 
