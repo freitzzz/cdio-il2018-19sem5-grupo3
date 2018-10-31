@@ -2,9 +2,8 @@
 carregar:-['cdio-tsp.pl'],['intersept.pl'].
 
 opt2(C, D, L):- tsp2(C, L1, D1),
-                opt2_segment(L1, [H|T]),
+                opt2_segment(L1, [H|T]),!,
                 opt2_combinations(H, T, [H|T], L, D1, D).
-
 opt2_segment([H1|[H]], [(H1, H)]).
 opt2_segment([H1|[H|T]], [(H1, H)|SL]):- opt2_segment([H|T], SL).
 
@@ -13,38 +12,51 @@ opt2_combinations((C1,C2),[(C3,C4)] , L, L1, D, Daux):- linearCoord(C1,X1,Y1), l
 														doIntersect((X1,Y1),(X2,Y2),(X3,Y3),(X4,Y4)),
 														opt2_analysis(L, L1, (C1, C2), (C3, C4), D, Daux).
 
+opt2_combinations((C1,C2),[(C3,C4)] , L1, L1, D, D1).
+
 opt2_combinations((C1, C2), [(C3, C4)|T], L, L1, D, D1) :- linearCoord(C1,X1,Y1), linearCoord(C2,X2,Y2),
 														   linearCoord(C3,X3,Y3), linearCoord(C4,X4,Y4),
 												           doIntersect((X1,Y1),(X2,Y2),(X3,Y3),(X4,Y4)),
 												           opt2_analysis(L, [H2|T2], (C1, C2), (C3, C4), D, Daux),
 												           opt2_combinations(H2, T2, [H2|T2], L1, Daux, D1).
 
-opt2_combinations((C1, C2), [(C3, C4)|T], [H1|T1], L, D, D1) :- opt2_combinations((C1, C2), T, [H1|T1], L, D,D1),
-																opt2_combinations((C3, C4), T, [H1|T1], L, D, D1).
+opt2_combinations((C1, C2), [(C3, C4)|T], [H1|T1], L1, D, D1) :- opt2_combinations((C1, C2), T, [H1|T1], L, D,D1),
+																opt2_combinations((C3, C4), T, L, L1, D, D1).
 
+opt2_evaluate_new_segment(L, C1, C2, C3, (C1, C3), D2) :- dist_cities(C1,C2,D1),
+	                                                  dist_cities(C1,C3,D2),
+					                  D1 > D2,
+						          not(has_circuit(L, C1, C3)),
+							  not(has_circuit(L, C3, C1)).
 
-opt2_evaluate_new_segment(C1, C2, C3, E, D) :- dist_cities(C1, C2, D1),
-                                               dist_cities(C1, C3, D2),
-			                       D1 > D2 -> E = (C1, C3), D is D2;
-                                               E = (C1, C2), D is D1.
+opt2_evaluate_new_segment(L, C1, C2, _, (C1, C2), D) :- dist_cities(C1, C2, D),
+							not(has_circuit(L,C1,C2)),
+							not(has_circuit(L,C2,C1)).
 
-
+opt2_evaluate_new_segment(L, C1, _, C3, (C1, C3), D) :- dist_cities(C1, C3, D),
+							not(has_circuit(L, C1, C3)),
+							not(has_circuit(L,C3,C1)).
 
 opt2_analysis(L, Z, (C1, C2), (C3, C4), D, Daux) :- C2 \== C3, C1 \== C3,
-													C2 \== C4, C1 \== C4,
-													dist_cities(C1, C2, D1),
-													dist_cities(C3, C4, D2),
-													D3 is D1 + D2,
-                                                                                                          opt2_evaluate_new_segment(C2, C3, C4, E1, D4),
-													opt2_evaluate_new_segment(C1, C3, C4, E2, D5),
-													D6 is D4 + D5,
-													D3 > D6 -> Daux is D - D3 + D6,
-													delete(L, (C1, C2), X),
-													delete(X, (C3, C4), Y),
-													append([E1], Y, W),
-													append([E2], W, Z).
+						    C2 \== C4, C1 \== C4,
+						    dist_cities(C1, C2, D1),
+						    dist_cities(C3, C4, D2),
+						    D3 is D1 + D2,
+						    delete(L, (C1, C2), Laux2),
+						    delete(Laux2, (C3, C4), Laux3),
+						    opt2_evaluate_new_segment(Laux3, C2, C3, C4, E1, D4),
+						    opt2_evaluate_new_segment(Laux3, C1, C3, C4, E2, D5),
+						    D6 is D4 + D5,
+						    D3 > D6 -> Daux is D - D3 + D6,
+						    delete(L, (C1, C2), X),
+						    delete(X, (C3, C4), Y),
+						    append([E1], Y, W),
+						    append([E2], W, Z).
 
+has_circuit(_, C, C).
 
+has_circuit(L, C1, C2):- member((C1, X),L),
+                         has_circuit(L, X, C2).
 
 
 degrees2radians(Deg,Rad):-
@@ -67,7 +79,6 @@ distance(Lat1, Lon1, Lat2, Lon2, Dis2):-
 % distance(50.8462807,4.3547273,50.0878114,14.4204598,D).
 % Online: http://www.movable-type.co.uk/scripts/latlong.html
 %
-
 
 
 
@@ -153,4 +164,45 @@ doIntersect(P1,Q1,P2,Q2):-
      % p2, q2 and q1 are colinear and q1 lies on segment p2q2
     O4 == 0, onSegment(P2, Q1, Q2),!
     ).
+
+%----------------------------------------------------------------------------------------------------
+% rGraph(Origin,UnorderedListOfEdges,OrderedListOfEdges)
+%
+% Examples:
+% ---------
+% ?- rGraph(a,[[a,b],[b,c],[c,d],[e,f],[d,f],[e,a]],R).
+%
+% ?- rGraph(brussels,[[vienna, sarajevo], [sarajevo, tirana],[tirana,sofia], [sofia, minsk], [andorra,brussels],[brussels,minsk],[vienna,andorra]],R).
+%
+%
+rGraph(Orig,[[Orig,Z]|R],R2):-!,
+	reorderGraph([[Orig,Z]|R],R2).
+rGraph(Orig,R,R3):-
+	member([Orig,X],R),!,
+	delete(R,[Orig,X],R2),
+	reorderGraph([[Orig,X]|R2],R3).
+rGraph(Orig,R,R3):-
+	member([X,Orig],R),
+	delete(R,[X,Orig],R2),
+	reorderGraph([[Orig,X]|R2],R3).
+
+
+reorderGraph([],[]).
+
+reorderGraph([[X,Y],[Y,Z]|R],[[X,Y]|R1]):-
+	reorderGraph([[Y,Z]|R],R1).
+
+reorderGraph([[X,Y],[Z,W]|R],[[X,Y]|R2]):-
+	Y\=Z,
+	reorderGraph2(Y,[[Z,W]|R],R2).
+
+reorderGraph2(_,[],[]).
+reorderGraph2(Y,R1,[[Y,Z]|R2]):-
+	member([Y,Z],R1),!,
+	delete(R1,[Y,Z],R11),
+	reorderGraph2(Z,R11,R2).
+reorderGraph2(Y,R1,[[Y,Z]|R2]):-
+	member([Z,Y],R1),
+	delete(R1,[Z,Y],R11),
+	reorderGraph2(Z,R11,R2).
 
