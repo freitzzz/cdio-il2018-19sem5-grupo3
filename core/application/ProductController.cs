@@ -129,6 +129,21 @@ namespace core.application{
         }
 
         /// <summary>
+        /// Deletes a material from a product
+        /// </summary>
+        /// <param name="deleteMaterialFromProductDTO">DeleteMaterialFromProductDTO with the material deletion information</param>
+        public void deleteMaterialFromProduct(DeleteMaterialFromProductDTO deleteMaterialFromProductDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productToRemoveMaterial=productRepository.find(deleteMaterialFromProductDTO.productID);
+            //TODO:CHECK PRODUCT EXISTENCE
+            Material materialBeingDeleted=PersistenceContext.repositories().createMaterialRepository().find(deleteMaterialFromProductDTO.materialID);
+            //TODO:CHECK MATERIAL EXISTENCE
+            productToRemoveMaterial.removeMaterial(materialBeingDeleted);
+            //TODO:CHECK PRODUCT UPDATE SUCCESS
+            productRepository.update(productToRemoveMaterial);
+        }
+
+        /// <summary>
         /// Updates the components of a product
         /// </summary>
         /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
@@ -183,6 +198,21 @@ namespace core.application{
             //TODO:REPLACE WITH MODEL VIEW DTO (ComponentDetailsDTO)
             //return componentBeingAdded.toDTO();
             return null;
+        }
+
+        /// <summary>
+        /// Deletes a component from a product
+        /// </summary>
+        /// <param name="deleteComponentFromProductDTO">DeleteComponentFromProductDTO with the component deletion information</param>
+        public void deleteComponentFromProduct(DeleteComponentFromProductDTO deleteComponentFromProductDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productToRemoveComponent=productRepository.find(deleteComponentFromProductDTO.productID);
+            //TODO:CHECK PRODUCT EXISTENCE
+            Product productBeingDeleted=productRepository.find(deleteComponentFromProductDTO.componentID);
+            //TODO:CHECK COMPLEMENTED PRODUCT EXISTENCE
+            productToRemoveComponent.removeComplementedProduct(productBeingDeleted);
+            //TODO:CHECK PRODUCT UPDATE SUCCESS
+            productRepository.update(productToRemoveComponent);
         }
 
         /// <summary>
@@ -274,6 +304,23 @@ namespace core.application{
             productRepository.update(productToAddMaterial);
             //TODO:REPLACE WITH MODEL VIEW DTO (DimensionsDetailsDTO)
             return null;
+        }
+
+        /// <summary>
+        /// Deletes a dimension from a product
+        /// </summary>
+        /// <param name="deleteDimensionFromProductDTO">DeleteDimensionFromProductDTO with the dimension deletion information</param>
+        public void deleteDimensionFromProduct(DeleteDimensionFromProductDTO deleteDimensionFromProductDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productToRemoveDimension=productRepository.find(deleteDimensionFromProductDTO.productID);
+            //TODO:CHECK PRODUCT EXISTENCE
+            //Dimension materialBeingDeleted=PersistenceContext.repositories().createDimensionRepository().find(addMaterialToProductDTO.materialID);
+            //TODO:CHECK DIMENSION EXISTENCE
+            
+            //TODO: DIMENSIONS REPOSITORY ???? :(
+            //productToRemoveDimension.removeMaterial(materialBeingDeleted);
+            //TODO:CHECK PRODUCT UPDATE SUCCESS
+            productRepository.update(productToRemoveDimension);
         }
 
         /// <summary>
