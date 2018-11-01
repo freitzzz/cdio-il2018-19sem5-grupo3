@@ -162,6 +162,23 @@ namespace core.application{
         }
 
         /// <summary>
+        /// Deletes a restriction from a product material
+        /// </summary>
+        /// <param name="deleteRestrictionFromProductMaterialDTO">DeleteRestrictionFromProductMaterialDTO with the restriction deletion information</param>
+        public void deleteRestrictionFromProductMaterial(DeleteRestrictionFromProductMaterialDTO deleteRestrictionFromProductMaterialDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productWithMaterialBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductMaterialDTO.productID);
+            //TODO: CHECK PRODUCT EXISTENCE
+            Material productMaterialBeingDeletedRestriction=PersistenceContext.repositories().createMaterialRepository().find(deleteRestrictionFromProductMaterialDTO.materialID);
+            //TODO: CHECK MATERIAL EXISTENCE
+            //TODO: RESTRICTION REPOSITORY ? ? ? ? ? ? :\
+
+            productRepository.update(productWithMaterialBeingDeletedRestriction);
+            //TODO:CHECK PRODUCT UPDATE SUCCESS
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Updates the components of a product
         /// </summary>
         /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
@@ -248,6 +265,23 @@ namespace core.application{
 
             productRepository.update(productWithComponentBeingAddedRestriction);
             //TODO: CHECK UPDATE SUCCESS
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Deletes a restriction from a product component
+        /// </summary>
+        /// <param name="deleteRestrictionFromProductComponentDTO">DeleteRestrictionFromProductComponentDTO with the restriction deletion information</param>
+        public void deleteRestrictionFromProductMaterial(DeleteRestrictionFromProductComponentDTO deleteRestrictionFromProductComponentDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productWithComponentBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductComponentDTO.productID);
+            //TODO: CHECK PRODUCT EXISTENCE
+            Product productComponentBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductComponentDTO.componentID);
+            //TODO: CHECK COMPLEMENTED PRODUCT EXISTENCE
+            //TODO: RESTRICTION REPOSITORY ? ? ? ? ? ? :\
+
+            productRepository.update(productWithComponentBeingDeletedRestriction);
+            //TODO:CHECK PRODUCT UPDATE SUCCESS
             throw new NotImplementedException();
         }
 
@@ -375,6 +409,24 @@ namespace core.application{
 
             productRepository.update(productWithDimensionBeingAddedRestriction);
             //TODO: CHECK UPDATE SUCCESS
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Deletes a restriction from a product dimension
+        /// </summary>
+        /// <param name="deleteRestrictionFromProductDimensionDTO">DeleteRestrictionFromProductDimensionDTO with the restriction deletion information</param>
+        public void deleteRestrictionFromProductDimension(DeleteRestrictionFromProductDimensionDTO deleteRestrictionFromProductDimensionDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productWithDimensionBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductDimensionDTO.productID);
+            //TODO: CHECK PRODUCT EXISTENCE
+            //Dimension productMaterialBeingDeletedRestriction=PersistenceContext.repositories().createMaterialRepository().find(deleteRestrictionFromProductDimensionDTO.materialID);
+            //TODO: DIMENSION REPOSITORY ? ? ? ? ? :\
+            //TODO: CHECK DIMENSION EXISTENCE
+            //TODO: RESTRICTION REPOSITORY ? ? ? ? ? ? :\
+
+            productRepository.update(productWithDimensionBeingDeletedRestriction);
+            //TODO:CHECK PRODUCT UPDATE SUCCESS
             throw new NotImplementedException();
         }
 
