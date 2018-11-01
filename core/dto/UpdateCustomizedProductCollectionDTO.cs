@@ -19,14 +19,9 @@ namespace core.dto{
         [DataMember(Name="name")]
         public string name{get;set;}
         /// <summary>
-        /// List with the customized products to add to the collection
+        ///Customized product to add
         /// </summary>
-        [DataMember(Name="addCustomizedProducts")]
-        public List<CustomizedProductDTO> customizedProductsToAdd{get;set;}
-        /// <summary>
-        /// List with the customized products to remove from the collection
-        /// </summary>
-        [DataMember(Name="removeCustomizedProducts")]
-        public List<CustomizedProductDTO> customizedProductsToRemove{get;set;}
+        [DataMember(Name="customizedProduct")]
+        public CustomizedProductDTO customizedProductToAdd{get;set;}
     }
 }

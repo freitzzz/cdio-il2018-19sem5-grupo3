@@ -10,7 +10,7 @@ namespace backend.Controllers{
     /// <summary>
     /// MVC Controller for CustomizedProductCollection operations
     /// </summary>
-    [Route("/myc/api/collections")]
+    [Route("/mycm/api/collections")]
     public class CustomizedProductCollectionController:Controller{
         /// <summary>
         /// Constant that represents the message that occurs if there are no collections available
@@ -53,9 +53,14 @@ namespace backend.Controllers{
         private const string LOG_POST_START="POST Request started";
 
         /// <summary>
-        /// Constant that represents the log message for when a PUT Basic Info Request starts
+        /// Constant that represents the log message for when a POST Customized Product Request starts
         /// </summary>
-        private const string LOG_PUT_BASIC_INFO_START="PUT Basic Info Request started";
+        private const string LOG_POST_CUSTOMIZED_PRODUCT_START="POST Customized Product Request started";
+
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Customized Product Request starts
+        /// </summary>
+        private const string LOG_DELETE_CUSTOMIZED_PRODUCT_START="DELETE Customized Product Request started";
 
         /// <summary>
         /// Constant that represents the log message for when a DELETE Request starts
@@ -93,6 +98,11 @@ namespace backend.Controllers{
         private const string LOG_DELETE_BAD_REQUEST="DELETE({id}) BadRequest";
 
         /// <summary>
+        /// Constant representing the log message for when a DELETE Customized Product Request returns NotFound
+        /// </summary>
+        private const string LOG_DELETE_CUSTOMIZED_PRODUCT_NOT_FOUND = "DELETE({customizedProductID}) NotFound";
+
+        /// <summary>
         /// Constant that represents the log message for when a GET All Request is successful
         /// </summary>
         private const string LOG_GET_ALL_SUCCESS="Customized Product Collections {@collectionList} retrieved";
@@ -116,6 +126,11 @@ namespace backend.Controllers{
         /// Constant that represents the log message for when a DELETE Request is successful
         /// </summary>
         private const string LOG_DELETE_SUCCESS="Customized Product Collection with id {id} soft deleted";
+
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Customized Product Request is successful
+        /// </summary>
+        private const string LOG_DELETE_CUSTOMIZED_PRODUCT_SUCCESS = "Customized Product with id {id} deleted from the Customized Product Collection";
         
         /// <summary>
         /// This repository attribute is only here due to entity framework injection
@@ -138,7 +153,8 @@ namespace backend.Controllers{
         /// <param name="customizedProductCollectionRepository">Injected repository of customized products collections</param>
         /// <param name="customizedProductRepository">Injected repository of customized products</param>
         /// <param name="logger">Controllers logger to log any information regarding HTTP Requests and Responses</param>
-        public CustomizedProductCollectionController(CustomizedProductCollectionRepository customizedProductCollectionRepository,CustomizedProductRepository customizedProductRepository, ILogger<CustomizedProductCollectionController> logger){
+        public CustomizedProductCollectionController(CustomizedProductCollectionRepository customizedProductCollectionRepository,
+        CustomizedProductRepository customizedProductRepository, ILogger<CustomizedProductCollectionController> logger){
             this.customizedProductCollectionRepository=customizedProductCollectionRepository;
             this.customizedProductRepository=customizedProductRepository;
             this.logger=logger;
@@ -238,7 +254,7 @@ namespace backend.Controllers{
         /// <returns>ActionResult with the information success about update</returns>
         [HttpPut("{id}")]
         public ActionResult<CustomizedProductCollectionDTO> updateCustomizedProductCollection(long id,[FromBody]UpdateCustomizedProductCollectionDTO updateCustomizedProductCollectionDTO){
-            logger.LogInformation(LOG_PUT_BASIC_INFO_START);
+          //  logger.LogInformation(LOG_PUT_BASIC_INFO_START);
             try{
                 updateCustomizedProductCollectionDTO.id=id;
                 bool updatedWithSuccess=new core.application.CustomizedProductCollectionController().updateCollectionBasicInformation(updateCustomizedProductCollectionDTO);
@@ -262,32 +278,52 @@ namespace backend.Controllers{
         }
 
         /// <summary>
-        /// Updates the customized products of a certain customized products collection
+        /// Adds a given customized product to the customized product collection.
         /// </summary>
         /// <param name="id">Long with the customized products collection resource id</param>
         /// <param name="updateCustomizedProductCollectionDTO">UpdateCustomizedProductCollection with the information about the update</param>
-        /// <returns>ActionResult with the information success about update</returns>
-        [HttpPut("{id}/customizedproducts")]
-        public ActionResult<CustomizedProductCollectionDTO> updateCustomizedProductCollectionCustomizedProducts(long id,[FromBody]UpdateCustomizedProductCollectionDTO updateCustomizedProductCollectionDTO){
-            logger.LogInformation(LOG_PUT_CUSTOMIZED_PRODUCTS_START);
-            try{
-                updateCustomizedProductCollectionDTO.id=id;
-                bool updatedWithSuccess=new core.application.CustomizedProductCollectionController().updateCollectionCustomizedProducts(updateCustomizedProductCollectionDTO);
-                if(updatedWithSuccess)
-                {
-                    logger.LogInformation(LOG_PUT_SUCCESS,id,updateCustomizedProductCollectionDTO);
+        /// <returns>ActionResult with the information regarding the update</returns>
+        [HttpPost("{id}/customizedproducts")]
+        public ActionResult<CustomizedProductCollectionDTO> addCustomizedProductsToCustomizedProductCollection(long id, [FromBody] UpdateCustomizedProductCollectionDTO updateCustomizedProductCollectionDTO){
+            logger.LogInformation(LOG_POST_CUSTOMIZED_PRODUCT_START);
+            try {
+                updateCustomizedProductCollectionDTO.id = id;
+                if(new core.application.CustomizedProductCollectionController().addCustomizedProductsToCustomizedProductCollection(updateCustomizedProductCollectionDTO)){
+                    logger.LogInformation(LOG_POST_SUCCESS);
                     return Ok(VALID_UPDATE_MESSAGE);
                 }
                 return BadRequest(INVALID_UPDATE_MESSAGE);
-            }catch(NullReferenceException nullReferenceException){
+            } catch (NullReferenceException nullReferenceException){
                 logger.LogWarning(nullReferenceException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
                 return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
-            }catch(InvalidOperationException invalidOperationException){
+            } catch (InvalidOperationException invalidOperationException){
                 logger.LogWarning(invalidOperationException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
                 return BadRequest(invalidOperationException.Message);
-            }catch(ArgumentException invalidArgumentsException){
-                logger.LogWarning(invalidArgumentsException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
-                return BadRequest(invalidArgumentsException.Message);
+            } catch (ArgumentException argumentException){
+                logger.LogWarning(argumentException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Removes a given customized product to the customized product collection.
+        /// </summary>
+        /// <param name="collectionID">Long with the customized products collection resource id</param>
+        /// <param name="customizedProductID">Long with the customized product resource id</param>
+        /// <returns>ActionResult with the information regarding the update</returns>
+        [HttpDelete("{collectionID}/customizedproducts/{customizedProductID}")]
+        public ActionResult<CustomizedProductCollectionDTO> removeCustomizedProductsToCustomizedProductCollection(long collectionID, long customizedProductID){
+            logger.LogInformation(LOG_DELETE_CUSTOMIZED_PRODUCT_START);
+            try {
+                if(new core.application.CustomizedProductCollectionController().removeCustomizedProductsToCustomizedProductCollection(collectionID, customizedProductID)){
+                    logger.LogInformation(LOG_DELETE_CUSTOMIZED_PRODUCT_SUCCESS, customizedProductID);
+                    return NoContent();
+                }
+                logger.LogWarning(LOG_DELETE_BAD_REQUEST, customizedProductID);
+                return BadRequest(INVALID_UPDATE_MESSAGE);
+            } catch (ArgumentException argumentException){
+                logger.LogWarning(argumentException, LOG_DELETE_CUSTOMIZED_PRODUCT_NOT_FOUND, customizedProductID);
+                return NotFound(RESOURCE_NOT_FOUND_MESSAGE);
             }
         }
 
