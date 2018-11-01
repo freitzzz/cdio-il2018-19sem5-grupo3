@@ -5,6 +5,7 @@ using core.dto;
 using System;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using core.modelview.productcategory;
 
 namespace backend.Controllers
 {
@@ -158,7 +159,7 @@ namespace backend.Controllers
         /// <returns>ActionResult with the 201 HTTP code and the newly added category in JSON format 
         /// or the an ActionResult with the 400 HTTP code if the ProductCategory could not be added.</returns>
         [HttpPost]
-        public ActionResult addProductCategory([FromBody] ProductCategoryDTO categoryAsJson)
+        public ActionResult addProductCategory([FromBody] AddProductCategoryModelView categoryAsJson)
         {
             logger.LogInformation(LOG_POST_START);
             if (categoryAsJson == null)
@@ -169,7 +170,7 @@ namespace backend.Controllers
 
             try
             {
-                ProductCategoryDTO createdCategory = new core.application
+                GetProductCategoryModelView createdCategory = new core.application
                     .ProductCategoryController().addProductCategory(categoryAsJson);
 
                 logger.LogInformation(LOG_POST_SUCCESS, createdCategory);
@@ -187,14 +188,14 @@ namespace backend.Controllers
         /// Adds a new sub ProductCategory from HTTP request's body data. 
         /// </summary>
         /// <param name="parentId">JSON body containing the new category's information.</param>
-        /// <param name="categoryDTO">ActionResult with the 201 HTTP code and the newly added category in JSON format 
+        /// <param name="modelView">ActionResult with the 201 HTTP code and the newly added category in JSON format 
         /// or the an ActionResult with the 400 HTTP code if the ProductCategory could not be added.</param>
         /// <returns></returns>
         [HttpPost("{parentId}/subcategories")]
-        public ActionResult addSubProductCategory(long parentId, [FromBody]ProductCategoryDTO categoryDTO)
+        public ActionResult addSubProductCategory(long parentId, [FromBody]AddProductCategoryModelView modelView)
         {
             logger.LogInformation(LOG_POST_START);
-            if (categoryDTO == null)
+            if (modelView == null)
             {
                 logger.LogWarning(LOG_POST_EMPTY_BODY);
                 return BadRequest(new { error = ERROR_EMPTY_BODY });
@@ -202,15 +203,15 @@ namespace backend.Controllers
 
             try
             {
-                ProductCategoryDTO createdCategory = new core.application
-                    .ProductCategoryController().addSubProductCategory(parentId, categoryDTO);
+                GetProductCategoryModelView createdCategory = new core.application
+                    .ProductCategoryController().addSubProductCategory(parentId, modelView);
 
                 logger.LogInformation(LOG_POST_SUCCESS, createdCategory);
                 return CreatedAtRoute("GetCategory", new { id = createdCategory.id }, createdCategory);
             }
             catch (ArgumentException e)
             {
-                logger.LogWarning(e, LOG_POST_BAD_REQUEST, categoryDTO);
+                logger.LogWarning(e, LOG_POST_BAD_REQUEST, modelView);
                 return BadRequest(new { error = e.Message });
             }
         }
@@ -227,7 +228,7 @@ namespace backend.Controllers
             logger.LogInformation(LOG_DELETE_START);
             try
             {
-                ProductCategoryDTO removedCategory = new core.application.ProductCategoryController().removeProductCategory(id);
+                GetProductCategoryModelView removedCategory = new core.application.ProductCategoryController().removeProductCategory(id);
                 logger.LogInformation(LOG_DELETE_SUCCESS, removedCategory);
                 return NoContent();
             }
@@ -250,7 +251,7 @@ namespace backend.Controllers
             logger.LogInformation(LOG_GET_BY_ID_START);
             try
             {
-                ProductCategoryDTO result = new core.application.
+                GetProductCategoryModelView result = new core.application.
                     ProductCategoryController().findByDatabaseId(id);
                 logger.LogInformation(LOG_GET_BY_ID_SUCCESS, result);
                 return Ok(result);
@@ -287,7 +288,7 @@ namespace backend.Controllers
             logger.LogInformation(LOG_GET_ALL_START);
             try
             {
-                List<ProductCategoryDTO> result = new core.application.
+                List<GetBasicProductCategoryModelView> result = new core.application.
                     ProductCategoryController().findAllCategories();
                 logger.LogInformation(LOG_GET_ALL_SUCCESS, result);
                 return Ok(result);
@@ -311,7 +312,7 @@ namespace backend.Controllers
             logger.LogInformation(LOG_GET_BY_NAME_START);
             try
             {
-                ProductCategoryDTO result = new core.application.
+                GetProductCategoryModelView result = new core.application.
                     ProductCategoryController().findByName(name);
                 logger.LogInformation(LOG_GET_BY_NAME_SUCCESS, result);
                 return Ok(result);
@@ -336,7 +337,7 @@ namespace backend.Controllers
             logger.LogInformation(LOG_GET_BY_ID_START);
             try
             {
-                List<ProductCategoryDTO> result = new core.application.
+                List<GetBasicProductCategoryModelView> result = new core.application.
                     ProductCategoryController().findAllSubCategories(parentId);
                 logger.LogInformation(LOG_GET_SUBCATEGORIES_SUCCESS, result);
                 return Ok(result);
@@ -353,19 +354,19 @@ namespace backend.Controllers
         /// Updates an instance of ProductCategory.
         /// </summary>
         /// <param name="id">Database identifier of the ProductCategory.</param>
-        /// <param name="productCategoryDTO">DTO containing being updated.</param>
+        /// <param name="modelView">DTO containing being updated.</param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public ActionResult updateCategory(long id, [FromBody]ProductCategoryDTO productCategoryDTO)
+        public ActionResult updateCategory(long id, [FromBody]UpdateProductCategoryModelView modelView)
         {
             logger.LogInformation(LOG_PUT_START);
 
             try
             {
-                ProductCategoryDTO updatedProductCategoryDTO = new core.application.ProductCategoryController().updateProductCategory(id, productCategoryDTO);
-                logger.LogInformation(LOG_PUT_SUCCESS, updatedProductCategoryDTO);
+                GetProductCategoryModelView updatedCategoryModelView = new core.application.ProductCategoryController().updateProductCategory(id, modelView);
+                logger.LogInformation(LOG_PUT_SUCCESS, updatedCategoryModelView);
 
-                return Ok(updatedProductCategoryDTO);
+                return Ok(updatedCategoryModelView);
             }
             catch (ArgumentException e)
             {
