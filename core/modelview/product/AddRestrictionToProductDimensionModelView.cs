@@ -1,11 +1,12 @@
+using core.dto;
 using System.Runtime.Serialization;
 
-namespace core.dto{
+namespace core.modelview.product{
     /// <summary>
     /// Model View representation for the add restriction to a product dimension context
     /// </summary>
     [DataContract]
-    public sealed class AddRestrictionToProductDimensionDTO{
+    public sealed class AddRestrictionToProductDimensionModelView{
         /// <summary>
         /// Long with the product resource ID which restriction will be applied to its dimension
         /// </summary>

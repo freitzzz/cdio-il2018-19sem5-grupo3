@@ -1,11 +1,11 @@
 using System.Runtime.Serialization;
 
-namespace core.dto{
+namespace core.modelview.product{
     /// <summary>
     /// Model View DTO representation for the delete material from a product context
     /// </summary>
     [DataContract]
-    public sealed class DeleteMaterialFromProductDTO{
+    public sealed class DeleteMaterialFromProducModelView{
         /// <summary>
         /// Long with the resource ID of the product which material will be deleted
         /// </summary>

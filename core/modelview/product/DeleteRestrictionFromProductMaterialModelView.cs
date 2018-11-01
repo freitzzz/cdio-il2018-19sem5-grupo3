@@ -1,10 +1,10 @@
 using System.Runtime.Serialization;
 
-namespace core.dto{
+namespace core.modelview.product{
     /// <summary>
     /// Model View representation for the delete restriction from a product material context
     /// </summary>
-    public sealed class DeleteRestrictionFromProductMaterialDTO{
+    public sealed class DeleteRestrictionFromProductMaterialModelView{
         /// <summary>
         /// Long with the product resource ID which restriction will be deleted from its material
         /// </summary>

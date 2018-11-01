@@ -1,11 +1,12 @@
+using core.dto;
 using System.Runtime.Serialization;
 
-namespace core.dto{
+namespace core.modelview.product{
     /// <summary>
     /// Model View representation for the add restriction to a product component context
     /// </summary>
     [DataContract]
-    public sealed class AddRestrictionToProductComponentDTO{
+    public sealed class AddRestrictionToProductComponentModelView{
         /// <summary>
         /// Long with the product resource ID which restriction will be applied to its component
         /// </summary>

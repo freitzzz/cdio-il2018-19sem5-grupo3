@@ -1,11 +1,11 @@
 using System.Runtime.Serialization;
 
-namespace core.dto{
+namespace core.modelview.product{
     [DataContract]
     /// <summary>
     /// A Model View DTO representation for the add component to a product context
     /// </summary>
-    public sealed class AddComponentToProductDTO{
+    public sealed class AddComponentToProductModelView{
         /// <summary>
         /// Long with the resource ID of the product which will be complemented
         /// </summary>

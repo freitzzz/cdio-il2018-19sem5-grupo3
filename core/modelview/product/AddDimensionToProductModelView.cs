@@ -1,11 +1,12 @@
+using core.dto;
 using System.Runtime.Serialization;
 
-namespace core.dto{
+namespace core.modelview.product{
     [DataContract]
     /// <summary>
     /// A Model View DTO representation for the add dimension to a product context
     /// </summary>
-    public sealed class AddDimensionToProductDTO{
+    public sealed class AddDimensionToProductModelView{
         /// <summary>
         /// Long with the resource ID of the product which will be complemented
         /// </summary>
