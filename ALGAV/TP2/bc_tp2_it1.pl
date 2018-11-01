@@ -2,19 +2,30 @@
 % Carrega a base de conhecimento
 carregar:-['cdio-tsp.pl'],['intersept.pl'].
 
-
 % Problema do caixeiro viagante (TSP) com o uso de pesquisa exaustiva (c/ B&B)
-tsp1(Orig,Dest,Cam,Custo):-get_time(X) % Tempo atual antes de executar a pesquisa exaustiva (Remover quando necessario)
-                                ,findall((Cam1,Custo1) % Obtém todas as soluções do B&B
+tsp1(Orig,Cam,Custo):-
+    get_time(X), % Tempo atual antes de executar a pesquisa exaustiva (Remover quando necessario)
+    findall(
+        (Cam1,Custo1),
+        (city(C,_,_),C\==Orig,tsp1(Orig,C,Cam1,Custo1)),
+        LTSP),
+    sort(2,@=<,LTSP,LSTSP),
+    [(Cam,Custo)|_]=LSTSP,
+    get_time(Y), % Tempo depois da execução da pesquisa exaustiva
+    Z is Y-X,
+    W is Z,
+    write("Required Time"),nl,
+    write(W),write(" s"),nl,
+    !.
+
+% Executa o B&B entre uma cidade origem e destino
+tsp1(Orig,Dest,Cam,Custo):-
+                            findall((Cam1,Custo1) % Obtém todas as soluções do B&B
                                 ,bnb(Orig,Dest,Cam1,Custo1)
                                 ,AP)
                             ,rup(AP,SWP) % Das solucoes obtidas do B&B remove as que nao sao precisas (todas as que nao percorrem todas as cidades)
                             ,reverse(SWP,[(Cam,Custo)|_]) % Invertemos as solucoes possiveis e extraimos a primeira (A primeira solucao é sempre a melhor visto que o B&B)
-                            ,get_time(Y) % Tempo depois da execução da pesquisa exaustiva
-                            ,Z is Y-X
-                            ,W is Z*1000
-                            ,write(W)
-                            ,!. % Cut pois apenas queremos uma solução
+                            ,!.
 
 % Predicado para remover todas as possibilidades de caminho que nao sao precisas (Queremos vistar todas as cidades)
 rup(AP,SWP):-sort(2,@>=,AP,SAP) % Ordenamos a lista de tuplos por ordem decrescente com o tamanho da lista de cada possibilidade
