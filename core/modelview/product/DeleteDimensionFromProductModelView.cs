@@ -12,8 +12,18 @@ namespace core.modelview.product{
         public long productID{get;set;}
 
         /// <summary>
-        /// Long with the resource ID of the dimension which will be deleted
+        /// Long with the resource ID of the width dimension which will be deleted
         /// </summary>
-        public long dimensionID{get;set;}
+        public long widthDimensionID{get;set;}
+
+        /// <summary>
+        /// Long with the resource ID of the depth dimension which will be deleted
+        /// </summary>
+        public long depthDimensionID{get;set;}
+
+        /// <summary>
+        /// Long with the resource ID of the height dimension which will be deleted
+        /// </summary>
+        public long heightDimensionID{get;set;}
     }
 }
