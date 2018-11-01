@@ -144,6 +144,24 @@ namespace core.application{
         }
 
         /// <summary>
+        /// Adds a restriction to a product material
+        /// </summary>
+        /// <param name="addRestrictionToProductMaterialDTO">AddRestrictionToProductMaterialDTO with the restriction addition information</param>
+        /// <returns>RestrictionDTO with the product material added restriction</returns>
+        public RestrictionDTO addRestrictionToProductMaterial(AddRestrictionToProductMaterialDTO addRestrictionToProductMaterialDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productWithMaterialBeingAddedRestriction=productRepository.find(addRestrictionToProductMaterialDTO.productID);
+            //TODO: CHECK PRODUCT EXISTENCE
+            Material productMaterialBeingAddedRestriction=PersistenceContext.repositories().createMaterialRepository().find(addRestrictionToProductMaterialDTO.materialID);
+            //TODO: CHECK MATERIAL EXISTENCE
+            //TODO: RESTRICTION DTO SERVICE
+            
+            productRepository.update(productWithMaterialBeingAddedRestriction);
+            //TODO: CHECK PRODUCT UPDATE SUCCESS
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Updates the components of a product
         /// </summary>
         /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
@@ -199,7 +217,7 @@ namespace core.application{
             //return componentBeingAdded.toDTO();
             return null;
         }
-
+        
         /// <summary>
         /// Deletes a component from a product
         /// </summary>
@@ -213,6 +231,24 @@ namespace core.application{
             productToRemoveComponent.removeComplementedProduct(productBeingDeleted);
             //TODO:CHECK PRODUCT UPDATE SUCCESS
             productRepository.update(productToRemoveComponent);
+        }
+
+        /// <summary>
+        /// Adds a restriction to a product component
+        /// </summary>
+        /// <param name="addRestrictionToProductComponentDTO">AddRestrictionToProductComponentDTO with the restriction addition information</param>
+        /// <returns>RestrictionDTO with the product component added restriction</returns>
+        public RestrictionDTO addRestrictionToProductComponent(AddRestrictionToProductComponentDTO addRestrictionToProductComponentDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productWithComponentBeingAddedRestriction=productRepository.find(addRestrictionToProductComponentDTO.productID);
+            //TODO: CHECK PRODUCT EXISTENCE
+            Product productComponentBeingAddedRestriction=productRepository.find(addRestrictionToProductComponentDTO.componentID);
+            //TODO: CHECK COMPLEMENTED PRODUCT EXISTENCE
+            //TODO: RESTRICTION DTO SERVICE
+
+            productRepository.update(productWithComponentBeingAddedRestriction);
+            //TODO: CHECK UPDATE SUCCESS
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -321,6 +357,25 @@ namespace core.application{
             //productToRemoveDimension.removeMaterial(materialBeingDeleted);
             //TODO:CHECK PRODUCT UPDATE SUCCESS
             productRepository.update(productToRemoveDimension);
+        }
+
+        /// <summary>
+        /// Adds a restriction to a product dimension
+        /// </summary>
+        /// <param name="addRestrictionToProductDimensionDTO">AddRestrictionToProductDimensionDTO with the restriction addition information</param>
+        /// <returns>RestrictionDTO with the product dimension added restriction</returns>
+        public RestrictionDTO addRestrictionToProductDimension(AddRestrictionToProductDimensionDTO addRestrictionToProductDimensionDTO){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productWithDimensionBeingAddedRestriction=productRepository.find(addRestrictionToProductDimensionDTO.productID);
+            //TODO: CHECK PRODUCT EXISTENCE
+            //Product productDimensionBeingAddedRestriction=productRepository.find(addRestrictionToProductDimensionDTO.componentID);
+            //TODO: DIMENSION REPOSITORY ????? :(
+            //TODO: CHECK DIMENSION EXISTENCE
+            //TODO: RESTRICTION DTO SERVICE
+
+            productRepository.update(productWithDimensionBeingAddedRestriction);
+            //TODO: CHECK UPDATE SUCCESS
+            throw new NotImplementedException();
         }
 
         /// <summary>
