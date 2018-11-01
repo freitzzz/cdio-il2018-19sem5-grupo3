@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using core.domain;
 using core.persistence;
 using core.dto;
+using core.modelview.product;
 using core.services;
 using core.services.ensurance;
 using support.dto;
@@ -115,7 +116,7 @@ namespace core.application{
         /// </summary>
         /// <param name="addComponentToProductDTO">AddMaterialToProductDTO with the material addition information</param>
         /// <returns>MaterialDTO with the material that was added to the product</returns>
-        public MaterialDTO addMaterialToProduct(AddMaterialToProductDTO addMaterialToProductDTO){
+        public MaterialDTO addMaterialToProduct(AddMaterialToProductModelView addMaterialToProductDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productToAddMaterial=productRepository.find(addMaterialToProductDTO.productID);
             //TODO:CHECK PRODUCT EXISTENCE
@@ -132,7 +133,7 @@ namespace core.application{
         /// Deletes a material from a product
         /// </summary>
         /// <param name="deleteMaterialFromProductDTO">DeleteMaterialFromProductDTO with the material deletion information</param>
-        public void deleteMaterialFromProduct(DeleteMaterialFromProductDTO deleteMaterialFromProductDTO){
+        public void deleteMaterialFromProduct(DeleteMaterialFromProducModelView deleteMaterialFromProductDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productToRemoveMaterial=productRepository.find(deleteMaterialFromProductDTO.productID);
             //TODO:CHECK PRODUCT EXISTENCE
@@ -148,7 +149,7 @@ namespace core.application{
         /// </summary>
         /// <param name="addRestrictionToProductMaterialDTO">AddRestrictionToProductMaterialDTO with the restriction addition information</param>
         /// <returns>RestrictionDTO with the product material added restriction</returns>
-        public RestrictionDTO addRestrictionToProductMaterial(AddRestrictionToProductMaterialDTO addRestrictionToProductMaterialDTO){
+        public RestrictionDTO addRestrictionToProductMaterial(AddRestrictionToProductMaterialModelView addRestrictionToProductMaterialDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithMaterialBeingAddedRestriction=productRepository.find(addRestrictionToProductMaterialDTO.productID);
             //TODO: CHECK PRODUCT EXISTENCE
@@ -165,7 +166,7 @@ namespace core.application{
         /// Deletes a restriction from a product material
         /// </summary>
         /// <param name="deleteRestrictionFromProductMaterialDTO">DeleteRestrictionFromProductMaterialDTO with the restriction deletion information</param>
-        public void deleteRestrictionFromProductMaterial(DeleteRestrictionFromProductMaterialDTO deleteRestrictionFromProductMaterialDTO){
+        public void deleteRestrictionFromProductMaterial(DeleteRestrictionFromProductMaterialModelView deleteRestrictionFromProductMaterialDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithMaterialBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductMaterialDTO.productID);
             //TODO: CHECK PRODUCT EXISTENCE
@@ -221,7 +222,7 @@ namespace core.application{
         /// </summary>
         /// <param name="addComponentToProductDTO">AddComponentToProductDTO with the component addition information</param>
         /// <returns>ComponentDTO with the component that was added to the product</returns>
-        public ComponentDTO addComponentToProduct(AddComponentToProductDTO addComponentToProductDTO){
+        public ComponentDTO addComponentToProduct(AddComponentToProductModelView addComponentToProductDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productToAddComponent=productRepository.find(addComponentToProductDTO.productID);
             //TODO:CHECK PRODUCT EXISTENCE
@@ -239,7 +240,7 @@ namespace core.application{
         /// Deletes a component from a product
         /// </summary>
         /// <param name="deleteComponentFromProductDTO">DeleteComponentFromProductDTO with the component deletion information</param>
-        public void deleteComponentFromProduct(DeleteComponentFromProductDTO deleteComponentFromProductDTO){
+        public void deleteComponentFromProduct(DeleteComponentFromProductModelView deleteComponentFromProductDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productToRemoveComponent=productRepository.find(deleteComponentFromProductDTO.productID);
             //TODO:CHECK PRODUCT EXISTENCE
@@ -255,7 +256,7 @@ namespace core.application{
         /// </summary>
         /// <param name="addRestrictionToProductComponentDTO">AddRestrictionToProductComponentDTO with the restriction addition information</param>
         /// <returns>RestrictionDTO with the product component added restriction</returns>
-        public RestrictionDTO addRestrictionToProductComponent(AddRestrictionToProductComponentDTO addRestrictionToProductComponentDTO){
+        public RestrictionDTO addRestrictionToProductComponent(AddRestrictionToProductComponentModelView addRestrictionToProductComponentDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithComponentBeingAddedRestriction=productRepository.find(addRestrictionToProductComponentDTO.productID);
             //TODO: CHECK PRODUCT EXISTENCE
@@ -272,7 +273,7 @@ namespace core.application{
         /// Deletes a restriction from a product component
         /// </summary>
         /// <param name="deleteRestrictionFromProductComponentDTO">DeleteRestrictionFromProductComponentDTO with the restriction deletion information</param>
-        public void deleteRestrictionFromProductComponent(DeleteRestrictionFromProductComponentDTO deleteRestrictionFromProductComponentDTO){
+        public void deleteRestrictionFromProductComponent(DeleteRestrictionFromProductComponentModelView deleteRestrictionFromProductComponentDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithComponentBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductComponentDTO.productID);
             //TODO: CHECK PRODUCT EXISTENCE
@@ -357,7 +358,7 @@ namespace core.application{
         /// </summary>
         /// <param name="addDimensionToProductDTO">AddDimensionToProductDTO with the dimension addition information</param>
         /// <returns>DimensionDTO with the dimension that was added to the product</returns>
-        public DimensionDTO addDimensionToProduct(AddDimensionToProductDTO addDimensionToProductDTO){
+        public DimensionDTO addDimensionToProduct(AddDimensionToProductModelView addDimensionToProductDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productToAddMaterial=productRepository.find(addDimensionToProductDTO.productID);
             //TODO:CHECK PRODUCT EXISTENCE
@@ -380,7 +381,7 @@ namespace core.application{
         /// Deletes a dimension from a product
         /// </summary>
         /// <param name="deleteDimensionFromProductDTO">DeleteDimensionFromProductDTO with the dimension deletion information</param>
-        public void deleteDimensionFromProduct(DeleteDimensionFromProductDTO deleteDimensionFromProductDTO){
+        public void deleteDimensionFromProduct(DeleteDimensionFromProductModelView deleteDimensionFromProductDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productToRemoveDimension=productRepository.find(deleteDimensionFromProductDTO.productID);
             //TODO:CHECK PRODUCT EXISTENCE
@@ -398,7 +399,7 @@ namespace core.application{
         /// </summary>
         /// <param name="addRestrictionToProductDimensionDTO">AddRestrictionToProductDimensionDTO with the restriction addition information</param>
         /// <returns>RestrictionDTO with the product dimension added restriction</returns>
-        public RestrictionDTO addRestrictionToProductDimension(AddRestrictionToProductDimensionDTO addRestrictionToProductDimensionDTO){
+        public RestrictionDTO addRestrictionToProductDimension(AddRestrictionToProductDimensionModelView addRestrictionToProductDimensionDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithDimensionBeingAddedRestriction=productRepository.find(addRestrictionToProductDimensionDTO.productID);
             //TODO: CHECK PRODUCT EXISTENCE
@@ -416,7 +417,7 @@ namespace core.application{
         /// Deletes a restriction from a product dimension
         /// </summary>
         /// <param name="deleteRestrictionFromProductDimensionDTO">DeleteRestrictionFromProductDimensionDTO with the restriction deletion information</param>
-        public void deleteRestrictionFromProductDimension(DeleteRestrictionFromProductDimensionDTO deleteRestrictionFromProductDimensionDTO){
+        public void deleteRestrictionFromProductDimension(DeleteRestrictionFromProductDimensionModelView deleteRestrictionFromProductDimensionDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithDimensionBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductDimensionDTO.productID);
             //TODO: CHECK PRODUCT EXISTENCE

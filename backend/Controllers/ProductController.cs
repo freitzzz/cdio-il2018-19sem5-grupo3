@@ -8,6 +8,7 @@ using backend.Models;
 using core.application;
 using core.domain;
 using core.dto.options;
+using core.modelview.product;
 using support.dto;
 using System.Web;
 using Newtonsoft.Json;
@@ -280,7 +281,7 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
         /// </returns>
         [HttpPost("{id}/materials")]
-        public ActionResult addMaterialToProduct(long id,[FromBody]AddMaterialToProductDTO addMaterialToProductDTO){
+        public ActionResult addMaterialToProduct(long id,[FromBody]AddMaterialToProductModelView addMaterialToProductDTO){
             addMaterialToProductDTO.productID=id;
             try{
                 MaterialDTO materialDTO=new core.application.ProductController().addMaterialToProduct(addMaterialToProductDTO);
@@ -304,7 +305,7 @@ namespace backend.Controllers {
         /// </returns>
         [HttpDelete("{productID}/materials/{materialID}")]
         public ActionResult deleteMaterialFromProduct(long productID,long materialID){
-            DeleteMaterialFromProductDTO deleteMaterialFromProductDTO=new DeleteMaterialFromProductDTO();
+            DeleteMaterialFromProducModelView deleteMaterialFromProductDTO=new DeleteMaterialFromProducModelView();
             deleteMaterialFromProductDTO.productID=productID;
             deleteMaterialFromProductDTO.materialID=materialID;
             try{
@@ -328,7 +329,7 @@ namespace backend.Controllers {
         /// </returns>
         [HttpPost("{productID}/materials/{materialID}/restrictions")]
         public ActionResult addRestrictionToProductMaterial(long productID,long materialID,[FromBody]RestrictionDTO restrictionDTO){
-            AddRestrictionToProductMaterialDTO addRestrictionToProductMaterialDTO=new AddRestrictionToProductMaterialDTO();
+            AddRestrictionToProductMaterialModelView addRestrictionToProductMaterialDTO=new AddRestrictionToProductMaterialModelView();
             addRestrictionToProductMaterialDTO.productID=productID;
             addRestrictionToProductMaterialDTO.materialID=materialID;
             addRestrictionToProductMaterialDTO.restriction=restrictionDTO;
@@ -355,7 +356,7 @@ namespace backend.Controllers {
         /// </returns>
         [HttpDelete("{productID}/materials/{materialID}/restrictions/{restrictionID}")]
         public ActionResult deleteRestrictionFromProductMaterial(long productID,long materialID,long restrictionID){
-            DeleteRestrictionFromProductMaterialDTO deleteRestrictionFromProductMaterialDTO=new DeleteRestrictionFromProductMaterialDTO();
+            DeleteRestrictionFromProductMaterialModelView deleteRestrictionFromProductMaterialDTO=new DeleteRestrictionFromProductMaterialModelView();
             deleteRestrictionFromProductMaterialDTO.productID=productID;
             deleteRestrictionFromProductMaterialDTO.materialID=materialID;
             deleteRestrictionFromProductMaterialDTO.restrictionID=restrictionID;
@@ -405,7 +406,7 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
         /// </returns>
         [HttpPost("{id}/components")]
-        public ActionResult addComponentToProduct(long id,[FromBody]AddComponentToProductDTO addComponentToProductDTO){
+        public ActionResult addComponentToProduct(long id,[FromBody]AddComponentToProductModelView addComponentToProductDTO){
             addComponentToProductDTO.productID=id;
             try{
                 ComponentDTO componentDTO=new core.application.ProductController().addComponentToProduct(addComponentToProductDTO);
@@ -429,7 +430,7 @@ namespace backend.Controllers {
         /// </returns>
         [HttpDelete("{productID}/components/{componentID}")]
         public ActionResult deleteComponentFromProduct(long productID,long componentID){
-            DeleteComponentFromProductDTO deleteComponentFromProductDTO=new DeleteComponentFromProductDTO();
+            DeleteComponentFromProductModelView deleteComponentFromProductDTO=new DeleteComponentFromProductModelView();
             deleteComponentFromProductDTO.productID=productID;
             deleteComponentFromProductDTO.componentID=componentID;
             try{
@@ -453,7 +454,7 @@ namespace backend.Controllers {
         /// </returns>
         [HttpPost("{productID}/components/{componentID}/restrictions")]
         public ActionResult addRestrictionToProductComponent(long productID,long componentID,[FromBody]RestrictionDTO restrictionDTO){
-            AddRestrictionToProductComponentDTO addRestrictionToProductComponentDTO=new AddRestrictionToProductComponentDTO();
+            AddRestrictionToProductComponentModelView addRestrictionToProductComponentDTO=new AddRestrictionToProductComponentModelView();
             addRestrictionToProductComponentDTO.productID=productID;
             addRestrictionToProductComponentDTO.componentID=componentID;
             addRestrictionToProductComponentDTO.restriction=restrictionDTO;
@@ -480,7 +481,7 @@ namespace backend.Controllers {
         /// </returns>
         [HttpDelete("{productID}/components/{componentID}/restrictions/{restrictionID}")]
         public ActionResult deleteRestrictionFromProductComponent(long productID,long componentID,long restrictionID){
-            DeleteRestrictionFromProductComponentDTO deleteRestrictionFromProductComponentDTO=new DeleteRestrictionFromProductComponentDTO();
+            DeleteRestrictionFromProductComponentModelView deleteRestrictionFromProductComponentDTO=new DeleteRestrictionFromProductComponentModelView();
             deleteRestrictionFromProductComponentDTO.productID=productID;
             deleteRestrictionFromProductComponentDTO.componentID=componentID;
             deleteRestrictionFromProductComponentDTO.restrictionID=restrictionID;
@@ -530,7 +531,7 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
         /// </returns>
         [HttpPost("{id}/dimensions")]
-        public ActionResult addDimensionToProduct(long id,[FromBody]AddDimensionToProductDTO addDimensionToProductDTO){
+        public ActionResult addDimensionToProduct(long id,[FromBody]AddDimensionToProductModelView addDimensionToProductDTO){
             addDimensionToProductDTO.productID=id;
             try{
                 DimensionDTO dimensionDTO=new core.application.ProductController().addDimensionToProduct(addDimensionToProductDTO);
@@ -554,7 +555,7 @@ namespace backend.Controllers {
         /// </returns>
         [HttpDelete("{productID}/dimensions/{dimensionID}")]
         public ActionResult deleteDimensionFromProduct(long productID,long dimensionID){
-            DeleteDimensionFromProductDTO deletedDimensionFromProductDTO=new DeleteDimensionFromProductDTO();
+            DeleteDimensionFromProductModelView deletedDimensionFromProductDTO=new DeleteDimensionFromProductModelView();
             deletedDimensionFromProductDTO.productID=productID;
             deletedDimensionFromProductDTO.dimensionID=dimensionID;
             try{
@@ -578,7 +579,7 @@ namespace backend.Controllers {
         /// </returns>
         [HttpPost("{productID}/dimensions/{dimensionID}/restrictions")]
         public ActionResult addRestrictionToProductDimension(long productID,long dimensionID,[FromBody]RestrictionDTO restrictionDTO){
-            AddRestrictionToProductDimensionDTO addRestrictionToProductDimensionDTO=new AddRestrictionToProductDimensionDTO();
+            AddRestrictionToProductDimensionModelView addRestrictionToProductDimensionDTO=new AddRestrictionToProductDimensionModelView();
             addRestrictionToProductDimensionDTO.productID=productID;
             addRestrictionToProductDimensionDTO.dimensionID=dimensionID;
             addRestrictionToProductDimensionDTO.restriction=restrictionDTO;
@@ -605,7 +606,7 @@ namespace backend.Controllers {
         /// </returns>
         [HttpDelete("{productID}/dimensions/{dimensionID}/restrictions/{restrictionID}")]
         public ActionResult deleteRestrictionFromProductDimension(long productID,long dimensionID,long restrictionID){
-            DeleteRestrictionFromProductDimensionDTO deleteRestrictionFromProductDimensionDTO=new DeleteRestrictionFromProductDimensionDTO();
+            DeleteRestrictionFromProductDimensionModelView deleteRestrictionFromProductDimensionDTO=new DeleteRestrictionFromProductDimensionModelView();
             deleteRestrictionFromProductDimensionDTO.productID=productID;
             deleteRestrictionFromProductDimensionDTO.dimensionID=dimensionID;
             deleteRestrictionFromProductDimensionDTO.restrictionID=restrictionID;
