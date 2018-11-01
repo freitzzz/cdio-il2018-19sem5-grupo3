@@ -378,18 +378,55 @@ namespace core.application{
         }
 
         /// <summary>
-        /// Deletes a dimension from a product
+        /// Deletes a width dimension from a product
         /// </summary>
-        /// <param name="deleteDimensionFromProductDTO">DeleteDimensionFromProductDTO with the dimension deletion information</param>
-        public void deleteDimensionFromProduct(DeleteDimensionFromProductModelView deleteDimensionFromProductDTO){
+        /// <param name="deleteDimensionFromProductModelView">DeleteDimensionFromProductModelView with the dimension deletion information</param>
+        public void deleteWidthDimensionFromProduct(DeleteDimensionFromProductModelView deleteDimensionFromProductModelView){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productToRemoveDimension=productRepository.find(deleteDimensionFromProductDTO.productID);
+            Product productToRemoveDimension=productRepository.find(deleteDimensionFromProductModelView.productID);
             //TODO:CHECK PRODUCT EXISTENCE
-            //Dimension materialBeingDeleted=PersistenceContext.repositories().createDimensionRepository().find(addMaterialToProductDTO.materialID);
-            //TODO:CHECK DIMENSION EXISTENCE
-            
-            //TODO: DIMENSIONS REPOSITORY ???? :(
-            //productToRemoveDimension.removeMaterial(materialBeingDeleted);
+            FetchProductDimensionDTO fetchProductDimensionDTO=new FetchProductDimensionDTO();
+            fetchProductDimensionDTO.productID=deleteDimensionFromProductModelView.productID;
+            fetchProductDimensionDTO.dimensionID=deleteDimensionFromProductModelView.widthDimensionID;
+            Dimension widthDimension=productRepository.fetchProductWidthDimension(fetchProductDimensionDTO);
+            //TODO:CHECK WIDTH DIMENSION EXISTENCE
+            productToRemoveDimension.removeWidthDimension(widthDimension);
+            //TODO:CHECK PRODUCT UPDATE SUCCESS
+            productRepository.update(productToRemoveDimension);
+        }
+
+        /// <summary>
+        /// Deletes a height dimension from a product
+        /// </summary>
+        /// <param name="deleteDimensionFromProductModelView">DeleteDimensionFromProductModelView with the dimension deletion information</param>
+        public void deleteHeightDimensionFromProduct(DeleteDimensionFromProductModelView deleteDimensionFromProductModelView){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productToRemoveDimension=productRepository.find(deleteDimensionFromProductModelView.productID);
+            //TODO:CHECK PRODUCT EXISTENCE
+            FetchProductDimensionDTO fetchProductDimensionDTO=new FetchProductDimensionDTO();
+            fetchProductDimensionDTO.productID=deleteDimensionFromProductModelView.productID;
+            fetchProductDimensionDTO.dimensionID=deleteDimensionFromProductModelView.heightDimensionID;
+            Dimension heightDimension=productRepository.fetchProductHeightDimension(fetchProductDimensionDTO);
+            //TODO:CHECK HEIGHT DIMENSION EXISTENCE
+            productToRemoveDimension.removeHeightDimension(heightDimension);
+            //TODO:CHECK PRODUCT UPDATE SUCCESS
+            productRepository.update(productToRemoveDimension);
+        }
+
+        /// <summary>
+        /// Deletes a depth dimension from a product
+        /// </summary>
+        /// <param name="deleteDimensionFromProductModelView">DeleteDimensionFromProductModelView with the dimension deletion information</param>
+        public void deleteDepthDimensionFromProduct(DeleteDimensionFromProductModelView deleteDimensionFromProductModelView){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productToRemoveDimension=productRepository.find(deleteDimensionFromProductModelView.productID);
+            //TODO:CHECK PRODUCT EXISTENCE
+            FetchProductDimensionDTO fetchProductDimensionDTO=new FetchProductDimensionDTO();
+            fetchProductDimensionDTO.productID=deleteDimensionFromProductModelView.productID;
+            fetchProductDimensionDTO.dimensionID=deleteDimensionFromProductModelView.depthDimensionID;
+            Dimension depthDimension=productRepository.fetchProductDepthDimension(fetchProductDimensionDTO);
+            //TODO:CHECK DEPTH DIMENSION EXISTENCE
+            productToRemoveDimension.removeDepthDimension(depthDimension);
             //TODO:CHECK PRODUCT UPDATE SUCCESS
             productRepository.update(productToRemoveDimension);
         }
@@ -476,39 +513,35 @@ namespace core.application{
         /// <summary>
         /// Fetches a list of all products present in the product repository
         /// </summary>
-        /// <returns>a list of all of the products DTOs</returns>
-        public List<ProductDTO> findAllProducts(){
-            List<ProductDTO> productDTOList=new List<ProductDTO>();
-
-            IEnumerable<Product> productList=PersistenceContext.repositories().createProductRepository().findAll();
-
-            if (productList == null || !productList.GetEnumerator().MoveNext()){
-                return null;
-            }
-
-            foreach (Product product in productList){
-                productDTOList.Add(product.toDTO());
-            }
-
-            return productDTOList;
+        /// <returns>a list of all of the products model views</returns>
+        public GetAllProductsModelView findAllProducts(){
+            return ProductModelViewService.fromCollection(
+                PersistenceContext.repositories().createProductRepository().findAll()
+            );
         }
 
         /// <summary>
         /// Returns a product which has a certain persistence id
         /// </summary>
         /// <param name="productDTO">FetchProductDTO with the product fetch information</param>
-        /// <returns>ProductDTO with the product which has a certain persistence id</returns>
-        public ProductDTO findProductByID(FetchProductDTO fetchProductDTO){
-            return PersistenceContext.repositories().createProductRepository().find(fetchProductDTO.id).toDTO(fetchProductDTO.productDTOOptions);
+        /// <returns>GetProductModelView with the product which has a certain persistence id</returns>
+        public GetProductModelView findProductByID(FetchProductDTO fetchProductDTO){
+            return ProductModelViewService.fromEntity(
+                PersistenceContext.repositories().createProductRepository().find(
+                    fetchProductDTO.id
+                ));
         }
 
         /// <summary>
         /// Returns a product which has a certain reference
         /// </summary>
         /// <param name="productDTO">FetchProductDTO with the product fetch information</param>
-        /// <returns>ProductDTO with the product which has a certain reference</returns>
-        public ProductDTO findByReference(FetchProductDTO fetchProductDTO){
-            return PersistenceContext.repositories().createProductRepository().find(fetchProductDTO.reference).toDTO(fetchProductDTO.productDTOOptions);
+        /// <returns>GetProductModelView with the product which has a certain reference</returns>
+        public GetProductModelView findByReference(FetchProductDTO fetchProductDTO){
+            return ProductModelViewService.fromEntity(
+                PersistenceContext.repositories().createProductRepository().find(
+                    fetchProductDTO.reference
+                ));
         }
 
         public bool defineProductDimensions(ProductDTO productDTO){

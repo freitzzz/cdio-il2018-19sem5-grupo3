@@ -154,14 +154,14 @@ namespace backend.Controllers {
         [HttpGet]
         public ActionResult<List<ProductDTO>> findAll() {
             logger.LogInformation(LOG_GET_ALL_START);
-            List<ProductDTO> allProductsDTO = new core.application.ProductController().findAllProducts();
+            GetAllProductsModelView allProductsModelView = new core.application.ProductController().findAllProducts();
 
-            if (allProductsDTO == null) {
+            if (allProductsModelView == null) {
                 logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
                 return BadRequest(NO_PRODUCTS_FOUND_REFERENCE);
             }
-            logger.LogInformation(LOG_GET_ALL_SUCCESS, allProductsDTO);
-            return Ok(allProductsDTO);
+            logger.LogInformation(LOG_GET_ALL_SUCCESS, allProductsModelView);
+            return Ok(allProductsModelView);
         }
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace backend.Controllers {
             fetchProductDTO.productDTOOptions = new ProductDTOOptions();
             fetchProductDTO.productDTOOptions.requiredUnit = unit;
             try {
-                ProductDTO productDTOY = new core.application.ProductController().findProductByID(fetchProductDTO);
+                GetProductModelView productDTOY = new core.application.ProductController().findProductByID(fetchProductDTO);
                 if (productDTOY == null) {
                     logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST + PRODUCT_NOT_FOUND_REFERENCE);
                     return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
@@ -546,20 +546,66 @@ namespace backend.Controllers {
         }
 
         /// <summary>
-        /// Deletes a dimension from a product
+        /// Deletes a width dimension from a product
         /// </summary>
         /// <param name="productID">Long with the product resource ID which dimension will be deleted from</param>
-        /// <param name="dimensionID">Long with the dimension resource ID which will be deleted</param>
-        /// <returns>HTTP Response 204; No Content if the dimension was deleted with success
+        /// <param name="dimensionID">Long with the width dimension resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the width dimension was deleted with success
         ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the dimension
         /// </returns>
-        [HttpDelete("{productID}/dimensions/{dimensionID}")]
-        public ActionResult deleteDimensionFromProduct(long productID,long dimensionID){
+        [HttpDelete("{productID}/dimensions/width/{dimensionID}")]
+        public ActionResult deleteWidthDimensionFromProduct(long productID,long dimensionID){
             DeleteDimensionFromProductModelView deletedDimensionFromProductDTO=new DeleteDimensionFromProductModelView();
             deletedDimensionFromProductDTO.productID=productID;
-            deletedDimensionFromProductDTO.dimensionID=dimensionID;
+            deletedDimensionFromProductDTO.widthDimensionID=dimensionID;
             try{
-                new core.application.ProductController().deleteDimensionFromProduct(deletedDimensionFromProductDTO);
+                new core.application.ProductController().deleteWidthDimensionFromProduct(deletedDimensionFromProductDTO);
+                return NoContent();
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a height dimension from a product
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which dimension will be deleted from</param>
+        /// <param name="dimensionID">Long with the height dimension resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the height dimension was deleted with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the dimension
+        /// </returns>
+        [HttpDelete("{productID}/dimensions/height/{dimensionID}")]
+        public ActionResult deleteHeightDimensionFromProduct(long productID,long dimensionID){
+            DeleteDimensionFromProductModelView deletedDimensionFromProductDTO=new DeleteDimensionFromProductModelView();
+            deletedDimensionFromProductDTO.productID=productID;
+            deletedDimensionFromProductDTO.heightDimensionID=dimensionID;
+            try{
+                new core.application.ProductController().deleteHeightDimensionFromProduct(deletedDimensionFromProductDTO);
+                return NoContent();
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a depth dimension from a product
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which dimension will be deleted from</param>
+        /// <param name="dimensionID">Long with the depth dimension resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the depth dimension was deleted with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the dimension
+        /// </returns>
+        [HttpDelete("{productID}/dimensions/depth/{dimensionID}")]
+        public ActionResult deleteDepthDimensionFromProduct(long productID,long dimensionID){
+            DeleteDimensionFromProductModelView deletedDimensionFromProductDTO=new DeleteDimensionFromProductModelView();
+            deletedDimensionFromProductDTO.productID=productID;
+            deletedDimensionFromProductDTO.depthDimensionID=dimensionID;
+            try{
+                new core.application.ProductController().deleteDepthDimensionFromProduct(deletedDimensionFromProductDTO);
                 return NoContent();
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
