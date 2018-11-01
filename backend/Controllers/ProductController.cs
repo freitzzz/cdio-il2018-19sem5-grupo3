@@ -280,10 +280,10 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
         /// </returns>
         [HttpPost("{id}/materials")]
-        public ActionResult addMaterialToProduct(long id,[FromBody]AddComponentToProductDTO addMaterialToProductDTO){
+        public ActionResult addMaterialToProduct(long id,[FromBody]AddMaterialToProductDTO addMaterialToProductDTO){
             addMaterialToProductDTO.productID=id;
             try{
-                MaterialDTO materialDTO=new core.application.ProductController().addMaterialToProduct(addMaterialToProduct);
+                MaterialDTO materialDTO=new core.application.ProductController().addMaterialToProduct(addMaterialToProductDTO);
                 return Created(Request.Path,materialDTO);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
@@ -408,7 +408,7 @@ namespace backend.Controllers {
         public ActionResult addComponentToProduct(long id,[FromBody]AddComponentToProductDTO addComponentToProductDTO){
             addComponentToProductDTO.productID=id;
             try{
-                ComponentDTO componentDTO=new core.application.ProductController().addProductComponent(addComponentToProductDTO);
+                ComponentDTO componentDTO=new core.application.ProductController().addComponentToProduct(addComponentToProductDTO);
                 return Created(Request.Path,componentDTO);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
@@ -482,7 +482,7 @@ namespace backend.Controllers {
         public ActionResult deleteRestrictionFromProductComponent(long productID,long componentID,long restrictionID){
             DeleteRestrictionFromProductComponentDTO deleteRestrictionFromProductComponentDTO=new DeleteRestrictionFromProductComponentDTO();
             deleteRestrictionFromProductComponentDTO.productID=productID;
-            deleteRestrictionFromProductComponentDTO.componentID=dimensionID;
+            deleteRestrictionFromProductComponentDTO.componentID=componentID;
             deleteRestrictionFromProductComponentDTO.restrictionID=restrictionID;
             try{
                 new core.application.ProductController().deleteRestrictionFromProductComponent(deleteRestrictionFromProductComponentDTO);
@@ -533,7 +533,7 @@ namespace backend.Controllers {
         public ActionResult addDimensionToProduct(long id,[FromBody]AddDimensionToProductDTO addDimensionToProductDTO){
             addDimensionToProductDTO.productID=id;
             try{
-                DimensionDTO dimensionDTO=new core.application.ProductController().addProductDimension(addDimensionToProductDTO);
+                DimensionDTO dimensionDTO=new core.application.ProductController().addDimensionToProduct(addDimensionToProductDTO);
                 return Created(Request.Path,dimensionDTO);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
@@ -558,7 +558,7 @@ namespace backend.Controllers {
             deletedDimensionFromProductDTO.productID=productID;
             deletedDimensionFromProductDTO.dimensionID=dimensionID;
             try{
-                new core.application.ProductController().deleteDimensionFromProduct(deleteMaterialFromProduct);
+                new core.application.ProductController().deleteDimensionFromProduct(deletedDimensionFromProductDTO);
                 return NoContent();
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
