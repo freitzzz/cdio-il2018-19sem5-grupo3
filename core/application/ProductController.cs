@@ -272,7 +272,7 @@ namespace core.application{
         /// Deletes a restriction from a product component
         /// </summary>
         /// <param name="deleteRestrictionFromProductComponentDTO">DeleteRestrictionFromProductComponentDTO with the restriction deletion information</param>
-        public void deleteRestrictionFromProductMaterial(DeleteRestrictionFromProductComponentDTO deleteRestrictionFromProductComponentDTO){
+        public void deleteRestrictionFromProductComponent(DeleteRestrictionFromProductComponentDTO deleteRestrictionFromProductComponentDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithComponentBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductComponentDTO.productID);
             //TODO: CHECK PRODUCT EXISTENCE
