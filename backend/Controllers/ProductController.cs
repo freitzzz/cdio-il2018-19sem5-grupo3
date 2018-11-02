@@ -160,7 +160,7 @@ namespace backend.Controllers {
             logger.LogInformation(LOG_GET_ALL_START);
             GetAllProductsModelView allProductsModelView = new core.application.ProductController().findAllProducts();
 
-            if (allProductsModelView == null) {
+            if (allProductsModelView == null||Collections.isEnumerableNullOrEmpty(allProductsModelView)) {
                 logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
                 return BadRequest(NO_PRODUCTS_FOUND_REFERENCE);
             }
