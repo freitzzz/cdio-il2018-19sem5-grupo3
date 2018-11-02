@@ -461,7 +461,7 @@ namespace core.application{
         /// </summary>
         /// <param name="addRestrictionToProductDimensionModelView">AddRestrictionToProductDimensionModelView with the restriction addition information</param>
         /// <returns>GetAllRestrictionsModelView with the updated dimension restrictions information</returns>
-        public GetAllRestrictionsModelView addRestrictionToProductWidthDimension(AddRestrictionToProductDimensionModelView addRestrictionToProductDimensionModelView){
+        public GetAllRestrictionsModelView addRestrictionToProductWidthDimension(AddRestrictionToProductComponentDimensionModelView addRestrictionToProductDimensionModelView){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithDimensionBeingAddedRestriction=productRepository.find(addRestrictionToProductDimensionModelView.productID);
             //TODO: CHECK PRODUCT EXISTENCE
@@ -477,7 +477,7 @@ namespace core.application{
         /// </summary>
         /// <param name="addRestrictionToProductDimensionModelView">AddRestrictionToProductDimensionModelView with the restriction addition information</param>
         /// <returns>GetAllRestrictionsModelView with the updated dimension restrictions information</returns>
-        public GetAllRestrictionsModelView addRestrictionToProductHeightDimension(AddRestrictionToProductDimensionModelView addRestrictionToProductDimensionModelView){
+        public GetAllRestrictionsModelView addRestrictionToProductHeightDimension(AddRestrictionToProductComponentDimensionModelView addRestrictionToProductDimensionModelView){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithDimensionBeingAddedRestriction=productRepository.find(addRestrictionToProductDimensionModelView.productID);
             //TODO: CHECK PRODUCT EXISTENCE
@@ -493,7 +493,7 @@ namespace core.application{
         /// </summary>
         /// <param name="addRestrictionToProductDimensionModelView">AddRestrictionToProductDimensionModelView with the restriction addition information</param>
         /// <returns>GetAllRestrictionsModelView with the updated dimension restrictions information</returns>
-        public GetAllRestrictionsModelView addRestrictionToProductDepthDimension(AddRestrictionToProductDimensionModelView addRestrictionToProductDimensionModelView){
+        public GetAllRestrictionsModelView addRestrictionToProductDepthDimension(AddRestrictionToProductComponentDimensionModelView addRestrictionToProductDimensionModelView){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithDimensionBeingAddedRestriction=productRepository.find(addRestrictionToProductDimensionModelView.productID);
             //TODO: CHECK PRODUCT EXISTENCE
@@ -505,28 +505,10 @@ namespace core.application{
         }
 
         /// <summary>
-        /// Deletes a restriction from a product dimension
-        /// </summary>
-        /// <param name="deleteRestrictionFromProductDimensionDTO">DeleteRestrictionFromProductDimensionDTO with the restriction deletion information</param>
-        public void deleteRestrictionFromProductDimension(DeleteRestrictionFromProductDimensionModelView deleteRestrictionFromProductDimensionDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productWithDimensionBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductDimensionDTO.productID);
-            //TODO: CHECK PRODUCT EXISTENCE
-            //Dimension productMaterialBeingDeletedRestriction=PersistenceContext.repositories().createMaterialRepository().find(deleteRestrictionFromProductDimensionDTO.materialID);
-            //TODO: DIMENSION REPOSITORY ? ? ? ? ? :\
-            //TODO: CHECK DIMENSION EXISTENCE
-            //TODO: RESTRICTION REPOSITORY ? ? ? ? ? ? :\
-
-            productRepository.update(productWithDimensionBeingDeletedRestriction);
-            //TODO:CHECK PRODUCT UPDATE SUCCESS
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Deletes a restriction from a product width dimension
+        /// Deletes a restriction from a product component width dimension
         /// </summary>
         /// <param name="deleteRestrictionFromProductDimensionModelView">DeleteRestrictionFromProductDimensionModelView with the restriction deletion information</param>
-        public void deleteRestrictionFromProductWidthDimension(DeleteRestrictionFromProductDimensionModelView deleteRestrictionFromProductDimensionModelView){
+        public void deleteRestrictionFromProductComponentWidthDimension(DeleteRestrictionFromProductComponentDimensionModelView deleteRestrictionFromProductDimensionModelView){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithDimensionBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductDimensionModelView.productID);
             //TODO: CHECK PRODUCT EXISTENCE
@@ -538,10 +520,10 @@ namespace core.application{
         }
 
         /// <summary>
-        /// Deletes a restriction from a product height dimension
+        /// Deletes a restriction from a product component height dimension
         /// </summary>
         /// <param name="deleteRestrictionFromProductDimensionModelView">DeleteRestrictionFromProductDimensionModelView with the restriction deletion information</param>
-        public void deleteRestrictionFromProductHeightDimension(DeleteRestrictionFromProductDimensionModelView deleteRestrictionFromProductDimensionModelView){
+        public void deleteRestrictionFromProductComponentHeightDimension(DeleteRestrictionFromProductComponentDimensionModelView deleteRestrictionFromProductDimensionModelView){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithDimensionBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductDimensionModelView.productID);
             //TODO: CHECK PRODUCT EXISTENCE
@@ -553,10 +535,10 @@ namespace core.application{
         }
 
         /// <summary>
-        /// Deletes a restriction from a product depth dimension
+        /// Deletes a restriction from a product component depth dimension
         /// </summary>
         /// <param name="deleteRestrictionFromProductDimensionModelView">DeleteRestrictionFromProductDimensionModelView with the restriction deletion information</param>
-        public void deleteRestrictionFromProductDepthDimension(DeleteRestrictionFromProductDimensionModelView deleteRestrictionFromProductDimensionModelView){
+        public void deleteRestrictionFromProductComponentDepthDimension(DeleteRestrictionFromProductComponentDimensionModelView deleteRestrictionFromProductDimensionModelView){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithDimensionBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductDimensionModelView.productID);
             //TODO: CHECK PRODUCT EXISTENCE
