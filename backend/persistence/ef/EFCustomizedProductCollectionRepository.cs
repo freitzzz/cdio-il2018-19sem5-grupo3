@@ -18,7 +18,7 @@ namespace backend.persistence.ef
         /// <returns>CustomizedProductCollection with the collection of customized products which has a certain persistence id</returns>
         public override CustomizedProductCollection find(long entityPersistenceID){
             CustomizedProductCollection customizedProductCollection=base.find(entityPersistenceID);
-            return customizedProductCollection.available ? customizedProductCollection : null;
+            return customizedProductCollection.activated ? customizedProductCollection : null;
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace backend.persistence.ef
         public IEnumerable<CustomizedProductCollection> findAllCollections()
         {
             return (from product in base.dbContext.Set<CustomizedProductCollection>()
-                    where product.available==true
+                    where product.activated==true
                     select product);
         }
     }

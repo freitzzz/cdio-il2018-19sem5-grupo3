@@ -6,6 +6,7 @@ using support.domain.ddd;
 using support.dto;
 using support.utils;
 using System.Linq;
+using support.domain;
 
 namespace core.domain
 {
@@ -14,7 +15,7 @@ namespace core.domain
     /// <br>CustomizedProductCollection is an aggregate
     /// </summary>
     /// <typeparam name="CustomizedProductCollectionDTO">Generic-Type of the customized product collection DTO</typeparam>
-    public class CustomizedProductCollection : AggregateRoot<string>, DTOAble<CustomizedProductCollectionDTO>
+    public class CustomizedProductCollection : Activatable, AggregateRoot<string>, DTOAble<CustomizedProductCollectionDTO>
     {
         /// <summary>
         /// Constant that represents the message that occures if the name of the collection is invalid
@@ -53,11 +54,6 @@ namespace core.domain
         public List<CollectionProduct> collectionProducts { get => LazyLoader.Load(this, ref _collectionProducts); protected set => _collectionProducts = value; }
 
         /// <summary>
-        /// Boolean which tells if the current collection of customized products is available
-        /// </summary>
-        public bool available { get; protected set; }
-
-        /// <summary>
         /// LazyLoader injected by the framework.
         /// </summary>
         /// <value>Private Gets/Sets the LazyLoader.</value>
@@ -85,7 +81,6 @@ namespace core.domain
         {
             checkCustomizedProductCollectionProperties(name);
             this.name = name;
-            this.available = true;
             this.collectionProducts = new List<CollectionProduct>();
         }
 
@@ -96,9 +91,7 @@ namespace core.domain
         /// <param name="customizedProducts">IEnumerable with the collection customized products</param>
         public CustomizedProductCollection(string name, IEnumerable<CustomizedProduct> customizedProducts) : this(name)
         {
-            checkCustomizedProductCollectionProperties(name);
             checkCollectionCustomizedProducts(customizedProducts);
-            this.collectionProducts = new List<CollectionProduct>();
             foreach (CustomizedProduct customizedProduct in customizedProducts)
             {
                 this.collectionProducts.Add(new CollectionProduct(this, customizedProduct));
@@ -141,15 +134,15 @@ namespace core.domain
         }
 
         /// <summary>
-        /// Disables the current customized products collection
+        /// Checks if the CustomizedProductCollection contains the given CustomizedProduct.
         /// </summary>
-        /// <returns>boolean true if the current collection was disabled with success, false if not</returns>
-        public bool disable()
+        /// <param name="customizedProduct">CustomizedProduct being checked.</param>
+        /// <returns>true if the CustomizedProductCollection contains the CustomizedProduct; otherwise, false.</returns>
+        public bool hasCustomizedProduct(CustomizedProduct customizedProduct)
         {
-            if (!available) return false;
-            this.available = false;
-            return true;
+            return customizedProduct != null && collectionProducts.Select(cp => cp.customizedProduct).Contains(customizedProduct);
         }
+
 
         /// <summary>
         /// Returns the current collection identity

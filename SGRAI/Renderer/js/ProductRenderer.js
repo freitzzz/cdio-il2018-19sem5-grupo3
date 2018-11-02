@@ -210,8 +210,8 @@ function initControls(){
  * Initializes the graphic representation camera
  */
 function initCamera(){
-    initCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-    initCamera.position.y = -400;
+    initCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 10, 1000);
+    initCamera.position.y = 400;
     initCamera.position.z = 400;
     initCamera.rotation.x = .70;
 }

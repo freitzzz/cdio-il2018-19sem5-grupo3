@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Xunit;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Testing;
+using core.modelview.productcategory;
 
 namespace backend_tests.Controllers{
     
@@ -615,9 +616,13 @@ namespace backend_tests.Controllers{
             ProductDTO productDTO=new ProductDTO();
             productDTO.reference="Valid Reference";
             productDTO.designation="Valid Designation";
-            var productCategoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-            productCategoryDTO.Wait();
-            productDTO.productCategory=productCategoryDTO.Result;
+            Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryMVTask.Wait();
+            
+            //NOTE: ModelView is being converted to DTO for now
+            GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
+            productDTO.productCategory=new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name}; 
+
             var createProductNoMaterials=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON(productDTO));
             //Since there was an attempt to create a product with no materials
             //Then the response should be a Bad Request
@@ -633,9 +638,13 @@ namespace backend_tests.Controllers{
             ProductDTO productDTO=new ProductDTO();
             productDTO.reference="Valid Reference";
             productDTO.designation="Valid Designation";
-            var productCategoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-            productCategoryDTO.Wait();
-            productDTO.productCategory=productCategoryDTO.Result;
+            Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryMVTask.Wait();
+
+            //NOTE: ModelView is being converted to DTO for now
+            GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
+
+            productDTO.productCategory=new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name}; 
             //Materials must previously exist as they can be shared in various products
             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
             materialDTO.Wait();
@@ -652,13 +661,17 @@ namespace backend_tests.Controllers{
         [Fact,TestPriority(28)]
         public async void ensureProductCantBeCreatedWithInvalidComponents(){
             ProductDTO productDTO=createProductWithValidProperties();
-            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-            categoryDTO.Wait();
+            Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryMVTask.Wait();
             //Materials must previously exist as they can be shared in various products
             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
             materialDTO.Wait();
             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-            productDTO.productCategory=categoryDTO.Result;
+            
+            //NOTE: ModelView is being converted to DTO for now
+            GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
+            productDTO.productCategory=new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name}; 
+
             //Our invalid component is a "blank" component
             ComponentDTO componentDTO=new ComponentDTO();
             productDTO.complements=new List<ComponentDTO>();
@@ -672,13 +685,17 @@ namespace backend_tests.Controllers{
         [Fact,TestPriority(29)]
         public async void ensureProductCantBeCreatedWithInvalidSlots(){
             ProductDTO productDTO=createProductWithValidProperties();
-            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-            categoryDTO.Wait();
+            Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryMVTask.Wait();
             //Materials must previously exist as they can be shared in various products
             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
             materialDTO.Wait();
             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-            productDTO.productCategory=categoryDTO.Result;
+
+            //NOTE: ModelView is being converted to DTO for now
+            GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
+            productDTO.productCategory=new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name}; 
+            
             //Our invalid slots are "empty" slots
             productDTO.slotDimensions=new SlotDimensionSetDTO();
             var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
@@ -696,13 +713,17 @@ namespace backend_tests.Controllers{
             //A valid category, valid dimensions and valid materials
             //Components are not required
             ProductDTO productDTO=createProductWithValidProperties();
-            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-            categoryDTO.Wait();
+            Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryMVTask.Wait();
             //Materials must previously exist as they can be shared in various products
             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
             materialDTO.Wait();
             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-            productDTO.productCategory=categoryDTO.Result; 
+
+            //NOTE: ModelView is being converted to DTO for now
+            GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
+            productDTO.productCategory=new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name}; 
+
             var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
@@ -715,13 +736,17 @@ namespace backend_tests.Controllers{
         public async Task<ProductDTO> ensureProductWithComponentsIsCreatedSuccesfuly(){
             //To save time lets just create a new product which will serve as the aggregate
             ProductDTO productDTO=createProductWithValidProperties();
-            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-            categoryDTO.Wait();
+            Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryMVTask.Wait();
             //Materials must previously exist as they can be shared in various products
             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
             materialDTO.Wait();
             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-            productDTO.productCategory=categoryDTO.Result; 
+            
+            //NOTE: ModelView is being converted to DTO for now
+            GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
+            productDTO.productCategory=new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name}; 
+            
             //Lets now adds the components to the product
             //We are going to create a product which will serve as complemented product for a product (component)
             Task<ProductDTO> complementedProductDTOTask=ensureProductIsCreatedSuccesfuly();
@@ -740,13 +765,17 @@ namespace backend_tests.Controllers{
         [Fact,TestPriority(32)]
         public async Task<ProductDTO> ensureProductWithSlotsIsCreatedSuccesfuly(){
             ProductDTO productDTO=createProductWithValidProperties();
-            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-            categoryDTO.Wait();
+            Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryMVTask.Wait();
             //Materials must previously exist as they can be shared in various products
             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
             materialDTO.Wait();
             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-            productDTO.productCategory=categoryDTO.Result;
+
+            //NOTE: ModelView is being converted to DTO for now
+            GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
+            productDTO.productCategory= new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name};
+            
             //Now lets create valid slot dimensions and add it to the product
             SlotDimensionSetDTO slotDimensionSetDTO=new SlotDimensionSetDTO();
             CustomizedDimensionsDTO customizedDimensionsDTO=new CustomizedDimensionsDTO();
@@ -768,13 +797,18 @@ namespace backend_tests.Controllers{
         [Fact,TestPriority(33)]
         public async Task<ProductDTO> ensureProductWithSlotAndComponentsIsCreatedSuccesfuly(){
             ProductDTO productDTO=createProductWithValidProperties();
-            Task<ProductCategoryDTO> categoryDTO=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-            categoryDTO.Wait();
+            Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            categoryMVTask.Wait();
             //Materials must previously exist as they can be shared in various products
             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
             materialDTO.Wait();
             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-            productDTO.productCategory=categoryDTO.Result;
+
+            //NOTE: ModelView is being converted to DTO for now
+            GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
+            ProductCategoryDTO categoryDTO = new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name};
+
+            productDTO.productCategory=categoryDTO;
             //Now lets create valid slot dimensions and add it to the product
             SlotDimensionSetDTO slotDimensionSetDTO=new SlotDimensionSetDTO();
             CustomizedDimensionsDTO customizedDimensionsDTO=new CustomizedDimensionsDTO();

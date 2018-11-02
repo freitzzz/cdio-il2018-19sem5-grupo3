@@ -73,37 +73,35 @@ namespace core.application{
         }
 
         /// <summary>
-        /// Updates the customized products of a customized product collection
+        /// Adds a customized product to the customized product collection
         /// </summary>
-        /// <param name="updateCustomizedProductCollectionDTO">UpdateCustomizedProductCollectionDTO with the customized product collection update information</param>
-        /// <returns>boolean true if the update was successful, false if not</returns>
-        public bool updateCollectionCustomizedProducts(UpdateCustomizedProductCollectionDTO updateCustomizedProductCollectionDTO){
-            CustomizedProductCollectionRepository customizedProductCollectionRepository=PersistenceContext.repositories().createCustomizedProductCollectionRepository();
-            CustomizedProductCollection customizedProductCollection=customizedProductCollectionRepository.find(updateCustomizedProductCollectionDTO.id);
-            bool updatedWithSuccess=true;
-            bool performedAtLeastOneUpdate=false;
-            
-            if(!Collections.isEnumerableNullOrEmpty(updateCustomizedProductCollectionDTO.customizedProductsToAdd)){
-                IEnumerable<CustomizedProduct> customizedProductsToAdd=PersistenceContext.repositories().createCustomizedProductRepository().findCustomizedProductsByTheirPIDS(updateCustomizedProductCollectionDTO.customizedProductsToAdd);
-                //TODO: CHECK LISTS LENGTH
-                foreach(CustomizedProduct customizedProduct in customizedProductsToAdd)
-                    updatedWithSuccess&=customizedProductCollection.addCustomizedProduct(customizedProduct);
-                performedAtLeastOneUpdate=true;
+        /// <param name="updateCustomizedProductCollectionDTO">UpdateCustomizedProductCollectionDTO with the customized product collection information</param>
+        /// <returns>boolean true if the customized product was successfully added, false if not</returns>
+        public bool addCustomizedProductsToCustomizedProductCollection(UpdateCustomizedProductCollectionDTO updateCustomizedProductCollectionDTO){
+            CustomizedProductCollectionRepository customizedProductCollectionRepository = PersistenceContext.repositories().createCustomizedProductCollectionRepository();
+            CustomizedProductCollection customizedProductCollection = customizedProductCollectionRepository.find(updateCustomizedProductCollectionDTO.id);
+            CustomizedProductDTO customizedProductDTO = updateCustomizedProductCollectionDTO.customizedProductToAdd;
+            if(customizedProductDTO != null){
+                CustomizedProduct customizedProduct = PersistenceContext.repositories().createCustomizedProductRepository().find(customizedProductDTO.id);
+                return customizedProductCollection.addCustomizedProduct(customizedProduct) && customizedProductCollectionRepository.update(customizedProductCollection) != null;
             }
+            return false;
+        }
 
-            if(!updatedWithSuccess)return false;
-
-            if(!Collections.isEnumerableNullOrEmpty(updateCustomizedProductCollectionDTO.customizedProductsToRemove)){
-                IEnumerable<CustomizedProduct> customizedProductsToRemove=PersistenceContext.repositories().createCustomizedProductRepository().findCustomizedProductsByTheirPIDS(updateCustomizedProductCollectionDTO.customizedProductsToRemove);
-                //TODO: CHECK LISTS LENGTH
-                foreach(CustomizedProduct customizedProduct in customizedProductsToRemove)
-                    updatedWithSuccess&=customizedProductCollection.removeCustomizedProduct(customizedProduct);
-                performedAtLeastOneUpdate=true;
+        /// <summary>
+        /// Removes a customized product from the customized product collection
+        /// </summary>
+        /// <param name="collectionID">ID of the customized product collection to update</param>
+        /// <param name="customizedProductID">ID of the customized product to remove</param>
+        /// <returns>boolean true if the customized product was successfully removed, false if not</returns>
+        public bool removeCustomizedProductsToCustomizedProductCollection(long collectionID, long customizedProductID){
+            CustomizedProduct customizedProduct = PersistenceContext.repositories().createCustomizedProductRepository().find(customizedProductID);
+            if(customizedProduct != null){
+                CustomizedProductCollectionRepository customizedProductCollectionRepository = PersistenceContext.repositories().createCustomizedProductCollectionRepository();
+                CustomizedProductCollection customizedProductCollection = customizedProductCollectionRepository.find(collectionID);
+                return customizedProductCollection.removeCustomizedProduct(customizedProduct) && customizedProductCollectionRepository.update(customizedProductCollection) != null;
             }
-
-            if(!performedAtLeastOneUpdate||!updatedWithSuccess)return false;
-            updatedWithSuccess&=customizedProductCollectionRepository.update(customizedProductCollection)!=null;
-            return updatedWithSuccess;
+            return false;
         }
 
         /// <summary>
@@ -114,7 +112,7 @@ namespace core.application{
         public bool disableCustomizedProductCollection(CustomizedProductCollectionDTO customizedProductCollectionDTO){
             CustomizedProductCollectionRepository customizedProductCollectionRepository=PersistenceContext.repositories().createCustomizedProductCollectionRepository();
             CustomizedProductCollection customizedProductCollection=customizedProductCollectionRepository.find(customizedProductCollectionDTO.id);
-            return customizedProductCollection!=null && customizedProductCollection.disable() && customizedProductCollectionRepository.update(customizedProductCollection)!=null;
+            return customizedProductCollection!=null && customizedProductCollection.deactivate() && customizedProductCollectionRepository.update(customizedProductCollection)!=null;
         }
     }
 }

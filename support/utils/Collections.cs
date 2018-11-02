@@ -14,7 +14,7 @@ namespace support.utils
         /// <summary>
         /// Checks if a collection is empty.
         /// </summary>
-        /// <param name="list"></param>
+        /// <param name="list">List to check</param>
         /// <returns>true if it's empty, false if otherwise</returns>
         public static bool isListEmpty<T>(List<T> list)
         {
@@ -24,7 +24,7 @@ namespace support.utils
         /// <summary>
         ///  Checks if a list is null.
         /// </summary>
-        /// <param name="list">List with the list being checked</param>
+        /// <param name="list">List to check</param>
         /// <returns>true if it's null, false if otherwise</returns>
         public static bool isListNull<T>(List<T> list)
         {

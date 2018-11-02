@@ -37,50 +37,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureCustomizedProductsListWithDuplicatesIsNotValid()
         {
-            var category = new ProductCategory("It's-a-me again");
-
-            //Creating Dimensions
-            List<Double> values = new List<Double>();
-
-            values.Add(500.0); //Width
-
-            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
-
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(interval);
-
-            IEnumerable<Dimension> heightValues = dimensions;
-            IEnumerable<Dimension> widthValues = dimensions;
-            IEnumerable<Dimension> depthValues = dimensions;
-
-            //Creating a material
-            string reference = "Just referencing";
-            string designation = "Doin' my thing";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Prayin'");
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("Kinda dead", "So tired", category, matsList, heightValues, widthValues, depthValues);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
-
-            //Customized Material
-            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
-            Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(material, color1, finish2);
-
-
-            CustomizedProduct cp = new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);
+            CustomizedProduct cp = buildCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
             products.Add(cp);
@@ -95,43 +52,6 @@ namespace core_tests.domain
         [Fact]
         public void ensureNullNameIsNotValid()
         {
-            var category = new ProductCategory("It's-a-me again");
-
-            //Creating Dimensions
-            List<Double> values = new List<Double>();
-
-            values.Add(500.0); //Width
-
-            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
-
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(interval);
-
-            IEnumerable<Dimension> heightValues = dimensions;
-            IEnumerable<Dimension> widthValues = dimensions;
-            IEnumerable<Dimension> depthValues = dimensions;
-
-            //Creating a material
-            string reference = "Just referencing";
-            string designation = "Doin' my thing";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Prayin'");
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("Kinda dead", "So tired", category, matsList, heightValues, widthValues, depthValues);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
-
             Assert.Throws<ArgumentException>(() => new CustomizedProductCollection(null));
         }
 
@@ -141,43 +61,6 @@ namespace core_tests.domain
         [Fact]
         public void ensureEmptyNameIsNotValid()
         {
-            var category = new ProductCategory("It's-a-me again");
-
-            //Creating Dimensions
-            List<Double> values = new List<Double>();
-
-            values.Add(500.0); //Width
-
-            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
-
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(interval);
-
-            IEnumerable<Dimension> heightValues = dimensions;
-            IEnumerable<Dimension> widthValues = dimensions;
-            IEnumerable<Dimension> depthValues = dimensions;
-
-            //Creating a material
-            string reference = "Just referencing";
-            string designation = "Doin' my thing";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Prayin'");
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("Kinda dead", "So tired", category, matsList, heightValues, widthValues, depthValues);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
-
             Assert.Throws<ArgumentException>(() => new CustomizedProductCollection(""));
         }
 
@@ -249,52 +132,9 @@ namespace core_tests.domain
         [Fact]
         public void ensureAddCustomizedProductWorksForValidProduct()
         {
+            CustomizedProduct customizedProduct = buildCustomizedProductInstance();
 
-            var category = new ProductCategory("It's-a-me again");
-
-            //Creating Dimensions
-            List<Double> values = new List<Double>();
-
-            values.Add(500.0); //Width
-
-            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
-
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(interval);
-
-            IEnumerable<Dimension> heightValues = dimensions;
-            IEnumerable<Dimension> widthValues = dimensions;
-            IEnumerable<Dimension> depthValues = dimensions;
-
-            //Creating a material
-            string reference = "Just referencing";
-            string designation = "Doin' my thing";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Prayin'");
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("Kinda dead", "So tired", category, matsList, heightValues, widthValues, depthValues);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
-
-            //Customized Material
-            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
-            Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
-
-
-            Assert.True(new CustomizedProductCollection("Mario").addCustomizedProduct(
-                new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product)));
+            Assert.True(new CustomizedProductCollection("Mario").addCustomizedProduct(customizedProduct));
         }
 
         /// <summary>
@@ -303,49 +143,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureAddCustomizedProductFailsIfItAlreadyExists()
         {
-            var category = new ProductCategory("It's-a-me again");
-
-            //Creating Dimensions
-            List<Double> values = new List<Double>();
-
-            values.Add(500.0); //Width
-
-            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
-
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(interval);
-
-            IEnumerable<Dimension> heightValues = dimensions;
-            IEnumerable<Dimension> widthValues = dimensions;
-            IEnumerable<Dimension> depthValues = dimensions;
-
-            //Creating a material
-            string reference = "Just referencing";
-            string designation = "Doin' my thing";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Prayin'");
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("Kinda dead", "So tired", category, matsList, heightValues, widthValues, depthValues);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
-
-            //Customized Material
-            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
-            Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
-
-            CustomizedProduct customizedProduct = new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);
+            CustomizedProduct customizedProduct = buildCustomizedProductInstance();
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(customizedProduct);
 
@@ -368,50 +166,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureRemovedCustomizedProductWorksForAlreadyExistentProduct()
         {
-
-            var category = new ProductCategory("It's-a-me again");
-
-            //Creating Dimensions
-            List<Double> values = new List<Double>();
-
-            values.Add(500.0); //Width
-
-            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
-
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(interval);
-
-            IEnumerable<Dimension> heightValues = dimensions;
-            IEnumerable<Dimension> widthValues = dimensions;
-            IEnumerable<Dimension> depthValues = dimensions;
-
-            //Creating a material
-            string reference = "Just referencing";
-            string designation = "Doin' my thing";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Prayin'");
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("Kinda dead", "So tired", category, matsList, heightValues, widthValues, depthValues);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
-
-            //Customized Material
-            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
-            Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
-
-            CustomizedProduct cp = new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);
+            CustomizedProduct cp = buildCustomizedProductInstance();
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(cp);
 
@@ -434,9 +189,9 @@ namespace core_tests.domain
         public void ensureDisabledCustomizedProductCollectionCantBeDisabled()
         {
             CustomizedProductCollection collection = new CustomizedProductCollection("Mario");
-            collection.disable();
+            collection.deactivate();
 
-            Assert.False(collection.disable());
+            Assert.False(collection.deactivate());
         }
         /// <summary>
         /// Test to ensure that an enabled CustomizedProductCollection can be disabled.
@@ -444,7 +199,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureEnabledCustomizedProductCollectionCanBeDisabled()
         {
-            Assert.True(new CustomizedProductCollection("Mario").disable());
+            Assert.True(new CustomizedProductCollection("Mario").deactivate());
         }
 
         /// <summary>
@@ -475,11 +230,15 @@ namespace core_tests.domain
 
             List<Color> colors = new List<Color>();
             Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
+            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
             colors.Add(color);
+            colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
             Finish finish = Finish.valueOf("Prayin'");
+            Finish finish2 = Finish.valueOf("Estragado");
             finishes.Add(finish);
+            finishes.Add(finish2);
 
             Material material = new Material(reference, designation, colors, finishes);
             List<Material> materials = new List<Material>();
@@ -491,8 +250,6 @@ namespace core_tests.domain
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
-            Finish finish2 = Finish.valueOf("Estragado");
             CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
 
 
@@ -510,50 +267,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureEqualCustomizedProductCollectionsAreEqual()
         {
-            var category = new ProductCategory("It's-a-me again");
-
-            //Creating Dimensions
-            List<Double> values = new List<Double>();
-
-            values.Add(500.0); //Width
-
-            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
-
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(interval);
-
-            IEnumerable<Dimension> heightValues = dimensions;
-            IEnumerable<Dimension> widthValues = dimensions;
-            IEnumerable<Dimension> depthValues = dimensions;
-
-            //Creating a material
-            string reference = "Just referencing";
-            string designation = "Doin' my thing";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Prayin'");
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("Kinda dead", "So tired", category, matsList, heightValues, widthValues, depthValues);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
-
-            //Customized Material
-            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
-            Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
-
-
-            CustomizedProduct cp = new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);
+            CustomizedProduct cp = buildCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -566,50 +280,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureDifferentTypeObjectIsNotEqualToCustomizedProductCollection()
         {
-            var category = new ProductCategory("It's-a-me again");
-
-            //Creating Dimensions
-            List<Double> values = new List<Double>();
-
-            values.Add(500.0); //Width
-
-            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
-
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(interval);
-
-            IEnumerable<Dimension> heightValues = dimensions;
-            IEnumerable<Dimension> widthValues = dimensions;
-            IEnumerable<Dimension> depthValues = dimensions;
-
-            //Creating a material
-            string reference = "Just referencing";
-            string designation = "Doin' my thing";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Prayin'");
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("Kinda dead", "So tired", category, matsList, heightValues, widthValues, depthValues);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
-
-            //Customized Material
-            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
-            Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
-
-
-            CustomizedProduct cp = new CustomizedProduct("Luigi", "Peach", mat, customizedDimensions, product);
+            CustomizedProduct cp = buildCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -622,50 +293,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureNullObjectIsNotEqualToCustomizedProductCollection()
         {
-            var category = new ProductCategory("It's-a-me again");
-
-            //Creating Dimensions
-            List<Double> values = new List<Double>();
-
-            values.Add(500.0); //Width
-
-            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
-
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(interval);
-
-            IEnumerable<Dimension> heightValues = dimensions;
-            IEnumerable<Dimension> widthValues = dimensions;
-            IEnumerable<Dimension> depthValues = dimensions;
-
-            //Creating a material
-            string reference = "Just referencing";
-            string designation = "Doin' my thing";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Prayin'");
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("Kinda dead", "So tired", category, matsList, heightValues, widthValues, depthValues);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
-
-            //Customized Material
-            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
-            Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
-
-
-            CustomizedProduct cp = new CustomizedProduct("Mushrooms", "Are deadly", mat, customizedDimensions, product);
+            CustomizedProduct cp = buildCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -678,50 +306,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureHashCodeWorks()
         {
-            var category = new ProductCategory("It's-a-me again");
-
-            //Creating Dimensions
-            List<Double> values = new List<Double>();
-
-            values.Add(500.0); //Width
-
-            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
-
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(interval);
-
-            IEnumerable<Dimension> heightValues = dimensions;
-            IEnumerable<Dimension> widthValues = dimensions;
-            IEnumerable<Dimension> depthValues = dimensions;
-
-            //Creating a material
-            string reference = "Just referencing";
-            string designation = "Doin' my thing";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Prayin'");
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("Kinda dead", "So tired", category, matsList, heightValues, widthValues, depthValues);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
-
-            //Customized Material
-            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
-            Finish finish2 = Finish.valueOf("Estragado");
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
-
-
-            CustomizedProduct cp = new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);
+            CustomizedProduct cp = buildCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -735,6 +320,48 @@ namespace core_tests.domain
         [Fact]
         public void ensureToStringWorks()
         {
+
+            CustomizedProduct cp = buildCustomizedProductInstance();
+
+            List<CustomizedProduct> products = new List<CustomizedProduct>();
+            products.Add(cp);
+
+            Assert.Equal(new CustomizedProductCollection("Mario", products).ToString(),
+            new CustomizedProductCollection("Mario", products).ToString());
+        }
+
+        [Fact]
+        public void ensureHasCustomizedProductReturnsFalseIfCustomizedProductIsNull()
+        {
+            CustomizedProductCollection collection = new CustomizedProductCollection("Collection");
+
+            Assert.False(collection.hasCustomizedProduct(null));
+        }
+
+        [Fact]
+        public void ensureHasCustomizedProductReturnsFalseIfCustomizedProductWasNotAdded()
+        {
+            CustomizedProductCollection collection = new CustomizedProductCollection("Collection");
+
+            CustomizedProduct customizedProduct = buildCustomizedProductInstance();
+
+            Assert.False(collection.hasCustomizedProduct(customizedProduct));
+        }
+
+        [Fact]
+        public void ensureHasCustomizedProductReturnsTrueIfCustomizedProductWasAdded()
+        {
+            CustomizedProductCollection collection = new CustomizedProductCollection("Collection");
+
+            CustomizedProduct customizedProduct = buildCustomizedProductInstance();
+
+            collection.addCustomizedProduct(customizedProduct);
+
+            Assert.True(collection.hasCustomizedProduct(customizedProduct));
+        }
+
+        private CustomizedProduct buildCustomizedProductInstance()
+        {
             var category = new ProductCategory("It's-a-me again");
 
             //Creating Dimensions
@@ -757,11 +384,15 @@ namespace core_tests.domain
 
             List<Color> colors = new List<Color>();
             Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
+            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
             colors.Add(color);
+            colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
             Finish finish = Finish.valueOf("Prayin'");
+            Finish finish2 = Finish.valueOf("Estragado");
             finishes.Add(finish);
+            finishes.Add(finish2);
 
             Material material = new Material(reference, designation, colors, finishes);
             List<Material> materials = new List<Material>();
@@ -773,17 +404,11 @@ namespace core_tests.domain
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
-            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
-            Finish finish2 = Finish.valueOf("Estragado");
             CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
 
 
-            CustomizedProduct cp = new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);
-            List<CustomizedProduct> products = new List<CustomizedProduct>();
-            products.Add(cp);
 
-            Assert.Equal(new CustomizedProductCollection("Mario", products).ToString(),
-            new CustomizedProductCollection("Mario", products).ToString());
+            return new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);
         }
     }
 }
