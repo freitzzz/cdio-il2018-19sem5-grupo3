@@ -10,6 +10,7 @@ using core.domain;
 using core.dto.options;
 using core.modelview.product;
 using core.modelview.dimension;
+using core.modelview.restriction;
 using support.dto;
 using System.Web;
 using Newtonsoft.Json;
@@ -662,7 +663,7 @@ namespace backend.Controllers {
         }
 
         /// <summary>
-        /// Adds a restriction to a product dimension
+        /// Adds a restriction to a product width dimension
         /// </summary>
         /// <param name="productID">Long with the product resource ID which restriction will apply to its dimension</param>
         /// <param name="dimensionID">Long with the dimension resource ID which restriction will be applied to</param>
@@ -670,15 +671,69 @@ namespace backend.Controllers {
         /// <returns>HTTP Response 201; Created if the restriction was added to the product dimension with success
         ///      <br>HTTP Response 400; Bad Request if an error occured while adding the restriction to the product dimension
         /// </returns>
-        [HttpPost("{productID}/dimensions/{dimensionID}/restrictions")]
-        public ActionResult addRestrictionToProductDimension(long productID,long dimensionID,[FromBody]RestrictionDTO restrictionDTO){
+        [HttpPost("{productID}/dimensions/width/{dimensionID}/restrictions")]
+        public ActionResult addRestrictionToProductWidthDimension(long productID,long dimensionID,[FromBody]RestrictionDTO restrictionDTO){
             AddRestrictionToProductDimensionModelView addRestrictionToProductDimensionDTO=new AddRestrictionToProductDimensionModelView();
             addRestrictionToProductDimensionDTO.productID=productID;
             addRestrictionToProductDimensionDTO.dimensionID=dimensionID;
             addRestrictionToProductDimensionDTO.restriction=restrictionDTO;
             try{
-                RestrictionDTO appliedRestrictionDTO=new core.application.ProductController().addRestrictionToProductDimension(addRestrictionToProductDimensionDTO);
-                return Created(Request.Path,appliedRestrictionDTO);
+                GetAllRestrictionsModelView updatedAppliedRestrictions=new core.application.ProductController().addRestrictionToProductWidthDimension(addRestrictionToProductDimensionDTO);
+                return Created(Request.Path,updatedAppliedRestrictions);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Adds a restriction to a product height dimension
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which restriction will apply to its dimension</param>
+        /// <param name="dimensionID">Long with the dimension resource ID which restriction will be applied to</param>
+        /// <param name="restrictionDTO">RestrictionDTO with the restriction information</param>
+        /// <returns>HTTP Response 201; Created if the restriction was added to the product dimension with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while adding the restriction to the product dimension
+        /// </returns>
+        [HttpPost("{productID}/dimensions/height/{dimensionID}/restrictions")]
+        public ActionResult addRestrictionToProductHeightDimension(long productID,long dimensionID,[FromBody]RestrictionDTO restrictionDTO){
+            AddRestrictionToProductDimensionModelView addRestrictionToProductDimensionDTO=new AddRestrictionToProductDimensionModelView();
+            addRestrictionToProductDimensionDTO.productID=productID;
+            addRestrictionToProductDimensionDTO.dimensionID=dimensionID;
+            addRestrictionToProductDimensionDTO.restriction=restrictionDTO;
+            try{
+                GetAllRestrictionsModelView updatedAppliedRestrictions=new core.application.ProductController().addRestrictionToProductHeightDimension(addRestrictionToProductDimensionDTO);
+                return Created(Request.Path,updatedAppliedRestrictions);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Adds a restriction to a product depth dimension
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which restriction will apply to its dimension</param>
+        /// <param name="dimensionID">Long with the dimension resource ID which restriction will be applied to</param>
+        /// <param name="restrictionDTO">RestrictionDTO with the restriction information</param>
+        /// <returns>HTTP Response 201; Created if the restriction was added to the product dimension with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while adding the restriction to the product dimension
+        /// </returns>
+        [HttpPost("{productID}/dimensions/depth/{dimensionID}/restrictions")]
+        public ActionResult addRestrictionToProductDepthDimension(long productID,long dimensionID,[FromBody]RestrictionDTO restrictionDTO){
+            AddRestrictionToProductDimensionModelView addRestrictionToProductDimensionDTO=new AddRestrictionToProductDimensionModelView();
+            addRestrictionToProductDimensionDTO.productID=productID;
+            addRestrictionToProductDimensionDTO.dimensionID=dimensionID;
+            addRestrictionToProductDimensionDTO.restriction=restrictionDTO;
+            try{
+                GetAllRestrictionsModelView updatedAppliedRestrictions=new core.application.ProductController().addRestrictionToProductDepthDimension(addRestrictionToProductDimensionDTO);
+                return Created(Request.Path,updatedAppliedRestrictions);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
             }catch(InvalidOperationException invalidOperationException){

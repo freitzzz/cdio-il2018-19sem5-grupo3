@@ -5,6 +5,7 @@ using core.persistence;
 using core.dto;
 using core.modelview.dimension;
 using core.modelview.product;
+using core.modelview.restriction;
 using core.services;
 using core.services.ensurance;
 using support.dto;
@@ -452,21 +453,50 @@ namespace core.application{
             //TODO:CHECK PRODUCT UPDATE SUCCESS
             productRepository.update(productToRemoveDimension);
         }
+        
+        /// <summary>
+        /// Adds a restriction to a product width dimension
+        /// </summary>
+        /// <param name="addRestrictionToProductDimensionModelView">AddRestrictionToProductDimensionModelView with the restriction addition information</param>
+        /// <returns>GetAllRestrictionsModelView with the updated dimension restrictions information</returns>
+        public GetAllRestrictionsModelView addRestrictionToProductWidthDimension(AddRestrictionToProductDimensionModelView addRestrictionToProductDimensionModelView){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productWithDimensionBeingAddedRestriction=productRepository.find(addRestrictionToProductDimensionModelView.productID);
+            //TODO: CHECK PRODUCT EXISTENCE
+
+            //TODO: FINISH IMPLEMENTATION (@Moreira (1160928))
+            productRepository.update(productWithDimensionBeingAddedRestriction);
+            //TODO: CHECK UPDATE SUCCESS
+            throw new NotImplementedException();
+        }
 
         /// <summary>
-        /// Adds a restriction to a product dimension
+        /// Adds a restriction to a product height dimension
         /// </summary>
-        /// <param name="addRestrictionToProductDimensionDTO">AddRestrictionToProductDimensionDTO with the restriction addition information</param>
-        /// <returns>RestrictionDTO with the product dimension added restriction</returns>
-        public RestrictionDTO addRestrictionToProductDimension(AddRestrictionToProductDimensionModelView addRestrictionToProductDimensionDTO){
+        /// <param name="addRestrictionToProductDimensionModelView">AddRestrictionToProductDimensionModelView with the restriction addition information</param>
+        /// <returns>GetAllRestrictionsModelView with the updated dimension restrictions information</returns>
+        public GetAllRestrictionsModelView addRestrictionToProductHeightDimension(AddRestrictionToProductDimensionModelView addRestrictionToProductDimensionModelView){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productWithDimensionBeingAddedRestriction=productRepository.find(addRestrictionToProductDimensionDTO.productID);
+            Product productWithDimensionBeingAddedRestriction=productRepository.find(addRestrictionToProductDimensionModelView.productID);
             //TODO: CHECK PRODUCT EXISTENCE
-            //Product productDimensionBeingAddedRestriction=productRepository.find(addRestrictionToProductDimensionDTO.componentID);
-            //TODO: DIMENSION REPOSITORY ????? :(
-            //TODO: CHECK DIMENSION EXISTENCE
-            //TODO: RESTRICTION DTO SERVICE
 
+            //TODO: FINISH IMPLEMENTATION (@Moreira (1160928))
+            productRepository.update(productWithDimensionBeingAddedRestriction);
+            //TODO: CHECK UPDATE SUCCESS
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Adds a restriction to a product depth dimension
+        /// </summary>
+        /// <param name="addRestrictionToProductDimensionModelView">AddRestrictionToProductDimensionModelView with the restriction addition information</param>
+        /// <returns>GetAllRestrictionsModelView with the updated dimension restrictions information</returns>
+        public GetAllRestrictionsModelView addRestrictionToProductDepthDimension(AddRestrictionToProductDimensionModelView addRestrictionToProductDimensionModelView){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productWithDimensionBeingAddedRestriction=productRepository.find(addRestrictionToProductDimensionModelView.productID);
+            //TODO: CHECK PRODUCT EXISTENCE
+
+            //TODO: FINISH IMPLEMENTATION (@Moreira (1160928))
             productRepository.update(productWithDimensionBeingAddedRestriction);
             //TODO: CHECK UPDATE SUCCESS
             throw new NotImplementedException();
