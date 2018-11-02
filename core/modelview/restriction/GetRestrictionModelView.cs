@@ -1,3 +1,4 @@
+using core.modelview.algorithm;
 using System.Runtime.Serialization;
 
 namespace core.modelview.restriction{
@@ -20,9 +21,9 @@ namespace core.modelview.restriction{
         public string description{get;set;}
 
         /// <summary>
-        /// Short with the restriction algorithm ID
+        /// GetBasicAlgorithmModelView with the restriction algorithm
         /// </summary>
         [DataMember(Name="algorithm")]
-        public short algorithm{get;set;}
+        public GetBasicAlgorithmModelView algorithm{get;set;}
     }
 }

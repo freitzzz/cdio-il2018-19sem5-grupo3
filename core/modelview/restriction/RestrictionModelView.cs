@@ -14,6 +14,9 @@ namespace core.modelview.restriction{
         /// <param name="restriction">Restriction with the restriction being created the model view</param>
         /// <returns>GetBasicRestrictionModelView with the restriction basic information model view</returns>
         public static GetBasicRestrictionModelView fromEntityAsBasic(Restriction restriction){
+            GetBasicRestrictionModelView basicRestrictionModelView=new GetBasicRestrictionModelView();
+            basicRestrictionModelView.id=restriction.Id;
+            basicRestrictionModelView.description=restriction.description;
             throw new NotImplementedException();
         }
 
@@ -23,6 +26,9 @@ namespace core.modelview.restriction{
         /// <param name="restriction">Restriction with the restriction being created the model view</param>
         /// <returns>GetRestrictionModelView with the restriction information model view</returns>
         public static GetRestrictionModelView fromEntity(Restriction restriction){
+            GetRestrictionModelView restrictionModelView=new GetRestrictionModelView();
+            restrictionModelView.id=restriction.Id;
+            restrictionModelView.description=restriction.description;
             throw new NotImplementedException();
         }
 

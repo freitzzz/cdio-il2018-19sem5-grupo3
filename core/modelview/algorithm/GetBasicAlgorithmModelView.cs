@@ -2,7 +2,7 @@ using System;
 using System.Runtime.Serialization;
 using core.domain;
 
-namespace core.dto {
+namespace core.modelview.algorithm {
     /// <summary>
     /// Basic algorithm information modelview
     /// </summary>
