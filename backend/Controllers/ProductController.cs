@@ -8,8 +8,10 @@ using backend.Models;
 using core.application;
 using core.domain;
 using core.dto.options;
-using core.modelview.product;
+using core.modelview.component;
 using core.modelview.dimension;
+using core.modelview.material;
+using core.modelview.product;
 using core.modelview.restriction;
 using support.dto;
 using System.Web;
@@ -286,8 +288,8 @@ namespace backend.Controllers {
         public ActionResult addMaterialToProduct(long id,[FromBody]AddMaterialToProductModelView addMaterialToProductDTO){
             addMaterialToProductDTO.productID=id;
             try{
-                MaterialDTO materialDTO=new core.application.ProductController().addMaterialToProduct(addMaterialToProductDTO);
-                return Created(Request.Path,materialDTO);
+                GetMaterialModelView materialModelView=new core.application.ProductController().addMaterialToProduct(addMaterialToProductDTO);
+                return Created(Request.Path,materialModelView);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
             }catch(InvalidOperationException invalidOperationException){
@@ -336,8 +338,8 @@ namespace backend.Controllers {
             addRestrictionToProductMaterialDTO.materialID=materialID;
             addRestrictionToProductMaterialDTO.restriction=restrictionDTO;
             try{
-                RestrictionDTO appliedRestrictionDTO=new core.application.ProductController().addRestrictionToProductMaterial(addRestrictionToProductMaterialDTO);
-                return Created(Request.Path,appliedRestrictionDTO);
+                GetRestrictionModelView appliedRestrictionModelView=new core.application.ProductController().addRestrictionToProductMaterial(addRestrictionToProductMaterialDTO);
+                return Created(Request.Path,appliedRestrictionModelView);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
             }catch(InvalidOperationException invalidOperationException){
@@ -411,8 +413,8 @@ namespace backend.Controllers {
         public ActionResult addComponentToProduct(long id,[FromBody]AddComponentToProductModelView addComponentToProductDTO){
             addComponentToProductDTO.productID=id;
             try{
-                ComponentDTO componentDTO=new core.application.ProductController().addComponentToProduct(addComponentToProductDTO);
-                return Created(Request.Path,componentDTO);
+                GetComponentModelView componentModelView=new core.application.ProductController().addComponentToProduct(addComponentToProductDTO);
+                return Created(Request.Path,componentModelView);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
             }catch(InvalidOperationException invalidOperationException){
@@ -461,8 +463,8 @@ namespace backend.Controllers {
             addRestrictionToProductComponentDTO.componentID=componentID;
             addRestrictionToProductComponentDTO.restriction=restrictionDTO;
             try{
-                RestrictionDTO appliedRestrictionDTO=new core.application.ProductController().addRestrictionToProductComponent(addRestrictionToProductComponentDTO);
-                return Created(Request.Path,appliedRestrictionDTO);
+                GetRestrictionModelView appliedRestrictionModelView=new core.application.ProductController().addRestrictionToProductComponent(addRestrictionToProductComponentDTO);
+                return Created(Request.Path,appliedRestrictionModelView);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
             }catch(InvalidOperationException invalidOperationException){

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using core.domain;
 using core.persistence;
 using core.dto;
+using core.modelview.component;
 using core.modelview.dimension;
+using core.modelview.material;
 using core.modelview.product;
 using core.modelview.restriction;
 using core.services;
@@ -118,7 +120,7 @@ namespace core.application{
         /// </summary>
         /// <param name="addComponentToProductDTO">AddMaterialToProductDTO with the material addition information</param>
         /// <returns>MaterialDTO with the material that was added to the product</returns>
-        public MaterialDTO addMaterialToProduct(AddMaterialToProductModelView addMaterialToProductDTO){
+        public GetMaterialModelView addMaterialToProduct(AddMaterialToProductModelView addMaterialToProductDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productToAddMaterial=productRepository.find(addMaterialToProductDTO.productID);
             //TODO:CHECK PRODUCT EXISTENCE
@@ -128,7 +130,7 @@ namespace core.application{
             //TODO:CHECK PRODUCT UPDATE SUCCESS
             productRepository.update(productToAddMaterial);
             //TODO:REPLACE toDTO() WITH MODEL VIEW DTO (MaterialDetailsDTO)
-            return materialBeingAdded.toDTO();
+            return MaterialModelViewService.fromEntity(materialBeingAdded);
         }
 
         /// <summary>
@@ -151,7 +153,7 @@ namespace core.application{
         /// </summary>
         /// <param name="addRestrictionToProductMaterialDTO">AddRestrictionToProductMaterialDTO with the restriction addition information</param>
         /// <returns>RestrictionDTO with the product material added restriction</returns>
-        public RestrictionDTO addRestrictionToProductMaterial(AddRestrictionToProductMaterialModelView addRestrictionToProductMaterialDTO){
+        public GetRestrictionModelView addRestrictionToProductMaterial(AddRestrictionToProductMaterialModelView addRestrictionToProductMaterialDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithMaterialBeingAddedRestriction=productRepository.find(addRestrictionToProductMaterialDTO.productID);
             //TODO: CHECK PRODUCT EXISTENCE
@@ -224,7 +226,7 @@ namespace core.application{
         /// </summary>
         /// <param name="addComponentToProductDTO">AddComponentToProductDTO with the component addition information</param>
         /// <returns>ComponentDTO with the component that was added to the product</returns>
-        public ComponentDTO addComponentToProduct(AddComponentToProductModelView addComponentToProductDTO){
+        public GetComponentModelView addComponentToProduct(AddComponentToProductModelView addComponentToProductDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productToAddComponent=productRepository.find(addComponentToProductDTO.productID);
             //TODO:CHECK PRODUCT EXISTENCE
@@ -258,7 +260,7 @@ namespace core.application{
         /// </summary>
         /// <param name="addRestrictionToProductComponentDTO">AddRestrictionToProductComponentDTO with the restriction addition information</param>
         /// <returns>RestrictionDTO with the product component added restriction</returns>
-        public RestrictionDTO addRestrictionToProductComponent(AddRestrictionToProductComponentModelView addRestrictionToProductComponentDTO){
+        public GetRestrictionModelView addRestrictionToProductComponent(AddRestrictionToProductComponentModelView addRestrictionToProductComponentDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithComponentBeingAddedRestriction=productRepository.find(addRestrictionToProductComponentDTO.productID);
             //TODO: CHECK PRODUCT EXISTENCE
