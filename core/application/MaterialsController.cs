@@ -173,33 +173,24 @@ namespace core.application
             return materials;
         }
         /// <summary>
-        /// Updates the finishes of a material
+        /// Add the finish of a material from update
         /// </summary>
-        /// <param name="updateMaterialDTO">UpdateMaterialDTO with the data regarding the material update</param>
+        /// <param name="idMaterial">id of the material to be updated</param>
+        /// <param name="addFinishDTO">FinishDTO with the information of finish to add</param>
         /// <returns>boolean true if the update was successful, false if not</returns>
-        public bool updateFinishes(UpdateMaterialDTO updateMaterialDTO)
+        public bool addFinish(long idMaterial, FinishDTO addFinishDTO)
         {
             MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
-            Material material = materialRepository.find(updateMaterialDTO.id);
+            Material material = materialRepository.find(idMaterial);
 
             bool updatedWithSuccess = true;
             bool perfomedAtLeastOneUpdate = false;
 
-            if (updateMaterialDTO.finishesToAdd != null)
+            if (addFinishDTO != null)
             {
-                foreach (FinishDTO finish in updateMaterialDTO.finishesToAdd)
-                {
-                    updatedWithSuccess &= material.addFinish(finish.toEntity());
-                    perfomedAtLeastOneUpdate = true;
-                }
-            }
-            if (updateMaterialDTO.finishesToRemove != null)
-            {
-                foreach (FinishDTO finish in updateMaterialDTO.finishesToRemove)
-                {
-                    updatedWithSuccess &= material.removeFinish(finish.toEntity());
-                    perfomedAtLeastOneUpdate = true;
-                }
+                updatedWithSuccess &= material.addFinish(addFinishDTO.toEntity());
+                perfomedAtLeastOneUpdate = true;
+
             }
             if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
 
@@ -207,34 +198,71 @@ namespace core.application
             return updatedWithSuccess;
         }
         /// <summary>
-        /// Updates the colors of a material
+        /// Remove the Finish of a material from update
         /// </summary>
-        /// <param name="updateMaterialDTO">UpdateMaterialDTO with the data regarding the material update</param>
+        /// <param name="idMaterial">id of the material to be updated</param>
+        /// <param name="idFinish">id of the finish to be remove</param>
         /// <returns>boolean true if the update was successful, false if not</returns>
-        public bool updateColors(UpdateMaterialDTO updateMaterialDTO)
+        public bool removeFinish(long idMaterial, long idFinsih)
         {
             MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
-            Material material = materialRepository.find(updateMaterialDTO.id);
+            Material material = materialRepository.find(idMaterial);
 
             bool updatedWithSuccess = true;
             bool perfomedAtLeastOneUpdate = false;
 
-            if (updateMaterialDTO.colorsToAdd != null)
+            material = materialRepository.deleteFinish(idMaterial, idFinsih);
+            updatedWithSuccess = true;
+            perfomedAtLeastOneUpdate = true;
+
+            if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
+
+            updatedWithSuccess &= materialRepository.update(material) != null;
+            return updatedWithSuccess;
+        }
+        /// <summary>
+        /// Add the color of a material from update
+        /// </summary>
+        /// <param name="idMaterial">id of the material to be updated</param>
+        /// <param name="addColorDTO">ColorDTO with the information of color to add</param>
+        /// <returns>boolean true if the update was successful, false if not</returns>
+        public bool addColor(long idMaterial, ColorDTO addColorDTO)
+        {
+            MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
+            Material material = materialRepository.find(idMaterial);
+
+            bool updatedWithSuccess = true;
+            bool perfomedAtLeastOneUpdate = false;
+
+            if (addColorDTO != null)
             {
-                foreach (ColorDTO color in updateMaterialDTO.colorsToAdd)
-                {
-                    updatedWithSuccess &= material.addColor(color.toEntity());
-                    perfomedAtLeastOneUpdate = true;
-                }
+                updatedWithSuccess &= material.addColor(addColorDTO.toEntity());
+                perfomedAtLeastOneUpdate = true;
+
             }
-            if (updateMaterialDTO.colorsToRemove != null)
-            {
-                foreach (ColorDTO color in updateMaterialDTO.colorsToRemove)
-                {
-                    updatedWithSuccess &= material.removeColor(color.toEntity());
-                    perfomedAtLeastOneUpdate = true;
-                }
-            }
+            if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
+
+            updatedWithSuccess &= materialRepository.update(material) != null;
+            return updatedWithSuccess;
+        }
+        /// <summary>
+        /// Remove the color of a material from update
+        /// </summary>
+        /// <param name="idMaterial">id of the material to be updated</param>
+        /// <param name="idColor">id of the color to be remove</param>
+        /// <returns>boolean true if the update was successful, false if not</returns>
+        public bool removeColor(long idMaterial, long idColor)
+        {
+            MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
+            Material material = materialRepository.find(idMaterial);
+
+            bool updatedWithSuccess = true;
+            bool perfomedAtLeastOneUpdate = false;
+
+            material = materialRepository.deleteColor(idMaterial, idColor);
+            updatedWithSuccess = true;
+            perfomedAtLeastOneUpdate = true;
+
             if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
 
             updatedWithSuccess &= materialRepository.update(material) != null;

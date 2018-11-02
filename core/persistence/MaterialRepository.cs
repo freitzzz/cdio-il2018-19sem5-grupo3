@@ -15,5 +15,10 @@ namespace core.persistence {
         /// <param name="materialsDTO">IEnumerable with the materials identifiers information</param>
         /// <returns>IEnumerable with the materials based on their identifiers</returns>
         IEnumerable<Material> getMaterialsByIDS(IEnumerable<MaterialDTO> materialsDTO);
+
+        Material deleteColor(long idMaterial, long idColor);
+
+        Material deleteFinish(long idMaterial, long idFinish);
+
     }
 }
