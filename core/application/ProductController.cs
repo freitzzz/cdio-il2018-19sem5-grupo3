@@ -149,11 +149,11 @@ namespace core.application{
         }
 
         /// <summary>
-        /// Adds a restriction to a product material
+        /// Adds a restriction to a product component material
         /// </summary>
-        /// <param name="addRestrictionToProductMaterialDTO">AddRestrictionToProductMaterialDTO with the restriction addition information</param>
-        /// <returns>RestrictionDTO with the product material added restriction</returns>
-        public GetRestrictionModelView addRestrictionToProductMaterial(AddRestrictionToProductMaterialModelView addRestrictionToProductMaterialDTO){
+        /// <param name="addRestrictionToProductMaterialDTO">AddRestrictionToProductComponentMaterialDTO with the restriction addition information</param>
+        /// <returns>RestrictionDTO with the product component material added restriction</returns>
+        public GetRestrictionModelView addRestrictionToProductComponentMaterial(AddRestrictionToProductComponentMaterialModelView addRestrictionToProductMaterialDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productWithMaterialBeingAddedRestriction=productRepository.find(addRestrictionToProductMaterialDTO.productID);
             //TODO: CHECK PRODUCT EXISTENCE
@@ -167,14 +167,14 @@ namespace core.application{
         }
 
         /// <summary>
-        /// Deletes a restriction from a product material
+        /// Deletes a restriction from a product component material
         /// </summary>
-        /// <param name="deleteRestrictionFromProductMaterialDTO">DeleteRestrictionFromProductMaterialDTO with the restriction deletion information</param>
-        public void deleteRestrictionFromProductMaterial(DeleteRestrictionFromProductMaterialModelView deleteRestrictionFromProductMaterialDTO){
+        /// <param name="deleteRestrictionFromProductComponentMaterialDTO">DeleteRestrictionFromProductComponentMaterialDTO with the restriction deletion information</param>
+        public void deleteRestrictionFromProductComponentMaterial(DeleteRestrictionFromProductComponentMaterialModelView deleteRestrictionFromProductComponentMaterialDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productWithMaterialBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductMaterialDTO.productID);
+            Product productWithMaterialBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductComponentMaterialDTO.productID);
             //TODO: CHECK PRODUCT EXISTENCE
-            Material productMaterialBeingDeletedRestriction=PersistenceContext.repositories().createMaterialRepository().find(deleteRestrictionFromProductMaterialDTO.materialID);
+            Material productMaterialBeingDeletedRestriction=PersistenceContext.repositories().createMaterialRepository().find(deleteRestrictionFromProductComponentMaterialDTO.materialID);
             //TODO: CHECK MATERIAL EXISTENCE
             //TODO: RESTRICTION REPOSITORY ? ? ? ? ? ? :\
 

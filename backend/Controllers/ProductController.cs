@@ -323,7 +323,7 @@ namespace backend.Controllers {
         }
 
         /// <summary>
-        /// Adds a restriction to a product material
+        /// Adds a restriction to a product component material
         /// </summary>
         /// <param name="productID">Long with the product resource ID which restriction will apply to its material</param>
         /// <param name="materialID">Long with the material resource ID which restriction will be applied to</param>
@@ -331,14 +331,15 @@ namespace backend.Controllers {
         /// <returns>HTTP Response 201; Created if the restriction was added to the product material with success
         ///      <br>HTTP Response 400; Bad Request if an error occured while adding the restriction to the product material
         /// </returns>
-        [HttpPost("{productID}/materials/{materialID}/restrictions")]
-        public ActionResult addRestrictionToProductMaterial(long productID,long materialID,[FromBody]RestrictionDTO restrictionDTO){
-            AddRestrictionToProductMaterialModelView addRestrictionToProductMaterialDTO=new AddRestrictionToProductMaterialModelView();
-            addRestrictionToProductMaterialDTO.productID=productID;
-            addRestrictionToProductMaterialDTO.materialID=materialID;
-            addRestrictionToProductMaterialDTO.restriction=restrictionDTO;
+        [HttpPost("{productID}/components/{componentID}/materials/{materialID}/restrictions")]
+        public ActionResult addRestrictionToProductMaterial(long productID,long componentID,long materialID,[FromBody]RestrictionDTO restrictionDTO){
+            AddRestrictionToProductComponentMaterialModelView addRestrictionToProductComponentMaterialDTO=new AddRestrictionToProductComponentMaterialModelView();
+            addRestrictionToProductComponentMaterialDTO.productID=productID;
+            addRestrictionToProductComponentMaterialDTO.componentID=componentID;
+            addRestrictionToProductComponentMaterialDTO.materialID=materialID;
+            addRestrictionToProductComponentMaterialDTO.restriction=restrictionDTO;
             try{
-                GetRestrictionModelView appliedRestrictionModelView=new core.application.ProductController().addRestrictionToProductMaterial(addRestrictionToProductMaterialDTO);
+                GetRestrictionModelView appliedRestrictionModelView=new core.application.ProductController().addRestrictionToProductComponentMaterial(addRestrictionToProductComponentMaterialDTO);
                 return Created(Request.Path,appliedRestrictionModelView);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
@@ -350,7 +351,7 @@ namespace backend.Controllers {
         }
 
         /// <summary>
-        /// Deletes a restriction from a product material
+        /// Deletes a restriction from a product component material
         /// </summary>
         /// <param name="productID">Long with the product resource ID which restriction will be deleted from its material</param>
         /// <param name="materialID">Long with the material resource ID which restriction will be deleted from</param>
@@ -358,14 +359,15 @@ namespace backend.Controllers {
         /// <returns>HTTP Response 204; No Content if the restriction was deleted from the product material with success
         ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the restriction from the product material
         /// </returns>
-        [HttpDelete("{productID}/materials/{materialID}/restrictions/{restrictionID}")]
-        public ActionResult deleteRestrictionFromProductMaterial(long productID,long materialID,long restrictionID){
-            DeleteRestrictionFromProductMaterialModelView deleteRestrictionFromProductMaterialDTO=new DeleteRestrictionFromProductMaterialModelView();
+        [HttpDelete("{productID}/materials/components/{componentID}/{materialID}/restrictions/{restrictionID}")]
+        public ActionResult deleteRestrictionFromProductMaterial(long productID,long componentID,long materialID,long restrictionID){
+            DeleteRestrictionFromProductComponentMaterialModelView deleteRestrictionFromProductMaterialDTO=new DeleteRestrictionFromProductComponentMaterialModelView();
             deleteRestrictionFromProductMaterialDTO.productID=productID;
+            deleteRestrictionFromProductMaterialDTO.componentID=componentID;
             deleteRestrictionFromProductMaterialDTO.materialID=materialID;
             deleteRestrictionFromProductMaterialDTO.restrictionID=restrictionID;
             try{
-                new core.application.ProductController().deleteRestrictionFromProductMaterial(deleteRestrictionFromProductMaterialDTO);
+                new core.application.ProductController().deleteRestrictionFromProductComponentMaterial(deleteRestrictionFromProductMaterialDTO);
                 return NoContent();
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);

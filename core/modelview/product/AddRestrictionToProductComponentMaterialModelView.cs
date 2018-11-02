@@ -3,10 +3,10 @@ using System.Runtime.Serialization;
 
 namespace core.modelview.product{
     /// <summary>
-    /// Model View representation for the add restriction to a product material context
+    /// Model View representation for the add restriction to a product component material context
     /// </summary>
     [DataContract]
-    public sealed class AddRestrictionToProductMaterialModelView{
+    public sealed class AddRestrictionToProductComponentMaterialModelView{
         /// <summary>
         /// Long with the product resource ID which restriction will be applied to its material
         /// </summary>
@@ -17,6 +17,11 @@ namespace core.modelview.product{
         /// </summary>
         public long materialID{get;set;}
         
+        /// <summary>
+        /// Long with the component resource ID which restriction will be applied to
+        /// </summary>
+        public long componentID{get;set;}
+
         /// <summary>
         /// RestrictionDTO with the restriction information which will be applied to the product material
         /// </summary>
