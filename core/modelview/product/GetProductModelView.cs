@@ -1,3 +1,7 @@
+using core.modelview.component;
+using core.modelview.dimension;
+using core.modelview.material;
+using core.modelview.productcategory;
 using System.Runtime.Serialization;
 
 namespace core.modelview.product{
@@ -23,6 +27,18 @@ namespace core.modelview.product{
         /// </summary>
         [DataMember(Name="designation")]
         public string designation{get;set;}
+
+        /// <summary>
+        /// GetBasicMaterialModelView with the product category
+        /// </summary>
+        [DataMember(Name="category")]
+        public GetBasicProductCategoryModelView category{get;set;}
+
+        /// <summary>
+        /// GetBasicMaterialModelView with the product material
+        /// </summary>
+        [DataMember(Name="material")]
+        public GetBasicMaterialModelView material{get;set;}
         //TODO: ADD OTHER MODEL VIEWS
     }
 }

@@ -1,4 +1,6 @@
 using core.domain;
+using core.modelview.material;
+using core.modelview.productcategory;
 using System.Collections.Generic;
 
 namespace core.modelview.product{
@@ -29,6 +31,7 @@ namespace core.modelview.product{
             productModelView.id=product.Id;
             productModelView.reference=product.reference;
             productModelView.designation=product.designation;
+            productModelView.category=ProductCategoryModelViewService.fromEntityAsBasic(product.productCategory);
             return productModelView;
         }
         
