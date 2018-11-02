@@ -15,7 +15,7 @@ namespace core.domain {
     /// <br>User is an Aggregate Root</br>
     /// </summary>
     /// <typeparam name="Authentication">Generic-Type of the User entity identifier</typeparam>
-    public class User : AggregateRoot<Authentication>, DTOAble<GenericDTO> {
+    public class User : Activatable, AggregateRoot<Authentication>, DTOAble<GenericDTO> {
         /// <summary>
         /// User's authentication
         /// </summary>
