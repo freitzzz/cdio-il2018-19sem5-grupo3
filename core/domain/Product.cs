@@ -23,7 +23,7 @@ namespace core.domain {
     /// <typeparam name="Product"></typeparam>
     /// <typeparam name="ProductDTO">Type of DTO being used</typeparam>
     /// <typeparam name="string">Generic-Type of the Product entity identifier</typeparam>
-    public class Product : AggregateRoot<string>, DTOAble<ProductDTO>, DTOAbleOptions<ProductDTO, ProductDTOOptions> {
+    public class Product : Activatable, AggregateRoot<string>, DTOAble<ProductDTO>, DTOAbleOptions<ProductDTO, ProductDTOOptions> {
         /// <summary>
         /// Constant that represents the message that occurs if the product reference is invalid
         /// </summary>
@@ -116,11 +116,6 @@ namespace core.domain {
         /// </summary>
         private ProductCategory _productCategory;//!private field used for lazy loading, do not use this for storing or fetching data
         public ProductCategory productCategory { get => LazyLoader.Load(this, ref _productCategory); protected set => _productCategory = value; }
-
-        /// <summary>
-        /// Boolean that controls if the current product is available or not
-        /// </summary>
-        public bool isAvailable { get; protected set; }
 
         /// <summary>
         /// CustomizedDimensions that represents the maximum size of the slots
@@ -225,7 +220,6 @@ namespace core.domain {
             this.widthValues = new List<Dimension>(widthDimensions);
             this.depthValues = new List<Dimension>(depthDimensions);
             this.productCategory = productCategory;
-            this.isAvailable = true;
             this.supportsSlots = false;
             this.maxSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
             this.minSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
@@ -428,16 +422,6 @@ namespace core.domain {
         /// <param name="complementedProduct">Product with the complemented product being removed</param>
         /// <returns>boolean true if the complemented product was removed with success, false if not</returns>
         public bool removeComplementedProduct(Product complementedProduct) { return complementedProducts.Remove(new Component(this, complementedProduct)); }
-
-        /// <summary>
-        /// Disables the current product
-        /// </summary>
-        /// <returns>boolean true if the product was disabled with success, false if not</returns>
-        public bool disable() {
-            if (!isAvailable) return false;
-            isAvailable = false;
-            return true;
-        }
 
         /// <summary>
         /// Returns the product identity

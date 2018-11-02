@@ -1,7 +1,9 @@
 using core.domain;
 using core.dto;
 using core.persistence;
+using core.services.ensurance;
 using support.dto;
+using support.utils;
 using System.Collections.Generic;
 using System;
 
@@ -10,6 +12,7 @@ namespace core.services{
     /// Service class that helps the transformation of ProductDTO into Product since some information needs to be accessed on the persistence context
     /// </summary>
     public sealed class ProductDTOService{
+
         /// <summary>
         /// Transforms a product dto into a product via service
         /// </summary>
@@ -19,12 +22,17 @@ namespace core.services{
             string reference=productDTO.reference;
             string designation=productDTO.designation;
             IEnumerable<Product> productComplementedProducts=null;
-            if(productDTO.complements!=null)
+            if(productDTO.complements!=null){
                 productComplementedProducts=new ComponentDTOService().transform(productDTO.complements);
+                FetchEnsurance.ensureProductsComponentsFetchWasSuccesful(productDTO.complements,productComplementedProducts);
+            }
+
             ProductCategory productCategory=PersistenceContext.repositories().createProductCategoryRepository().find(productDTO.productCategory.id);
-            //TODO:Check if the length of product materials is equal to product materials dtos
+            ProductCategoryEnsurance.ensureProductCategoryIsLeaf(productCategory);
+
             IEnumerable<Material> productMaterials=PersistenceContext.repositories().createMaterialRepository().getMaterialsByIDS(productDTO.productMaterials);
-            //TODO:Currently DTO Mapping for dimensions isn't working
+            FetchEnsurance.ensureMaterialsFetchWasSuccessful(productDTO.productMaterials,productMaterials);
+
             IEnumerable<Dimension> productHeightDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.heightDimensionDTOs);
             IEnumerable<Dimension> productWidthDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.widthDimensionDTOs);
             IEnumerable<Dimension> productDepthDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.depthDimensionDTOs);

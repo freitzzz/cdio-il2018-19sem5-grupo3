@@ -11,7 +11,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace core.domain {
-    public class Component : AggregateRoot<Product>, DTOAble<ComponentDTO> {
+    public class Component : DTOAble<ComponentDTO> {
 
         /// <summary>
         /// Constant that represents the message that ocurrs if the Component's product is not valid.

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using backend_tests.Setup;
 using backend_tests.utils;
-using core.dto;
+using core.modelview.productcategory;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using Xunit;
@@ -20,7 +20,7 @@ namespace backend_tests.Controllers
 
         //!Do not compare response's DTO's ids since they may be different from expected depending on the used provider
 
-        private const string baseUrl = "/myc/api/categories";
+        private const string baseUrl = "/mycm/api/categories";
 
         private HttpClient client;
 
@@ -42,21 +42,20 @@ namespace backend_tests.Controllers
         {
             var response = await client.GetAsync(baseUrl);
 
-            var bodyContent = response.Content.ReadAsStringAsync();
-
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
 
         [Fact, TestPriority(1)]
-        public async Task<ProductCategoryDTO> ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully()
+        public async Task<GetProductCategoryModelView> ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully()
         {
-            ProductCategoryDTO categoryDTO = new ProductCategoryDTO() { name = "Drawers" + Guid.NewGuid().ToString("n") };
+            AddProductCategoryModelView addCategoryMV = new AddProductCategoryModelView()
+            { name = "Drawers" + Guid.NewGuid().ToString("n") };
 
-            var response = await client.PostAsJsonAsync(baseUrl, categoryDTO);
+            var response = await client.PostAsJsonAsync(baseUrl, addCategoryMV);
 
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-            return JsonConvert.DeserializeObject<ProductCategoryDTO>(await response.Content.ReadAsStringAsync());
+            return JsonConvert.DeserializeObject<GetProductCategoryModelView>(await response.Content.ReadAsStringAsync());
         }
 
 
@@ -65,24 +64,23 @@ namespace backend_tests.Controllers
         {
             string categoryName = "Drawers" + Guid.NewGuid().ToString("n");
 
-            ProductCategoryDTO categoryDTO = new ProductCategoryDTO() { name = categoryName };
+            AddProductCategoryModelView addCategoryMV = new AddProductCategoryModelView() { name = categoryName };
 
-            var response = await client.PostAsJsonAsync(baseUrl, categoryDTO);
+            var response = await client.PostAsJsonAsync(baseUrl, addCategoryMV);
 
-            ProductCategoryDTO actual = await response.Content.ReadAsAsync<ProductCategoryDTO>();
-            ProductCategoryDTO expected = new ProductCategoryDTO() { name = categoryName };
+            GetProductCategoryModelView actual = await response.Content.ReadAsAsync<GetProductCategoryModelView>();
+            GetProductCategoryModelView expected = new GetProductCategoryModelView() { name = categoryName };
 
             Assert.Equal(expected.name, actual.name);
-            Assert.Equal(expected.parentId, actual.parentId);
         }
 
 
         [Fact, TestPriority(3)]
         public async Task ensureAddProductCategoryReturnsBadRequestIfCategoryHasDuplicateName()
         {
-            ProductCategoryDTO categoryDTO = await ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            GetProductCategoryModelView getCategoryMV = await ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
 
-            var response = await client.PostAsJsonAsync(baseUrl, categoryDTO);
+            var response = await client.PostAsJsonAsync(baseUrl, getCategoryMV);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
@@ -90,25 +88,35 @@ namespace backend_tests.Controllers
         [Fact, TestPriority(4)]
         public async Task ensureAddProductCategoryReturnsBadRequestIfCategoryDoesNotHaveName()
         {
-            ProductCategoryDTO categoryDTO = new ProductCategoryDTO();
+            AddProductCategoryModelView addCategoryMV = new AddProductCategoryModelView();
 
-            var response = await client.PostAsJsonAsync(baseUrl, categoryDTO);
+            var response = await client.PostAsJsonAsync(baseUrl, addCategoryMV);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact, TestPriority(5)]
+        public async Task ensureAddProductCategoryReturnsBadRequestIfDTOIsNull()
+        {
+            AddProductCategoryModelView addCategoryMV = null;
+
+            var response = await client.PostAsJsonAsync(baseUrl, addCategoryMV);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
 
-        [Fact, TestPriority(5)]
+        [Fact, TestPriority(6)]
         public async Task ensureFindProductCategoryReturnsOkIfCategoryExists()
         {
-            ProductCategoryDTO categoryDTO = await ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            GetProductCategoryModelView getCategoryMV = await ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
 
-            var response = await client.GetAsync(string.Format("{0}/{1}", baseUrl, categoryDTO.id));
+            var response = await client.GetAsync(string.Format("{0}/{1}", baseUrl, getCategoryMV.id));
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-        [Fact, TestPriority(6)]
+        [Fact, TestPriority(7)]
         public async Task ensureFindProductCategoryReturnsNotFoundIfCategoryDoesNotExist()
         {
             var response = await client.GetAsync(string.Format("{0}/{1}", baseUrl, 0));
@@ -116,7 +124,7 @@ namespace backend_tests.Controllers
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-        [Fact, TestPriority(7)]
+        [Fact, TestPriority(8)]
         public async Task ensureDeleteProductCategoryReturnsNotFoundIfCategoryDoesNotExist()
         {
             var response = await client.DeleteAsync(string.Format("{0}/{1}", baseUrl, 0));
@@ -124,43 +132,43 @@ namespace backend_tests.Controllers
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-        [Fact, TestPriority(8)]
+        [Fact, TestPriority(9)]
         public async Task ensureDeleteProductCategoryReturnsNoContentIfCategoryWasRemoved()
         {
-            ProductCategoryDTO categoryDTO = await ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            GetProductCategoryModelView getCategoryMV = await ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
 
-            var response = await client.DeleteAsync(string.Format("{0}/{1}", baseUrl, categoryDTO.id));
+            var response = await client.DeleteAsync(string.Format("{0}/{1}", baseUrl, getCategoryMV.id));
 
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         }
 
-        [Fact, TestPriority(9)]
+        [Fact, TestPriority(10)]
         public async Task ensureDeleteProductCategoryReallyDeletes()
         {
-            ProductCategoryDTO categoryDTO = await ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
+            GetProductCategoryModelView getCategoryMV = await ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
 
-            var response = await client.DeleteAsync(string.Format("{0}/{1}", baseUrl, categoryDTO.id));
+            var response = await client.DeleteAsync(string.Format("{0}/{1}", baseUrl, getCategoryMV.id));
 
-            response = await client.GetAsync(string.Format("{0}/{1}", baseUrl, categoryDTO.id));
+            response = await client.GetAsync(string.Format("{0}/{1}", baseUrl, getCategoryMV.id));
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
 
-        [Fact, TestPriority(10)]
+        [Fact, TestPriority(11)]
         public async Task ensureGetProductCategoryByNameReturnsOkIfCategoryExists()
         {
             string categoryName = "Shelves" + Guid.NewGuid().ToString("n");
-            ProductCategoryDTO categoryDTO = new ProductCategoryDTO() { name = categoryName };
+            AddProductCategoryModelView addCategoryMV = new AddProductCategoryModelView() { name = categoryName };
 
-            var response = await client.PostAsJsonAsync(baseUrl, categoryDTO);
+            var response = await client.PostAsJsonAsync(baseUrl, addCategoryMV);
 
             response = await client.GetAsync(string.Format("{0}?name={1}", baseUrl, categoryName));
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-        [Fact, TestPriority(11)]
+        [Fact, TestPriority(12)]
         public async Task ensureGetProductCategoryByNameReturnsNotFoundIfCategoryDoesNotExist()
         {
             string categoryName = "Mirrors" + Guid.NewGuid().ToString("n");
@@ -170,18 +178,18 @@ namespace backend_tests.Controllers
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-        [Fact, TestPriority(12)]
-        public async Task ensureGetAllProductCategoriesWorks(){
+        [Fact, TestPriority(13)]
+        public async Task ensureGetAllProductCategoriesWorks()
+        {
 
             var response = await client.GetAsync(baseUrl);
 
             string contentString = await response.Content.ReadAsStringAsync();
 
-            object content = JsonConvert.DeserializeObject(contentString);
+            List<GetBasicProductCategoryModelView> list = JsonConvert.DeserializeObject<List<GetBasicProductCategoryModelView>>(contentString);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.NotNull(content);
+            Assert.NotEmpty(list);
         }
-
     }
 }
