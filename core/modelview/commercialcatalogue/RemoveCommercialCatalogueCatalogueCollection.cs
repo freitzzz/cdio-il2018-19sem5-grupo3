@@ -6,13 +6,13 @@ namespace core.modelview.commercialcatalogue
     /// </summary>
     [DataContract]
 
-    public class RemoveCatalogueCollectionModelView
+    public class RemoveCommercialCatalogueCatalogueCollection
     {
          /// <summary>
         /// Commercial Catalogue reference.
         /// </summary>
         /// <value>Gets/sets the reference.</value>
         [DataMember]
-        long  catalogueCollectionId {get; set;}
+        long  commercialCatalogueCatalogueCollectionId {get; set;}
     }
 }
