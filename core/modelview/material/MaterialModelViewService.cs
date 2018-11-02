@@ -1,6 +1,8 @@
 using core.domain;
+using support.dto;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace core.modelview.material{
     /// <summary>
@@ -14,7 +16,11 @@ namespace core.modelview.material{
         /// <param name="material">Material with the material being created the model view</param>
         /// <returns>GetBasicMaterialModelView with the material basic information model view</returns>
         public static GetBasicMaterialModelView fromEntityAsBasic(Material material){
-            throw new NotImplementedException();
+            GetBasicMaterialModelView basicMaterialModelView=new GetBasicMaterialModelView();
+            basicMaterialModelView.id=material.Id;
+            basicMaterialModelView.reference=material.reference;
+            basicMaterialModelView.designation=material.designation;
+            return basicMaterialModelView;
         }
 
         /// <summary>
@@ -23,7 +29,13 @@ namespace core.modelview.material{
         /// <param name="material">Material with the material being created the model view</param>
         /// <returns>GetMaterialModelView with the material information model view</returns>
         public static GetMaterialModelView fromEntity(Material material){
-            throw new NotImplementedException();
+            GetMaterialModelView materialModelView=new GetMaterialModelView();
+            materialModelView.id=material.Id;
+            materialModelView.reference=material.reference;
+            materialModelView.designation=material.designation;
+            materialModelView.colors=DTOUtils.parseToDTOS(material.Colors).ToList();
+            materialModelView.finishes=DTOUtils.parseToDTOS(material.Finishes).ToList();
+            return materialModelView;
         }
 
         /// <summary>
