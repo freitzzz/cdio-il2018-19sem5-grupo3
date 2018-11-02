@@ -9,6 +9,7 @@ using core.application;
 using core.domain;
 using core.dto.options;
 using core.modelview.product;
+using core.modelview.dimension;
 using support.dto;
 using System.Web;
 using Newtonsoft.Json;
@@ -523,19 +524,65 @@ namespace backend.Controllers {
         }
 
         /// <summary>
-        /// Adds a new dimension to a product
+        /// Adds a new width dimension to a product
         /// </summary>
         /// <param name="id">Long with the product resource ID which dimension is being added</param>
         /// <param name="addDimensionToProductDTO">AddDimensionToProductDTO with the information about the dimension being added</param>
         /// <returns>HTTP Response 201; Created if the dimension was added with success to the product
         ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
         /// </returns>
-        [HttpPost("{id}/dimensions")]
-        public ActionResult addDimensionToProduct(long id,[FromBody]AddDimensionToProductModelView addDimensionToProductDTO){
+        [HttpPost("{id}/dimensions/width")]
+        public ActionResult addWidthDimensionToProduct(long id,[FromBody]AddDimensionToProductModelView addDimensionToProductDTO){
             addDimensionToProductDTO.productID=id;
             try{
-                DimensionDTO dimensionDTO=new core.application.ProductController().addDimensionToProduct(addDimensionToProductDTO);
-                return Created(Request.Path,dimensionDTO);
+                GetAllDimensionsModelView updateWidthDimension=new core.application.ProductController().addWidthDimensionToProduct(addDimensionToProductDTO);
+                return Created(Request.Path,updateWidthDimension);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Adds a new height dimension to a product
+        /// </summary>
+        /// <param name="id">Long with the product resource ID which dimension is being added</param>
+        /// <param name="addDimensionToProductDTO">AddDimensionToProductDTO with the information about the dimension being added</param>
+        /// <returns>HTTP Response 201; Created if the dimension was added with success to the product
+        ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
+        /// </returns>
+        [HttpPost("{id}/dimensions/width")]
+        public ActionResult addHeightDimensionToProduct(long id,[FromBody]AddDimensionToProductModelView addDimensionToProductDTO){
+            addDimensionToProductDTO.productID=id;
+            try{
+                GetAllDimensionsModelView updateHeightDimension=new core.application.ProductController().addHeightDimensionToProduct(addDimensionToProductDTO);
+                return Created(Request.Path,updateHeightDimension);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Adds a new depth dimension to a product
+        /// </summary>
+        /// <param name="id">Long with the product resource ID which dimension is being added</param>
+        /// <param name="addDimensionToProductDTO">AddDimensionToProductDTO with the information about the dimension being added</param>
+        /// <returns>HTTP Response 201; Created if the dimension was added with success to the product
+        ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
+        /// </returns>
+        [HttpPost("{id}/dimensions/width")]
+        public ActionResult addDepthDimensionToProduct(long id,[FromBody]AddDimensionToProductModelView addDimensionToProductDTO){
+            addDimensionToProductDTO.productID=id;
+            try{
+                GetAllDimensionsModelView updateDepthDimension=new core.application.ProductController().addDepthDimensionToProduct(addDimensionToProductDTO);
+                return Created(Request.Path,updateDepthDimension);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
             }catch(InvalidOperationException invalidOperationException){

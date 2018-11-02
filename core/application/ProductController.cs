@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using core.domain;
 using core.persistence;
 using core.dto;
+using core.modelview.dimension;
 using core.modelview.product;
 using core.services;
 using core.services.ensurance;
@@ -354,27 +355,48 @@ namespace core.application{
         }
 
         /// <summary>
-        /// Adds a dimension to a product
+        /// Adds a width dimension to a product
         /// </summary>
-        /// <param name="addDimensionToProductDTO">AddDimensionToProductDTO with the dimension addition information</param>
-        /// <returns>DimensionDTO with the dimension that was added to the product</returns>
-        public DimensionDTO addDimensionToProduct(AddDimensionToProductModelView addDimensionToProductDTO){
+        /// <param name="addDimensionToProductModelView">AddDimensionToProductModelView with the dimension addition information</param>
+        /// <returns>GetAllDimensionsModelView with the updated collection of width dimensions of the product which dimension was added</returns>
+        public GetAllDimensionsModelView addWidthDimensionToProduct(AddDimensionToProductModelView addDimensionToProductModelView){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productToAddMaterial=productRepository.find(addDimensionToProductDTO.productID);
-            //TODO:CHECK PRODUCT EXISTENCE
-            
-            if(addDimensionToProductDTO.widthDimension!=null){
-                productToAddMaterial.addWidthDimension(addDimensionToProductDTO.widthDimension.toEntity());
-            }else if(addDimensionToProductDTO.heightDimension!=null){
-                productToAddMaterial.addHeightDimension(addDimensionToProductDTO.heightDimension.toEntity());
-            }else{
-                productToAddMaterial.addDepthDimension(addDimensionToProductDTO.depthDimension.toEntity());
-            }
-            
-            //TODO:CHECK PRODUCT UPDATE SUCCESS
-            productRepository.update(productToAddMaterial);
-            //TODO:REPLACE WITH MODEL VIEW DTO (DimensionsDetailsDTO)
-            return null;
+            Product productToAddWidthDimension=productRepository.find(addDimensionToProductModelView.productID);
+            //TODO: CHECK PRODUCT EXISTENCE
+            productToAddWidthDimension.addWidthDimension(addDimensionToProductModelView.widthDimension.toEntity());
+            //TODO: CHECK PRODUCT UPDATE SUCCESS
+            productRepository.update(productToAddWidthDimension);
+            return DimensionModelViewService.fromCollection(productToAddWidthDimension.widthValues);
+        }
+
+        /// <summary>
+        /// Adds a height dimension to a product
+        /// </summary>
+        /// <param name="addDimensionToProductModelView">AddDimensionToProductModelView with the dimension addition information</param>
+        /// <returns>GetAllDimensionsModelView with the updated collection of height dimensions of the product which dimension was added</returns>
+        public GetAllDimensionsModelView addHeightDimensionToProduct(AddDimensionToProductModelView addDimensionToProductModelView){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productToAddHeightDimension=productRepository.find(addDimensionToProductModelView.productID);
+            //TODO: CHECK PRODUCT EXISTENCE
+            productToAddHeightDimension.addHeightDimension(addDimensionToProductModelView.heightDimension.toEntity());
+            //TODO: CHECK PRODUCT UPDATE SUCCESS
+            productRepository.update(productToAddHeightDimension);
+            return DimensionModelViewService.fromCollection(productToAddHeightDimension.heightValues);
+        }
+
+        /// <summary>
+        /// Adds a depth dimension to a product
+        /// </summary>
+        /// <param name="addDimensionToProductModelView">AddDimensionToProductModelView with the dimension addition information</param>
+        /// <returns>GetAllDimensionsModelView with the updated collection of depth dimensions of the product which dimension was added</returns>
+        public GetAllDimensionsModelView addDepthDimensionToProduct(AddDimensionToProductModelView addDimensionToProductModelView){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productToAddDepthDimension=productRepository.find(addDimensionToProductModelView.productID);
+            //TODO: CHECK PRODUCT EXISTENCE
+            productToAddDepthDimension.addDepthDimension(addDimensionToProductModelView.depthDimension.toEntity());
+            //TODO: CHECK PRODUCT UPDATE SUCCESS
+            productRepository.update(productToAddDepthDimension);
+            return DimensionModelViewService.fromCollection(productToAddDepthDimension.depthValues);
         }
 
         /// <summary>
