@@ -744,7 +744,7 @@ namespace backend.Controllers {
         }
 
         /// <summary>
-        /// Deletes a restriction from a product dimension
+        /// Deletes a restriction from a product width dimension
         /// </summary>
         /// <param name="productID">Long with the product resource ID which restriction will be deleted from its dimension</param>
         /// <param name="dimensionID">Long with the dimension resource ID which restriction will be deleted from</param>
@@ -752,14 +752,64 @@ namespace backend.Controllers {
         /// <returns>HTTP Response 204; No Content if the restriction was deleted from the product dimension with success
         ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the restriction from the product dimension
         /// </returns>
-        [HttpDelete("{productID}/dimensions/{dimensionID}/restrictions/{restrictionID}")]
-        public ActionResult deleteRestrictionFromProductDimension(long productID,long dimensionID,long restrictionID){
+        [HttpDelete("{productID}/dimensions/width/{dimensionID}/restrictions/{restrictionID}")]
+        public ActionResult deleteRestrictionFromProductWidthDimension(long productID,long dimensionID,long restrictionID){
             DeleteRestrictionFromProductDimensionModelView deleteRestrictionFromProductDimensionDTO=new DeleteRestrictionFromProductDimensionModelView();
             deleteRestrictionFromProductDimensionDTO.productID=productID;
             deleteRestrictionFromProductDimensionDTO.dimensionID=dimensionID;
             deleteRestrictionFromProductDimensionDTO.restrictionID=restrictionID;
             try{
-                new core.application.ProductController().deleteRestrictionFromProductDimension(deleteRestrictionFromProductDimensionDTO);
+                new core.application.ProductController().deleteRestrictionFromProductWidthDimension(deleteRestrictionFromProductDimensionDTO);
+                return NoContent();
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+        
+        /// <summary>
+        /// Deletes a restriction from a product height dimension
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which restriction will be deleted from its dimension</param>
+        /// <param name="dimensionID">Long with the dimension resource ID which restriction will be deleted from</param>
+        /// <param name="restrictionID">Long with the restriction resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the restriction was deleted from the product dimension with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the restriction from the product dimension
+        /// </returns>
+        [HttpDelete("{productID}/dimensions/height/{dimensionID}/restrictions/{restrictionID}")]
+        public ActionResult deleteRestrictionFromProductHeightDimension(long productID,long dimensionID,long restrictionID){
+            DeleteRestrictionFromProductDimensionModelView deleteRestrictionFromProductDimensionDTO=new DeleteRestrictionFromProductDimensionModelView();
+            deleteRestrictionFromProductDimensionDTO.productID=productID;
+            deleteRestrictionFromProductDimensionDTO.dimensionID=dimensionID;
+            deleteRestrictionFromProductDimensionDTO.restrictionID=restrictionID;
+            try{
+                new core.application.ProductController().deleteRestrictionFromProductHeightDimension(deleteRestrictionFromProductDimensionDTO);
+                return NoContent();
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a restriction from a product depth dimension
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which restriction will be deleted from its dimension</param>
+        /// <param name="dimensionID">Long with the dimension resource ID which restriction will be deleted from</param>
+        /// <param name="restrictionID">Long with the restriction resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the restriction was deleted from the product dimension with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the restriction from the product dimension
+        /// </returns>
+        [HttpDelete("{productID}/dimensions/depth/{dimensionID}/restrictions/{restrictionID}")]
+        public ActionResult deleteRestrictionFromProductDepthDimension(long productID,long dimensionID,long restrictionID){
+            DeleteRestrictionFromProductDimensionModelView deleteRestrictionFromProductDimensionDTO=new DeleteRestrictionFromProductDimensionModelView();
+            deleteRestrictionFromProductDimensionDTO.productID=productID;
+            deleteRestrictionFromProductDimensionDTO.dimensionID=dimensionID;
+            deleteRestrictionFromProductDimensionDTO.restrictionID=restrictionID;
+            try{
+                new core.application.ProductController().deleteRestrictionFromProductDepthDimension(deleteRestrictionFromProductDimensionDTO);
                 return NoContent();
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
