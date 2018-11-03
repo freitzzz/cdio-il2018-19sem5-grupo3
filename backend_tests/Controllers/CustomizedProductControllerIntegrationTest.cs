@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Xunit;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Linq;
+using core.modelview.customizedproduct;
 
 namespace backend_tests.Controllers
 {
@@ -22,7 +23,7 @@ namespace backend_tests.Controllers
         /// <summary>
         /// String with the URI where the API Requests will be performed
         /// </summary>
-        private const string CUSTOMIZED_PRODUCTS_URI = "myc/api/customizedproducts";
+        private const string CUSTOMIZED_PRODUCTS_URI = "mycm/api/customizedproducts";
         /// <summary>
         /// Injected Mock Server
         /// </summary>
@@ -83,19 +84,19 @@ namespace backend_tests.Controllers
 
 
             //CustomizedProductDTO creation with the previously created dimensions and material
-            CustomizedProductDTO customizedProductDTO = new CustomizedProductDTO();
+            PostCustomizedProductModelView customizedProductModelView = new PostCustomizedProductModelView();
             //A customized product requires a valid reference
-            customizedProductDTO.reference = productDTO.reference;
+            customizedProductModelView.reference = productDTO.reference;
             //A customized product requires a valid designation
-            customizedProductDTO.designation = productDTO.designation;
-            customizedProductDTO.customizedDimensionsDTO = customizedDimensionsDTO;
-            customizedProductDTO.customizedMaterialDTO = customizedMaterialDTO;
-            customizedProductDTO.productDTO = productDTOWithJustID;
+            customizedProductModelView.designation = productDTO.designation;
+            customizedProductModelView.customizedDimensionsDTO = customizedDimensionsDTO;
+            customizedProductModelView.customizedMaterialDTO = customizedMaterialDTO;
+            customizedProductModelView.productId = productDTOWithJustID.id;
 
 
             //TODO:SLOTS
-            var createCustomizedProduct = await httpClient.PostAsJsonAsync(CUSTOMIZED_PRODUCTS_URI, customizedProductDTO);
-            Assert.True(createCustomizedProduct.StatusCode == HttpStatusCode.Created);
+            var createCustomizedProduct = await httpClient.PostAsJsonAsync(CUSTOMIZED_PRODUCTS_URI, customizedProductModelView);
+            Assert.Equal(HttpStatusCode.Created,createCustomizedProduct.StatusCode);
             return JsonConvert.DeserializeObject<CustomizedProductDTO>(await createCustomizedProduct.Content.ReadAsStringAsync());
         }
 
