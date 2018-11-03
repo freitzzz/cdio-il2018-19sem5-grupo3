@@ -7,6 +7,9 @@ namespace core.dto
     [DataContract]
     public class MeasurementDTO : DTO, DTOParseable<Measurement, MeasurementDTO>
     {
+        [DataMember(Name = "id")]
+        public long id { get; set; }
+
         [DataMember(Name = "height")]
         public DimensionDTO height { get; set; }
 
