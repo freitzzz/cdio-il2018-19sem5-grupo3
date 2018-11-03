@@ -65,10 +65,11 @@ namespace backend.persistence.ef
             builder.Entity<DiscreteDimensionInterval>().HasBaseType<Dimension>();
             builder.Entity<SingleValueDimension>().HasBaseType<Dimension>();
 
-            //TODO: improve restriction mapping, since it currently has columns for various entity ids
-            builder.Entity<Dimension>().HasMany(d => d.restrictions);           //one-to-many relationship
-
             builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values); //one-to-many relationship
+
+            builder.Entity<Measurement>().HasOne(m => m.height).WithOne();      //one-to-one relationship
+            builder.Entity<Measurement>().HasOne(m => m.depth).WithOne();       //one-to-one relationship
+            builder.Entity<Measurement>().HasOne(m => m.width).WithOne();       //one-to-one relationship
 
             //Configure many-to-one relationship between parent and child ProductCategory
             builder.Entity<ProductCategory>().HasOne(c => c.parent).WithMany().HasForeignKey(c => c.parentId);
@@ -83,9 +84,7 @@ namespace backend.persistence.ef
             builder.Entity<Product>().HasMany(p => p.productMaterials).WithOne(pm => pm.product);
 
             builder.Entity<Product>().HasOne(p => p.productCategory);           //many-to-one relationship
-            builder.Entity<Product>().HasMany(p => p.depthValues);              //one-to-many relationship
-            builder.Entity<Product>().HasMany(p => p.widthValues);              //one-to-many relationship
-            builder.Entity<Product>().HasMany(p => p.heightValues);             //one-to-many relationship
+            builder.Entity<Product>().HasMany(p => p.measurements);             //one-to-many relationship
             builder.Entity<Product>().OwnsOne(p => p.minSlotSize);              //embedded Dimensions
             builder.Entity<Product>().OwnsOne(p => p.maxSlotSize);              //embedded Dimensions
             builder.Entity<Product>().OwnsOne(p => p.recommendedSlotSize);      //embedded Dimensions
