@@ -5,13 +5,14 @@ using support.dto;
 using core.dto;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using support.domain;
 
 namespace core.domain
 {
     /// <summary>
     /// Class that represents a Customized Product.
     /// </summary>
-    public class CustomizedProduct : AggregateRoot<string>, DTOAble<CustomizedProductDTO>
+    public class CustomizedProduct : Activatable, AggregateRoot<string>, DTOAble<CustomizedProductDTO>
     {
 
         /// <summary>

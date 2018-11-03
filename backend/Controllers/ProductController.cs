@@ -8,6 +8,11 @@ using backend.Models;
 using core.application;
 using core.domain;
 using core.dto.options;
+using core.modelview.component;
+using core.modelview.dimension;
+using core.modelview.material;
+using core.modelview.product;
+using core.modelview.restriction;
 using support.dto;
 using System.Web;
 using Newtonsoft.Json;
@@ -153,14 +158,14 @@ namespace backend.Controllers {
         [HttpGet]
         public ActionResult<List<ProductDTO>> findAll() {
             logger.LogInformation(LOG_GET_ALL_START);
-            List<ProductDTO> allProductsDTO = new core.application.ProductController().findAllProducts();
+            GetAllProductsModelView allProductsModelView = new core.application.ProductController().findAllProducts();
 
-            if (allProductsDTO == null) {
+            if (allProductsModelView == null||Collections.isEnumerableNullOrEmpty(allProductsModelView)) {
                 logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
                 return BadRequest(NO_PRODUCTS_FOUND_REFERENCE);
             }
-            logger.LogInformation(LOG_GET_ALL_SUCCESS, allProductsDTO);
-            return Ok(allProductsDTO);
+            logger.LogInformation(LOG_GET_ALL_SUCCESS, allProductsModelView);
+            return Ok(allProductsModelView);
         }
 
         /// <summary>
@@ -209,7 +214,7 @@ namespace backend.Controllers {
             fetchProductDTO.productDTOOptions = new ProductDTOOptions();
             fetchProductDTO.productDTOOptions.requiredUnit = unit;
             try {
-                ProductDTO productDTOY = new core.application.ProductController().findProductByID(fetchProductDTO);
+                GetProductModelView productDTOY = new core.application.ProductController().findProductByID(fetchProductDTO);
                 if (productDTOY == null) {
                     logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST + PRODUCT_NOT_FOUND_REFERENCE);
                     return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
@@ -224,7 +229,7 @@ namespace backend.Controllers {
                 return BadRequest(new { error = e.Message }); //this exception should happen when converting to an unknown unit
             }
         }
-
+        
         /// <summary>
         /// Updates a product basic information
         /// </summary>
@@ -272,6 +277,106 @@ namespace backend.Controllers {
         }
 
         /// <summary>
+        /// Adds a new material to a product
+        /// </summary>
+        /// <param name="id">Long with the product resource ID which material is being added</param>
+        /// <param name="addMaterialToProductDTO">AddMaterialToProductDTO with the information about the material being added</param>
+        /// <returns>HTTP Response 201; Created if the material was added with success to the product
+        ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
+        /// </returns>
+        [HttpPost("{id}/materials")]
+        public ActionResult addMaterialToProduct(long id,[FromBody]AddMaterialToProductModelView addMaterialToProductDTO){
+            addMaterialToProductDTO.productID=id;
+            try{
+                GetMaterialModelView materialModelView=new core.application.ProductController().addMaterialToProduct(addMaterialToProductDTO);
+                return Created(Request.Path,materialModelView);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a material from a product
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which material will be deleted from</param>
+        /// <param name="materialID">Long with the material resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the material was deleted with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the material
+        /// </returns>
+        [HttpDelete("{productID}/materials/{materialID}")]
+        public ActionResult deleteMaterialFromProduct(long productID,long materialID){
+            DeleteMaterialFromProducModelView deleteMaterialFromProductDTO=new DeleteMaterialFromProducModelView();
+            deleteMaterialFromProductDTO.productID=productID;
+            deleteMaterialFromProductDTO.materialID=materialID;
+            try{
+                new core.application.ProductController().deleteMaterialFromProduct(deleteMaterialFromProductDTO);
+                return NoContent();
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Adds a restriction to a product component material
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which restriction will apply to its material</param>
+        /// <param name="materialID">Long with the material resource ID which restriction will be applied to</param>
+        /// <param name="restrictionDTO">RestrictionDTO with the restriction information</param>
+        /// <returns>HTTP Response 201; Created if the restriction was added to the product material with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while adding the restriction to the product material
+        /// </returns>
+        [HttpPost("{productID}/components/{componentID}/materials/{materialID}/restrictions")]
+        public ActionResult addRestrictionToProductMaterial(long productID,long componentID,long materialID,[FromBody]RestrictionDTO restrictionDTO){
+            AddRestrictionToProductComponentMaterialModelView addRestrictionToProductComponentMaterialDTO=new AddRestrictionToProductComponentMaterialModelView();
+            addRestrictionToProductComponentMaterialDTO.productID=productID;
+            addRestrictionToProductComponentMaterialDTO.componentID=componentID;
+            addRestrictionToProductComponentMaterialDTO.materialID=materialID;
+            addRestrictionToProductComponentMaterialDTO.restriction=restrictionDTO;
+            try{
+                GetRestrictionModelView appliedRestrictionModelView=new core.application.ProductController().addRestrictionToProductComponentMaterial(addRestrictionToProductComponentMaterialDTO);
+                return Created(Request.Path,appliedRestrictionModelView);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a restriction from a product component material
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which restriction will be deleted from its material</param>
+        /// <param name="materialID">Long with the material resource ID which restriction will be deleted from</param>
+        /// <param name="restrictionID">Long with the restriction resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the restriction was deleted from the product material with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the restriction from the product material
+        /// </returns>
+        [HttpDelete("{productID}/materials/components/{componentID}/{materialID}/restrictions/{restrictionID}")]
+        public ActionResult deleteRestrictionFromProductMaterial(long productID,long componentID,long materialID,long restrictionID){
+            DeleteRestrictionFromProductComponentMaterialModelView deleteRestrictionFromProductMaterialDTO=new DeleteRestrictionFromProductComponentMaterialModelView();
+            deleteRestrictionFromProductMaterialDTO.productID=productID;
+            deleteRestrictionFromProductMaterialDTO.componentID=componentID;
+            deleteRestrictionFromProductMaterialDTO.materialID=materialID;
+            deleteRestrictionFromProductMaterialDTO.restrictionID=restrictionID;
+            try{
+                new core.application.ProductController().deleteRestrictionFromProductComponentMaterial(deleteRestrictionFromProductMaterialDTO);
+                return NoContent();
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+
+        /// <summary>
         /// Updates the components which a product can be complemented with
         /// </summary>
         /// <param name="updateProductData">UpdateProductDTO with the information of the product being updated</param>
@@ -299,6 +404,104 @@ namespace backend.Controllers {
         }
 
         /// <summary>
+        /// Adds a new component to a product
+        /// </summary>
+        /// <param name="id">Long with the product resource ID which component is being added</param>
+        /// <param name="addComponentToProductDTO">AddComponentToProductDTO with the information about the component being added</param>
+        /// <returns>HTTP Response 201; Created if the component was added with success to the product
+        ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
+        /// </returns>
+        [HttpPost("{id}/components")]
+        public ActionResult addComponentToProduct(long id,[FromBody]AddComponentToProductModelView addComponentToProductDTO){
+            addComponentToProductDTO.productID=id;
+            try{
+                GetComponentModelView componentModelView=new core.application.ProductController().addComponentToProduct(addComponentToProductDTO);
+                return Created(Request.Path,componentModelView);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a component from a product
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which component will be deleted from</param>
+        /// <param name="componentID">Long with the component resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the component was deleted with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the component
+        /// </returns>
+        [HttpDelete("{productID}/components/{componentID}")]
+        public ActionResult deleteComponentFromProduct(long productID,long componentID){
+            DeleteComponentFromProductModelView deleteComponentFromProductDTO=new DeleteComponentFromProductModelView();
+            deleteComponentFromProductDTO.productID=productID;
+            deleteComponentFromProductDTO.componentID=componentID;
+            try{
+                new core.application.ProductController().deleteComponentFromProduct(deleteComponentFromProductDTO);
+                return NoContent();
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Adds a restriction to a product component
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which restriction will apply to its component</param>
+        /// <param name="componentID">Long with the component resource ID which restriction will be applied to</param>
+        /// <param name="restrictionDTO">RestrictionDTO with the restriction information</param>
+        /// <returns>HTTP Response 201; Created if the restriction was added to the product component with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while adding the restriction to the product component
+        /// </returns>
+        [HttpPost("{productID}/components/{componentID}/restrictions")]
+        public ActionResult addRestrictionToProductComponent(long productID,long componentID,[FromBody]RestrictionDTO restrictionDTO){
+            AddRestrictionToProductComponentModelView addRestrictionToProductComponentDTO=new AddRestrictionToProductComponentModelView();
+            addRestrictionToProductComponentDTO.productID=productID;
+            addRestrictionToProductComponentDTO.componentID=componentID;
+            addRestrictionToProductComponentDTO.restriction=restrictionDTO;
+            try{
+                GetRestrictionModelView appliedRestrictionModelView=new core.application.ProductController().addRestrictionToProductComponent(addRestrictionToProductComponentDTO);
+                return Created(Request.Path,appliedRestrictionModelView);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a restriction from a product component
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which restriction will be deleted from its component</param>
+        /// <param name="dimensionID">Long with the component resource ID which restriction will be deleted from</param>
+        /// <param name="restrictionID">Long with the restriction resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the restriction was deleted from the product component with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the restriction from the product component
+        /// </returns>
+        [HttpDelete("{productID}/components/{componentID}/restrictions/{restrictionID}")]
+        public ActionResult deleteRestrictionFromProductComponent(long productID,long componentID,long restrictionID){
+            DeleteRestrictionFromProductComponentModelView deleteRestrictionFromProductComponentDTO=new DeleteRestrictionFromProductComponentModelView();
+            deleteRestrictionFromProductComponentDTO.productID=productID;
+            deleteRestrictionFromProductComponentDTO.componentID=componentID;
+            deleteRestrictionFromProductComponentDTO.restrictionID=restrictionID;
+            try{
+                new core.application.ProductController().deleteRestrictionFromProductComponent(deleteRestrictionFromProductComponentDTO);
+                return NoContent();
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+
+        /// <summary>
         /// Updates the dimensions of a product
         /// </summary>
         /// <param name="updateProductData">UpdateProductDTO with the information of the product being updated</param>
@@ -323,6 +526,306 @@ namespace backend.Controllers {
             }
             logger.LogInformation(LOG_PUT_BAD_REQUEST, id, updateProductData);
             return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
+        }
+
+        /// <summary>
+        /// Adds a new width dimension to a product
+        /// </summary>
+        /// <param name="id">Long with the product resource ID which dimension is being added</param>
+        /// <param name="addDimensionToProductDTO">AddDimensionToProductDTO with the information about the dimension being added</param>
+        /// <returns>HTTP Response 201; Created if the dimension was added with success to the product
+        ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
+        /// </returns>
+        [HttpPost("{id}/dimensions/width")]
+        public ActionResult addWidthDimensionToProduct(long id,[FromBody]AddDimensionToProductModelView addDimensionToProductDTO){
+            addDimensionToProductDTO.productID=id;
+            try{
+                GetAllDimensionsModelView updateWidthDimension=new core.application.ProductController().addWidthDimensionToProduct(addDimensionToProductDTO);
+                return Created(Request.Path,updateWidthDimension);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Adds a new height dimension to a product
+        /// </summary>
+        /// <param name="id">Long with the product resource ID which dimension is being added</param>
+        /// <param name="addDimensionToProductDTO">AddDimensionToProductDTO with the information about the dimension being added</param>
+        /// <returns>HTTP Response 201; Created if the dimension was added with success to the product
+        ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
+        /// </returns>
+        [HttpPost("{id}/dimensions/width")]
+        public ActionResult addHeightDimensionToProduct(long id,[FromBody]AddDimensionToProductModelView addDimensionToProductDTO){
+            addDimensionToProductDTO.productID=id;
+            try{
+                GetAllDimensionsModelView updateHeightDimension=new core.application.ProductController().addHeightDimensionToProduct(addDimensionToProductDTO);
+                return Created(Request.Path,updateHeightDimension);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Adds a new depth dimension to a product
+        /// </summary>
+        /// <param name="id">Long with the product resource ID which dimension is being added</param>
+        /// <param name="addDimensionToProductDTO">AddDimensionToProductDTO with the information about the dimension being added</param>
+        /// <returns>HTTP Response 201; Created if the dimension was added with success to the product
+        ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
+        /// </returns>
+        [HttpPost("{id}/dimensions/width")]
+        public ActionResult addDepthDimensionToProduct(long id,[FromBody]AddDimensionToProductModelView addDimensionToProductDTO){
+            addDimensionToProductDTO.productID=id;
+            try{
+                GetAllDimensionsModelView updateDepthDimension=new core.application.ProductController().addDepthDimensionToProduct(addDimensionToProductDTO);
+                return Created(Request.Path,updateDepthDimension);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a width dimension from a product
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which dimension will be deleted from</param>
+        /// <param name="dimensionID">Long with the width dimension resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the width dimension was deleted with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the dimension
+        /// </returns>
+        [HttpDelete("{productID}/dimensions/width/{dimensionID}")]
+        public ActionResult deleteWidthDimensionFromProduct(long productID,long dimensionID){
+            DeleteDimensionFromProductModelView deletedDimensionFromProductDTO=new DeleteDimensionFromProductModelView();
+            deletedDimensionFromProductDTO.productID=productID;
+            deletedDimensionFromProductDTO.widthDimensionID=dimensionID;
+            try{
+                new core.application.ProductController().deleteWidthDimensionFromProduct(deletedDimensionFromProductDTO);
+                return NoContent();
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a height dimension from a product
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which dimension will be deleted from</param>
+        /// <param name="dimensionID">Long with the height dimension resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the height dimension was deleted with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the dimension
+        /// </returns>
+        [HttpDelete("{productID}/dimensions/height/{dimensionID}")]
+        public ActionResult deleteHeightDimensionFromProduct(long productID,long dimensionID){
+            DeleteDimensionFromProductModelView deletedDimensionFromProductDTO=new DeleteDimensionFromProductModelView();
+            deletedDimensionFromProductDTO.productID=productID;
+            deletedDimensionFromProductDTO.heightDimensionID=dimensionID;
+            try{
+                new core.application.ProductController().deleteHeightDimensionFromProduct(deletedDimensionFromProductDTO);
+                return NoContent();
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a depth dimension from a product
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which dimension will be deleted from</param>
+        /// <param name="dimensionID">Long with the depth dimension resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the depth dimension was deleted with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the dimension
+        /// </returns>
+        [HttpDelete("{productID}/dimensions/depth/{dimensionID}")]
+        public ActionResult deleteDepthDimensionFromProduct(long productID,long dimensionID){
+            DeleteDimensionFromProductModelView deletedDimensionFromProductDTO=new DeleteDimensionFromProductModelView();
+            deletedDimensionFromProductDTO.productID=productID;
+            deletedDimensionFromProductDTO.depthDimensionID=dimensionID;
+            try{
+                new core.application.ProductController().deleteDepthDimensionFromProduct(deletedDimensionFromProductDTO);
+                return NoContent();
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Adds a restriction to a product component width dimension
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which restriction will apply to its dimension</param>
+        /// <param name="dimensionID">Long with the dimension resource ID which restriction will be applied to</param>
+        /// <param name="restrictionDTO">RestrictionDTO with the restriction information</param>
+        /// <returns>HTTP Response 201; Created if the restriction was added to the product dimension with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while adding the restriction to the product dimension
+        /// </returns>
+        [HttpPost("{productID}/components/{componentID}/dimensions/width/{dimensionID}/restrictions")]
+        public ActionResult addRestrictionToProductComponentWidthDimension(long productID,long componentID,long dimensionID,[FromBody]RestrictionDTO restrictionDTO){
+            AddRestrictionToProductComponentDimensionModelView addRestrictionToProductDimensionDTO=new AddRestrictionToProductComponentDimensionModelView();
+            addRestrictionToProductDimensionDTO.productID=productID;
+            addRestrictionToProductDimensionDTO.componentID=componentID;
+            addRestrictionToProductDimensionDTO.dimensionID=dimensionID;
+            addRestrictionToProductDimensionDTO.restriction=restrictionDTO;
+            try{
+                GetAllRestrictionsModelView updatedAppliedRestrictions=new core.application.ProductController().addRestrictionToProductWidthDimension(addRestrictionToProductDimensionDTO);
+                return Created(Request.Path,updatedAppliedRestrictions);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Adds a restriction to a product component height dimension
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which restriction will apply to its dimension</param>
+        /// <param name="dimensionID">Long with the dimension resource ID which restriction will be applied to</param>
+        /// <param name="restrictionDTO">RestrictionDTO with the restriction information</param>
+        /// <returns>HTTP Response 201; Created if the restriction was added to the product dimension with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while adding the restriction to the product dimension
+        /// </returns>
+        [HttpPost("{productID}/components/{componentID}/dimensions/height/{dimensionID}/restrictions")]
+        public ActionResult addRestrictionToProductHeightDimension(long productID,long componentID,long dimensionID,[FromBody]RestrictionDTO restrictionDTO){
+            AddRestrictionToProductComponentDimensionModelView addRestrictionToProductDimensionDTO=new AddRestrictionToProductComponentDimensionModelView();
+            addRestrictionToProductDimensionDTO.productID=productID;
+            addRestrictionToProductDimensionDTO.componentID=componentID;
+            addRestrictionToProductDimensionDTO.dimensionID=dimensionID;
+            addRestrictionToProductDimensionDTO.restriction=restrictionDTO;
+            try{
+                GetAllRestrictionsModelView updatedAppliedRestrictions=new core.application.ProductController().addRestrictionToProductHeightDimension(addRestrictionToProductDimensionDTO);
+                return Created(Request.Path,updatedAppliedRestrictions);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Adds a restriction to a product component depth dimension
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which restriction will apply to its dimension</param>
+        /// <param name="dimensionID">Long with the dimension resource ID which restriction will be applied to</param>
+        /// <param name="restrictionDTO">RestrictionDTO with the restriction information</param>
+        /// <returns>HTTP Response 201; Created if the restriction was added to the product dimension with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while adding the restriction to the product dimension
+        /// </returns>
+        [HttpPost("{productID}/components/{componentID}/dimensions/depth/{dimensionID}/restrictions")]
+        public ActionResult addRestrictionToProductDepthDimension(long productID,long componentID,long dimensionID,[FromBody]RestrictionDTO restrictionDTO){
+            AddRestrictionToProductComponentDimensionModelView addRestrictionToProductDimensionDTO=new AddRestrictionToProductComponentDimensionModelView();
+            addRestrictionToProductDimensionDTO.productID=productID;
+            addRestrictionToProductDimensionDTO.componentID=componentID;
+            addRestrictionToProductDimensionDTO.dimensionID=dimensionID;
+            addRestrictionToProductDimensionDTO.restriction=restrictionDTO;
+            try{
+                GetAllRestrictionsModelView updatedAppliedRestrictions=new core.application.ProductController().addRestrictionToProductDepthDimension(addRestrictionToProductDimensionDTO);
+                return Created(Request.Path,updatedAppliedRestrictions);
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }catch(ArgumentException argumentException){
+                return BadRequest(argumentException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a restriction from a product width dimension
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which restriction will be deleted from its dimension</param>
+        /// <param name="dimensionID">Long with the dimension resource ID which restriction will be deleted from</param>
+        /// <param name="restrictionID">Long with the restriction resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the restriction was deleted from the product dimension with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the restriction from the product dimension
+        /// </returns>
+        [HttpDelete("{productID}/components/{componentID}/dimensions/width/{dimensionID}/restrictions/{restrictionID}")]
+        public ActionResult deleteRestrictionFromProductWidthDimension(long productID,long componentID,long dimensionID,long restrictionID){
+            DeleteRestrictionFromProductComponentDimensionModelView deleteRestrictionFromProductDimensionDTO=new DeleteRestrictionFromProductComponentDimensionModelView();
+            deleteRestrictionFromProductDimensionDTO.productID=productID;
+            deleteRestrictionFromProductDimensionDTO.componentID=componentID;
+            deleteRestrictionFromProductDimensionDTO.dimensionID=dimensionID;
+            deleteRestrictionFromProductDimensionDTO.restrictionID=restrictionID;
+            try{
+                new core.application.ProductController().deleteRestrictionFromProductComponentWidthDimension(deleteRestrictionFromProductDimensionDTO);
+                return NoContent();
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+        
+        /// <summary>
+        /// Deletes a restriction from a product height dimension
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which restriction will be deleted from its dimension</param>
+        /// <param name="dimensionID">Long with the dimension resource ID which restriction will be deleted from</param>
+        /// <param name="restrictionID">Long with the restriction resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the restriction was deleted from the product dimension with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the restriction from the product dimension
+        /// </returns>
+        [HttpDelete("{productID}/components/{componentID}/dimensions/height/{dimensionID}/restrictions/{restrictionID}")]
+        public ActionResult deleteRestrictionFromProductHeightDimension(long productID,long componentID,long dimensionID,long restrictionID){
+            DeleteRestrictionFromProductComponentDimensionModelView deleteRestrictionFromProductDimensionDTO=new DeleteRestrictionFromProductComponentDimensionModelView();
+            deleteRestrictionFromProductDimensionDTO.productID=productID;
+            deleteRestrictionFromProductDimensionDTO.componentID=componentID;
+            deleteRestrictionFromProductDimensionDTO.dimensionID=dimensionID;
+            deleteRestrictionFromProductDimensionDTO.restrictionID=restrictionID;
+            try{
+                new core.application.ProductController().deleteRestrictionFromProductComponentHeightDimension(deleteRestrictionFromProductDimensionDTO);
+                return NoContent();
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a restriction from a product depth dimension
+        /// </summary>
+        /// <param name="productID">Long with the product resource ID which restriction will be deleted from its dimension</param>
+        /// <param name="dimensionID">Long with the dimension resource ID which restriction will be deleted from</param>
+        /// <param name="restrictionID">Long with the restriction resource ID which will be deleted</param>
+        /// <returns>HTTP Response 204; No Content if the restriction was deleted from the product dimension with success
+        ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the restriction from the product dimension
+        /// </returns>
+        [HttpDelete("{productID}/components/{componentID}/dimensions/depth/{dimensionID}/restrictions/{restrictionID}")]
+        public ActionResult deleteRestrictionFromProductDepthDimension(long productID,long componentID,long dimensionID,long restrictionID){
+            DeleteRestrictionFromProductComponentDimensionModelView deleteRestrictionFromProductDimensionDTO=new DeleteRestrictionFromProductComponentDimensionModelView();
+            deleteRestrictionFromProductDimensionDTO.productID=productID;
+            deleteRestrictionFromProductDimensionDTO.componentID=componentID;
+            deleteRestrictionFromProductDimensionDTO.dimensionID=dimensionID;
+            deleteRestrictionFromProductDimensionDTO.restrictionID=restrictionID;
+            try{
+                new core.application.ProductController().deleteRestrictionFromProductComponentDepthDimension(deleteRestrictionFromProductDimensionDTO);
+                return NoContent();
+            }catch(NullReferenceException){
+                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException.Message);
+            }
         }
 
         /// <summary>

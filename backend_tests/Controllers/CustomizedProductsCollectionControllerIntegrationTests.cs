@@ -22,7 +22,7 @@ namespace backend_tests.Controllers
         /// <summary>
         /// String with the URI where the API Requests will be performed
         /// </summary>
-        private const string CUSTOMIZED_PRODUCTS_COLLECTION_URI = "myc/api/collections";
+        private const string CUSTOMIZED_PRODUCTS_COLLECTION_URI = "mycm/api/collections";
         /// <summary>
         /// Injected Mock Server
         /// </summary>
@@ -158,12 +158,11 @@ namespace backend_tests.Controllers
             CustomizedProductCollectionDTO customizedProductCollectionDTO = new CustomizedProductCollectionDTO();
             customizedProductCollectionDTO.name = name;
             CustomizedProductDTO customizedProductDTO=new CustomizedProductDTO();
-            //We need a valid customized product so lets create one
+            //We need a valid customized product so let's create one
             Task<CustomizedProductDTO> customizedProductDTOTask=new CustomizedProductControllerIntegrationTest(fixture).ensureCustomizedProductIsCreatedSuccesfuly();
             customizedProductDTOTask.Wait();
             //Now let's add the customized product to the customized product collection
             customizedProductCollectionDTO.customizedProducts=new List<CustomizedProductDTO>(new []{customizedProductDTOTask.Result});
-
             //We will try to create a customized product collection with the generated name and customized products
             var createCustomizedProductsCollection = await httpClient.PostAsJsonAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI, customizedProductCollectionDTO);
             //Since there were no customized product collection with the generated name and customized products then the result should tell us that it was created (sucessfuly)
@@ -172,6 +171,56 @@ namespace backend_tests.Controllers
             grantExistsCustomizedProductCollectionExistWithName(name);
             //We can also grant that its possible to fetch the customized product collection by its ID
             return JsonConvert.DeserializeObject<CustomizedProductCollectionDTO>(await createCustomizedProductsCollection.Content.ReadAsStringAsync());
+        }
+
+        [Fact, TestPriority(5)]
+        public async Task<CustomizedProductCollectionDTO> ensureCanRemoveACustomizedProductFromTheCustomizedProductCollectionIfItIsValid()
+        {
+            //Creates a customized product collection with a valid name and a customized product
+            CustomizedProductCollectionDTO customizedProductCollectionDTO = await ensureCanCreateACustomizedProductCollectionIfItHasAValidNameAndValidCustomizedProducts();
+            long id = 0;
+
+            //Fetches the customized product's ID of the customized product collection
+            foreach(CustomizedProductDTO customizedProductDTO in customizedProductCollectionDTO.customizedProducts) id = customizedProductDTO.id;
+
+            //Deletes the customized product with the given ID
+            var removeCustomizedProduct = await httpClient.DeleteAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI + 
+            "/" + customizedProductCollectionDTO.id + "/customizedproducts/" + id);
+
+            //Since the customized product could be removed, the result is no content, meaning it was deleted from the collection
+            Assert.Equal(HttpStatusCode.NoContent, removeCustomizedProduct.StatusCode);
+
+            //Fetches the updated customized product collection
+            var getCustomizedProductCollection = await httpClient.GetAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI + "/" + customizedProductCollectionDTO.id);
+            
+            var changedCustomizedProductCollectionDTO = JsonConvert.DeserializeObject<CustomizedProductCollectionDTO>(await getCustomizedProductCollection.Content.ReadAsStringAsync());
+            //Since its only product was removed, now the customized product collection should have an empty list of customized products
+            Assert.Empty(changedCustomizedProductCollectionDTO.customizedProducts);       
+
+            return changedCustomizedProductCollectionDTO;
+        }
+
+        [Fact, TestPriority(6)]
+        public async Task<CustomizedProductCollectionDTO> ensureCantRemoveANonExistentCustomizedProductFromTheCustomizedProductCollection()
+        {
+            //Creates a customized product collection with a valid name and a customized product
+            CustomizedProductCollectionDTO customizedProductCollectionDTO = await ensureCanCreateACustomizedProductCollectionIfItHasAValidNameAndValidCustomizedProducts();
+
+            //Tries to delete the customized product with an invalid ID
+            var removeCustomizedProduct = await httpClient.DeleteAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI + 
+            "/" + customizedProductCollectionDTO.id + "/customizedproducts/" + 0);
+
+            //Since the customized product doesn't exist, the result is bad request, meaning it couldn't be removed
+            Assert.Equal(HttpStatusCode.BadRequest, removeCustomizedProduct.StatusCode);
+
+            //Fetches the updated customized product collection
+            var getCustomizedProductCollection = await httpClient.GetAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI + "/" + customizedProductCollectionDTO.id);
+            var updatedCustomizedProductCollectionDTO =  JsonConvert.DeserializeObject<CustomizedProductCollectionDTO>(await getCustomizedProductCollection.Content.ReadAsStringAsync());
+
+            //Ensures the customized product wasn't deleted
+            Assert.NotEmpty(updatedCustomizedProductCollectionDTO.customizedProducts);
+
+            return updatedCustomizedProductCollectionDTO;
         }
 
         /// <summary>

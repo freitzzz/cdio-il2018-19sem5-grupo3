@@ -189,9 +189,9 @@ namespace core_tests.domain
         public void ensureDisabledCustomizedProductCollectionCantBeDisabled()
         {
             CustomizedProductCollection collection = new CustomizedProductCollection("Mario");
-            collection.disable();
+            collection.deactivate();
 
-            Assert.False(collection.disable());
+            Assert.False(collection.deactivate());
         }
         /// <summary>
         /// Test to ensure that an enabled CustomizedProductCollection can be disabled.
@@ -199,7 +199,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureEnabledCustomizedProductCollectionCanBeDisabled()
         {
-            Assert.True(new CustomizedProductCollection("Mario").disable());
+            Assert.True(new CustomizedProductCollection("Mario").deactivate());
         }
 
         /// <summary>

@@ -92,4 +92,3 @@ distance(Lat1, Lon1, Lat2, Lon2, Dis2):-
 % distance(50.8462807,4.3547273,50.0878114,14.4204598,D).
 % Online: http://www.movable-type.co.uk/scripts/latlong.html
 %
-

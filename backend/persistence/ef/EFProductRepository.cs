@@ -23,6 +23,46 @@ namespace backend.persistence.ef
         }
 
         /// <summary>
+        /// Fetches a width dimension of a product
+        /// </summary>
+        /// <param name="fetchProductDimensionDTO">FetchProductDimensionDTO with the product width dimension information</param>
+        /// <returns>Dimension with the fetched product width dimension</returns>
+        public Dimension fetchProductWidthDimension(FetchProductDimensionDTO fetchProductDimensionDTO){
+            Product fetchedProduct=find(fetchProductDimensionDTO.productID);
+            foreach(Dimension dimension in fetchedProduct.widthValues)
+                if(dimension.Id==fetchProductDimensionDTO.dimensionID)
+                    return dimension;
+            return null;
+        }
+        
+
+        /// <summary>
+        /// Fetches a height dimension of a product
+        /// </summary>
+        /// <param name="fetchProductDimensionDTO">FetchProductDimensionDTO with the product height dimension information</param>
+        /// <returns>Dimension with the fetched product height dimension</returns>
+        public Dimension fetchProductHeightDimension(FetchProductDimensionDTO fetchProductDimensionDTO){
+            Product fetchedProduct=find(fetchProductDimensionDTO.productID);
+            foreach(Dimension dimension in fetchedProduct.heightValues)
+                if(dimension.Id==fetchProductDimensionDTO.dimensionID)
+                    return dimension;
+            return null;
+        }
+
+        /// <summary>
+        /// Fetches a depth dimension of a product
+        /// </summary>
+        /// <param name="fetchProductDimensionDTO">FetchProductDimensionDTO with the product depth dimension information</param>
+        /// <returns>Dimension with the fetched product depth dimension</returns>
+        public Dimension fetchProductDepthDimension(FetchProductDimensionDTO fetchProductDimensionDTO){
+            Product fetchedProduct=find(fetchProductDimensionDTO.productID);
+            foreach(Dimension dimension in fetchedProduct.depthValues)
+                if(dimension.Id==fetchProductDimensionDTO.dimensionID)
+                    return dimension;
+            return null;
+        }
+
+        /// <summary>
         /// Fetches an enumerable of products by their ids
         /// </summary>
         /// <param name="productsDTO">IEnumerable with the products information</param>
@@ -35,6 +75,7 @@ namespace backend.persistence.ef
                     select product
                     );
         }
+
         /// <summary>
         /// Updates a product
         /// <br>Returns null if the update affects the entity identifier and the changing entity identifier already exists on the database

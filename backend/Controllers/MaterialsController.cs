@@ -23,7 +23,7 @@ namespace backend.Controllers
     //<summary>
     //Backend MaterialsController class.
     //</summary>
-    [Route("myc/api/materials")]
+    [Route("mycm/api/materials")]
     public class MaterialsController : Controller
     {
         /// <summary>
@@ -85,14 +85,22 @@ namespace backend.Controllers
         private const string LOG_PUT_BASIC_INFO_START = "PUT Basic Info Request started";
 
         /// <summary>
-        /// Constant that represents the log message for when a PUT Finishes Request starts
+        /// Constant that represents the log message for when a POST Finish Request starts
         /// </summary>
-        private const string LOG_PUT_FINISHES_START = "PUT Finishes Request started";
+        private const string LOG_POST_FINISH_START = "POST Finish Request started";
 
         /// <summary>
-        /// Constant that represents the log message for when a PUT Colors Request starts
+        /// Constant that represents the log message for when a POST Color Request starts
         /// </summary>
-        private const string LOG_PUT_COLORS_START = "PUT Colors Request started";
+        private const string LOG_POST_COLOR_START = "POST Color Request started";
+         /// <summary>
+        /// Constant that represents the log message for when a DELETE Finish Request starts
+        /// </summary>
+        private const string LOG_DELETE_FINISH_START = "DELETE Finish Request started";
+         /// <summary>
+        /// Constant that represents the log message for when a DELETE Color Request starts
+        /// </summary>
+        private const string LOG_DELETE_COLOR_START = "DELETE Color Request started";
 
         /// <summary>
         /// Constant that represents the log message for when a GET All Request returns a BadRequest
@@ -311,63 +319,113 @@ namespace backend.Controllers
         }
 
         /// <summary>
-        /// Updates finishes of a material
+        /// Add finish of a material for update
         /// </summary>
-        /// <param name="id">id of the material to be updated</param>
-        /// <param name="upMat">dto with the list of finishes to add and remove</param>
+        /// <param name="idMaterial">id of the material to be updated</param>
+        /// <param name="addFinishDTO">FinishDTO with the information of finish to add</param>
         /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
         [HttpPut("{id}/finishes")]
-        public ActionResult updateFinishes(long id, [FromBody] UpdateMaterialDTO upMat)
+        public ActionResult addFinish(long idMaterial, [FromBody] FinishDTO addFinishDTO)
         {
-            logger.LogInformation(LOG_PUT_FINISHES_START);
+            logger.LogInformation(LOG_POST_FINISH_START);
             try
             {
-                upMat.id = id;
-                if (new core.application.MaterialsController().updateFinishes(upMat))
+                if (new core.application.MaterialsController().addFinish(idMaterial, addFinishDTO))
                 {
-                    logger.LogInformation(LOG_PUT_SUCCESS, id, upMat);
+                    logger.LogInformation(LOG_PUT_SUCCESS, idMaterial, addFinishDTO);
                     return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
                 }
             }
             catch (NullReferenceException nullReferenceException)
             {
-                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, id, upMat);
+                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, addFinishDTO);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
-            logger.LogWarning(LOG_PUT_BAD_REQUEST, id, upMat);
+            logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, addFinishDTO);
+            return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
+        }
+        /// <summary>
+        /// Remove finish of a material for update
+        /// </summary>
+        /// <param name="idMaterial">id of the material to be updated</param>
+        /// <param name="idFinish">id of the finish to be remove</param>
+        /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
+        [HttpPut("{idMaterial}/finishes/{idFinish}")]
+        public ActionResult removeFinish(long idMaterial, long idFinish)
+        {
+            logger.LogInformation(LOG_DELETE_FINISH_START);
+            try
+            {
+                if (new core.application.MaterialsController().removeFinish(idMaterial, idFinish))
+                {
+                    logger.LogInformation(LOG_PUT_SUCCESS, idMaterial, idFinish);
+                    return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
+                }
+            }
+            catch (NullReferenceException nullReferenceException)
+            {
+                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, idFinish);
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            }
+            logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, idFinish);
             return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
         }
 
         /// <summary>
-        /// Updates colors of a material
+        /// Add color of a material for update
         /// </summary>
-        /// <param name="id">id of the material to be updated</param>
-        /// <param name="upMat">dto with the list of colors to add and remove</param>
+        /// <param name="idMaterial">id of the material to be updated</param>
+        /// <param name="addColorDTO">ColorDTO with the information of finish to add</param>
         /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
         [HttpPut("{id}/colors")]
-        public ActionResult updateColors(long id, [FromBody] UpdateMaterialDTO upMat)
+        public ActionResult addColor(long idMaterial, [FromBody] ColorDTO addColorDTO)
         {
-            logger.LogInformation(LOG_PUT_COLORS_START);
+            logger.LogInformation(LOG_POST_COLOR_START);
             try
             {
-                upMat.id = id;
-                if (new core.application.MaterialsController().updateColors(upMat))
+                if (new core.application.MaterialsController().addColor(idMaterial, addColorDTO))
                 {
-                    logger.LogInformation(LOG_PUT_SUCCESS, id, upMat);
+                    logger.LogInformation(LOG_PUT_SUCCESS, idMaterial, addColorDTO);
                     return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
                 }
             }
             catch (NullReferenceException nullReferenceException)
             {
-                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, id, upMat);
+                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, addColorDTO);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
             catch (InvalidOperationException invalidOperationException)
             {
-                logger.LogWarning(invalidOperationException, LOG_PUT_BAD_REQUEST, id, upMat);
+                logger.LogWarning(invalidOperationException, LOG_PUT_BAD_REQUEST, idMaterial, addColorDTO);
                 return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
             }
-            logger.LogWarning(LOG_PUT_BAD_REQUEST, id, upMat);
+            logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, addColorDTO);
+            return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
+        }
+        /// <summary>
+        /// Remove color of a material for update
+        /// </summary>
+        /// <param name="idMaterial">id of the material to be updated</param>
+        /// <param name="idColor">id of the color to be remove</param>
+        /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
+        [HttpPut("{idMaterial}/colors/{idColor}")]
+        public ActionResult removeColor(long idMaterial, long idColor)
+        {
+            logger.LogInformation(LOG_DELETE_COLOR_START);
+            try
+            {
+                if (new core.application.MaterialsController().removeColor(idMaterial, idColor))
+                {
+                    logger.LogInformation(LOG_PUT_SUCCESS, idMaterial, idColor);
+                    return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
+                }
+            }
+            catch (NullReferenceException nullReferenceException)
+            {
+                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, idColor);
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            }
+            logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, idColor);
             return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
         }
     }
