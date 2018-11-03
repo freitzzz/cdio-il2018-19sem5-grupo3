@@ -54,8 +54,8 @@ namespace core_tests.domain
             Color otherColor = Color.valueOf("adeus", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("finish");
             Material material = new Material("#material", "designation",
-            new List<Color>(){ color },
-            new List<Finish>(){ finish });
+            new List<Color>() { color },
+            new List<Finish>() { finish });
 
             Action act = () => CustomizedMaterial.valueOf(material, otherColor, finish);
 
@@ -400,6 +400,116 @@ namespace core_tests.domain
             CustomizedMaterial custMaterial2 = CustomizedMaterial.valueOf(material, color, finish);
 
             Assert.Equal(custMaterial1.ToString(), custMaterial2.ToString());
+        }
+
+        [Fact]
+        public void ensureChangeColorChangesColor()
+        {
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Color otherColor = Color.valueOf("Amarelo", 2, 2, 3, 3);
+            Finish finish = Finish.valueOf("Acabamento polido");
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+            colors.Add(otherColor);
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+            Material material = new Material("1234", "Material", colors, finishes);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
+
+            Assert.True(customizedMaterial.changeColor(otherColor));
+            Assert.NotEqual(customizedMaterial.color, color);
+        }
+
+        [Fact]
+        public void ensureChangeColorDoesNotChangeColorIfNewColorIsNull()
+        {
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+            Material material = new Material("1234", "Material", colors, finishes);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
+
+            Action act = () => customizedMaterial.changeColor(null);
+
+            Assert.Throws<ArgumentException>(act);
+            Assert.Equal(customizedMaterial.color, color);
+        }
+
+        [Fact]
+        public void ensureChangeColorDoesNotChangeColorIfNewColorIsNotInTheMaterial()
+        {
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Color otherColor = Color.valueOf("Amarelo", 2, 2, 3, 3);
+            Finish finish = Finish.valueOf("Acabamento polido");
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+            Material material = new Material("1234", "Material", colors, finishes);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
+
+            Action act = () => customizedMaterial.changeColor(otherColor);
+
+            Assert.Throws<ArgumentException>(act);
+            Assert.Equal(customizedMaterial.color, color);
+        }
+
+        [Fact]
+        public void ensureChangeFinishChangesFinish()
+        {
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish otherFinish = Finish.valueOf("Wax");
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+            finishes.Add(otherFinish);
+            Material material = new Material("1234", "Material", colors, finishes);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
+
+            Assert.True(customizedMaterial.changeFinish(otherFinish));
+            Assert.NotEqual(customizedMaterial.finish, finish);
+        }
+
+        [Fact]
+        public void ensureChangeFinishDoesNotChangeFinishIfNewFinishIsNull()
+        {
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+            Material material = new Material("1234", "Material", colors, finishes);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
+
+            Action act = () => customizedMaterial.changeFinish(null);
+
+            Assert.Throws<ArgumentException>(act);
+            Assert.Equal(customizedMaterial.finish, finish);
+        }
+
+        [Fact]
+        public void ensureChangeFinishDoesNotChangeFinishIfNewFinishIsNotInTheMaterial()
+        {
+            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
+            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish otherFinish = Finish.valueOf("Wax");
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+            List<Finish> finishes = new List<Finish>();
+            finishes.Add(finish);
+            Material material = new Material("1234", "Material", colors, finishes);
+            CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
+
+            Action act = () => customizedMaterial.changeFinish(otherFinish);
+
+            Assert.Throws<ArgumentException>(act);
+            Assert.Equal(customizedMaterial.finish, finish);
         }
     }
 }
