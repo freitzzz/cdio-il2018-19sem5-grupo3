@@ -222,7 +222,26 @@ namespace core.domain
 
         public MeasurementDTO toDTO()
         {
-            throw new NotImplementedException();
+            MeasurementDTO dto = new MeasurementDTO();
+
+            dto.id = Id;
+            dto.height = height.toDTO();
+            dto.width = width.toDTO();
+            dto.depth = depth.toDTO();
+
+            return dto;
+        }
+
+        public MeasurementDTO toDTO(string unit)
+        {
+            MeasurementDTO dto = new MeasurementDTO();
+
+            dto.id = Id;
+            dto.height = height.toDTO(unit);
+            dto.width = width.toDTO(unit);
+            dto.depth = depth.toDTO(unit);
+
+            return dto;
         }
     }
 }
