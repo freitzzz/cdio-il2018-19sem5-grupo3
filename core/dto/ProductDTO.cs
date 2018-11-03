@@ -57,7 +57,7 @@ namespace core.dto {
         [DataMember(Name = "category")]
         public ProductCategoryDTO productCategory { get; set; }
         [DataMember(Name = "dimensions")]
-        public DimensionsListDTO dimensions { get; set; }
+        public List<MeasurementDTO> dimensions { get; set; }
         /// <summary>
         /// Returns this DTO's equivalent Entity
         /// </summary>
