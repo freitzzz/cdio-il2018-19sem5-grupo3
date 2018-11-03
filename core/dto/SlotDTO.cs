@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using core.domain;
 using support.dto;
+using support.utils;
 
 namespace core.dto
 {
@@ -34,18 +35,11 @@ namespace core.dto
         /// </summary>
         /// <value>Gets/Sets the value of the list</value>
         [DataMember]
-        public List<CustomizedProductDTO> customizedProducts {get; set;}
+        public List<CustomizedProductDTO> customizedProducts { get; set; }
 
         public Slot toEntity()
         {
-            Slot slot = new Slot(customizedDimensions.toEntity());
-            slot.Id = Id;
-            
-            foreach (var customizedProductDTO in customizedProducts)
-            {
-                slot.addCustomizedProduct(customizedProductDTO.toEntity());
-            }
-            return slot;
+            throw new NotSupportedException();
         }
     }
 }
