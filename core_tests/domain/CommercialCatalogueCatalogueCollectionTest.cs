@@ -25,23 +25,22 @@ namespace support_tests.domain
             List<Double> values = new List<Double>();
             values.Add(500.0);
 
-            DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(values);
-            List<Dimension> dimensionList = new List<Dimension>();
-            dimensionList.Add(discreteDimensionInterval);
-
             Material material = new Material("told", "me", colors, finishes);
             List<Material> materialList = new List<Material>();
             materialList.Add(material);
 
             ProductCategory productCategory = new ProductCategory("the");
 
-            IEnumerable<Dimension> heightDimensionsEnumerable = dimensionList;
-            IEnumerable<Dimension> widthDimensionsEnumerable = dimensionList;
-            IEnumerable<Dimension> depthDimensionsEnumerable = dimensionList;
+            Dimension heightDimension = new SingleValueDimension(21);
+            Dimension widthDimension = new SingleValueDimension(30);
+            Dimension depthDimension = new SingleValueDimension(17);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+            List<Measurement> measurements = new List<Measurement>() {measurement};
             IEnumerable<Material> materialEnumerable = materialList;
 
             Product product = new Product("world", "is", productCategory, materialEnumerable,
-            heightDimensionsEnumerable, widthDimensionsEnumerable, depthDimensionsEnumerable);
+            measurements);
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
@@ -77,23 +76,23 @@ namespace support_tests.domain
             List<Double> values = new List<Double>();
             values.Add(500.0);
 
-            DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(values);
-            List<Dimension> dimensionList = new List<Dimension>();
-            dimensionList.Add(discreteDimensionInterval);
-
             Material material = new Material("told", "me", colors, finishes);
             List<Material> materialList = new List<Material>();
             materialList.Add(material);
 
             ProductCategory productCategory = new ProductCategory("the");
 
-            IEnumerable<Dimension> heightDimensionsEnumerable = dimensionList;
-            IEnumerable<Dimension> widthDimensionsEnumerable = dimensionList;
-            IEnumerable<Dimension> depthDimensionsEnumerable = dimensionList;
+            Dimension heightDimension = new SingleValueDimension(21);
+            Dimension widthDimension = new SingleValueDimension(30);
+            Dimension depthDimension = new SingleValueDimension(17);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+            List<Measurement> measurements = new List<Measurement>() {measurement};
+
             IEnumerable<Material> materialEnumerable = materialList;
 
             Product product = new Product("world", "is", productCategory, materialEnumerable,
-            heightDimensionsEnumerable, widthDimensionsEnumerable, depthDimensionsEnumerable);
+            measurements);
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
@@ -133,23 +132,22 @@ namespace support_tests.domain
             List<Double> values = new List<Double>();
             values.Add(500.0);
 
-            DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(values);
-            List<Dimension> dimensionList = new List<Dimension>();
-            dimensionList.Add(discreteDimensionInterval);
-
             Material material = new Material("told", "me", colors, finishes);
             List<Material> materialList = new List<Material>();
             materialList.Add(material);
 
             ProductCategory productCategory = new ProductCategory("the");
 
-            IEnumerable<Dimension> heightDimensionsEnumerable = dimensionList;
-            IEnumerable<Dimension> widthDimensionsEnumerable = dimensionList;
-            IEnumerable<Dimension> depthDimensionsEnumerable = dimensionList;
+            Dimension heightDimension = new SingleValueDimension(21);
+            Dimension widthDimension = new SingleValueDimension(30);
+            Dimension depthDimension = new SingleValueDimension(17);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+            List<Measurement> measurements = new List<Measurement>() {measurement};
             IEnumerable<Material> materialEnumerable = materialList;
 
             Product product = new Product("world", "is", productCategory, materialEnumerable,
-            heightDimensionsEnumerable, widthDimensionsEnumerable, depthDimensionsEnumerable);
+            measurements);
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);

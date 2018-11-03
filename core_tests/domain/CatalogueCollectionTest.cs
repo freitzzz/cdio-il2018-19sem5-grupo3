@@ -4,10 +4,13 @@ using support.dto;
 using core.domain;
 using core.dto;
 using Xunit;
-namespace core_tests.domain {
-    public class CatalogueCollectionTest {
+namespace core_tests.domain
+{
+    public class CatalogueCollectionTest
+    {
         [Fact]
-        public void ensureCatalogueCollectionCanBeCreatedWithCustomizedProductCollection() {
+        public void ensureCatalogueCollectionCanBeCreatedWithCustomizedProductCollection()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -16,12 +19,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -41,7 +40,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -53,7 +52,8 @@ namespace core_tests.domain {
             Assert.NotNull(new CatalogueCollection(customCollection));
         }
         [Fact]
-        public void ensureCatalogueCollectionContructorIsInvalid() {
+        public void ensureCatalogueCollectionContructorIsInvalid()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -62,12 +62,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -91,7 +87,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -110,7 +106,8 @@ namespace core_tests.domain {
 
 
         [Fact]
-        public void ensureCatalogueCollectionContructorIsValid() {
+        public void ensureCatalogueCollectionContructorIsValid()
+        {
             var category = new ProductCategory("Drawers");
 
 
@@ -121,12 +118,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -150,7 +143,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -172,7 +165,8 @@ namespace core_tests.domain {
         }
 
         [Fact]
-        public void ensureHashCodeIsEqual() {
+        public void ensureHashCodeIsEqual()
+        {
             var category = new ProductCategory("Drawers");
 
             //Creating Dimensions
@@ -182,12 +176,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -211,7 +201,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -236,7 +226,8 @@ namespace core_tests.domain {
             Assert.Equal(hashCode1, hashCode2);
         }
         [Fact]
-        public void ensureToStringSucceeds() {
+        public void ensureToStringSucceeds()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -245,12 +236,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -270,7 +257,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -282,7 +269,8 @@ namespace core_tests.domain {
             Assert.Equal("List of Customized Products: System.Collections.Generic.List`1[core.domain.CatalogueCollectionProduct], Customized Product Collection Name Lab Coats", new CatalogueCollection(customCollection).ToString());
         }
         [Fact]
-        public void ensureEqualsSucceedsIfSameInstance() {
+        public void ensureEqualsSucceedsIfSameInstance()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -291,12 +279,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -316,7 +300,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -329,7 +313,8 @@ namespace core_tests.domain {
             Assert.True(collection.Equals(collection));
         }
         [Fact]
-        public void ensureEqualsFailsIfObjjectIsNull() {
+        public void ensureEqualsFailsIfObjjectIsNull()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -338,12 +323,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -363,7 +344,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -376,7 +357,8 @@ namespace core_tests.domain {
             Assert.False(collection.Equals(null));
         }
         [Fact]
-        public void ensureEqualsFailsIfObjectNotSameType() {
+        public void ensureEqualsFailsIfObjectNotSameType()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -385,12 +367,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -410,7 +388,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -423,7 +401,8 @@ namespace core_tests.domain {
             Assert.False(collection.Equals(cp));
         }
         [Fact]
-        public void ensureEqualsSucceeds() {
+        public void ensureEqualsSucceeds()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -432,12 +411,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -457,7 +432,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -470,7 +445,8 @@ namespace core_tests.domain {
             Assert.True(collection.Equals(new CatalogueCollection(customCollection)));
         }
         [Fact]
-        public void ensureEqualsFailsIfCustomizedProductCollectionIsNotEqual() {
+        public void ensureEqualsFailsIfCustomizedProductCollectionIsNotEqual()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -479,12 +455,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -504,7 +476,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -519,7 +491,8 @@ namespace core_tests.domain {
             Assert.False(collection.Equals(new CatalogueCollection(customCollection2)));
         }
         [Fact]
-        public void ensureEqualsFailsIfCatalogueCollectionProductListNotSameSize() {
+        public void ensureEqualsFailsIfCatalogueCollectionProductListNotSameSize()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -528,12 +501,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -553,7 +522,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -569,7 +538,8 @@ namespace core_tests.domain {
             Assert.False(collection.Equals(collection2));
         }
         [Fact]
-        public void ensureEqualsFailsIfCatalogueCollectionProductsAreNotTheSame() {
+        public void ensureEqualsFailsIfCatalogueCollectionProductsAreNotTheSame()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -578,12 +548,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() {measurement};
 
             //Creating a material
             string reference = "1160912";
@@ -603,7 +569,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -620,7 +586,8 @@ namespace core_tests.domain {
             Assert.False(collection.Equals(collection2));
         }
         [Fact]
-        public void ensureHasCustomizedProductSucceeds() {
+        public void ensureHasCustomizedProductSucceeds()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -629,12 +596,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() {measurement};
 
             //Creating a material
             string reference = "1160912";
@@ -654,7 +617,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -667,7 +630,8 @@ namespace core_tests.domain {
             Assert.True(collection.hasCustomizedProduct(cp));
         }
         [Fact]
-        public void ensureHasCustomizedProductFails() {
+        public void ensureHasCustomizedProductFails()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -676,12 +640,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() {measurement};
 
             //Creating a material
             string reference = "1160912";
@@ -701,7 +661,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -715,7 +675,8 @@ namespace core_tests.domain {
             Assert.False(collection.hasCustomizedProduct(cp2));
         }
         [Fact]
-        public void ensureToDTOWorks() {
+        public void ensureToDTOWorks()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -724,12 +685,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() {measurement};
 
             //Creating a material
             string reference = "1160912";
@@ -749,7 +706,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -764,7 +721,8 @@ namespace core_tests.domain {
             Assert.Equal(collection.catalogueCollectionProducts.Count, dto.customizedProductDTOs.Count);
         }
         [Fact]
-        public void ensureCatalogueCollectionIsNotCreatedIfACustomizedProductDoesNotBelongToTheCollection() {
+        public void ensureCatalogueCollectionIsNotCreatedIfACustomizedProductDoesNotBelongToTheCollection()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -773,12 +731,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() {measurement};
 
             //Creating a material
             string reference = "1160912";
@@ -798,7 +752,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -811,7 +765,8 @@ namespace core_tests.domain {
             Assert.Throws<ArgumentException>(() => new CatalogueCollection(customCollection, new List<CustomizedProduct>(new[] { cp2 })));
         }
         [Fact]
-        public void ensureCatalgueCollectionIsNotCreatedIfEitherArgumentIsNull() {
+        public void ensureCatalgueCollectionIsNotCreatedIfEitherArgumentIsNull()
+        {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -820,12 +775,8 @@ namespace core_tests.domain {
 
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            List<Dimension> valuest = new List<Dimension>();
-            valuest.Add(d2);
-
-            IEnumerable<Dimension> heightValues = valuest;
-            IEnumerable<Dimension> widthValues = valuest;
-            IEnumerable<Dimension> depthValues = valuest;
+            Measurement measurement = new Measurement(d2, d2, d2);
+            List<Measurement> measurements = new List<Measurement>() {measurement};
 
             //Creating a material
             string reference = "1160912";
@@ -845,7 +796,7 @@ namespace core_tests.domain {
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("#666", "Shelf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material

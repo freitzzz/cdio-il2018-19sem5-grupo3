@@ -61,11 +61,11 @@ namespace core_tests.domain
             Dimension depthDimension = new SingleValueDimension(15.6);
             Dimension widthDimension = new SingleValueDimension(19);
 
-            List<Dimension> heightDimensions = new List<Dimension>() { heightDimension };
-            List<Dimension> depthDimensions = new List<Dimension>() { depthDimension };
-            List<Dimension> widthDimensions = new List<Dimension>() { widthDimension };
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
 
-            Product product = new Product("productid", "Awesome shelf", productCategory, new List<Material>() { material }, heightDimensions, widthDimensions, depthDimensions);
+            List<Measurement> measurements = new List<Measurement>() { measurement };
+
+            Product product = new Product("productid", "Awesome shelf", productCategory, new List<Material>() { material }, measurements);
 
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color);
