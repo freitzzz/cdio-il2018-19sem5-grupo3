@@ -1,5 +1,6 @@
 using core.domain;
 using core.dto;
+using core.modelview.customizedproduct;
 using core.persistence;
 
 namespace core.services

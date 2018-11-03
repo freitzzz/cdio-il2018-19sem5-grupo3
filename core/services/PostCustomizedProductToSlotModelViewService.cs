@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using core.domain;
 using core.dto;
+using core.modelview.customizedproduct;
 using core.persistence;
 using support.dto;
 
