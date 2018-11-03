@@ -38,7 +38,7 @@ namespace backend.persistence.ef
         /// Database set containing all of the saved instances of CustomizedProduct.
         /// </summary>
         /// <value>Gets/sets the database set containing all the saved instances of CustomizedProduct.</value>
-        public DbSet<CustomizedProductCollection> CustomizedProduct { get; set; }
+        public DbSet<CustomizedProduct> CustomizedProduct { get; set; }
 
         /// <summary>
         /// Database set containing all of the saved instances of CustomizedProductCollection.
@@ -98,7 +98,7 @@ namespace backend.persistence.ef
             builder.Entity<CustomizedProduct>().HasOne(cp => cp.product);       //one-to-one relationship
             builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedDimensions); //embedded Dimensions
             builder.Entity<CustomizedProduct>().HasOne(cp => cp.customizedMaterial);
-            builder.Entity<CustomizedProduct>().HasMany(cp => cp.slots).WithOne();        //one-to-many relationship
+            builder.Entity<CustomizedProduct>().HasMany(cp => cp.slots).WithOne().OnDelete(DeleteBehavior.Cascade);        //one-to-many relationship
 
             builder.Entity<CustomizedMaterial>().HasOne(cm => cm.material).WithMany();
             builder.Entity<CustomizedMaterial>().HasOne(cm => cm.finish);
@@ -108,8 +108,7 @@ namespace backend.persistence.ef
             //TODO: Create a relational class
 
             builder.Entity<Slot>().OwnsOne(s => s.slotDimensions);              //embedded Dimensions
-            builder.Entity<Slot>().HasMany(s => s.customizedProducts);          //one-to-many relationship
-
+            builder.Entity<Slot>().HasMany(s => s.customizedProducts).WithOne(cp => cp.insertedInSlot).HasForeignKey(cp => cp.insertedInSlotId).OnDelete(DeleteBehavior.Cascade);          //one-to-many relationship
 
             //Compound key for CollectionProduct
             builder.Entity<CollectionProduct>().HasKey(cp => new { cp.customizedProductId, cp.customizedProductCollectionId });
