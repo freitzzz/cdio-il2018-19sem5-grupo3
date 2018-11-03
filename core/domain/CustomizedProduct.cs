@@ -173,7 +173,7 @@ namespace core.domain
         CustomizedDimensions customizedDimensions, Product product, List<Slot> slots, Slot insertedInSlot) :
             this(reference, designation, customizedMaterial, customizedDimensions, product, slots)
         {
-            checkOwnSlot(insertedInSlot);
+            checkInsertedInSlot(insertedInSlot);
             insertedInSlot.addCustomizedProduct(this);
         }
 
@@ -192,7 +192,7 @@ namespace core.domain
         CustomizedDimensions customizedDimensions, Product product, Slot insertedInSlot) :
             this(reference, designation, customizedMaterial, customizedDimensions, product)
         {
-            checkOwnSlot(insertedInSlot);
+            checkInsertedInSlot(insertedInSlot);
             insertedInSlot.addCustomizedProduct(this);
         }
         /// <summary>
@@ -234,7 +234,7 @@ namespace core.domain
         /// <param name="customizedDimensions">New customized dimensions</param>
         /// <returns>true if the customized dimensions were changed successfully</returns>
         public bool changeCustomizedDimensions(CustomizedDimensions customizedDimensions){
-            checkCustomizedDimensions(customizedDimensions);if (String.IsNullOrEmpty(designation)) throw new ArgumentException(INVALID_PRODUCT_DESIGNATION);
+            checkCustomizedDimensions(customizedDimensions);
             this.customizedDimensions = customizedDimensions;
             return true;
         }
@@ -323,10 +323,10 @@ namespace core.domain
         }
 
         /// <summary>
-        /// Checks if the customized products own slot is valid 
+        /// Checks if the slot in which the customized product is inserted in is valid 
         /// </summary>
         /// <param name="insertedInSlot">customized products own slot</param>
-        private void checkOwnSlot(Slot insertedInSlot)
+        private void checkInsertedInSlot(Slot insertedInSlot)
         {
             if (insertedInSlot == null) throw new ArgumentException(INVALID_INSERTED_IN_SLOT);
             this.insertedInSlot = insertedInSlot;
