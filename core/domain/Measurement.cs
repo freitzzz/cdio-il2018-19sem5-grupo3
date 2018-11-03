@@ -86,6 +86,7 @@ namespace core.domain
             this.height = height;
             this.width = width;
             this.depth = depth;
+            this.restrictions = new List<Restriction>();
         }
 
         /// <summary>
