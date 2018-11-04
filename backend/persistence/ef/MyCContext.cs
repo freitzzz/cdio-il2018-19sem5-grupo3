@@ -77,11 +77,11 @@ namespace backend.persistence.ef
             builder.Entity<Material>().HasMany(m => m.Colors);                  //one-to-many relationship
             builder.Entity<Material>().HasMany(m => m.Finishes);                //one-to-many relationship
 
-            //TODO: change pk to compound pk
             //Configure many-to-many relationship between Product and Material
-            builder.Entity<ProductMaterial>().HasOne(m => m.material).WithMany();
+            builder.Entity<ProductMaterial>().HasKey(pm => new {pm.productId, pm.materialId});
+            builder.Entity<ProductMaterial>().HasOne(pm => pm.product).WithMany(p => p.productMaterials).HasForeignKey(pm => pm.productId);
+            builder.Entity<ProductMaterial>().HasOne(pm => pm.material).WithMany().HasForeignKey(pm => pm.materialId);
             builder.Entity<ProductMaterial>().HasMany(pm => pm.restrictions);
-            builder.Entity<Product>().HasMany(p => p.productMaterials).WithOne(pm => pm.product);
 
             builder.Entity<Product>().HasOne(p => p.productCategory);           //many-to-one relationship
             builder.Entity<Product>().HasMany(p => p.measurements);             //one-to-many relationship
@@ -103,8 +103,6 @@ namespace backend.persistence.ef
             builder.Entity<CustomizedMaterial>().HasOne(cm => cm.finish);
             builder.Entity<CustomizedMaterial>().HasOne(cm => cm.color);
 
-            //!Slots have many customized products and a customized product has many slots
-            //TODO: Create a relational class
 
             builder.Entity<Slot>().OwnsOne(s => s.slotDimensions);              //embedded Dimensions
             builder.Entity<Slot>().HasMany(s => s.customizedProducts).WithOne(cp => cp.insertedInSlot).HasForeignKey(cp => cp.insertedInSlotId).OnDelete(DeleteBehavior.Cascade);          //one-to-many relationship
