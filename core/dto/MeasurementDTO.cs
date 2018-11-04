@@ -21,7 +21,11 @@ namespace core.dto
 
         public Measurement toEntity()
         {
-            throw new System.NotImplementedException();
+            Dimension heightDimension = height.toEntity();
+            Dimension widthDimension = width.toEntity();
+            Dimension depthDimension = depth.toEntity();
+
+            return new Measurement(heightDimension, widthDimension, depthDimension);
         }
     }
 }
