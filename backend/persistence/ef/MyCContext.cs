@@ -67,9 +67,10 @@ namespace backend.persistence.ef
 
             builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values); //one-to-many relationship
 
-            builder.Entity<Measurement>().HasOne(m => m.height);      //one-to-one relationship
-            builder.Entity<Measurement>().HasOne(m => m.depth);       //one-to-one relationship
-            builder.Entity<Measurement>().HasOne(m => m.width);       //one-to-one relationship
+            builder.Entity<Measurement>().HasOne(m => m.height);        //one-to-one relationship
+            builder.Entity<Measurement>().HasOne(m => m.depth);         //one-to-one relationship
+            builder.Entity<Measurement>().HasOne(m => m.width);         //one-to-one relationship
+            builder.Entity<Measurement>().HasMany(m => m.restrictions); //one-to-many relationship
 
             //Configure many-to-one relationship between parent and child ProductCategory
             builder.Entity<ProductCategory>().HasOne(c => c.parent).WithMany().HasForeignKey(c => c.parentId);
