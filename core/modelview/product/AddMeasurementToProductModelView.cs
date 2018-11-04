@@ -1,4 +1,5 @@
 using core.dto;
+using core.modelview.dimension;
 using System.Runtime.Serialization;
 
 namespace core.modelview.product{
@@ -6,7 +7,7 @@ namespace core.modelview.product{
     /// <summary>
     /// A Model View DTO representation for the add dimension to a product context
     /// </summary>
-    public sealed class AddDimensionToProductModelView{
+    public sealed class AddMeasurementToProductModelView{
         /// <summary>
         /// Long with the resource ID of the product which will be complemented
         /// </summary>
@@ -15,19 +16,19 @@ namespace core.modelview.product{
         /// <summary>
         /// DimensionDTO with the width dimension which will be added to the product
         /// </summary>
-        [DataMember(Name="widthDimension")]
-        public DimensionDTO widthDimension{get;set;}
+        [DataMember(Name="width")]
+        public AddDimensionModelView widthDimension{get;set;}
 
         /// <summary>
         /// DimensionDTO with the height dimension which will be added to the product
         /// </summary>
-        [DataMember(Name="heightDimension")]
-        public DimensionDTO heightDimension{get;set;}
+        [DataMember(Name="height")]
+        public AddDimensionModelView heightDimension{get;set;}
 
         /// <summary>
         /// DimensionDTO with the depth dimension which will be added to the product
         /// </summary>
-        [DataMember(Name="depthDimension")]
-        public DimensionDTO depthDimension{get;set;}
+        [DataMember(Name="depth")]
+        public AddDimensionModelView depthDimension{get;set;}
     }
 }
