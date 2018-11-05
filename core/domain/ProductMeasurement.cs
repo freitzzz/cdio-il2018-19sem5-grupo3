@@ -9,12 +9,12 @@ namespace core.domain
     public class ProductMeasurement
     {
         /// <summary>
-        /// 
+        /// Constant representing the error message presented when attempting to create an instance with a null Product.
         /// </summary>
         private const string ERROR_NULL_PRODUCT = "The provided product can not be null.";
 
         /// <summary>
-        /// 
+        /// Constant representing the error message presented when attempting to create an instance with a null Measurement.
         /// </summary>
         private const string ERROR_NULL_MEASUREMENT = "The provided measurement can not be null.";
 
