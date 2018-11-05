@@ -14,13 +14,14 @@ namespace backend.Controllers {
     /// <summary>
     /// Backend AlgorithmController class
     /// </summary>
+    [Route("mycm/api/algorithms")]
     public class AlgorithmController : Controller {
         /// <summary>
         /// Constant that represents the 400 Bad Request message for when no Algorithms are found.
         /// </summary>
         private const string NO_ALGORITHMS_FOUND = "No algorithms found";
         /// <summary>
-        /// Constant that represents the 200 Ok message for when no inputs are required by the Algorithm
+        /// Constant that represents the 400 Bad Request message for when no inputs are required by the Algorithm
         /// </summary>
         private const string NO_INPUTS_NEEDED_MESSAGE = "Algorithm does not require any inputs";
         /// <summary>
@@ -118,14 +119,14 @@ namespace backend.Controllers {
         /// <returns>
         /// <br>HTTP Response 200 Ok with the inputs the algorithm needs
         /// </returns>
-        [HttpGet("{id}", Name = "GetAlgorithmInputs")]
+        [HttpGet("{id}/inputs", Name = "GetAlgorithmInputs")]
         public ActionResult getAlgorithmInputs(int id) {
             logger.LogInformation(LOG_GET_INPUTS_START);
             try {
                 List<InputDTO> inputs = new core.application.AlgorithmController().getAlgorithmInputs((RestrictionAlgorithm)id);
                 if (Collections.isListEmpty(inputs)) {
                     logger.LogInformation(LOG_GET_INPUTS_SUCCESS_NO_INPUTS);
-                    return Ok(new SimpleJSONMessageService(NO_INPUTS_NEEDED_MESSAGE));
+                    return BadRequest(new SimpleJSONMessageService(NO_INPUTS_NEEDED_MESSAGE));
                 }
                 logger.LogInformation(LOG_GET_INPUTS_SUCCESS, inputs);
                 return Ok(inputs);
