@@ -102,8 +102,8 @@ namespace core.domain {
         /// List containg all of the Product's measurements.
         /// </summary>
         /// <value>Gets/sets the measurements list value.</value>
-        private List<Measurement> _measurements;
-        public List<Measurement> measurements {get => LazyLoader.Load(this, ref _measurements); protected set => _measurements = value;}
+        private List<ProductMeasurement> _measurements;
+        public List<ProductMeasurement> measurements {get => LazyLoader.Load(this, ref _measurements); protected set => _measurements = value;}
 
         /// <summary>
         /// ProductCategory with the category which the product belongs to
@@ -184,7 +184,10 @@ namespace core.domain {
                 this.productMaterials.Add(new ProductMaterial(this, mat));
             }
             this.complementedProducts = new List<Component>();
-            this.measurements = new List<Measurement>(measurements);
+            this.measurements = new List<ProductMeasurement>();
+            foreach(Measurement measurement in measurements){
+                this.measurements.Add(new ProductMeasurement(this, measurement));
+            }
             this.productCategory = productCategory;
             this.supportsSlots = false;
             this.maxSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
@@ -304,7 +307,7 @@ namespace core.domain {
                 return false;
             }
             int beforeCount = this.measurements.Count;
-            this.measurements.Add(measurement);
+            this.measurements.Add(new ProductMeasurement(this, measurement));
             int afterCount = this.measurements.Count;
             return beforeCount + 1 == afterCount;
         }
@@ -348,7 +351,11 @@ namespace core.domain {
         /// </summary>
         /// <param name="measurement">Measurement being removed.</param>
         /// <returns>True if there is more than one Measurement in the list and Measurement could be removed; false otherwise.</returns>
-        public bool removeMeasurement(Measurement measurement){return measurements.Count > 1 && measurements.Remove(measurement);}
+        public bool removeMeasurement(Measurement measurement){
+            return measurements.Count > 1 && measurements.Remove(
+                measurements.Where(pm => pm.measurement.Equals(measurement)).SingleOrDefault()
+                );
+        }
 
         /// <summary>
         /// Removes a material which the current product can be made of
@@ -404,12 +411,12 @@ namespace core.domain {
             dto.productCategory = productCategory.toDTO();
 
             if (dtoOptions.requiredUnit == null) {
-                dto.dimensions = new List<MeasurementDTO>(DTOUtils.parseToDTOS(measurements));
+                dto.dimensions = new List<MeasurementDTO>(DTOUtils.parseToDTOS(measurements.Select(pm => pm.measurement)));
             } else {
                 dto.dimensions = new List<MeasurementDTO>();
 
-                foreach(Measurement measurement in this.measurements){
-                    dto.dimensions.Add(measurement.toDTO(dtoOptions.requiredUnit));
+                foreach(ProductMeasurement measurement in this.measurements){
+                    dto.dimensions.Add(measurement.measurement.toDTO(dtoOptions.requiredUnit));
                 }
             }
 
@@ -506,7 +513,7 @@ namespace core.domain {
         /// <param name="measurement">Measurement being validated.</param>
         /// <returns>True if the Measurement is not null nor has it been previously added to the list of Measurement; false otherwise.</returns>
         private bool isProductMeasurementValidForAddition(Measurement measurement){
-            return measurement != null && !measurements.Contains(measurement);
+            return measurement != null && !measurements.Where(pm => pm.measurement.Equals(measurement)).Any();
         }
 
         /// <summary>

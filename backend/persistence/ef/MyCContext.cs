@@ -84,8 +84,13 @@ namespace backend.persistence.ef
             builder.Entity<ProductMaterial>().HasOne(pm => pm.material).WithMany().HasForeignKey(pm => pm.materialId);
             builder.Entity<ProductMaterial>().HasMany(pm => pm.restrictions);
 
+             //TODO: remove join class, if possible
+            //NOTE: This "join class" is only here as a workaround for now
+            builder.Entity<ProductMeasurement>().HasKey(pm => new {pm.productId, pm.measurementId});
+            builder.Entity<ProductMeasurement>().HasOne(pm => pm.product).WithMany(p => p.measurements).HasForeignKey(pm => pm.productId);
+            builder.Entity<ProductMeasurement>().HasOne(pm => pm.measurement);
+
             builder.Entity<Product>().HasOne(p => p.productCategory);           //many-to-one relationship
-            builder.Entity<Product>().HasMany(p => p.measurements);             //one-to-many relationship
             builder.Entity<Product>().OwnsOne(p => p.minSlotSize);              //embedded Dimensions
             builder.Entity<Product>().OwnsOne(p => p.maxSlotSize);              //embedded Dimensions
             builder.Entity<Product>().OwnsOne(p => p.recommendedSlotSize);      //embedded Dimensions
