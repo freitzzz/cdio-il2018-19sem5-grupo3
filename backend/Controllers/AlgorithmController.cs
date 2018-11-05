@@ -118,7 +118,7 @@ namespace backend.Controllers {
         /// <returns>
         /// <br>HTTP Response 200 Ok with the inputs the algorithm needs
         /// </returns>
-        [HttpGet("{id}", Name = "GetAlgorithmInputs")]
+        [HttpGet("{id}/inputs", Name = "GetAlgorithmInputs")]
         public ActionResult getAlgorithmInputs(int id) {
             logger.LogInformation(LOG_GET_INPUTS_START);
             try {
