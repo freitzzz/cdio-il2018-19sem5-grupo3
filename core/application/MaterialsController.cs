@@ -187,11 +187,13 @@ namespace core.application
             {
                material.addFinish(addFinishDTO.toEntity());
 
-            }
+            
             materialRepository.update(material);
             AddFinishModelView addFinishModelView = new AddFinishModelView();
             addFinishModelView.finish = addFinishDTO;
             return addFinishModelView;
+            }
+            return null;
         }
         /// <summary>
         /// Remove the Finish of a material from update
@@ -231,11 +233,13 @@ namespace core.application
                 Color colorToAdd = addColorDTO.toEntity();
                 material.addColor(colorToAdd);
 
-            }
+            
             materialRepository.update(material);
             AddColorModelView addColorModelView = new AddColorModelView();
             addColorModelView.color = addColorDTO;
             return addColorModelView;
+            }
+            return null;
         }
         /// <summary>
         /// Remove the color of a material from update

@@ -397,11 +397,6 @@ namespace backend.Controllers
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, addColorDTO);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
-            catch (InvalidOperationException invalidOperationException)
-            {
-                logger.LogWarning(invalidOperationException, LOG_PUT_BAD_REQUEST, idMaterial, addColorDTO);
-                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
-            }
             logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, addColorDTO);
             return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
         }

@@ -213,17 +213,17 @@ namespace backend_tests.Controllers
             Assert.NotNull(response.Content.ReadAsStringAsync());
         }
 
-        // [Fact, TestPriority(13)]
-        // public async Task ensureUpdateFinishesPostFailsForInvalidBody()
-        // {
-        //     var materialDTO = ensurePostMaterialWorks();
-        //     materialDTO.Wait();
+        [Fact, TestPriority(13)]
+        public async Task ensureUpdateFinishesPostFailsForInvalidBody()
+        {
+            var materialDTO = ensurePostMaterialWorks();
+            materialDTO.Wait();
 
-        //     var response = await client.PostAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "finishes"), "InvalidBody");
+            var response = await client.PostAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "finishes"), "InvalidBody");
 
-        //     Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        //     Assert.NotNull(response.Content.ReadAsStringAsync());
-        // }
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.NotNull(response.Content.ReadAsStringAsync());
+        }
 
         [Fact, TestPriority(14)]
         public async Task ensureUpdateFinishesPostSucceedsWhenAddingFinish()
@@ -272,17 +272,17 @@ namespace backend_tests.Controllers
             Assert.NotNull(response.Content.ReadAsStringAsync());
         }
 
-        // [Fact, TestPriority(17)]
-        // public async Task ensureUpdateColorPostFailsForInvalidBody()
-        // {
-        //     var materialDTO = ensurePostMaterialWorks();
-        //     materialDTO.Wait();
+        [Fact, TestPriority(17)]
+        public async Task ensureUpdateColorPostFailsForInvalidBody()
+        {
+            var materialDTO = ensurePostMaterialWorks();
+            materialDTO.Wait();
 
-        //     var response = await client.PostAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "colors"), "invalid body");
+            var response = await client.PostAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "colors"), "invalid body");
 
-        //     Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        //     Assert.NotNull(response.Content.ReadAsStringAsync());
-        // }
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.NotNull(response.Content.ReadAsStringAsync());
+        }
 
         [Fact, TestPriority(18)]
         public async Task ensureUpdateColorPostSucceedsWhenAddingColor()
@@ -317,6 +317,33 @@ namespace backend_tests.Controllers
             var response = await client.DeleteAsync(String.Format(urlBase + "/{0}/{1}/{2}", materialDTO.Id, "colors", colorDTO.id));
 
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+            Assert.NotNull(response.Content.ReadAsStringAsync());
+        }
+    
+         [Fact, TestPriority(20)]
+        public async Task ensureUpdateFinishPostFailsForNonExistingMaterial()
+        {
+            FinishDTO finishDTOToRemove = new FinishDTO();
+            finishDTOToRemove.description = "ola";
+           
+            var response = await client.DeleteAsync(String.Format(urlBase + "/{0}/{1}/{2}", -1, "colors", finishDTOToRemove.id));
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.NotNull(response.Content.ReadAsStringAsync());
+        }
+         [Fact, TestPriority(21)]
+        public async Task ensureUpdateColorDeleteFailsForNonExistingMaterial()
+        {
+            ColorDTO colorDTO = new ColorDTO();
+            colorDTO.name = "lean";
+            colorDTO.red = 1;
+            colorDTO.green = 2;
+            colorDTO.blue = 3;
+            colorDTO.alpha = 0;
+           
+            var response = await client.DeleteAsync(String.Format(urlBase + "/{0}/{1}/{2}", -1, "colors", colorDTO.id));
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             Assert.NotNull(response.Content.ReadAsStringAsync());
         }
      }
