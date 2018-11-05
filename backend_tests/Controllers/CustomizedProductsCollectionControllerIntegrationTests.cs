@@ -159,7 +159,7 @@ namespace backend_tests.Controllers
             customizedProductCollectionDTO.name = name;
             CustomizedProductDTO customizedProductDTO=new CustomizedProductDTO();
             //We need a valid customized product so let's create one
-            Task<CustomizedProductDTO> customizedProductDTOTask=new CustomizedProductControllerIntegrationTest(fixture).ensureCustomizedProductIsCreatedSuccesfuly();
+            Task<CustomizedProductDTO> customizedProductDTOTask=new CustomizedProductControllerIntegrationTest(fixture).ensureCustomizedProductWithoutSlotsIsCreatedSuccessfully();
             customizedProductDTOTask.Wait();
             //Now let's add the customized product to the customized product collection
             customizedProductCollectionDTO.customizedProducts=new List<CustomizedProductDTO>(new []{customizedProductDTOTask.Result});
