@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -6,6 +7,7 @@ namespace core.dto{
     /// <summary>
     /// Simple DTO class used to transpor data required for products updates
     /// </summary>
+    [Obsolete("UpdateProductDTO to be deprecated. Use UpdateProductPropertiesModelView for now on")]
     public class UpdateProductDTO{
         /// <summary>
         /// ID of the product being updated
