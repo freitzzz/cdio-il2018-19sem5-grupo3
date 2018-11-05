@@ -236,9 +236,13 @@ namespace core_tests.domain {
             Console.WriteLine("ensureApplyRestrictsSingleValueDimensions");
             Material material = new Material("#12", "K6205", new List<Color>(new[] { Color.valueOf("Missing Link of the Annihilator: Absolute Zero", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
             ProductCategory cat = new ProductCategory("AI");
-            List<Dimension> dimensions = new List<Dimension>(new[] { new SingleValueDimension(200), new SingleValueDimension(100), new SingleValueDimension(50) });
-            Product product = new Product("#23", "Arclight of the Point at Infinity: Arclight of the Sky", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
-            Product component = new Product("#16", "Altair of the Point at Infinity: Vega and Altair", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
+            Measurement measurement = new Measurement( new SingleValueDimension(200), new SingleValueDimension(100), new SingleValueDimension(50));
+            Measurement measurement1 = new Measurement(new SingleValueDimension(100), new SingleValueDimension(200),  new SingleValueDimension(50));
+            Measurement measurement2 = new Measurement(new SingleValueDimension(100), new SingleValueDimension(50), new SingleValueDimension(200));
+
+            List<Measurement> measurements = new List<Measurement>() {measurement, measurement1, measurement2};
+            Product product = new Product("#23", "Arclight of the Point at Infinity: Arclight of the Sky", cat, new List<Material>(new[] { material }), measurements);
+            Product component = new Product("#16", "Altair of the Point at Infinity: Vega and Altair", cat, new List<Material>(new[] { material }), measurements);
             CustomizedProduct custom = new CustomizedProduct("#17", "Altair of the Hyperbolic Plane: Beltrami Pseudosphere", CustomizedMaterial.valueOf(material, Color.valueOf("Missing Link of the Annihilator: Absolute Zero", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht")), CustomizedDimensions.valueOf(100, 100, 100), product);
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = new Input("Minimum Percentage");
@@ -250,8 +254,8 @@ namespace core_tests.domain {
             inputs.Add(maxInput);
             algorithm.setInputValues(inputs);
             Product alteredProduct = algorithm.apply(custom, component);
-            Assert.True(alteredProduct.widthValues.Count == 1);
-            double remainingValue = ((SingleValueDimension)alteredProduct.widthValues[0]).value;
+            Assert.True(alteredProduct.measurements.Count == 1);
+            double remainingValue = ((SingleValueDimension)alteredProduct.measurements[0].measurement.width).value;
             Assert.True(remainingValue == 100);
         }
         /// <summary>
@@ -262,9 +266,13 @@ namespace core_tests.domain {
             Console.WriteLine("ensureApplyReturnsNullIfComponentDoesNotHaveCompatibleDimensions");
             Material material = new Material("#12", "K6205", new List<Color>(new[] { Color.valueOf("Missing Link of the Annihilator: Absolute Zero", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
             ProductCategory cat = new ProductCategory("AI");
-            List<Dimension> dimensions = new List<Dimension>(new[] { new SingleValueDimension(200), new SingleValueDimension(120), new SingleValueDimension(50) });
-            Product product = new Product("#23", "Arclight of the Point at Infinity: Arclight of the Sky", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
-            Product component = new Product("#16", "Altair of the Point at Infinity: Vega and Altair", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
+            Measurement measurement = new Measurement( new SingleValueDimension(200), new SingleValueDimension(120), new SingleValueDimension(50));
+            Measurement measurement1 = new Measurement(new SingleValueDimension(120), new SingleValueDimension(200),  new SingleValueDimension(50));
+            Measurement measurement2 = new Measurement(new SingleValueDimension(120), new SingleValueDimension(50), new SingleValueDimension(200));
+
+            List<Measurement> measurements = new List<Measurement>() {measurement, measurement1, measurement2};
+            Product product = new Product("#23", "Arclight of the Point at Infinity: Arclight of the Sky", cat, new List<Material>(new[] { material }), measurements);
+            Product component = new Product("#16", "Altair of the Point at Infinity: Vega and Altair", cat, new List<Material>(new[] { material }), measurements);
             CustomizedProduct custom = new CustomizedProduct("#17", "Altair of the Hyperbolic Plane: Beltrami Pseudosphere", CustomizedMaterial.valueOf(material, Color.valueOf("Missing Link of the Annihilator: Absolute Zero", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht")), CustomizedDimensions.valueOf(100, 100, 100), product);
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = new Input("Minimum Percentage");
@@ -286,10 +294,12 @@ namespace core_tests.domain {
             Material material = new Material("#24", "K6205", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
             ProductCategory cat = new ProductCategory("AI");
             DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 90.0, 100.0, 150.0 }));
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(discrete);
-            Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose ", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
-            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
+            Measurement measurement = new Measurement( new SingleValueDimension(200), discrete, new SingleValueDimension(50));
+
+            List<Measurement> measurements = new List<Measurement>() {measurement};
+
+            Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose ", cat, new List<Material>(new[] { material }), measurements);
+            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", cat, new List<Material>(new[] { material }), measurements);
             CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht")), CustomizedDimensions.valueOf(100, 100, 100), product);
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = new Input("Minimum Percentage");
@@ -301,7 +311,7 @@ namespace core_tests.domain {
             inputs.Add(maxInput);
             algorithm.setInputValues(inputs);
             Product alteredProduct = algorithm.apply(custom, component);
-            DiscreteDimensionInterval discreteDimension = (DiscreteDimensionInterval)alteredProduct.widthValues[0];
+            DiscreteDimensionInterval discreteDimension = (DiscreteDimensionInterval)alteredProduct.measurements[0].measurement.width;
             DiscreteDimensionInterval expected = new DiscreteDimensionInterval(new List<double>(new[] { 90.0, 100.0 }));
             Assert.True(discreteDimension.Equals(expected));
         }
@@ -314,10 +324,10 @@ namespace core_tests.domain {
             Material material = new Material("#12", "K6205", new List<Color>(new[] { Color.valueOf("Silver", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
             ProductCategory cat = new ProductCategory("AI");
             DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 100.0, 150.0 }));
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(discrete);
-            Product product = new Product("#20", "Rinascimento of the Unwavering Promise: Promised Rinascimento", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
-            Product component = new Product("#21", "Rinascimento of Image Formation: Return of Phoenix", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
+            Measurement measurement = new Measurement( new SingleValueDimension(200), discrete, new SingleValueDimension(50));
+            List<Measurement> measurements = new List<Measurement>(){measurement};
+            Product product = new Product("#20", "Rinascimento of the Unwavering Promise: Promised Rinascimento", cat, new List<Material>(new[] { material }), measurements);
+            Product component = new Product("#21", "Rinascimento of Image Formation: Return of Phoenix", cat, new List<Material>(new[] { material }), measurements);
             CustomizedProduct custom = new CustomizedProduct("#22", "Rinascimento of Projection: Project Amadeus", CustomizedMaterial.valueOf(material, Color.valueOf("Silver", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht")), CustomizedDimensions.valueOf(100, 100, 100), product);
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = new Input("Minimum Percentage");
@@ -329,8 +339,8 @@ namespace core_tests.domain {
             inputs.Add(maxInput);
             algorithm.setInputValues(inputs);
             Product alteredProduct = algorithm.apply(custom, component);
-            Assert.True(alteredProduct.widthValues[0].GetType() == typeof(SingleValueDimension));
-            Assert.True(((SingleValueDimension)alteredProduct.widthValues[0]).value == 100);
+            Assert.True(alteredProduct.measurements[0].measurement.width.GetType() == typeof(SingleValueDimension));
+            Assert.True(((SingleValueDimension)alteredProduct.measurements[0].measurement.width).value == 100);
         }
         /// <summary>
         /// Ensures method apply removes discrete dimensions with no values
@@ -341,10 +351,11 @@ namespace core_tests.domain {
             Material material = new Material("#12", "K6205", new List<Color>(new[] { Color.valueOf("Durpa", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
             ProductCategory cat = new ProductCategory("AI");
             DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 110.0, 150.0 }));
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(discrete);
-            Product product = new Product("#9", "Pandora of Eternal Return: Pandora's Box", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
-            Product component = new Product("#10", "Pandora of Provable Existence: Forbidden Cubicle", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
+
+            Measurement measurement = new Measurement( new SingleValueDimension(200), discrete, new SingleValueDimension(50));
+            List<Measurement> measurements = new List<Measurement>(){measurement};
+            Product product = new Product("#9", "Pandora of Eternal Return: Pandora's Box", cat, new List<Material>(new[] { material }), measurements);
+            Product component = new Product("#10", "Pandora of Provable Existence: Forbidden Cubicle", cat, new List<Material>(new[] { material }), measurements);
             CustomizedProduct custom = new CustomizedProduct("#11", "Pandora of Forgotten Existence: Sealed Reliquary", CustomizedMaterial.valueOf(material, Color.valueOf("Durpa", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht")), CustomizedDimensions.valueOf(100, 100, 100), product);
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = new Input("Minimum Percentage");
@@ -366,10 +377,10 @@ namespace core_tests.domain {
             Material material = new Material("#12", "K6205", new List<Color>(new[] { Color.valueOf("Open the Missing Link", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
             ProductCategory cat = new ProductCategory("AI");
             ContinuousDimensionInterval continuous = new ContinuousDimensionInterval(50.0, 150.0, 2.0);
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(continuous);
-            Product product = new Product("#18", "Altair of Translational Symmetry: Translational Symmetry", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
-            Product component = new Product("#19", "Altair of the Cyclic Coordinate: Time-leap Machine", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
+            Measurement measurement = new Measurement( new SingleValueDimension(200), continuous, new SingleValueDimension(50));
+            List<Measurement> measurements = new List<Measurement>(){measurement};
+            Product product = new Product("#18", "Altair of Translational Symmetry: Translational Symmetry", cat, new List<Material>(new[] { material }), measurements);
+            Product component = new Product("#19", "Altair of the Cyclic Coordinate: Time-leap Machine", cat, new List<Material>(new[] { material }), measurements);
             CustomizedProduct custom = new CustomizedProduct("#3", "Protocol of the Two-sided Gospel: X-Day Protocol", CustomizedMaterial.valueOf(material, Color.valueOf("Open the Missing Link", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht")), CustomizedDimensions.valueOf(100, 100, 100), product);
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = new Input("Minimum Percentage");
@@ -381,8 +392,8 @@ namespace core_tests.domain {
             inputs.Add(maxInput);
             algorithm.setInputValues(inputs);
             Product alteredProduct = algorithm.apply(custom, component);
-            Assert.True(((ContinuousDimensionInterval)alteredProduct.widthValues[0]).minValue == 90);
-            Assert.True(((ContinuousDimensionInterval)alteredProduct.widthValues[0]).maxValue == 100);
+            Assert.True(((ContinuousDimensionInterval)alteredProduct.measurements[0].measurement.width).minValue == 90);
+            Assert.True(((ContinuousDimensionInterval)alteredProduct.measurements[0].measurement.width).maxValue == 100);
         }
         /// <summary>
         /// Ensures method apply condenses continuous dimension intervals with same minimum and maximum value into a single value dimension
@@ -393,10 +404,10 @@ namespace core_tests.domain {
             Material material = new Material("#12", "K6205", new List<Color>(new[] { Color.valueOf("Open the Steins Gate", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
             ProductCategory cat = new ProductCategory("AI");
             ContinuousDimensionInterval continuous = new ContinuousDimensionInterval(100.0, 150.0, 2.0);
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(continuous);
-            Product product = new Product("#4", "Solitude of the Mournful Flow: A Stray Sheep", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
-            Product component = new Product("#5", "Solitude of the Astigmatism: Entangled Sheep", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
+            Measurement measurement = new Measurement( new SingleValueDimension(200), continuous, new SingleValueDimension(50));
+            List<Measurement> measurements = new List<Measurement>(){measurement};
+            Product product = new Product("#4", "Solitude of the Mournful Flow: A Stray Sheep", cat, new List<Material>(new[] { material }), measurements);
+            Product component = new Product("#5", "Solitude of the Astigmatism: Entangled Sheep", cat, new List<Material>(new[] { material }), measurements);
             CustomizedProduct custom = new CustomizedProduct("#24", "Achievement Point", CustomizedMaterial.valueOf(material, Color.valueOf("Open the Steins Gate", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht")), CustomizedDimensions.valueOf(100, 100, 100), product);
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = new Input("Minimum Percentage");
@@ -408,8 +419,8 @@ namespace core_tests.domain {
             inputs.Add(maxInput);
             algorithm.setInputValues(inputs);
             Product alteredProduct = algorithm.apply(custom, component);
-            Assert.True(alteredProduct.widthValues[0].GetType() == typeof(SingleValueDimension));
-            Assert.True(((SingleValueDimension)alteredProduct.widthValues[0]).value == 100);
+            Assert.True(alteredProduct.measurements[0].measurement.width.GetType() == typeof(SingleValueDimension));
+            Assert.True(((SingleValueDimension)alteredProduct.measurements[0].measurement.width).value == 100);
         }
         /// <summary>
         /// Ensures method apply removes continuous dimension intervals whose interval does not fit allowed dimension
@@ -421,11 +432,11 @@ namespace core_tests.domain {
             ProductCategory cat = new ProductCategory("AI");
             ContinuousDimensionInterval continuous1 = new ContinuousDimensionInterval(110.0, 150.0, 2.0);
             ContinuousDimensionInterval continuous2 = new ContinuousDimensionInterval(50.0, 80.0, 2.0);
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(continuous1);
-            dimensions.Add(continuous2);
-            Product product = new Product("#4", "Solitude of the Mournful Flow: A Stray Sheep", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
-            Product component = new Product("#5", "Solitude of the Astigmatism: Entangled Sheep", cat, new List<Material>(new[] { material }), dimensions, dimensions, dimensions);
+            Measurement measurement1 = new Measurement(continuous1, continuous1, continuous1);
+            Measurement measurement2 = new Measurement(continuous2, continuous2, continuous2);
+            List<Measurement> measurements = new List<Measurement>(){measurement1,measurement2};
+            Product product = new Product("#4", "Solitude of the Mournful Flow: A Stray Sheep", cat, new List<Material>(new[] { material }), measurements);
+            Product component = new Product("#5", "Solitude of the Astigmatism: Entangled Sheep", cat, new List<Material>(new[] { material }), measurements);
             CustomizedProduct custom = new CustomizedProduct("#24", "Achievement Point", CustomizedMaterial.valueOf(material, Color.valueOf("Open the Steins Gate", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht")), CustomizedDimensions.valueOf(100, 100, 100), product);
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = new Input("Minimum Percentage");
