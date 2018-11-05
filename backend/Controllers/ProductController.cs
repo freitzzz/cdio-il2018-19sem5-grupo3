@@ -834,33 +834,6 @@ namespace backend.Controllers {
         }
 
         /// <summary>
-        /// Updates the dimensions of a product
-        /// </summary>
-        /// <param name="updateProductData">UpdateProductDTO with the information of the product being updated</param>
-        /// <returns>HTTP Response 200;OK if the product was updated with success
-        ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
-        /// </returns>
-        [HttpPut("{id}/category")]
-        public ActionResult updateProductCategory(long id, [FromBody] UpdateProductDTO updateProductData) {
-            logger.LogInformation(LOG_PUT_PRODUCT_CATEGORY_START);
-            updateProductData.id = id;
-            try {
-                if (new core.application.ProductController().updateProductCategory(updateProductData)) {
-                    logger.LogInformation(LOG_PUT_SUCCESS, id, updateProductData);
-                    return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
-                }
-            } catch (NullReferenceException nullReferenceException) {
-                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, id, updateProductData);
-                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
-            } catch (InvalidOperationException invalidOperationException) {
-                logger.LogWarning(invalidOperationException, LOG_PUT_BAD_REQUEST, id, updateProductData);
-                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
-            }
-            logger.LogInformation(LOG_PUT_BAD_REQUEST, id, updateProductData);
-            return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
-        }
-
-        /// <summary>
         /// Disables a product
         /// </summary>
         /// <param name="id">Long with the product being disabled ID</param>

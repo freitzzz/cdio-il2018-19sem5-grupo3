@@ -18,6 +18,11 @@ namespace core.application{
     /// Core ProductController class
     /// </summary>
     public class ProductController{
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the update of a product wasn't successful
+        /// </summary>
+        public const string INVALID_PRODUCT_UPDATE="An error occured while updating the product";
         /// <summary>
         /// Constant that represents the message that occurs if the user does not provide inputs
         /// </summary>
@@ -68,30 +73,30 @@ namespace core.application{
         public GetProductModelView updateProductProperties(UpdateProductPropertiesModelView updateProductPropertiesModelView){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productBeingUpdated=productRepository.find(updateProductPropertiesModelView.id);
-            //TODO: IF PRODUCT DOESNT EXIST THROW EXCEPTION INFORMING IT
-            bool updatedWithSuccess=true;
+            FetchEnsurance.ensureProductFetchWasSuccessful(productBeingUpdated);
             bool perfomedAtLeastOneUpdate=false;
             
             if(updateProductPropertiesModelView.reference!=null){
-                updatedWithSuccess&=productBeingUpdated.changeProductReference(updateProductPropertiesModelView.reference);
+                productBeingUpdated.changeProductReference(updateProductPropertiesModelView.reference);
                 perfomedAtLeastOneUpdate=true;
             }
             
             if(updateProductPropertiesModelView.designation!=null){
-                updatedWithSuccess&=productBeingUpdated.changeProductDesignation(updateProductPropertiesModelView.designation);
+                productBeingUpdated.changeProductDesignation(updateProductPropertiesModelView.designation);
                 perfomedAtLeastOneUpdate=true;
             }
             
             if(updateProductPropertiesModelView.categoryId!=0){
                 ProductCategory categoryToUpdate=PersistenceContext.repositories().createProductCategoryRepository().find(updateProductPropertiesModelView.categoryId);
-                updatedWithSuccess&=productBeingUpdated.changeProductCategory(categoryToUpdate);
+                FetchEnsurance.ensureProductCategoryFetchWasSuccessful(categoryToUpdate);
+                productBeingUpdated.changeProductCategory(categoryToUpdate);
                 perfomedAtLeastOneUpdate=true;
             }
 
-            if(!perfomedAtLeastOneUpdate || !updatedWithSuccess)
-                throw new InvalidOperationException();//TODO: THROW EXCEPTION INFORMING THAT THE UPDATE WASN'T SUCCESSFUL
-            updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
-            //TODO: THROW EXCEPTION INFORMING THAT THE UPDATE WASN'T SUCCESSFUL DUE TO AN INTERNAL DATABASE FAILURE
+            UpdateEnsurance.ensureAtLeastOneUpdateWasPerformed(perfomedAtLeastOneUpdate);
+
+            productBeingUpdated=productRepository.update(productBeingUpdated);
+            UpdateEnsurance.ensureProductUpdateWasSuccessful(productBeingUpdated);
             return ProductModelViewService.fromEntity(productBeingUpdated);
         }
 
@@ -563,26 +568,6 @@ namespace core.application{
             productRepository.update(productWithDimensionBeingDeletedRestriction);
             //TODO: CHECK UPDATE SUCCESS
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Updates the category of a product
-        /// </summary>
-        /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
-        /// <returns>boolean true if the update was successful, fasle if not</returns>
-        public bool updateProductCategory(UpdateProductDTO updateProductDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productBeingUpdated=productRepository.find(updateProductDTO.id);
-            bool updatedWithSuccess=true;
-            bool perfomedAtLeastOneUpdate=false;
-            if(updateProductDTO.productCategoryToUpdate!=null){
-                ProductCategory productCategory=PersistenceContext.repositories().createProductCategoryRepository().find(updateProductDTO.productCategoryToUpdate.id);
-                updatedWithSuccess&=productBeingUpdated.changeProductCategory(productCategory);
-                perfomedAtLeastOneUpdate=true;
-            }
-            if(!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
-            updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
-            return updatedWithSuccess;
         }
 
         /// <summary>
