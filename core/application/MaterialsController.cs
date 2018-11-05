@@ -5,6 +5,7 @@ using core.domain;
 using core.persistence;
 using core.dto;
 using core.services;
+using core.modelview.material;
 
 namespace core.application
 {
@@ -178,24 +179,21 @@ namespace core.application
         /// <param name="idMaterial">id of the material to be updated</param>
         /// <param name="addFinishDTO">FinishDTO with the information of finish to add</param>
         /// <returns>boolean true if the update was successful, false if not</returns>
-        public bool addFinish(long idMaterial, FinishDTO addFinishDTO)
+        public AddFinishModelView addFinish(long idMaterial, FinishDTO addFinishDTO)
         {
             MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
             Material material = materialRepository.find(idMaterial);
-
-            bool updatedWithSuccess = true;
-            bool perfomedAtLeastOneUpdate = false;
-
             if (addFinishDTO != null)
             {
-                updatedWithSuccess &= material.addFinish(addFinishDTO.toEntity());
-                perfomedAtLeastOneUpdate = true;
+               material.addFinish(addFinishDTO.toEntity());
 
+            
+            materialRepository.update(material);
+            AddFinishModelView addFinishModelView = new AddFinishModelView();
+            addFinishModelView.finish = addFinishDTO;
+            return addFinishModelView;
             }
-            if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
-
-            updatedWithSuccess &= materialRepository.update(material) != null;
-            return updatedWithSuccess;
+            return null;
         }
         /// <summary>
         /// Remove the Finish of a material from update
@@ -226,24 +224,22 @@ namespace core.application
         /// <param name="idMaterial">id of the material to be updated</param>
         /// <param name="addColorDTO">ColorDTO with the information of color to add</param>
         /// <returns>boolean true if the update was successful, false if not</returns>
-        public bool addColor(long idMaterial, ColorDTO addColorDTO)
+        public AddColorModelView addColor(long idMaterial, ColorDTO addColorDTO)
         {
             MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
             Material material = materialRepository.find(idMaterial);
-
-            bool updatedWithSuccess = true;
-            bool perfomedAtLeastOneUpdate = false;
-
             if (addColorDTO != null)
             {
-                updatedWithSuccess &= material.addColor(addColorDTO.toEntity());
-                perfomedAtLeastOneUpdate = true;
+                Color colorToAdd = addColorDTO.toEntity();
+                material.addColor(colorToAdd);
 
+            
+            materialRepository.update(material);
+            AddColorModelView addColorModelView = new AddColorModelView();
+            addColorModelView.color = addColorDTO;
+            return addColorModelView;
             }
-            if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
-
-            updatedWithSuccess &= materialRepository.update(material) != null;
-            return updatedWithSuccess;
+            return null;
         }
         /// <summary>
         /// Remove the color of a material from update

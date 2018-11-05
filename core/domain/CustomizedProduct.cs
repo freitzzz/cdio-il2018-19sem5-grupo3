@@ -16,24 +16,29 @@ namespace core.domain
     {
 
         /// <summary>
-        /// Constant that represents the message that ocurrs if the CustomizedProduct's material is not valid
+        /// Constant that represents the message that occurs if the CustomizedProduct's material is not valid
         /// </summary>
         private const string INVALID_CUSTOMIZED_PRODUCT_MATERIAL = "The chosen material is not valid";
 
         /// <summary>
-        /// Constant that represents the message that ocurrs if the CustomizedProduct's dimensions are not valid
+        /// Constant that represents the message that occurs if the CustomizedProduct's dimensions are not valid
         /// </summary>
         private const string INVALID_CUSTOMIZED_PRODUCT_DIMENSIONS = "The inserted dimension is not valid";
 
         /// <summary>
-        /// Constant that represents the message that ocurrs if the CustomizedProduct's product reference is not valid
+        /// Constant that represents the message that occurs if the CustomizedProduct's product reference is not valid
         /// </summary>
         private const string INVALID_PRODUCT_REFERENCE = "The inserted product reference is not valid";
 
         /// <summary>
-        /// Constant that represents the message that ocurrs if the CustomizedProduct's designation is not valid
+        /// Constant that represents the message that occurs if the CustomizedProduct's designation is not valid
         /// </summary>
         private const string INVALID_PRODUCT_DESIGNATION = "The inserted designation is not valid";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the CustomizedProducts slot is not valid
+        /// </summary>
+        private const string INVALID_INSERTED_IN_SLOT = "The customized products own slot is not valid";
 
         /// <summary>
         /// Long that represents the CustomizedProduct's persistence ID.
@@ -77,16 +82,30 @@ namespace core.domain
         public List<Slot> slots { get => LazyLoader.Load(this, ref _slots); protected set => _slots = value; }
 
         /// <summary>
+        /// Identifier of the slot that this customized product belongs to
+        /// </summary>
+        /// <value>Get/Internal set of the identifier</value>
+        public long? insertedInSlotId { get; internal set; }
+
+        /// <summary>
+        /// Slot that this customized product belongs to
+        /// </summary>
+        private Slot _insertedInSlot; //!private field used for lazy loading, do not use this for storing or fetching data 
+
+        public Slot insertedInSlot { get => LazyLoader.Load(this, ref _insertedInSlot); protected set => _insertedInSlot = value; }
+
+        /// <summary>
         /// LazyLoader being injected by the framework.
         /// </summary>
         /// <value>Private Gets/Sets the value of the LazyLoader.</value>
         private ILazyLoader LazyLoader { get; set; }
-        
+
         /// <summary>
         /// Private constructor used for injecting the LazyLoader.
         /// </summary>
         /// <param name="lazyLoader">LazyLoader being injected.</param>
-        private CustomizedProduct(ILazyLoader lazyLoader){
+        private CustomizedProduct(ILazyLoader lazyLoader)
+        {
             this.LazyLoader = lazyLoader;
         }
 
@@ -119,7 +138,7 @@ namespace core.domain
             this.customizedMaterial = customizedMaterial;
             this.product = product;
             this.slots = new List<Slot>();
-        } 
+        }
 
         /// <summary>
         /// Builds a new instance of CustomizedProduct, receiving its reference,
@@ -128,16 +147,54 @@ namespace core.domain
         /// <param name = "designation">String with the new CustomizedProduct's designation</param>
         /// <param name = "customizedDimensions">String with the new CustomizedProduct's CustomizedDimensions</param>
         /// <param name = "customizedMaterial">String with the new CustomizedProduct's CustomizedMaterial</param>
-        /// <param name = "product">String with the new CustomizedProduct's Product</param>DDD
+        /// <param name = "product">CustomizedProduct's Product</param>DDD
         /// <param name="slots">List containing instances of Slot.</param>
         /// </summary>
         public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial,
-        CustomizedDimensions customizedDimensions, Product product, List<Slot> slots) : 
+        CustomizedDimensions customizedDimensions, Product product, List<Slot> slots) :
             this(reference, designation, customizedMaterial, customizedDimensions, product)
         {
             checkAndAddSlots(slots);
         }
 
+        /// <summary>
+        /// Builds a new instance of CustomizedProduct, receiving it's reference,
+        /// designation, dimensions, material, the product it refers to, it's slots
+        /// and the slot that the customized product belongs to
+        /// </summary>
+        /// <param name="reference">String with the new CustomizedProduct's reference</param>
+        /// <param name="designation">String with the new CustomizedProduct's designation</param>
+        /// <param name="customizedMaterial">String with the new CustomizedProduct's CustomizedMaterial</param>
+        /// <param name="customizedDimensions">String with the new CustomizedProduct's CustomizedDimensions</param>
+        /// <param name="product">CustomizedProduct's Product</param>
+        /// <param name="slots">CustomizedProduct's Slots</param>
+        /// <param name="insertedInSlot">Slot that the customied product belongs to</param>
+        public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial,
+        CustomizedDimensions customizedDimensions, Product product, List<Slot> slots, Slot insertedInSlot) :
+            this(reference, designation, customizedMaterial, customizedDimensions, product, slots)
+        {
+            checkInsertedInSlot(insertedInSlot);
+            insertedInSlot.addCustomizedProduct(this);
+        }
+
+        /// <summary>
+        /// Builds a new instance of CustomizedProduct, receiving it's reference,
+        /// designation, dimensions, material, the product it refers to, it's slots
+        /// and the slot that the customized product belongs to
+        /// </summary>
+        /// <param name="reference">String with the new CustomizedProduct's reference</param>
+        /// <param name="designation">String with the new CustomizedProduct's designation</param>
+        /// <param name="customizedMaterial">String with the new CustomizedProduct's CustomizedMaterial</param>
+        /// <param name="customizedDimensions">String with the new CustomizedProduct's CustomizedDimensions</param>
+        /// <param name="product">CustomizedProduct's Product</param>
+        /// <param name="insertedInSlot">Slot that the customied product belongs to</param>
+        public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial,
+        CustomizedDimensions customizedDimensions, Product product, Slot insertedInSlot) :
+            this(reference, designation, customizedMaterial, customizedDimensions, product)
+        {
+            checkInsertedInSlot(insertedInSlot);
+            insertedInSlot.addCustomizedProduct(this);
+        }
         /// <summary>
         /// Returns the CustomizedProduct's identity
         /// </summary>
@@ -151,20 +208,64 @@ namespace core.domain
         /// Changes the CustomizedProduct's reference
         /// </summary>
         /// <param name="reference">New reference</param>
-        public void changeReference(string reference)
+        /// <returns>true if the reference was changed succesfully, false if otherwise</returns>
+        public bool changeReference(string reference)
         {
             if (String.IsNullOrEmpty(reference)) throw new ArgumentException(INVALID_PRODUCT_REFERENCE);
             this.reference = reference;
+            return true;
         }
 
         /// <summary>
         /// Changes the CustomizedProduct's designation
         /// </summary>
         /// <param name="designation">New designation</param>
-        public void changeDesignation(string designation)
+        /// <returns>true if the designation was changed successfully, false if otherwise</returns>
+        public bool changeDesignation(string designation)
         {
             if (String.IsNullOrEmpty(designation)) throw new ArgumentException(INVALID_PRODUCT_DESIGNATION);
             this.designation = designation;
+            return true;
+        }
+
+        /// <summary>
+        /// Changes the CustomizedProduct's customized dimensions
+        /// </summary>
+        /// <param name="customizedDimensions">New customized dimensions</param>
+        /// <returns>true if the customized dimensions were changed successfully</returns>
+        public bool changeCustomizedDimensions(CustomizedDimensions customizedDimensions){
+            checkCustomizedDimensions(customizedDimensions);
+            this.customizedDimensions = customizedDimensions;
+            return true;
+        }
+
+        /// <summary>
+        /// Changes the CustomizedProduct's customized material
+        /// </summary>
+        /// <param name="customizedMaterial">New customized material</param>
+        /// <returns>true if the customized material was changed successfully</returns>
+        public bool changeCustomizedMaterial(CustomizedMaterial customizedMaterial){
+            checkCustomizedMaterial(customizedMaterial);
+            this.customizedMaterial = customizedMaterial;
+            return true;
+        }
+
+        /// <summary>
+        /// Changes the Finish of a CustomizedProduct's customized material
+        /// </summary>
+        /// <param name="finish">new finish</param>
+        /// <returns>true if the finish was changed succesfully</returns>
+        public bool changeFinish(Finish finish){
+            return this.customizedMaterial.changeFinish(finish);
+        }
+
+        /// <summary>
+        /// Changes the Color of a CustomizedProduct's customized material
+        /// </summary>
+        /// <param name="color">new color</param>
+        /// <returns>true if the color successfully</returns>
+        public bool changeColor(Color color){
+            return this.customizedMaterial.changeColor(color);
         }
 
         /// <summary>
@@ -213,10 +314,22 @@ namespace core.domain
         /// Checks if all Slots from a received List are valid and adds them to the CustomizedProduct's list of Slots
         /// </summary>
         /// <param name="slots"></param>
-        private void checkAndAddSlots(List<Slot> slots){
-            foreach(Slot slot in slots){
+        private void checkAndAddSlots(List<Slot> slots)
+        {
+            foreach (Slot slot in slots)
+            {
                 addSlot(slot);
             }
+        }
+
+        /// <summary>
+        /// Checks if the slot in which the customized product is inserted in is valid 
+        /// </summary>
+        /// <param name="insertedInSlot">customized products own slot</param>
+        private void checkInsertedInSlot(Slot insertedInSlot)
+        {
+            if (insertedInSlot == null) throw new ArgumentException(INVALID_INSERTED_IN_SLOT);
+            this.insertedInSlot = insertedInSlot;
         }
 
         /// <summary>
@@ -232,6 +345,8 @@ namespace core.domain
         /// Checks if the CustomizedMaterial is valid
         /// </summary>
         /// <param name="customizedMaterial">CustomizedMaterial to check</param>
+        //TODO Is the String.IsNullOrEmpty necessary
+        //TODO check if the material referenced by the customized material is in the material list of the product referenced by the customized product (bit confusing right?)
         private void checkCustomizedMaterial(CustomizedMaterial customizedMaterial)
         {
             if (customizedMaterial == null || String.IsNullOrEmpty(customizedMaterial.ToString()))
@@ -242,6 +357,8 @@ namespace core.domain
         /// Checks if the CustomizedDimensions are valid
         /// </summary>
         /// <param name="customizedDimensions">CustomizedDimensions to check</param>
+        //TODO should a check be performed to validate the actual sizes of each dimension?
+        //TODO Is the String.IsNullOrEmpty necessary
         private void checkCustomizedDimensions(CustomizedDimensions customizedDimensions)
         {
             if (customizedDimensions == null || String.IsNullOrEmpty(customizedDimensions.ToString()))

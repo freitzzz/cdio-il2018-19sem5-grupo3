@@ -63,7 +63,6 @@ namespace core.domain
         {
             checkSlotDimensions(slotDimensions);
             this.slotDimensions = slotDimensions;
-            //TODO check if this list needs to be passed as a parameter or not
             customizedProducts = new List<CustomizedProduct>();
         }
 
