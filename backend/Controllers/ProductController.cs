@@ -231,22 +231,27 @@ namespace backend.Controllers {
         }
         
         /// <summary>
-        /// Updates a product basic information
+        /// Updates the properties of a product
         /// </summary>
-        /// <param name="updateProductData">UpdateProductDTO with the basic information of the product being updated</param>
+        /// <param name="updateProductPropertiesModelView">UpdateProductPropertiesModelView with the information about the product properties update</param>
         /// <returns>HTTP Response 200;OK if the product was updated with success
         ///      <br>HTTP Response 400;Bad Request if an error occured while updating the product
         /// </returns>
         [HttpPut("{id}")]
-        public ActionResult updateProductBasicInformation(long id, [FromBody] UpdateProductDTO updateProductData) {
+        public ActionResult updateProductProperties(long id, [FromBody] UpdateProductPropertiesModelView updateProductPropertiesModelView) {
             logger.LogInformation(LOG_PUT_BASIC_INFO_START);
-            updateProductData.id = id;
-            if (new core.application.ProductController().updateProductBasicInformation(updateProductData)) {
-                logger.LogInformation(LOG_PUT_SUCCESS, id, updateProductData);
+            updateProductPropertiesModelView.id = id;
+            try{
+                GetProductModelView updatedProductMV=new core.application.ProductController().updateProductProperties(updateProductPropertiesModelView);
+                logger.LogInformation(LOG_PUT_SUCCESS, id, updateProductPropertiesModelView);
                 return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+            }catch(ArgumentException argumentException){
+                logger.LogWarning(LOG_PUT_BAD_REQUEST, id, argumentException.Message);
+                return BadRequest(argumentException.Message);
+            }catch(InvalidOperationException invalidOperationException){
+                logger.LogWarning(LOG_PUT_BAD_REQUEST, id, invalidOperationException.Message);
+                return BadRequest(invalidOperationException.Message);
             }
-            logger.LogWarning(LOG_PUT_BAD_REQUEST, id, updateProductData);
-            return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_UPDATE_MESSAGE));
         }
 
         /// <summary>
