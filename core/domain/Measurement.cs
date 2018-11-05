@@ -40,21 +40,21 @@ namespace core.domain
         /// Measurement's height Dimension.
         /// </summary>
         /// <value>Gets/protected sets the value of the height Dimension.</value>
-        private Dimension _height;
+        private Dimension _height;  //!private field used for lazy loading, do not use this for storing or fetching data
         public Dimension height { get => LazyLoader.Load(this, ref _height); protected set => _height = value; }
 
         /// <summary>
         /// Measurement's width Dimension.
         /// </summary>
         /// <value>Gets/protected sets the value of the width Dimension.</value>
-        private Dimension _width;
+        private Dimension _width;   //!private field used for lazy loading, do not use this for storing or fetching data
         public Dimension width { get => LazyLoader.Load(this, ref _width); protected set => _width = value; }
 
         /// <summary>
         /// Measurement's depth Dimension.
         /// </summary>
         /// <value>Gets/protected sets the value of the depth Dimension.</value>
-        private Dimension _depth;
+        private Dimension _depth;   //!private field used for lazy loading, do not use this for storing or fetching data
         public Dimension depth { get => LazyLoader.Load(this, ref _depth); protected set => _depth = value; }
 
 
@@ -72,6 +72,11 @@ namespace core.domain
         {
             this.LazyLoader = lazyLoader;
         }
+
+        /// <summary>
+        /// Empty constructor used by ORM.
+        /// </summary>
+        protected Measurement() { }
 
         /// <summary>
         /// Creates a new instance of Measurement with the given instances of Dimension.
