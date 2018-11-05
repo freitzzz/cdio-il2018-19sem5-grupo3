@@ -14,6 +14,7 @@ namespace backend.Controllers {
     /// <summary>
     /// Backend AlgorithmController class
     /// </summary>
+    [Route("mycm/api/algorithms")]
     public class AlgorithmController : Controller {
         /// <summary>
         /// Constant that represents the 400 Bad Request message for when no Algorithms are found.
