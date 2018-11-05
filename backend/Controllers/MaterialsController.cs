@@ -15,6 +15,7 @@ using Newtonsoft.Json.Linq;
 using support.utils;
 using core.persistence;
 using core.dto;
+using core.modelview.material;
 using backend.utils;
 using Microsoft.Extensions.Logging;
 
@@ -324,17 +325,18 @@ namespace backend.Controllers
         /// <param name="idMaterial">id of the material to be updated</param>
         /// <param name="addFinishDTO">FinishDTO with the information of finish to add</param>
         /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
-        [HttpPut("{id}/finishes")]
+        [HttpPost("{idMaterial}/finishes")]
         public ActionResult addFinish(long idMaterial, [FromBody] FinishDTO addFinishDTO)
         {
             logger.LogInformation(LOG_POST_FINISH_START);
             try
             {
-                if (new core.application.MaterialsController().addFinish(idMaterial, addFinishDTO))
+                AddFinishModelView addFinishModelView = new core.application.MaterialsController().addFinish(idMaterial, addFinishDTO);
+                 if (addFinishModelView != null)
                 {
                     logger.LogInformation(LOG_PUT_SUCCESS, idMaterial, addFinishDTO);
-                    return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
-                }
+                    return Created(Request.Path, addFinishModelView);
+                    }
             }
             catch (NullReferenceException nullReferenceException)
             {
@@ -350,7 +352,7 @@ namespace backend.Controllers
         /// <param name="idMaterial">id of the material to be updated</param>
         /// <param name="idFinish">id of the finish to be remove</param>
         /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
-        [HttpPut("{idMaterial}/finishes/{idFinish}")]
+        [HttpDelete("{idMaterial}/finishes/{idFinish}")]
         public ActionResult removeFinish(long idMaterial, long idFinish)
         {
             logger.LogInformation(LOG_DELETE_FINISH_START);
@@ -359,7 +361,7 @@ namespace backend.Controllers
                 if (new core.application.MaterialsController().removeFinish(idMaterial, idFinish))
                 {
                     logger.LogInformation(LOG_PUT_SUCCESS, idMaterial, idFinish);
-                    return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
+                    return NoContent();
                 }
             }
             catch (NullReferenceException nullReferenceException)
@@ -377,17 +379,18 @@ namespace backend.Controllers
         /// <param name="idMaterial">id of the material to be updated</param>
         /// <param name="addColorDTO">ColorDTO with the information of finish to add</param>
         /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
-        [HttpPut("{id}/colors")]
+        [HttpPost("{idMaterial}/colors")]
         public ActionResult addColor(long idMaterial, [FromBody] ColorDTO addColorDTO)
         {
             logger.LogInformation(LOG_POST_COLOR_START);
             try
             {
-                if (new core.application.MaterialsController().addColor(idMaterial, addColorDTO))
+                AddColorModelView addColorModelView = new core.application.MaterialsController().addColor(idMaterial, addColorDTO);
+               if (addColorModelView != null)
                 {
                     logger.LogInformation(LOG_PUT_SUCCESS, idMaterial, addColorDTO);
-                    return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
-                }
+                    return Created(Request.Path, addColorModelView);
+                    }
             }
             catch (NullReferenceException nullReferenceException)
             {
@@ -408,7 +411,7 @@ namespace backend.Controllers
         /// <param name="idMaterial">id of the material to be updated</param>
         /// <param name="idColor">id of the color to be remove</param>
         /// <returns>ActionResult with the 200 Http code and the updated material or ActionResult with the 400 Http code</returns>
-        [HttpPut("{idMaterial}/colors/{idColor}")]
+        [HttpDelete("{idMaterial}/colors/{idColor}")]
         public ActionResult removeColor(long idMaterial, long idColor)
         {
             logger.LogInformation(LOG_DELETE_COLOR_START);
@@ -417,7 +420,7 @@ namespace backend.Controllers
                 if (new core.application.MaterialsController().removeColor(idMaterial, idColor))
                 {
                     logger.LogInformation(LOG_PUT_SUCCESS, idMaterial, idColor);
-                    return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
+                    return NoContent();
                 }
             }
             catch (NullReferenceException nullReferenceException)
