@@ -21,7 +21,7 @@ namespace backend.Controllers {
         /// </summary>
         private const string NO_ALGORITHMS_FOUND = "No algorithms found";
         /// <summary>
-        /// Constant that represents the 200 Ok message for when no inputs are required by the Algorithm
+        /// Constant that represents the 400 Bad Request message for when no inputs are required by the Algorithm
         /// </summary>
         private const string NO_INPUTS_NEEDED_MESSAGE = "Algorithm does not require any inputs";
         /// <summary>
@@ -126,7 +126,7 @@ namespace backend.Controllers {
                 List<InputDTO> inputs = new core.application.AlgorithmController().getAlgorithmInputs((RestrictionAlgorithm)id);
                 if (Collections.isListEmpty(inputs)) {
                     logger.LogInformation(LOG_GET_INPUTS_SUCCESS_NO_INPUTS);
-                    return Ok(new SimpleJSONMessageService(NO_INPUTS_NEEDED_MESSAGE));
+                    return BadRequest(new SimpleJSONMessageService(NO_INPUTS_NEEDED_MESSAGE));
                 }
                 logger.LogInformation(LOG_GET_INPUTS_SUCCESS, inputs);
                 return Ok(inputs);
