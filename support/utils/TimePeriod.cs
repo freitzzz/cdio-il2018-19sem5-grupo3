@@ -63,6 +63,11 @@ namespace support.utils
         }
 
         /// <summary>
+        /// Empty constructor for ORM
+        /// </summary>
+        protected TimePeriod() { }
+
+        /// <summary>
         /// Builds a TimePeriod with a starting date and an ending date
         /// </summary>
         /// <param name="startingDate">starting date of the Time Period</param>
@@ -83,7 +88,6 @@ namespace support.utils
             this.startingDate = startingDate;
             this.endingDate = LocalDate.MaxIsoValue.At(LocalTime.MaxValue);
         }
-
 
         /// <summary>
         /// Checks if starting date and ending date LocalDateTimes are valid
