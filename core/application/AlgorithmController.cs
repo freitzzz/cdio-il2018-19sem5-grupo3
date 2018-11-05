@@ -36,6 +36,7 @@ namespace core.application {
         public AlgorithmDTO getAlgorithm(RestrictionAlgorithm alg) {
             AlgorithmDTO dto = new AlgorithmDTO();
             Algorithm algorithm = new AlgorithmFactory().createAlgorithm(alg);
+            dto.id = alg;
             dto.name = AlgorithmAttributes.getName(alg);
             dto.description = AlgorithmAttributes.getDescription(alg);
             dto.inputs = (List<InputDTO>)DTOUtils.parseToDTOS(algorithm.getRequiredInputs());
