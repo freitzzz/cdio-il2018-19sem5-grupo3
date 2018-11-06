@@ -96,12 +96,12 @@ namespace backend.Controllers{
         /// <summary>
         /// Constant that represents the log message for when a GET All Request returns a BadRequest
         /// </summary>
-        private const string LOG_GET_ALL_BAD_REQUEST="GET All BadRequest (No Customized Products Found)";
+        private const string LOG_GET_ALL_NOT_FOUND="GET All NotFound (No Customized Products Found)";
 
         /// <summary>
         /// Constant that represents the log message for when a GET By ID Request returns a BadRequest
         /// </summary>
-        private const string LOG_GET_BY_ID_BAD_REQUEST="GETByID({id}) BadRequest";
+        private const string LOG_GET_BY_ID_NOT_FOUND="GETByID({id}) NotFound";
 
         /// <summary>
         /// Constant that represents the log message for when a POST Request returns a BadRequest
@@ -151,13 +151,13 @@ namespace backend.Controllers{
         public ActionResult findAll(){
             logger.LogInformation(LOG_GET_ALL_START);
             GetAllCustomizedProductsModelView getAllModelView=new core.application.CustomizedProductController().findAllCustomizedProducts();
-            if(getAllModelView != null)
+            if(!Collections.isEnumerableNullOrEmpty(getAllModelView.basicModelViewList))
             {
                 logger.LogInformation(LOG_GET_ALL_SUCCESS,getAllModelView);
                 return Ok(getAllModelView.basicModelViewList);
             }
-            logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
-            return BadRequest(new {error = NO_CUSTOMIZED_PRODUCTS_AVAILABLE });
+            logger.LogWarning(LOG_GET_ALL_NOT_FOUND);
+            return NotFound(new {error = NO_CUSTOMIZED_PRODUCTS_AVAILABLE });
         }
 
         /// <summary>
@@ -177,11 +177,11 @@ namespace backend.Controllers{
                     logger.LogInformation(LOG_GET_BY_ID_SUCCESS);
                     return Ok(customizedProduct);
                 }
-                logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST,id);
-                return BadRequest(new {error = RESOURCE_NOT_FOUND_MESSAGE});
+                logger.LogWarning(LOG_GET_BY_ID_NOT_FOUND,id);
+                return NotFound(new {error = RESOURCE_NOT_FOUND_MESSAGE});
             }catch(NullReferenceException nullReferenceException){
-                logger.LogWarning(nullReferenceException,LOG_GET_BY_ID_BAD_REQUEST,id);
-                return BadRequest(new {error = RESOURCE_NOT_FOUND_MESSAGE});
+                logger.LogWarning(nullReferenceException,LOG_GET_BY_ID_NOT_FOUND,id);
+                return NotFound(new {error = RESOURCE_NOT_FOUND_MESSAGE});
             }
         }
 
@@ -203,9 +203,9 @@ namespace backend.Controllers{
             }catch(InvalidOperationException invalidOperationException){
                 logger.LogWarning(invalidOperationException,LOG_POST_BAD_REQUEST,customizedProductModelView);
                 return BadRequest(new {error = invalidOperationException.Message});
-            }catch(ArgumentException invalidArgumentsException){
-                logger.LogWarning(invalidArgumentsException,LOG_POST_BAD_REQUEST,customizedProductModelView);
-                return BadRequest(new {error = invalidArgumentsException.Message});
+            }catch(ArgumentException argumentException){
+                logger.LogWarning(argumentException,LOG_POST_BAD_REQUEST,customizedProductModelView);
+                return BadRequest(new {error = argumentException.Message});
             }
         }
 

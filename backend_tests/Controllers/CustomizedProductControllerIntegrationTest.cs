@@ -20,22 +20,12 @@ namespace backend_tests.Controllers
     public sealed class CustomizedProductControllerIntegrationTest : IClassFixture<TestFixture<TestStartupSQLite>>
     {
 
-        /// <summary>
-        /// String with the URI where the API Requests will be performed
-        /// </summary>
-        private const string CUSTOMIZED_PRODUCTS_URI = "mycm/api/customizedproducts";
-        /// <summary>
-        /// Injected Mock Server
-        /// </summary>
+        private const string baseUri = "mycm/api/customizedproducts";
+
         private TestFixture<TestStartupSQLite> fixture;
-        /// <summary>
-        /// Current HTTP Client
-        /// </summary>
+
         private HttpClient httpClient;
-        /// <summary>
-        /// Builds a new CustomizedProductControllerIntegrationTest with the mocked server injected by parameters
-        /// </summary>
-        /// <param name="fixture">Injected Mocked Server</param>
+
         public CustomizedProductControllerIntegrationTest(TestFixture<TestStartupSQLite> fixture)
         {
             this.fixture = fixture;
@@ -46,17 +36,85 @@ namespace backend_tests.Controllers
             });
         }
 
-        /// <summary>
-        /// Ensures that a customized product is created succesfuly
-        /// </summary>
+        [Fact, TestPriority(0)]
+        public async Task ensureGetAllReturnsNotFoundIfCollectionIsEmpty()
+        {
+            var response = await httpClient.GetAsync(baseUri);
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
         [Fact, TestPriority(1)]
-        public async Task<CustomizedProductDTO> ensureCustomizedProductIsCreatedSuccesfuly()
+        public async Task ensureGetByIdReturnsNotFoundIfCollectionIsEmpty()
+        {
+            var response = await httpClient.GetAsync(String.Format(baseUri + "/{0}", 1));
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact, TestPriority(2)]
+        public async Task ensureGetByIdReturnsNotFoundIfIdIsNotValid()
+        {
+            var response = await httpClient.GetAsync(String.Format(baseUri + "/{0}", -1));
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact, TestPriority(3)]
+        public async Task ensurePostWithInvalidProductReferenceReturnsBadRequest()
         {
             ProductControllerIntegrationTest productControllerTest = new ProductControllerIntegrationTest(fixture);
             ProductDTO productDTO = await productControllerTest.ensureProductIsCreatedSuccesfuly();
 
-            //When creating a customized product, only the product's id is defined
-            ProductDTO productDTOWithJustID = new ProductDTO() { id = productDTO.id };
+            CustomizedDimensionsDTO customizedDimensionsDTO = new CustomizedDimensionsDTO();
+            customizedDimensionsDTO.depth = 10;
+            customizedDimensionsDTO.height = 20;
+            customizedDimensionsDTO.width = 30;
+
+            MaterialDTO materialDTO = productDTO.productMaterials.First();
+            FinishDTO materialFinishDTO = materialDTO.finishes.First();
+            ColorDTO materialColorDTO = materialDTO.colors.First();
+
+            FinishDTO finishDTO = new FinishDTO();
+            finishDTO.description = materialFinishDTO.description;
+
+            ColorDTO colorDTO = new ColorDTO()
+            { name = materialColorDTO.name, red = materialColorDTO.red, green = materialColorDTO.green, blue = materialColorDTO.blue, alpha = materialColorDTO.alpha };
+
+            //CustomizedMaterialDTO creation;
+            CustomizedMaterialDTO customizedMaterialDTO = new CustomizedMaterialDTO();
+            customizedMaterialDTO.material = materialDTO;
+            customizedMaterialDTO.finish = finishDTO;
+            customizedMaterialDTO.color = colorDTO;
+
+            PostCustomizedProductModelView customizedProductModelView = new PostCustomizedProductModelView();
+
+            customizedProductModelView.productId = -1;
+            customizedProductModelView.reference = "reference";
+            customizedProductModelView.designation = "designation";
+            customizedProductModelView.customizedDimensionsDTO = customizedDimensionsDTO;
+            customizedProductModelView.customizedMaterialDTO = customizedMaterialDTO;
+
+            var createCustomizedProduct = await httpClient.PostAsJsonAsync(baseUri, customizedProductModelView);
+
+            Assert.Equal(HttpStatusCode.BadRequest, createCustomizedProduct.StatusCode);
+        }
+
+        [Fact, TestPriority(4)]
+        public async Task ensurePostWithInvalidRequestBodyReturnsBadRequest()
+        {
+            PostCustomizedProductModelView customizedProductModelView = null;
+
+            var createCustomizedProduct = await httpClient.PostAsJsonAsync(baseUri, customizedProductModelView);
+
+            Assert.Equal(HttpStatusCode.BadRequest, createCustomizedProduct.StatusCode);
+        }
+
+        [Fact, TestPriority(5)]
+        public async Task<CustomizedProductDTO> ensureCustomizedProductWithoutSlotsIsCreatedSuccessfully()
+        {
+            ProductControllerIntegrationTest productControllerTest = new ProductControllerIntegrationTest(fixture);
+            ProductDTO productDTO = await productControllerTest.ensureProductIsCreatedSuccesfuly();
 
             //CustomizedDimensionsDTO creation
             //Please note that these dimensions reflect those specified in the product
@@ -75,10 +133,9 @@ namespace backend_tests.Controllers
             ColorDTO colorDTO = new ColorDTO()
             { name = materialColorDTO.name, red = materialColorDTO.red, green = materialColorDTO.green, blue = materialColorDTO.blue, alpha = materialColorDTO.alpha };
 
-            //CustomizedMaterialDTO creation
+            //CustomizedMaterialDTO creation;
             CustomizedMaterialDTO customizedMaterialDTO = new CustomizedMaterialDTO();
-            MaterialDTO materialDTOWithJustID = new MaterialDTO() { id = materialDTO.id };
-            customizedMaterialDTO.material = materialDTOWithJustID;
+            customizedMaterialDTO.material = materialDTO;
             customizedMaterialDTO.finish = finishDTO;
             customizedMaterialDTO.color = colorDTO;
 
@@ -91,13 +148,33 @@ namespace backend_tests.Controllers
             customizedProductModelView.designation = productDTO.designation;
             customizedProductModelView.customizedDimensionsDTO = customizedDimensionsDTO;
             customizedProductModelView.customizedMaterialDTO = customizedMaterialDTO;
-            customizedProductModelView.productId = productDTOWithJustID.id;
+            customizedProductModelView.productId = productDTO.id;
 
+            var createCustomizedProduct = await httpClient.PostAsJsonAsync(baseUri, customizedProductModelView);
 
-            //TODO:SLOTS
-            var createCustomizedProduct = await httpClient.PostAsJsonAsync(CUSTOMIZED_PRODUCTS_URI, customizedProductModelView);
-            Assert.Equal(HttpStatusCode.Created,createCustomizedProduct.StatusCode);
-            return JsonConvert.DeserializeObject<CustomizedProductDTO>(await createCustomizedProduct.Content.ReadAsStringAsync());
+            Assert.Equal(HttpStatusCode.Created, createCustomizedProduct.StatusCode);
+
+            PostCustomizedProductModelView customizedProductModelViewFromPost = JsonConvert.DeserializeObject<PostCustomizedProductModelView>(await createCustomizedProduct.Content.ReadAsStringAsync());
+
+            Assert.Equal(customizedProductModelView.reference, customizedProductModelViewFromPost.reference);
+            Assert.Equal(customizedProductModelView.designation, customizedProductModelViewFromPost.designation);
+            Assert.Equal(customizedProductModelView.customizedDimensionsDTO.toEntity(), customizedProductModelViewFromPost.customizedDimensionsDTO.toEntity());
+            Assert.Equal(customizedProductModelView.customizedMaterialDTO.toEntity(), customizedProductModelViewFromPost.customizedMaterialDTO.toEntity());
+            Assert.Empty(customizedProductModelViewFromPost.slots);
+
+            var fetchCreatedCustomizedProduct = await httpClient.GetAsync(String.Format(baseUri + "/{0}", customizedProductModelViewFromPost.id));
+
+            Assert.Equal(HttpStatusCode.OK, fetchCreatedCustomizedProduct.StatusCode);
+
+            CustomizedProductDTO fetchedCustomizedProductDTO = JsonConvert.DeserializeObject<CustomizedProductDTO>(await fetchCreatedCustomizedProduct.Content.ReadAsStringAsync());
+
+            Assert.Equal(customizedProductModelView.reference, fetchedCustomizedProductDTO.reference);
+            Assert.Equal(customizedProductModelView.designation, fetchedCustomizedProductDTO.designation);
+            Assert.Equal(customizedProductModelView.customizedDimensionsDTO.toEntity(), fetchedCustomizedProductDTO.customizedDimensionsDTO.toEntity());
+            Assert.Equal(customizedProductModelView.customizedMaterialDTO.toEntity(), fetchedCustomizedProductDTO.customizedMaterialDTO.toEntity());
+            Assert.Empty(fetchedCustomizedProductDTO.slotListDTO);
+
+            return fetchedCustomizedProductDTO;
         }
 
     }
