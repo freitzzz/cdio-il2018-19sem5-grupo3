@@ -58,6 +58,7 @@ namespace core.modelview.dimension
                 {
                     values.Add(value);
                 }
+                discreteMV.values = values;
 
                 return discreteMV;
             }
