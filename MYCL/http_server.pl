@@ -7,8 +7,8 @@
 :- use_module(library(http/websocket)).
 
 :- http_handler('/asd', say_hi, []).		% (1)
-%:- http_handler('/mycl/algorithms',display_available_algorithms,[]).
-:- http_handler('/mycl/algorithms/',display_algorithm_by_id,[prefix]).
+:- http_handler('/mycl/algorithms',display_available_algorithms,[]).
+:- http_handler('/mycl/travel',compute_algorithm,[]).
 
 % Loads required knowledge bases
 carregar:-['intersept.pl'],['cdio-tsp.pl'],load_json_objects.
@@ -27,18 +27,24 @@ say_hi(_Request) :-					% (3)
 
 
 % Displays all algorithm available
-display_available_algorithms(_Request):-
-    format('Content-type: application/json'),
-    get_available_algorithms(Alg),
-    prolog_to_json(Alg,AlgJSON),
-    reply_json(AlgJSON).
+display_available_algorithms(Request):-
+        format('Content-type: application/json'),
+        get_available_algorithms(Alg),
+        prolog_to_json(Alg,AlgJSON),
+        reply_json(AlgJSON).
 
-% Displays an algorithm by its ID
-display_algorithm_by_id(Request):-
-    format('Content-type: application/json'),
-    memberchk(path_info(Id), Request), 
-    write(Id),
-    get_algorithm_by_id(Id,Alg),
-    prolog_to_json(Alg,AlgJSON),
-    reply_json(AlgJSON).
 
+compute_algorithm(Request):-
+        http_read_json(Request, JSONIn,[json_object(cities_body_request)]),
+        json_to_prolog(JSONIn, CC),
+        CC=cities_body_request(Id,L),
+        get_algorithm_by_id(Id,Alg),
+        format('Content-type: application/json'),
+        prolog_to_json(Alg,AlgJSON),
+        reply_json(AlgJSON).
+
+% Checks the query parameters that can be extracted from the available algorithms URI
+check_available_algorithms_query_parameters(Request,Id):-
+        http_parameters(Request, [
+                id(Id, [ optional(true) ])
+        ]).
