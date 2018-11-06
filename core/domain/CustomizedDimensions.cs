@@ -27,7 +27,7 @@ namespace core.domain
         ///<summary>
         ///Constant that represents the message that occurs if the value is negative
         ///</summary>
-        private const string NEGATIVE_VALUE_REFERENCE = "Dimension value can't be negative";
+        private const string NEGATIVE_OR_ZERO_VALUE_REFERENCE = "Dimension value can't be negative or zero";
 
         ///<summary>
         ///Database identifier.
@@ -91,13 +91,13 @@ namespace core.domain
         {
             if (Double.IsNaN(height)) throw new ArgumentException(VALUE_IS_NAN_REFERENCE);
             if (Double.IsInfinity(height)) throw new ArgumentException(VALUE_IS_INFINITY_REFERENCE);
-            if (height < 0) throw new ArgumentException(NEGATIVE_VALUE_REFERENCE);
+            if (height <= 0) throw new ArgumentException(NEGATIVE_OR_ZERO_VALUE_REFERENCE);
             if (Double.IsNaN(width)) throw new ArgumentException(VALUE_IS_NAN_REFERENCE);
             if (Double.IsInfinity(width)) throw new ArgumentException(VALUE_IS_INFINITY_REFERENCE);
-            if (width < 0) throw new ArgumentException(NEGATIVE_VALUE_REFERENCE);
+            if (width <= 0) throw new ArgumentException(NEGATIVE_OR_ZERO_VALUE_REFERENCE);
             if (Double.IsNaN(depth)) throw new ArgumentException(VALUE_IS_NAN_REFERENCE);
             if (Double.IsInfinity(depth)) throw new ArgumentException(VALUE_IS_INFINITY_REFERENCE);
-            if (depth < 0) throw new ArgumentException(NEGATIVE_VALUE_REFERENCE);
+            if (depth <= 0) throw new ArgumentException(NEGATIVE_OR_ZERO_VALUE_REFERENCE);
         }
 
         ///<summary>
