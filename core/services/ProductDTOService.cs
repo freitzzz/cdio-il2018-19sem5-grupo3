@@ -33,9 +33,8 @@ namespace core.services{
             IEnumerable<Material> productMaterials=PersistenceContext.repositories().createMaterialRepository().getMaterialsByIDS(productDTO.productMaterials);
             FetchEnsurance.ensureMaterialsFetchWasSuccessful(productDTO.productMaterials,productMaterials);
 
-            IEnumerable<Dimension> productHeightDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.heightDimensionDTOs);
-            IEnumerable<Dimension> productWidthDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.widthDimensionDTOs);
-            IEnumerable<Dimension> productDepthDimensions=DTOUtils.reverseDTOS(productDTO.dimensions.depthDimensionDTOs);
+            IEnumerable<Measurement> productMeasurements = DTOUtils.reverseDTOS(productDTO.dimensions);
+
             SlotDimensionSetDTO slotDimensions=null;
             if(productDTO.slotDimensions!=null)
                 slotDimensions=productDTO.slotDimensions;
@@ -44,46 +43,38 @@ namespace core.services{
                 CustomizedDimensions minSlotDimension=slotDimensions.minimumSlotDimensions.toEntity();
                 CustomizedDimensions recommendedSlotDimension = slotDimensions.recommendedSlotDimensions.toEntity();
 
-                return new Product(reference, designation,true,
+                return new Product(reference, designation,
                                             maxSlotDimension,
                                             minSlotDimension,
                                             recommendedSlotDimension,
                                             productCategory,
                                             productMaterials,
                                             productComplementedProducts,
-                                            productHeightDimensions,
-                                            productWidthDimensions,
-                                            productDepthDimensions);     
+                                            productMeasurements);     
             }   
             if(productComplementedProducts==null&&slotDimensions!=null){
                 CustomizedDimensions maxSlotDimension=slotDimensions.maximumSlotDimensions.toEntity();
                 CustomizedDimensions minSlotDimension=slotDimensions.minimumSlotDimensions.toEntity();
                 CustomizedDimensions recommendedSlotDimension = slotDimensions.recommendedSlotDimensions.toEntity();
 
-                return new Product(reference,designation,true,
+                return new Product(reference,designation,
                                             maxSlotDimension,
                                             minSlotDimension,
                                             recommendedSlotDimension,
                                             productCategory, 
                                             productMaterials,
-                                            productHeightDimensions,
-                                            productWidthDimensions,
-                                            productDepthDimensions);
+                                            productMeasurements);
             }
             if(productComplementedProducts!=null&&slotDimensions==null){
                 return new Product(reference,designation,
                                             productCategory, 
                                             productMaterials,
                                             productComplementedProducts,
-                                            productHeightDimensions,
-                                            productWidthDimensions,
-                                            productDepthDimensions);
+                                            productMeasurements);
             }
             return new Product(reference,designation,productCategory
                                             ,productMaterials
-                                            ,productHeightDimensions
-                                            ,productWidthDimensions
-                                            ,productDepthDimensions); 
+                                            ,productMeasurements); 
         }
     }
 }

@@ -387,7 +387,7 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", true, CustomizedDimensions.valueOf(5, 5, 5),
+            Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
@@ -646,7 +646,7 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", true, CustomizedDimensions.valueOf(5, 5, 5),
+            Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
@@ -700,7 +700,7 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", true, CustomizedDimensions.valueOf(5, 5, 5),
+            Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
@@ -754,7 +754,7 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", true, CustomizedDimensions.valueOf(5, 5, 5),
+            Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
@@ -807,7 +807,7 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", true, CustomizedDimensions.valueOf(5, 5, 5),
+            Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
@@ -859,7 +859,7 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", true, CustomizedDimensions.valueOf(5, 5, 5),
+            Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
@@ -907,7 +907,7 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", true, CustomizedDimensions.valueOf(5, 5, 5),
+            Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
@@ -960,7 +960,7 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", true, CustomizedDimensions.valueOf(5, 5, 5),
+            Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
@@ -1012,7 +1012,7 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", true, CustomizedDimensions.valueOf(5, 5, 5),
+            Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
@@ -1060,7 +1060,7 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", true, CustomizedDimensions.valueOf(5, 5, 5),
+            Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
@@ -1622,8 +1622,7 @@ namespace core_tests.domain
             CustomizedDimensions maxSlotSize = CustomizedDimensions.valueOf(500, 500, 500);
             CustomizedDimensions recommendedSlotSize = CustomizedDimensions.valueOf(300, 300, 300);
 
-            Product product = new Product("#555", "designation",
-                true, maxSlotSize, minSlotSize, recommendedSlotSize, category,
+            Product product = new Product("#555", "designation", maxSlotSize, minSlotSize, recommendedSlotSize, category,
                 matsList, measurements);
 
             Slot slot = new Slot(CustomizedDimensions.valueOf(500, 500, 500));
@@ -1681,8 +1680,7 @@ namespace core_tests.domain
             CustomizedDimensions maxSlotSize = CustomizedDimensions.valueOf(500, 500, 500);
             CustomizedDimensions recommendedSlotSize = CustomizedDimensions.valueOf(300, 300, 300);
 
-            Product product = new Product("#555", "designation",
-                true, maxSlotSize, minSlotSize, recommendedSlotSize, category,
+            Product product = new Product("#555", "designation", maxSlotSize, minSlotSize, recommendedSlotSize, category,
                 matsList, measurements);
 
             Slot slot = new Slot(CustomizedDimensions.valueOf(500, 500, 500));
@@ -1744,8 +1742,7 @@ namespace core_tests.domain
             CustomizedDimensions maxSlotSize = CustomizedDimensions.valueOf(500, 500, 500);
             CustomizedDimensions recommendedSlotSize = CustomizedDimensions.valueOf(300, 300, 300);
 
-            Product product = new Product("#555", "designation",
-                true, maxSlotSize, minSlotSize, recommendedSlotSize, category,
+            Product product = new Product("#555", "designation", maxSlotSize, minSlotSize, recommendedSlotSize, category,
                 matsList, measurements);
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
@@ -1804,8 +1801,7 @@ namespace core_tests.domain
             List<Slot> slotList = new List<Slot>();
             slotList.Add(slot);
 
-            Product product = new Product("#555", "designation",
-                true, maxSlotSize, minSlotSize, recommendedSlotSize, category,
+            Product product = new Product("#555", "designation", maxSlotSize, minSlotSize, recommendedSlotSize, category,
                 matsList, measurements);
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);

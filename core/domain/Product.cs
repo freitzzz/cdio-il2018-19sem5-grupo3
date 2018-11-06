@@ -189,7 +189,6 @@ namespace core.domain {
                 this.measurements.Add(new ProductMeasurement(this, measurement));
             }
             this.productCategory = productCategory;
-            this.supportsSlots = false;
             this.maxSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
             this.minSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
             this.recommendedSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
@@ -225,20 +224,19 @@ namespace core.domain {
         /// </summary>
         /// <param name="reference">Reference of the Product</param>
         /// <param name="designation">Designation of the Product</param>
-        /// <param name="supportsSlots">Indicates if the product can hold slots</param>
         /// <param name="maxSlotSize">Maximum slot dimensions</param>
         /// <param name="minSlotSize">Minimum slot dimensions</param>
         /// <param name="recommendedSlotSize">Recommended slot dimensions</param>
         /// <param name="productCategory">ProductCategory with the product's category</param>
         /// <param name="materials">Materials the product can be made of</param>
         /// <param name="measurements">Product measurements</param>
-        public Product(string reference, string designation, bool supportsSlots,
+        public Product(string reference, string designation,
                         CustomizedDimensions maxSlotSize, CustomizedDimensions minSlotSize,
                         CustomizedDimensions recommendedSlotSize, ProductCategory productCategory,
                         IEnumerable<Material> materials, IEnumerable<Measurement> measurements) :
                         this(reference, designation, productCategory, materials, measurements) {
             checkProductSlotsDimensions(maxSlotSize, minSlotSize, recommendedSlotSize);
-            this.supportsSlots = supportsSlots;
+            this.supportsSlots = true;
             this.maxSlotSize = maxSlotSize;
             this.minSlotSize = minSlotSize;
             this.recommendedSlotSize = recommendedSlotSize;
@@ -250,7 +248,6 @@ namespace core.domain {
         /// </summary>
         /// <param name="reference">String with the product reference</param>
         /// <param name="designation">String with the product designation</param>
-        /// <param name="supportsSlots">Indicates if the product can hold slots</param>
         /// <param name="maxSlotSize">Maximum slot dimensions</param>
         /// <param name="minSlotSize">Minimum slot dimensions</param>
         /// <param name="recommendedSlotSize">Recommended slot dimensions</param>
@@ -258,12 +255,12 @@ namespace core.domain {
         /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
         /// <param name="complementedProducts">IEnumerable with the product complemented products</param>
         /// <param name="measurements">IEnumerable with the product measurements</param>
-        public Product(string reference, string designation, bool supportsSlots,
+        public Product(string reference, string designation,
                         CustomizedDimensions maxSlotSize, CustomizedDimensions minSlotSize,
                         CustomizedDimensions recommendedSlotSize, ProductCategory productCategory,
                         IEnumerable<Material> materials, IEnumerable<Product> complementedProducts,
                         IEnumerable<Measurement> measurements) :
-                        this(reference, designation, supportsSlots, maxSlotSize, minSlotSize,
+                        this(reference, designation, maxSlotSize, minSlotSize,
                         recommendedSlotSize, productCategory, materials, measurements) {
             checkProductComplementedProducts(complementedProducts);
             this.complementedProducts = new List<Component>();
