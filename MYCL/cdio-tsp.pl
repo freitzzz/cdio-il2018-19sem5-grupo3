@@ -1,5 +1,5 @@
 :-set_prolog_flag(answer_write_options,[quoted(true),portray(true),spacing(next_argument)]).
-
+:-dynamic city/3.
 %
 % Codigo que verifica se dois segmentos se intersectam encontra-se no fx. intersept.pl
 %
@@ -11,13 +11,13 @@
 %city(name,latitude,longitude)
 city(brussels,50.8462807,4.3547273).
 city(tirana,41.33165,19.8318).
-city(andorra,42.5075025,1.5218033).
-city(vienna,48.2092062,16.3727778).
-city(minsk,53.905117,27.5611845).
-city(sarajevo,43.85643,18.41342).
-city(sofia,42.6976246,23.3222924).
-city(zagreb,45.8150053,15.9785014).
-city(nicosia,35.167604,33.373621).
+%city(andorra,42.5075025,1.5218033).
+%city(vienna,48.2092062,16.3727778).
+%city(minsk,53.905117,27.5611845).
+%city(sarajevo,43.85643,18.41342).
+%city(sofia,42.6976246,23.3222924).
+%city(zagreb,45.8150053,15.9785014).
+%city(nicosia,35.167604,33.373621).
 %city(prague,50.0878114,14.4204598).
 %city(copenhagen,55.6762944,12.5681157).
 %city(london,51.5001524,-0.1262362).

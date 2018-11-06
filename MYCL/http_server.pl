@@ -8,10 +8,10 @@
 
 :- http_handler('/asd', say_hi, []).		% (1)
 :- http_handler('/mycl/algorithms',display_available_algorithms,[]).
-:- http_handler('/mycl/travel',compute_algorithm,[]).
+:- http_handler('/mycl/travel',compute_algorithm,[time_limit(0)]).
 
 % Loads required knowledge bases
-carregar:-['intersept.pl'],['cdio-tsp.pl'],load_json_objects.
+carregar:-['intersept.pl'],['cdio-tsp.pl'],['algorithm_computation.pl'],['algorithms.pl'],load_json_objects.
 
 load_json_objects:-['json_algorithms.pl'].
 
@@ -38,13 +38,28 @@ compute_algorithm(Request):-
         http_read_json(Request, JSONIn,[json_object(cities_body_request)]),
         json_to_prolog(JSONIn, CC),
         CC=cities_body_request(Id,L),
-        get_algorithm_by_id(Id,Alg),
+        json_cities_to_cities(L,Cities),
+        compute_algorithm(1,Cities,CitiesToTravel,Distance),
+        cities_to_json_cities(CitiesToTravel,JSONCitiesToTravel),
+        prolog_to_json(cities_body_response(Id,JSONCitiesToTravel),RSP),
         format('Content-type: application/json'),
-        prolog_to_json(Alg,AlgJSON),
-        reply_json(AlgJSON).
+        format(user_output,"Request is: ~p~n",[JSONCitiesToTravel]),
+        reply_json(JSONIn).
 
 % Checks the query parameters that can be extracted from the available algorithms URI
 check_available_algorithms_query_parameters(Request,Id):-
         http_parameters(Request, [
                 id(Id, [ optional(true) ])
         ]).
+
+json_cities_to_cities([],[]).
+json_cities_to_cities([H|T],Cities):-
+        json_to_prolog(H,H1),
+        H1=city_object(N,LT,LO),
+        json_cities_to_cities(T,Cities1),
+        append([city(N,LT,LO)],Cities1,Cities).
+
+cities_to_json_cities([],[]).
+cities_to_json_cities([H|T],JSONCities):-
+        cities_to_json_cities(T,JSONCities1),
+        append([basic_city_object(H)],JSONCities1,JSONCities).
