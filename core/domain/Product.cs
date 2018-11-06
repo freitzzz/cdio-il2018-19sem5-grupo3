@@ -221,9 +221,11 @@ namespace core.domain {
             this.depthValues = new List<Dimension>(depthDimensions);
             this.productCategory = productCategory;
             this.supportsSlots = false;
-            this.maxSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
-            this.minSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
-            this.recommendedSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
+            //!MaxValue assigned here because customized dimensions can't have value 0
+            //TODO see if there's a better alternative to using Double.MaxValue
+            this.maxSlotSize = CustomizedDimensions.valueOf(Double.MaxValue, Double.MaxValue, Double.MaxValue);
+            this.minSlotSize = CustomizedDimensions.valueOf(Double.MaxValue, Double.MaxValue, Double.MaxValue);
+            this.recommendedSlotSize = CustomizedDimensions.valueOf(Double.MaxValue, Double.MaxValue, Double.MaxValue);
         }
 
         /// <summary>
