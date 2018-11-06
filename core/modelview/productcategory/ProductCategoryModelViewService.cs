@@ -41,9 +41,9 @@ namespace core.modelview.productcategory
         /// </summary>
         /// <param name="productCategories">IEnumerable of instances of ProductCategory from which the ModelView List will be built.</param>
         /// <returns>A List of GetBasicProductCategoryModelView.</returns>
-        public static List<GetBasicProductCategoryModelView> fromCollection(IEnumerable<ProductCategory> productCategories)
+        public static GetAllProductCategoriesModelView fromCollection(IEnumerable<ProductCategory> productCategories)
         {
-            List<GetBasicProductCategoryModelView> result = new List<GetBasicProductCategoryModelView>();
+            GetAllProductCategoriesModelView result = new GetAllProductCategoriesModelView();
 
             foreach (ProductCategory productCategory in productCategories)
             {
