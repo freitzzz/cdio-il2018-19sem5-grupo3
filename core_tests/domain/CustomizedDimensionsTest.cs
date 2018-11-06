@@ -146,15 +146,40 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureToDTOWorks(){
+        public void ensureToDTOWorks()
+        {
 
-            CustomizedDimensions instance = CustomizedDimensions.valueOf(100,200,300);
+            CustomizedDimensions instance = CustomizedDimensions.valueOf(100, 200, 300);
             CustomizedDimensionsDTO instanceDTO = instance.toDTO();
 
-            Assert.Equal(instanceDTO.height,instance.height);
-            Assert.Equal(instanceDTO.width,instance.width);
-            Assert.Equal(instanceDTO.depth,instance.depth);
-            Assert.Equal(instanceDTO.Id,instance.Id);
+            Assert.Equal(instanceDTO.height, instance.height);
+            Assert.Equal(instanceDTO.width, instance.width);
+            Assert.Equal(instanceDTO.depth, instance.depth);
+            Assert.Equal(instanceDTO.Id, instance.Id);
+        }
+
+        [Fact]
+        public void ensureCustomizedDimensionsWithZeroHeightCantBeCreated()
+        {
+            Action act = () => CustomizedDimensions.valueOf(0,100,200);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureCustomizedDimensionsWithZeroDepthCantBeCreated()
+        {
+            Action act = () => CustomizedDimensions.valueOf(100,100,0);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureCustomizedDimensionsWithZeroWidthCantBeCreated()
+        {
+            Action act = () => CustomizedDimensions.valueOf(100,0,100);
+
+            Assert.Throws<ArgumentException>(act);
         }
     }
 }
