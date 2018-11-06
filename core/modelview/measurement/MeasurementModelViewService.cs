@@ -94,7 +94,7 @@ namespace core.modelview.measurement
         /// <param name="measurements">IEnumerable of Measurement being converted.</param>
         /// <returns>An IEnumerable of GetMeasurementModelView </returns>
         /// <exception cref="System.ArgumentException">If any instance of Measurement in the IEnumerable is null.</exception>
-        public static IEnumerable<GetMeasurementModelView> fromEntities(IEnumerable<Measurement> measurements)
+        public static IEnumerable<GetMeasurementModelView> fromCollection(IEnumerable<Measurement> measurements)
         {
             List<GetMeasurementModelView> measurementModelViews = new List<GetMeasurementModelView>();
 
