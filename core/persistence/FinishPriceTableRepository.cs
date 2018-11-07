@@ -1,4 +1,5 @@
 using core.domain;
+using support.domain.ddd;
 using support.persistence.repositories;
 
 namespace core.persistence
@@ -8,7 +9,8 @@ namespace core.persistence
     /// </summary>
     /// <typeparam name="FinishPriceTableEntry">Entity type</typeparam>
     /// <typeparam name="long">PID type</typeparam>
-    public interface FinishPriceTableRepository : DataRepository<FinishPriceTableEntry, long>
+    /// <typeparam name="FinishPriceTableEntry">Entity's Business Identifier</typeparam>
+    public interface FinishPriceTableRepository : Repository<FinishPriceTableEntry, long, FinishPriceTableEntry>
     {
 
     }
