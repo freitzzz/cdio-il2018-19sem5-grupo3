@@ -1,10 +1,11 @@
 using System;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using support.domain.ddd;
 using support.utils;
 
 namespace core.domain
 {
-    public class FinishPriceTableEntry : PriceTableEntry
+    public class FinishPriceTableEntry : PriceTableEntry<Finish>, AggregateRoot<FinishPriceTableEntry>
     {
         /// <summary>
         /// Constant that represents the message that occurs if the Table Entry's finish is null
@@ -12,10 +13,10 @@ namespace core.domain
         private const string NULL_FINISH = "The finish can't be null";
 
         /// <summary>
-        /// Table Entry's finish
+        /// Overrides entity property to allow lazy loading of the same
         /// </summary>
-        private Finish _finish; //!private field used for lazy loading, do not use this for storing or fetching data
-        public Finish finish { get => LazyLoader.Load(this, ref _finish); protected set => _finish = value; }
+        /// <param name="_entity">entity type of the price table entry</param>
+        public override Finish entity { get => LazyLoader.Load(this, ref _entity); protected set => _entity = value; }
 
         /// <summary>
         /// Constructor used for injecting a LazyLoader
@@ -38,7 +39,7 @@ namespace core.domain
                 : base(price, timePeriod)
         {
             checkFinish(finish);
-            this.finish = finish;
+            this.entity = finish;
         }
 
         /// <summary>
@@ -53,27 +54,14 @@ namespace core.domain
             }
         }
 
-        public override int GetHashCode()
+        public FinishPriceTableEntry id()
         {
-            return base.GetHashCode() + finish.GetHashCode();
+            return this;
         }
 
-        public override bool Equals(object obj)
+        public bool sameAs(FinishPriceTableEntry comparingEntity)
         {
-            if (!base.Equals(obj))
-            {
-                return false;
-            }
-
-            FinishPriceTableEntry other = (FinishPriceTableEntry)obj;
-
-            return this.finish.Equals(other.finish);
-        }
-
-        public override string ToString()
-        {
-            return String.Format("{0}\nFinish:{1}",
-                                base.ToString(), finish.description);
+            return this.Equals(comparingEntity);
         }
     }
 }
