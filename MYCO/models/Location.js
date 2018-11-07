@@ -35,6 +35,15 @@ var locationSchema=new Schema({
 });
 
 /**
+ * Creates a new Location object
+ * @param {Number} latitude Number with the location latitude
+ * @param {Number} longitude Number with the location longitude
+ */
+locationSchema.statics.createLocation= function(latitude,longitude){
+    return {latitude,longitude};
+}
+
+/**
  * Exports Factory Data Model required by Mongoose
  */
 var Location = module.exports = mongoose.model('location', locationSchema);

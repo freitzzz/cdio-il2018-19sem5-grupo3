@@ -37,6 +37,20 @@ var factorySchema=new Schema({
     location:{type: location.schema, required:true}
 });
 
+/**
+ * Creates a new Factory object
+ * @param {String} reference String with the factory reference
+ * @param {String} designation String with the factory designation
+ * @param {Number} locationLatitude Number with the factory latitude
+ * @param {Number} locationLongitude Number with the factory longitude
+ */
+factorySchema.statics.createFactory=function (reference,designation,locationLatitude,locationLongitude){
+    return {
+        reference:reference,
+        designation:designation,
+        location:location.createLocation(locationLatitude,locationLongitude)
+    }
+}
 
 
 /**
