@@ -28,6 +28,19 @@ factoriesRoute.route('/factories').get(function(request,response){
 })
 
 /**
+ * Routes the GET of a production factory
+ */
+factoriesRoute.route('/factories/:id').get(function(request,response){
+    factory
+        .findById(request.params.id)
+        .then(function(factory){
+            response.status(200).json(deserializeFactory(factory));
+        }).catch(function(_error){
+            response.status(400).json(noFactoryFound());
+        })
+})
+
+/**
  * Routes the POST of a new factory
  */
 factoriesRoute.route('/factories').post(function(request,response,mw){
@@ -94,6 +107,11 @@ function schemaToBasicFactory(factorySchema){
  * Provides a message object for justifying that there are no available production factories
  */
 function noAvailableFactories(){return {message:"There are no production factories available"}}
+
+/**
+ * Provides a message object for justifying that there is no production factory being fetched
+ */
+function noFactoryFound(){return {message:"No production factory was found"}}
 
 /**
  * Exports Production Factories API router
