@@ -37,13 +37,17 @@ namespace core.modelview.product{
             productModelView.reference=product.reference;
             productModelView.designation=product.designation;
             productModelView.category=ProductCategoryModelViewService.fromEntityAsBasic(product.productCategory);
-            productModelView.components=ComponentModelViewService.fromCollection(product.complementedProducts);
+            if(product.complementedProducts.Any()){
+                productModelView.components=ComponentModelViewService.fromCollection(product.complementedProducts);
+            }
             productModelView.materials=MaterialModelViewService.fromCollection(product.productMaterials.Select(pm => pm.material));
             productModelView.measurements=MeasurementModelViewService.fromCollection(product.measurements.Select(pm => pm.measurement)).ToList();
-            productModelView.slotSizes = new GetSlotDimensionsModelView();
-            productModelView.slotSizes.minSize = CustomizedDimensionsModelViewService.fromEntity(product.minSlotSize);
-            productModelView.slotSizes.maxSize = CustomizedDimensionsModelViewService.fromEntity(product.maxSlotSize);
-            productModelView.slotSizes.recommendedSize = CustomizedDimensionsModelViewService.fromEntity(product.recommendedSlotSize);
+            if(product.supportsSlots){
+                productModelView.slotSizes = new GetSlotDimensionsModelView();
+                productModelView.slotSizes.minSize = CustomizedDimensionsModelViewService.fromEntity(product.minSlotSize);
+                productModelView.slotSizes.maxSize = CustomizedDimensionsModelViewService.fromEntity(product.maxSlotSize);
+                productModelView.slotSizes.recommendedSize = CustomizedDimensionsModelViewService.fromEntity(product.recommendedSlotSize);
+            }
             return productModelView;
         }
 
