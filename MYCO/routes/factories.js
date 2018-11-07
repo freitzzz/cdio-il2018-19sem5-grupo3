@@ -21,6 +21,8 @@ factoriesRoute.route('/factories').get(function(request,response){
         .then(function(factories){
             if(factories.length>0){
                 response.status(200).json(schemasToBasicFactories(factories));
+            }else{
+                response.status(400).json(noAvailableFactories());
             }
         })
 })
@@ -87,6 +89,11 @@ function schemaToBasicFactory(factorySchema){
         reference:factorySchema.reference
     }
 }
+
+/**
+ * Provides a message object for justifying that there are no available production factories
+ */
+function noAvailableFactories(){return {message:"There are no production factories available"}}
 
 /**
  * Exports Production Factories API router
