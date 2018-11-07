@@ -71,6 +71,21 @@ factoriesRoute.route('/factories/:id').put(function(request,response){
 })
 
 /**
+ * Routes the DELETE of the factory disable
+ */
+factoriesRoute.route('/factories/:id').delete(function(request,response){
+    factory
+        .findById(request.params.id)
+            .then(function(_factory){
+                disableFactorySchema(_factory);
+                factory.update(_factory);
+                response.status(204).json();
+            }).catch(function(_error){
+                response.status(400).json(_error);
+            })
+})
+
+/**
  * Serializes the request body into a Factory Object
  * @param {Object} requestBody Object with the request body
  */
@@ -139,6 +154,22 @@ function updateFactorySchema(factoryUpdate,factorySchema){
     if(factoryUpdate.longitude){
         factorySchema.changeLongitude(factoryUpdate.longitude);
     }
+}
+
+/**
+ * Enables a factory schema
+ * @param {Factory.Schema} factorySchema Factory.Schema with the factory schema being enabled
+ */
+function enableFactorySchema(factorySchema){
+    factorySchema.enable();
+}
+
+/**
+ * Disables a factory schema
+ * @param {Factory.Schema} factorySchema Factory.Schema with the factory schema being disabled
+ */
+function disableFactorySchema(factorySchema){
+    factorySchema.disable();
 }
 
 /**
