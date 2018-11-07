@@ -23,7 +23,7 @@ var referenceValidator={
  */
 var designationValidator={
     validator:function(designation){
-        return designation.trim().length>0;
+        return checkDesignationBusinessRule(designation);
     },
     message:props=>`${props.value} is not a valid designation`
 }
@@ -47,6 +47,31 @@ factorySchema.methods.changeReference=function(reference){
 }
 
 /**
+ * Changes the current factory designation
+ * @param {String} designation String with the updating designation
+ */
+factorySchema.methods.changeDesignation=function(designation){
+    grantDesignationIsValidForUpdate(designation);
+    this.designation=designation;
+}
+
+/**
+ * Changes the current factory latitude
+ * @param {Number} latitude Number with the updating latitude
+ */
+factorySchema.methods.changeLatitude=function(latitude){
+    this.location.changeLatitude(latitude);
+}
+
+/**
+ * Changes the current factory longitude
+ * @param {Number} latitude Number with the updating longitude
+ */
+factorySchema.methods.changeLongitude=function(longitude){
+    this.location.changeLongitude(longitude);
+}
+
+/**
  * Creates a new Factory object
  * @param {String} reference String with the factory reference
  * @param {String} designation String with the factory designation
@@ -67,6 +92,14 @@ factorySchema.statics.createFactory=function (reference,designation,locationLati
  */
 function grantReferenceIsValidForUpdate(reference){
     if(!checkReferenceBusinessRule(reference))throw `${reference} is not a valid reference`;
+}
+
+/**
+ * Grants that a designation is valid for update
+ * @param {string} designation String with the designation to be updated
+ */
+function grantDesignationIsValidForUpdate(designation){
+    if(!checkDesignationBusinessRule(designation))throw `${designation} is not a valid designation`;
 }
 
 /**
