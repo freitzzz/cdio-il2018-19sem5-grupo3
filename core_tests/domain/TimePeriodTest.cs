@@ -1,9 +1,9 @@
 using System;
 using NodaTime;
-using support.utils;
 using Xunit;
+using core.domain;
 
-namespace support_tests.utils
+namespace core_tests.domain
 {
     /// <summary>
     /// Unit testing class for TimePeriod

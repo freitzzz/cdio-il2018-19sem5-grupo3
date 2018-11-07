@@ -4,16 +4,16 @@ using core.domain;
 using core.persistence;
 using core.dto;
 using core.modelview.component;
-using core.modelview.dimension;
 using core.modelview.material;
 using core.modelview.product;
 using core.modelview.restriction;
 using core.services;
-using core.services.ensurance;
 using support.dto;
 using support.utils;
+using core.services.ensurance;
 
-namespace core.application{
+namespace core.application
+{
     /// <summary>
     /// Core ProductController class
     /// </summary>
@@ -56,13 +56,13 @@ namespace core.application{
         /// <summary>
         /// Adds a new product
         /// </summary>
-        /// <param name="productAsDTO">DTO with the product information</param>
-        /// <returns>DTO with the created product DTO, null if the product was not created</returns>
-        public ProductDTO addProduct(ProductDTO productAsDTO){
-            Product newProduct=new ProductDTOService().transform(productAsDTO);
-            Product createdProduct=PersistenceContext.repositories().createProductRepository().save(newProduct);
-            if(createdProduct == null) return null;
-            return createdProduct.toDTO();
+        /// <param name="addProductMV">ModelView with the product information</param>
+        /// <returns>GetProductModelView with the created product, null if the product was not created</returns>
+        public GetProductModelView addProduct(AddProductModelView addProductMV){
+            Product newProduct= CreateProductService.create(addProductMV);
+            newProduct=PersistenceContext.repositories().createProductRepository().save(newProduct);
+            if (newProduct == null) return null;
+            return ProductModelViewService.fromEntity(newProduct);
         }
 
         /// <summary>
@@ -101,37 +101,21 @@ namespace core.application{
         }
 
         /// <summary>
-        /// Updates the materials of a product
+        /// Updates the category of a Product.
         /// </summary>
-        /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
-        /// <returns>boolean true if the update was successful, fasle if not</returns>
-        public bool updateProductMaterials(UpdateProductDTO updateProductDTO){
+        /// <param name="updateProductMV">UpdateProductModelView with the data regarding the product update</param>
+        /// <returns>boolean true if the update was successful, false otherwise.</returns>
+        private bool updateProductCategory(UpdateProductModelView updateProductMV){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            MaterialRepository materialRepository=PersistenceContext.repositories().createMaterialRepository();
-            Product productBeingUpdated=productRepository.find(updateProductDTO.id);
+            Product productBeingUpdated=productRepository.find(updateProductMV.productId);
             bool updatedWithSuccess=true;
             bool perfomedAtLeastOneUpdate=false;
-
-            if(updateProductDTO.materialsToAdd!=null){
-                IEnumerable<Material> materialsBeingAdded=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToAdd);
-                FetchEnsurance.ensureMaterialsFetchWasSuccessful(updateProductDTO.materialsToAdd, materialsBeingAdded);
-                foreach (Material material in materialsBeingAdded)
-                    updatedWithSuccess&=productBeingUpdated.addMaterial(material);
+            if (updateProductMV.productCategoryId.HasValue){
+                ProductCategory productCategory=PersistenceContext.repositories().createProductCategoryRepository().find((updateProductMV.productCategoryId.Value));
+                updatedWithSuccess&=productBeingUpdated.changeProductCategory(productCategory);
                 perfomedAtLeastOneUpdate=true;
             }
-
-            if(!updatedWithSuccess) return false;
-
-            if(updateProductDTO.materialsToRemove!=null){
-                IEnumerable<Material> materialsBeingRemoved=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToRemove);
-                FetchEnsurance.ensureMaterialsFetchWasSuccessful(updateProductDTO.materialsToRemove, materialsBeingRemoved);
-                foreach (Material material in materialsBeingRemoved)
-                    updatedWithSuccess&=productBeingUpdated.removeMaterial(material);
-                perfomedAtLeastOneUpdate=true;
-            }
-
-            if(!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
-
+            if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
             updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
         }
@@ -205,44 +189,6 @@ namespace core.application{
         }
 
         /// <summary>
-        /// Updates the components of a product
-        /// </summary>
-        /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
-        /// <returns>boolean true if the update was successful, fasle if not</returns>
-        public bool updateProductComponents(UpdateProductDTO updateProductDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productBeingUpdated=productRepository.find(updateProductDTO.id);
-            bool updatedWithSuccess=true;
-            bool perfomedAtLeastOneUpdate=false;
-
-            if(updateProductDTO.componentsToAdd!=null){
-                IEnumerable<ProductDTO> productsDTO=extractProductsDTOFromComponentsDTO(updateProductDTO.componentsToAdd);
-                IEnumerable<Product> complementedProducts=PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
-                FetchEnsurance.ensureProductsFetchWasSuccesful(productsDTO, complementedProducts);
-                foreach (Product complementedProduct in complementedProducts)
-                    updatedWithSuccess&=productBeingUpdated.addComplementedProduct(complementedProduct);
-                perfomedAtLeastOneUpdate=true;
-            }
-
-            if(!updatedWithSuccess) return false;
-
-
-            if(updateProductDTO.componentsToRemove!=null){
-                IEnumerable<ProductDTO> productsDTO=extractProductsDTOFromComponentsDTO(updateProductDTO.componentsToRemove);
-                IEnumerable<Product> complementedProducts=PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
-                FetchEnsurance.ensureProductsFetchWasSuccesful(productsDTO, complementedProducts);
-                foreach (Product complementedProduct in complementedProducts)
-                    updatedWithSuccess&=productBeingUpdated.removeComplementedProduct(complementedProduct);
-                perfomedAtLeastOneUpdate=true;
-            }
-
-            if(!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
-
-            updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
-            return updatedWithSuccess;
-        }
-
-        /// <summary>
         /// Adds a component to a product
         /// </summary>
         /// <param name="addComponentToProductDTO">AddComponentToProductDTO with the component addition information</param>
@@ -311,171 +257,6 @@ namespace core.application{
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Updates the dimensions of a product
-        /// </summary>
-        /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
-        /// <returns>boolean true if the update was successful, fasle if not</returns>
-        public bool updateProductDimensions(UpdateProductDTO updateProductDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productBeingUpdated=productRepository.find(updateProductDTO.id);
-            bool updatedWithSuccess=true;
-            bool perfomedAtLeastOneUpdate=false;
-            if(updateProductDTO.dimensionsToAdd!=null && updateProductDTO.dimensionsToAdd.widthDimensionDTOs!=null){
-                IEnumerable<Dimension> widthDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.widthDimensionDTOs);
-                foreach (Dimension widthDimension in widthDimensionsBeingAdded)
-                    updatedWithSuccess&=productBeingUpdated.addWidthDimension(widthDimension);
-                perfomedAtLeastOneUpdate=true;
-                if(!updatedWithSuccess) return false;
-            }
-
-            if(updateProductDTO.dimensionsToAdd!=null && updateProductDTO.dimensionsToAdd.heightDimensionDTOs!=null){
-                IEnumerable<Dimension> heightDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.heightDimensionDTOs);
-                foreach (Dimension heightDimension in heightDimensionsBeingAdded)
-                    updatedWithSuccess&=productBeingUpdated.addHeightDimension(heightDimension);
-                perfomedAtLeastOneUpdate=true;
-                if(!updatedWithSuccess) return false;
-            }
-
-            if(updateProductDTO.dimensionsToAdd!=null && updateProductDTO.dimensionsToAdd.depthDimensionDTOs!=null){
-                IEnumerable<Dimension> depthDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.depthDimensionDTOs);
-                foreach (Dimension depthDimension in depthDimensionsBeingAdded)
-                    updatedWithSuccess&=productBeingUpdated.addDepthDimension(depthDimension);
-                perfomedAtLeastOneUpdate=true;
-                if(!updatedWithSuccess) return false;
-            }
-
-            if(updateProductDTO.dimensionsToRemove!=null && updateProductDTO.dimensionsToRemove.widthDimensionDTOs!=null){
-                IEnumerable<Dimension> widthDimensionsBeingRemoved=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToRemove.widthDimensionDTOs);
-                if(widthDimensionsBeingRemoved!=null)
-                    foreach (Dimension widthDimension in widthDimensionsBeingRemoved)
-                        updatedWithSuccess&=productBeingUpdated.removeWidthDimension(widthDimension);
-                perfomedAtLeastOneUpdate=true;
-                if(!updatedWithSuccess) return false;
-            }
-
-            if(updateProductDTO.dimensionsToRemove!=null && updateProductDTO.dimensionsToRemove.heightDimensionDTOs!=null){
-                IEnumerable<Dimension> heightDimensionsBeingRemoved=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToRemove.heightDimensionDTOs);
-                if(heightDimensionsBeingRemoved!=null)
-                    foreach (Dimension heightDimension in heightDimensionsBeingRemoved)
-                        updatedWithSuccess&=productBeingUpdated.removeHeightDimension(heightDimension);
-                perfomedAtLeastOneUpdate=true;
-                if(!updatedWithSuccess) return false;
-            }
-
-            if(updateProductDTO.dimensionsToRemove!=null && updateProductDTO.dimensionsToRemove.depthDimensionDTOs!=null){
-                IEnumerable<Dimension> depthDimensionsBeingRemoved=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToRemove.depthDimensionDTOs);
-                if(depthDimensionsBeingRemoved!=null)
-                    foreach (Dimension depthDimension in depthDimensionsBeingRemoved)
-                        updatedWithSuccess&=productBeingUpdated.removeDepthDimension(depthDimension);
-                perfomedAtLeastOneUpdate=true;
-                if(!updatedWithSuccess) return false;
-            }
-
-            if(!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
-
-            updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
-            return updatedWithSuccess;
-        }
-
-        /// <summary>
-        /// Adds a width dimension to a product
-        /// </summary>
-        /// <param name="addDimensionToProductModelView">AddDimensionToProductModelView with the dimension addition information</param>
-        /// <returns>GetAllDimensionsModelView with the updated collection of width dimensions of the product which dimension was added</returns>
-        public GetAllDimensionsModelView addWidthDimensionToProduct(AddDimensionToProductModelView addDimensionToProductModelView){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productToAddWidthDimension=productRepository.find(addDimensionToProductModelView.productID);
-            //TODO: CHECK PRODUCT EXISTENCE
-            productToAddWidthDimension.addWidthDimension(addDimensionToProductModelView.widthDimension.toEntity());
-            //TODO: CHECK PRODUCT UPDATE SUCCESS
-            productRepository.update(productToAddWidthDimension);
-            return DimensionModelViewService.fromCollection(productToAddWidthDimension.widthValues);
-        }
-
-        /// <summary>
-        /// Adds a height dimension to a product
-        /// </summary>
-        /// <param name="addDimensionToProductModelView">AddDimensionToProductModelView with the dimension addition information</param>
-        /// <returns>GetAllDimensionsModelView with the updated collection of height dimensions of the product which dimension was added</returns>
-        public GetAllDimensionsModelView addHeightDimensionToProduct(AddDimensionToProductModelView addDimensionToProductModelView){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productToAddHeightDimension=productRepository.find(addDimensionToProductModelView.productID);
-            //TODO: CHECK PRODUCT EXISTENCE
-            productToAddHeightDimension.addHeightDimension(addDimensionToProductModelView.heightDimension.toEntity());
-            //TODO: CHECK PRODUCT UPDATE SUCCESS
-            productRepository.update(productToAddHeightDimension);
-            return DimensionModelViewService.fromCollection(productToAddHeightDimension.heightValues);
-        }
-
-        /// <summary>
-        /// Adds a depth dimension to a product
-        /// </summary>
-        /// <param name="addDimensionToProductModelView">AddDimensionToProductModelView with the dimension addition information</param>
-        /// <returns>GetAllDimensionsModelView with the updated collection of depth dimensions of the product which dimension was added</returns>
-        public GetAllDimensionsModelView addDepthDimensionToProduct(AddDimensionToProductModelView addDimensionToProductModelView){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productToAddDepthDimension=productRepository.find(addDimensionToProductModelView.productID);
-            //TODO: CHECK PRODUCT EXISTENCE
-            productToAddDepthDimension.addDepthDimension(addDimensionToProductModelView.depthDimension.toEntity());
-            //TODO: CHECK PRODUCT UPDATE SUCCESS
-            productRepository.update(productToAddDepthDimension);
-            return DimensionModelViewService.fromCollection(productToAddDepthDimension.depthValues);
-        }
-
-        /// <summary>
-        /// Deletes a width dimension from a product
-        /// </summary>
-        /// <param name="deleteDimensionFromProductModelView">DeleteDimensionFromProductModelView with the dimension deletion information</param>
-        public void deleteWidthDimensionFromProduct(DeleteDimensionFromProductModelView deleteDimensionFromProductModelView){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productToRemoveDimension=productRepository.find(deleteDimensionFromProductModelView.productID);
-            //TODO:CHECK PRODUCT EXISTENCE
-            FetchProductDimensionDTO fetchProductDimensionDTO=new FetchProductDimensionDTO();
-            fetchProductDimensionDTO.productID=deleteDimensionFromProductModelView.productID;
-            fetchProductDimensionDTO.dimensionID=deleteDimensionFromProductModelView.widthDimensionID;
-            Dimension widthDimension=productRepository.fetchProductWidthDimension(fetchProductDimensionDTO);
-            //TODO:CHECK WIDTH DIMENSION EXISTENCE
-            productToRemoveDimension.removeWidthDimension(widthDimension);
-            //TODO:CHECK PRODUCT UPDATE SUCCESS
-            productRepository.update(productToRemoveDimension);
-        }
-
-        /// <summary>
-        /// Deletes a height dimension from a product
-        /// </summary>
-        /// <param name="deleteDimensionFromProductModelView">DeleteDimensionFromProductModelView with the dimension deletion information</param>
-        public void deleteHeightDimensionFromProduct(DeleteDimensionFromProductModelView deleteDimensionFromProductModelView){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productToRemoveDimension=productRepository.find(deleteDimensionFromProductModelView.productID);
-            //TODO:CHECK PRODUCT EXISTENCE
-            FetchProductDimensionDTO fetchProductDimensionDTO=new FetchProductDimensionDTO();
-            fetchProductDimensionDTO.productID=deleteDimensionFromProductModelView.productID;
-            fetchProductDimensionDTO.dimensionID=deleteDimensionFromProductModelView.heightDimensionID;
-            Dimension heightDimension=productRepository.fetchProductHeightDimension(fetchProductDimensionDTO);
-            //TODO:CHECK HEIGHT DIMENSION EXISTENCE
-            productToRemoveDimension.removeHeightDimension(heightDimension);
-            //TODO:CHECK PRODUCT UPDATE SUCCESS
-            productRepository.update(productToRemoveDimension);
-        }
-
-        /// <summary>
-        /// Deletes a depth dimension from a product
-        /// </summary>
-        /// <param name="deleteDimensionFromProductModelView">DeleteDimensionFromProductModelView with the dimension deletion information</param>
-        public void deleteDepthDimensionFromProduct(DeleteDimensionFromProductModelView deleteDimensionFromProductModelView){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productToRemoveDimension=productRepository.find(deleteDimensionFromProductModelView.productID);
-            //TODO:CHECK PRODUCT EXISTENCE
-            FetchProductDimensionDTO fetchProductDimensionDTO=new FetchProductDimensionDTO();
-            fetchProductDimensionDTO.productID=deleteDimensionFromProductModelView.productID;
-            fetchProductDimensionDTO.dimensionID=deleteDimensionFromProductModelView.depthDimensionID;
-            Dimension depthDimension=productRepository.fetchProductDepthDimension(fetchProductDimensionDTO);
-            //TODO:CHECK DEPTH DIMENSION EXISTENCE
-            productToRemoveDimension.removeDepthDimension(depthDimension);
-            //TODO:CHECK PRODUCT UPDATE SUCCESS
-            productRepository.update(productToRemoveDimension);
-        }
 
         /// <summary>
         /// Adds a restriction to a product width dimension
@@ -624,21 +405,6 @@ namespace core.application{
                 PersistenceContext.repositories().createProductRepository().find(
                     fetchProductDTO.reference
                 ));
-        }
-
-        public bool defineProductDimensions(ProductDTO productDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product product=productRepository.find(productDTO.id);
-
-            IEnumerable<Dimension> heightDimensions=getProductDTOEnumerableDimensions(productDTO.dimensions.heightDimensionDTOs);
-            IEnumerable<Dimension> widthDimensions=getProductDTOEnumerableDimensions(productDTO.dimensions.widthDimensionDTOs);
-            IEnumerable<Dimension> depthDimensions=getProductDTOEnumerableDimensions(productDTO.dimensions.depthDimensionDTOs);
-
-            foreach (Dimension heightDimension in heightDimensions){ if(!product.addHeightDimension(heightDimension)) return false; }
-            foreach (Dimension widthDimension in widthDimensions){ if(!product.addWidthDimension(widthDimension)) return false; }
-            foreach (Dimension depthDimension in depthDimensions){ if(!product.addDepthDimension(depthDimension)) return false; }
-
-            return productRepository.save(product)!=null;
         }
 
         /// <summary>

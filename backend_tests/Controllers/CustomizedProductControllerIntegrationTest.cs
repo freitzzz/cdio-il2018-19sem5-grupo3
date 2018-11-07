@@ -12,6 +12,7 @@ using Xunit;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Linq;
 using core.modelview.customizedproduct;
+using core.modelview.product;
 
 namespace backend_tests.Controllers
 {
@@ -64,8 +65,10 @@ namespace backend_tests.Controllers
         public async Task ensurePostWithInvalidProductReferenceReturnsBadRequest()
         {
             ProductControllerIntegrationTest productControllerTest = new ProductControllerIntegrationTest(fixture);
-            ProductDTO productDTO = await productControllerTest.ensureProductIsCreatedSuccesfuly();
-
+            GetProductModelView productMV = await productControllerTest.ensureProductIsCreatedSuccesfuly();
+            //TODO: DONT FORGET TO CHANGE THIS
+            ProductDTO productDTO = new ProductDTO();
+            
             CustomizedDimensionsDTO customizedDimensionsDTO = new CustomizedDimensionsDTO();
             customizedDimensionsDTO.depth = 10;
             customizedDimensionsDTO.height = 20;
@@ -114,7 +117,11 @@ namespace backend_tests.Controllers
         public async Task<CustomizedProductDTO> ensureCustomizedProductWithoutSlotsIsCreatedSuccessfully()
         {
             ProductControllerIntegrationTest productControllerTest = new ProductControllerIntegrationTest(fixture);
-            ProductDTO productDTO = await productControllerTest.ensureProductIsCreatedSuccesfuly();
+            //ProductDTO productDTO = await productControllerTest.ensureProductIsCreatedSuccesfuly();
+
+            //TODO: DONT FORGET TO CHANGE THIS
+
+            ProductDTO productDTO = new ProductDTO();
 
             //CustomizedDimensionsDTO creation
             //Please note that these dimensions reflect those specified in the product
@@ -175,6 +182,7 @@ namespace backend_tests.Controllers
             Assert.Empty(fetchedCustomizedProductDTO.slotListDTO);
 
             return fetchedCustomizedProductDTO;
+            return null;
         }
 
     }

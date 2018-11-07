@@ -19,26 +19,6 @@ namespace core.persistence {
         /// <returns>IEnumerable with the fetched products</returns>
         IEnumerable<Product> fetchProductsByID(IEnumerable<ProductDTO> productsDTO);
         /// <summary>
-        /// Fetches a width dimension of a product
-        /// </summary>
-        /// <param name="fetchProductDimensionDTO">FetchProductDimensionDTO with the product width dimension information</param>
-        /// <returns>Dimension with the fetched product width dimension</returns>
-        Dimension fetchProductWidthDimension(FetchProductDimensionDTO fetchProductDimensionDTO);
-        
-        /// <summary>
-        /// Fetches a height dimension of a product
-        /// </summary>
-        /// <param name="fetchProductDimensionDTO">FetchProductDimensionDTO with the product height dimension information</param>
-        /// <returns>Dimension with the fetched product height dimension</returns>
-        Dimension fetchProductHeightDimension(FetchProductDimensionDTO fetchProductDimensionDTO);
-
-        /// <summary>
-        /// Fetches a depth dimension of a product
-        /// </summary>
-        /// <param name="fetchProductDimensionDTO">FetchProductDimensionDTO with the product depth dimension information</param>
-        /// <returns>Dimension with the fetched product depth dimension</returns>
-        Dimension fetchProductDepthDimension(FetchProductDimensionDTO fetchProductDimensionDTO);
-        /// <summary>
         /// Fetches product component by their ids
         /// </summary>
         /// <param name="productID">product id</param>

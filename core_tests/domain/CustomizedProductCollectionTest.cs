@@ -211,18 +211,12 @@ namespace core_tests.domain
             var category = new ProductCategory("It's-a-me again");
 
             //Creating Dimensions
-            List<Double> values = new List<Double>();
+            Dimension heightDimension = new SingleValueDimension(21);
+            Dimension widthDimension = new SingleValueDimension(30);
+            Dimension depthDimension = new SingleValueDimension(17);
 
-            values.Add(500.0); //Width
-
-            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
-
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(interval);
-
-            IEnumerable<Dimension> heightValues = dimensions;
-            IEnumerable<Dimension> widthValues = dimensions;
-            IEnumerable<Dimension> depthValues = dimensions;
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+            List<Measurement> measurements = new List<Measurement>() {measurement};
 
             //Creating a material
             string reference = "Just referencing";
@@ -246,7 +240,7 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("Kinda dead", "So tired", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("Kinda dead", "So tired", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -364,19 +358,12 @@ namespace core_tests.domain
         {
             var category = new ProductCategory("It's-a-me again");
 
-            //Creating Dimensions
-            List<Double> values = new List<Double>();
+            Dimension heightDimension = new SingleValueDimension(21);
+            Dimension widthDimension = new SingleValueDimension(30);
+            Dimension depthDimension = new SingleValueDimension(17);
 
-            values.Add(500.0); //Width
-
-            DiscreteDimensionInterval interval = new DiscreteDimensionInterval(values);
-
-            List<Dimension> dimensions = new List<Dimension>();
-            dimensions.Add(interval);
-
-            IEnumerable<Dimension> heightValues = dimensions;
-            IEnumerable<Dimension> widthValues = dimensions;
-            IEnumerable<Dimension> depthValues = dimensions;
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+            List<Measurement> measurements = new List<Measurement>() {measurement};
 
             //Creating a material
             string reference = "Just referencing";
@@ -400,7 +387,7 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("Kinda dead", "So tired", category, matsList, heightValues, widthValues, depthValues);
+            Product product = new Product("Kinda dead", "So tired", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
