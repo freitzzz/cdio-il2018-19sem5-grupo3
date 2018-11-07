@@ -33,8 +33,8 @@ factoriesRoute.route('/factories').get(function(request,response){
 factoriesRoute.route('/factories/:id').get(function(request,response){
     factory
         .findById(request.params.id)
-        .then(function(factory){
-            response.status(200).json(deserializeFactory(factory));
+        .then(function(_factory){
+            response.status(200).json(deserializeFactory(_factory));
         }).catch(function(_error){
             response.status(400).json(noFactoryFound());
         })
@@ -52,6 +52,21 @@ factoriesRoute.route('/factories').post(function(request,response,mw){
             .catch(function(error){
                 let exceptionName=Object.keys(error.errors)[0];
                 response.status(400).json({error: error.errors[exceptionName].message});
+            })
+})
+
+/**
+ * Routes the PUT of the factory properties update
+ */
+factoriesRoute.route('/factories/:id').put(function(request,response){
+    factory
+        .findById(request.params.id)
+            .then(function(_factory){
+                updateFactorySchema(request.body,_factory);
+                factory.update(_factory);
+                response.status(200).json(deserializeFactory(_factory));
+            }).catch(function(_error){
+                response.status(400).json(_error);
             })
 })
 
@@ -100,6 +115,29 @@ function schemaToBasicFactory(factorySchema){
     return {
         id:factorySchema.id,
         reference:factorySchema.reference
+    }
+}
+
+/**
+ * Updates a factory schema properties
+ * @param {Object} factoryUpdate Object with the factory properties to update
+ * @param {Factory.Schema} factorySchema Factory.Schema with the factory schema being updated
+ */
+function updateFactorySchema(factoryUpdate,factorySchema){
+    if(factoryUpdate.reference){
+        factorySchema.changeReference(factoryUpdate.reference);
+    }
+    
+    if(factoryUpdate.designation){
+        factorySchema.changeDesignation(factoryUpdate.designation);
+    }
+
+    if(factoryUpdate.latitude){
+        factorySchema.changeLatitude(factoryUpdate.latitude);
+    }
+
+    if(factoryUpdate.longitude){
+        factorySchema.changeLongitude(factoryUpdate.longitude);
     }
 }
 
