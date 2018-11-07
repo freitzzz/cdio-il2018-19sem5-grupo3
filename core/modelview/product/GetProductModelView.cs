@@ -1,7 +1,10 @@
 using core.modelview.component;
 using core.modelview.dimension;
 using core.modelview.material;
+using core.modelview.measurement;
 using core.modelview.productcategory;
+using core.modelview.slotdimensions;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace core.modelview.product{
@@ -38,7 +41,27 @@ namespace core.modelview.product{
         /// GetBasicMaterialModelView with the product material
         /// </summary>
         [DataMember(Name="material")]
-        public GetBasicMaterialModelView material{get;set;}
-        //TODO: ADD OTHER MODEL VIEWS
+        public GetAllMaterialsModelView materials{get;set;}
+
+        /// <summary>
+        /// ModelView containing Product's components' information.
+        /// </summary>
+        /// <value>Gets/sets the ModelView.</value>
+        [DataMember]
+        public GetAllComponentsModelView components {get; set;}
+
+        /// <summary>
+        /// List of ModelViews containg the Product's measurements' information.
+        /// </summary>
+        /// <value>Get/set the list of ModelView.</value>
+        [DataMember(Name="dimensions")]
+        public List<GetMeasurementModelView> measurements {get; set;}
+
+        /// <summary>
+        /// ModelView containing Product's slot sizes.
+        /// </summary>
+        /// <value>Gets/sets the ModelView.</value>
+        [DataMember]
+        public GetSlotDimensionsModelView slotSizes {get; set;}
     }
 }
