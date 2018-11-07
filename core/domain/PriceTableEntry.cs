@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using support.domain;
 using support.domain.ddd;
 using support.utils;
 
@@ -11,7 +12,7 @@ namespace core.domain
     /// Represents a generic price table entry
     /// </summary>
     /// <typeparam name="string">EID of the entity that belongs to it's respective price table</typeparam>
-    public abstract class PriceTableEntry
+    public abstract class PriceTableEntry<T> : Activatable
     {
         /// <summary>
         /// Constant that represents the message that occurs if the price is null
@@ -28,6 +29,12 @@ namespace core.domain
         /// </summary>
         /// <value>Gets/Sets the identifier</value>
         public long Id { get; internal set; }
+
+        /// <summary>
+        /// Entity Type of the table entry
+        /// </summary>
+        protected T _entity;  //!private field used for lazy loading, do not use this for storing or fetching data
+        public virtual T entity { get; protected set; }
 
         /// <summary>
         /// The entry's price
@@ -94,7 +101,7 @@ namespace core.domain
 
         public override int GetHashCode()
         {
-            return price.GetHashCode() + timePeriod.GetHashCode();
+            return price.GetHashCode() + timePeriod.GetHashCode() + entity.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -114,15 +121,25 @@ namespace core.domain
                 return false;
             }
 
-            PriceTableEntry other = (PriceTableEntry)obj;
+            PriceTableEntry<T> other = (PriceTableEntry<T>)obj;
 
-            return this.price.Equals(other.price) && this.timePeriod.Equals(other.timePeriod);
+            if (!this.price.Equals(other.price))
+            {
+                return false;
+            }
+
+            if (!this.timePeriod.Equals(other.timePeriod))
+            {
+                return false;
+            }
+
+            return this.entity.Equals(other.entity);
         }
 
         public override string ToString()
         {
-            return String.Format("{0}\n{1}",
-                                price.ToString(), timePeriod.ToString());
+            return String.Format("{0}\n{1}\n{2}",
+                                price.ToString(), timePeriod.ToString(), entity.ToString());
         }
     }
 }
