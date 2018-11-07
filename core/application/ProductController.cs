@@ -17,6 +17,11 @@ namespace core.application
     /// Core ProductController class
     /// </summary>
     public class ProductController{
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the update of a product wasn't successful
+        /// </summary>
+        public const string INVALID_PRODUCT_UPDATE="An error occured while updating the product";
         /// <summary>
         /// Constant that represents the message that occurs if the user does not provide inputs
         /// </summary>
@@ -86,9 +91,19 @@ namespace core.application
                 updatedWithSuccess&=productBeingUpdated.changeProductDesignation(updateProductMV.designation);
                 perfomedAtLeastOneUpdate=true;
             }
-            if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
-            updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
-            return updatedWithSuccess;
+            
+            if(updateProductPropertiesModelView.categoryId!=0){
+                ProductCategory categoryToUpdate=PersistenceContext.repositories().createProductCategoryRepository().find(updateProductPropertiesModelView.categoryId);
+                FetchEnsurance.ensureProductCategoryFetchWasSuccessful(categoryToUpdate);
+                productBeingUpdated.changeProductCategory(categoryToUpdate);
+                perfomedAtLeastOneUpdate=true;
+            }
+
+            UpdateEnsurance.ensureAtLeastOneUpdateWasPerformed(perfomedAtLeastOneUpdate);
+
+            productBeingUpdated=productRepository.update(productBeingUpdated);
+            UpdateEnsurance.ensureProductUpdateWasSuccessful(productBeingUpdated);
+            return ProductModelViewService.fromEntity(productBeingUpdated);
         }
 
         /// <summary>
@@ -406,11 +421,11 @@ namespace core.application
         /// <param name="restDTO">Data Transfer Object of the restriction to add</param>
         /// <returns>list of inputs for the restriction's algorithm</returns>
         public RestrictionDTO addComponentRestriction(long productID, long productComponentID, RestrictionDTO restDTO){
-            if (Collections.isEnumerableNullOrEmpty(restDTO.inputs)){
+            if(Collections.isEnumerableNullOrEmpty(restDTO.inputs)){
                 //gets required list of inputs for the algorithm
                 List<Input> inputs=new AlgorithmFactory().createAlgorithm(restDTO.algorithm).getRequiredInputs();
                 //if the algorithm did not need any inputs then persist
-                if (Collections.isEnumerableNullOrEmpty(inputs)){
+                if(Collections.isEnumerableNullOrEmpty(inputs)){
                     ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
                     Product product=productRepository.find(productID);
                     Product component=productRepository.find(productComponentID);
@@ -425,7 +440,7 @@ namespace core.application
                 Product product = productRepository.find(productID);
                 Product component = productRepository.find(productComponentID);
                 List<Input> inputs = new List<Input>(DTOUtils.reverseDTOS(restDTO.inputs));
-                if (new AlgorithmFactory().createAlgorithm(restDTO.algorithm).isWithinDataRange(inputs)) {
+                if(new AlgorithmFactory().createAlgorithm(restDTO.algorithm).isWithinDataRange(inputs)) {
                     Restriction restriction = restDTO.toEntity();
                     product.addComponentRestriction(component, restriction);
                     productRepository.update(product);
@@ -442,15 +457,15 @@ namespace core.application
         internal IEnumerable<Dimension> getProductDTOEnumerableDimensions(List<DimensionDTO> dimensionsDTOs){
             List<Dimension> dimensions=new List<Dimension>();
             foreach (DimensionDTO dimensionDTO in dimensionsDTOs){
-                if (dimensionDTO.GetType() == typeof(DiscreteDimensionIntervalDTO)){
+                if(dimensionDTO.GetType() == typeof(DiscreteDimensionIntervalDTO)){
                     DiscreteDimensionIntervalDTO ddiDTO=(DiscreteDimensionIntervalDTO)dimensionDTO;
                     DiscreteDimensionInterval discreteInterval=new DiscreteDimensionInterval(ddiDTO.values);
                     dimensions.Add(discreteInterval);
-                } else if (dimensionDTO.GetType() == typeof(ContinuousDimensionIntervalDTO)){
+                } else if(dimensionDTO.GetType() == typeof(ContinuousDimensionIntervalDTO)){
                     ContinuousDimensionIntervalDTO cdiDTO=(ContinuousDimensionIntervalDTO)dimensionDTO;
                     ContinuousDimensionInterval continuousInterval=new ContinuousDimensionInterval(cdiDTO.minValue, cdiDTO.maxValue, cdiDTO.increment);
                     dimensions.Add(continuousInterval);
-                } else if (dimensionDTO.GetType() == typeof(SingleValueDimensionDTO)){
+                } else if(dimensionDTO.GetType() == typeof(SingleValueDimensionDTO)){
                     SingleValueDimensionDTO svdDTO=(SingleValueDimensionDTO)dimensionDTO;
                     SingleValueDimension dimensionValue=new SingleValueDimension(svdDTO.value);
                     dimensions.Add(dimensionValue);

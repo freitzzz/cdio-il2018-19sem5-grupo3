@@ -69,6 +69,21 @@ namespace core.domain {
         private const string INVALID_RECOMMENDED_TO_MIN_SLOT_SIZE_RATIO = "The product's recommended slot size can't be smaller than the minimum slot size";
 
         /// <summary>
+        /// Constant that represents the message that ocurrs if the product reference change is invalid
+        /// </summary>
+        private const string INVALID_PRODUCT_REFERENCE_CHANGE="The product reference being changed is the same as the actual one";
+
+        /// <summary>
+        /// Constant that represents the message that ocurrs if the product designation change is invalid
+        /// </summary>
+        private const string INVALID_PRODUCT_DESIGNATION_CHANGE="The product designation being changed is the same as the actual one";
+
+        /// <summary>
+        /// Constant that represents the message that ocurrs if the product category change is invalid
+        /// </summary>
+        private const string INVALID_PRODUCT_CATEGORY_CHANGE="The product category being changed is the same as the actual one";
+
+        /// <summary>
         /// Long property with the persistence iD
         /// </summary>
         public long Id { get; internal set; }   //the id should have an internal set, since DTO's have to be able to set them
@@ -189,9 +204,11 @@ namespace core.domain {
                 this.measurements.Add(new ProductMeasurement(this, measurement));
             }
             this.productCategory = productCategory;
-            this.maxSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
-            this.minSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
-            this.recommendedSlotSize = CustomizedDimensions.valueOf(0, 0, 0);
+            //!MaxValue assigned here because customized dimensions can't have value 0
+            //TODO see if there's a better alternative to using Double.MaxValue
+            this.maxSlotSize = CustomizedDimensions.valueOf(Double.MaxValue, Double.MaxValue, Double.MaxValue);
+            this.minSlotSize = CustomizedDimensions.valueOf(Double.MaxValue, Double.MaxValue, Double.MaxValue);
+            this.recommendedSlotSize = CustomizedDimensions.valueOf(Double.MaxValue, Double.MaxValue, Double.MaxValue);
         }
 
         //*CONSTRUCTOR WITH COMPONENTS */
@@ -325,22 +342,18 @@ namespace core.domain {
         /// Changes the current product reference
         /// </summary>
         /// <param name="reference">String with the reference being updated</param>
-        /// <returns>boolean true if the reference update was valid, false if not</returns>
-        public bool changeProductReference(string reference) {
-            if (Strings.isNullOrEmpty(reference) || this.reference.Equals(reference)) return false;
+        public void changeProductReference(string reference) {
+            grantProductReferenceIsValidForChange(reference);
             this.reference = reference;
-            return true;
         }
 
         /// <summary>
         /// Changes the current product designation
         /// </summary>
         /// <param name="designation">String with the designation being updated</param>
-        /// <returns>boolean true if the designation update was valid, false if not</returns>
-        public bool changeProductDesignation(string designation) {
-            if (Strings.isNullOrEmpty(designation) || this.designation.Equals(designation)) return false;
-            this.designation = designation;
-            return true;
+        public void changeProductDesignation(string designation) {
+            grantProductDesignationIsValidForChange(designation);
+            this.designation=designation;
         }
 
         /// <summary>
@@ -531,13 +544,59 @@ namespace core.domain {
         }
 
         /// <summary>
+        /// Grants that a product reference is valid for change
+        /// </summary>
+        /// <param name="designation">String with the product reference being changed</param>
+        private void grantProductReferenceIsValidForChange(string reference){
+            checkProductReference(designation);
+            if(this.reference.Equals(designation))
+                throw new InvalidOperationException(INVALID_PRODUCT_REFERENCE_CHANGE);
+        }
+
+        /// <summary>
+        /// Grants that a product designation is valid for change
+        /// </summary>
+        /// <param name="designation">String with the product designation being changed</param>
+        private void grantProductDesignationIsValidForChange(string designation){
+            checkProductDesignation(designation);
+            if(this.designation.Equals(designation))
+                throw new InvalidOperationException(INVALID_PRODUCT_DESIGNATION_CHANGE);
+        }
+
+        /// <summary>
+        /// Grants that a product category is valid for change
+        /// </summary>
+        /// <param name="category">ProductCategory with the product category being changed</param>
+        private void grantProductCategoryIsValidForChange(ProductCategory category){
+            checkProductCategory(category);
+            if(this.productCategory.Equals(category))
+                throw new InvalidOperationException(INVALID_PRODUCT_CATEGORY_CHANGE);
+        }
+
+        /// <summary>
         /// Checks if the product properties are valid
         /// </summary>
         /// <param name="reference">String with the product reference</param>
         /// <param name="designation">String with the product designation</param>
         private void checkProductProperties(string reference, string designation) {
+            checkProductReference(reference);
+            checkProductDesignation(designation);
+        }
+
+        /// <summary>
+        /// Checks if the product reference is valid
+        /// </summary>
+        /// <param name="reference">String with the product reference being checked</param>
+        private void checkProductReference(string reference){
             if (Strings.isNullOrEmpty(reference)) throw new ArgumentException(INVALID_PRODUCT_REFERENCE);
-            if (Strings.isNullOrEmpty(designation)) throw new ArgumentException(INVALID_PRODUCT_DESIGNATION);
+        }
+
+        /// <summary>
+        /// Checks if the product designation is valid
+        /// </summary>
+        /// <param name="designation">String with the product designation being checked</param>
+        private void checkProductDesignation(string designation){
+            if (Strings.isNullOrEmpty(designation)) throw new ArgumentException(INVALID_PRODUCT_REFERENCE);
         }
 
         /// <summary>
