@@ -1,5 +1,6 @@
 using System;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using support.domain.ddd;
 using support.utils;
 
 namespace core.domain
@@ -7,7 +8,7 @@ namespace core.domain
     /// <summary>
     /// Represents an Entry in a Material Price Table
     /// </summary>
-    public class MaterialPriceTableEntry : PriceTableEntry
+    public class MaterialPriceTableEntry : PriceTableEntry<Material>, AggregateRoot<MaterialPriceTableEntry>
     {
         /// <summary>
         /// Constant that represents the message that occurs if a material is null
@@ -15,10 +16,10 @@ namespace core.domain
         private const string NULL_MATERIAL = "Material can't be null";
 
         /// <summary>
-        /// Table Entry's Material
+        /// Overrides entity property to allow lazy loading of the same
         /// </summary>
-        private Material _material; //!private field used for lazy loading, do not use this for storing or fetching data
-        public Material material { get => LazyLoader.Load(this, ref _material); protected set => _material = value; }
+        /// <param name="_entity">entity type of the price table</param>
+        public override Material entity { get => LazyLoader.Load(this, ref _entity); protected set => _entity = value; }
 
         /// <summary>
         /// Constructor used for injecting the LazyLoader
@@ -41,7 +42,7 @@ namespace core.domain
                                         : base(price, timePeriod)
         {
             checkMaterial(material);
-            this.material = material;
+            this.entity = material;
         }
 
         /// <summary>
@@ -56,27 +57,14 @@ namespace core.domain
             }
         }
 
-        public override int GetHashCode()
+        public MaterialPriceTableEntry id()
         {
-            return base.GetHashCode() + material.GetHashCode();
+            return this;
         }
 
-        public override bool Equals(object obj)
+        public bool sameAs(MaterialPriceTableEntry comparingEntity)
         {
-            if (!base.Equals(obj))
-            {
-                return false;
-            }
-
-            MaterialPriceTableEntry other = (MaterialPriceTableEntry)obj;
-
-            return this.material.Equals(other.material);
-        }
-
-        public override string ToString()
-        {
-            return String.Format("{0}\nMaterial:{1}",
-                                base.ToString(), material.designation);
+            return this.Equals(comparingEntity);
         }
     }
 }

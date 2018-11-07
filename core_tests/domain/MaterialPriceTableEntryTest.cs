@@ -2,7 +2,6 @@ using Xunit;
 using System;
 using core.domain;
 using System.Collections.Generic;
-using support.utils;
 using NodaTime;
 
 namespace core_tests.domain
