@@ -13,6 +13,19 @@ const factoriesRoute = express.Router();
 const factory = require('../models/Factory');
 
 /**
+ * Routes the GET of all available factories
+ */
+factoriesRoute.route('/factories').get(function(request,response){
+    factory
+        .find()
+        .then(function(factories){
+            if(factories.length>0){
+                response.status(200).json(schemasToBasicFactories(factories));
+            }
+        })
+})
+
+/**
  * Routes the POST of a new factory
  */
 factoriesRoute.route('/factories').post(function(request,response,mw){
@@ -50,6 +63,28 @@ function deserializeFactory(factorySchema){
         designation:factorySchema.designation,
         latitude:factorySchema.location.latitude,
         longitude:factorySchema.location.longitude
+    }
+}
+
+/**
+ * Transforms a collection of factory schemas into a collection of basic information factory objects
+ * @param {Factory.Schema} factorySchemas List with all factory schemas being transformed
+ * @returns {List} List with the transformed collection of basic information factory objects
+ */
+function schemasToBasicFactories(factorySchemas){
+    let basicFactories=[];
+    factorySchemas.forEach(function(factorySchema){basicFactories.push(schemaToBasicFactory(factorySchema))})
+    return basicFactories;
+}
+
+/**
+ * Transforms a Factory Schema into a basic information factory object
+ * @param {Factory.Schema} factorySchema 
+ */
+function schemaToBasicFactory(factorySchema){
+    return {
+        id:factorySchema.id,
+        reference:factorySchema.reference
     }
 }
 
