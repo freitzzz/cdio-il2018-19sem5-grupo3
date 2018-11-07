@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using core.domain;
 using backend.config;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NodaTime;
+using System;
 
 namespace backend.persistence.ef
 {
@@ -46,6 +49,17 @@ namespace backend.persistence.ef
         /// <value>Gets/sets the database set containing all the saved instances of CustomizedProductCollection.</value>
         public DbSet<CustomizedProductCollection> CustomizedProductCollection { get; set; }
 
+        /// <summary>
+        /// Database set containing all of the saved instances of MaterialPriceTableEntry
+        /// </summary>
+        /// <value>Gets/Sets the database set containing all the saved instances of MaterialPriceTableEntry</value>
+        public DbSet<MaterialPriceTableEntry> MaterialPriceTable{ get; set; }
+
+        /// <summary>
+        /// Database set containing all of the saved instances of FinishPriceTableEntry
+        /// </summary>
+        /// <value>Gets/Sets the database set containing all the saved instances of FinishPriceTableEntry</value>
+        public DbSet<FinishPriceTableEntry> FinishPriceTable { get; set; }
 
         /// <summary>
         /// Constructs a new database for the MakeYourCloset application.
@@ -64,6 +78,10 @@ namespace backend.persistence.ef
             builder.Entity<ContinuousDimensionInterval>().HasBaseType<Dimension>();
             builder.Entity<DiscreteDimensionInterval>().HasBaseType<Dimension>();
             builder.Entity<SingleValueDimension>().HasBaseType<Dimension>();
+
+            //PriceTableEntry inheritance mapping
+            /* builder.Entity<MaterialPriceTableEntry>().HasBaseType<PriceTableEntry>();
+            builder.Entity<FinishPriceTableEntry>().HasBaseType<PriceTableEntry>(); */
 
             //TODO: improve restriction mapping, since it currently has columns for various entity ids
             builder.Entity<Dimension>().HasMany(d => d.restrictions);           //one-to-many relationship
@@ -130,6 +148,25 @@ namespace backend.persistence.ef
             builder.Entity<CommercialCatalogueCatalogueCollection>()
                 .HasOne(cccc => cccc.commercialCatalogue).WithMany(cc => cc.catalogueCollectionList).HasForeignKey(cccc => cccc.commercialCatalogueId);
             builder.Entity<CommercialCatalogueCatalogueCollection>().HasOne(cccc => cccc.catalogueCollection).WithOne();
+
+
+            //TimePeriod conversion mapping
+            var localDateTimeConverter = new ValueConverter<LocalDateTime, DateTime>(v => v.ToDateTimeUnspecified(), v => LocalDateTime.FromDateTime(v));
+            builder.Entity<TimePeriod>().Property(tp => tp.startingDate).HasConversion(localDateTimeConverter);
+            builder.Entity<TimePeriod>().Property(tp => tp.endingDate).HasConversion(localDateTimeConverter);
+
+
+            // Material Price Table Entries Mapping
+            builder.Entity<MaterialPriceTableEntry>().HasKey(mpte => new { mpte.Id });
+            builder.Entity<MaterialPriceTableEntry>().HasOne(mpte => mpte.entity).WithMany();
+            builder.Entity<MaterialPriceTableEntry>().OwnsOne(mpte => mpte.price);
+            builder.Entity<MaterialPriceTableEntry>().HasOne(mpte => mpte.timePeriod);
+
+            // Finish Price Table Entries Mapping
+            builder.Entity<FinishPriceTableEntry>().HasKey(fpte => new { fpte.Id });
+            builder.Entity<FinishPriceTableEntry>().HasOne(fpte => fpte.entity);
+            builder.Entity<FinishPriceTableEntry>().OwnsOne(fpte => fpte.price);
+            builder.Entity<FinishPriceTableEntry>().HasOne(fpte => fpte.timePeriod);
 
             //TODO: DISABLE CASCADE DELETION FROM JOIN TABLES
         }
