@@ -34,9 +34,10 @@ namespace core.modelview.customizeddimensions
         {
             GetCustomizedDimensionsModelView modelView = new GetCustomizedDimensionsModelView();
             modelView.customizedDimensionsId = customizedDimensions.Id;
-            modelView.height = customizedDimensions.height;
-            modelView.width = customizedDimensions.width;
-            modelView.depth = customizedDimensions.depth;
+            modelView.unit = MeasurementUnitService.getMinimumUnit();
+            modelView.height = MeasurementUnitService.convertFromUnit(customizedDimensions.height, modelView.unit);
+            modelView.width = MeasurementUnitService.convertFromUnit(customizedDimensions.width, modelView.unit);
+            modelView.depth = MeasurementUnitService.convertFromUnit(customizedDimensions.depth, modelView.unit);
 
             return modelView;
         }
