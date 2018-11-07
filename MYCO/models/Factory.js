@@ -13,7 +13,7 @@ var location=require('../models/Location');
  */
 var referenceValidator={
     validator:function(reference){
-        return reference.trim().length>0;
+        return checkReferenceBusinessRule(reference);
     },
     message:props=>`${props.value} is not a valid reference`
 }
@@ -32,10 +32,19 @@ var designationValidator={
  * Represents a Factory Schema
  */
 var factorySchema=new Schema({
-    reference:{type: String, validate:referenceValidator, required:true},
+    reference:{type: String, validate: referenceValidator, required:true},
     designation:{type: String, validate: designationValidator, required:true},
     location:{type: location.schema, required:true}
 });
+
+/**
+ * Changes the current factory reference
+ * @param {String} reference String with the updating reference
+ */
+factorySchema.methods.changeReference=function(reference){
+    grantReferenceIsValidForUpdate(reference);
+    this.reference=reference;
+}
 
 /**
  * Creates a new Factory object
@@ -52,6 +61,29 @@ factorySchema.statics.createFactory=function (reference,designation,locationLati
     }
 }
 
+/**
+ * Grants that a reference is valid for update
+ * @param {string} reference String with the reference to be updated
+ */
+function grantReferenceIsValidForUpdate(reference){
+    if(!checkReferenceBusinessRule(reference))throw `${reference} is not a valid reference`;
+}
+
+/**
+ * Checks if a reference is valid according to business rules
+ * @param {String} reference String with the reference being checked
+ */
+function checkReferenceBusinessRule(reference){
+    return reference.trim().length>0;
+}
+
+/**
+ * Checks if a designation is valid according to business rules
+ * @param {String} designation String with the designation being checked
+ */
+function checkDesignationBusinessRule(designation){
+    return designation.trim().length>0;
+}
 
 /**
  * Exports Factory Data Model required by Mongoose
