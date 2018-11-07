@@ -3,6 +3,10 @@
  */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+/**
+ * Requires Location for representing locations
+ */
+var location=require('../models/Location');
 
 /**
  * Validates a factory reference
@@ -29,7 +33,8 @@ var designationValidator={
  */
 var factorySchema=new Schema({
     reference:{type: String, validate:referenceValidator, required:true},
-    designation:{type: String, validate: designationValidator, required:true}
+    designation:{type: String, validate: designationValidator, required:true},
+    location:{type: location.schema, required:true}
 });
 
 
