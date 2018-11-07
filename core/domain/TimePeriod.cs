@@ -2,7 +2,7 @@ using System;
 using NodaTime;
 using support.domain.ddd;
 
-namespace support.utils
+namespace core.domain
 {
     /// <summary>
     /// Represents a Time Period (starting date and ending date)
@@ -28,6 +28,12 @@ namespace support.utils
         /// Constant that represents the message that occurs if the starting date is later than the ending date
         /// </summary>
         private const string STARTING_DATE_LATER_THAN_ENDING_DATE = "The starting date can't be later than the ending date";
+
+        /// <summary>
+        /// PID of the TimePeriod
+        /// </summary>
+        /// <value>Gets/Sets the Identifier</value>
+        public long Id {get; set;}
 
         /// <summary>
         /// Starting date of the time period
