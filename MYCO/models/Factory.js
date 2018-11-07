@@ -34,7 +34,8 @@ var designationValidator={
 var factorySchema=new Schema({
     reference:{type: String, validate: referenceValidator, required:true},
     designation:{type: String, validate: designationValidator, required:true},
-    location:{type: location.schema, required:true}
+    location:{type: location.schema, required:true},
+    _available:{type: Boolean,required:true}
 });
 
 /**
@@ -72,6 +73,22 @@ factorySchema.methods.changeLongitude=function(longitude){
 }
 
 /**
+ * Enables the current factory
+ */
+factorySchema.methods.enable=function(){
+    grantFactoryIsDisabled(this._available);
+    this._available=false;
+}
+
+/**
+ * Disables the current factory
+ */
+factorySchema.methods.disable=function(){
+    grantFactoryIsEnabled(this._available);
+    this._available=true;
+}
+
+/**
  * Creates a new Factory object
  * @param {String} reference String with the factory reference
  * @param {String} designation String with the factory designation
@@ -82,7 +99,8 @@ factorySchema.statics.createFactory=function (reference,designation,locationLati
     return {
         reference:reference,
         designation:designation,
-        location:location.createLocation(locationLatitude,locationLongitude)
+        location:location.createLocation(locationLatitude,locationLongitude),
+        _available:true
     }
 }
 
@@ -100,6 +118,22 @@ function grantReferenceIsValidForUpdate(reference){
  */
 function grantDesignationIsValidForUpdate(designation){
     if(!checkDesignationBusinessRule(designation))throw `${designation} is not a valid designation`;
+}
+
+/**
+ * Grants that a factory is enabled
+ * @param {Boolean} _available Boolean with the factory availability
+ */
+function grantFactoryIsEnabled(_available){
+    if(!_available)throw `Factory is disabled`;
+}
+
+/**
+ * Grants that a factory is disabled
+ * @param {Boolean} _available Boolean with the factory availability
+ */
+function grantFactoryIsDisabled(_available){
+    if(_available)throw `Factory is enabled`;
 }
 
 /**
