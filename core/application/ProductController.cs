@@ -10,6 +10,7 @@ using core.modelview.restriction;
 using core.services;
 using support.dto;
 using support.utils;
+using core.services.ensurance;
 
 namespace core.application
 {
@@ -65,30 +66,23 @@ namespace core.application
         }
 
         /// <summary>
-        /// Updates a Product.
+        /// Updates the properties of a product
         /// </summary>
-        /// <param name="updateProductModelView">UpdateProductModelView with the data being updated.</param>
-        /// <returns>True if the update was successful, false otherwise.</returns>
-        public bool updateProduct(UpdateProductModelView updateProductModelView){
-            return updateProductBasicInformation(updateProductModelView) && updateProductCategory(updateProductModelView);
-        }
-
-        /// <summary>
-        /// Updates basic information of a Product.
-        /// </summary>
-        /// <param name="updateProductMV">UpdateProductModelView with the data regarding the product update</param>
-        /// <returns>boolean true if the update was successful, false otherwise.</returns>
-        private bool updateProductBasicInformation(UpdateProductModelView updateProductMV){
+        /// <param name="updateProductPropertiesModelView">UpdateProductPropertiesModelView with the data regarding the product update</param>
+        /// <returns>GetProductModelView with the updated product information</returns>
+        public GetProductModelView updateProductProperties(UpdateProductPropertiesModelView updateProductPropertiesModelView){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productBeingUpdated=productRepository.find(updateProductMV.productId);
-            bool updatedWithSuccess=true;
+            Product productBeingUpdated=productRepository.find(updateProductPropertiesModelView.id);
+            FetchEnsurance.ensureProductFetchWasSuccessful(productBeingUpdated);
             bool perfomedAtLeastOneUpdate=false;
-            if (updateProductMV.reference!=null){
-                updatedWithSuccess&=productBeingUpdated.changeProductReference(updateProductMV.reference);
+            
+            if(updateProductPropertiesModelView.reference!=null){
+                productBeingUpdated.changeProductReference(updateProductPropertiesModelView.reference);
                 perfomedAtLeastOneUpdate=true;
             }
-            if (updateProductMV.designation!=null){
-                updatedWithSuccess&=productBeingUpdated.changeProductDesignation(updateProductMV.designation);
+            
+            if(updateProductPropertiesModelView.designation!=null){
+                productBeingUpdated.changeProductDesignation(updateProductPropertiesModelView.designation);
                 perfomedAtLeastOneUpdate=true;
             }
             
