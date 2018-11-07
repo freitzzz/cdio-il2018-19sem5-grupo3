@@ -47,7 +47,7 @@ namespace core.modelview.product{
         /// ModelView containing Product's components' information.
         /// </summary>
         /// <value>Gets/sets the ModelView.</value>
-        [DataMember]
+        [DataMember(EmitDefaultValue = false)]  //since this is optional, don't show null values
         public GetAllComponentsModelView components {get; set;}
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace core.modelview.product{
         /// ModelView containing Product's slot sizes.
         /// </summary>
         /// <value>Gets/sets the ModelView.</value>
-        [DataMember]
+        [DataMember(EmitDefaultValue = false)]  //since this is optional, don't show null values
         public GetSlotDimensionsModelView slotSizes {get; set;}
     }
 }
