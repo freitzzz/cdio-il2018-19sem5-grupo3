@@ -36,6 +36,14 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureConstructorDetectsZeroValue()
+        {
+            Action act = () => new SingleValueDimension(0);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
         public void ensureInstanceIsCreated()
         {
             SingleValueDimension instance = new SingleValueDimension(100.0);

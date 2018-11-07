@@ -18,6 +18,11 @@ namespace core.application{
     /// Core ProductController class
     /// </summary>
     public class ProductController{
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the update of a product wasn't successful
+        /// </summary>
+        public const string INVALID_PRODUCT_UPDATE="An error occured while updating the product";
         /// <summary>
         /// Constant that represents the message that occurs if the user does not provide inputs
         /// </summary>
@@ -56,31 +61,43 @@ namespace core.application{
         public ProductDTO addProduct(ProductDTO productAsDTO){
             Product newProduct=new ProductDTOService().transform(productAsDTO);
             Product createdProduct=PersistenceContext.repositories().createProductRepository().save(newProduct);
-            if (createdProduct == null) return null;
+            if(createdProduct == null) return null;
             return createdProduct.toDTO();
         }
 
         /// <summary>
-        /// Updates basic information of a product
+        /// Updates the properties of a product
         /// </summary>
-        /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
-        /// <returns>boolean true if the update was successful, fasle if not</returns>
-        public bool updateProductBasicInformation(UpdateProductDTO updateProductDTO){
+        /// <param name="updateProductPropertiesModelView">UpdateProductPropertiesModelView with the data regarding the product update</param>
+        /// <returns>GetProductModelView with the updated product information</returns>
+        public GetProductModelView updateProductProperties(UpdateProductPropertiesModelView updateProductPropertiesModelView){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productBeingUpdated=productRepository.find(updateProductDTO.id);
-            bool updatedWithSuccess=true;
+            Product productBeingUpdated=productRepository.find(updateProductPropertiesModelView.id);
+            FetchEnsurance.ensureProductFetchWasSuccessful(productBeingUpdated);
             bool perfomedAtLeastOneUpdate=false;
-            if (updateProductDTO.reference!=null){
-                updatedWithSuccess&=productBeingUpdated.changeProductReference(updateProductDTO.reference);
+            
+            if(updateProductPropertiesModelView.reference!=null){
+                productBeingUpdated.changeProductReference(updateProductPropertiesModelView.reference);
                 perfomedAtLeastOneUpdate=true;
             }
-            if (updateProductDTO.designation!=null){
-                updatedWithSuccess&=productBeingUpdated.changeProductDesignation(updateProductDTO.designation);
+            
+            if(updateProductPropertiesModelView.designation!=null){
+                productBeingUpdated.changeProductDesignation(updateProductPropertiesModelView.designation);
                 perfomedAtLeastOneUpdate=true;
             }
-            if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
-            updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
-            return updatedWithSuccess;
+            
+            if(updateProductPropertiesModelView.categoryId!=0){
+                ProductCategory categoryToUpdate=PersistenceContext.repositories().createProductCategoryRepository().find(updateProductPropertiesModelView.categoryId);
+                FetchEnsurance.ensureProductCategoryFetchWasSuccessful(categoryToUpdate);
+                productBeingUpdated.changeProductCategory(categoryToUpdate);
+                perfomedAtLeastOneUpdate=true;
+            }
+
+            UpdateEnsurance.ensureAtLeastOneUpdateWasPerformed(perfomedAtLeastOneUpdate);
+
+            productBeingUpdated=productRepository.update(productBeingUpdated);
+            UpdateEnsurance.ensureProductUpdateWasSuccessful(productBeingUpdated);
+            return ProductModelViewService.fromEntity(productBeingUpdated);
         }
 
         /// <summary>
@@ -95,7 +112,7 @@ namespace core.application{
             bool updatedWithSuccess=true;
             bool perfomedAtLeastOneUpdate=false;
 
-            if (updateProductDTO.materialsToAdd!=null){
+            if(updateProductDTO.materialsToAdd!=null){
                 IEnumerable<Material> materialsBeingAdded=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToAdd);
                 FetchEnsurance.ensureMaterialsFetchWasSuccessful(updateProductDTO.materialsToAdd, materialsBeingAdded);
                 foreach (Material material in materialsBeingAdded)
@@ -103,9 +120,9 @@ namespace core.application{
                 perfomedAtLeastOneUpdate=true;
             }
 
-            if (!updatedWithSuccess) return false;
+            if(!updatedWithSuccess) return false;
 
-            if (updateProductDTO.materialsToRemove!=null){
+            if(updateProductDTO.materialsToRemove!=null){
                 IEnumerable<Material> materialsBeingRemoved=materialRepository.getMaterialsByIDS(updateProductDTO.materialsToRemove);
                 FetchEnsurance.ensureMaterialsFetchWasSuccessful(updateProductDTO.materialsToRemove, materialsBeingRemoved);
                 foreach (Material material in materialsBeingRemoved)
@@ -113,7 +130,7 @@ namespace core.application{
                 perfomedAtLeastOneUpdate=true;
             }
 
-            if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
+            if(!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
 
             updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
@@ -198,7 +215,7 @@ namespace core.application{
             bool updatedWithSuccess=true;
             bool perfomedAtLeastOneUpdate=false;
 
-            if (updateProductDTO.componentsToAdd!=null){
+            if(updateProductDTO.componentsToAdd!=null){
                 IEnumerable<ProductDTO> productsDTO=extractProductsDTOFromComponentsDTO(updateProductDTO.componentsToAdd);
                 IEnumerable<Product> complementedProducts=PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
                 FetchEnsurance.ensureProductsFetchWasSuccesful(productsDTO, complementedProducts);
@@ -207,10 +224,10 @@ namespace core.application{
                 perfomedAtLeastOneUpdate=true;
             }
 
-            if (!updatedWithSuccess) return false;
+            if(!updatedWithSuccess) return false;
 
 
-            if (updateProductDTO.componentsToRemove!=null){
+            if(updateProductDTO.componentsToRemove!=null){
                 IEnumerable<ProductDTO> productsDTO=extractProductsDTOFromComponentsDTO(updateProductDTO.componentsToRemove);
                 IEnumerable<Product> complementedProducts=PersistenceContext.repositories().createProductRepository().fetchProductsByID(productsDTO);
                 FetchEnsurance.ensureProductsFetchWasSuccesful(productsDTO, complementedProducts);
@@ -219,7 +236,7 @@ namespace core.application{
                 perfomedAtLeastOneUpdate=true;
             }
 
-            if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
+            if(!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
 
             updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
@@ -304,58 +321,58 @@ namespace core.application{
             Product productBeingUpdated=productRepository.find(updateProductDTO.id);
             bool updatedWithSuccess=true;
             bool perfomedAtLeastOneUpdate=false;
-            if (updateProductDTO.dimensionsToAdd!=null && updateProductDTO.dimensionsToAdd.widthDimensionDTOs!=null){
+            if(updateProductDTO.dimensionsToAdd!=null && updateProductDTO.dimensionsToAdd.widthDimensionDTOs!=null){
                 IEnumerable<Dimension> widthDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.widthDimensionDTOs);
                 foreach (Dimension widthDimension in widthDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addWidthDimension(widthDimension);
                 perfomedAtLeastOneUpdate=true;
-                if (!updatedWithSuccess) return false;
+                if(!updatedWithSuccess) return false;
             }
 
-            if (updateProductDTO.dimensionsToAdd!=null && updateProductDTO.dimensionsToAdd.heightDimensionDTOs!=null){
+            if(updateProductDTO.dimensionsToAdd!=null && updateProductDTO.dimensionsToAdd.heightDimensionDTOs!=null){
                 IEnumerable<Dimension> heightDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.heightDimensionDTOs);
                 foreach (Dimension heightDimension in heightDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addHeightDimension(heightDimension);
                 perfomedAtLeastOneUpdate=true;
-                if (!updatedWithSuccess) return false;
+                if(!updatedWithSuccess) return false;
             }
 
-            if (updateProductDTO.dimensionsToAdd!=null && updateProductDTO.dimensionsToAdd.depthDimensionDTOs!=null){
+            if(updateProductDTO.dimensionsToAdd!=null && updateProductDTO.dimensionsToAdd.depthDimensionDTOs!=null){
                 IEnumerable<Dimension> depthDimensionsBeingAdded=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToAdd.depthDimensionDTOs);
                 foreach (Dimension depthDimension in depthDimensionsBeingAdded)
                     updatedWithSuccess&=productBeingUpdated.addDepthDimension(depthDimension);
                 perfomedAtLeastOneUpdate=true;
-                if (!updatedWithSuccess) return false;
+                if(!updatedWithSuccess) return false;
             }
 
-            if (updateProductDTO.dimensionsToRemove!=null && updateProductDTO.dimensionsToRemove.widthDimensionDTOs!=null){
+            if(updateProductDTO.dimensionsToRemove!=null && updateProductDTO.dimensionsToRemove.widthDimensionDTOs!=null){
                 IEnumerable<Dimension> widthDimensionsBeingRemoved=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToRemove.widthDimensionDTOs);
-                if (widthDimensionsBeingRemoved!=null)
+                if(widthDimensionsBeingRemoved!=null)
                     foreach (Dimension widthDimension in widthDimensionsBeingRemoved)
                         updatedWithSuccess&=productBeingUpdated.removeWidthDimension(widthDimension);
                 perfomedAtLeastOneUpdate=true;
-                if (!updatedWithSuccess) return false;
+                if(!updatedWithSuccess) return false;
             }
 
-            if (updateProductDTO.dimensionsToRemove!=null && updateProductDTO.dimensionsToRemove.heightDimensionDTOs!=null){
+            if(updateProductDTO.dimensionsToRemove!=null && updateProductDTO.dimensionsToRemove.heightDimensionDTOs!=null){
                 IEnumerable<Dimension> heightDimensionsBeingRemoved=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToRemove.heightDimensionDTOs);
-                if (heightDimensionsBeingRemoved!=null)
+                if(heightDimensionsBeingRemoved!=null)
                     foreach (Dimension heightDimension in heightDimensionsBeingRemoved)
                         updatedWithSuccess&=productBeingUpdated.removeHeightDimension(heightDimension);
                 perfomedAtLeastOneUpdate=true;
-                if (!updatedWithSuccess) return false;
+                if(!updatedWithSuccess) return false;
             }
 
-            if (updateProductDTO.dimensionsToRemove!=null && updateProductDTO.dimensionsToRemove.depthDimensionDTOs!=null){
+            if(updateProductDTO.dimensionsToRemove!=null && updateProductDTO.dimensionsToRemove.depthDimensionDTOs!=null){
                 IEnumerable<Dimension> depthDimensionsBeingRemoved=DTOUtils.reverseDTOS(updateProductDTO.dimensionsToRemove.depthDimensionDTOs);
-                if (depthDimensionsBeingRemoved!=null)
+                if(depthDimensionsBeingRemoved!=null)
                     foreach (Dimension depthDimension in depthDimensionsBeingRemoved)
                         updatedWithSuccess&=productBeingUpdated.removeDepthDimension(depthDimension);
                 perfomedAtLeastOneUpdate=true;
-                if (!updatedWithSuccess) return false;
+                if(!updatedWithSuccess) return false;
             }
 
-            if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
+            if(!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
 
             updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
             return updatedWithSuccess;
@@ -554,26 +571,6 @@ namespace core.application{
         }
 
         /// <summary>
-        /// Updates the category of a product
-        /// </summary>
-        /// <param name="updateProductDTO">UpdateProductDTO with the data regarding the product update</param>
-        /// <returns>boolean true if the update was successful, fasle if not</returns>
-        public bool updateProductCategory(UpdateProductDTO updateProductDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productBeingUpdated=productRepository.find(updateProductDTO.id);
-            bool updatedWithSuccess=true;
-            bool perfomedAtLeastOneUpdate=false;
-            if (updateProductDTO.productCategoryToUpdate!=null){
-                ProductCategory productCategory=PersistenceContext.repositories().createProductCategoryRepository().find(updateProductDTO.productCategoryToUpdate.id);
-                updatedWithSuccess&=productBeingUpdated.changeProductCategory(productCategory);
-                perfomedAtLeastOneUpdate=true;
-            }
-            if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
-            updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
-            return updatedWithSuccess;
-        }
-
-        /// <summary>
         /// Disables a product
         /// </summary>
         /// <param name="productDTO">ProductDTO with the product data being disabled</param>
@@ -637,9 +634,9 @@ namespace core.application{
             IEnumerable<Dimension> widthDimensions=getProductDTOEnumerableDimensions(productDTO.dimensions.widthDimensionDTOs);
             IEnumerable<Dimension> depthDimensions=getProductDTOEnumerableDimensions(productDTO.dimensions.depthDimensionDTOs);
 
-            foreach (Dimension heightDimension in heightDimensions){ if (!product.addHeightDimension(heightDimension)) return false; }
-            foreach (Dimension widthDimension in widthDimensions){ if (!product.addWidthDimension(widthDimension)) return false; }
-            foreach (Dimension depthDimension in depthDimensions){ if (!product.addDepthDimension(depthDimension)) return false; }
+            foreach (Dimension heightDimension in heightDimensions){ if(!product.addHeightDimension(heightDimension)) return false; }
+            foreach (Dimension widthDimension in widthDimensions){ if(!product.addWidthDimension(widthDimension)) return false; }
+            foreach (Dimension depthDimension in depthDimensions){ if(!product.addDepthDimension(depthDimension)) return false; }
 
             return productRepository.save(product)!=null;
         }
@@ -652,11 +649,11 @@ namespace core.application{
         /// <param name="restDTO">Data Transfer Object of the restriction to add</param>
         /// <returns>list of inputs for the restriction's algorithm</returns>
         public RestrictionDTO addComponentRestriction(long productID, long productComponentID, RestrictionDTO restDTO){
-            if (Collections.isEnumerableNullOrEmpty(restDTO.inputs)){
+            if(Collections.isEnumerableNullOrEmpty(restDTO.inputs)){
                 //gets required list of inputs for the algorithm
                 List<Input> inputs=new AlgorithmFactory().createAlgorithm(restDTO.algorithm).getRequiredInputs();
                 //if the algorithm did not need any inputs then persist
-                if (Collections.isEnumerableNullOrEmpty(inputs)){
+                if(Collections.isEnumerableNullOrEmpty(inputs)){
                     ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
                     Product product=productRepository.find(productID);
                     Product component=productRepository.find(productComponentID);
@@ -671,7 +668,7 @@ namespace core.application{
                 Product product = productRepository.find(productID);
                 Product component = productRepository.find(productComponentID);
                 List<Input> inputs = new List<Input>(DTOUtils.reverseDTOS(restDTO.inputs));
-                if (new AlgorithmFactory().createAlgorithm(restDTO.algorithm).isWithinDataRange(inputs)) {
+                if(new AlgorithmFactory().createAlgorithm(restDTO.algorithm).isWithinDataRange(inputs)) {
                     Restriction restriction = restDTO.toEntity();
                     product.addComponentRestriction(component, restriction);
                     productRepository.update(product);
@@ -688,15 +685,15 @@ namespace core.application{
         internal IEnumerable<Dimension> getProductDTOEnumerableDimensions(List<DimensionDTO> dimensionsDTOs){
             List<Dimension> dimensions=new List<Dimension>();
             foreach (DimensionDTO dimensionDTO in dimensionsDTOs){
-                if (dimensionDTO.GetType() == typeof(DiscreteDimensionIntervalDTO)){
+                if(dimensionDTO.GetType() == typeof(DiscreteDimensionIntervalDTO)){
                     DiscreteDimensionIntervalDTO ddiDTO=(DiscreteDimensionIntervalDTO)dimensionDTO;
                     DiscreteDimensionInterval discreteInterval=new DiscreteDimensionInterval(ddiDTO.values);
                     dimensions.Add(discreteInterval);
-                } else if (dimensionDTO.GetType() == typeof(ContinuousDimensionIntervalDTO)){
+                } else if(dimensionDTO.GetType() == typeof(ContinuousDimensionIntervalDTO)){
                     ContinuousDimensionIntervalDTO cdiDTO=(ContinuousDimensionIntervalDTO)dimensionDTO;
                     ContinuousDimensionInterval continuousInterval=new ContinuousDimensionInterval(cdiDTO.minValue, cdiDTO.maxValue, cdiDTO.increment);
                     dimensions.Add(continuousInterval);
-                } else if (dimensionDTO.GetType() == typeof(SingleValueDimensionDTO)){
+                } else if(dimensionDTO.GetType() == typeof(SingleValueDimensionDTO)){
                     SingleValueDimensionDTO svdDTO=(SingleValueDimensionDTO)dimensionDTO;
                     SingleValueDimension dimensionValue=new SingleValueDimension(svdDTO.value);
                     dimensions.Add(dimensionValue);

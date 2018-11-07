@@ -1,6 +1,7 @@
 using backend_tests.Setup;
 using backend_tests.utils;
 using core.dto;
+using core.modelview.product;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -125,10 +126,10 @@ namespace backend_tests.Controllers{
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
             //If we try to update it to a reference that is invalid, then it should fail
             createdProductDTOX.Wait();
-            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            UpdateProductPropertiesModelView updatedProductX=new UpdateProductPropertiesModelView();
             var updateReference=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX.Result.id
                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-            Assert.True(updateReference.StatusCode==HttpStatusCode.BadRequest);
+            Assert.Equal(HttpStatusCode.BadRequest,updateReference.StatusCode);
         }
 
         /// <summary>
@@ -146,7 +147,7 @@ namespace backend_tests.Controllers{
             //If we try to update it to a reference that already exists, then it should fail
             ProductDTO productDTOX=createdProductDTOX.Result;
             ProductDTO productDTOY=createdProductDTOY.Result;
-            UpdateProductDTO updatedProductY=new UpdateProductDTO();
+            UpdateProductPropertiesModelView updatedProductY=new UpdateProductPropertiesModelView();
             updatedProductY.reference=productDTOX.reference;
             //DONT UNCOMMENT UNTIL INTEGRATION DATABASE PROBLEMS IS SOLVED
             //PROBLEM HERE IS THAT SINCE WE ARE USING AN IN MEMORY DATABASE PROVIDER
@@ -167,10 +168,10 @@ namespace backend_tests.Controllers{
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
             //If we try to update it to a designation that is invalid, then it should fail
             createdProductDTOX.Wait();
-            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            UpdateProductPropertiesModelView updatedProductX=new UpdateProductPropertiesModelView();
             var updateDesignation=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX.Result.id
                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-            Assert.True(updateDesignation.StatusCode==HttpStatusCode.BadRequest);
+            Assert.Equal(HttpStatusCode.BadRequest,updateDesignation.StatusCode);
         }
 
         /// <summary>
@@ -181,12 +182,12 @@ namespace backend_tests.Controllers{
             //We need to create a product for the test
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
             createdProductDTOX.Wait();
-            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            UpdateProductPropertiesModelView updatedProductX=new UpdateProductPropertiesModelView();
             var updateProduct=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
                                                                             .Result.id
                                                                         +"/materials"
                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-            Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
+            Assert.Equal(HttpStatusCode.BadRequest,updateProduct.StatusCode);
         }
 
         /// <summary>
@@ -203,7 +204,7 @@ namespace backend_tests.Controllers{
                                                                             .Result.id
                                                                         +"/materials"
                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-            Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
+            Assert.Equal(HttpStatusCode.BadRequest,updateProduct.StatusCode);
         }
 
         /// <summary>
@@ -403,12 +404,11 @@ namespace backend_tests.Controllers{
             //We need to create a product for the test
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
             createdProductDTOX.Wait();
-            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            UpdateProductPropertiesModelView updatedProductX=new UpdateProductPropertiesModelView();
             //Our category will be an "empty" category
-            updatedProductX.productCategoryToUpdate=new ProductCategoryDTO();
+            updatedProductX.categoryId=0;
             var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
                                                                             .Result.id
-                                                                        +"/category"
                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
 
             Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
@@ -422,15 +422,13 @@ namespace backend_tests.Controllers{
             //We need to create a product for the test
             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
             createdProductDTOX.Wait();
-            UpdateProductDTO updatedProductX=new UpdateProductDTO();
+            UpdateProductPropertiesModelView updatedProductX=new UpdateProductPropertiesModelView();
             //Our category will be a non existing category (still not persisted)
-            ProductCategoryDTO productCategoryDTO=new ProductCategoryDTO();
-            productCategoryDTO.id=0;
-            updatedProductX.productCategoryToUpdate=productCategoryDTO;
+            updatedProductX.categoryId=-1;
             
             var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
                                                                             .Result.id
-                                                                        +"/category"
+
                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
 
             Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);

@@ -29,6 +29,54 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureConstructorDetectsNaNValue()
+        {
+            var list = new List<double>();
+            list.Add(1.0);
+            list.Add(Double.NaN);
+
+            Action act = () => new DiscreteDimensionInterval(list);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureConstructorDetectsInfinityValue()
+        {
+            var list = new List<double>();
+            list.Add(2.0);
+            list.Add(Double.PositiveInfinity);
+
+            Action act = () => new DiscreteDimensionInterval(list);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureConstructorDetectsNegativeValue()
+        {
+            var list = new List<double>();
+            list.Add(2.0);
+            list.Add(-1.0);
+
+            Action act = () => new DiscreteDimensionInterval(list);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureConstructorDetectsZeroValue()
+        {
+            var list = new List<double>();
+            list.Add(2.0);
+            list.Add(0);
+
+            Action act = () => new DiscreteDimensionInterval(list);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
         public void ensureInstanceIsCreated()
         {
             var list = new List<double>();
