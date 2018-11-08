@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using NodaTime;
 using support.domain;
 using support.domain.ddd;
 using support.utils;
@@ -24,6 +25,9 @@ namespace core.domain
         /// </summary>
         private const string NULL_TIME_PERIOD = "Time Period can't be null";
 
+        /// <summary>
+        /// Constant that represents the message that occurs if the entity is null
+        /// </summary>
         private const string NULL_ENTITY = "Entity can't be null";
 
         /// <summary>
@@ -93,23 +97,72 @@ namespace core.domain
         /// <param name="timePeriod">TimePeriod to be checked</param>
         private void checkEntityAndPriceAndTimePeriod(T entity, Price price, TimePeriod timePeriod)
         {
-            if (price == null)
-            {
-                throw new ArgumentException(NULL_PRICE);
-            }
+            checkEntity(entity);
+            checkPrice(price);
+            checkTimePeriod(timePeriod);
+        }
 
-            if (timePeriod == null)
-            {
-                throw new ArgumentException(NULL_TIME_PERIOD);
-            }
-
+        /// <summary>
+        /// Checks if a given entity is valid
+        /// </summary>
+        /// <param name="entity">entity being checked</param>
+        private void checkEntity(T entity)
+        {
             if (entity == null)
             {
                 throw new ArgumentException(NULL_ENTITY);
             }
         }
 
+        /// <summary>
+        /// Checks if a given price is valid
+        /// </summary>
+        /// <param name="price">price being checked</param>
+        private void checkPrice(Price price)
+        {
+            if (price == null)
+            {
+                throw new ArgumentException(NULL_PRICE);
+            }
+        }
+
+        /// <summary>
+        /// Checks if a given time period is valid
+        /// </summary>
+        /// <param name="timePeriod">time period being checked</param>
+        private void checkTimePeriod(TimePeriod timePeriod)
+        {
+            if (timePeriod == null)
+            {
+                throw new ArgumentException(NULL_TIME_PERIOD);
+            }
+        }
+
+        /// <summary>
+        /// Changes the price of a price table entry
+        /// </summary>
+        /// <param name="newPrice">new price</param>
+        public void changePrice(Price newPrice){
+            checkPrice(newPrice);
+            this.price = newPrice;
+        }
+
+        /// <summary>
+        /// Changes the time period of a price table entry
+        /// </summary>
+        /// <param name="newStartingDate">new time period</param>
+        public void changeTimePeriod(TimePeriod newTimePeriod){
+            checkTimePeriod(newTimePeriod);
+            this.timePeriod = newTimePeriod;
+        }
+
+        /// <summary>
+        /// Creates an EID for each concrete PriceTableEntry
+        /// </summary>
         protected abstract void createEID();
+
+        public abstract string id();
+        public abstract bool sameAs(string comparingEntity);
 
         public override int GetHashCode()
         {
@@ -153,8 +206,5 @@ namespace core.domain
             return String.Format("{0}\n{1}\n{2}",
                                 price.ToString(), timePeriod.ToString(), entity.ToString());
         }
-
-        public abstract string id();
-        public abstract bool sameAs(string comparingEntity);
     }
 }
