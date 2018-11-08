@@ -12,7 +12,7 @@ namespace core.domain
     /// Represents a generic price table entry
     /// </summary>
     /// <typeparam name="string">EID of the entity that belongs to it's respective price table</typeparam>
-    public abstract class PriceTableEntry<T> : Activatable
+    public abstract class PriceTableEntry<T> : Activatable, AggregateRoot<string>
     {
         /// <summary>
         /// Constant that represents the message that occurs if the price is null
@@ -23,6 +23,8 @@ namespace core.domain
         /// Constant that represents the message that occurs if the time period is null
         /// </summary>
         private const string NULL_TIME_PERIOD = "Time Period can't be null";
+
+        private const string NULL_ENTITY = "Entity can't be null";
 
         /// <summary>
         /// PID of the Entry
@@ -47,6 +49,8 @@ namespace core.domain
         /// </summary>
         private TimePeriod _timePeriod;
         public TimePeriod timePeriod { get => LazyLoader.Load(this, ref _timePeriod); protected set => _timePeriod = value; }
+
+        public string eId { get; protected set; }
 
         /// <summary>
         /// Injected LazyLoader
@@ -74,11 +78,12 @@ namespace core.domain
         /// </summary>
         /// <param name="price">Entry's price</param>
         /// <param name="timePeriod">Entry's time period</param>
-        protected PriceTableEntry(Price price, TimePeriod timePeriod)
+        protected PriceTableEntry(T entity, Price price, TimePeriod timePeriod)
         {
-            checkPriceAndTimePeriod(price, timePeriod);
+            checkEntityAndPriceAndTimePeriod(entity, price, timePeriod);
             this.price = price;
             this.timePeriod = timePeriod;
+            this.entity = entity;
         }
 
         /// <summary>
@@ -86,7 +91,7 @@ namespace core.domain
         /// </summary>
         /// <param name="price">Price to be checked</param>
         /// <param name="timePeriod">TimePeriod to be checked</param>
-        private void checkPriceAndTimePeriod(Price price, TimePeriod timePeriod)
+        private void checkEntityAndPriceAndTimePeriod(T entity, Price price, TimePeriod timePeriod)
         {
             if (price == null)
             {
@@ -97,7 +102,14 @@ namespace core.domain
             {
                 throw new ArgumentException(NULL_TIME_PERIOD);
             }
+
+            if (entity == null)
+            {
+                throw new ArgumentException(NULL_ENTITY);
+            }
         }
+
+        protected abstract void createEID();
 
         public override int GetHashCode()
         {
@@ -141,5 +153,8 @@ namespace core.domain
             return String.Format("{0}\n{1}\n{2}",
                                 price.ToString(), timePeriod.ToString(), entity.ToString());
         }
+
+        public abstract string id();
+        public abstract bool sameAs(string comparingEntity);
     }
 }
