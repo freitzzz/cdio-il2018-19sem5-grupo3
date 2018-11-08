@@ -29,6 +29,13 @@
 :- json_object
         cities_body_response(algorithmID:integer,citiesToTravel:list,distance:distance_object/2).
 
+% JSON Object with the information regarding the compute shortest factory body request
+:- json_object
+        factories_body_request(city:city_object/3, factories:list).
+
+% JSON Object with the information regarding the compute shortest factory body response
+:- json_object
+        factories_body_response(factory:city_object/3, distance:distance_object/2).
 
 % Available algorithms
 algorithm(1,"Branch & Bound").

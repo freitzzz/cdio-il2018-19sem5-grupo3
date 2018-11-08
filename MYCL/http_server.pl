@@ -8,6 +8,7 @@
 
 :- http_handler('/mycl/api/algorithms',display_available_algorithms,[]). % Endpoint to display all algorithms available
 :- http_handler('/mycl/api/travel',compute_algorithm,[time_limit(0)]). % Endpoint to compute a city circuit
+:- http_handler('/mycl/api/factories',shortest_factory,[time_limit(0)]). % Endpoint to compute the shortest factory
 
 % Loads required knowledge bases
 carregar:-['intersept.pl'],['cdio-tsp.pl'],load_computations,load_algorithms,load_json_objects.
@@ -47,6 +48,19 @@ compute_algorithm(Request):-
         format(user_output,"Request is: ~p~n",[JSONCitiesToTravel]),
         reply_json(RSP).
 
+
+shortest_factory(Request):-
+        http_read_json(Request, JSONIn,[json_object(factories_body_request)]),
+        json_to_prolog(JSONIn, FF),
+        FF=factories_body_request(JCity,JFactories),
+        json_cities_to_cities([JCity],[City]),
+        json_cities_to_cities(JFactories,Factories),
+        compute_shortest_city(City,Factories,(ShortestFactory,Distance)),
+        city_to_city_json_object(ShortestFactory,JShortestFactory),
+        JDistance=distance_object(Distance,'KM'),
+        prolog_to_json(factories_body_response(JShortestFactory,JDistance),SFJ),
+        reply_json(SFJ).
+
 % Checks the query parameters that can be extracted from the available algorithms URI
 check_available_algorithms_query_parameters(Request,Id):-
         http_parameters(Request, [
@@ -66,3 +80,6 @@ cities_to_json_cities([],[]).
 cities_to_json_cities([H|T],JSONCities):-
         cities_to_json_cities(T,JSONCities1),
         append([basic_city_object(H)],JSONCities1,JSONCities).
+
+% Parses a city fact into a json city object
+city_to_city_json_object(city(Name,LT,LO),city_object(Name,LT,LO)).
