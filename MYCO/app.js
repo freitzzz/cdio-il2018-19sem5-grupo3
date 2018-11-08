@@ -7,6 +7,7 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 
 var ordersRouter = require('./routes/orders');
+var factoriesRouter=require('./routes/factories');
 
 var app = express();
 
@@ -24,6 +25,7 @@ console.log('App listening on port ' + port);
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/myco/api', ordersRouter);
+app.use('/myco/api',factoriesRouter)
 
 app.use(function (req, res, next) {
   // Website you wish to allow to connect

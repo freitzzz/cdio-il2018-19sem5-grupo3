@@ -1,18 +1,18 @@
 
 % Problema do caixeiro viagante (TSP) com o uso de pesquisa exaustiva (c/ B&B)
 tsp1(Orig,Cam,Custo):-
-    get_time(X), % Tempo atual antes de executar a pesquisa exaustiva (Remover quando necessario)
+    %get_time(X), % Tempo atual antes de executar a pesquisa exaustiva (Remover quando necessario)
     findall(
         (Cam1,Custo1),
         (city(C,_,_),C\==Orig,tsp1(Orig,C,Cam1,Custo1)),
         LTSP),
     sort(2,@=<,LTSP,LSTSP),
     [(Cam,Custo)|_]=LSTSP,
-    get_time(Y), % Tempo depois da execução da pesquisa exaustiva
-    Z is Y-X,
-    W is Z,
-    write("Required Time"),nl,
-    write(W),write(" s"),nl,
+    %get_time(Y), % Tempo depois da execução da pesquisa exaustiva
+    %Z is Y-X,
+    %W is Z,
+    %write("Required Time"),nl,
+    %write(W),write(" s"),nl,
     !.
 
 % Executa o B&B entre uma cidade origem e destino

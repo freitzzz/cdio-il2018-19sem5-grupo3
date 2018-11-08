@@ -80,7 +80,6 @@ namespace core.domain
             }
 
             this.values = doubleValues;
-            this.restrictions = new List<Restriction>();
         }
 
         /// <summary>

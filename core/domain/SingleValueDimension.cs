@@ -64,7 +64,6 @@ namespace core.domain
             }
 
             this.value = value;
-            this.restrictions = new List<Restriction>();
         }
 
         /// <summary>

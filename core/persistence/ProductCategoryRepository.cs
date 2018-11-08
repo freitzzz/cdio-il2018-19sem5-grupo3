@@ -25,5 +25,12 @@ namespace core.persistence
         /// </summary>
         /// <returns>List with all ProductCategory leaves</returns>
         IEnumerable<ProductCategory> findLeaves();
+
+        /// <summary>
+        /// Checks if the provided ProductCategory is a leaf (no subcategories) or not.
+        /// </summary>
+        /// <param name="category">ProductCategory being checked.</param>
+        /// <returns>true if the provided ProductCategory is a leaf; false, otherwise.</returns>
+        bool isLeaf(ProductCategory category);
     }
 }

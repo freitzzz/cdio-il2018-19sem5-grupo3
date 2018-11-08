@@ -91,68 +91,67 @@ namespace core.domain {
         /// <summary>
         /// String with the product reference
         /// </summary>
+        /// <value>Gets/protected sets the reference value.</value>
         public string reference { get; protected set; }
         /// <summary>
         /// String with the product designation
         /// </summary>
+        /// <value>Gets/protected sets the designation value.</value>
         public string designation { get; protected set; }
         /// <summary>
         /// List with the components which the current product can be complemented by
         /// </summary>
+        /// <value>Gets/protected sets the value of the Component list.</value>
         //TODO: Should complemented products be a list and not a set?
         private List<Component> _complementedProducts;//!private field used for lazy loading, do not use this for storing or fetching data
         public List<Component> complementedProducts { get => LazyLoader.Load(this, ref _complementedProducts); protected set => _complementedProducts = value; }
         /// <summary>
         /// List with the materials which the product can be made of
         /// </summary>
+        /// <value>Gets/protected sets the value of the ProductMaterial list.</value>
         //TODO: Should product materials be a list or a set?
         private List<ProductMaterial> _productMaterials;//!private field used for lazy loading, do not use this for storing or fetching data
         public List<ProductMaterial> productMaterials { get => LazyLoader.Load(this, ref _productMaterials); protected set => _productMaterials = value; }
+
         /// <summary>
-        /// List with the product heigth dimensions
+        /// List containg all of the Product's measurements.
         /// </summary>
-        //TODO: Should product dimensions be a list or a set
-        private List<Dimension> _heightValues;//!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Dimension> heightValues { get => LazyLoader.Load(this, ref _heightValues); protected set => _heightValues = value; }
-        /// <summary>
-        /// List with the product width dimensions
-        /// </summary>
-        //TODO: Should product dimensions be a list or a set
-        private List<Dimension> _widthValues;//!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Dimension> widthValues { get => LazyLoader.Load(this, ref _widthValues); protected set => _widthValues = value; }
-        /// <summary>
-        /// List with the product depth dimensions
-        /// </summary>
-        //TODO: Should product restrinctions be a list or a set
-        private List<Dimension> _depthValues;//!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Dimension> depthValues { get => LazyLoader.Load(this, ref _depthValues); protected set => _depthValues = value; }
+        /// <value>Gets/sets the measurements list value.</value>
+        private List<ProductMeasurement> _measurements;
+        public List<ProductMeasurement> measurements {get => LazyLoader.Load(this, ref _measurements); protected set => _measurements = value;}
+
         /// <summary>
         /// ProductCategory with the category which the product belongs to
         /// </summary>
+        /// <value>Gets/protected sets the ProductCategory's value.</value>
         private ProductCategory _productCategory;//!private field used for lazy loading, do not use this for storing or fetching data
         public ProductCategory productCategory { get => LazyLoader.Load(this, ref _productCategory); protected set => _productCategory = value; }
 
         /// <summary>
         /// CustomizedDimensions that represents the maximum size of the slots
         /// </summary>
+        /// <value>Gets/protected sets the CustomizedDimension's value.</value>
         private CustomizedDimensions _maxSlotSize;//!private field used for lazy loading, do not use this for storing or fetching data
         public CustomizedDimensions maxSlotSize { get => LazyLoader.Load(this, ref _maxSlotSize); protected set => _maxSlotSize = value; }
 
         /// <summary>
         /// CustomizedDimensions that represents the minimum size of the slots
         /// </summary>
+        /// <value>Gets/protected sets the CustomizedDimension's value.</value>
         private CustomizedDimensions _minSlotSize;//!private field used for lazy loading, do not use this for storing or fetching data
         public CustomizedDimensions minSlotSize { get => LazyLoader.Load(this, ref _minSlotSize); protected set => _minSlotSize = value; }
 
         /// <summary>
         /// CustomizedDimensions that represents the recommended size of the slots
         /// </summary>
+        /// <value>Gets/protected sets the CustomizedDimension's value.</value>
         private CustomizedDimensions _recommendedSlotSize;//!private field used for lazy loading, do not use this for storing or fetching data
         public CustomizedDimensions recommendedSlotSize { get => LazyLoader.Load(this, ref _recommendedSlotSize); protected set => _recommendedSlotSize = value; }
 
         /// <summary>
         /// Booelan that indicates if the product can hold slots
         /// </summary>
+        /// <value>Gets/protected sets the value of the supportsSlots flag.</value>
         public bool supportsSlots { get; protected set; }
 
         /// <summary>
@@ -162,46 +161,21 @@ namespace core.domain {
         private ILazyLoader LazyLoader { get; set; }
 
         /// <summary>
+        /// Private constructror used by the framework for injecting an instance of ILazyLoader.
+        /// </summary>
+        /// <param name="lazyLoader">ILazyLoader being injected.</param>
+        public Product(ILazyLoader lazyLoader) 
+        {
+            this.LazyLoader = lazyLoader;
+               
+        }
+
+        /// <summary>
         /// Empty constructor used by ORM.
         /// </summary>
         protected Product() { }
 
-        /// <summary>
-        /// Constructor used for injecting the LazyLoader.
-        /// </summary>
-        /// <param name="lazyLoader">LazyLoader being injected.</param>
-        private Product(ILazyLoader lazyLoader) { this.LazyLoader = lazyLoader; }
-
-        /// <summary>
-        /// Builds a new product with its reference, designation, maximum number of slots, its category,
-        /// the materials it can be made of and its dimensions.
-        /// </summary>
-        /// <param name="reference">Reference of the Product</param>
-        /// <param name="designation">Designation of the Product</param>
-        /// <param name="supportsSlots">Indicates if the product can hold slots</param>
-        /// <param name="maxSlotSize">Maximum slot dimensions</param>
-        /// <param name="minSlotSize">Minimum slot dimensions</param>
-        /// <param name="recommendedSlotSize">Recommended slot dimensions</param>
-        /// <param name="productCategory">ProductCategory with the product's category</param>
-        /// <param name="materials">Materials the product can be made of</param>
-        /// <param name="heightDimensions">Product height dimensions</param>
-        /// <param name="widthDimensions">Product width dimensions</param>
-        /// <param name="depthDimensions">Product depth dimensions</param>
-        public Product(string reference, string designation, bool supportsSlots,
-                        CustomizedDimensions maxSlotSize, CustomizedDimensions minSlotSize,
-                        CustomizedDimensions recommendedSlotSize, ProductCategory productCategory,
-                        IEnumerable<Material> materials, IEnumerable<Dimension> heightDimensions,
-                        IEnumerable<Dimension> widthDimensions, IEnumerable<Dimension> depthDimensions) :
-                        this(reference, designation, productCategory,
-                        materials, heightDimensions, widthDimensions,
-                        depthDimensions) {
-            this.supportsSlots = supportsSlots;
-            checkProductSlotsDimensions(maxSlotSize, minSlotSize, recommendedSlotSize);
-            this.maxSlotSize = maxSlotSize;
-            this.minSlotSize = minSlotSize;
-            this.recommendedSlotSize = recommendedSlotSize;
-        }
-
+        //*BASE CONSTRUCTOR (NO SLOT DIMENSIONS, NO COMPONENTS) */
         /// <summary>
         /// Builds a new product with its reference, designation and materials which it can be made of
         /// </summary>
@@ -209,20 +183,14 @@ namespace core.domain {
         /// <param name="designation">String with the product designation</param>
         /// <param name="productCategory">ProductCategory with the product category</param>
         /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
-        /// <param name="heightDimensions">IEnumerable with the product height dimensions</param>
-        /// <param name="widthDimensions">IEnumerable with the product width dimensions</param>
-        /// <param name="depthDimensions">IEnumerable with the product depth dimensions</param>
+        /// <param name="measurements">IEnumerable with the product measurements</param>
         public Product(string reference, string designation,
                         ProductCategory productCategory,
                         IEnumerable<Material> materials,
-                        IEnumerable<Dimension> heightDimensions,
-                        IEnumerable<Dimension> widthDimensions,
-                        IEnumerable<Dimension> depthDimensions) {
+                        IEnumerable<Measurement> measurements) {
             checkProductProperties(reference, designation);
             checkProductMaterials(materials);
-            checkProductDimensions(heightDimensions);
-            checkProductDimensions(widthDimensions);
-            checkProductDimensions(depthDimensions);
+            checkProductMeasurements(measurements);
             checkProductCategory(productCategory);
             this.reference = reference;
             this.designation = designation;
@@ -231,11 +199,11 @@ namespace core.domain {
                 this.productMaterials.Add(new ProductMaterial(this, mat));
             }
             this.complementedProducts = new List<Component>();
-            this.heightValues = new List<Dimension>(heightDimensions);
-            this.widthValues = new List<Dimension>(widthDimensions);
-            this.depthValues = new List<Dimension>(depthDimensions);
+            this.measurements = new List<ProductMeasurement>();
+            foreach(Measurement measurement in measurements){
+                this.measurements.Add(new ProductMeasurement(this, measurement));
+            }
             this.productCategory = productCategory;
-            this.supportsSlots = false;
             //!MaxValue assigned here because customized dimensions can't have value 0
             //TODO see if there's a better alternative to using Double.MaxValue
             this.maxSlotSize = CustomizedDimensions.valueOf(Double.MaxValue, Double.MaxValue, Double.MaxValue);
@@ -243,6 +211,7 @@ namespace core.domain {
             this.recommendedSlotSize = CustomizedDimensions.valueOf(Double.MaxValue, Double.MaxValue, Double.MaxValue);
         }
 
+        //*CONSTRUCTOR WITH COMPONENTS */
         /// <summary>
         /// Builds a new product with its reference, designation and complemented products
         /// </summary>
@@ -251,17 +220,13 @@ namespace core.domain {
         /// <param name="productCategory">ProductCategory with the product category</param>
         /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
         /// <param name="complementedProducts">IEnumerable with the product complemented products</param>
-        /// <param name="heightDimensions">IEnumerable with the product height dimensions</param>
-        /// <param name="widthDimensions">IEnumerable with the product width dimensions</param>
-        /// <param name="depthDimensions">IEnumerable with the product depth dimensions</param>
+        /// <param name="measurements">IEnumerable with the product measurements</param>
         public Product(string reference, string designation,
                         ProductCategory productCategory,
                         IEnumerable<Material> materials,
                         IEnumerable<Product> complementedProducts,
-                        IEnumerable<Dimension> heightValues,
-                        IEnumerable<Dimension> widthValues,
-                        IEnumerable<Dimension> depthValues) :
-                        this(reference, designation, productCategory, materials, heightValues, widthValues, depthValues) {
+                        IEnumerable<Measurement> measurements) :
+                        this(reference, designation, productCategory, materials, measurements) {
             checkProductComplementedProducts(complementedProducts);
             this.complementedProducts = new List<Component>();
             foreach (Product complementedProduct in complementedProducts) {
@@ -269,35 +234,51 @@ namespace core.domain {
             }
         }
 
+        //*CONSTRUCTOR WITH SLOT DIMENSIONS */
+        /// <summary>
+        /// Builds a new product with its reference, designation, maximum number of slots, its category,
+        /// the materials it can be made of and its dimensions.
+        /// </summary>
+        /// <param name="reference">Reference of the Product</param>
+        /// <param name="designation">Designation of the Product</param>
+        /// <param name="maxSlotSize">Maximum slot dimensions</param>
+        /// <param name="minSlotSize">Minimum slot dimensions</param>
+        /// <param name="recommendedSlotSize">Recommended slot dimensions</param>
+        /// <param name="productCategory">ProductCategory with the product's category</param>
+        /// <param name="materials">Materials the product can be made of</param>
+        /// <param name="measurements">Product measurements</param>
+        public Product(string reference, string designation,
+                        CustomizedDimensions maxSlotSize, CustomizedDimensions minSlotSize,
+                        CustomizedDimensions recommendedSlotSize, ProductCategory productCategory,
+                        IEnumerable<Material> materials, IEnumerable<Measurement> measurements) :
+                        this(reference, designation, productCategory, materials, measurements) {
+            checkProductSlotsDimensions(maxSlotSize, minSlotSize, recommendedSlotSize);
+            this.supportsSlots = true;
+            this.maxSlotSize = maxSlotSize;
+            this.minSlotSize = minSlotSize;
+            this.recommendedSlotSize = recommendedSlotSize;
+        }
+
+        //*CONSTRUCTOR WITH SLOT DIMENSIONS AND COMPONENTS */
         /// <summary>
         /// Builds a new product with its reference, designation and complemented products
         /// </summary>
         /// <param name="reference">String with the product reference</param>
         /// <param name="designation">String with the product designation</param>
-        /// <param name="supportsSlots">Indicates if the product can hold slots</param>
         /// <param name="maxSlotSize">Maximum slot dimensions</param>
         /// <param name="minSlotSize">Minimum slot dimensions</param>
         /// <param name="recommendedSlotSize">Recommended slot dimensions</param>
         /// <param name="productCategory">ProductCategory with the product category</param>
         /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
         /// <param name="complementedProducts">IEnumerable with the product complemented products</param>
-        /// <param name="heightDimensions">IEnumerable with the product height dimensions</param>
-        /// <param name="widthDimensions">IEnumerable with the product width dimensions</param>
-        /// <param name="depthDimensions">IEnumerable with the product depth dimensions</param>
+        /// <param name="measurements">IEnumerable with the product measurements</param>
         public Product(string reference, string designation,
-                        bool supportsSlots,
-                        CustomizedDimensions maxSlotSize,
-                        CustomizedDimensions minSlotSize,
-                        CustomizedDimensions recommendedSlotSize,
-                        ProductCategory productCategory,
-                        IEnumerable<Material> materials,
-                        IEnumerable<Product> complementedProducts,
-                        IEnumerable<Dimension> heightValues,
-                        IEnumerable<Dimension> widthValues,
-                        IEnumerable<Dimension> depthValues) :
-                        this(reference, designation, supportsSlots, maxSlotSize, minSlotSize,
-                        recommendedSlotSize, productCategory, materials, heightValues, widthValues,
-                        depthValues) {
+                        CustomizedDimensions maxSlotSize, CustomizedDimensions minSlotSize,
+                        CustomizedDimensions recommendedSlotSize, ProductCategory productCategory,
+                        IEnumerable<Material> materials, IEnumerable<Product> complementedProducts,
+                        IEnumerable<Measurement> measurements) :
+                        this(reference, designation, maxSlotSize, minSlotSize,
+                        recommendedSlotSize, productCategory, materials, measurements) {
             checkProductComplementedProducts(complementedProducts);
             this.complementedProducts = new List<Component>();
             foreach (Product complementedProduct in complementedProducts) {
@@ -331,38 +312,29 @@ namespace core.domain {
         }
 
         /// <summary>
-        /// Adds new height value(s) to the product
+        /// Adds a Measurement to the Product's list of Measurement.
         /// </summary>
-        /// <param name="heightDimension">Height's value(s)</param>
-        /// <returns>boolean true if the value(s) were added with success, false if not</returns>
-        public bool addHeightDimension(Dimension heightDimension) {
-            if (!isProductDimensionValidForAddition(heightDimension, heightValues))
+        /// <param name="measurement">Measurement being added.</param>
+        /// <returns>Returns true if the Measurement is not null nor has it been previosuly added; false otherwise.</returns>
+        public bool addMeasurement(Measurement measurement){
+            if(!isProductMeasurementValidForAddition(measurement)){
                 return false;
-            heightValues.Add(heightDimension);
-            return true;
+            }
+            int beforeCount = this.measurements.Count;
+            this.measurements.Add(new ProductMeasurement(this, measurement));
+            int afterCount = this.measurements.Count;
+            return beforeCount + 1 == afterCount;
         }
 
         /// <summary>
-        /// Adds new width value(s) to the product
+        /// Changes the current product category
         /// </summary>
-        /// <param name="widthDimension">Width's value(s)</param>
-        /// <returns>boolean true if the value(s) were added with success, false if not</returns>
-        public bool addWidthDimension(Dimension widthDimension) {
-            if (!isProductDimensionValidForAddition(widthDimension, widthValues))
+        /// <param name="productCategory">ProductCategory with the new product category</param>
+        /// <returns>boolean true if the product category was changed, false if not</returns>
+        public bool changeProductCategory(ProductCategory productCategory) {
+            if (productCategory == null || this.productCategory.Equals(productCategory))
                 return false;
-            widthValues.Add(widthDimension);
-            return true;
-        }
-
-        /// <summary>
-        /// Adds new depth value(s) to the product
-        /// </summary>
-        /// <param name="depthDimension">Depth's value(s)</param>
-        /// <returns>boolean true if the value(s) were added with success, false if not</returns>
-        public bool addDepthDimension(Dimension depthDimension) {
-            if (!isProductDimensionValidForAddition(depthDimension, depthValues))
-                return false;
-            depthValues.Add(depthDimension);
+            this.productCategory = productCategory;
             return true;
         }
 
@@ -385,34 +357,15 @@ namespace core.domain {
         }
 
         /// <summary>
-        /// Changes the current product category
+        /// Removes an instance of Measurement from the Product's list of Measurement.
         /// </summary>
-        /// <param name="productCategory">ProductCategory with the new product category</param>
-        public void changeProductCategory(ProductCategory productCategory) {
-            grantProductCategoryIsValidForChange(productCategory);
-            this.productCategory=productCategory;
+        /// <param name="measurement">Measurement being removed.</param>
+        /// <returns>True if there is more than one Measurement in the list and Measurement could be removed; false otherwise.</returns>
+        public bool removeMeasurement(Measurement measurement){
+            return measurements.Count > 1 && measurements.Remove(
+                measurements.Where(pm => pm.measurement.Equals(measurement)).SingleOrDefault()
+                );
         }
-
-        /// <summary>
-        /// Removes a specified width dimension from the current product
-        /// </summary>
-        /// <param name="widthDimension">Dimension with the width dimension being removed</param>
-        /// <returns>boolean true if the dimension was removed with success, false if not</returns>
-        public bool removeWidthDimension(Dimension widthDimension) { return widthValues.Count > 1 && widthValues.Remove(widthDimension); }
-
-        /// <summary>
-        /// Removes a specified height dimension from the current product
-        /// </summary>
-        /// <param name="heightDimension">Dimension with the height dimension being removed</param>
-        /// <returns>boolean true if the dimension was removed with success, false if not</returns>
-        public bool removeHeightDimension(Dimension heightDimension) { return heightValues.Count > 1 && heightValues.Remove(heightDimension); }
-
-        /// <summary>
-        /// Removes a specified depth dimension from the current product
-        /// </summary>
-        /// <param name="depthDimension">Dimension with the depth dimension being removed</param>
-        /// <returns>boolean true if the dimension was removed with success, false if not</returns>
-        public bool removeDepthDimension(Dimension depthDimension) { return depthValues.Count > 1 && depthValues.Remove(depthDimension); }
 
         /// <summary>
         /// Removes a material which the current product can be made of
@@ -467,20 +420,15 @@ namespace core.domain {
             dto.reference = this.reference;
             dto.productCategory = productCategory.toDTO();
 
-            DimensionsListDTO dimensionsListDTO = new DimensionsListDTO();
             if (dtoOptions.requiredUnit == null) {
-                dimensionsListDTO.heightDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(heightValues));
-                dimensionsListDTO.widthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(widthValues));
-                dimensionsListDTO.depthDimensionDTOs = new List<DimensionDTO>(DTOUtils.parseToDTOS(depthValues));
+                dto.dimensions = new List<MeasurementDTO>(DTOUtils.parseToDTOS(measurements.Select(pm => pm.measurement)));
             } else {
-                dimensionsListDTO.heightDimensionDTOs = new List<DimensionDTO>();
-                dimensionsListDTO.widthDimensionDTOs = new List<DimensionDTO>();
-                dimensionsListDTO.depthDimensionDTOs = new List<DimensionDTO>();
-                foreach (Dimension dimension in heightValues) dimensionsListDTO.heightDimensionDTOs.Add(dimension.toDTO(dtoOptions.requiredUnit));
-                foreach (Dimension dimension in widthValues) dimensionsListDTO.widthDimensionDTOs.Add(dimension.toDTO(dtoOptions.requiredUnit));
-                foreach (Dimension dimension in depthValues) dimensionsListDTO.depthDimensionDTOs.Add(dimension.toDTO(dtoOptions.requiredUnit));
+                dto.dimensions = new List<MeasurementDTO>();
+
+                foreach(ProductMeasurement measurement in this.measurements){
+                    dto.dimensions.Add(measurement.measurement.toDTO(dtoOptions.requiredUnit));
+                }
             }
-            dto.dimensions = dimensionsListDTO;
 
             dto.productMaterials = new List<MaterialDTO>();
             foreach (ProductMaterial pm in this.productMaterials) {
@@ -570,13 +518,12 @@ namespace core.domain {
         }
 
         /// <summary>
-        /// Checks if a product dimension is valid for addition on the current product
+        /// Checks if an instance of Measurement is valid for addition on the current Product's list of Measurement.
         /// </summary>
-        /// <param name="productDimension">Dimension being validated</param>
-        /// <param name="productDimensions">IEnumerable with the product dimensions</param>
-        /// <returns>boolean true if the dimension is valid for addition, false if not</returns>
-        private bool isProductDimensionValidForAddition(Dimension productDimension, ICollection<Dimension> productDimensions) {
-            return productDimension != null && !productDimensions.Contains(productDimension);
+        /// <param name="measurement">Measurement being validated.</param>
+        /// <returns>True if the Measurement is not null nor has it been previously added to the list of Measurement; false otherwise.</returns>
+        private bool isProductMeasurementValidForAddition(Measurement measurement){
+            return measurement != null && !measurements.Where(pm => pm.measurement.Equals(measurement)).Any();
         }
 
         /// <summary>
@@ -672,14 +619,11 @@ namespace core.domain {
             checkDuplicatedMaterials(productMaterials);
         }
 
-        /// <summary>
-        /// Checks if the product dimensions are valid
-        /// </summary>
-        /// <param name="productDimensions">IEnumerable with the product dimensions</param>
-        private void checkProductDimensions(IEnumerable<Dimension> productDimensions) {
-            if (Collections.isEnumerableNullOrEmpty(productDimensions))
+        private void checkProductMeasurements(IEnumerable<Measurement> measurements){
+            if(Collections.isEnumerableNullOrEmpty(measurements)){
                 throw new ArgumentException(INVALID_PRODUCT_DIMENSIONS);
-            checkDuplicatedDimensions(productDimensions);
+            }
+            checkDuplicatedMeasurements(measurements);
         }
 
         /// <summary>
@@ -723,20 +667,18 @@ namespace core.domain {
         }
 
         /// <summary>
-        /// Checks if an enumerable of dimensions has duplicates
+        /// Checks if an IEnumerable of Measurement contains duplicates
         /// </summary>
-        /// <param name="productDimension">IEnumerable with product dimensions</param>
-        private void checkDuplicatedDimensions(IEnumerable<Dimension> productDimensions) {
-            HashSet<int> productDimensionsHashCodes = new HashSet<int>();
-            IEnumerator<Dimension> productDimensionsEnumerator = productDimensions.GetEnumerator();
-            Dimension nextDimension = productDimensionsEnumerator.Current;
-            while (productDimensionsEnumerator.MoveNext()) {
-                nextDimension = productDimensionsEnumerator.Current;
-                if (!productDimensionsHashCodes.Add(nextDimension.GetHashCode())) {
+        /// <param name="measurements"></param>
+        private void checkDuplicatedMeasurements(IEnumerable<Measurement> measurements){
+            HashSet<Measurement> measurementsSet = new HashSet<Measurement>();
+            foreach(Measurement measurement in measurements){
+                if(!measurementsSet.Add(measurement)){
                     throw new ArgumentException(INVALID_PRODUCT_DIMENSIONS);
                 }
             }
         }
+
         /// <summary>
         /// Adds a restriction to a component
         /// </summary>

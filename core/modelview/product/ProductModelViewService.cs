@@ -1,7 +1,12 @@
 using core.domain;
+using core.modelview.component;
+using core.modelview.customizeddimensions;
 using core.modelview.material;
+using core.modelview.measurement;
 using core.modelview.productcategory;
+using core.modelview.slotdimensions;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace core.modelview.product{
     /// <summary>
@@ -32,9 +37,20 @@ namespace core.modelview.product{
             productModelView.reference=product.reference;
             productModelView.designation=product.designation;
             productModelView.category=ProductCategoryModelViewService.fromEntityAsBasic(product.productCategory);
+            if(product.complementedProducts.Any()){
+                productModelView.components=ComponentModelViewService.fromCollection(product.complementedProducts);
+            }
+            productModelView.materials=MaterialModelViewService.fromCollection(product.productMaterials.Select(pm => pm.material));
+            productModelView.measurements=MeasurementModelViewService.fromCollection(product.measurements.Select(pm => pm.measurement)).ToList();
+            if(product.supportsSlots){
+                productModelView.slotSizes = new GetSlotDimensionsModelView();
+                productModelView.slotSizes.minSize = CustomizedDimensionsModelViewService.fromEntity(product.minSlotSize);
+                productModelView.slotSizes.maxSize = CustomizedDimensionsModelViewService.fromEntity(product.maxSlotSize);
+                productModelView.slotSizes.recommendedSize = CustomizedDimensionsModelViewService.fromEntity(product.recommendedSlotSize);
+            }
             return productModelView;
         }
-        
+
         /// <summary>
         /// Creates a model view with the information about a collection of products
         /// </summary>

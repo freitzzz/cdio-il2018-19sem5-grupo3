@@ -82,11 +82,12 @@ namespace backend.persistence.ef
             //PriceTableEntry inheritance mapping
             /* builder.Entity<MaterialPriceTableEntry>().HasBaseType<PriceTableEntry>();
             builder.Entity<FinishPriceTableEntry>().HasBaseType<PriceTableEntry>(); */
-
-            //TODO: improve restriction mapping, since it currently has columns for various entity ids
-            builder.Entity<Dimension>().HasMany(d => d.restrictions);           //one-to-many relationship
-
             builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values); //one-to-many relationship
+
+            builder.Entity<Measurement>().HasOne(m => m.height);        //one-to-one relationship
+            builder.Entity<Measurement>().HasOne(m => m.depth);         //one-to-one relationship
+            builder.Entity<Measurement>().HasOne(m => m.width);         //one-to-one relationship
+            builder.Entity<Measurement>().HasMany(m => m.restrictions); //one-to-many relationship
 
             //Configure many-to-one relationship between parent and child ProductCategory
             builder.Entity<ProductCategory>().HasOne(c => c.parent).WithMany().HasForeignKey(c => c.parentId);
@@ -94,16 +95,19 @@ namespace backend.persistence.ef
             builder.Entity<Material>().HasMany(m => m.Colors);                  //one-to-many relationship
             builder.Entity<Material>().HasMany(m => m.Finishes);                //one-to-many relationship
 
-            //TODO: change pk to compound pk
             //Configure many-to-many relationship between Product and Material
-            builder.Entity<ProductMaterial>().HasOne(m => m.material).WithMany();
+            builder.Entity<ProductMaterial>().HasKey(pm => new {pm.productId, pm.materialId});
+            builder.Entity<ProductMaterial>().HasOne(pm => pm.product).WithMany(p => p.productMaterials).HasForeignKey(pm => pm.productId);
+            builder.Entity<ProductMaterial>().HasOne(pm => pm.material).WithMany().HasForeignKey(pm => pm.materialId);
             builder.Entity<ProductMaterial>().HasMany(pm => pm.restrictions);
-            builder.Entity<Product>().HasMany(p => p.productMaterials).WithOne(pm => pm.product);
+
+             //TODO: remove join class, if possible
+            //NOTE: This "join class" is only here as a workaround for now
+            builder.Entity<ProductMeasurement>().HasKey(pm => new {pm.productId, pm.measurementId});
+            builder.Entity<ProductMeasurement>().HasOne(pm => pm.product).WithMany(p => p.measurements).HasForeignKey(pm => pm.productId);
+            builder.Entity<ProductMeasurement>().HasOne(pm => pm.measurement);
 
             builder.Entity<Product>().HasOne(p => p.productCategory);           //many-to-one relationship
-            builder.Entity<Product>().HasMany(p => p.depthValues);              //one-to-many relationship
-            builder.Entity<Product>().HasMany(p => p.widthValues);              //one-to-many relationship
-            builder.Entity<Product>().HasMany(p => p.heightValues);             //one-to-many relationship
             builder.Entity<Product>().OwnsOne(p => p.minSlotSize);              //embedded Dimensions
             builder.Entity<Product>().OwnsOne(p => p.maxSlotSize);              //embedded Dimensions
             builder.Entity<Product>().OwnsOne(p => p.recommendedSlotSize);      //embedded Dimensions
@@ -122,8 +126,6 @@ namespace backend.persistence.ef
             builder.Entity<CustomizedMaterial>().HasOne(cm => cm.finish);
             builder.Entity<CustomizedMaterial>().HasOne(cm => cm.color);
 
-            //!Slots have many customized products and a customized product has many slots
-            //TODO: Create a relational class
 
             builder.Entity<Slot>().OwnsOne(s => s.slotDimensions);              //embedded Dimensions
             builder.Entity<Slot>().HasMany(s => s.customizedProducts).WithOne(cp => cp.insertedInSlot).HasForeignKey(cp => cp.insertedInSlotId).OnDelete(DeleteBehavior.Cascade);          //one-to-many relationship

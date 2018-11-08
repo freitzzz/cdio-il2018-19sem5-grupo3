@@ -70,7 +70,7 @@ namespace core.domain
         /// </summary>
         public double increment { get; set; }
 
-        private ContinuousDimensionInterval(ILazyLoader lazyLoader) : base(lazyLoader) {}
+        private ContinuousDimensionInterval(ILazyLoader lazyLoader) : base(lazyLoader) { }
 
         /// <summary>
         /// Empty constructor for ORM.
@@ -134,7 +134,6 @@ namespace core.domain
             this.minValue = minValue;
             this.maxValue = maxValue;
             this.increment = increment;
-            this.restrictions = new List<Restriction>();
         }
 
         /// <summary>
