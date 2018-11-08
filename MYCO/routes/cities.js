@@ -46,4 +46,4 @@ function deserializeCity(citySchema){
         longitude:citySchema.location.longitude
     }
 }
-module.exports = (citiesRoute,City);
+module.exports = citiesRoute;
