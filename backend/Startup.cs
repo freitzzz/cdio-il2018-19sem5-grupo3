@@ -7,6 +7,7 @@ using backend.config;
 using System.Security;
 using Microsoft.EntityFrameworkCore;
 using backend.persistence.ef;
+using System;
 
 namespace backend
 {
@@ -31,6 +32,12 @@ namespace backend
             });*/
             DatabaseConfiguration.ConfigureDatabase(Configuration, services);
 
+            services.AddHttpClient("CurrencyConversion", client =>
+            {
+                client.BaseAddress = new Uri("http://rate-exchange-1.appspot.com");
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                client.DefaultRequestHeaders.Add("User-Agent", "CurrencyConversionAgent");
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
