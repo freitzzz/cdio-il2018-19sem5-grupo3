@@ -34,5 +34,14 @@ namespace core.application
         {
             return UpdateMaterialPriceTableEntryModelViewService.update(modelView);
         }
+
+        /// <summary>
+        /// Updates a finish's price table entry
+        /// </summary>
+        /// <param name="modelView">model view with the necessary update information</param>
+        public bool updateFinishPriceTableEntry(UpdateFinishPriceTableEntryModelView modelView)
+        {
+            return UpdateFinishPriceTableEntryModelViewService.update(modelView);
+        }
     }
 }
