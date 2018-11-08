@@ -7,12 +7,20 @@ namespace core.domain
 {
     public class FinishPriceTableEntry : PriceTableEntry<Finish>, AggregateRoot<string>
     {
+        private const string EMPTY_MATERIAL_EID = "Material EID can't be null or empty";
 
         /// <summary>
         /// Overrides entity property to allow lazy loading of the same
         /// </summary>
         /// <param name="_entity">entity type of the price table entry</param>
         public override Finish entity { get => LazyLoader.Load(this, ref _entity); protected set => _entity = value; }
+
+        //TODO see if this is the best solution
+        /// <summary>
+        /// EID of the material that belongs to the finish
+        /// </summary>
+        /// <value>Gets/Sets the EID</value>
+        public string materialEID { get; internal set; }
 
         /// <summary>
         /// Constructor used for injecting a LazyLoader
@@ -31,14 +39,28 @@ namespace core.domain
         /// <param name="price">Table Entry's price</param>
         /// <param name="timePeriod">Table Entry's time period</param>
         /// <param name="finish">Table Entry's finish</param>
-        public FinishPriceTableEntry(Finish finish, Price price, TimePeriod timePeriod)
+        public FinishPriceTableEntry(string materialEID, Finish finish, Price price, TimePeriod timePeriod)
                 : base(finish, price, timePeriod)
         {
+            checkMaterialEID(materialEID);
+            this.materialEID = materialEID;
+            createEID();
+        }
+
+        /// <summary>
+        /// Checks if a material EID is valid
+        /// </summary>
+        private void checkMaterialEID(string materialEID)
+        {
+            if (materialEID == null || materialEID.Trim().Length == 0)
+            {
+                throw new ArgumentException(EMPTY_MATERIAL_EID);
+            }
         }
 
         protected override void createEID()
         {
-            eId = entity.description + String.Format("_{0}-{1}-{2}T{3}:{4}:{5}",
+            eId = "M" + materialEID + "_" + entity.description + String.Format("_{0}-{1}-{2}T{3}:{4}:{5}",
                                 timePeriod.startingDate.Year,
                                 timePeriod.startingDate.Month,
                                 timePeriod.startingDate.Day,
@@ -54,7 +76,7 @@ namespace core.domain
 
         public override bool sameAs(string comparingEntity)
         {
-            return this.id().Equals(comparingEntity);
+            return eId.Equals(comparingEntity);
         }
     }
 }
