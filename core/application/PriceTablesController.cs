@@ -1,5 +1,8 @@
+using core.dto;
 using core.modelview.pricetableentries;
+using core.modelview.pricetable;
 using core.services;
+using System;
 
 namespace core.application
 {
@@ -8,6 +11,25 @@ namespace core.application
     /// </summary>
     public class PriceTablesController
     {
+
+        /// <summary>
+        /// Fetches the price history of a material
+        /// </summary>
+        /// <param name="fetchMaterialFinishPriceHistoryDTO">FetchMaterialPriceHistoryDTO with the information about the fetch</param>
+        /// <returns>GetAllMaterialPriceHistoryModelView with the material price history fetch information</returns>
+        public GetAllMaterialPriceHistoryModelView fetchMaterialPriceHistory(FetchMaterialPriceHistoryDTO fetchMaterialPriceHistoryDTO){
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Fetches the price history of a material finish
+        /// </summary>
+        /// <param name="fetchMaterialFinishPriceHistoryDTO">FetchMaterialFinishPriceHistoryDTO with the information about the fetch</param>
+        /// <returns>GetAllMaterialFinishPriceHistoryModelView with the material finish price history fetch information</returns>
+        public GetAllMaterialFinishPriceHistoryModelView fetchMaterialFinishPriceHistory(FetchMaterialPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO){
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Adds a new price table entry for a material
         /// </summary>
