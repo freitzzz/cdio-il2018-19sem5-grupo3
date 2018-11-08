@@ -3,16 +3,11 @@ using core.dto;
 
 namespace core.modelview.pricetableentries
 {
+    /// <summary>
+    /// ModelView that represents the updatable information of a price table entry
+    /// </summary>
     [DataContract]
-    public class UpdatePriceTableEntryModelView
+    public class UpdatePriceTableEntryModelView : BasicPriceTableEntryModelView
     {
-        [DataMember(Name = "tableEntryId")]
-        public long tableEntryId { get; set; }
-
-        [DataMember(Name = "entityId")]
-        public long entityId { get; set; }
-
-        [DataMember(Name = "tableEntry")]
-        public PriceTableEntryDTO priceTableEntry { get; set; }
     }
 }
