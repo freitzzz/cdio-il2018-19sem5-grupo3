@@ -1,6 +1,9 @@
 using System;
+using backend.utils;
 using core.application;
+using core.dto;
 using core.persistence;
+using core.modelview.pricetable;
 using core.modelview.pricetableentries;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -111,6 +114,46 @@ namespace backend.Controllers
             this.finishPriceTableRepository = finishPriceTableRepository;
             this.logger = logger;
             this.clientFactory = clientFactory;
+        }
+
+        /// <summary>
+        /// Fetches the price history of a material
+        /// </summary>
+        /// <param name="materialID">Long with the resource ID of the material being fetched the price history</param>
+        /// <returns>HTTP Response 200; OK with the material price history
+        ///      <br>HTTP Response 400; Bad Request if there is no price history for the given material
+        /// </returns>
+        [HttpGet("materials/{materialID}")]
+        public ActionResult fetchMaterialPriceHistory(long materialID){
+            FetchMaterialPriceHistoryDTO fetchMaterialPriceHistoryDTO=new FetchMaterialPriceHistoryDTO();
+            fetchMaterialPriceHistoryDTO.materialID=materialID;
+            try{
+                GetAllMaterialPriceHistoryModelView materialPriceHistoryModelView=new core.application.PriceTablesController().fetchMaterialPriceHistory(fetchMaterialPriceHistoryDTO);
+                return Ok(materialPriceHistoryModelView);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+            }
+        }
+
+        /// <summary>
+        /// Fetches the price history of a material finish
+        /// </summary>
+        /// <param name="materialID">Long with the resource ID of the material being fetched the price history</param>
+        /// <param name="finishID">Long with the resource ID of the material finish being fetched the price history</param>
+        /// <returns>HTTP Response 200; OK with the material price history
+        ///      <br>HTTP Response 400; Bad Request if there is no price history for the given material
+        /// </returns>
+        [HttpGet("materials/{materialID}/finishes/{finishID}")]
+        public ActionResult fetchMaterialPriceHistory(long materialID,long finishID){
+            FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO=new FetchMaterialFinishPriceHistoryDTO();
+            fetchMaterialFinishPriceHistoryDTO.materialID=materialID;
+            fetchMaterialFinishPriceHistoryDTO.finishID=finishID;
+            try{
+                GetAllMaterialFinishPriceHistoryModelView materialFinishPriceHistoryModelView=new core.application.PriceTablesController().fetchMaterialFinishPriceHistory(fetchMaterialFinishPriceHistoryDTO);
+                return Ok(materialFinishPriceHistoryModelView);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+            }
         }
 
         /// <summary>
