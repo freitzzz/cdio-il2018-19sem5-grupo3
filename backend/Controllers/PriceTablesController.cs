@@ -109,6 +109,27 @@ namespace backend.Controllers
         }
 
         /// <summary>
+        /// Fetches the price history of a material
+        /// </summary>
+        /// <param name="materialID">Long with the resource ID of the material being fetched the price history</param>
+        /// <returns>HTTP Response 200; OK with the material price history
+        ///      <br>HTTP Response 400; Bad Request if there is no price history for the given material
+        /// </returns>
+        [HttpGet("materials/{materialID}")]
+        public ActionResult fetchMaterialPriceHistory(long materialID){throw new NotImplementedException();}
+
+        /// <summary>
+        /// Fetches the price history of a material finish
+        /// </summary>
+        /// <param name="materialID">Long with the resource ID of the material being fetched the price history</param>
+        /// <param name="finishID">Long with the resource ID of the material finish being fetched the price history</param>
+        /// <returns>HTTP Response 200; OK with the material price history
+        ///      <br>HTTP Response 400; Bad Request if there is no price history for the given material
+        /// </returns>
+        [HttpGet("materials/{materialID}/finishes/{finishID}")]
+        public ActionResult fetchMaterialPriceHistory(long materialID,long finishID){throw new NotImplementedException();}
+
+        /// <summary>
         /// Adds a new price table entry for a given material
         /// </summary>
         /// <param name="id">PID of the material</param>
