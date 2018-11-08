@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var city = require('../models/City');
+var factory = require('../models/Factory');
 
 var orderContentsSchemas = new mongoose.Schema({
     customizedproduct: {
@@ -22,6 +24,7 @@ var orderContentsSchemas = new mongoose.Schema({
         },
         required: [true, 'Quantity Required']
     }
+
 }, {
     _id: false
 });
@@ -35,6 +38,14 @@ var orderSchema = new Schema({
         enum: ["In Validation", "Validated", "In Production", "Ready To Ship", "Delivered"],
         default: "In Validation",
         required: true
+    },
+    cityToDeliver:{
+        type:city.schema,
+        required:true
+    },
+    factoryOfProduction:{
+        type:factory.schema,
+        required:false
     }
 }, {
     collection: 'orders'

@@ -3,6 +3,7 @@ const ordersRoute = express.Router();
 const Order = require('../models/order');
 const Factory=require('../models/Factory');
 const http = require('http');
+const City = require('../models/City');
 
 //Get all orders in the database
 //Handle errors by using the ones available in the mongoose schema
@@ -95,22 +96,23 @@ function getCustomizedProduct(customizedProductId) {
     })
 }
 
+
 //Creates a new Order
 //TODO Handle errors by using the ones available in the mongoose schema
 ordersRoute.route('/orders').post(function (req, res, next) {
-    Order.create({
-            orderContents: req.body.orderContents,
-        },
-        function (error, order) {
-            if (error) {
-                res.status(400).json({
-                    Error: 'The order body is invalid. Please try again'
-                });
-            } else {
-                res.status(201).json(order);
-            }
+    if(!req.body.cityToDeliverId.match(/^[0-9a-fA-F]{24}$/)){
+        res.status(400).json({
+            Error : 'Invalid City Id. Please try again'
         })
-})
+
+
+
+
+
+
+
+
+
 
 function get_shortest_factory_between_city(city){
     Factory
@@ -124,4 +126,46 @@ function get_shortest_factory_between_city(city){
             })
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+    City.findById(req.body.cityToDeliverId).then(function (error, city) {
+        if (error) {
+            res.status(404).json({
+                Error: 'City not found. Please try again'
+            });
+
+        } else {
+            Order.create({
+                    orderContents: req.body.orderContents,
+                    cityToDeliver: city
+                },
+                function (error, order) {
+                    if (error) {
+                        res.status(400).json({
+                            Error: 'The order body is invalid. Please try again'
+                        });
+                    } else {
+                        res.status(201).json(order);
+                    }
+                })
+        }
+    })
+})
 module.exports = ordersRoute;
