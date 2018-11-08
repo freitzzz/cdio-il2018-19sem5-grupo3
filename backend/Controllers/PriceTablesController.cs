@@ -95,17 +95,20 @@ namespace backend.Controllers
         /// </summary>
         private readonly ILogger<PriceTablesController> logger;
 
+        private readonly IHttpClientFactory clientFactory;
+
         /// <summary>
         /// Constructor with injected type of repositories
         /// </summary>
         /// <param name="materialPriceTableRepository">material price table repository</param>
         /// <param name="finishPriceTableRepository">finish price table repository</param>
         /// <param name="logger">controller's logger</param>
-        public PriceTablesController(MaterialPriceTableRepository materialPriceTableRepository, FinishPriceTableRepository finishPriceTableRepository, ILogger<PriceTablesController> logger)
+        public PriceTablesController(MaterialPriceTableRepository materialPriceTableRepository, FinishPriceTableRepository finishPriceTableRepository, ILogger<PriceTablesController> logger, IHttpClientFactory clientFactory)
         {
             this.materialPriceTableRepository = materialPriceTableRepository;
             this.finishPriceTableRepository = finishPriceTableRepository;
             this.logger = logger;
+            this.clientFactory = clientFactory;
         }
 
         /// <summary>
