@@ -10,8 +10,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntryIsntCreatedIfPriceIsNull()
         {
-            Action act = () => new FinishPriceTableEntry(null,
-                createTimePeriod(), createFinish());
+            Action act = () => new FinishPriceTableEntry(price:null,
+                timePeriod:createTimePeriod(), finish:createFinish());
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -19,8 +19,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntryIsntCreatedIfTimePeriodIsNull()
         {
-            Action act = () => new FinishPriceTableEntry(Price.valueOf(10),
-                null, createFinish());
+            Action act = () => new FinishPriceTableEntry(price:Price.valueOf(10),
+                timePeriod:null, finish:createFinish());
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -28,8 +28,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntryIsntCreatedIfFinishIsNull()
         {
-            Action act = () => new FinishPriceTableEntry(Price.valueOf(20),
-                createTimePeriod(), null);
+            Action act = () => new FinishPriceTableEntry(price:Price.valueOf(20),
+                timePeriod:createTimePeriod(), finish:null);
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -37,18 +37,18 @@ namespace core_tests.domain
         [Fact]
         public void ensureInstanceIsCreated()
         {
-            FinishPriceTableEntry instance = new FinishPriceTableEntry(Price.valueOf(20),
-                                                createTimePeriod(), createFinish());
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(price:Price.valueOf(20),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
             Assert.NotNull(instance);
         }
 
         [Fact]
         public void ensureTableEntriesWithDifferentPricesHaveDifferentHashCodes()
         {
-            FinishPriceTableEntry instance = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
-            FinishPriceTableEntry other = new FinishPriceTableEntry(Price.valueOf(5),
-                                                createTimePeriod(), createFinish());
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
+            FinishPriceTableEntry other = new FinishPriceTableEntry(price:Price.valueOf(5),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
 
             Assert.NotEqual(instance.GetHashCode(), other.GetHashCode());
         }
@@ -56,10 +56,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntriesWithDifferentTimePeriodsHaveDifferentHashCodes()
         {
-            FinishPriceTableEntry instance = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
-            FinishPriceTableEntry other = new FinishPriceTableEntry(Price.valueOf(10),
-                                               createOtherTimePeriod(), createFinish());
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
+            FinishPriceTableEntry other = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                               timePeriod:createOtherTimePeriod(), finish:createFinish());
 
             Assert.NotEqual(instance.GetHashCode(), other.GetHashCode());
         }
@@ -67,10 +67,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntriesWithDifferentFinishesHaveDifferentHashCodes()
         {
-            FinishPriceTableEntry instance = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
-            FinishPriceTableEntry other = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createOtherFinish());
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
+            FinishPriceTableEntry other = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createOtherFinish());
 
             Assert.NotEqual(instance.GetHashCode(), other.GetHashCode());
         }
@@ -78,10 +78,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureEqualTableEntriesHaveEqualHashCodes()
         {
-            FinishPriceTableEntry instance = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
-            FinishPriceTableEntry other = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
+            FinishPriceTableEntry other = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
 
             Assert.Equal(instance.GetHashCode(), other.GetHashCode());
         }
@@ -89,8 +89,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntryIsEqualToItself()
         {
-            FinishPriceTableEntry instance = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
 
             Assert.True(instance.Equals(instance));
         }
@@ -98,8 +98,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntryIsntEqualToNull()
         {
-            FinishPriceTableEntry instance = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
 
             Assert.False(instance.Equals(null));
         }
@@ -107,8 +107,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntryIsntEqualToInstanceOfOtherType()
         {
-            FinishPriceTableEntry instance = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
 
             Assert.False(instance.Equals("bananas"));
         }
@@ -116,10 +116,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntriesWithDifferentPricesArentEqual()
         {
-            FinishPriceTableEntry instance = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
-            FinishPriceTableEntry other = new FinishPriceTableEntry(Price.valueOf(5),
-                                                createTimePeriod(), createFinish());
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
+            FinishPriceTableEntry other = new FinishPriceTableEntry(price:Price.valueOf(5),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
 
             Assert.False(instance.Equals(other));
         }
@@ -127,10 +127,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntriesWithDifferentTimePeriodsArentEqual()
         {
-            FinishPriceTableEntry instance = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
-            FinishPriceTableEntry other = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createOtherTimePeriod(), createFinish());
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
+            FinishPriceTableEntry other = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createOtherTimePeriod(), finish:createFinish());
 
             Assert.False(instance.Equals(other));
         }
@@ -138,10 +138,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntriesWithDifferentFinishesArentEqual()
         {
-            FinishPriceTableEntry instance = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
-            FinishPriceTableEntry other = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createOtherFinish());
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
+            FinishPriceTableEntry other = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createOtherFinish());
 
             Assert.False(instance.Equals(other));
         }
@@ -149,10 +149,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntriesWithEqualPropertiesAreEqual()
         {
-            FinishPriceTableEntry instance = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
-            FinishPriceTableEntry other = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
+            FinishPriceTableEntry other = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
 
             Assert.True(instance.Equals(other));
         }
@@ -160,10 +160,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureToStringWorks()
         {
-            FinishPriceTableEntry instance = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
-            FinishPriceTableEntry other = new FinishPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createFinish());
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
+            FinishPriceTableEntry other = new FinishPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), finish:createFinish());
 
             Assert.Equal(instance.ToString(), other.ToString());
         }

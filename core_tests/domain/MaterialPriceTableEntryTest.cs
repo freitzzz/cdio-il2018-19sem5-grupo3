@@ -14,8 +14,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntryIsntCreatedIfPriceIsNull()
         {
-            Action act = () => new MaterialPriceTableEntry(null,
-                createTimePeriod(), createMaterial());
+            Action act = () => new MaterialPriceTableEntry(price:null,
+                timePeriod:createTimePeriod(), material:createMaterial());
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -23,8 +23,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntryIsntCreatedIfTimePeriodIsNull()
         {
-            Action act = () => new MaterialPriceTableEntry(Price.valueOf(10),
-                null, createMaterial());
+            Action act = () => new MaterialPriceTableEntry(price:Price.valueOf(10),
+                timePeriod:null, material:createMaterial());
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -32,8 +32,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntryIsntCreatedIfMaterialIsNull()
         {
-            Action act = () => new MaterialPriceTableEntry(Price.valueOf(20),
-                createTimePeriod(), null);
+            Action act = () => new MaterialPriceTableEntry(price:Price.valueOf(20),
+                timePeriod:createTimePeriod(), material:null);
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -41,18 +41,18 @@ namespace core_tests.domain
         [Fact]
         public void ensureInstanceIsCreated()
         {
-            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(Price.valueOf(20),
-                                                createTimePeriod(), createMaterial());
+            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(price:Price.valueOf(20),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
             Assert.NotNull(instance);
         }
 
         [Fact]
         public void ensureTableEntriesWithDifferentPricesHaveDifferentHashCodes()
         {
-            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
-            MaterialPriceTableEntry other = new MaterialPriceTableEntry(Price.valueOf(5),
-                                                createTimePeriod(), createMaterial());
+            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
+            MaterialPriceTableEntry other = new MaterialPriceTableEntry(price:Price.valueOf(5),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
 
             Assert.NotEqual(instance.GetHashCode(), other.GetHashCode());
         }
@@ -60,10 +60,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntriesWithDifferentTimePeriodsHaveDifferentHashCodes()
         {
-            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
-            MaterialPriceTableEntry other = new MaterialPriceTableEntry(Price.valueOf(10),
-                                               createOtherTimePeriod(), createMaterial());
+            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
+            MaterialPriceTableEntry other = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                               timePeriod:createOtherTimePeriod(), material:createMaterial());
 
             Assert.NotEqual(instance.GetHashCode(), other.GetHashCode());
         }
@@ -71,10 +71,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntriesWithDifferentMaterialsHaveDifferentHashCodes()
         {
-            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
-            MaterialPriceTableEntry other = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createOtherMaterial());
+            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
+            MaterialPriceTableEntry other = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createOtherMaterial());
 
             Assert.NotEqual(instance.GetHashCode(), other.GetHashCode());
         }
@@ -82,10 +82,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureEqualTableEntriesHaveEqualHashCodes()
         {
-            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
-            MaterialPriceTableEntry other = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
+            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
+            MaterialPriceTableEntry other = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
 
             Assert.Equal(instance.GetHashCode(), other.GetHashCode());
         }
@@ -93,8 +93,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntryIsEqualToItself()
         {
-            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
+            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
 
             Assert.True(instance.Equals(instance));
         }
@@ -102,8 +102,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntryIsntEqualToNull()
         {
-            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
+            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
 
             Assert.False(instance.Equals(null));
         }
@@ -111,8 +111,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntryIsntEqualToInstanceOfOtherType()
         {
-            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
+            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
 
             Assert.False(instance.Equals("bananas"));
         }
@@ -120,10 +120,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntriesWithDifferentPricesArentEqual()
         {
-            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
-            MaterialPriceTableEntry other = new MaterialPriceTableEntry(Price.valueOf(5),
-                                                createTimePeriod(), createMaterial());
+            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
+            MaterialPriceTableEntry other = new MaterialPriceTableEntry(price:Price.valueOf(5),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
 
             Assert.False(instance.Equals(other));
         }
@@ -131,10 +131,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntriesWithDifferentTimePeriodsArentEqual()
         {
-            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
-            MaterialPriceTableEntry other = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createOtherTimePeriod(), createMaterial());
+            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
+            MaterialPriceTableEntry other = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createOtherTimePeriod(), material:createMaterial());
 
             Assert.False(instance.Equals(other));
         }
@@ -142,10 +142,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntriesWithDifferentMaterialsArentEqual()
         {
-            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
-            MaterialPriceTableEntry other = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createOtherMaterial());
+            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
+            MaterialPriceTableEntry other = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createOtherMaterial());
 
             Assert.False(instance.Equals(other));
         }
@@ -153,10 +153,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureTableEntriesWithEqualPropertiesAreEqual()
         {
-            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
-            MaterialPriceTableEntry other = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
+            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
+            MaterialPriceTableEntry other = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
 
             Assert.True(instance.Equals(other));
         }
@@ -164,10 +164,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureToStringWorks()
         {
-            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
-            MaterialPriceTableEntry other = new MaterialPriceTableEntry(Price.valueOf(10),
-                                                createTimePeriod(), createMaterial());
+            MaterialPriceTableEntry instance = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
+            MaterialPriceTableEntry other = new MaterialPriceTableEntry(price:Price.valueOf(10),
+                                                timePeriod:createTimePeriod(), material:createMaterial());
 
             Assert.Equal(instance.ToString(), other.ToString());
         }
