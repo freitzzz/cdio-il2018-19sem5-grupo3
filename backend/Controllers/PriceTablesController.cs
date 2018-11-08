@@ -5,6 +5,8 @@ using core.modelview.pricetableentries;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NodaTime.Text;
+using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace backend.Controllers
 {
@@ -119,13 +121,13 @@ namespace backend.Controllers
         /// <returns>ActionResult with HTTP Code 201 if the creation is successful
         ///         Or ActionResult with HTTP Code 401 if an error happens</returns>
         [HttpPost("materials/{id}")]
-        public ActionResult addMaterialPriceTableEntry(long id, [FromBody] AddPriceTableEntryModelView modelView)
+        public async Task<ActionResult> addMaterialPriceTableEntry(long id, [FromBody] AddPriceTableEntryModelView modelView)
         {
             logger.LogInformation(LOG_POST_START);
             try
             {
                 modelView.entityId = id;
-                AddPriceTableEntryModelView createdPrice = new core.application.PriceTablesController().addMaterialPriceTableEntry(modelView);
+                AddPriceTableEntryModelView createdPrice = await new core.application.PriceTablesController().addMaterialPriceTableEntry(modelView, clientFactory);
                 if (createdPrice == null)
                 {
                     logger.LogWarning(LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
@@ -164,14 +166,14 @@ namespace backend.Controllers
         /// <returns>ActionResult with HTTP Code 201 if the creation is successful
         ///         Or ActionResult with HTTP Code 401 if an error happens</returns>
         [HttpPost("materials/{materialid}/finishes/{finishid}")]
-        public ActionResult addFinishPriceTableEntry(long materialid, long finishid, [FromBody] AddFinishPriceTableEntryModelView modelView)
+        public async Task<ActionResult> addFinishPriceTableEntry(long materialid, long finishid, [FromBody] AddFinishPriceTableEntryModelView modelView)
         {
             logger.LogInformation(LOG_POST_START);
             try
             {
                 modelView.entityId = materialid;
                 modelView.finishId = finishid;
-                AddFinishPriceTableEntryModelView createdPrice = new core.application.PriceTablesController().addFinishPriceTableEntry(modelView);
+                AddFinishPriceTableEntryModelView createdPrice = await new core.application.PriceTablesController().addFinishPriceTableEntry(modelView, clientFactory);
                 if (createdPrice == null)
                 {
                     logger.LogWarning(LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
@@ -211,14 +213,14 @@ namespace backend.Controllers
         /// <returns>ActionResult with HTTP Code 200 if the update is successful
         ///         Or ActionResult with HTTP Code 401 if the update isn't successful</returns>
         [HttpPut("materials/{materialid}/entries/{entryid}")]
-        public ActionResult updateMaterialPriceTableEntry(long materialid, long entryid, [FromBody] UpdatePriceTableEntryModelView modelView)
+        public async Task<ActionResult> updateMaterialPriceTableEntry(long materialid, long entryid, [FromBody] UpdatePriceTableEntryModelView modelView)
         {
             logger.LogInformation(LOG_PUT_START);
             try
             {
                 modelView.entityId = materialid;
                 modelView.tableEntryId = entryid;
-                if (!new core.application.PriceTablesController().updateMaterialPriceTableEntry(modelView))
+                if (!await new core.application.PriceTablesController().updateMaterialPriceTableEntry(modelView, clientFactory))
                 {
                     logger.LogWarning(LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
                     return BadRequest(new { error = ENTRY_NOT_UPDATED });
@@ -257,7 +259,7 @@ namespace backend.Controllers
         /// <param name="modelView">model view with the update information</param>
         /// <returns></returns>
         [HttpPut("materials/{materialid}/finishes/{finishid}/entries/{entryid}")]
-        public ActionResult updateFinishPriceTableEntry(long materialid, long finishid, long entryid, [FromBody] UpdateFinishPriceTableEntryModelView modelView)
+        public async Task<ActionResult> updateFinishPriceTableEntry(long materialid, long finishid, long entryid, [FromBody] UpdateFinishPriceTableEntryModelView modelView)
         {
             logger.LogInformation(LOG_PUT_START);
             try
@@ -265,7 +267,7 @@ namespace backend.Controllers
                 modelView.entityId = materialid;
                 modelView.finishId = finishid;
                 modelView.tableEntryId = entryid;
-                if (!new core.application.PriceTablesController().updateFinishPriceTableEntry(modelView))
+                if (!await new core.application.PriceTablesController().updateFinishPriceTableEntry(modelView, clientFactory))
                 {
                     logger.LogWarning(LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
                     return BadRequest(new { error = ENTRY_NOT_UPDATED });
