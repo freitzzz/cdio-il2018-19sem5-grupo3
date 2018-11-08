@@ -8,12 +8,8 @@ namespace core.domain
     /// <summary>
     /// Represents an Entry in a Material Price Table
     /// </summary>
-    public class MaterialPriceTableEntry : PriceTableEntry<Material>, AggregateRoot<MaterialPriceTableEntry>
+    public class MaterialPriceTableEntry : PriceTableEntry<Material>
     {
-        /// <summary>
-        /// Constant that represents the message that occurs if a material is null
-        /// </summary>
-        private const string NULL_MATERIAL = "Material can't be null";
 
         /// <summary>
         /// Overrides entity property to allow lazy loading of the same
@@ -38,33 +34,30 @@ namespace core.domain
         /// <param name="price">Table Entry's price</param>
         /// <param name="timePeriod">Price's time period</param>
         /// <param name="material">Table Entry's material</param>
-        public MaterialPriceTableEntry(Price price, TimePeriod timePeriod, Material material)
-                                        : base(price, timePeriod)
+        public MaterialPriceTableEntry(Material material, Price price, TimePeriod timePeriod)
+                                        : base(material, price, timePeriod)
         {
-            checkMaterial(material);
-            this.entity = material;
+            createEID();
         }
 
-        /// <summary>
-        /// Checks if a material is valid for a TableEntry
-        /// </summary>
-        /// <param name="material">Material being checked</param>
-        private void checkMaterial(Material material)
-        {
-            if (material == null)
-            {
-                throw new ArgumentException(NULL_MATERIAL);
-            }
+        protected override void createEID(){
+            eId = entity.id() + String.Format("_{0}-{1}-{2}T{3}:{4}:{5}",
+                                 timePeriod.startingDate.Year,
+                                 timePeriod.startingDate.Month,
+                                 timePeriod.startingDate.Day,
+                                 timePeriod.startingDate.Hour,
+                                 timePeriod.startingDate.Minute,
+                                 timePeriod.startingDate.Second);
         }
 
-        public MaterialPriceTableEntry id()
+        public override string id()
         {
-            return this;
+            return eId;
         }
 
-        public bool sameAs(MaterialPriceTableEntry comparingEntity)
+        public override bool sameAs(string comparingEntity)
         {
-            return this.Equals(comparingEntity);
+            return eId.Equals(comparingEntity);
         }
     }
 }

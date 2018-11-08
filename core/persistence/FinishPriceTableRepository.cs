@@ -10,7 +10,7 @@ namespace core.persistence
     /// <typeparam name="FinishPriceTableEntry">Entity type</typeparam>
     /// <typeparam name="long">PID type</typeparam>
     /// <typeparam name="FinishPriceTableEntry">Entity's Business Identifier</typeparam>
-    public interface FinishPriceTableRepository : Repository<FinishPriceTableEntry, long, FinishPriceTableEntry>
+    public interface FinishPriceTableRepository : Repository<FinishPriceTableEntry, long, string>
     {
 
     }

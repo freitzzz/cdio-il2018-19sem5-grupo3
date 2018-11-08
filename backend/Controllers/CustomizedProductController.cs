@@ -281,11 +281,16 @@ namespace backend.Controllers{
             DeleteSlotFromCustomizedProductModelView deleteSlotFromCustomizedProductModelView = new DeleteSlotFromCustomizedProductModelView();
             deleteSlotFromCustomizedProductModelView.customizedProductId = id;
             deleteSlotFromCustomizedProductModelView.slotId = slotid;
-            if(new core.application.CustomizedProductController().deleteSlotFromCustomizedProduct(deleteSlotFromCustomizedProductModelView)){
-                logger.LogInformation(LOG_DELETE_SLOT_FROM_CUSTOMIZED_PRODUCT_SUCCESS,slotid,id);
-                return NoContent();
-            }else{
-                logger.LogWarning(LOG_DELETE_SLOT_FROM_CUSTOMIZED_PRODUCT_BAD_REQUEST,slotid,id);
+            try{
+                if(new core.application.CustomizedProductController().deleteSlotFromCustomizedProduct(deleteSlotFromCustomizedProductModelView)){
+                    logger.LogInformation(LOG_DELETE_SLOT_FROM_CUSTOMIZED_PRODUCT_SUCCESS,slotid,id);
+                    return NoContent();
+                }else{
+                    logger.LogWarning(LOG_DELETE_SLOT_FROM_CUSTOMIZED_PRODUCT_BAD_REQUEST,slotid,id);
+                    return BadRequest();
+                }
+            }catch(NullReferenceException nullReferenceException){
+                logger.LogWarning(nullReferenceException,LOG_DELETE_CHILD_CUSTOMIZED_PRODUCT_BAD_REQUEST,slotid,id);
                 return BadRequest();
             }
         }

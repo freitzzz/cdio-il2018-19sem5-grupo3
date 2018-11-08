@@ -79,10 +79,18 @@ namespace backend_tests.Controllers
             colorDTO.green = 200;
             colorDTO.blue = 10;
             colorDTO.alpha = 0;
+            ColorDTO otherColorDTO = new ColorDTO();
+            otherColorDTO.name = "another color";
+            otherColorDTO.red = 10;
+            otherColorDTO.green = 10;
+            otherColorDTO.blue = 10;
+            otherColorDTO.alpha = 10;
             FinishDTO finishDTO = new FinishDTO();
+            FinishDTO otherFinishDTO = new FinishDTO();
             finishDTO.description = "ola";
-            materialDTO.colors = new List<ColorDTO>(new[] { colorDTO });
-            materialDTO.finishes = new List<FinishDTO>(new[] { finishDTO });
+            otherFinishDTO.description = "another finish";
+            materialDTO.colors = new List<ColorDTO>(new[] { colorDTO, otherColorDTO });
+            materialDTO.finishes = new List<FinishDTO>(new[] { finishDTO, otherFinishDTO });
             var response = await client.PostAsJsonAsync(urlBase, materialDTO);
 
             MaterialDTO materialDTOFromPost = JsonConvert.DeserializeObject<MaterialDTO>(await response.Content.ReadAsStringAsync());

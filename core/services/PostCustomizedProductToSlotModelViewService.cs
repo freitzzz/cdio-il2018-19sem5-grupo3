@@ -8,7 +8,7 @@ using core.persistence;
 using support.dto;
 
 namespace core.services
-{  
+{
     /// <summary>
     /// Service to help transform a PostCustomizedProductToSlotModelView into a customized product
     /// </summary>
@@ -37,17 +37,25 @@ namespace core.services
                         ); */
             CustomizedProduct baseProduct = customizedProductRepository.find(customizedProductModelView.baseId);
 
+            if (baseProduct == null)
+            {
+                return null;
+            }
+
             //!Temporary solution using foreach because of what's mentioned above
             Slot slot = null;
 
-            foreach(Slot baseSlot in baseProduct.slots){
-                if(baseSlot.Id == customizedProductModelView.slotId){
+            foreach (Slot baseSlot in baseProduct.slots)
+            {
+                if (baseSlot.Id == customizedProductModelView.slotId)
+                {
                     slot = baseSlot;
                     break;
                 }
             }
 
-            if(slot == null){
+            if (slot == null)
+            {
                 return null;
             }
 

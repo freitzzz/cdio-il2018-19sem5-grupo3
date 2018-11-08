@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 
 var ordersRouter = require('./routes/orders');
 var factoriesRouter=require('./routes/factories');
+var citiesRouter=require('./routes/cities');
 
 var app = express();
 
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/myco/api', ordersRouter);
 app.use('/myco/api',factoriesRouter)
+app.use('/myco/api',citiesRouter)
 
 app.use(function (req, res, next) {
   // Website you wish to allow to connect

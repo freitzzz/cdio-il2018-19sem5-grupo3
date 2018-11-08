@@ -34,6 +34,11 @@ namespace core.services
                 return false;
             }
 
+            if (!fatherCustomizedProduct.product.supportsSlots)
+            {
+                return false;
+            }
+
             foreach (Slot slot in fatherCustomizedProduct.slots)
             {
                 if (slot.Id == deleteChildCustomizedProductModelView.slotId)
