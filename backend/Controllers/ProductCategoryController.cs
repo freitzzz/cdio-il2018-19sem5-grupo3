@@ -138,7 +138,7 @@ namespace backend.Controllers
         /// <summary>
         /// Controllers Logger
         /// </summary>
-        readonly ILogger<ProductCategoryController> logger;
+        private readonly ILogger<ProductCategoryController> logger;
 
         /// <summary>
         /// Constructor with injected type of repository.

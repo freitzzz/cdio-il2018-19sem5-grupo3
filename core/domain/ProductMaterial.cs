@@ -11,12 +11,14 @@ namespace core.domain
     /// <summary>
     /// Represents the relation between a Product and a Material
     /// </summary>
-    public class ProductMaterial : DTOAble<ProductMaterialDTO>
+    public class ProductMaterial
     {
+
         /// <summary>
-        /// Long property with the persistence iD
+        /// Material's database identifier (Foreign Key, part of this class's Primary Key).
         /// </summary>
-        public long Id { get; private set; }
+        /// <value>Gets/protected sets the Material's database identifier.</value>
+        public long materialId { get; protected set; }
 
         /// <summary>
         /// Material
@@ -30,6 +32,12 @@ namespace core.domain
         /// </summary>
         private List<Restriction> _restrictions;//!private field used for lazy loading, do not use this for storing or fetching data
         public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); set => _restrictions = value; }
+
+        /// <summary>
+        /// Product's database identifier (Foreign Key, part of this class's Primary Key).
+        /// </summary>
+        /// <value>Get/protected sets the Product's database identifier.</value>
+        public long productId {get; protected set;}
 
         /// <summary>
         /// Product
@@ -130,25 +138,6 @@ namespace core.domain
         public bool hasMaterial(Material material)
         {
             return this.material.Equals(material);
-        }
-
-        /// <summary>
-        /// Returns the current ProductMaterial as a DTO
-        /// </summary>
-        /// <returns>DTO with the representation of the current ProductMaterial</returns>
-        public ProductMaterialDTO toDTO()
-        {
-            ProductMaterialDTO dto = new ProductMaterialDTO();
-            dto.id = this.Id;
-            dto.material = this.material.toDTO();
-            dto.product = this.product.toDTO(); ;
-            List<RestrictionDTO> restList = new List<RestrictionDTO>();
-            foreach (Restriction rest in this.restrictions)
-            {
-                restList.Add(rest.toDTO());
-            }
-            dto.restrictions = restList;
-            return dto;
         }
     }
 }

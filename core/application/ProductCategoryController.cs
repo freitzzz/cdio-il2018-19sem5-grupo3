@@ -151,7 +151,7 @@ namespace core.application
         /// </summary>
         /// <param name="parentId">Parent ProductCategory's database identifier.</param>
         /// <returns>Returns a list with ModelViews of all the instances of ProductCategory that are subcategories of the given ProductCategory.</returns>
-        public List<GetBasicProductCategoryModelView> findAllSubCategories(long parentId)
+        public GetAllProductCategoriesModelView findAllSubCategories(long parentId)
         {
             ProductCategoryRepository repository = PersistenceContext.repositories().createProductCategoryRepository();
 

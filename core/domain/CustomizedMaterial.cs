@@ -177,6 +177,28 @@ namespace core.domain
             if (!material.hasFinish(finish)) throw new ArgumentException(INVALID_CUSTOMIZED_MATERIAL_FINISH);
         }
 
+        /// <summary>
+        /// Updates the finish of a customized material
+        /// </summary>
+        /// <param name="finish">new finish</param>
+        /// <returns>true if the finish was updated successfully</returns>
+        public bool changeFinish(Finish finish){
+            checkCustomizedMaterialFinish(this.material,finish);
+            this.finish = finish;
+            return true;
+        }
+
+        /// <summary>
+        /// Updates the color of a customized material
+        /// </summary>
+        /// <param name="color">new color</param>
+        /// <returns>true if the color was updated successfully</returns>
+        public bool changeColor(Color color){
+            checkCustomizedMaterialColor(this.material,color);
+            this.color = color;
+            return true;
+        }
+
         ///<summary>
         ///Returns a textual with the material, color and finish of the Customized Material.
         ///</summary>

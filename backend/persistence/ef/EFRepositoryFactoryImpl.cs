@@ -35,6 +35,16 @@ namespace backend.persistence.ef{
             return new EFCustomizedProductRepository(BackendConfiguration.entityFrameworkContext);
         }
 
+        public FinishPriceTableRepository createFinishPriceTableRepository()
+        {
+            return new EFFinishPriceTableRepository(BackendConfiguration.entityFrameworkContext);
+        }
+
+        public MaterialPriceTableRepository createMaterialPriceTableRepository()
+        {
+            return new EFMaterialPriceTableRepository(BackendConfiguration.entityFrameworkContext);
+        }
+
         /// <summary>
         /// Creates a MaterialRepository
         /// </summary>

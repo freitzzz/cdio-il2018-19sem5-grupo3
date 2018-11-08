@@ -9,6 +9,18 @@ namespace core.modelview.productcategory
     public static class ProductCategoryModelViewService
     {
         /// <summary>
+        /// Builds an instance of GetBasicProductCategoryModelView from an instance of ProductCategory.
+        /// </summary>
+        /// <param name="productcategory">Instance of ProductCategory from which the ModelView will be built.</param>
+        /// <returns>An instance of GetBasicProductCategoryModelView.</returns>
+        public static GetBasicProductCategoryModelView fromEntityAsBasic(ProductCategory productCategory){
+            GetBasicProductCategoryModelView basicProductCategoryModelView=new GetBasicProductCategoryModelView();
+            basicProductCategoryModelView.id=productCategory.Id;
+            basicProductCategoryModelView.name=productCategory.name;
+            return basicProductCategoryModelView;
+        }
+
+        /// <summary>
         /// Builds an instance of GetProductCategoryModelView from an instance of ProductCategory.
         /// </summary>
         /// <param name="productcategory">Instance of ProductCategory from which the ModelView will be built.</param>
@@ -29,9 +41,9 @@ namespace core.modelview.productcategory
         /// </summary>
         /// <param name="productCategories">IEnumerable of instances of ProductCategory from which the ModelView List will be built.</param>
         /// <returns>A List of GetBasicProductCategoryModelView.</returns>
-        public static List<GetBasicProductCategoryModelView> fromCollection(IEnumerable<ProductCategory> productCategories)
+        public static GetAllProductCategoriesModelView fromCollection(IEnumerable<ProductCategory> productCategories)
         {
-            List<GetBasicProductCategoryModelView> result = new List<GetBasicProductCategoryModelView>();
+            GetAllProductCategoriesModelView result = new GetAllProductCategoriesModelView();
 
             foreach (ProductCategory productCategory in productCategories)
             {

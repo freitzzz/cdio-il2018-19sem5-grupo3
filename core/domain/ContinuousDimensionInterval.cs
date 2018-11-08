@@ -44,7 +44,7 @@ namespace core.domain
         /// <summary>
         /// Constant that represents the message that occurs if one of the values is negative
         /// </summary>
-        private const string NEGATIVE_VALUES_REFERENCE = "All values have to be positive";
+        private const string NEGATIVE_OR_ZERO_VALUES_REFERENCE = "All values have to be positive and greated than zero";
 
         /// <summary>
         /// Constant that represents the message that occurs if the min value is greater than the max value
@@ -70,7 +70,7 @@ namespace core.domain
         /// </summary>
         public double increment { get; set; }
 
-        private ContinuousDimensionInterval(ILazyLoader lazyLoader) : base(lazyLoader) {}
+        private ContinuousDimensionInterval(ILazyLoader lazyLoader) : base(lazyLoader) { }
 
         /// <summary>
         /// Empty constructor for ORM.
@@ -116,9 +116,9 @@ namespace core.domain
                 throw new ArgumentException(INCREMENT_INFINITY_REFERENCE);
             }
 
-            if (minValue < 0 || maxValue < 0 || increment < 0)
+            if (minValue <= 0|| maxValue <= 0 || increment <= 0)
             {
-                throw new ArgumentException(NEGATIVE_VALUES_REFERENCE);
+                throw new ArgumentException(NEGATIVE_OR_ZERO_VALUES_REFERENCE);
             }
 
             if (minValue > maxValue)
@@ -134,7 +134,6 @@ namespace core.domain
             this.minValue = minValue;
             this.maxValue = maxValue;
             this.increment = increment;
-            this.restrictions = new List<Restriction>();
         }
 
         /// <summary>

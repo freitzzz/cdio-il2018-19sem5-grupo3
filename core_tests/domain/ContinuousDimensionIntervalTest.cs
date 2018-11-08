@@ -137,6 +137,30 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureConstructorDetectsMinValueIsZero()
+        {
+            Action act = () => new ContinuousDimensionInterval(0, 200, 1.0);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureConstrucorDetectsMaxValueIsZero()
+        {
+            Action act = () => new ContinuousDimensionInterval(100, 0, 1.0);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureConstructorDetectsIncrementIsZero()
+        {
+            Action act = () => new ContinuousDimensionInterval(100, 200, 0);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
         public void ensureInstanceIsCreated()
         {
             ContinuousDimensionInterval instance = new ContinuousDimensionInterval(100.0, 200.0, 1.0);

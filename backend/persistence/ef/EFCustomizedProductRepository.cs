@@ -4,6 +4,7 @@ using core.persistence;
 using support.persistence.repositories;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace backend.persistence.ef
 {
@@ -33,6 +34,31 @@ namespace backend.persistence.ef
                     where customizedProductsPIDS.Contains(customizedProduct.Id)
                     select customizedProduct
             );
+        }
+
+        /// <summary>
+        /// Fetches a slot of a customized product
+        /// </summary>
+        /// <param name="customizedProductId">PID of a customized product</param>
+        /// <param name="slotId">PID of a slot</param>
+        /// <returns>Slot of a customized product</returns>
+        public Slot findSlot(long customizedProductId, long slotId)
+        {
+            /* return (
+                    from customizedProduct in base.dbContext.CustomizedProduct
+                        where customizedProduct.Id == customizedProductId
+                            from slot in customizedProduct.slots
+                                where slot.Id == slotId
+                                    select slot
+            ).SingleOrDefault(); */
+            Task<CustomizedProduct> fetchedCustomizedProductTask = 
+                    dbContext.CustomizedProduct.FindAsync(customizedProductId);
+                    
+            fetchedCustomizedProductTask.Wait();
+            CustomizedProduct fetchedCustomizedProduct = fetchedCustomizedProductTask.Result;
+
+            return fetchedCustomizedProduct.slots.
+                    Where(s => s.Id == slotId).SingleOrDefault();
         }
     }
 }

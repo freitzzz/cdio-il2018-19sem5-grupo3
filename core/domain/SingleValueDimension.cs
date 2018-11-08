@@ -28,7 +28,7 @@ namespace core.domain
         /// <summary>
         /// Constant that represents the message that occurs if the value is negative
         /// </summary>
-        private const string NEGATIVE_VALUE_REFERENCE = "Dimension value can't be negative";
+        private const string NEGATIVE_OR_ZERO_VALUE_REFERENCE = "Dimension value can't be negative or zero";
 
         /// <summary>
         /// Value that the dimension has
@@ -58,13 +58,12 @@ namespace core.domain
                 throw new ArgumentException(VALUE_IS_INFINITY_REFERENCE);
             }
 
-            if (value < 0)
+            if (value <= 0)
             {
-                throw new ArgumentException(NEGATIVE_VALUE_REFERENCE);
+                throw new ArgumentException(NEGATIVE_OR_ZERO_VALUE_REFERENCE);
             }
 
             this.value = value;
-            this.restrictions = new List<Restriction>();
         }
 
         /// <summary>

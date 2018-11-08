@@ -54,7 +54,7 @@ namespace core.services
             else
             {
                 //if the dto contains slot info, then create one with slots
-                List<Slot> slots = DTOUtils.reverseDTOS(customizedProductDTO.slotListDTO).ToList();
+                List<Slot> slots = new SlotDTOService().transform(customizedProductDTO.slotListDTO).ToList();
                 customizedProduct = new CustomizedProduct(reference, designation, customizedMaterial, customizedDimensions, product, slots);
             }
 

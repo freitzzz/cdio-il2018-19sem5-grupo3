@@ -25,7 +25,7 @@ namespace backend_tests.Controllers
         /// <summary>
         /// Materials URI for HTTP Requests
         /// </summary>
-        private const string urlBase = "/myc/api/materials";
+        private const string urlBase = "/mycm/api/materials";
 
         /// <summary>
         /// HTTP Client to perform HTTP Requests to the test server
@@ -79,10 +79,18 @@ namespace backend_tests.Controllers
             colorDTO.green = 200;
             colorDTO.blue = 10;
             colorDTO.alpha = 0;
+            ColorDTO otherColorDTO = new ColorDTO();
+            otherColorDTO.name = "another color";
+            otherColorDTO.red = 10;
+            otherColorDTO.green = 10;
+            otherColorDTO.blue = 10;
+            otherColorDTO.alpha = 10;
             FinishDTO finishDTO = new FinishDTO();
+            FinishDTO otherFinishDTO = new FinishDTO();
             finishDTO.description = "ola";
-            materialDTO.colors = new List<ColorDTO>(new[] { colorDTO });
-            materialDTO.finishes = new List<FinishDTO>(new[] { finishDTO });
+            otherFinishDTO.description = "another finish";
+            materialDTO.colors = new List<ColorDTO>(new[] { colorDTO, otherColorDTO });
+            materialDTO.finishes = new List<FinishDTO>(new[] { finishDTO, otherFinishDTO });
             var response = await client.PostAsJsonAsync(urlBase, materialDTO);
 
             MaterialDTO materialDTOFromPost = JsonConvert.DeserializeObject<MaterialDTO>(await response.Content.ReadAsStringAsync());
@@ -202,85 +210,62 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(12)]
-        public async Task ensureUpdateFinishesPutFailsForNonExistingMaterial()
+        public async Task ensureUpdateFinishesPostFailsForNonExistingMaterial()
         {
             FinishDTO finishDTO = new FinishDTO();
             finishDTO.description = "ola";
-            var materialUpdates = new UpdateMaterialDTO();
-            materialUpdates.finishesToAdd = new List<FinishDTO>(new[] { finishDTO });
-
-            var response = await client.PutAsJsonAsync(String.Format(urlBase + "/{0}/{1}", -1, "finishes"), materialUpdates);
+           
+            var response = await client.PostAsJsonAsync(String.Format(urlBase + "/{0}/{1}", -1, "finishes"), finishDTO);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             Assert.NotNull(response.Content.ReadAsStringAsync());
         }
 
-
         [Fact, TestPriority(13)]
-        public async Task ensureUpdateFinishesPutFailsForInvalidBody()
+        public async Task ensureUpdateFinishesPostFailsForInvalidBody()
         {
             var materialDTO = ensurePostMaterialWorks();
             materialDTO.Wait();
 
-            var response = await client.PutAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "finishes"), "invalid body");
+            var response = await client.PostAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "finishes"), "InvalidBody");
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             Assert.NotNull(response.Content.ReadAsStringAsync());
         }
 
         [Fact, TestPriority(14)]
-        public async Task ensureUpdateFinishesPutSucceedsWhenOnlyAddingFinishes()
+        public async Task ensureUpdateFinishesPostSucceedsWhenAddingFinish()
         {
             FinishDTO finishDTOToAdd = new FinishDTO();
             finishDTOToAdd.description = "new finish";
-            var materialUpdates = new UpdateMaterialDTO();
-            materialUpdates.finishesToAdd = new List<FinishDTO>(new[] { finishDTOToAdd });
             var materialDTO = ensurePostMaterialWorks();
             materialDTO.Wait();
 
-            var response = await client.PutAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "finishes"), materialUpdates);
+            var response = await client.PostAsJsonAsync(String.
+            Format(urlBase + "/{0}/{1}", materialDTO.Id, "finishes"), finishDTOToAdd);
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             Assert.NotNull(response.Content.ReadAsStringAsync());
         }
 
         [Fact, TestPriority(15)]
-        public async Task ensureUpdateFinishesPutSucceedsWhenOnlyRemovingFinishes()
+        public async Task ensureUpdateFinishesDeleteSucceedsWhenRemovingFinish()
         {
             FinishDTO finishDTOToRemove = new FinishDTO();
             finishDTOToRemove.description = "ola";
-            var materialUpdates = new UpdateMaterialDTO();
-            materialUpdates.finishesToRemove = new List<FinishDTO>(new[] { finishDTOToRemove });
             var materialDTO = ensurePostMaterialWorks();
             materialDTO.Wait();
 
-            var response = await client.PutAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "finishes"), materialUpdates);
+            var response = await client.DeleteAsync(String.
+            Format(urlBase + "/{0}/{1}/{2}", materialDTO.Id, "finishes", finishDTOToRemove.id));
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
             Assert.NotNull(response.Content.ReadAsStringAsync());
         }
 
-        [Fact, TestPriority(16)]
-        public async Task ensureUpdateFinishesPutSucceedsWhenAddingAndRemovingFinishes()
-        {
-            FinishDTO finishDTOToAdd = new FinishDTO();
-            FinishDTO finishDTOToRemove = new FinishDTO();
-            finishDTOToAdd.description = "new finish";
-            finishDTOToRemove.description = "ola";
-            var materialUpdates = new UpdateMaterialDTO();
-            materialUpdates.finishesToAdd = new List<FinishDTO>(new[] { finishDTOToAdd });
-            materialUpdates.finishesToRemove = new List<FinishDTO>(new[] { finishDTOToRemove });
-            var materialDTO = ensurePostMaterialWorks();
-            materialDTO.Wait();
-
-            var response = await client.PutAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "finishes"), materialUpdates);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.NotNull(response.Content.ReadAsStringAsync());
-        }
 
         [Fact, TestPriority(16)]
-        public async Task ensureUpdateColorsPutFailsForNonExistingMaterial()
+        public async Task ensureUpdateColorPostFailsForNonExistingMaterial()
         {
             ColorDTO colorDTO = new ColorDTO();
             colorDTO.name = "lean";
@@ -288,29 +273,27 @@ namespace backend_tests.Controllers
             colorDTO.green = 2;
             colorDTO.blue = 3;
             colorDTO.alpha = 0;
-            var materialUpdates = new UpdateMaterialDTO();
-            materialUpdates.colorsToAdd = new List<ColorDTO>(new[] { colorDTO });
-
-            var response = await client.PutAsJsonAsync(String.Format(urlBase + "/{0}/{1}", -1, "colors"), materialUpdates);
+           
+            var response = await client.PostAsJsonAsync(String.Format(urlBase + "/{0}/{1}", -1, "colors"), colorDTO);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             Assert.NotNull(response.Content.ReadAsStringAsync());
         }
 
         [Fact, TestPriority(17)]
-        public async Task ensureUpdateColorsPutFailsForInvalidBody()
+        public async Task ensureUpdateColorPostFailsForInvalidBody()
         {
             var materialDTO = ensurePostMaterialWorks();
             materialDTO.Wait();
 
-            var response = await client.PutAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "colors"), "invalid body");
+            var response = await client.PostAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "colors"), "invalid body");
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             Assert.NotNull(response.Content.ReadAsStringAsync());
         }
 
         [Fact, TestPriority(18)]
-        public async Task ensureUpdateColorsPutSucceedsWhenOnlyAddingColors()
+        public async Task ensureUpdateColorPostSucceedsWhenAddingColor()
         {
             ColorDTO colorDTO = new ColorDTO();
             colorDTO.name = "lean";
@@ -318,19 +301,17 @@ namespace backend_tests.Controllers
             colorDTO.green = 2;
             colorDTO.blue = 3;
             colorDTO.alpha = 0;
-            var materialUpdates = new UpdateMaterialDTO();
-            materialUpdates.colorsToAdd = new List<ColorDTO>(new[] { colorDTO });
             var materialDTO = ensurePostMaterialWorks();
             materialDTO.Wait();
 
-            var response = await client.PutAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "colors"), materialUpdates);
+            var response = await client.PostAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "colors"), colorDTO);
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             Assert.NotNull(response.Content.ReadAsStringAsync());
         }
 
         [Fact, TestPriority(19)]
-        public async Task ensureUpdateColorsPutSucceedsWhenOnlyRemovingColors()
+        public async Task ensureUpdateColorsDeleteSucceedsWhenOnlyRemovingColor()
         {
             ColorDTO colorDTO = new ColorDTO();
             colorDTO.name = "lilxan";
@@ -338,42 +319,40 @@ namespace backend_tests.Controllers
             colorDTO.green = 200;
             colorDTO.blue = 10;
             colorDTO.alpha = 0;
-            var materialUpdates = new UpdateMaterialDTO();
-            materialUpdates.colorsToRemove = new List<ColorDTO>(new[] { colorDTO });
             var materialDTO = ensurePostMaterialWorks();
             materialDTO.Wait();
 
-            var response = await client.PutAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "colors"), materialUpdates);
+            var response = await client.DeleteAsync(String.Format(urlBase + "/{0}/{1}/{2}", materialDTO.Id, "colors", colorDTO.id));
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
             Assert.NotNull(response.Content.ReadAsStringAsync());
         }
-
-        [Fact, TestPriority(20)]
-        public async Task ensureUpdateColorsPutSucceedsWhenAddingAndRemovingColors()
+    
+         [Fact, TestPriority(20)]
+        public async Task ensureUpdateFinishPostFailsForNonExistingMaterial()
         {
-            ColorDTO colorDTOToAdd = new ColorDTO();
-            colorDTOToAdd.name = "lean";
-            colorDTOToAdd.red = 2;
-            colorDTOToAdd.green = 3;
-            colorDTOToAdd.blue = 4;
-            colorDTOToAdd.alpha = 0;
-            ColorDTO colorDTOToRemove = new ColorDTO();
-            colorDTOToRemove.name = "lilxan";
-            colorDTOToRemove.red = 100;
-            colorDTOToRemove.green = 200;
-            colorDTOToRemove.blue = 10;
-            colorDTOToRemove.alpha = 0;
-            var materialUpdates = new UpdateMaterialDTO();
-            materialUpdates.colorsToAdd = new List<ColorDTO>(new[] { colorDTOToAdd });
-            materialUpdates.colorsToRemove = new List<ColorDTO>(new[] { colorDTOToRemove });
-            var materialDTO = ensurePostMaterialWorks();
-            materialDTO.Wait();
+            FinishDTO finishDTOToRemove = new FinishDTO();
+            finishDTOToRemove.description = "ola";
+           
+            var response = await client.DeleteAsync(String.Format(urlBase + "/{0}/{1}/{2}", -1, "colors", finishDTOToRemove.id));
 
-            var response = await client.PutAsJsonAsync(String.Format(urlBase + "/{0}/{1}", materialDTO.Id, "colors"), materialUpdates);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             Assert.NotNull(response.Content.ReadAsStringAsync());
         }
-    }
-}
+         [Fact, TestPriority(21)]
+        public async Task ensureUpdateColorDeleteFailsForNonExistingMaterial()
+        {
+            ColorDTO colorDTO = new ColorDTO();
+            colorDTO.name = "lean";
+            colorDTO.red = 1;
+            colorDTO.green = 2;
+            colorDTO.blue = 3;
+            colorDTO.alpha = 0;
+           
+            var response = await client.DeleteAsync(String.Format(urlBase + "/{0}/{1}/{2}", -1, "colors", colorDTO.id));
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.NotNull(response.Content.ReadAsStringAsync());
+        }
+     }
+ }

@@ -2,6 +2,7 @@ using core.domain;
 using core.dto;
 using support.domain.ddd;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace core.persistence{
     /// <summary>
@@ -21,5 +22,12 @@ namespace core.persistence{
         /// </summary>
         /// <returns>IEnumerable with all available customized products</returns>
         IEnumerable<CustomizedProduct> findAllCustomizedProducts();
+        /// <summary>
+        /// Fetches a given slot of a given customized product
+        /// </summary>
+        /// <param name="customizedProductId">PID of the CustomizedProduct</param>
+        /// <param name="slotId">PID of the Slot</param>
+        /// <returns>Slot instance</returns>
+        Slot findSlot(long customizedProductId,long slotId);
     }
 }

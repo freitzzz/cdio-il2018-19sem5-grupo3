@@ -35,6 +35,7 @@ namespace backend.persistence.ef
                     select product
                     );
         }
+
         /// <summary>
         /// Updates a product
         /// <br>Returns null if the update affects the entity identifier and the changing entity identifier already exists on the database

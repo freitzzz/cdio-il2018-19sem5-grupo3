@@ -22,9 +22,24 @@ namespace core.domain
         private const string NULL_LIST_REFERENCE = "List of values can't be null";
 
         /// <summary>
-        /// Constant that represents the message that occurs if the min value is NaN
+        /// Constant that represents the message that occurs if the list is empty
         /// </summary>
         private const string EMPTY_LIST_REFERENCE = "List of values can't be empty";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if a value is NaN
+        /// </summary>
+        private const string VALUE_NAN = "All values must be a number";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if a value is infinity
+        /// </summary>
+        private const string VALUE_INFINITY = "No value can be infinity";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if a zero or negative value exists in the list
+        /// </summary>
+        private const string NEGATIVE_OR_ZERO_VALUE = "All values have to be greater than zero";
 
         /// <summary>
         /// List of values that make up the interval.
@@ -33,7 +48,7 @@ namespace core.domain
         private List<DoubleValue> _values;  //!private field used for lazy loading, do not use this for storing or fetching data
         public List<DoubleValue> values { get => LazyLoader.Load(this, ref _values); set => _values = value; }
 
-        private DiscreteDimensionInterval(ILazyLoader lazyLoader) : base(lazyLoader) {}
+        private DiscreteDimensionInterval(ILazyLoader lazyLoader) : base(lazyLoader) { }
 
         /// <summary>
         /// Empty constructor for ORM.
@@ -60,11 +75,33 @@ namespace core.domain
             List<DoubleValue> doubleValues = new List<DoubleValue>();
             foreach (double value in values)
             {
+                checkValue(value);
                 doubleValues.Add(value);
             }
 
             this.values = doubleValues;
-            this.restrictions = new List<Restriction>();
+        }
+
+        /// <summary>
+        /// Checks if a value for the interval is valid
+        /// </summary>
+        /// <param name="value">value being checked</param>
+        private void checkValue(double value)
+        {
+            if (Double.IsNaN(value))
+            {
+                throw new ArgumentException(VALUE_NAN);
+            }
+
+            if (Double.IsInfinity(value))
+            {
+                throw new ArgumentException(VALUE_INFINITY);
+            }
+
+            if (Double.IsNegative(value) || value == 0)
+            {
+                throw new ArgumentException(NEGATIVE_OR_ZERO_VALUE);
+            }
         }
 
         /// <summary>
