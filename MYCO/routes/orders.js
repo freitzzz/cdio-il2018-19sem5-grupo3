@@ -1,6 +1,7 @@
 const express = require('express');
 const ordersRoute = express.Router();
 const Order = require('../models/order');
+const Factory=require('../models/Factory');
 const http = require('http');
 
 //Get all orders in the database
@@ -111,5 +112,16 @@ ordersRoute.route('/orders').post(function (req, res, next) {
         })
 })
 
+function get_shortest_factory_between_city(city){
+    Factory
+        .find()
+            .then(function(availableFactories){
+                availableFactories.forEach(function(factory){
+                    if(factory.isLocated(city)){
+                        console.log(city);
+                    }
+                })
+            })
+}
 
 module.exports = ordersRoute;
