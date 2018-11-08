@@ -5,6 +5,8 @@ using core.domain;
 using NodaTime;
 using NodaTime.Text;
 using System;
+using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace core.services
 {
@@ -39,7 +41,13 @@ namespace core.services
         /// </summary>
         private const string PRICE_TABLE_ENTRY_NOT_CREATED = "A price table entry with the same values already exists for this finish. Please try again with different values";
 
-        public static AddFinishPriceTableEntryModelView transform(AddFinishPriceTableEntryModelView modelView)
+        /// <summary>
+        /// Transforms and creates a finish price table entry
+        /// </summary>
+        /// <param name="modelView">model view with the necessary info to create a finish price table entry</param>
+        /// <param name="clientFactory">injected client factory</param>
+        /// <returns></returns>
+        public static async Task<AddFinishPriceTableEntryModelView> transform(AddFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
             MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
             long materialId = modelView.entityId;
@@ -75,16 +83,27 @@ namespace core.services
                         startingDate = LocalDateTimePattern.GeneralIso.Parse(startingDateAsString).GetValueOrThrow();
                         endingDate = LocalDateTimePattern.GeneralIso.Parse(endingDateAsString).GetValueOrThrow();
                     }
-                    catch (UnparsableValueException unparsableValueException)
+                    catch (UnparsableValueException)
                     {
                         throw new UnparsableValueException(DATES_WRONG_FORMAT + LocalDateTimePattern.GeneralIso.PatternText);
                     }
 
                     TimePeriod timePeriod = TimePeriod.valueOf(startingDate, endingDate);
 
-                    //TODO Take into account currency and area conversion
-                    //!For now we are considering all prices are in €/m2
-                    Price price = Price.valueOf(modelView.priceTableEntry.price.value);
+                    //TODO Take area conversion into account
+                    Price price = null;
+                    try
+                    {
+                        double convertedValue = await new CurrencyPerAreaConversionService(clientFactory)
+                                                            .convertCurrencyToDefaultCurrency(modelView.priceTableEntry.price.currency,
+                                                                 modelView.priceTableEntry.price.value);
+                        price = Price.valueOf(convertedValue);
+                    }
+                    catch (HttpRequestException)
+                    {
+                        price = Price.valueOf(modelView.priceTableEntry.price.value);
+                    }
+
                     FinishPriceTableEntry finishPriceTableEntry = new FinishPriceTableEntry(material.id(), finish, price, timePeriod);
                     FinishPriceTableEntry savedFinishPriceTableEntry = PersistenceContext.repositories()
                                             .createFinishPriceTableRepository().save(finishPriceTableEntry);
@@ -99,8 +118,7 @@ namespace core.services
                     createdPriceTableEntryDTO.endingDate = LocalDateTimePattern.GeneralIso.Format(savedFinishPriceTableEntry.timePeriod.endingDate);
                     createdPriceTableEntryDTO.price = new PriceDTO();
                     createdPriceTableEntryDTO.price.value = savedFinishPriceTableEntry.price.value;
-                    //TODO Take into account currency and area conversion
-                    //!For now we are considering all prices are in €/m2
+                    //TODO Take area conversion into account
                     createdPriceTableEntryDTO.price.currency = "";
                     createdPriceTableEntryDTO.price.area = "";
 

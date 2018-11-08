@@ -25,9 +25,7 @@ var citySchema = new Schema({
     name:{type: String, validate: nameValidator, required:true},
     location:{type: location.schema, required:true},
 
-}, {
-    collection: 'cities'
-})
+});
 /**
  * Creates a City object
  * @param {String} name String with the city name
@@ -36,7 +34,7 @@ var citySchema = new Schema({
  */
 citySchema.statics.createCity=function (name,locationLatitude,locationLongitude){
     return {
-        reference:name,
+        name:name,
         location:location.createLocation(locationLatitude,locationLongitude)
     }
 }
