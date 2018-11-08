@@ -1,6 +1,8 @@
 using System;
 using core.application;
+using core.dto;
 using core.persistence;
+using core.modelview.pricetable;
 using core.modelview.pricetableentries;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -116,7 +118,16 @@ namespace backend.Controllers
         ///      <br>HTTP Response 400; Bad Request if there is no price history for the given material
         /// </returns>
         [HttpGet("materials/{materialID}")]
-        public ActionResult fetchMaterialPriceHistory(long materialID){throw new NotImplementedException();}
+        public ActionResult fetchMaterialPriceHistory(long materialID){
+            FetchMaterialPriceHistoryDTO fetchMaterialPriceHistoryDTO=new FetchMaterialPriceHistoryDTO();
+            fetchMaterialPriceHistoryDTO.materialID=materialID;
+            try{
+                GetAllMaterialPriceHistoryModelView materialPriceHistoryModelView=new core.application.PriceTablesController().fetchMaterialPriceHistory(fetchMaterialPriceHistoryDTO);
+                return Ok(materialPriceHistoryModelView);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException);
+            }
+        }
 
         /// <summary>
         /// Fetches the price history of a material finish
@@ -127,7 +138,17 @@ namespace backend.Controllers
         ///      <br>HTTP Response 400; Bad Request if there is no price history for the given material
         /// </returns>
         [HttpGet("materials/{materialID}/finishes/{finishID}")]
-        public ActionResult fetchMaterialPriceHistory(long materialID,long finishID){throw new NotImplementedException();}
+        public ActionResult fetchMaterialPriceHistory(long materialID,long finishID){
+            FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO=new FetchMaterialFinishPriceHistoryDTO();
+            fetchMaterialFinishPriceHistoryDTO.materialID=materialID;
+            fetchMaterialFinishPriceHistoryDTO.finishID=finishID;
+            try{
+                GetAllMaterialFinishPriceHistoryModelView materialFinishPriceHistoryModelView=new core.application.PriceTablesController().fetchMaterialFinishPriceHistory(fetchMaterialFinishPriceHistoryDTO);
+                return Ok(materialFinishPriceHistoryModelView);
+            }catch(InvalidOperationException invalidOperationException){
+                return BadRequest(invalidOperationException);
+            }
+        }
 
         /// <summary>
         /// Adds a new price table entry for a given material
