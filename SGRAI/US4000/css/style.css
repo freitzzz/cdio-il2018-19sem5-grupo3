@@ -388,12 +388,118 @@ a:focus, .btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:acti
     display: none;
     padding: 6px 12px;
     border: 1px solid #ccc;
-    border-top: none;
+	border-top: none;
 }
 .tabcontent input {
 	width: 40%;
 	clear: both;
   }
 
-
 }
+.material-btn {
+	color:black;
+	transition: all 0.3s;
+}
+.material-btn:hover, .material-btn:focus, .material-btn.focus, .material-btn:active, .btn-custom.active {
+	color: #0ba2db;
+	cursor: pointer;
+}
+.scrollable-div{
+	overflow-y: scroll;
+	border: thin solid #0ba2db;
+	background-color: rgb(243, 235, 235)
+}
+.sidepanel {
+    height: 0; /* Specify a height */
+	width: 0; /* 0 width - change this with JavaScript */
+    position: relative; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0;
+    left: 0;
+	background-color: #0ba2db;
+    overflow-x: hidden; /* Disable horizontal scroll */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
+}
+/* The sidepanel links */
+.sidepanel-entry {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: white;
+    display: block;
+    transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidepanel-entry:hover {
+	color: #f1f1f1;
+	background-color: rgb(66, 66, 240);
+	cursor: pointer;
+}
+/* The sidepanel links */
+.sidepanel-subentry {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 15px;
+    color: white;
+    display: block;
+    transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidepanel-subentry:hover {
+	color: #f1f1f1;
+	background-color: rgb(101, 101, 245);
+	cursor: pointer;
+}
+
+/* Position and style the close button (top right corner) */
+.sidepanel .closebtn {
+	position: absolute;
+	color: white;
+    top: 0;
+    right: 25px;
+    font-size: 25px;
+    margin-left: 50px;
+}
+
+/* Style the button that is used to open the sidepanel */
+.openbtn {
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #111;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+}
+
+.openbtn:hover {
+  background-color: #444;
+}
+
+
+ul.material_list>li{
+	text-align:center;
+}
+
+ul.material_list>li:nth-child(odd){
+	float: left;
+	width: 50%
+}
+ul.material_list>li:nth-child(even){
+	float: right;
+	width: 50%
+}
+ul.material_list>li>img{
+	padding-bottom:0.5em;
+}
+
+.dropdown-active {
+    background-color: rgb(66, 66, 240);
+	color: white;
+}
+.dropdown-container {
+    display: none;
+    background-color: #0ba2db;
+}
+
