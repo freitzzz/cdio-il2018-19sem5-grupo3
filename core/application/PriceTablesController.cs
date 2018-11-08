@@ -21,10 +21,18 @@ namespace core.application
         /// Adds new price table entry for a material's finish
         /// </summary>
         /// <param name="modelView">model view with the price table entry's information</param>
-        /// <returns></returns>
         public AddFinishPriceTableEntryModelView addFinishPriceTableEntry(AddFinishPriceTableEntryModelView modelView)
         {
             return AddFinishPriceTableEntryModelViewService.transform(modelView);
+        }
+
+        /// <summary>
+        /// Updates a material's price table entry
+        /// </summary>
+        /// <param name="modelView">model view with the necessary update information</param>
+        public bool updateMaterialPriceTableEntry(UpdatePriceTableEntryModelView modelView)
+        {
+            return UpdateMaterialPriceTableEntryModelViewService.update(modelView);
         }
     }
 }
