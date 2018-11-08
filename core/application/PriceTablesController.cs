@@ -5,6 +5,7 @@ using core.modelview.pricetableentries;
 using core.modelview.pricetable;
 using core.persistence;
 using core.services;
+using core.services.ensurance;
 using System;
 using System.Collections.Generic;
 
@@ -23,7 +24,7 @@ namespace core.application
         /// <returns>GetAllMaterialPriceHistoryModelView with the material price history fetch information</returns>
         public GetAllMaterialPriceHistoryModelView fetchMaterialPriceHistory(FetchMaterialPriceHistoryDTO fetchMaterialPriceHistoryDTO){
             IEnumerable<MaterialPriceTableEntry> materialPriceHistory=PersistenceContext.repositories().createMaterialPriceTableRepository().fetchMaterialPriceHistory(fetchMaterialPriceHistoryDTO);
-            //TODO: ENSURE PRICE HISTORY WAS FETCHED WITH SUCCESS
+            FetchEnsurance.ensureMaterialPriceHistoryFetchWasSuccessful(materialPriceHistory);
             return PriceTableModelViewService.fromMaterialCollection(materialPriceHistory);
         }
 
@@ -34,7 +35,7 @@ namespace core.application
         /// <returns>GetAllMaterialFinishPriceHistoryModelView with the material finish price history fetch information</returns>
         public GetAllMaterialFinishPriceHistoryModelView fetchMaterialFinishPriceHistory(FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO){
             IEnumerable<FinishPriceTableEntry> materialFinishPriceHistory=PersistenceContext.repositories().createFinishPriceTableRepository().fetchMaterialFinishPriceHistory(fetchMaterialFinishPriceHistoryDTO);
-            //TODO: ENSURE PRICE HISTORY WAS FETCHED WITH SUCCESS
+            FetchEnsurance.ensureMaterialFinishPriceHistoryFetchWasSuccessful(materialFinishPriceHistory);
             return PriceTableModelViewService.fromMaterialFinishCollection(materialFinishPriceHistory);
         }
 
