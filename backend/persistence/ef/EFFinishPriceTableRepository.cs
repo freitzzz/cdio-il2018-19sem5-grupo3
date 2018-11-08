@@ -25,7 +25,7 @@ namespace backend.persistence.ef
             return (from finishPriceTableEntry in base.dbContext.FinishPriceTable
                     from materialPriceTableEntry in dbContext.MaterialPriceTable
                     where materialPriceTableEntry.Id==fetchMaterialFinishPriceHistoryDTO.materialID
-                    where finishPriceTableEntry.Id==fetchMaterialFinishPriceHistoryDTO.finishID
+                    where finishPriceTableEntry.entity.Id==fetchMaterialFinishPriceHistoryDTO.finishID
                     select finishPriceTableEntry);
         }
     }
