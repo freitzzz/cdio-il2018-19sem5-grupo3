@@ -7,15 +7,7 @@ namespace core.modelview.pricetableentries
     /// ModelView to represent the necessary information to add a new generic price table entry
     /// </summary>
     [DataContract]
-    public class AddPriceTableEntryModelView
+    public class AddPriceTableEntryModelView : BasicPriceTableEntryModelView
     {
-        [DataMember(Name = "tableEntryId")]
-        public long tableEntryId {get; set;}
-
-        [DataMember(Name = "entityId")]
-        public long entityId { get; set; }
-
-        [DataMember(Name = "tableEntry")]
-        public PriceTableEntryDTO priceTableEntry { get; set; }
     }
 }
