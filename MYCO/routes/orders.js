@@ -114,14 +114,8 @@ function get_shortest_factory_between_city(city){
 //Creates a new Order
 //TODO Handle errors by using the ones available in the mongoose schema
 ordersRoute.route('/orders').post(function (req, res, next) {
-    /* if(!req.body.cityToDeliverId.match(/^[0-9a-fA-F]{24}$/)){
-        res.status(400).json({
-            Error : 'Invalid City Id. Please try again'
-        })
-    } */
     City.findById(req.body.cityToDeliverId).then(function (city,error) {
         if (error) {
-            console.log(city);
             res.status(404).json({
                 Error: 'City not found. Please try again'
             });
@@ -130,45 +124,75 @@ ordersRoute.route('/orders').post(function (req, res, next) {
             Factory
                 .find()
                     .then(async function(availableFactories){
-                        let factories=[];
-                        availableFactories.forEach(function(factory){
-                            if(factory.isLocated(city)){factories.push(factory);}
+                        isCityInFactories(city,availableFactories)
+                        .then((_shortestFactory)=>{
+                            createOrder(req.body.orderContents,city,_shortestFactory)
+                            .then((_createdOrder)=>{
+                                res.status(201).json(_createdOrder);
+                            }).catch((_error)=>{
+                                res.status(420).json(_error);
+                            });
                         })
-                        let shortestFactory;
-                        if(factories.length==1){
-                            shortestFactory=factories.pop();
-                        }else{
-                            fetchShortestFactory(city,factories)
-                                .then(function(body){
-                                    let _factory=factoryByName(factories,body.factory.name);
-                                    Order.create({
-                                        orderContents:req.body.orderContents,
-                                        cityToDeliver:city,
-                                        factoryOfProduction:_factory
-                                    })
-                                    .then(function(createdOrder){
-                                        return res.status(201).json(createdOrder);
-                                    }).catch(function(_error){
-                                        return res.status(400).json(_error);
-                                    })
-                                })
-                        }
-                        
-                    })
+                        .catch(()=>{
+                            fetchShortestFactory(city,availableFactories)
+                            .then((_shortestFactory)=>{
+                                createOrder(req.body.orderContents,city,_shortestFactory)
+                                .then((_createdOrder)=>{
+                                    res.status(201).json(_createdOrder);
+                                }).catch((_error)=>{
+                                    res.status(401).json(_error);
+                                });
+                            }).catch((_error)=>{
+                                res.status(402).json(_error);
+                            });
+                        });                        
+                    });
         }
     })
 })
+
+/**
+ * Verifies if a city is located in a collection of factories
+ * @param {City.Schema} city City with the city being verified
+ * @param {List} factories Collection with the factories being checked
+ * @returns Promise with the condition information
+ */
+function isCityInFactories(city,factories){
+    return new Promise((resolve,reject)=>{
+        let _factories=[];
+        factories.forEach((factory)=>{
+            if(factory.isLocated(city)){resolve(factory);}
+            //TODO: REWORK : )
+        })
+        return _factories ? resolve(_factories) : reject(null);
+    });
+}
+
+/**
+ * Creates an order
+ * @param {List} orderContents Collection with the order contents
+ * @param {City.Schema} cityToDeliver City with the city to deliver the order
+ * @param {Factory.Schema} factoryOfProduction Factory with the factory where the order will be produced
+ * @returns Order with the created order
+ */
+function createOrder(orderContents,cityToDeliver,factoryOfProduction){
+    return Order.create({
+        orderContents:orderContents,
+        cityToDeliver:cityToDeliver,
+        factoryOfProduction:factoryOfProduction
+    });
+}
 
 async function fetchShortestFactory(city,factories){
     return new Promise((resolve,reject)=>{
         let _requestBody={city:serializeCity(city),factories:serializeFactories(factories)};
         axios.post(config.MYCL_URL+"mycl/api/factories",_requestBody)
-                .then(function(response){
-                    resolve(response.data);
-                })
-                .catch(function(_error){
-                    reject(_error);
-                })
+            .then(function(response){
+                resolve(factoryByName(factories,response.data.factory.name));
+            })
+            .catch(function(_error){
+                reject(_error);
+            });
     })
 }
 
