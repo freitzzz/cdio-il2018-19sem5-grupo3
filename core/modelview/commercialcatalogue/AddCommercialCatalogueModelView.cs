@@ -10,40 +10,41 @@ namespace core.modelview.commercialcatalogue
 
     public class AddCommercialCatalogue
     {
-         /// <summary>
+        /// <summary>
         /// Commercial Catalogue reference.
         /// </summary>
         /// <value>Gets/sets the reference.</value>
         [DataMember]
-        string reference {get; set;}
-        
+        string reference { get; set; }
+
         /// <summary>
         /// Commercial Catalogue designation.
         /// </summary>
         /// <value>Gets/sets the designation.</value>
         [DataMember]
-        string designation {get; set;}
+        string designation { get; set; }
 
-          /// <summary>
+        /// <summary>
         /// List of Commercial Catalogue Catalogue Collection.
         /// </summary>
         /// <value>Gets/sets the name.</value>
         [DataMember]
-        public List<CommercialCatalogueCatalogueCollectionId> commercialCatalogueCatalogueCollectionList { get; set; }
-     
+        public List<CatalogueCollectionModelViewId> catalogueCollectionList { get; set; }
+
     }
 
     /// <summary>
     /// Class representing a ModelView used for retrieving basic data from instances of GetCommercialCatalogueCatalogueCollection
     /// </summary>
     [DataContract]
-    public class CommercialCatalogueCatalogueCollectionId
+    public class CatalogueCollectionModelViewId
     {
+
         /// <summary>
-        /// Commercial Catalogue's database identifier.
+        /// Catalogue Collection id
         /// </summary>
-        /// <value>Gets/sets the database identifier.</value>
+        /// <value>Gets/sets the reference.</value>
         [DataMember]
-        public long id { get; set; }
+        long catalogueCollectionId { get; set; }
     }
 }
