@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using core.domain;
 using core.dto;
 using core.modelview.pricetableentries;
@@ -44,13 +46,18 @@ namespace core.services
         /// Message that occurs if one of the dates of the time period doesn't follow the General ISO format
         /// </summary>
         private const string DATES_WRONG_FORMAT = "Make sure all dates follow the General ISO Format: ";
-        
+
+        /// <summary>
+        /// String that represents the abbreviation of the EURO currency
+        /// </summary>
+        private const string EURO_CURRENCY_ABV = "EUR";
+
         /// <summary>
         /// Updates a finish's price table entry
         /// </summary>
         /// <param name="modelView">model view containing updatable information</param>
         /// <returns>True if the update is successful</returns>
-        public static bool update(UpdateFinishPriceTableEntryModelView modelView)
+        public static async Task<bool> update(UpdateFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
             MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
             long materialId = modelView.entityId;
@@ -80,15 +87,30 @@ namespace core.services
                     }
 
                     //TODO Is this if statement correct?
-                    if(tableEntryToUpdate.entity.Id != modelView.finishId){
+                    if (tableEntryToUpdate.entity.Id != modelView.finishId)
+                    {
                         throw new InvalidOperationException(ENTRY_DOESNT_BELONG_TO_FINISH);
                     }
 
                     if (modelView.priceTableEntry.price != null)
                     {
-                        //TODO Take into account currency and area conversion
+                        //TODO Take area conversion into account
                         //!For now we are considering all prices are in €/m2
-                        Price newPrice = Price.valueOf(modelView.priceTableEntry.price.value);
+                        Price newPrice = null;
+                        if (!modelView.priceTableEntry.price.currency.Equals(EURO_CURRENCY_ABV))
+                        {
+                            try
+                            {
+                                double convertedValue = await new CurrencyConversionService(clientFactory)
+                                                                    .convertCurrencyToEuro(modelView.priceTableEntry.price.currency,
+                                                                         modelView.priceTableEntry.price.value);
+                                newPrice = Price.valueOf(convertedValue);
+                            }
+                            catch (HttpRequestException)
+                            {
+                                newPrice = Price.valueOf(modelView.priceTableEntry.price.value);
+                            }
+                        }
                         tableEntryToUpdate.changePrice(newPrice);
                         performedAtLeastOneUpdate = true;
                     }
@@ -104,7 +126,7 @@ namespace core.services
                             tableEntryToUpdate.changeTimePeriod(TimePeriod.valueOf(newStartingDate, tableEntryToUpdate.timePeriod.endingDate));
                             performedAtLeastOneUpdate = true;
                         }
-                        catch (UnparsableValueException unparsableValueException)
+                        catch (UnparsableValueException)
                         {
                             throw new UnparsableValueException(DATES_WRONG_FORMAT + LocalDateTimePattern.GeneralIso.PatternText);
                         }
@@ -120,7 +142,7 @@ namespace core.services
                             tableEntryToUpdate.changeTimePeriod(TimePeriod.valueOf(tableEntryToUpdate.timePeriod.startingDate, newEndingDate));
                             performedAtLeastOneUpdate = true;
                         }
-                        catch (UnparsableValueException unparsableValueException)
+                        catch (UnparsableValueException)
                         {
                             throw new UnparsableValueException(DATES_WRONG_FORMAT + LocalDateTimePattern.GeneralIso.PatternText);
                         }
