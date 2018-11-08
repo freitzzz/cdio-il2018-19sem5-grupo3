@@ -5,12 +5,8 @@ using support.utils;
 
 namespace core.domain
 {
-    public class FinishPriceTableEntry : PriceTableEntry<Finish>, AggregateRoot<FinishPriceTableEntry>
+    public class FinishPriceTableEntry : PriceTableEntry<Finish>, AggregateRoot<string>
     {
-        /// <summary>
-        /// Constant that represents the message that occurs if the Table Entry's finish is null
-        /// </summary>
-        private const string NULL_FINISH = "The finish can't be null";
 
         /// <summary>
         /// Overrides entity property to allow lazy loading of the same
@@ -35,33 +31,30 @@ namespace core.domain
         /// <param name="price">Table Entry's price</param>
         /// <param name="timePeriod">Table Entry's time period</param>
         /// <param name="finish">Table Entry's finish</param>
-        public FinishPriceTableEntry(Price price, TimePeriod timePeriod, Finish finish)
-                : base(price, timePeriod)
+        public FinishPriceTableEntry(Finish finish, Price price, TimePeriod timePeriod)
+                : base(finish, price, timePeriod)
         {
-            checkFinish(finish);
-            this.entity = finish;
         }
 
-        /// <summary>
-        /// Checks if the Table Entry's finish is valid
-        /// </summary>
-        /// <param name="finish">Finish being checked</param>
-        private void checkFinish(Finish finish)
+        protected override void createEID()
         {
-            if (finish == null)
-            {
-                throw new ArgumentException(NULL_FINISH);
-            }
+            eId = entity.description + String.Format("_{0}-{1}-{2}T{3}:{4}:{5}",
+                                timePeriod.startingDate.Year,
+                                timePeriod.startingDate.Month,
+                                timePeriod.startingDate.Day,
+                                timePeriod.startingDate.Hour,
+                                timePeriod.startingDate.Minute,
+                                timePeriod.startingDate.Second);
         }
 
-        public FinishPriceTableEntry id()
+        public override string id()
         {
-            return this;
+            return eId;
         }
 
-        public bool sameAs(FinishPriceTableEntry comparingEntity)
+        public override bool sameAs(string comparingEntity)
         {
-            return this.Equals(comparingEntity);
+            return this.id().Equals(comparingEntity);
         }
     }
 }
