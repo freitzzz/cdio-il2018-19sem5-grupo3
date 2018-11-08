@@ -5,6 +5,9 @@ using core.domain;
 using NodaTime;
 using NodaTime.Text;
 using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
 
 namespace core.services
 {
@@ -30,11 +33,16 @@ namespace core.services
         private const string PRICE_TABLE_ENTRY_NOT_CREATED = "A price table entry for the requested material with the same values already exists. Please try again";
 
         /// <summary>
+        /// String representing the abbreviation for the euro currency
+        /// </summary>
+        private const string EURO_CURRENCY_ABV = "EUR";
+
+        /// <summary>
         /// Transforms an AddMaterialPriceTableEntry into a MaterialPriceTableEntry and saves it to the database
         /// </summary>
         /// <param name="modelView">material price table entry to transform and persist</param>
         /// <returns>created instance or null in case the creation wasn't successfull</returns>
-        public static AddPriceTableEntryModelView transform(AddPriceTableEntryModelView modelView)
+        public static async Task<AddPriceTableEntryModelView> transform(AddPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
 
             MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
@@ -100,10 +108,9 @@ namespace core.services
             createdPriceTableEntryDTO.endingDate = LocalDateTimePattern.GeneralIso.Format(savedMaterialPriceTableEntry.timePeriod.endingDate);
             createdPriceTableEntryDTO.price = new PriceDTO();
             createdPriceTableEntryDTO.price.value = savedMaterialPriceTableEntry.price.value;
-            //TODO Take into account currency and area conversion
-            //!For now we are considering all prices are in €/m2
-            createdPriceTableEntryDTO.price.currency = "";
-            createdPriceTableEntryDTO.price.area = "";
+            //TODO Take area conversion into account
+            createdPriceTableEntryDTO.price.currency = EURO_CURRENCY_ABV;
+            createdPriceTableEntryDTO.price.area = "m2";
 
             createdPriceModelView.priceTableEntry = createdPriceTableEntryDTO;
             createdPriceModelView.tableEntryId = savedMaterialPriceTableEntry.Id;
