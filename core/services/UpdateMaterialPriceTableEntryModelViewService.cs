@@ -99,20 +99,18 @@ namespace core.services
                 //TODO Take area conversion into account
                 //!For now we are considering all prices are in €/m2
                 Price newPrice = null;
-                if (!modelView.priceTableEntry.price.currency.Equals(EURO_CURRENCY_ABV))
+                try
                 {
-                    try
-                    {
-                        double convertedValue = await new CurrencyConversionService(clientFactory)
-                                                            .convertCurrencyToEuro(modelView.priceTableEntry.price.currency,
-                                                                 modelView.priceTableEntry.price.value);
-                        newPrice = Price.valueOf(convertedValue);
-                    }
-                    catch (HttpRequestException)
-                    {
-                        newPrice = Price.valueOf(modelView.priceTableEntry.price.value);
-                    }
+                    double convertedValue = await new CurrencyPerAreaConversionService(clientFactory)
+                                                        .convertCurrencyToDefaultCurrency(modelView.priceTableEntry.price.currency,
+                                                             modelView.priceTableEntry.price.value);
+                    newPrice = Price.valueOf(convertedValue);
                 }
+                catch (HttpRequestException)
+                {
+                    newPrice = Price.valueOf(modelView.priceTableEntry.price.value);
+                }
+
                 tableEntryToUpdate.changePrice(newPrice);
                 performedAtLeastOneUpdate = true;
             }
