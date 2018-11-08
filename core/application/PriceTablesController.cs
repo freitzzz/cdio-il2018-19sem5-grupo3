@@ -1,8 +1,12 @@
+using core;
+using core.domain;
 using core.dto;
 using core.modelview.pricetableentries;
 using core.modelview.pricetable;
+using core.persistence;
 using core.services;
 using System;
+using System.Collections.Generic;
 
 namespace core.application
 {
@@ -18,7 +22,9 @@ namespace core.application
         /// <param name="fetchMaterialFinishPriceHistoryDTO">FetchMaterialPriceHistoryDTO with the information about the fetch</param>
         /// <returns>GetAllMaterialPriceHistoryModelView with the material price history fetch information</returns>
         public GetAllMaterialPriceHistoryModelView fetchMaterialPriceHistory(FetchMaterialPriceHistoryDTO fetchMaterialPriceHistoryDTO){
-            throw new NotImplementedException();
+            IEnumerable<MaterialPriceTableEntry> materialPriceHistory=PersistenceContext.repositories().createMaterialPriceTableRepository().fetchMaterialPriceHistory(fetchMaterialPriceHistoryDTO);
+            //TODO: ENSURE PRICE HISTORY WAS FETCHED WITH SUCCESS
+            return PriceTableModelViewService.fromMaterialCollection(materialPriceHistory);
         }
 
         /// <summary>
@@ -26,8 +32,10 @@ namespace core.application
         /// </summary>
         /// <param name="fetchMaterialFinishPriceHistoryDTO">FetchMaterialFinishPriceHistoryDTO with the information about the fetch</param>
         /// <returns>GetAllMaterialFinishPriceHistoryModelView with the material finish price history fetch information</returns>
-        public GetAllMaterialFinishPriceHistoryModelView fetchMaterialFinishPriceHistory(FetchMaterialPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO){
-            throw new NotImplementedException();
+        public GetAllMaterialFinishPriceHistoryModelView fetchMaterialFinishPriceHistory(FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO){
+            IEnumerable<FinishPriceTableEntry> materialFinishPriceHistory=PersistenceContext.repositories().createFinishPriceTableRepository().fetchMaterialFinishPriceHistory(fetchMaterialFinishPriceHistoryDTO);
+            //TODO: ENSURE PRICE HISTORY WAS FETCHED WITH SUCCESS
+            return PriceTableModelViewService.fromMaterialFinishCollection(materialFinishPriceHistory);
         }
 
         /// <summary>
