@@ -95,6 +95,15 @@ factorySchema.methods.disable=function(){
 }
 
 /**
+ * Checks if the current factory is located on a certain city
+ * @param {City.Schema} city City with the city being checked
+ * @returns Boolean true if the factory is located at a certain city, false if not
+ */
+factorySchema.methods.isLocated=function(city){
+    return this.city ? this.city.equals(city) : false;
+}
+
+/**
  * Creates a new Factory object
  * @param {String} reference String with the factory reference
  * @param {String} designation String with the factory designation

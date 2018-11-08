@@ -26,6 +26,16 @@ var citySchema = new Schema({
     location:{type: location.schema, required:true},
 
 });
+
+/**
+ * Checks if two cities are equal
+ * @param {City.Schema} city City with the comparing city
+ * @returns Boolean true if both cities are equal, false if not 
+ */
+citySchema.methods.equals=function(city){
+    return city!=null ? this.name.valueOf()==city.name.valueOf() : false;
+}
+
 /**
  * Creates a City object
  * @param {String} name String with the city name
