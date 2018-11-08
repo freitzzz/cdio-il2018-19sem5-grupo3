@@ -15,14 +15,29 @@ namespace backend.Controllers
     public class PriceTablesController : Controller
     {
         /// <summary>
-        /// Constant that represents the message that is logged if a price entry for a material isn't created
+        /// Constant that represents the message that occurs if a price entry for a material isn't created
         /// </summary>
         private const string PRICE_ENTRY_NOT_CREATED = "The price entry wasn't created";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if a price entry isn't updated
+        /// </summary>
+        private const string ENTRY_NOT_UPDATED = "The price entry wasn't updated";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if a price entry is updated successfully
+        /// </summary>
+        private const string ENTRY_UPDATE_SUCCESSFUL = "The price entry was updated successfully";
 
         /// <summary>
         /// Constant that represents the message that is logged everytime this controller receives a POST Request
         /// </summary>
         private const string LOG_POST_START = "POST Request started";
+
+        /// <summary>
+        /// Constant that represents the message that is logged everytime this controller receives a PUT Request
+        /// </summary>
+        private const string LOG_PUT_START = "PUT Request started";
 
         /// <summary>
         /// Constant that represents the message that is logged everytime a material price entry is created successfully
@@ -35,6 +50,11 @@ namespace backend.Controllers
         private const string LOG_POST_FINISH_ENTRY_SUCCESS = "Price Entry {@entry} for Finish {id} of Material {materialId} created successfully";
 
         /// <summary>
+        /// Constant that represents the message that is logged everytime an update for a material's price table entry returns a BadRequest
+        /// </summary>
+        private const string LOG_PUT_MATERIAL_ENTRY_SUCCESS = "Price Table Entry {entryid} of Material {materialId} updated succesfully with {@update}";
+
+        /// <summary>
         /// Constant that represents the message that is logged everytime a material price entry POST returns a BadRequest
         /// </summary>
         private const string LOG_POST_MATERIAL_ENTRY_BAD_REQUEST = "POST Price Entry {@entry} for Material {id} BadRequest";
@@ -44,6 +64,10 @@ namespace backend.Controllers
         /// </summary>
         private const string LOG_POST_FINISH_ENTRY_BAD_REQUEST = "POST Price Entry {@entry} for Finish {id} of Material {materialId} BadRequest";
 
+        /// <summary>
+        /// Constant that represents the message that is logged everytime an update for a material's price table entry returns a BadRequest
+        /// </summary>
+        private const string LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST = "PUT {@update} for Price Table Entry {entryid} of Material {materialId} BadRequest";
 
         /// <summary>
         /// Material Price Table Repository
@@ -91,7 +115,7 @@ namespace backend.Controllers
                 if (createdPrice == null)
                 {
                     logger.LogWarning(LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
-                    return BadRequest(new { err = PRICE_ENTRY_NOT_CREATED });
+                    return BadRequest(new { error = PRICE_ENTRY_NOT_CREATED });
                 }
                 logger.LogInformation(LOG_POST_MATERIAL_ENTRY_SUCCESS, createdPrice, createdPrice.entityId);
                 return Created(Request.Path, createdPrice);
@@ -99,22 +123,22 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
-                return BadRequest(new { err = nullReferenceException.Message });
+                return BadRequest(new { error = nullReferenceException.Message });
             }
             catch (InvalidOperationException invalidOperationException)
             {
                 logger.LogWarning(invalidOperationException, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
-                return BadRequest(new { err = invalidOperationException.Message });
+                return BadRequest(new { error = invalidOperationException.Message });
             }
             catch (UnparsableValueException unparsableValueException)
             {
                 logger.LogWarning(unparsableValueException, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
-                return BadRequest(new { err = unparsableValueException.Message });
+                return BadRequest(new { error = unparsableValueException.Message });
             }
             catch (ArgumentException argumentException)
             {
                 logger.LogWarning(argumentException, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
-                return BadRequest(new { err = argumentException.Message });
+                return BadRequest(new { error = argumentException.Message });
             }
         }
 
@@ -137,7 +161,7 @@ namespace backend.Controllers
                 if (createdPrice == null)
                 {
                     logger.LogWarning(LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
-                    return BadRequest(new { err = PRICE_ENTRY_NOT_CREATED });
+                    return BadRequest(new { error = PRICE_ENTRY_NOT_CREATED });
                 }
                 logger.LogInformation(LOG_POST_MATERIAL_ENTRY_SUCCESS, createdPrice, createdPrice.finishId, createdPrice.entityId);
                 return Created(Request.Path, createdPrice);
@@ -145,22 +169,60 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
-                return BadRequest(new { err = nullReferenceException.Message });
+                return BadRequest(new { error = nullReferenceException.Message });
             }
             catch (InvalidOperationException invalidOperationException)
             {
                 logger.LogWarning(invalidOperationException, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
-                return BadRequest(new { err = invalidOperationException.Message });
+                return BadRequest(new { error = invalidOperationException.Message });
             }
             catch (UnparsableValueException unparsableValueException)
             {
                 logger.LogWarning(unparsableValueException, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
-                return BadRequest(new { err = unparsableValueException.Message });
+                return BadRequest(new { error = unparsableValueException.Message });
             }
             catch (ArgumentException argumentException)
             {
                 logger.LogWarning(argumentException, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
-                return BadRequest(new { err = argumentException.Message });
+                return BadRequest(new { error = argumentException.Message });
+            }
+        }
+
+        [HttpPut("materials/{materialid}/entries/{entryid}")]
+        public ActionResult updateMaterialPriceTableEntry(long materialid, long entryid, [FromBody] UpdatePriceTableEntryModelView modelView)
+        {
+            logger.LogInformation(LOG_PUT_START);
+            try
+            {
+                modelView.entityId = materialid;
+                modelView.tableEntryId = entryid;
+                if (!new core.application.PriceTablesController().updateMaterialPriceTableEntry(modelView))
+                {
+                    logger.LogWarning(LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
+                    return BadRequest(new { error = ENTRY_NOT_UPDATED });
+                }
+                logger.LogInformation(LOG_PUT_MATERIAL_ENTRY_SUCCESS, entryid, materialid, modelView);
+                return Ok(new { message = ENTRY_UPDATE_SUCCESSFUL });
+            }
+            catch (NullReferenceException nullReferenceException)
+            {
+                logger.LogWarning(nullReferenceException, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
+                return BadRequest(new { error = nullReferenceException.Message });
+            }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                logger.LogWarning(invalidOperationException, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
+                return BadRequest(new { error = invalidOperationException.Message });
+            }
+            catch (UnparsableValueException unparsableValueException)
+            {
+                logger.LogWarning(unparsableValueException, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
+                return BadRequest(new { error = unparsableValueException.Message });
+            }
+            catch (ArgumentException argumentException)
+            {
+                logger.LogWarning(argumentException, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
+                return BadRequest(new { error = argumentException.Message });
             }
         }
     }
