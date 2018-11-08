@@ -12,7 +12,7 @@ namespace core.services
     /// Service that helps transforming and persisting a Finish Price Table Entry
     /// </summary>
     //TODO This Service and AddMaterialPriceTableEntryModelViewService are very similar. Should we look into a way of decreasing duplicated code?
-    public class AddFinishPriceTableEntryModelViewService
+    public static class AddFinishPriceTableEntryModelViewService
     {
         /// <summary>
         /// Message that occurs if the requested material for the price table entry isn't found
@@ -108,6 +108,7 @@ namespace core.services
                     createdPriceModelView.priceTableEntry = createdPriceTableEntryDTO;
                     createdPriceModelView.entityId = material.Id;
                     createdPriceModelView.finishId = finish.Id;
+                    createdPriceModelView.tableEntryId = savedFinishPriceTableEntry.Id;
 
                     return createdPriceModelView;
                 }
