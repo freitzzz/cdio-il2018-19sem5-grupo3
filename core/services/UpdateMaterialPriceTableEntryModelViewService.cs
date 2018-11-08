@@ -26,6 +26,11 @@ namespace core.services
         private const string ENTRY_NOT_FOUND = "Requested price table entry wasn't found";
 
         /// <summary>
+        /// Message that occurs if the requested price table entry doesn't belong to the requested material
+        /// </summary>
+        private const string ENTRY_DOESNT_BELONG_TO_MATERIAL = "The requested price table entry does not belong to the requested material";
+
+        /// <summary>
         /// Message that occurs if the request price table entry to update isn't updated successfully
         /// </summary>
         private const string UPDATE_NOT_SUCCESSFUL = "Update of the price table entry wasn't successful";
@@ -69,6 +74,12 @@ namespace core.services
             if (tableEntryToUpdate == null)
             {
                 throw new NullReferenceException(ENTRY_NOT_FOUND);
+            }
+
+            //TODO Is this if statement correct?
+            if (tableEntryToUpdate.entity.Id != modelView.entityId)
+            {
+                throw new InvalidOperationException(ENTRY_DOESNT_BELONG_TO_MATERIAL);
             }
 
             if (modelView.priceTableEntry.price != null)
