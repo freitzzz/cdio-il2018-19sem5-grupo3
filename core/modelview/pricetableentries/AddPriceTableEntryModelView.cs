@@ -9,6 +9,9 @@ namespace core.modelview.pricetableentries
     [DataContract]
     public class AddPriceTableEntryModelView
     {
+        [DataMember(Name = "tableEntryId")]
+        public long tableEntryId {get; set;}
+
         [DataMember(Name = "entityId")]
         public long entityId { get; set; }
 
