@@ -42,12 +42,6 @@ namespace core.services
         private const string PRICE_TABLE_ENTRY_NOT_CREATED = "A price table entry with the same values already exists for this finish. Please try again with different values";
 
         /// <summary>
-        /// String representing the abbreviation for the euro currency
-        /// </summary>
-        private const string EURO_CURRENCY_ABV = "EUR";
-
-
-        /// <summary>
         /// Transforms and creates a finish price table entry
         /// </summary>
         /// <param name="modelView">model view with the necessary info to create a finish price table entry</param>
@@ -97,22 +91,19 @@ namespace core.services
                     TimePeriod timePeriod = TimePeriod.valueOf(startingDate, endingDate);
 
                     //TODO Take area conversion into account
-                    //!For now we are considering all prices are in currency/m2
                     Price price = null;
-                    if (!modelView.priceTableEntry.price.currency.Equals(EURO_CURRENCY_ABV))
+                    try
                     {
-                        try
-                        {
-                            double convertedValue = await new CurrencyConversionService(clientFactory)
-                                                                .convertCurrencyToEuro(modelView.priceTableEntry.price.currency,
-                                                                     modelView.priceTableEntry.price.value);
-                            price = Price.valueOf(convertedValue);
-                        }
-                        catch (HttpRequestException)
-                        {
-                            price = Price.valueOf(modelView.priceTableEntry.price.value);
-                        }
+                        double convertedValue = await new CurrencyPerAreaConversionService(clientFactory)
+                                                            .convertCurrencyToDefaultCurrency(modelView.priceTableEntry.price.currency,
+                                                                 modelView.priceTableEntry.price.value);
+                        price = Price.valueOf(convertedValue);
                     }
+                    catch (HttpRequestException)
+                    {
+                        price = Price.valueOf(modelView.priceTableEntry.price.value);
+                    }
+
                     FinishPriceTableEntry finishPriceTableEntry = new FinishPriceTableEntry(material.id(), finish, price, timePeriod);
                     FinishPriceTableEntry savedFinishPriceTableEntry = PersistenceContext.repositories()
                                             .createFinishPriceTableRepository().save(finishPriceTableEntry);
@@ -128,9 +119,8 @@ namespace core.services
                     createdPriceTableEntryDTO.price = new PriceDTO();
                     createdPriceTableEntryDTO.price.value = savedFinishPriceTableEntry.price.value;
                     //TODO Take area conversion into account
-                    //!For now we are considering all prices are in €/m2
-                    createdPriceTableEntryDTO.price.currency = EURO_CURRENCY_ABV;
-                    createdPriceTableEntryDTO.price.area = "m2";
+                    createdPriceTableEntryDTO.price.currency = "";
+                    createdPriceTableEntryDTO.price.area = "";
 
                     AddFinishPriceTableEntryModelView createdPriceModelView = new AddFinishPriceTableEntryModelView();
                     createdPriceModelView.priceTableEntry = createdPriceTableEntryDTO;
