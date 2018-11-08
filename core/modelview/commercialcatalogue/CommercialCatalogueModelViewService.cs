@@ -19,7 +19,7 @@ namespace core.modelview.commercialcatalogue
             commercialCatalogueView.id = commercialCatalogue.Id;
             commercialCatalogueView.reference = commercialCatalogue.reference;
             commercialCatalogueView.designation = commercialCatalogue.designation;
-            commercialCatalogueView.collectionList = commercialCatalogue.catalogueCollectionList;
+            //commercialCatalogueView.commercialCatalogueCatalogueCollectionList = commercialCatalogue.catalogueCollectionList;
             return commercialCatalogueView;
         }
 
