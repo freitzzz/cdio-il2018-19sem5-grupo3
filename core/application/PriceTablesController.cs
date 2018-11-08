@@ -1,7 +1,15 @@
+using core;
+using core.domain;
+using core.dto;
 using System.Net.Http;
 using System.Threading.Tasks;
 using core.modelview.pricetableentries;
+using core.modelview.pricetable;
+using core.persistence;
 using core.services;
+using core.services.ensurance;
+using System;
+using System.Collections.Generic;
 
 namespace core.application
 {
@@ -10,6 +18,29 @@ namespace core.application
     /// </summary>
     public class PriceTablesController
     {
+
+        /// <summary>
+        /// Fetches the price history of a material
+        /// </summary>
+        /// <param name="fetchMaterialFinishPriceHistoryDTO">FetchMaterialPriceHistoryDTO with the information about the fetch</param>
+        /// <returns>GetAllMaterialPriceHistoryModelView with the material price history fetch information</returns>
+        public GetAllMaterialPriceHistoryModelView fetchMaterialPriceHistory(FetchMaterialPriceHistoryDTO fetchMaterialPriceHistoryDTO){
+            IEnumerable<MaterialPriceTableEntry> materialPriceHistory=PersistenceContext.repositories().createMaterialPriceTableRepository().fetchMaterialPriceHistory(fetchMaterialPriceHistoryDTO);
+            FetchEnsurance.ensureMaterialPriceHistoryFetchWasSuccessful(materialPriceHistory);
+            return PriceTableModelViewService.fromMaterialCollection(materialPriceHistory);
+        }
+
+        /// <summary>
+        /// Fetches the price history of a material finish
+        /// </summary>
+        /// <param name="fetchMaterialFinishPriceHistoryDTO">FetchMaterialFinishPriceHistoryDTO with the information about the fetch</param>
+        /// <returns>GetAllMaterialFinishPriceHistoryModelView with the material finish price history fetch information</returns>
+        public GetAllMaterialFinishPriceHistoryModelView fetchMaterialFinishPriceHistory(FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO){
+            IEnumerable<FinishPriceTableEntry> materialFinishPriceHistory=PersistenceContext.repositories().createFinishPriceTableRepository().fetchMaterialFinishPriceHistory(fetchMaterialFinishPriceHistoryDTO);
+            FetchEnsurance.ensureMaterialFinishPriceHistoryFetchWasSuccessful(materialFinishPriceHistory);
+            return PriceTableModelViewService.fromMaterialFinishCollection(materialFinishPriceHistory);
+        }
+
         /// <summary>
         /// Adds a new price table entry for a material
         /// </summary>
