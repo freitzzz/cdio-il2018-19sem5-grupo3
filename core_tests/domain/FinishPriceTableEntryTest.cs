@@ -62,6 +62,94 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureChangePriceDoesntChangePriceIfNewPriceIsNull()
+        {
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(materialEID: "hi", price: Price.valueOf(20),
+                                                timePeriod: createTimePeriod(), finish: createFinish());
+
+            Action act = () => instance.changePrice(null);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureChangePriceChangesPrice()
+        {
+            Price oldPrice = Price.valueOf(20);
+            Price newPrice = Price.valueOf(30);
+
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(materialEID: "hi", price: oldPrice,
+                                               timePeriod: createTimePeriod(), finish: createFinish());
+
+            instance.changePrice(newPrice);
+
+            Assert.NotEqual(oldPrice, instance.price);
+        }
+
+        [Fact]
+        public void ensureChangeTimePeriodDoesntChangeTimePeriodIfNewTimePeriodIsNull()
+        {
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(materialEID: "hi", price: Price.valueOf(20),
+                                                timePeriod: createTimePeriod(), finish: createFinish());
+
+            Action act = () => instance.changeTimePeriod(null);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureChangeTimePeriodChangesTimePeriod()
+        {
+            TimePeriod oldTimePeriod = createTimePeriod();
+            TimePeriod newTimePeriod = createOtherTimePeriod();
+
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(materialEID: "hi", price: Price.valueOf(10),
+                                                timePeriod: oldTimePeriod, finish: createFinish());
+
+            instance.changeTimePeriod(newTimePeriod);
+
+            Assert.NotEqual(oldTimePeriod, instance.timePeriod);
+        }
+
+        [Fact]
+        public void ensureIdReturnsTheBusinessIdentifier()
+        {
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(materialEID: "hi", price: Price.valueOf(10),
+                                               timePeriod: createTimePeriod(), finish: createFinish());
+
+            FinishPriceTableEntry other = new FinishPriceTableEntry(materialEID: "hi", price: Price.valueOf(10),
+                                               timePeriod: createTimePeriod(), finish: createFinish());
+
+
+            Assert.Equal(instance.id(), other.id());
+        }
+
+        [Fact]
+        public void ensureSameAsReturnsTrueForEqualEntities()
+        {
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(materialEID: "hi", price: Price.valueOf(10),
+                                               timePeriod: createTimePeriod(), finish: createFinish());
+
+            FinishPriceTableEntry other = new FinishPriceTableEntry(materialEID: "hi", price: Price.valueOf(10),
+                                               timePeriod: createTimePeriod(), finish: createFinish());
+
+
+            Assert.True(instance.sameAs(other.eId));
+        }
+
+        [Fact]
+        public void ensureSameAsReturnsFalseForDifferentEntities()
+        {
+            FinishPriceTableEntry instance = new FinishPriceTableEntry(materialEID: "hi", price: Price.valueOf(10),
+                                               timePeriod: createTimePeriod(), finish: createFinish());
+
+            FinishPriceTableEntry other = new FinishPriceTableEntry(materialEID: "hello", price: Price.valueOf(10),
+                                               timePeriod: createOtherTimePeriod(), finish: createFinish());
+
+            Assert.False(instance.sameAs(other.eId));
+        }
+
+        [Fact]
         public void ensureTableEntriesWithDifferentPricesHaveDifferentHashCodes()
         {
             FinishPriceTableEntry instance = new FinishPriceTableEntry(materialEID: "hi", price: Price.valueOf(10),

@@ -57,7 +57,7 @@ namespace core.domain
 
         public override bool sameAs(string comparingEntity)
         {
-            return this.id().Equals(comparingEntity);
+            return eId.Equals(comparingEntity);
         }
     }
 }
