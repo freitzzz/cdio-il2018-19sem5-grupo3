@@ -17,31 +17,51 @@ var closet_faces_ids = [];
  */
 var closet_slots_faces_ids = [];
 
-
-//new
-
-
-var selection = null, hovered = null, plane = null, int0;
-
-/**
- * Global variable with a vector that holds the mouse coordinates
- */
-var mouse = new THREE.Vector2();
-
-var offset = new THREE.Vector3();
-
-var intersection = new THREE.Vector3(0, 0, 0);
-
-var raycaster = new THREE.Raycaster();
-
-
-//end new
-
-
 /**
  * Global variable with the WebGL canvas
  */
 var canvasWebGL;
+
+// ------------ Global variables used to dinamically resize Slots ------------
+/**
+ * Global variable that represents the currently selected slot (null if none)
+ */
+var selected_object = null;
+
+/**
+ * Global variable that represents the object being hovered (null if none)
+ */
+var hovered_object = null;
+
+/**
+ * Global variable that represents the plane that intersects the closet
+ */
+var plane = null;
+
+/**
+ * Global variable that represents the difference between the intersection's x coordinate
+ * and the selected object's x coordinate
+ */
+var offset;
+
+/**
+ * Global variable with a Vector that holds the mouse coordinates (x, y)
+ */
+var mouse = new THREE.Vector2();
+
+/**
+ * Global variable with a Vector that represents the intersection between the plane and
+ * the clicked object
+ */
+var intersection = new THREE.Vector3(0, 0, 0);
+
+/**
+ * Global variable with a Raycaster used for picking (hovering, clicking and identifying) objects
+ */
+var raycaster = new THREE.Raycaster();
+// ------------ End of global variables used to dinamically resize Slots ------------
+
+
 
 /**
  * Initial Product Draw function
@@ -50,22 +70,11 @@ function main() {
     canvasWebGL = document.getElementById("webgl");
     renderer = new THREE.WebGLRenderer({ canvas: canvasWebGL });
 
-    //renderer.setSize(window.innerWidth, window.innerHeight);
-    //renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false); old
-    //renderer.domElement.addEventListener('mousemove', raycast, false); old
-
     initCamera();
     initControls();
     initCloset();
 
-    // Adds lights
-    //scene.add(new THREE.AmbientLight(0x444444));
-    //var dirLight = new THREE.DirectionalLight(0xffffff);
-    //dirLight.position.set(200, 200, 1000).normalize();
-    //camera.add(dirLight);
-    //camera.add(dirLight.target);
-
-
+    //Creates the intersection plane
     plane = new THREE.Plane();
     plane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 200, 0)).normalize();
 
@@ -83,50 +92,14 @@ function main() {
 
     var dispPlane = new THREE.Mesh(planeGeometry, planeMaterial);
     dispPlane.visible = false;
+    //Finishes creating the intersection plane
 
     scene.add(dispPlane);
     scene.add(camera);
 
-    //changeClosetSlots(0);
     registerEvents();
     animate();
 }
-
-// /**
-//  * Raycast function used for picking
-//  */
-// function raycast(e) {
-//     if (e.buttons != 2) return;
-
-//     var x = e.clientX;
-//     var y = e.clientY;
-//     var rect = e.target.getBoundingClientRect();
-//     mouse.x = (x - rect.left) / (canvasWebGL.clientWidth / 2.0) - 1.0;
-//     mouse.y = (canvasWebGL.clientHeight - (y - rect.top)) / (canvasWebGL.clientHeight / 2.0) - 1.0;
-
-//     //2. set the picking ray from the camera position and mouse coordinates
-//     raycaster.setFromCamera(mouse, camera);
-
-//     //3. compute intersections
-//     var intersects = raycaster.intersectObjects(scene.children[0].children);
-//     if (intersects != null) {
-//         var face = intersects[0].object;
-
-//         for (var i = 0; i < closet_slots_faces_ids.length; i++) {
-//             var closet_face = group.getObjectById(closet_slots_faces_ids[i]);
-//             if (JSON.stringify(closet_face) == JSON.stringify(face)) {
-
-//                 if (mouse.x > 0 && face.position.x < group.getObjectById(closet_faces_ids[3]).position.x - 15) {
-//                     face.translateX(4);
-//                 }
-
-//                 if (mouse.x < 0 && face.position.x > group.getObjectById(closet_faces_ids[2]).position.x + 15) {
-//                     face.translateX(-4);
-//                 }
-//             }
-//         }
-//     }
-// }
 
 /**
  * Initiates the closet
@@ -282,13 +255,9 @@ function render() {
  * Initializes the graphic representation controls
  */
 function initControls() {
-    // controls
-
     controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-    controls.target = new THREE.Vector3(0, 0, 0); // new
-
-    //controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
+    controls.target = new THREE.Vector3(0, 0, 0);
 
     controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
     controls.dampingFactor = 0.25;
@@ -298,6 +267,10 @@ function initControls() {
     controls.maxDistance = 500;
 
     controls.maxPolarAngle = Math.PI / 2;
+
+    document.addEventListener('mousedown', onDocumentMouseDown, false);
+    document.addEventListener('mousemove', onDocumentMouseMove, false);
+    document.addEventListener('mouseup', onDocumentMouseUp, false);
 }
 
 /**
@@ -322,7 +295,7 @@ function getNewScaleValue(initialScaleValue, newScaleValue, currentScaleValue) {
 }
 
 /**
- * Remove when found a better way
+ * Creates a material with a certain texture
  */
 function createMaterialWithTexture() {
 
@@ -347,15 +320,14 @@ function registerEvents() {
     document.addEventListener("changeSlots", function (changeSlotsEvent) {
         changeClosetSlots(changeSlotsEvent.detail.slots);
     });
-
-    document.addEventListener('mousedown', onDocumentMouseDown, false); //new
-
-    document.addEventListener('mousemove', onDocumentMouseMove, false); //new
-
-    document.addEventListener('mouseup', onDocumentMouseUp, false); //new
 }
 
-function onDocumentMouseDown(event) { //new
+/**
+ * Represents the action that occurs when the mouse's left button is pressed (mouse down),
+ * which is recognizing the object being clicked on, setting it as the selected one if
+ * it is a slot and disabling the rotation control
+ */
+function onDocumentMouseDown(event) {
     event.preventDefault();
     raycaster.setFromCamera(mouse, camera);
 
@@ -372,24 +344,24 @@ function onDocumentMouseDown(event) { //new
             var closet_face = group.getObjectById(closet_slots_faces_ids[i]);
 
             if (JSON.stringify(closet_face) == JSON.stringify(face)) {
-
                 //Disables rotation while moving the slot
                 controls.enabled = false;
-
                 //Sets the selection to the current slot
-                selection = face;
+                selected_object = face;
                 if (raycaster.ray.intersectPlane(plane, intersection)) {
-                    //   offset.copy(intersection).sub(selection.position);
-                    offset.x = intersection.x - selection.position.x;
+                    offset = intersection.x - selected_object.position.x;
                 }
-                // var aux = raycaster.ray.intersectPlane(plane, intersection);
-                //  if (aux) int0 = aux;
             }
         }
     }
 }
 
-function onDocumentMouseMove(event) { //new
+/**
+ * Represents the action that occurs when the mouse is dragged (mouse move), which
+ * is interacting with the previously picked object on mouse down (moving it accross
+ * the x axis)
+ */
+function onDocumentMouseMove(event) {
     event.preventDefault();
     //Get mouse position
     var rect = event.target.getBoundingClientRect();
@@ -400,20 +372,14 @@ function onDocumentMouseMove(event) { //new
     //Set raycast position
     raycaster.setFromCamera(mouse, camera);
 
-    if (selection) {
+    if (selected_object) {
         if (raycaster.ray.intersectPlane(plane, intersection)) {
-            var aux = intersection.x - offset.x;
-            if (aux) {
-                selection.position.x = aux;
-            }
-            //selection.position.copy(intersection.sub(offset));
+            var aux = intersection.x - offset;
+            //    if (aux.x <= group.getObjectById(closet_faces_ids[3]).position.x
+            //      && aux.x >= group.getObjectById(closet_faces_ids[2].position.x)) {
+            selected_object.position.x = aux;
+            // }
         }
-        // var int = raycaster.ray.intersectPlane(plane, intersection);
-        // if (int) {
-        //     offset.x = int.x - int0.x;
-        //     selection.position.x += offset.x;
-        //     int0 = int;
-        // }
         return;
     }
 
@@ -423,18 +389,23 @@ function onDocumentMouseMove(event) { //new
         var face = intersects[0].object;
         plane.setFromNormalAndCoplanarPoint(camera.position, face.position);
 
-        if (hovered !== face) hovered = face;
+        if (hovered_object !== face) hovered_object = face;
 
     } else {
-        if (hovered !== null) hovered = null;
+        if (hovered_object !== null) hovered_object = null;
     }
 }
 
+/**
+ * Represents the action that occurs when the mouse's left button is released, which is
+ * setting the selected object as null, since it is no longer being picked, and enabling
+ * the rotation control
+ */
 function onDocumentMouseUp(event) {
     //Enables rotation again
     controls.enabled = true;
     //Sets the selection to null (the slot stops being selected)
-    selection = null;
+    selected_object = null;
 }
 
 /**
