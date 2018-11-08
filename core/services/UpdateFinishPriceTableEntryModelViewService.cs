@@ -80,15 +80,30 @@ namespace core.services
                     }
 
                     //TODO Is this if statement correct?
-                    if(tableEntryToUpdate.entity.Id != modelView.finishId){
+                    if (tableEntryToUpdate.entity.Id != modelView.finishId)
+                    {
                         throw new InvalidOperationException(ENTRY_DOESNT_BELONG_TO_FINISH);
                     }
 
                     if (modelView.priceTableEntry.price != null)
                     {
-                        //TODO Take into account currency and area conversion
+                        //TODO Take area conversion into account
                         //!For now we are considering all prices are in €/m2
-                        Price newPrice = Price.valueOf(modelView.priceTableEntry.price.value);
+                        Price newPrice = null;
+                        if (!modelView.priceTableEntry.price.currency.Equals(EURO_CURRENCY_ABV))
+                        {
+                            try
+                            {
+                                double convertedValue = await new CurrencyConversionService(clientFactory)
+                                                                    .convertCurrencyToEuro(modelView.priceTableEntry.price.currency,
+                                                                         modelView.priceTableEntry.price.value);
+                                newPrice = Price.valueOf(convertedValue);
+                            }
+                            catch (HttpRequestException)
+                            {
+                                newPrice = Price.valueOf(modelView.priceTableEntry.price.value);
+                            }
+                        }
                         tableEntryToUpdate.changePrice(newPrice);
                         performedAtLeastOneUpdate = true;
                     }

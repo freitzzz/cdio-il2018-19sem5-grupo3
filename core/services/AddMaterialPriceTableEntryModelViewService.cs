@@ -58,16 +58,30 @@ namespace core.services
                 startingDate = LocalDateTimePattern.GeneralIso.Parse(startingDateAsString).GetValueOrThrow();
                 endingDate = LocalDateTimePattern.GeneralIso.Parse(endingDateAsString).GetValueOrThrow();
             }
-            catch (UnparsableValueException unparsableValueException)
+            catch (UnparsableValueException)
             {
                 throw new UnparsableValueException(DATES_WRONG_FORMAT + LocalDateTimePattern.GeneralIso.PatternText);
             }
 
             TimePeriod timePeriod = TimePeriod.valueOf(startingDate, endingDate);
 
-            //TODO Take into account currency and area conversion
-            //!For now we are considering all prices are in €/m2
-            Price price = Price.valueOf(modelView.priceTableEntry.price.value);
+            //TODO Take area conversion into account
+            //!For now we are considering all prices are in currency/m2
+            Price price = null;
+            if (!modelView.priceTableEntry.price.currency.Equals(EURO_CURRENCY_ABV))
+            {
+                try
+                {
+                    double convertedValue = await new CurrencyConversionService(clientFactory)
+                                                        .convertCurrencyToEuro(modelView.priceTableEntry.price.currency,
+                                                             modelView.priceTableEntry.price.value);
+                    price = Price.valueOf(convertedValue);
+                }
+                catch (HttpRequestException)
+                {
+                    price = Price.valueOf(modelView.priceTableEntry.price.value);
+                }
+            }
             MaterialPriceTableEntry materialPriceTableEntry = new MaterialPriceTableEntry(material, price, timePeriod);
             MaterialPriceTableEntry savedMaterialPriceTableEntry =
                 PersistenceContext.repositories().createMaterialPriceTableRepository().save(materialPriceTableEntry);
