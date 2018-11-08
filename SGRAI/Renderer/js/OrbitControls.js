@@ -443,13 +443,13 @@ THREE.OrbitControls = function (object, domElement) {
 
     }
 
-    function handleMouseDownPan(event) {
+   /*  function handleMouseDownPan(event) {
 
         //console.log( 'handleMouseDownPan' );
 
         panStart.set(event.clientX, event.clientY);
 
-    }
+    } */
 
     function handleMouseMoveRotate(event) {
 
