@@ -11,6 +11,7 @@ namespace core.services
     /// <summary>
     /// Service that helps in transforming an AddMaterialPriceTableEntry into a MaterialPriceTableEntry and saving it to the database
     /// </summary>
+    //TODO This Service and AddFinishPriceTableEntryModelViewService are very similar. Should we look into a way of decreasing duplicated code?
     public class AddMaterialPriceTableEntryModelViewService
     {
         /// <summary>
@@ -26,7 +27,7 @@ namespace core.services
         /// <summary>
         /// Message that occurs if the price table entry isn't created
         /// </summary>
-        private const string PRICE_TABLE_ENTRY_NOT_CREATED = "An error occurred and the price table entry wasn't created";
+        private const string PRICE_TABLE_ENTRY_NOT_CREATED = "A price table entry for the requested material with the same values already exists. Please try again";
 
         /// <summary>
         /// Transforms an AddMaterialPriceTableEntry into a MaterialPriceTableEntry and saves it to the database
