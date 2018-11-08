@@ -14,16 +14,26 @@ namespace core.modelview.pricetable{
         /// <param name="materialPriceTableEntry">MaterialPriceTableEntry with the material price</param>
         /// <returns>GetMaterialPriceModelView with the material price information model view</returns>
         public static GetMaterialPriceModelView fromMaterialEntity(MaterialPriceTableEntry materialPriceTableEntry){
-            throw new NotImplementedException();
+            GetMaterialPriceModelView getMaterialPriceModelView=new GetMaterialPriceModelView();
+            getMaterialPriceModelView.id=materialPriceTableEntry.Id;
+            getMaterialPriceModelView.value=materialPriceTableEntry.price.value;
+            getMaterialPriceModelView.startingDate=materialPriceTableEntry.timePeriod.startingDate.ToString();
+            getMaterialPriceModelView.endingDate=materialPriceTableEntry.timePeriod.endingDate.ToString();
+            return getMaterialPriceModelView;
         }
 
         /// <summary>
         /// Creates a model view with a material finish price information
         /// </summary>
-        /// <param name="finishPriceTableEntry">MaterialFinishPriceTableEntry with the material finish price</param>
+        /// <param name="materialFinishPriceTableEntry">MaterialFinishPriceTableEntry with the material finish price</param>
         /// <returns>GetMaterialFinishPriceModelView with the material finish price information model view</returns>
-        public static GetMaterialPriceModelView fromMaterialFinishEntity(FinishPriceTableEntry finishPriceTableEntry){
-            throw new NotImplementedException();
+        public static GetMaterialFinishPriceModelView fromMaterialFinishEntity(FinishPriceTableEntry materialFinishPriceTableEntry){
+            GetMaterialFinishPriceModelView getMaterialPriceModelView=new GetMaterialFinishPriceModelView();
+            getMaterialPriceModelView.id=materialFinishPriceTableEntry.Id;
+            getMaterialPriceModelView.value=materialFinishPriceTableEntry.price.value;
+            getMaterialPriceModelView.startingDate=materialFinishPriceTableEntry.timePeriod.startingDate.ToString();
+            getMaterialPriceModelView.endingDate=materialFinishPriceTableEntry.timePeriod.endingDate.ToString();
+            return getMaterialPriceModelView;
         }
 
         /// <summary>
@@ -32,7 +42,9 @@ namespace core.modelview.pricetable{
         /// <param name="materialFinishPriceTableEntries">IEnumerable with the material prices</param>
         /// <returns>GetAllMaterialPriceHistoryModelView with the material price history information</returns>
         public static GetAllMaterialPriceHistoryModelView fromMaterialCollection(IEnumerable<MaterialPriceTableEntry> materialPriceTableEntries){
-            throw new NotImplementedException();
+            GetAllMaterialPriceHistoryModelView getAllMaterialPrices=new GetAllMaterialPriceHistoryModelView();
+            foreach(MaterialPriceTableEntry materialPriceTableEntry in materialPriceTableEntries)getAllMaterialPrices.Add(fromMaterialEntity(materialPriceTableEntry));
+            return getAllMaterialPrices;
         }
 
         /// <summary>
@@ -40,8 +52,10 @@ namespace core.modelview.pricetable{
         /// </summary>
         /// <param name="materialFinishPriceTableEntries">IEnumerable with the material finish prices</param>
         /// <returns>GetAllMaterialFinishPriceHistoryModelView with the material finish price history information</returns>
-        public static GetAllMaterialPriceHistoryModelView fromMaterialFinishCollection(IEnumerable<FinishPriceTableEntry> materialFinishPriceTableEntries){
-            throw new NotImplementedException();
+        public static GetAllMaterialFinishPriceHistoryModelView fromMaterialFinishCollection(IEnumerable<FinishPriceTableEntry> materialFinishPriceTableEntries){
+            GetAllMaterialFinishPriceHistoryModelView getAllMaterialFinishPrices=new GetAllMaterialFinishPriceHistoryModelView();
+            foreach(FinishPriceTableEntry materialFinishPriceTableEntry in materialFinishPriceTableEntries)getAllMaterialFinishPrices.Add(fromMaterialFinishEntity(materialFinishPriceTableEntry));
+            return getAllMaterialFinishPrices;
         }
     }
 }
