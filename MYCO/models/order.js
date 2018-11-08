@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var city = require('../models/City');
+var factory = require('../models/Factory');
 
 var orderContentsSchemas = new mongoose.Schema({
     customizedproduct: {
@@ -41,6 +42,10 @@ var orderSchema = new Schema({
     cityToDeliver:{
         type:city.schema,
         required:true
+    },
+    factoryOfProduction:{
+        type:factory.schema,
+        required:false
     }
 }, {
     collection: 'orders'
