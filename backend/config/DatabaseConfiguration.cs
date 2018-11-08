@@ -52,6 +52,8 @@ namespace backend.config
             services.AddTransient<CustomizedProductCollectionRepository,EFCustomizedProductCollectionRepository>();
             services.AddTransient<CommercialCatalogueRepository,EFCommercialCatalogueRepository>();
 
+            services.AddTransient<FinishPriceTableRepository,EFFinishPriceTableRepository>();
+            services.AddTransient<MaterialPriceTableRepository,EFMaterialPriceTableRepository>();
         }
 
         /// <summary>
