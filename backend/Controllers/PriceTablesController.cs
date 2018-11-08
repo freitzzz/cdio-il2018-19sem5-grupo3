@@ -30,10 +30,20 @@ namespace backend.Controllers
         private const string LOG_POST_MATERIAL_ENTRY_SUCCESS = "Price Entry {@entry} for Material {id} created successfully";
 
         /// <summary>
+        /// Constant that represents the message that is logged everytime a material's finish price entry is created successfully
+        /// </summary>
+        private const string LOG_POST_FINISH_ENTRY_SUCCESS = "Price Entry {@entry} for Finish {id} of Material {materialId} created successfully";
+
+        /// <summary>
         /// Constant that represents the message that is logged everytime a material price entry POST returns a BadRequest
         /// </summary>
-        /// <value></value>
         private const string LOG_POST_MATERIAL_ENTRY_BAD_REQUEST = "POST Price Entry {@entry} for Material {id} BadRequest";
+
+        /// <summary>
+        /// Constant that represents the message that is logged everytime a material price entry POST returns a BadRequest
+        /// </summary>
+        private const string LOG_POST_FINISH_ENTRY_BAD_REQUEST = "POST Price Entry {@entry} for Finish {id} of Material {materialId} BadRequest";
+
 
         /// <summary>
         /// Material Price Table Repository
@@ -104,6 +114,52 @@ namespace backend.Controllers
             catch (ArgumentException argumentException)
             {
                 logger.LogWarning(argumentException, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
+                return BadRequest(new { err = argumentException.Message });
+            }
+        }
+
+        /// <summary>
+        /// Adds a new price table entry for a given material
+        /// </summary>
+        /// <param name="id">PID of the material</param>
+        /// <param name="modelView">AddMaterialPriceTableEntryModelView with the price's information</param>
+        /// <returns>ActionResult with HTTP Code 201 if the creation is successful
+        ///         Or ActionResult with HTTP Code 401 if an error happens</returns>
+        [HttpPost("materials/{materialid}/finishes/{finishid}")]
+        public ActionResult addFinishPriceTableEntry(long materialid, long finishid, [FromBody] AddFinishPriceTableEntryModelView modelView)
+        {
+            logger.LogInformation(LOG_POST_START);
+            try
+            {
+                modelView.entityId = materialid;
+                modelView.finishId = finishid;
+                AddFinishPriceTableEntryModelView createdPrice = new core.application.PriceTablesController().addFinishPriceTableEntry(modelView);
+                if (createdPrice == null)
+                {
+                    logger.LogWarning(LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
+                    return BadRequest(new { err = PRICE_ENTRY_NOT_CREATED });
+                }
+                logger.LogInformation(LOG_POST_MATERIAL_ENTRY_SUCCESS, createdPrice, createdPrice.finishId, createdPrice.entityId);
+                return Created(Request.Path, createdPrice);
+            }
+            catch (NullReferenceException nullReferenceException)
+            {
+                logger.LogWarning(nullReferenceException, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
+                return BadRequest(new { err = nullReferenceException.Message });
+            }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                logger.LogWarning(invalidOperationException, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
+                return BadRequest(new { err = invalidOperationException.Message });
+            }
+            catch (UnparsableValueException unparsableValueException)
+            {
+                logger.LogWarning(unparsableValueException, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
+                return BadRequest(new { err = unparsableValueException.Message });
+            }
+            catch (ArgumentException argumentException)
+            {
+                logger.LogWarning(argumentException, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
                 return BadRequest(new { err = argumentException.Message });
             }
         }
