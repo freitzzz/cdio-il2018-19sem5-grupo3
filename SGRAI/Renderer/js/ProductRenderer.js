@@ -68,7 +68,9 @@ var raycaster = new THREE.Raycaster();
  */
 function main() {
     canvasWebGL = document.getElementById("webgl");
-    renderer = new THREE.WebGLRenderer({ canvas: canvasWebGL });
+    renderer = new THREE.WebGLRenderer({
+        canvas: canvasWebGL
+    });
 
     initCamera();
     initControls();
@@ -88,7 +90,10 @@ function main() {
 
     planeGeometry.translate(coplanarPoint.x, coplanarPoint.y, coplanarPoint.z);
 
-    var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffff00, side: THREE.DoubleSide });
+    var planeMaterial = new THREE.MeshLambertMaterial({
+        color: 0xffff00,
+        side: THREE.DoubleSide
+    });
 
     var dispPlane = new THREE.Mesh(planeGeometry, planeMaterial);
     dispPlane.visible = false;
@@ -108,17 +113,11 @@ function initCloset() {
     scene = new THREE.Scene();
 
     group = new THREE.Group();
-    closet = new Closet([204.5, 4.20, 100, 0, 0, 0]
-        , [204.5, 4.20, 100, 0, 100, 0]
-        , [4.20, 100, 100, -100, 50, 0]
-        , [4.20, 100, 100, 100, 50, 0]
-        , [200, 100, 0, 0, 50, -50]);
+    closet = new Closet([204.5, 4.20, 100, 0, 0, 0], [204.5, 4.20, 100, 0, 100, 0], [4.20, 100, 100, -100, 50, 0], [4.20, 100, 100, 100, 50, 0], [200, 100, 0, 0, 50, -50]);
     var faces = closet.closet_faces;
 
     for (var i = 0; i < faces.length; i++) {
-        closet_faces_ids.push(generateParellepiped(faces[i][0], faces[i][1], faces[i][2]
-            , faces[i][3], faces[i][4], faces[i][5]
-            , createMaterialWithTexture(), group));
+        closet_faces_ids.push(generateParellepiped(faces[i][0], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], createMaterialWithTexture(), group));
     }
     scene.add(group);
     renderer.setClearColor(0xFFFFFF, 1);
@@ -164,9 +163,7 @@ function addSlot() {
 function addSlotNumbered(slotsToAdd) {
     for (var i = 0; i < slotsToAdd; i++) {
         var slotFace = closet.addSlot();
-        closet_slots_faces_ids.push(generateParellepiped(slotFace[0], slotFace[1], slotFace[2]
-            , slotFace[3], slotFace[4], slotFace[5]
-            , createMaterialWithTexture(), group));
+        closet_slots_faces_ids.push(generateParellepiped(slotFace[0], slotFace[1], slotFace[2], slotFace[3], slotFace[4], slotFace[5], createMaterialWithTexture(), group));
     }
     updateClosetGV();
 }
@@ -312,9 +309,7 @@ function createMaterialWithTexture() {
  */
 function registerEvents() {
     document.addEventListener("changeDimensions", function (changeDimensionsEvent) {
-        changeClosetDimensions(changeDimensionsEvent.detail.width
-            , changeDimensionsEvent.detail.height
-            , changeDimensionsEvent.detail.depth);
+        changeClosetDimensions(changeDimensionsEvent.detail.width, changeDimensionsEvent.detail.height, changeDimensionsEvent.detail.depth);
     });
 
     document.addEventListener("changeSlots", function (changeSlotsEvent) {
@@ -377,7 +372,11 @@ function onDocumentMouseMove(event) {
             var aux = intersection.x - offset;
             //    if (aux.x <= group.getObjectById(closet_faces_ids[3]).position.x
             //      && aux.x >= group.getObjectById(closet_faces_ids[2].position.x)) {
-            selected_object.position.x = aux;
+                var valueCloset = group.getObjectById(closet_faces_ids[2]).position.x;
+            if (Math.abs(aux) < Math.abs(valueCloset)) {
+                selected_object.position.x = aux;
+            }
+           
             // }
         }
         return;
@@ -411,14 +410,20 @@ function onDocumentMouseUp(event) {
 /**
  * Returns the current closet width
  */
-function getCurrentClosetWidth() { return closet.getClosetWidth(); }
+function getCurrentClosetWidth() {
+    return closet.getClosetWidth();
+}
 
 /**
  * Returns the current closet height
  */
-function getCurrentClosetHeight() { return closet.getClosetHeight(); }
+function getCurrentClosetHeight() {
+    return closet.getClosetHeight();
+}
 
 /**
  * Returns the current closet depth
  */
-function getCurrentClosetDepth() { return closet.getClosetDepth(); }
+function getCurrentClosetDepth() {
+    return closet.getClosetDepth();
+}
