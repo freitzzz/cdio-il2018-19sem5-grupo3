@@ -41,6 +41,11 @@ namespace core.domain
         }
 
         /// <summary>
+        /// Empty constructor for ORM
+        /// </summary>
+        protected Price() { }
+
+        /// <summary>
         /// Builds a Price instance with a given value
         /// </summary>
         /// <param name="value">monetary value of the price</param>

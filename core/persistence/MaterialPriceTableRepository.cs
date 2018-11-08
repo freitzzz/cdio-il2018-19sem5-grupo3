@@ -10,7 +10,7 @@ namespace core.persistence
     /// <typeparam name="MaterialPriceTableEntry">Entity Type</typeparam>
     /// <typeparam name="long">PID type</typeparam>
     /// <typeparam name="MaterialPriceTableEntry">Entity's Business Identifier</typeparam>
-    public interface MaterialPriceTableRepository : Repository<MaterialPriceTableEntry, long, MaterialPriceTableEntry>
+    public interface MaterialPriceTableRepository : Repository<MaterialPriceTableEntry, long, string>
     {
 
     }

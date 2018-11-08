@@ -37,5 +37,17 @@ namespace core.persistence{
         /// </summary>
         /// <returns>CustomizedProductRepository with the repository for customized products</returns>
         CustomizedProductRepository createCustomizedProductRepository();
+
+        /// <summary>
+        /// Creates a MaterialPriceTableRepository
+        /// </summary>
+        /// <returns>MaterialPriceTableRepository with the repository for material price table entries repository</returns>
+        MaterialPriceTableRepository createMaterialPriceTableRepository();
+
+        /// <summary>
+        /// Creates a FinishPriceTableRepository
+        /// </summary>
+        /// <returns>FinishPriceTableRepository with the repository for finish price table entries repository</returns>
+        FinishPriceTableRepository createFinishPriceTableRepository();
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using NodaTime;
 using support.domain;
 using support.domain.ddd;
 using support.utils;
@@ -12,7 +13,7 @@ namespace core.domain
     /// Represents a generic price table entry
     /// </summary>
     /// <typeparam name="string">EID of the entity that belongs to it's respective price table</typeparam>
-    public abstract class PriceTableEntry<T> : Activatable
+    public abstract class PriceTableEntry<T> : Activatable, AggregateRoot<string>
     {
         /// <summary>
         /// Constant that represents the message that occurs if the price is null
@@ -23,6 +24,11 @@ namespace core.domain
         /// Constant that represents the message that occurs if the time period is null
         /// </summary>
         private const string NULL_TIME_PERIOD = "Time Period can't be null";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the entity is null
+        /// </summary>
+        private const string NULL_ENTITY = "Entity can't be null";
 
         /// <summary>
         /// PID of the Entry
@@ -47,6 +53,8 @@ namespace core.domain
         /// </summary>
         private TimePeriod _timePeriod;
         public TimePeriod timePeriod { get => LazyLoader.Load(this, ref _timePeriod); protected set => _timePeriod = value; }
+
+        public string eId { get; protected set; }
 
         /// <summary>
         /// Injected LazyLoader
@@ -74,11 +82,12 @@ namespace core.domain
         /// </summary>
         /// <param name="price">Entry's price</param>
         /// <param name="timePeriod">Entry's time period</param>
-        protected PriceTableEntry(Price price, TimePeriod timePeriod)
+        protected PriceTableEntry(T entity, Price price, TimePeriod timePeriod)
         {
-            checkPriceAndTimePeriod(price, timePeriod);
+            checkEntityAndPriceAndTimePeriod(entity, price, timePeriod);
             this.price = price;
             this.timePeriod = timePeriod;
+            this.entity = entity;
         }
 
         /// <summary>
@@ -86,18 +95,74 @@ namespace core.domain
         /// </summary>
         /// <param name="price">Price to be checked</param>
         /// <param name="timePeriod">TimePeriod to be checked</param>
-        private void checkPriceAndTimePeriod(Price price, TimePeriod timePeriod)
+        private void checkEntityAndPriceAndTimePeriod(T entity, Price price, TimePeriod timePeriod)
+        {
+            checkEntity(entity);
+            checkPrice(price);
+            checkTimePeriod(timePeriod);
+        }
+
+        /// <summary>
+        /// Checks if a given entity is valid
+        /// </summary>
+        /// <param name="entity">entity being checked</param>
+        private void checkEntity(T entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentException(NULL_ENTITY);
+            }
+        }
+
+        /// <summary>
+        /// Checks if a given price is valid
+        /// </summary>
+        /// <param name="price">price being checked</param>
+        private void checkPrice(Price price)
         {
             if (price == null)
             {
                 throw new ArgumentException(NULL_PRICE);
             }
+        }
 
+        /// <summary>
+        /// Checks if a given time period is valid
+        /// </summary>
+        /// <param name="timePeriod">time period being checked</param>
+        private void checkTimePeriod(TimePeriod timePeriod)
+        {
             if (timePeriod == null)
             {
                 throw new ArgumentException(NULL_TIME_PERIOD);
             }
         }
+
+        /// <summary>
+        /// Changes the price of a price table entry
+        /// </summary>
+        /// <param name="newPrice">new price</param>
+        public void changePrice(Price newPrice){
+            checkPrice(newPrice);
+            this.price = newPrice;
+        }
+
+        /// <summary>
+        /// Changes the time period of a price table entry
+        /// </summary>
+        /// <param name="newStartingDate">new time period</param>
+        public void changeTimePeriod(TimePeriod newTimePeriod){
+            checkTimePeriod(newTimePeriod);
+            this.timePeriod = newTimePeriod;
+        }
+
+        /// <summary>
+        /// Creates an EID for each concrete PriceTableEntry
+        /// </summary>
+        protected abstract void createEID();
+
+        public abstract string id();
+        public abstract bool sameAs(string comparingEntity);
 
         public override int GetHashCode()
         {

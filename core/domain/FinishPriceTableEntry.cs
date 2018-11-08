@@ -5,18 +5,22 @@ using support.utils;
 
 namespace core.domain
 {
-    public class FinishPriceTableEntry : PriceTableEntry<Finish>, AggregateRoot<FinishPriceTableEntry>
+    public class FinishPriceTableEntry : PriceTableEntry<Finish>, AggregateRoot<string>
     {
-        /// <summary>
-        /// Constant that represents the message that occurs if the Table Entry's finish is null
-        /// </summary>
-        private const string NULL_FINISH = "The finish can't be null";
+        private const string EMPTY_MATERIAL_EID = "Material EID can't be null or empty";
 
         /// <summary>
         /// Overrides entity property to allow lazy loading of the same
         /// </summary>
         /// <param name="_entity">entity type of the price table entry</param>
         public override Finish entity { get => LazyLoader.Load(this, ref _entity); protected set => _entity = value; }
+
+        //TODO see if this is the best solution
+        /// <summary>
+        /// EID of the material that belongs to the finish
+        /// </summary>
+        /// <value>Gets/Sets the EID</value>
+        public string materialEID { get; internal set; }
 
         /// <summary>
         /// Constructor used for injecting a LazyLoader
@@ -35,33 +39,44 @@ namespace core.domain
         /// <param name="price">Table Entry's price</param>
         /// <param name="timePeriod">Table Entry's time period</param>
         /// <param name="finish">Table Entry's finish</param>
-        public FinishPriceTableEntry(Price price, TimePeriod timePeriod, Finish finish)
-                : base(price, timePeriod)
+        public FinishPriceTableEntry(string materialEID, Finish finish, Price price, TimePeriod timePeriod)
+                : base(finish, price, timePeriod)
         {
-            checkFinish(finish);
-            this.entity = finish;
+            checkMaterialEID(materialEID);
+            this.materialEID = materialEID;
+            createEID();
         }
 
         /// <summary>
-        /// Checks if the Table Entry's finish is valid
+        /// Checks if a material EID is valid
         /// </summary>
-        /// <param name="finish">Finish being checked</param>
-        private void checkFinish(Finish finish)
+        private void checkMaterialEID(string materialEID)
         {
-            if (finish == null)
+            if (materialEID == null || materialEID.Trim().Length == 0)
             {
-                throw new ArgumentException(NULL_FINISH);
+                throw new ArgumentException(EMPTY_MATERIAL_EID);
             }
         }
 
-        public FinishPriceTableEntry id()
+        protected override void createEID()
         {
-            return this;
+            eId = "M" + materialEID + "_" + entity.description + String.Format("_{0}-{1}-{2}T{3}:{4}:{5}",
+                                timePeriod.startingDate.Year,
+                                timePeriod.startingDate.Month,
+                                timePeriod.startingDate.Day,
+                                timePeriod.startingDate.Hour,
+                                timePeriod.startingDate.Minute,
+                                timePeriod.startingDate.Second);
         }
 
-        public bool sameAs(FinishPriceTableEntry comparingEntity)
+        public override string id()
         {
-            return this.Equals(comparingEntity);
+            return eId;
+        }
+
+        public override bool sameAs(string comparingEntity)
+        {
+            return eId.Equals(comparingEntity);
         }
     }
 }
