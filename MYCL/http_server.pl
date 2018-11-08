@@ -10,12 +10,13 @@
 :- http_handler('/mycl/api/travel',compute_algorithm,[time_limit(0)]). % Endpoint to compute a city circuit
 
 % Loads required knowledge bases
-carregar:-['intersept.pl'],['cdio-tsp.pl'],['algorithm_computation.pl'],['algorithms.pl'],load_json_objects.
+carregar:-['intersept.pl'],['cdio-tsp.pl'],['algorithm_computation.pl'],load_algorithms,load_json_objects.
 
 % Loads required defined json objects
 load_json_objects:-['json_algorithms.pl'].
 
-
+% Loads required algorithms
+load_algorithms:- ['algorithms/bb.pl'],['algorithms/greedy.pl'],['algorithms/greedy_two_opt.pl'],['algorithms/genetic.pl'].
 
 % Starts the server
 server(Port) :-						% (2)
