@@ -16,7 +16,7 @@ namespace core.modelview.pricetable{
         /// Long with the price entry value
         /// </summary>
         [DataMember(Name="value")]
-        public long value{get;set;}
+        public double value{get;set;}
 
         /// <summary>
         /// String with the price entry currency
@@ -34,12 +34,12 @@ namespace core.modelview.pricetable{
         /// String with the price entry starting date
         /// </summary>
         [DataMember(Name="startingDate")]
-        public long startingDate{get;set;}
+        public string startingDate{get;set;}
 
         /// <summary>
         /// String with the price entry ending date
         /// </summary>
         [DataMember(Name="endingDate")]
-        public long endingDate{get;set;}
+        public string endingDate{get;set;}
     }
 }
