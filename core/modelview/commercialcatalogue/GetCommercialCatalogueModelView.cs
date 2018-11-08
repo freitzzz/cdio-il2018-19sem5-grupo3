@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace core.modelview.commercialcatalogue
@@ -8,7 +9,7 @@ namespace core.modelview.commercialcatalogue
     [DataContract]
     public class GetCommercialCatalogueModelView
     {
-         /// <summary>
+        /// <summary>
         /// Commercial Catalogue's database identifier.
         /// </summary>
         /// <value>Gets/sets the database identifier.</value>
@@ -16,19 +17,27 @@ namespace core.modelview.commercialcatalogue
         public long id { get; set; }
 
         /// <summary>
-        /// Commercial Catalogue's name.
+        /// Commercial Catalogue's reference.
         /// </summary>
-        /// <value>Gets/sets the name.</value>
+        /// <value>Gets/sets the reference.</value>
         [DataMember]
         public string reference { get; set; }
 
         /// <summary>
-        /// Commercial Catalogue's name.
+        /// Commercial Catalogue's designation.
         /// </summary>
-        /// <value>Gets/sets the name.</value>
+        /// <value>Gets/sets the designation.</value>
         [DataMember]
         public string designation { get; set; }
 
-     
+    
+        /// <summary>
+        /// List of Commercial Catalogue Catalogue Collection.
+        /// </summary>
+        /// <value>Gets/sets the name.</value>
+        [DataMember]
+        public List<GetCatalogueCollectionModelView> commercialCatalogueCatalogueCollectionList { get; set; }
+
+      
     }
 }
