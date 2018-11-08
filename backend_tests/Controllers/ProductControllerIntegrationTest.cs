@@ -716,7 +716,9 @@ namespace backend_tests.Controllers{
             //Materials must previously exist as they can be shared in various products
             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
             materialDTO.Wait();
-            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
+            Task<MaterialDTO> otherMaterialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
+            otherMaterialDTO.Wait();
+            productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result, otherMaterialDTO.Result});
 
             //NOTE: ModelView is being converted to DTO for now
             GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
