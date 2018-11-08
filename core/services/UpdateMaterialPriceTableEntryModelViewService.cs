@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using core.domain;
 using core.dto;
 using core.modelview.pricetableentries;
@@ -45,7 +47,17 @@ namespace core.services
         /// </summary>
         private const string DATES_WRONG_FORMAT = "Make sure all dates follow the General ISO Format: ";
 
-        public static bool update(UpdatePriceTableEntryModelView modelView)
+        /// <summary>
+        /// Represents abbreviation of EURO currency
+        /// </summary>
+        private const string EURO_CURRENCY_ABV = "EUR";
+
+        /// <summary>
+        /// Updates a material's price table entry
+        /// </summary>
+        /// <param name="modelView">model view with the update information</param>
+        /// <returns></returns>
+        public static async Task<bool> update(UpdatePriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
             MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
             long materialId = modelView.entityId;
@@ -84,9 +96,23 @@ namespace core.services
 
             if (modelView.priceTableEntry.price != null)
             {
-                //TODO Take into account currency and area conversion
+                //TODO Take area conversion into account
                 //!For now we are considering all prices are in €/m2
-                Price newPrice = Price.valueOf(modelView.priceTableEntry.price.value);
+                Price newPrice = null;
+                if (!modelView.priceTableEntry.price.currency.Equals(EURO_CURRENCY_ABV))
+                {
+                    try
+                    {
+                        double convertedValue = await new CurrencyConversionService(clientFactory)
+                                                            .convertCurrencyToEuro(modelView.priceTableEntry.price.currency,
+                                                                 modelView.priceTableEntry.price.value);
+                        newPrice = Price.valueOf(convertedValue);
+                    }
+                    catch (HttpRequestException)
+                    {
+                        newPrice = Price.valueOf(modelView.priceTableEntry.price.value);
+                    }
+                }
                 tableEntryToUpdate.changePrice(newPrice);
                 performedAtLeastOneUpdate = true;
             }
@@ -102,7 +128,7 @@ namespace core.services
                     tableEntryToUpdate.changeTimePeriod(TimePeriod.valueOf(newStartingDate, tableEntryToUpdate.timePeriod.endingDate));
                     performedAtLeastOneUpdate = true;
                 }
-                catch (UnparsableValueException unparsableValueException)
+                catch (UnparsableValueException)
                 {
                     throw new UnparsableValueException(DATES_WRONG_FORMAT + LocalDateTimePattern.GeneralIso.PatternText);
                 }
@@ -118,7 +144,7 @@ namespace core.services
                     tableEntryToUpdate.changeTimePeriod(TimePeriod.valueOf(tableEntryToUpdate.timePeriod.startingDate, newEndingDate));
                     performedAtLeastOneUpdate = true;
                 }
-                catch (UnparsableValueException unparsableValueException)
+                catch (UnparsableValueException)
                 {
                     throw new UnparsableValueException(DATES_WRONG_FORMAT + LocalDateTimePattern.GeneralIso.PatternText);
                 }

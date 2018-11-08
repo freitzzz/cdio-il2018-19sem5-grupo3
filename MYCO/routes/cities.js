@@ -9,7 +9,7 @@ const citiesRoute = express.Router();
 /**
  * Requires City Mongoose Data Model
  */
-const City = require('../models/City');
+const city = require('../models/City');
 /**
  * Routes the POST of a city
  */
