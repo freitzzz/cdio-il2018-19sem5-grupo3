@@ -17,24 +17,24 @@ namespace core.services
         /// <summary>
         /// Message that occurs if the currency conversion fails
         /// </summary>
-        private string FAILED_TO_CONVERT = "Failed to convert currency";
+        private const string FAILED_TO_CONVERT = "Failed to convert currency";
 
         /// <summary>
         /// Represents the key of the json file that matches the current currency being persisted in the database
         /// </summary>
-        private string CURRENCY_KEY = "currency";
+        private const string CURRENCY_KEY = "currency";
 
         /// <summary>
         /// Represents the key of the json file that matches the current area unit being persisted in the database
         /// </summary>
-        private string AREA_KEY = "area";
+        private const string AREA_KEY = "area";
 
         /// <summary>
         /// Represents the error message that occurs if an error happens while parsing the JSON file that holds the default area unit
         /// </summary>
-        private string PARSE_FILE_AREA_ERROR = "Error happened when trying to parse the configuration file for the default area";
+        private const string PARSE_FILE_AREA_ERROR = "Error happened when trying to parse the configuration file for the default area";
 
-        private string PARSE_FILE_CURRENCY_ERROR = "Error happened when trying to parse the configuration file for the default currency";
+        private const string PARSE_FILE_CURRENCY_ERROR = "Error happened when trying to parse the configuration file for the default currency";
 
         /// <summary>
         /// Injected HTTPClientFactory
@@ -45,13 +45,13 @@ namespace core.services
         /// Currency being persisted in the database
         /// </summary>
         /// <value>Gets/Sets the base currency</value>
-        private string defaultCurrency { get; set; }
+        private static string defaultCurrency { get; set; }
 
         /// <summary>
         /// Current area unit being persisted in the database
         /// </summary>
         /// <value>Gets/Sets the area unit</value>
-        private string defaultArea { get; set; }
+        private static string defaultArea { get; set; }
 
         /// <summary>
         /// Builds an instance of the service with the injected HTTPClientFactory
@@ -61,6 +61,24 @@ namespace core.services
         {
             this.clientFactory = clientFactory;
             loadDefaultCurrencyPerAreaUnitValues();
+        }
+        
+        /// <summary>
+        /// Returns the current base currency
+        /// </summary>
+        /// <returns>String with the current base currency</returns>
+        public static string getBaseCurrency(){
+            loadDefaultCurrencyPerAreaUnitValues();
+            return defaultCurrency;
+        }
+
+        /// <summary>
+        /// Returns the current base area
+        /// </summary>
+        /// <returns>String with the current base area</returns>
+        public static string getBaseArea(){
+            loadDefaultCurrencyPerAreaUnitValues();
+            return defaultArea;
         }
 
         /// <summary>
@@ -94,31 +112,33 @@ namespace core.services
         /// <summary>
         /// Loads default currency and area unit being used from a JSON file
         /// </summary>
-        private void loadDefaultCurrencyPerAreaUnitValues()
+        private static void loadDefaultCurrencyPerAreaUnitValues()
         {
-            Dictionary<string, string> pricePerAreaDictionary = null;
+            if(defaultCurrency==null){
+                Dictionary<string, string> pricePerAreaDictionary = null;
 
-            // deserialize JSON directly from a file
-            using (StreamReader file = File.OpenText(@"../core/current_price_per_area_units.json"))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                pricePerAreaDictionary = (Dictionary<string, string>)serializer.Deserialize(file, typeof(Dictionary<string, string>));
+                // deserialize JSON directly from a file
+                using (StreamReader file = File.OpenText(@"../core/current_price_per_area_units.json"))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    pricePerAreaDictionary = (Dictionary<string, string>)serializer.Deserialize(file, typeof(Dictionary<string, string>));
+                }
+
+                String currency;
+
+                if (!pricePerAreaDictionary.TryGetValue(CURRENCY_KEY, out currency))
+                {
+                    throw new InvalidOperationException(PARSE_FILE_CURRENCY_ERROR);
+                }
+                defaultCurrency = currency;
+
+                String area;
+                if (!pricePerAreaDictionary.TryGetValue(AREA_KEY, out area))
+                {
+                    throw new InvalidOperationException(PARSE_FILE_AREA_ERROR);
+                }
+                defaultArea = area;
             }
-
-            String currency;
-
-            if (!pricePerAreaDictionary.TryGetValue(CURRENCY_KEY, out currency))
-            {
-                throw new InvalidOperationException(PARSE_FILE_CURRENCY_ERROR);
-            }
-            defaultCurrency = currency;
-
-            String area;
-            if (!pricePerAreaDictionary.TryGetValue(AREA_KEY, out area))
-            {
-                throw new InvalidOperationException(PARSE_FILE_AREA_ERROR);
-            }
-            defaultArea = area;
         }
 
         /// <summary>

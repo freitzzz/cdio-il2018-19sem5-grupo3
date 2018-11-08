@@ -1,4 +1,6 @@
 using core.domain;
+using core.services;
+using NodaTime.Text;
 using System;
 using System.Collections.Generic;
 
@@ -17,6 +19,8 @@ namespace core.modelview.pricetable{
             GetMaterialPriceModelView getMaterialPriceModelView=new GetMaterialPriceModelView();
             getMaterialPriceModelView.id=materialPriceTableEntry.Id;
             getMaterialPriceModelView.value=materialPriceTableEntry.price.value;
+            getMaterialPriceModelView.currency=CurrencyPerAreaConversionService.getBaseCurrency();
+            getMaterialPriceModelView.area=CurrencyPerAreaConversionService.getBaseArea();
             getMaterialPriceModelView.startingDate=materialPriceTableEntry.timePeriod.startingDate.ToString();
             getMaterialPriceModelView.endingDate=materialPriceTableEntry.timePeriod.endingDate.ToString();
             return getMaterialPriceModelView;
@@ -28,12 +32,14 @@ namespace core.modelview.pricetable{
         /// <param name="materialFinishPriceTableEntry">MaterialFinishPriceTableEntry with the material finish price</param>
         /// <returns>GetMaterialFinishPriceModelView with the material finish price information model view</returns>
         public static GetMaterialFinishPriceModelView fromMaterialFinishEntity(FinishPriceTableEntry materialFinishPriceTableEntry){
-            GetMaterialFinishPriceModelView getMaterialPriceModelView=new GetMaterialFinishPriceModelView();
-            getMaterialPriceModelView.id=materialFinishPriceTableEntry.Id;
-            getMaterialPriceModelView.value=materialFinishPriceTableEntry.price.value;
-            getMaterialPriceModelView.startingDate=materialFinishPriceTableEntry.timePeriod.startingDate.ToString();
-            getMaterialPriceModelView.endingDate=materialFinishPriceTableEntry.timePeriod.endingDate.ToString();
-            return getMaterialPriceModelView;
+            GetMaterialFinishPriceModelView getMaterialFinishPriceModelView=new GetMaterialFinishPriceModelView();
+            getMaterialFinishPriceModelView.id=materialFinishPriceTableEntry.Id;
+            getMaterialFinishPriceModelView.value=materialFinishPriceTableEntry.price.value;
+            getMaterialFinishPriceModelView.currency=CurrencyPerAreaConversionService.getBaseCurrency();
+            getMaterialFinishPriceModelView.area=CurrencyPerAreaConversionService.getBaseArea();
+            getMaterialFinishPriceModelView.startingDate=LocalDateTimePattern.GeneralIso.Format(materialFinishPriceTableEntry.timePeriod.startingDate);
+            getMaterialFinishPriceModelView.endingDate=LocalDateTimePattern.GeneralIso.Format(materialFinishPriceTableEntry.timePeriod.endingDate);
+            return getMaterialFinishPriceModelView;
         }
 
         /// <summary>
