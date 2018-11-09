@@ -9,6 +9,11 @@ var Schema = mongoose.Schema;
 var location=require('../models/Location');
 
 /**
+ * Requires City for representing cities
+ */
+var city=require('../models/City');
+
+/**
  * Validates a factory reference
  */
 var referenceValidator={
@@ -35,6 +40,7 @@ var factorySchema=new Schema({
     reference:{type: String, validate: referenceValidator, required:true},
     designation:{type: String, validate: designationValidator, required:true},
     location:{type: location.schema, required:true},
+    city:{type: city.schema, required:false},
     _available:{type: Boolean,required:true}
 });
 
@@ -89,19 +95,31 @@ factorySchema.methods.disable=function(){
 }
 
 /**
+ * Checks if the current factory is located on a certain city
+ * @param {City.Schema} city City with the city being checked
+ * @returns Boolean true if the factory is located at a certain city, false if not
+ */
+factorySchema.methods.isLocated=function(city){
+    return this.city ? this.city.equals(city) : false;
+}
+
+/**
  * Creates a new Factory object
  * @param {String} reference String with the factory reference
  * @param {String} designation String with the factory designation
  * @param {Number} locationLatitude Number with the factory latitude
  * @param {Number} locationLongitude Number with the factory longitude
+ * @param {City.Schema} city City.Schema with the city where the factory is located
  */
-factorySchema.statics.createFactory=function (reference,designation,locationLatitude,locationLongitude){
-    return {
+factorySchema.statics.createFactory=function (reference,designation,locationLatitude,locationLongitude,city){
+    let factory={
         reference:reference,
         designation:designation,
         location:location.createLocation(locationLatitude,locationLongitude),
         _available:true
     }
+    if(city)factory.city=city;
+    return factory; 
 }
 
 /**
