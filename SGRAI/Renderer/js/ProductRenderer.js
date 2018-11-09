@@ -77,11 +77,10 @@ var raycaster = new THREE.Raycaster();
  * Initial Product Draw function
  */
 function main(textureSource) {
-    var canvasWebGL=document.getElementById("webgl");
+    canvasWebGL=document.getElementById("webgl");
     renderer = new THREE.WebGLRenderer({canvas:canvasWebGL, antialias: true});
     //renderer.setSize(window.innerWidth, window.innerHeight);
     initCamera();
-    initCloset();
     initControls();
     initCloset(textureSource);
     initLighting();
