@@ -40,7 +40,7 @@
       loadSlots();
     }
     function lengthConverter(valNum) {
-        document.getElementById("outputMeters").innerHTML = valNum / 0.0022046;
+      document.getElementById("outputMeters").innerHTML = valNum / 0.0022046;
     }
     //loadDepth();
     function reloadCube() {
@@ -324,6 +324,13 @@
                 <!--Change the texture source, if the server or the port need to change-->
                 <img id="worn-wood" src="http://127.0.0.1:8002/US4000/img/worn_wood.jpg" alt="Worn Wood" width="100%" />
                 <p>Worn Wood</p>
+              </div>
+            </li>
+            <li>
+              <div class="material-btn" onclick="openNav(); reloadMaterial('armis')">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="armis" src="http://127.0.0.1:8002/US4000/img/armis.png" alt="Premium Edition" width="100%" />
+                <p>Premium Edition</p>
               </div>
             </li>
           </ul>
