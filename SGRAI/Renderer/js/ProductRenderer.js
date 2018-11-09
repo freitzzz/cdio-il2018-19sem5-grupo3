@@ -4,6 +4,16 @@
 var camera, controls, scene, renderer,group;
 
 /**
+ * Global variable for 
+ */
+var textureLoader;
+
+/**
+ * Global variable for the Mesh Material.
+ */
+var material;
+
+/**
  * Global variable with the current closet
  */
 var closet=null;
@@ -22,24 +32,24 @@ var closet_slots_faces_ids=[];
 /**
  * Initial Product Draw function
  */
-function main() {
+function main(textureSource) {
     var canvasWebGL=document.getElementById("webgl");
     renderer = new THREE.WebGLRenderer({canvas:canvasWebGL});
     //renderer.setSize(window.innerWidth, window.innerHeight);
     initCamera();
     initControls();
-    initCloset();
+    initCloset(textureSource);
     initLighting();
     //changeClosetSlots(0);
-    scene.add(group);
     registerEvents();
     animate();
 }
 
 /**
  * Initiates the closet
+ * @param {*} textureSource - Source of the texture being loaded.
  */
-function initCloset(){
+function initCloset(textureSource){
     scene=new THREE.Scene();
     group=new THREE.Group();
     closet=new Closet([204.5,4.20,100,0,0,0]
@@ -48,11 +58,21 @@ function initCloset(){
                      ,[4.20,100,100,100,50,0]
                      ,[200,100,0,0,50,-50]);
     var faces=closet.closet_faces;
-    
+
+
+    //var src = 'http://127.0.0.1:8000/Renderer/textures/cherry_wood_cabinets.jpg';
+
+    textureLoader = new THREE.TextureLoader();
+    var texture = textureLoader.load( textureSource );
+    //A MeshPhongMaterial allows for shiny surfaces
+    //A soft white light is being as specular light
+    //The shininess value is the same as the matte finishing's value
+    material = new THREE.MeshPhongMaterial( { map: texture, specular: 0x404040, shininess: 20 } );
+
     for(var i=0;i<faces.length;i++){
         closet_faces_ids.push(generateParellepiped(faces[i][0],faces[i][1],faces[i][2]
                                     ,faces[i][3],faces[i][4],faces[i][5]
-                                    ,createMaterialWithTexture(),group));
+                                    ,material,group));
     }
     scene.add(group);
     renderer.setClearColor(0xFFFFFF,1);
@@ -112,7 +132,7 @@ function addSlotNumbered(slotsToAdd){
         var slotFace=closet.addSlot();
         closet_slots_faces_ids.push(generateParellepiped(slotFace[0],slotFace[1],slotFace[2]
                                     ,slotFace[3],slotFace[4],slotFace[5]
-                                    ,createMaterialWithTexture(),group));
+                                    ,material,group));
     }
     updateClosetGV();
 }
