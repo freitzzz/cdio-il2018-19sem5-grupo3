@@ -73,8 +73,8 @@ function main() {
     });
 
     initCamera();
-    initControls();
     initCloset();
+    initControls();
 
     //Creates the intersection plane
     plane = new THREE.Plane();
@@ -265,9 +265,9 @@ function initControls() {
 
     controls.maxPolarAngle = Math.PI / 2;
 
-    document.addEventListener('mousedown', onDocumentMouseDown, false);
-    document.addEventListener('mousemove', onDocumentMouseMove, false);
-    document.addEventListener('mouseup', onDocumentMouseUp, false);
+    canvasWebGL.addEventListener('mousedown', onDocumentMouseDown, false);
+    canvasWebGL.addEventListener('mousemove', onDocumentMouseMove, false);
+    canvasWebGL.addEventListener('mouseup', onDocumentMouseUp, false);
 }
 
 /**

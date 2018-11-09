@@ -39,6 +39,9 @@
       loadDepth();
       loadSlots();
     }
+    function lengthConverter(valNum) {
+        document.getElementById("outputMeters").innerHTML = valNum / 0.0022046;
+    }
     //loadDepth();
     function reloadCube() {
 
@@ -217,10 +220,10 @@
         Depth:<br>
         <input type="number" min="1" name="depth" id="depth" onchange="reloadCube();"><br><br>
         <select>
-          <option value="cm">Centimeters</option>
-          <option value="mm">Milimeters</option>
-          <option value="m">Meters</option>
-          <option value="km">kilometers</option>
+          <option id="cm" value="cm" oninput="lengthConverter(this.value)" onchange="lengthConverter(this.value)">Centimeters
+          </option>
+          <option id="mm" value="mm" oninput="lengthConverter(this.value)" onchange="lengthConverter(this.value)">Milimeters</option>
+          <option id="m" value="m" oninput="lengthConverter(this.value)" onchange="lengthConverter(this.value)">Meters</option>
         </select><br>
         <br><br>
         <a class="btn-custom" onclick="openTab(event, 'slots')">Next</a>
