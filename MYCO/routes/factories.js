@@ -13,6 +13,11 @@ const factoriesRoute = express.Router();
 const factory = require('../models/Factory');
 
 /**
+ * Requires City Mongoose Data Model
+ */
+const city=require('../models/City');
+
+/**
  * Routes the GET of all available factories
  */
 factoriesRoute.route('/factories').get(function(request,response){
@@ -43,15 +48,22 @@ factoriesRoute.route('/factories/:id').get(function(request,response){
 /**
  * Routes the POST of a new factory
  */
-factoriesRoute.route('/factories').post(function(request,response,mw){
-    factory
-        .create(serializeFactory(request.body))
-            .then(function(createdFactorySchema){
-                response.status(201).json(deserializeFactory(createdFactorySchema));
-            })
-            .catch(function(error){
-                let exceptionName=Object.keys(error.errors)[0];
-                response.status(400).json({error: error.errors[exceptionName].message});
+factoriesRoute.route('/factories').post(function(request,response){
+    city
+        .findById(request.body.cityId)
+            .then(function(_city){
+                request.body.city=_city;
+                factory
+                    .create(serializeFactory(request.body))
+                    .then(function(createdFactorySchema){
+                        response.status(201).json(deserializeFactory(createdFactorySchema));
+                    })
+                    .catch(function(error){
+                        let exceptionName=Object.keys(error.errors)[0];
+                        response.status(400).json({error: error.errors[exceptionName].message});
+                    })
+            }).catch(function(){
+                response.status(400).json({error:'There is no city with the given id'});
             })
 })
 
@@ -94,7 +106,8 @@ function serializeFactory(requestBody){
         (requestBody.reference
         ,requestBody.designation
         ,requestBody.latitude
-        ,requestBody.longitude);
+        ,requestBody.longitude
+        ,requestBody.city);
 }
 
 /**
@@ -102,13 +115,15 @@ function serializeFactory(requestBody){
  * @param {Factory.Schema} factorySchema Factory.Schema with the factory schema being deserialized
  */
 function deserializeFactory(factorySchema){
-    return {
+    let deserializedFactory={
         id:factorySchema.id,
         reference:factorySchema.reference,
         designation:factorySchema.designation,
         latitude:factorySchema.location.latitude,
         longitude:factorySchema.location.longitude
-    }
+    };
+    if(factorySchema.city)deserializedFactory.cityId=factorySchema.city.id;
+    return deserializedFactory
 }
 
 /**

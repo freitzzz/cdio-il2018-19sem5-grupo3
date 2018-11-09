@@ -61,31 +61,31 @@ namespace core.application
         /// </summary>
         /// <param name="customizedCatalogueDTO">UpdateCommercialCatalogueDTO with the data regarding the commercialCatalogue update</param>
         /// <returns>boolean true if the update was successful, false if not</returns>
-        public bool updateCollection(UpdateCommercialCatalogueDTO customizedCatalogueDTO)
+        public bool addCollection(long id,List<CatalogueCollectionDTO> catalogueCollectionDTOToAdd)
         {
 
             CommercialCatalogueRepository comCatalogueRepo = PersistenceContext.repositories().createCommercialCatalogueRepository();
-            CommercialCatalogue newComCatalogue = comCatalogueRepo.find(customizedCatalogueDTO.id);
+            CommercialCatalogue newComCatalogue = comCatalogueRepo.find(id);
 
             bool updatedWithSuccess = true;
             bool perfomedAtLeastOneUpdate = false;
 
-            if (customizedCatalogueDTO.catalogueCollectionDTOToAdd != null)
+            if (catalogueCollectionDTOToAdd != null)
             {
-                foreach (CatalogueCollectionDTO collection in customizedCatalogueDTO.catalogueCollectionDTOToAdd)
+                foreach (CatalogueCollectionDTO collection in catalogueCollectionDTOToAdd)
                 {
                     updatedWithSuccess &= newComCatalogue.addCollection(collection.toEntity());
                     perfomedAtLeastOneUpdate = true;
                 }
             }
-            if (customizedCatalogueDTO.catalogueCollectionDTOToRemove != null)
+          /*   if (customizedCatalogueDTO.catalogueCollectionDTOToRemove != null)
             {
                 foreach (CatalogueCollectionDTO collection in customizedCatalogueDTO.catalogueCollectionDTOToRemove)
                 {
                     updatedWithSuccess &= newComCatalogue.removeCollection(collection.toEntity());
                     perfomedAtLeastOneUpdate = true;
                 }
-            }
+            } */
             if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
 
             updatedWithSuccess &= comCatalogueRepo.update(newComCatalogue) != null;
