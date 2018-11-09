@@ -29,6 +29,7 @@ function main() {
     initCamera();
     initControls();
     initCloset();
+    initLighting();
     //changeClosetSlots(0);
     scene.add(group);
     registerEvents();
@@ -55,6 +56,17 @@ function initCloset(){
     }
     scene.add(group);
     renderer.setClearColor(0xFFFFFF,1);
+}
+
+/**
+ * Initializes the scene's lighting.
+ */
+function initLighting(){
+    var spotlight = new THREE.SpotLight();
+    spotlight.position.set(400, 400, 0.70);
+    spotlight.target = group;
+    var lightAmbient = new THREE.AmbientLight(0x404040);
+    scene.add(spotlight, lightAmbient);
 }
 
 /**
