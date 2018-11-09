@@ -3,6 +3,16 @@
  */
 var camera, controls, scene, renderer, group;
 /**
+ * Global variable for 
+ */
+var textureLoader;
+
+/**
+ * Global variable for the Mesh Material.
+ */
+var material;
+
+/**
  * Global variable with the current closet
  */
 var closet = null;
@@ -66,15 +76,14 @@ var raycaster = new THREE.Raycaster();
 /**
  * Initial Product Draw function
  */
-function main() {
-    canvasWebGL = document.getElementById("webgl");
-    renderer = new THREE.WebGLRenderer({
-        canvas: canvasWebGL
-    });
-
+function main(textureSource) {
+    canvasWebGL=document.getElementById("webgl");
+    renderer = new THREE.WebGLRenderer({canvas:canvasWebGL, antialias: true});
+    //renderer.setSize(window.innerWidth, window.innerHeight);
     initCamera();
-    initCloset();
     initControls();
+    initCloset(textureSource);
+    initLighting();
 
     //Creates the intersection plane
     plane = new THREE.Plane();
@@ -108,19 +117,46 @@ function main() {
 
 /**
  * Initiates the closet
+ * @param {*} textureSource - Source of the texture being loaded.
  */
-function initCloset() {
-    scene = new THREE.Scene();
+function initCloset(textureSource){
+    scene=new THREE.Scene();
+    group=new THREE.Group();
+    closet=new Closet([204.5,4.20,100,0,0,0]
+                     ,[204.5,4.20,100,0,100,0]
+                     ,[4.20,100,100,-100,50,0]
+                     ,[4.20,100,100,100,50,0]
+                     ,[200,100,0,0,50,-50]);
+    var faces=closet.closet_faces;
 
-    group = new THREE.Group();
-    closet = new Closet([204.5, 4.20, 100, 0, 0, 0], [204.5, 4.20, 100, 0, 100, 0], [4.20, 100, 100, -100, 50, 0], [4.20, 100, 100, 100, 50, 0], [200, 100, 0, 0, 50, -50]);
-    var faces = closet.closet_faces;
 
-    for (var i = 0; i < faces.length; i++) {
-        closet_faces_ids.push(generateParellepiped(faces[i][0], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], createMaterialWithTexture(), group));
+    //var src = 'http://127.0.0.1:8000/Renderer/textures/cherry_wood_cabinets.jpg';
+
+    textureLoader = new THREE.TextureLoader();
+    var texture = textureLoader.load( textureSource );
+    //A MeshPhongMaterial allows for shiny surfaces
+    //A soft white light is being as specular light
+    //The shininess value is the same as the matte finishing's value
+    material = new THREE.MeshPhongMaterial( { map: texture, specular: 0x404040, shininess: 20 } );
+
+    for(var i=0;i<faces.length;i++){
+        closet_faces_ids.push(generateParellepiped(faces[i][0],faces[i][1],faces[i][2]
+                                    ,faces[i][3],faces[i][4],faces[i][5]
+                                    ,material,group));
     }
     scene.add(group);
     renderer.setClearColor(0xFFFFFF, 1);
+}
+
+/**
+ * Initializes the scene's lighting.
+ */
+function initLighting(){
+    var spotlight = new THREE.SpotLight();
+    spotlight.position.set(400, 400, 0.70);
+    spotlight.target = group;
+    var lightAmbient = new THREE.AmbientLight(0x404040);
+    scene.add(spotlight, lightAmbient);
 }
 
 /**
@@ -160,10 +196,12 @@ function addSlot() {
 /**
  * Adds a specified number of slots to the current closet
  */
-function addSlotNumbered(slotsToAdd) {
-    for (var i = 0; i < slotsToAdd; i++) {
-        var slotFace = closet.addSlot();
-        closet_slots_faces_ids.push(generateParellepiped(slotFace[0], slotFace[1], slotFace[2], slotFace[3], slotFace[4], slotFace[5], createMaterialWithTexture(), group));
+function addSlotNumbered(slotsToAdd){
+    for(var i=0;i<slotsToAdd;i++){
+        var slotFace=closet.addSlot();
+        closet_slots_faces_ids.push(generateParellepiped(slotFace[0],slotFace[1],slotFace[2]
+                                    ,slotFace[3],slotFace[4],slotFace[5]
+                                    ,material,group));
     }
     updateClosetGV();
 }
@@ -189,6 +227,28 @@ function changeClosetDimensions(width, height, depth) {
     closet.changeClosetHeight(height);
     closet.changeClosetDepth(depth);
     updateClosetGV();
+}
+
+/**
+ * Applies the texture to the closet.
+ * @param {*} texture - texture being applied.
+ */
+function applyTexture(texture){
+    textureLoader.load(texture, function(tex){
+        material.map = tex;
+    })
+}
+
+/**
+ * Changes the closet's material's shininess.
+ * @param {*} shininess - new shininess value
+ */
+function changeShininess(shininess){
+    material.shininess = shininess;
+}
+
+function changeColor(color){
+    material.color.setHex(color);
 }
 
 /**
@@ -236,8 +296,11 @@ function generateParellepiped(width, height, depth, x, y, z, material, group) {
  * Animates the scene
  */
 function animate() {
-    requestAnimationFrame(animate);
-    controls.update()
+    //animate the scene at 60 frames per second
+    setTimeout(function(){
+        requestAnimationFrame(animate);
+    }, 1000/60);
+    controls.update();
     render();
 }
 
@@ -292,7 +355,8 @@ function getNewScaleValue(initialScaleValue, newScaleValue, currentScaleValue) {
 }
 
 /**
- * Creates a material with a certain texture
+ * Remove when found a better way
+ * @deprecated No need to use this function since the material is now a global variable.
  */
 function createMaterialWithTexture() {
 
@@ -314,6 +378,15 @@ function registerEvents() {
 
     document.addEventListener("changeSlots", function (changeSlotsEvent) {
         changeClosetSlots(changeSlotsEvent.detail.slots);
+    });
+    document.addEventListener("changeMaterial", function(changeMaterialEvent){
+        applyTexture(changeMaterialEvent.detail.material);
+    });
+    document.addEventListener("changeShininess", function(changeShininessEvent){
+        changeShininess(changeShininessEvent.detail.shininess);
+    });
+    document.addEventListener("changeColor", function(changeColorEvent){
+        changeColorEvent(changeColorEvent.detail.color);
     });
 }
 

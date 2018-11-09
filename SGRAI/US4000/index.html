@@ -40,7 +40,7 @@
       loadSlots();
     }
     function lengthConverter(valNum) {
-        document.getElementById("outputMeters").innerHTML = valNum / 0.0022046;
+      document.getElementById("outputMeters").innerHTML = valNum / 0.0022046;
     }
     //loadDepth();
     function reloadCube() {
@@ -63,6 +63,33 @@
         }
       });
       document.dispatchEvent(eventX);
+    }
+
+    function reloadMaterial(elementId) {
+      var event = new CustomEvent("changeMaterial", {
+        detail: {
+          //this should the be image's link
+          material: document.getElementById(elementId).getAttribute("src")
+        }
+      })
+      document.dispatchEvent(event);
+    }
+
+    function changeShininess(shininess) {
+      var event = new CustomEvent("changeShininess", {
+        detail: {
+          shininess: shininess
+        }
+      })
+      document.dispatchEvent(event);
+    }
+
+    function changeColor(color) {
+      var event = new CustomEvent("changeColor", {
+        detail: {
+          color: color
+        }
+      })
     }
 
     function loadWidth() {
@@ -249,15 +276,16 @@
               <i class="fa fa-caret-down"></i>
             </a>
             <div class="dropdown-container">
-              <a class="sidepanel-subentry">Glossy</a>
-              <a class="sidepanel-subentry">Matte</a>
+              <a class="sidepanel-subentry" onclick="changeShininess(75);">Glossy</a>
+              <a class="sidepanel-subentry" onclick="changeShininess(20);">Matte</a>
             </div>
             <a class="sidepanel-entry">Colors
               <i class="fa fa-caret-down"></i>
             </a>
             <div class="dropdown-container">
-              <a class="sidepanel-subentry">Yellow</a>
-              <a class="sidepanel-subentry">Purple</a>
+              <a class="sidepanel-subentry" onclick="changeColor(0xffff00);">Yellow</a>
+              <a class="sidepanel-subentry" onclick="changeColor(0xbf00ff);">Purple</a>
+              <a class="sidepanel-subentry" onclick="changeColor(0xffffff)">Default</a>
             </div>
           </div>
           <script>
@@ -278,21 +306,31 @@
           </script>
           <ul class="material_list">
             <li>
-              <div class="material-btn" onclick="openNav()">
-                <img src="img/cherry_wood.jpeg" alt="Cherry Wood" width="100%" />
+              <div class="material-btn" onclick="openNav(); reloadMaterial('cherry-wood')">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="cherry-wood" src="http://127.0.0.1:8002/US4000/img/cherry_wood.jpeg" alt="Cherry Wood" width="100%" />
                 <p>Cherry Wood</p>
               </div>
             </li>
             <li>
-              <div class="material-btn" onclick="openNav()">
-                <img src="img/mdf.jpg" alt="MDF Wood" width="100%" />
+              <div class="material-btn" onclick="openNav(); reloadMaterial('mdf-wood')">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="mdf-wood" src="http://127.0.0.1:8002/US4000/img/mdf.jpg" alt="MDF Wood" width="100%" />
                 <p>MDF Wood</p>
               </div>
             </li>
             <li>
-              <div class="material-btn" onclick="openNav()">
-                <img src="img/worn_wood.jpg" alt="Worn Wood" width="100%" />
+              <div class="material-btn" onclick="openNav(); reloadMaterial('worn-wood')">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="worn-wood" src="http://127.0.0.1:8002/US4000/img/worn_wood.jpg" alt="Worn Wood" width="100%" />
                 <p>Worn Wood</p>
+              </div>
+            </li>
+            <li>
+              <div class="material-btn" onclick="openNav(); reloadMaterial('armis')">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="armis" src="http://127.0.0.1:8002/US4000/img/armis.png" alt="Premium Edition" width="100%" />
+                <p>Premium Edition</p>
               </div>
             </li>
           </ul>
@@ -312,7 +350,8 @@
         <script src="../Renderer/js/OrbitControls.js"></script>
         <script src="../Renderer/js/ProductRenderer.js"></script>
         <script src="../Renderer/js/Closet.js"></script>
-        <script> main();</script>
+        <!--Change the texture source, if the server or the port need to change-->
+        <script> main('http://127.0.0.1:8002/US4000/img/cherry_wood.jpeg');</script>
       </div>
     </div>
   </div>
