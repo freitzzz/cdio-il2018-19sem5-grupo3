@@ -161,6 +161,28 @@ function changeClosetDimensions(width,height,depth){
 }
 
 /**
+ * Applies the texture to the closet.
+ * @param {*} texture - texture being applied.
+ */
+function applyTexture(texture){
+    textureLoader.load(texture, function(tex){
+        material.map = tex;
+    })
+}
+
+/**
+ * Changes the closet's material's shininess.
+ * @param {*} shininess - new shininess value
+ */
+function changeShininess(shininess){
+    material.shininess = shininess;
+}
+
+function changeColor(color){
+    material.color.setHex(color);
+}
+
+/**
  * Changes the current closet slots
  * @param {number} slots Number with the new closet slots
  */
@@ -282,6 +304,15 @@ function registerEvents(){
     });
     document.addEventListener("changeSlots",function(changeSlotsEvent){
         changeClosetSlots(changeSlotsEvent.detail.slots);
+    });
+    document.addEventListener("changeMaterial", function(changeMaterialEvent){
+        applyTexture(changeMaterialEvent.detail.material);
+    });
+    document.addEventListener("changeShininess", function(changeShininessEvent){
+        changeShininess(changeShininessEvent.detail.shininess);
+    });
+    document.addEventListener("changeColor", function(changeColorEvent){
+        changeColorEvent(changeColorEvent.detail.color);
     });
 }
 
