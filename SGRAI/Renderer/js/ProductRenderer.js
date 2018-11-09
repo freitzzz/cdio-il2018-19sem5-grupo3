@@ -227,8 +227,11 @@ function generateParellepiped(width,height,depth,x,y,z,material,group){
  * Animates the scene
  */
 function animate() {
-    requestAnimationFrame(animate);
-    controls.update()
+    //animate the scene at 60 frames per second
+    setTimeout(function(){
+        requestAnimationFrame(animate);
+    }, 1000/60);
+    controls.update();
     render();
 }
 
