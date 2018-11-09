@@ -34,7 +34,7 @@ var closet_slots_faces_ids=[];
  */
 function main(textureSource) {
     var canvasWebGL=document.getElementById("webgl");
-    renderer = new THREE.WebGLRenderer({canvas:canvasWebGL});
+    renderer = new THREE.WebGLRenderer({canvas:canvasWebGL, antialias: true});
     //renderer.setSize(window.innerWidth, window.innerHeight);
     initCamera();
     initControls();
@@ -286,6 +286,7 @@ function getNewScaleValue(initialScaleValue,newScaleValue,currentScaleValue){
 
 /**
  * Remove when found a better way
+ * @deprecated No need to use this function since the material is now a global variable.
  */
 function createMaterialWithTexture(){
 
