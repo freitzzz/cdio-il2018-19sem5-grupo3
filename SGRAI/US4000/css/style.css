@@ -144,6 +144,7 @@ hr {
 .btn-custom:hover, .btn-custom:focus, .btn-custom.focus, .btn-custom:active, .btn-custom.active {
 	color: #fff;
 	background-color: #444;
+	cursor: pointer
 }
 /* Header Section */
 .intro {

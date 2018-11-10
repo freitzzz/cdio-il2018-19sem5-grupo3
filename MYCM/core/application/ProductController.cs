@@ -101,91 +101,55 @@ namespace core.application
         }
 
         /// <summary>
-        /// Updates the category of a Product.
-        /// </summary>
-        /// <param name="updateProductMV">UpdateProductModelView with the data regarding the product update</param>
-        /// <returns>boolean true if the update was successful, false otherwise.</returns>
-        private bool updateProductCategory(UpdateProductModelView updateProductMV){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productBeingUpdated=productRepository.find(updateProductMV.productId);
-            bool updatedWithSuccess=true;
-            bool perfomedAtLeastOneUpdate=false;
-            if (updateProductMV.productCategoryId.HasValue){
-                ProductCategory productCategory=PersistenceContext.repositories().createProductCategoryRepository().find((updateProductMV.productCategoryId.Value));
-                updatedWithSuccess&=productBeingUpdated.changeProductCategory(productCategory);
-                perfomedAtLeastOneUpdate=true;
-            }
-            if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
-            updatedWithSuccess&=productRepository.update(productBeingUpdated)!=null;
-            return updatedWithSuccess;
-        }
-
-        /// <summary>
         /// Adds a material to a product
         /// </summary>
         /// <param name="addComponentToProductDTO">AddMaterialToProductDTO with the material addition information</param>
         /// <returns>MaterialDTO with the material that was added to the product</returns>
-        public GetMaterialModelView addMaterialToProduct(AddMaterialToProductModelView addMaterialToProductDTO){
+        public GetProductModelView addMaterialToProduct(AddMaterialToProductModelView addMaterialToProductDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productToAddMaterial=productRepository.find(addMaterialToProductDTO.productID);
             //TODO:CHECK PRODUCT EXISTENCE
+            if(productToAddMaterial == null){
+                throw new ArgumentException();
+            }
             Material materialBeingAdded=PersistenceContext.repositories().createMaterialRepository().find(addMaterialToProductDTO.materialID);
+            if(materialBeingAdded == null){
+                throw new ArgumentException();
+            }
             //TODO:CHECK MATERIAL EXISTENCE
-            productToAddMaterial.addMaterial(materialBeingAdded);
+            bool added = productToAddMaterial.addMaterial(materialBeingAdded);
+            if(!added){
+                throw new ArgumentException();
+            }
             //TODO:CHECK PRODUCT UPDATE SUCCESS
-            productRepository.update(productToAddMaterial);
-            //TODO:REPLACE toDTO() WITH MODEL VIEW DTO (MaterialDetailsDTO)
-            return MaterialModelViewService.fromEntity(materialBeingAdded);
+            productToAddMaterial = productRepository.update(productToAddMaterial);
+            return ProductModelViewService.fromEntity(productToAddMaterial);
         }
 
         /// <summary>
         /// Deletes a material from a product
         /// </summary>
         /// <param name="deleteMaterialFromProductDTO">DeleteMaterialFromProductDTO with the material deletion information</param>
-        public void deleteMaterialFromProduct(DeleteMaterialFromProducModelView deleteMaterialFromProductDTO){
+        public GetProductModelView deleteMaterialFromProduct(DeleteMaterialFromProducModelView deleteMaterialFromProductDTO){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productToRemoveMaterial=productRepository.find(deleteMaterialFromProductDTO.productID);
+            if(productToRemoveMaterial == null){
+                throw new ArgumentException();
+            }
             //TODO:CHECK PRODUCT EXISTENCE
             Material materialBeingDeleted=PersistenceContext.repositories().createMaterialRepository().find(deleteMaterialFromProductDTO.materialID);
+            if(materialBeingDeleted == null){
+                throw new ArgumentException();
+            }
             //TODO:CHECK MATERIAL EXISTENCE
-            productToRemoveMaterial.removeMaterial(materialBeingDeleted);
+            bool removed = productToRemoveMaterial.removeMaterial(materialBeingDeleted);
+            if(!removed){
+                throw new ArgumentException();
+            }
             //TODO:CHECK PRODUCT UPDATE SUCCESS
-            productRepository.update(productToRemoveMaterial);
-        }
+            productToRemoveMaterial = productRepository.update(productToRemoveMaterial);
 
-        /// <summary>
-        /// Adds a restriction to a product component material
-        /// </summary>
-        /// <param name="addRestrictionToProductMaterialDTO">AddRestrictionToProductComponentMaterialDTO with the restriction addition information</param>
-        /// <returns>RestrictionDTO with the product component material added restriction</returns>
-        public GetRestrictionModelView addRestrictionToProductComponentMaterial(AddRestrictionToProductComponentMaterialModelView addRestrictionToProductMaterialDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productWithMaterialBeingAddedRestriction=productRepository.find(addRestrictionToProductMaterialDTO.productID);
-            //TODO: CHECK PRODUCT EXISTENCE
-            Material productMaterialBeingAddedRestriction=PersistenceContext.repositories().createMaterialRepository().find(addRestrictionToProductMaterialDTO.materialID);
-            //TODO: CHECK MATERIAL EXISTENCE
-            //TODO: RESTRICTION DTO SERVICE
-            
-            productRepository.update(productWithMaterialBeingAddedRestriction);
-            //TODO: CHECK PRODUCT UPDATE SUCCESS
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Deletes a restriction from a product component material
-        /// </summary>
-        /// <param name="deleteRestrictionFromProductComponentMaterialDTO">DeleteRestrictionFromProductComponentMaterialDTO with the restriction deletion information</param>
-        public void deleteRestrictionFromProductComponentMaterial(DeleteRestrictionFromProductComponentMaterialModelView deleteRestrictionFromProductComponentMaterialDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productWithMaterialBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductComponentMaterialDTO.productID);
-            //TODO: CHECK PRODUCT EXISTENCE
-            Material productMaterialBeingDeletedRestriction=PersistenceContext.repositories().createMaterialRepository().find(deleteRestrictionFromProductComponentMaterialDTO.materialID);
-            //TODO: CHECK MATERIAL EXISTENCE
-            //TODO: RESTRICTION REPOSITORY ? ? ? ? ? ? :\
-
-            productRepository.update(productWithMaterialBeingDeletedRestriction);
-            //TODO:CHECK PRODUCT UPDATE SUCCESS
-            throw new NotImplementedException();
+            return ProductModelViewService.fromEntity(productToRemoveMaterial);
         }
 
         /// <summary>
@@ -259,118 +223,14 @@ namespace core.application
 
 
         /// <summary>
-        /// Adds a restriction to a product width dimension
-        /// </summary>
-        /// <param name="addRestrictionToProductDimensionModelView">AddRestrictionToProductDimensionModelView with the restriction addition information</param>
-        /// <returns>GetAllRestrictionsModelView with the updated dimension restrictions information</returns>
-        public GetAllRestrictionsModelView addRestrictionToProductWidthDimension(AddRestrictionToProductComponentDimensionModelView addRestrictionToProductDimensionModelView){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productWithDimensionBeingAddedRestriction=productRepository.find(addRestrictionToProductDimensionModelView.productID);
-            //TODO: CHECK PRODUCT EXISTENCE
-
-            //TODO: FINISH IMPLEMENTATION (@Moreira (1160928))
-            productRepository.update(productWithDimensionBeingAddedRestriction);
-            //TODO: CHECK UPDATE SUCCESS
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Adds a restriction to a product height dimension
-        /// </summary>
-        /// <param name="addRestrictionToProductDimensionModelView">AddRestrictionToProductDimensionModelView with the restriction addition information</param>
-        /// <returns>GetAllRestrictionsModelView with the updated dimension restrictions information</returns>
-        public GetAllRestrictionsModelView addRestrictionToProductHeightDimension(AddRestrictionToProductComponentDimensionModelView addRestrictionToProductDimensionModelView){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productWithDimensionBeingAddedRestriction=productRepository.find(addRestrictionToProductDimensionModelView.productID);
-            //TODO: CHECK PRODUCT EXISTENCE
-
-            //TODO: FINISH IMPLEMENTATION (@Moreira (1160928))
-            productRepository.update(productWithDimensionBeingAddedRestriction);
-            //TODO: CHECK UPDATE SUCCESS
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Adds a restriction to a product depth dimension
-        /// </summary>
-        /// <param name="addRestrictionToProductDimensionModelView">AddRestrictionToProductDimensionModelView with the restriction addition information</param>
-        /// <returns>GetAllRestrictionsModelView with the updated dimension restrictions information</returns>
-        public GetAllRestrictionsModelView addRestrictionToProductDepthDimension(AddRestrictionToProductComponentDimensionModelView addRestrictionToProductDimensionModelView){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productWithDimensionBeingAddedRestriction=productRepository.find(addRestrictionToProductDimensionModelView.productID);
-            //TODO: CHECK PRODUCT EXISTENCE
-
-            //TODO: FINISH IMPLEMENTATION (@Moreira (1160928))
-            productRepository.update(productWithDimensionBeingAddedRestriction);
-            //TODO: CHECK UPDATE SUCCESS
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Deletes a restriction from a product component width dimension
-        /// </summary>
-        /// <param name="deleteRestrictionFromProductDimensionModelView">DeleteRestrictionFromProductDimensionModelView with the restriction deletion information</param>
-        public void deleteRestrictionFromProductComponentWidthDimension(DeleteRestrictionFromProductComponentDimensionModelView deleteRestrictionFromProductDimensionModelView){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productWithDimensionBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductDimensionModelView.productID);
-            //TODO: CHECK PRODUCT EXISTENCE
-
-            //TODO: FINISH IMPLEMENTATION (@Moreira (1160928))
-            productRepository.update(productWithDimensionBeingDeletedRestriction);
-            //TODO: CHECK UPDATE SUCCESS
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Deletes a restriction from a product component height dimension
-        /// </summary>
-        /// <param name="deleteRestrictionFromProductDimensionModelView">DeleteRestrictionFromProductDimensionModelView with the restriction deletion information</param>
-        public void deleteRestrictionFromProductComponentHeightDimension(DeleteRestrictionFromProductComponentDimensionModelView deleteRestrictionFromProductDimensionModelView){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productWithDimensionBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductDimensionModelView.productID);
-            //TODO: CHECK PRODUCT EXISTENCE
-
-            //TODO: FINISH IMPLEMENTATION (@Moreira (1160928))
-            productRepository.update(productWithDimensionBeingDeletedRestriction);
-            //TODO: CHECK UPDATE SUCCESS
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Deletes a restriction from a product component depth dimension
-        /// </summary>
-        /// <param name="deleteRestrictionFromProductDimensionModelView">DeleteRestrictionFromProductDimensionModelView with the restriction deletion information</param>
-        public void deleteRestrictionFromProductComponentDepthDimension(DeleteRestrictionFromProductComponentDimensionModelView deleteRestrictionFromProductDimensionModelView){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productWithDimensionBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductDimensionModelView.productID);
-            //TODO: CHECK PRODUCT EXISTENCE
-
-            //TODO: FINISH IMPLEMENTATION (@Moreira (1160928))
-            productRepository.update(productWithDimensionBeingDeletedRestriction);
-            //TODO: CHECK UPDATE SUCCESS
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Disables a product
         /// </summary>
-        /// <param name="productDTO">ProductDTO with the product data being disabled</param>
+        /// <param name="deleteProductMV">DeleteProductModelView with the product data being disabled</param>
         /// <returns>boolean true if the product was disabled with success, false if not</returns>
-        public bool disableProduct(ProductDTO productDTO){
+        public bool disableProduct(DeleteProductModelView deleteProductMV){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productBeingDisabled=productRepository.find(productDTO.id);
+            Product productBeingDisabled=productRepository.find(deleteProductMV.productId);
             return productBeingDisabled!=null && productBeingDisabled.deactivate() && productRepository.update(productBeingDisabled)!=null;
-        }
-
-        /// <summary>
-        /// Removes (Disables) a product
-        /// </summary>
-        /// <param name="productDTO">DTO with the product information</param>
-        /// <returns>boolean true if the product was removed (disabled) with success</returns>
-        public bool removeProduct(ProductDTO productDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productBeingRemoved=productRepository.find(productDTO.id);
-            return productBeingRemoved!=null && productBeingRemoved.deactivate() && productRepository.update(productBeingRemoved)!=null;
         }
 
         /// <summary>

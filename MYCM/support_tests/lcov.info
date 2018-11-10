@@ -1,0 +1,284 @@
+SF:/home/freitas/Development/Projects/CDIO/cdio-il2018-19sem5-grupo3/MYCM/support/utils/Properties.cs
+FN:28,System.Void support.system.Properties::put(System.Object,System.Object)
+FNDA:3,System.Void support.system.Properties::put(System.Object,System.Object)
+DA:29,3
+FN:35,System.Object support.system.Properties::get(System.Object)
+FNDA:1,System.Object support.system.Properties::get(System.Object)
+DA:36,1
+DA:37,1
+DA:38,1
+DA:39,1
+DA:40,1
+FN:45,System.Void support.system.Properties::load(System.IO.Stream)
+FNDA:0,System.Void support.system.Properties::load(System.IO.Stream)
+DA:46,0
+DA:47,0
+DA:48,0
+DA:49,0
+DA:50,0
+DA:51,0
+DA:52,0
+FN:17,System.Void support.system.Properties::.ctor()
+FNDA:1,System.Void support.system.Properties::.ctor()
+DA:18,1
+DA:22,3
+FN:13,System.Void support.system.Properties::.cctor()
+FNDA:0,System.Void support.system.Properties::.cctor()
+DA:14,0
+LF:16
+LH:8
+BRF:0
+BRH:0
+FNF:5
+FNH:3
+end_of_record
+SF:/home/freitas/Development/Projects/CDIO/cdio-il2018-19sem5-grupo3/MYCM/support/utils/Collections.cs
+FN:19,System.Boolean support.utils.Collections::isListEmpty(System.Collections.Generic.List`1<T>)
+FNDA:2,System.Boolean support.utils.Collections::isListEmpty(System.Collections.Generic.List`1<T>)
+DA:20,2
+DA:21,2
+DA:22,2
+BRDA:21,2,0,1
+BRDA:21,2,1,1
+FN:29,System.Boolean support.utils.Collections::isListNull(System.Collections.Generic.List`1<T>)
+FNDA:1,System.Boolean support.utils.Collections::isListNull(System.Collections.Generic.List`1<T>)
+DA:30,1
+DA:31,1
+DA:32,1
+FN:39,System.Boolean support.utils.Collections::isEnumerableNullOrEmpty(System.Collections.Generic.IEnumerable`1<T>)
+FNDA:2,System.Boolean support.utils.Collections::isEnumerableNullOrEmpty(System.Collections.Generic.IEnumerable`1<T>)
+DA:40,2
+DA:41,2
+DA:42,2
+BRDA:41,2,0,1
+BRDA:41,2,1,1
+FN:49,System.Int32 support.utils.Collections::getEnumerableSize(System.Collections.Generic.IEnumerable`1<T>)
+FNDA:2,System.Int32 support.utils.Collections::getEnumerableSize(System.Collections.Generic.IEnumerable`1<T>)
+DA:50,2
+DA:51,3
+DA:52,1
+DA:53,1
+DA:54,1
+DA:55,5
+DA:56,1
+DA:57,1
+DA:59,2
+BRDA:51,24,0,1
+BRDA:51,24,1,1
+BRDA:55,72,1,1
+BRDA:55,72,0,1
+FN:66,System.Collections.Generic.List`1<T> support.utils.Collections::enumerableAsList(System.Collections.Generic.IEnumerable`1<T>)
+FNDA:2,System.Collections.Generic.List`1<T> support.utils.Collections::enumerableAsList(System.Collections.Generic.IEnumerable`1<T>)
+DA:67,2
+DA:68,3
+DA:69,1
+DA:70,1
+DA:71,1
+DA:73,2
+BRDA:68,24,0,1
+BRDA:68,24,1,1
+LF:24
+LH:24
+BRF:10
+BRH:10
+FNF:5
+FNH:5
+end_of_record
+SF:/home/freitas/Development/Projects/CDIO/cdio-il2018-19sem5-grupo3/MYCM/support/utils/Strings.cs
+FN:12,System.Boolean support.utils.Strings::isNullOrEmpty(System.String)
+FNDA:9,System.Boolean support.utils.Strings::isNullOrEmpty(System.String)
+DA:13,9
+BRDA:13,2,0,2
+BRDA:13,2,1,1
+LF:1
+LH:1
+BRF:2
+BRH:2
+FNF:1
+FNH:1
+end_of_record
+SF:/home/freitas/Development/Projects/CDIO/cdio-il2018-19sem5-grupo3/MYCM/support/io/Streams.cs
+FN:19,System.Collections.Generic.List`1<System.String> support.io.Streams::readAllLines(System.IO.Stream)
+FNDA:0,System.Collections.Generic.List`1<System.String> support.io.Streams::readAllLines(System.IO.Stream)
+DA:20,0
+DA:21,0
+DA:22,0
+DA:23,0
+DA:24,0
+DA:25,0
+DA:26,0
+BRDA:24,47,1,0
+BRDA:24,47,0,0
+FN:31,System.Void support.io.Streams::grantStreamIsValidForRead(System.IO.Stream)
+FNDA:0,System.Void support.io.Streams::grantStreamIsValidForRead(System.IO.Stream)
+DA:32,0
+DA:33,0
+DA:34,0
+BRDA:33,2,0,0
+BRDA:33,2,1,0
+BRDA:33,18,0,0
+BRDA:33,18,1,0
+FN:13,System.Void support.io.Streams::.cctor()
+FNDA:0,System.Void support.io.Streams::.cctor()
+DA:14,0
+LF:11
+LH:0
+BRF:6
+BRH:0
+FNF:3
+FNH:0
+end_of_record
+SF:/home/freitas/Development/Projects/CDIO/cdio-il2018-19sem5-grupo3/MYCM/support/dto/DTOUtils.cs
+FN:12,T support.dto.DTOUtils::reverseDTO(support.dto.DTOParseable`2<T,D>)
+FNDA:0,T support.dto.DTOUtils::reverseDTO(support.dto.DTOParseable`2<T,D>)
+DA:13,0
+DA:14,0
+DA:15,0
+FN:23,System.Collections.Generic.IEnumerable`1<T> support.dto.DTOUtils::reverseDTOS(System.Collections.Generic.IEnumerable`1<support.dto.DTOParseable`2<T,D>>)
+FNDA:0,System.Collections.Generic.IEnumerable`1<T> support.dto.DTOUtils::reverseDTOS(System.Collections.Generic.IEnumerable`1<support.dto.DTOParseable`2<T,D>>)
+DA:24,0
+DA:25,0
+DA:26,0
+DA:27,0
+DA:28,0
+BRDA:26,43,1,0
+BRDA:26,43,0,0
+FN:35,D support.dto.DTOUtils::parseToDTO(support.dto.DTOAble`1<D>)
+FNDA:0,D support.dto.DTOUtils::parseToDTO(support.dto.DTOAble`1<D>)
+DA:36,0
+DA:37,0
+DA:38,0
+FN:45,System.Collections.Generic.IEnumerable`1<D> support.dto.DTOUtils::parseToDTOS(System.Collections.Generic.IEnumerable`1<support.dto.DTOAble`1<D>>)
+FNDA:0,System.Collections.Generic.IEnumerable`1<D> support.dto.DTOUtils::parseToDTOS(System.Collections.Generic.IEnumerable`1<support.dto.DTOAble`1<D>>)
+DA:46,0
+DA:47,0
+DA:48,0
+DA:49,0
+DA:50,0
+BRDA:48,43,1,0
+BRDA:48,43,0,0
+LF:16
+LH:0
+BRF:4
+BRH:0
+FNF:4
+FNH:0
+end_of_record
+SF:/home/freitas/Development/Projects/CDIO/cdio-il2018-19sem5-grupo3/MYCM/support/dto/GenericDTO.cs
+FN:42,System.Boolean support.dto.GenericDTO::put(System.String,System.Object)
+FNDA:0,System.Boolean support.dto.GenericDTO::put(System.String,System.Object)
+DA:43,0
+DA:44,0
+DA:45,0
+DA:46,0
+FN:52,System.Object support.dto.GenericDTO::get(System.String)
+FNDA:0,System.Object support.dto.GenericDTO::get(System.String)
+DA:53,0
+FN:56,System.Object support.dto.GenericDTO::get_Item(System.String)
+FNDA:0,System.Object support.dto.GenericDTO::get_Item(System.String)
+DA:57,0
+FN:58,System.Collections.Generic.ICollection`1<System.String> support.dto.GenericDTO::get_Keys()
+FNDA:0,System.Collections.Generic.ICollection`1<System.String> support.dto.GenericDTO::get_Keys()
+DA:59,0
+FN:60,System.Collections.Generic.ICollection`1<System.Object> support.dto.GenericDTO::get_Values()
+FNDA:0,System.Collections.Generic.ICollection`1<System.Object> support.dto.GenericDTO::get_Values()
+DA:61,0
+FN:62,System.Int32 support.dto.GenericDTO::get_Count()
+FNDA:0,System.Int32 support.dto.GenericDTO::get_Count()
+DA:63,0
+FN:64,System.Boolean support.dto.GenericDTO::get_IsReadOnly()
+FNDA:0,System.Boolean support.dto.GenericDTO::get_IsReadOnly()
+DA:65,0
+FN:71,System.Void support.dto.GenericDTO::Add(System.String,System.Object)
+FNDA:0,System.Void support.dto.GenericDTO::Add(System.String,System.Object)
+DA:72,0
+FN:77,System.Void support.dto.GenericDTO::Add(System.Collections.Generic.KeyValuePair`2<System.String,System.Object>)
+FNDA:0,System.Void support.dto.GenericDTO::Add(System.Collections.Generic.KeyValuePair`2<System.String,System.Object>)
+DA:78,0
+FN:82,System.Void support.dto.GenericDTO::Clear()
+FNDA:0,System.Void support.dto.GenericDTO::Clear()
+DA:83,0
+FN:89,System.Boolean support.dto.GenericDTO::Contains(System.Collections.Generic.KeyValuePair`2<System.String,System.Object>)
+FNDA:0,System.Boolean support.dto.GenericDTO::Contains(System.Collections.Generic.KeyValuePair`2<System.String,System.Object>)
+DA:90,0
+FN:96,System.Boolean support.dto.GenericDTO::ContainsKey(System.String)
+FNDA:0,System.Boolean support.dto.GenericDTO::ContainsKey(System.String)
+DA:97,0
+FN:103,System.Void support.dto.GenericDTO::CopyTo(System.Collections.Generic.KeyValuePair`2<System.String,System.Object>[],System.Int32)
+FNDA:0,System.Void support.dto.GenericDTO::CopyTo(System.Collections.Generic.KeyValuePair`2<System.String,System.Object>[],System.Int32)
+DA:104,0
+FN:109,System.Collections.Generic.IEnumerator`1<System.Collections.Generic.KeyValuePair`2<System.String,System.Object>> support.dto.GenericDTO::GetEnumerator()
+FNDA:0,System.Collections.Generic.IEnumerator`1<System.Collections.Generic.KeyValuePair`2<System.String,System.Object>> support.dto.GenericDTO::GetEnumerator()
+DA:110,0
+FN:116,System.Boolean support.dto.GenericDTO::Remove(System.String)
+FNDA:0,System.Boolean support.dto.GenericDTO::Remove(System.String)
+DA:117,0
+FN:123,System.Boolean support.dto.GenericDTO::Remove(System.Collections.Generic.KeyValuePair`2<System.String,System.Object>)
+FNDA:0,System.Boolean support.dto.GenericDTO::Remove(System.Collections.Generic.KeyValuePair`2<System.String,System.Object>)
+DA:124,0
+FN:131,System.Boolean support.dto.GenericDTO::TryGetValue(System.String,System.Object&)
+FNDA:0,System.Boolean support.dto.GenericDTO::TryGetValue(System.String,System.Object&)
+DA:132,0
+FN:137,System.Collections.IEnumerator support.dto.GenericDTO::System.Collections.IEnumerable.GetEnumerator()
+FNDA:0,System.Collections.IEnumerator support.dto.GenericDTO::System.Collections.IEnumerable.GetEnumerator()
+DA:138,0
+FN:143,System.Void support.dto.GenericDTO::checkGenericDTO(System.String)
+FNDA:0,System.Void support.dto.GenericDTO::checkGenericDTO(System.String)
+DA:144,0
+DA:145,0
+DA:146,0
+DA:148,0
+BRDA:145,2,0,0
+BRDA:145,2,1,0
+BRDA:145,23,0,0
+BRDA:145,23,1,0
+FN:23,System.Void support.dto.GenericDTO::.ctor(System.String)
+FNDA:0,System.Void support.dto.GenericDTO::.ctor(System.String)
+DA:24,0
+DA:29,0
+DA:30,0
+DA:31,0
+DA:32,0
+FN:15,System.Void support.dto.GenericDTO::.cctor()
+FNDA:0,System.Void support.dto.GenericDTO::.cctor()
+DA:16,0
+LF:31
+LH:0
+BRF:4
+BRH:0
+FNF:21
+FNH:0
+end_of_record
+SF:/home/freitas/Development/Projects/CDIO/cdio-il2018-19sem5-grupo3/MYCM/support/domain/Activatable.cs
+FN:11,System.Boolean support.domain.Activatable::get_activated()
+FNDA:0,System.Boolean support.domain.Activatable::get_activated()
+DA:12,0
+FN:17,System.Boolean support.domain.Activatable::activate()
+FNDA:0,System.Boolean support.domain.Activatable::activate()
+DA:18,0
+DA:19,0
+DA:20,0
+DA:21,0
+DA:24,0
+DA:26,0
+DA:27,0
+BRDA:19,9,0,0
+BRDA:19,9,1,0
+FN:32,System.Boolean support.domain.Activatable::deactivate()
+FNDA:0,System.Boolean support.domain.Activatable::deactivate()
+DA:33,0
+DA:34,0
+DA:35,0
+DA:36,0
+DA:39,0
+DA:41,0
+DA:42,0
+BRDA:34,12,0,0
+BRDA:34,12,1,0
+LF:15
+LH:0
+BRF:4
+BRH:0
+FNF:3
+FNH:0
+end_of_record

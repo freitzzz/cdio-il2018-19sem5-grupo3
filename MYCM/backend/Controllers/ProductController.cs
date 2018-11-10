@@ -157,7 +157,14 @@ namespace backend.Controllers {
         /// <returns>HTTP Response 400 Bad Request if no products are found;
         /// HTTP Response 200 Ok with the info of all products in JSON format </returns>
         [HttpGet]
-        public ActionResult findAll() {
+        public ActionResult find([FromQuery]string reference) {
+            if(reference == null){
+                return findAll();
+            }
+            return findByReference(reference);
+        }
+
+        private ActionResult findAll(){
             logger.LogInformation(LOG_GET_ALL_START);
             GetAllProductsModelView allProductsModelView = new core.application.ProductController().findAllProducts();
 
@@ -167,6 +174,16 @@ namespace backend.Controllers {
             }
             logger.LogInformation(LOG_GET_ALL_SUCCESS, allProductsModelView);
             return Ok(allProductsModelView);
+        }
+
+        //TODO: add this to the wiki
+        private ActionResult findByReference(string reference){
+            FetchProductDTO fetchProductDTO = new FetchProductDTO();
+            fetchProductDTO.reference = reference;
+            GetProductModelView getProductModelView = new core.application.ProductController().findByReference(fetchProductDTO);
+
+
+            return Ok(getProductModelView);
         }
 
         /// <summary>
@@ -345,8 +362,8 @@ namespace backend.Controllers {
         public ActionResult addMaterialToProduct(long id,[FromBody]AddMaterialToProductModelView addMaterialToProductMV){
             addMaterialToProductMV.productID=id;
             try{
-                GetMaterialModelView materialModelView=new core.application.ProductController().addMaterialToProduct(addMaterialToProductMV);
-                return Created(Request.Path,materialModelView);
+                GetProductModelView productModelView=new core.application.ProductController().addMaterialToProduct(addMaterialToProductMV);
+                return Created(Request.Path,productModelView);
             }catch(NullReferenceException){
                 return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
             }catch(InvalidOperationException invalidOperationException){
@@ -486,9 +503,9 @@ namespace backend.Controllers {
         [HttpDelete("{id}")]
         public ActionResult disableProduct(long id) {
             logger.LogInformation(LOG_DELETE_START);
-            ProductDTO productDTO = new ProductDTO();
-            productDTO.id = id;
-            bool disabledWithSuccess = new core.application.ProductController().disableProduct(productDTO);
+            DeleteProductModelView deleteProductMV = new DeleteProductModelView();
+            deleteProductMV.productId = id;
+            bool disabledWithSuccess = new core.application.ProductController().disableProduct(deleteProductMV);
             if (disabledWithSuccess) {
                 logger.LogInformation(LOG_DELETE_SUCCESS, id);
                 return NoContent();
