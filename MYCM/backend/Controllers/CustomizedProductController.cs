@@ -19,6 +19,16 @@ namespace backend.Controllers{
         private const string NO_CUSTOMIZED_PRODUCTS_AVAILABLE="There are no customized products available";
 
         /// <summary>
+        /// Constant that represents the message that occurs if a slot wasn't deleted successfully from a customized product
+        /// </summary>
+        private const string SLOT_NOT_DELETED="Slot wasn't deleted from customized product";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if a customized product wasn't deleted from a slot
+        /// </summary>
+        private const string CUSTOMIZED_PRODUCT_NOT_DELETED_FROM_SLOT="Customized product wasn't deleted from slot";
+
+        /// <summary>
         /// Constant that represents the message that occurs if a client attemps to create a product with an invalid request body
         /// </summary>
         private const string INVALID_REQUEST_BODY_MESSAGE="The request body is invalid! Check documentation for more information";
@@ -287,11 +297,11 @@ namespace backend.Controllers{
                     return NoContent();
                 }else{
                     logger.LogWarning(LOG_DELETE_SLOT_FROM_CUSTOMIZED_PRODUCT_BAD_REQUEST,slotid,id);
-                    return BadRequest();
+                    return BadRequest(new{error = SLOT_NOT_DELETED});
                 }
             }catch(NullReferenceException nullReferenceException){
                 logger.LogWarning(nullReferenceException,LOG_DELETE_CHILD_CUSTOMIZED_PRODUCT_BAD_REQUEST,slotid,id);
-                return BadRequest();
+                return BadRequest(new{error = SLOT_NOT_DELETED});
             }
         }
 
@@ -315,7 +325,7 @@ namespace backend.Controllers{
                 return NoContent();
             }else{
                 logger.LogWarning(LOG_DELETE_CHILD_CUSTOMIZED_PRODUCT_BAD_REQUEST,childid,slotid,parentid);
-                return BadRequest();
+                return BadRequest(new{error = CUSTOMIZED_PRODUCT_NOT_DELETED_FROM_SLOT});
             }
         }
     }
