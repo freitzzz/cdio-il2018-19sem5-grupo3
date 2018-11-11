@@ -13,7 +13,7 @@ namespace core_tests.domain
         {
             Action action = () => new CatalogueCollectionProduct(null, null);
 
-            Assert.Throws(typeof(ArgumentException), action);
+            Assert.Throws<ArgumentException>(action);
         }
 
         [Fact]
@@ -21,7 +21,7 @@ namespace core_tests.domain
         {
             Action action = () => new CatalogueCollectionProduct(null, buildCustomizedProduct());
 
-            Assert.Throws(typeof(ArgumentException), action);
+            Assert.Throws<ArgumentException>(action);
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace core_tests.domain
         {
             Action action = () => new CatalogueCollectionProduct(buildCatalogueCollection(), null);
 
-            Assert.Throws(typeof(ArgumentException), action);
+            Assert.Throws<ArgumentException>(action);
         }
 
         [Fact]

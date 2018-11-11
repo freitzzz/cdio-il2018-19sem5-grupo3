@@ -127,7 +127,7 @@ namespace core_tests.domain
             CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
 
             comCatalogue.changeReference("Mudei referecia");
-            Assert.Equal(comCatalogue.reference, "Mudei referecia", true);
+            Assert.Equal("Mudei referecia", comCatalogue.reference, true);
         }
         /**
                <summary>
@@ -299,7 +299,7 @@ namespace core_tests.domain
             CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
 
             comCatalogue.changeDesignation("Mudei designation");
-            Assert.Equal(comCatalogue.designation, "Mudei designation", true);
+            Assert.Equal("Mudei designation", comCatalogue.designation, true);
         }
 
         /**
