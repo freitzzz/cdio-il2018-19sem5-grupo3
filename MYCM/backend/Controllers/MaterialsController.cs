@@ -190,7 +190,7 @@ namespace backend.Controllers
             if (Collections.isListEmpty(materials))
             {
                 logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
-                return BadRequest(new SimpleJSONMessageService(NO_MATERIALS_FOUND_REFERENCE));
+                return BadRequest(new{error = NO_MATERIALS_FOUND_REFERENCE});
             }
             logger.LogInformation(LOG_GET_ALL_SUCCESS, materials);
             return Ok(materials);
@@ -214,7 +214,7 @@ namespace backend.Controllers
                 if (materialDTO == null)
                 {
                     logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST, id);
-                    return BadRequest(new SimpleJSONMessageService(MATERIAL_NOT_FOUND_REFERENCE));
+                    return BadRequest(new {error = MATERIAL_NOT_FOUND_REFERENCE});
                 }
                 logger.LogInformation(LOG_GET_BY_ID_SUCCESS, materialDTO);
                 return Ok(materialDTO);
@@ -222,7 +222,7 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_GET_BY_ID_BAD_REQUEST, id);
-                return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
+                return BadRequest(new {error = INVALID_REQUEST_BODY_MESSAGE});
             }
         }
 
@@ -248,19 +248,18 @@ namespace backend.Controllers
                 }
                 else
                 {
-                    //TODO:????????
-                    return BadRequest();
+                    return BadRequest(new{error = MATERIAL_NOT_ADDED_REFERENCE});
                 }
             }
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_POST_BAD_REQUEST, materialDTO);
-                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+                return BadRequest(new {error = INVALID_REQUEST_BODY_MESSAGE});
             }
             catch (ArgumentException argumentException)
             {
                 logger.LogWarning(argumentException, LOG_POST_BAD_REQUEST, materialDTO);
-                return BadRequest(new SimpleJSONMessageService(argumentException.Message));
+                return BadRequest(new {error = argumentException.Message});
             }
         }
 
@@ -287,7 +286,7 @@ namespace backend.Controllers
             else
             {
                 logger.LogWarning(LOG_DELETE_BAD_REQUEST, id);
-                return BadRequest();
+                return BadRequest(new{error = MATERIAL_NOT_REMOVED_REFERENCE});
             }
         }
         /// <summary>
@@ -307,16 +306,16 @@ namespace backend.Controllers
                 if (new core.application.MaterialsController().updateMaterialBasicInformation(updateMaterialData))
                 {
                     logger.LogInformation(LOG_PUT_SUCCESS, id, updateMaterialData);
-                    return Ok(new SimpleJSONMessageService(VALID_MATERIAL_UPDATE_MESSAGE));
+                    return Ok(new{error = VALID_MATERIAL_UPDATE_MESSAGE});
                 }
             }
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, id, updateMaterialData);
-                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+                return BadRequest(new{error = INVALID_REQUEST_BODY_MESSAGE});
             }
             logger.LogWarning(LOG_PUT_BAD_REQUEST, id, updateMaterialData);
-            return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
+            return BadRequest(new{error = INVALID_MATERIAL_UPDATE_MESSAGE});
         }
 
         /// <summary>
@@ -341,10 +340,10 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, addFinishDTO);
-                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+                return BadRequest(new{error = INVALID_REQUEST_BODY_MESSAGE});
             }
             logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, addFinishDTO);
-            return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
+            return BadRequest(new{error = INVALID_MATERIAL_UPDATE_MESSAGE});
         }
         /// <summary>
         /// Remove finish of a material for update
@@ -367,10 +366,10 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, idFinish);
-                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+                return BadRequest(new {error = INVALID_REQUEST_BODY_MESSAGE});
             }
             logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, idFinish);
-            return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
+            return BadRequest(new {error = INVALID_MATERIAL_UPDATE_MESSAGE});
         }
 
         /// <summary>
@@ -395,10 +394,10 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, addColorDTO);
-                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+                return BadRequest(new {error = INVALID_REQUEST_BODY_MESSAGE});
             }
             logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, addColorDTO);
-            return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
+            return BadRequest(new {error = INVALID_MATERIAL_UPDATE_MESSAGE});
         }
         /// <summary>
         /// Remove color of a material for update
@@ -421,10 +420,10 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, idColor);
-                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+                return BadRequest(new {error = INVALID_REQUEST_BODY_MESSAGE});
             }
             logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, idColor);
-            return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_UPDATE_MESSAGE));
+            return BadRequest(new {error = INVALID_MATERIAL_UPDATE_MESSAGE});
         }
     }
 }

@@ -45,6 +45,16 @@ namespace backend.Controllers {
         private const string NO_PRODUCTS_FOUND_REFERENCE = "No products found";
 
         /// <summary>
+        /// Constant that represents the 400 Bad Request message when a product isn't created
+        /// </summary>
+        private const string PRODUCT_NOT_CREATED_REFERNCE = "Product not created";
+
+        /// <summary>
+        /// Constant that represents the 400 Bad Request message for when a product isn't deleted
+        /// </summary>
+        private const string PRODUCT_NOT_DELETED_REFERENCE = "Product not deleted";
+
+        /// <summary>
         /// Constant that represents the message that occurs if the update of a product fails
         /// </summary>
         private const string INVALID_PRODUCT_UPDATE_MESSAGE = "An error occured while updating the product";
@@ -170,7 +180,7 @@ namespace backend.Controllers {
 
             if (allProductsModelView == null||Collections.isEnumerableNullOrEmpty(allProductsModelView)) {
                 logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
-                return NotFound(NO_PRODUCTS_FOUND_REFERENCE);
+                return NotFound(new{error = NO_PRODUCTS_FOUND_REFERENCE});
             }
             logger.LogInformation(LOG_GET_ALL_SUCCESS, allProductsModelView);
             return Ok(allProductsModelView);
@@ -203,13 +213,13 @@ namespace backend.Controllers {
                 GetProductModelView productDTOY = new core.application.ProductController().findProductByID(fetchProductDTO);
                 if (productDTOY == null) {
                     logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST + PRODUCT_NOT_FOUND_REFERENCE);
-                    return NotFound(PRODUCT_NOT_FOUND_REFERENCE);
+                    return NotFound(new{error=PRODUCT_NOT_FOUND_REFERENCE});
                 }
                 logger.LogInformation(LOG_GET_BY_ID_SUCCESS, productDTOY);
                 return Ok(productDTOY);
             } catch (NullReferenceException nullReferenceException) {
                 logger.LogWarning(nullReferenceException, LOG_GET_BY_ID_BAD_REQUEST + PRODUCT_NOT_FOUND_REFERENCE);
-                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+                return BadRequest(new{error=PRODUCT_NOT_FOUND_REFERENCE});
             } catch (ArgumentException e) {
                 logger.LogWarning(e, LOG_GET_BY_ID_BAD_REQUEST);
                 return BadRequest(new { error = e.Message }); //this exception should happen when converting to an unknown unit
@@ -270,17 +280,17 @@ namespace backend.Controllers {
                     return CreatedAtRoute("GetProduct", new { id = createdProductMV.id }, createdProductMV);
                 } else {
                     //TODO:????????
-                    return BadRequest();
+                    return BadRequest(new{error = PRODUCT_NOT_CREATED_REFERNCE});
                 }
             } catch (NullReferenceException nullReferenceException) {
                 logger.LogWarning(nullReferenceException, LOG_POST_BAD_REQUEST, addProductMV);
-                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+                return BadRequest(new{error=INVALID_REQUEST_BODY_MESSAGE});
             } catch (InvalidOperationException invalidOperationException) {
                 logger.LogWarning(invalidOperationException, LOG_POST_BAD_REQUEST, addProductMV);
-                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+                return BadRequest(new{error=invalidOperationException.Message});
             } catch (ArgumentException argumentException) {
                 logger.LogWarning(argumentException, LOG_POST_BAD_REQUEST, addProductMV);
-                return BadRequest(new SimpleJSONMessageService(argumentException.Message));
+                return BadRequest(new{error=(argumentException.Message)});
             }
         }
 
@@ -299,11 +309,11 @@ namespace backend.Controllers {
                 GetComponentModelView componentModelView=new core.application.ProductController().addComponentToProduct(addComponentToProductMV);
                 return Created(Request.Path,componentModelView);
             }catch(NullReferenceException){
-                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+                return BadRequest(new{error=PRODUCT_NOT_FOUND_REFERENCE});
             }catch(InvalidOperationException invalidOperationException){
-                return BadRequest(invalidOperationException.Message);
+                return BadRequest(new{error=invalidOperationException.Message});
             }catch(ArgumentException argumentException){
-                return BadRequest(argumentException.Message);
+                return BadRequest(new{error=argumentException.Message});
             }
         }
 
@@ -326,11 +336,11 @@ namespace backend.Controllers {
                 GetRestrictionModelView appliedRestrictionModelView=new core.application.ProductController().addRestrictionToProductComponent(addRestrictionToProductComponentDTO);
                 return Created(Request.Path,appliedRestrictionModelView);
             }catch(NullReferenceException){
-                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+                return BadRequest(new{error=PRODUCT_NOT_FOUND_REFERENCE});
             }catch(InvalidOperationException invalidOperationException){
-                return BadRequest(invalidOperationException.Message);
+                return BadRequest(new{error=invalidOperationException.Message});
             }catch(ArgumentException argumentException){
-                return BadRequest(argumentException.Message);
+                return BadRequest(new{error=argumentException.Message});
             }
         }
 
@@ -365,11 +375,11 @@ namespace backend.Controllers {
                 GetProductModelView productModelView=new core.application.ProductController().addMaterialToProduct(addMaterialToProductMV);
                 return Created(Request.Path,productModelView);
             }catch(NullReferenceException){
-                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+                return BadRequest(new{error=PRODUCT_NOT_FOUND_REFERENCE});
             }catch(InvalidOperationException invalidOperationException){
-                return BadRequest(invalidOperationException.Message);
+                return BadRequest(new{error=invalidOperationException.Message});
             }catch(ArgumentException argumentException){
-                return BadRequest(argumentException.Message);
+                return BadRequest(new{error=argumentException.Message});
             }
         }
 
@@ -401,13 +411,13 @@ namespace backend.Controllers {
             try{
                 GetProductModelView updatedProductMV=new core.application.ProductController().updateProductProperties(updateProductPropertiesModelView);
                 logger.LogInformation(LOG_PUT_SUCCESS, id, updateProductPropertiesModelView);
-                return Ok(new SimpleJSONMessageService(VALID_PRODUCT_UPDATE_MESSAGE));
+                return Ok(new {error=VALID_PRODUCT_UPDATE_MESSAGE});
             }catch(ArgumentException argumentException){
                 logger.LogWarning(LOG_PUT_BAD_REQUEST, id, argumentException.Message);
-                return BadRequest(argumentException.Message);
+                return BadRequest(new{error=argumentException.Message});
             }catch(InvalidOperationException invalidOperationException){
                 logger.LogWarning(LOG_PUT_BAD_REQUEST, id, invalidOperationException.Message);
-                return BadRequest(invalidOperationException.Message);
+                return BadRequest(new{error=invalidOperationException.Message});
             }
         }
 
@@ -428,9 +438,9 @@ namespace backend.Controllers {
                 new core.application.ProductController().deleteComponentFromProduct(deleteComponentFromProductMV);
                 return NoContent();
             }catch(NullReferenceException){
-                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+                return BadRequest(new{error=PRODUCT_NOT_FOUND_REFERENCE});
             }catch(InvalidOperationException invalidOperationException){
-                return BadRequest(invalidOperationException.Message);
+                return BadRequest(new{error=invalidOperationException.Message});
             }
         }
 
@@ -453,9 +463,9 @@ namespace backend.Controllers {
                 new core.application.ProductController().deleteRestrictionFromProductComponent(deleteRestrictionFromProductComponentMV);
                 return NoContent();
             }catch(NullReferenceException){
-                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+                return BadRequest(new{error=PRODUCT_NOT_FOUND_REFERENCE});
             }catch(InvalidOperationException invalidOperationException){
-                return BadRequest(invalidOperationException.Message);
+                return BadRequest(new{error=invalidOperationException.Message});
             }
         }
 
@@ -481,9 +491,9 @@ namespace backend.Controllers {
                 new core.application.ProductController().deleteMaterialFromProduct(deleteMaterialFromProductMV);
                 return NoContent();
             }catch(NullReferenceException){
-                return BadRequest(PRODUCT_NOT_FOUND_REFERENCE);
+                return BadRequest(new{error=PRODUCT_NOT_FOUND_REFERENCE});
             }catch(InvalidOperationException invalidOperationException){
-                return BadRequest(invalidOperationException.Message);
+                return BadRequest(new{error=invalidOperationException.Message});
             }
         }
 
@@ -511,7 +521,7 @@ namespace backend.Controllers {
                 return NoContent();
             } else {
                 logger.LogWarning(LOG_DELETE_BAD_REQUEST, id);
-                return BadRequest();
+                return BadRequest(new{error = PRODUCT_NOT_DELETED_REFERENCE});
             }
         }
     }

@@ -1,542 +1,591 @@
-// using System;
-// using Xunit;
-// using System.Collections.Generic;
-// using core.domain;
-// using core.dto;
-// using support.dto;
-// namespace core_tests.domain
-// {
-//     /**
-//     <summary>
-//         Tests of the class Component.
-//     </summary>
-//     */
-//     public class ComponentTest
-//     {
-//         //id tests
-
-//         /**
-//         <summary>
-//             Test to ensure that the method id works.
-//          </summary>
-//          */
-//         [Fact]
-//         public void ensureIdMethodWorks()
-//         {
-//             Console.WriteLine("ensureIdMethodWorks");
-//             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-//             Finish finish = Finish.valueOf("Acabamento polido");
-//             ProductCategory prodCat = new ProductCategory("Category 1");
-//             List<Double> values2 = new List<Double>();
-//             values2.Add(500.0); //Width
-//             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-//             List<Dimension> valuest = new List<Dimension>();
-//             valuest.Add(d2);
-//             IEnumerable<Dimension> heightDimensions = valuest;
-//             IEnumerable<Dimension> widthDimensions = valuest;
-//             IEnumerable<Dimension> depthDimensions = valuest;
-//             List<Color> colors = new List<Color>();
-//             colors.Add(color);
-
-//             List<Finish> finishes = new List<Finish>();
-//             finishes.Add(finish);
-
-//             Material material = new Material("1234", "Materail", colors, finishes);
-//             List<Material> listMaterial = new List<Material>();
-//             listMaterial.Add(material);
-//             IEnumerable<Material> materials = listMaterial;
-//             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-//             Component component = new Component(product);
-
-//             Assert.Equal(component.id(), product);
-//         }
-
-//         //sameAs tests
-
-//         /**
-//         <summary>
-//             Test to ensure that the method sameAs works, for two equal identities.
-//          </summary>
-//          */
-//         [Fact]
-//         public void ensureComponentsWithEqualIdentitiesAreTheSame()
-//         {
-//             Console.WriteLine("ensureComponentsWithEqualIdentitiesAreTheSame");
-
-//             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-//             Finish finish = Finish.valueOf("Acabamento polido");
-//             ProductCategory prodCat = new ProductCategory("Category 1");
-//             List<Double> values2 = new List<Double>();
-//             values2.Add(500.0); //Width
-//             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-//             List<Dimension> valuest = new List<Dimension>();
-//             valuest.Add(d2);
-//             IEnumerable<Dimension> heightDimensions = valuest;
-//             IEnumerable<Dimension> widthDimensions = valuest;
-//             IEnumerable<Dimension> depthDimensions = valuest;
-//             List<Color> colors = new List<Color>();
-//             colors.Add(color);
-
-//             List<Finish> finishes = new List<Finish>();
-//             finishes.Add(finish);
-
-//             Material material = new Material("1234", "Materail", colors, finishes);
-//             List<Material> listMaterial = new List<Material>();
-//             listMaterial.Add(material);
-//             IEnumerable<Material> materials = listMaterial;
-//             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-//             Component component = new Component(product);
-
-//             Assert.True(component.sameAs(product));
-//         }
-
-//         /**
-//         <summary>
-//             Test to ensure that the method sameAs works, for two different product.
-//          </summary>
-//          */
-//         /**[Fact]
-//         public void ensureComponentsWithDifferentIdentitiesAreNotTheSame()
-//         {
-//             Console.WriteLine("ensureComponentsWithDifferentIdentitiesAreNotTheSame");
-
-//             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-//             Finish finish = Finish.valueOf("Acabamento polido");
-//             ProductCategory prodCat = new ProductCategory("Category 1");
-//             List<Double> values2 = new List<Double>();
-//             values2.Add(500.0); //Width
-//             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-//             List<Dimension> valuest = new List<Dimension>();
-//             valuest.Add(d2);
-//             IEnumerable<Dimension> heightDimensions = valuest;
-//             IEnumerable<Dimension> widthDimensions = valuest;
-//             IEnumerable<Dimension> depthDimensions = valuest;
-//             List<Color> colors = new List<Color>();
-//             colors.Add(color);
-
-//             List<Finish> finishes = new List<Finish>();
-//             finishes.Add(finish);
-
-//             Material material = new Material("1234", "Materail", colors, finishes);
-//             List<Material> listMaterial = new List<Material>();
-//             listMaterial.Add(material);
-//             IEnumerable<Material> materials = listMaterial;
-//             Product product1 = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-//             Component component1 = new Component(product1);
-
-//             Assert.False(component1.sameAs(product1));
-//         }*/
-
-//         //checkComponentProperties tests
-
-//         /**
-//         <summary>
-//             Test to ensure that the instance of Component isn't built if the product is null.
-//         </summary>
-//          */
-//         [Fact]
-//         public void ensureNullProductIsNotValid()
-//         {
-//             Console.WriteLine("ensureNullProductIsNotValid");
-
-//             Assert.Throws<ArgumentException>(() => new Component(null));
-//         }
-
-//         /**
-//         <summary>
-//             Test to ensure that the instance of Component isn't built if the list of restriction is empty.
-//         </summary>
-//        */
-//         [Fact]
-//         public void ensureEmptyRestrictionsIsNotValid()
-//         {
-//             Console.WriteLine("ensureEmptyRestrictionsIsNotValid");
-//             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-//             Finish finish = Finish.valueOf("Acabamento polido");
-//             ProductCategory prodCat = new ProductCategory("Category 1");
-//             List<Double> values2 = new List<Double>();
-//             values2.Add(500.0); //Width
-//             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-//             List<Dimension> valuest = new List<Dimension>();
-//             valuest.Add(d2);
-//             IEnumerable<Dimension> heightDimensions = valuest;
-//             IEnumerable<Dimension> widthDimensions = valuest;
-//             IEnumerable<Dimension> depthDimensions = valuest;
-//             List<Color> colors = new List<Color>();
-//             colors.Add(color);
-
-//             List<Finish> finishes = new List<Finish>();
-//             finishes.Add(finish);
-
-//             Material material = new Material("1234", "Materail", colors, finishes);
-//             List<Material> listMaterial = new List<Material>();
-//             listMaterial.Add(material);
-//             IEnumerable<Material> materials = listMaterial;
-//             Product product1 = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-//             List<Restriction> restricions = new List<Restriction>();
-
-//             Assert.Throws<ArgumentException>(() => new Component(product1, restricions));
-//         }
-//         /**
-//         <summary>
-//             Test to ensure that the instance of Component isn't built if the list of restriction is null.
-//         </summary>
-//        */
-//         [Fact]
-//         public void ensureNullRestrictionsIsNotValid()
-//         {
-//             Console.WriteLine("ensureNullRestrictionsIsNotValid");
-//             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-//             Finish finish = Finish.valueOf("Acabamento polido");
-//             ProductCategory prodCat = new ProductCategory("Category 1");
-//             List<Double> values2 = new List<Double>();
-//             values2.Add(500.0); //Width
-//             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-//             List<Dimension> valuest = new List<Dimension>();
-//             valuest.Add(d2);
-//             IEnumerable<Dimension> heightDimensions = valuest;
-//             IEnumerable<Dimension> widthDimensions = valuest;
-//             IEnumerable<Dimension> depthDimensions = valuest;
-//             List<Color> colors = new List<Color>();
-//             colors.Add(color);
-
-//             List<Finish> finishes = new List<Finish>();
-//             finishes.Add(finish);
-
-//             Material material = new Material("1234", "Materail", colors, finishes);
-//             List<Material> listMaterial = new List<Material>();
-//             listMaterial.Add(material);
-//             IEnumerable<Material> materials = listMaterial;
-//             Product product1 = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-
-//             Assert.Throws<ArgumentException>(() => new Component(product1, null));
-//         }
-
-//         //GetHashCode tests
-
-//         /**
-//         <summary>
-//            Test to ensure that the method GetHashCode works.
-//         </summary>
-//         */
-//         [Fact]
-//         public void ensureGetHashCodeWorks()
-//         {
-//             Console.WriteLine("ensureNullRestrictionsIsNotValid");
-//             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-//             Finish finish = Finish.valueOf("Acabamento polido");
-//             ProductCategory prodCat = new ProductCategory("Category 1");
-//             List<Double> values2 = new List<Double>();
-//             values2.Add(500.0); //Width
-//             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-//             List<Dimension> valuest = new List<Dimension>();
-//             valuest.Add(d2);
-//             IEnumerable<Dimension> heightDimensions = valuest;
-//             IEnumerable<Dimension> widthDimensions = valuest;
-//             IEnumerable<Dimension> depthDimensions = valuest;
-//             List<Color> colors = new List<Color>();
-//             colors.Add(color);
-
-//             List<Finish> finishes = new List<Finish>();
-//             finishes.Add(finish);
-
-//             Material material = new Material("1234", "Materail", colors, finishes);
-//             List<Material> listMaterial = new List<Material>();
-//             listMaterial.Add(material);
-//             IEnumerable<Material> materials = listMaterial;
-//             Product product1 = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-//             Product product2 = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-//             Component component1 = new Component(product1);
-//             Component component2 = new Component(product2);
-
-//             Assert.Equal(component1.GetHashCode(), component2.GetHashCode());
-//         }
-
-//         //Equals tests
-
-//         /**
-//         <summary>
-//             Test to ensure that the method Equals works, for two Components with different product.
-//          </summary>
-//          */
-//         [Fact]
-//         public void ensureComponentsWithDifferentReferencesAreNotEqual()
-//         {
-//             Console.WriteLine("ensureComponentsWithDifferentReferencesAreNotEqual");
-
-//             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-//             Finish finish = Finish.valueOf("Acabamento polido");
-//             ProductCategory prodCat = new ProductCategory("Category 1");
-//             List<Double> values2 = new List<Double>();
-//             values2.Add(500.0); //Width
-//             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-//             List<Dimension> valuest = new List<Dimension>();
-//             valuest.Add(d2);
-//             IEnumerable<Dimension> heightDimensions = valuest;
-//             IEnumerable<Dimension> widthDimensions = valuest;
-//             IEnumerable<Dimension> depthDimensions = valuest;
-//             List<Color> colors = new List<Color>();
-//             colors.Add(color);
-
-//             List<Finish> finishes = new List<Finish>();
-//             finishes.Add(finish);
-
-//             Material material = new Material("1234", "Materail", colors, finishes);
-//             List<Material> listMaterial = new List<Material>();
-//             listMaterial.Add(material);
-//             IEnumerable<Material> materials = listMaterial;
-//             Product product1 = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-//             Product product2 = new Product("456", "product2", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-//             Component component1 = new Component(product1);
-//             Component component2 = new Component(product2);
-
-//             Assert.False(component1.Equals(component2));
-//         }
-
-//         /**
-//         <summary>
-//             Test to ensure that the method Equals works, for two Components with the same product.
-//          </summary>
-//          */
-//         [Fact]
-//         public void ensureComponentsWithSameReferencesAreEqual()
-//         {
-//             Console.WriteLine("ensureComponentsWithSameReferencesAreEqual");
-
-//             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-//             Finish finish = Finish.valueOf("Acabamento polido");
-//             ProductCategory prodCat = new ProductCategory("Category 1");
-//             List<Double> values2 = new List<Double>();
-//             values2.Add(500.0); //Width
-//             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-//             List<Dimension> valuest = new List<Dimension>();
-//             valuest.Add(d2);
-//             IEnumerable<Dimension> heightDimensions = valuest;
-//             IEnumerable<Dimension> widthDimensions = valuest;
-//             IEnumerable<Dimension> depthDimensions = valuest;
-//             List<Color> colors = new List<Color>();
-//             colors.Add(color);
-
-//             List<Finish> finishes = new List<Finish>();
-//             finishes.Add(finish);
-
-//             Material material = new Material("1234", "Materail", colors, finishes);
-//             List<Material> listMaterial = new List<Material>();
-//             listMaterial.Add(material);
-//             IEnumerable<Material> materials = listMaterial;
-//             Product product1 = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-//             Component component1 = new Component(product1);
-//             Component component2 = new Component(product1);
-//             Assert.True(component1.Equals(component2));
-//         }
-//         /**
-//         <summary>
-//             Test to ensure that the method Equals works, for two Components with the diferent product.
-//          </summary>
-//          */
-//         [Fact]
-//         public void ensureComponentsWithDiferentReferencesAreEqual()
-//         {
-//             Console.WriteLine("ensureComponentsWithDiferentReferencesAreEqual");
-
-//             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-//             Finish finish = Finish.valueOf("Acabamento polido");
-//             ProductCategory prodCat = new ProductCategory("Category 1");
-//             List<Double> values2 = new List<Double>();
-//             values2.Add(500.0); //Width
-//             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-//             List<Dimension> valuest = new List<Dimension>();
-//             valuest.Add(d2);
-//             IEnumerable<Dimension> heightDimensions = valuest;
-//             IEnumerable<Dimension> widthDimensions = valuest;
-//             IEnumerable<Dimension> depthDimensions = valuest;
-//             List<Color> colors = new List<Color>();
-//             colors.Add(color);
-
-//             List<Finish> finishes = new List<Finish>();
-//             finishes.Add(finish);
-
-//             Material material = new Material("1234", "Materail", colors, finishes);
-//             List<Material> listMaterial = new List<Material>();
-//             listMaterial.Add(material);
-//             IEnumerable<Material> materials = listMaterial;
-//             Product product1 = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-//             Product product2 = new Product("456", "product2", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-//             Component component1 = new Component(product1);
-//             Component component2 = new Component(product2);
-//             Assert.False(component1.Equals(component2));
-//         }
-
-//         /**
-//         <summary>
-//             Test to ensure that the method Equals works, for a null Component.
-//          </summary>
-//          */
-//         [Fact]
-//         public void ensureNullObjectIsNotEqual()
-//         {
-//             Console.WriteLine("ensureNullObjectIsNotEqual");
-
-//             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-//             Finish finish = Finish.valueOf("Acabamento polido");
-//             ProductCategory prodCat = new ProductCategory("Category 1");
-//             List<Double> values2 = new List<Double>();
-//             values2.Add(500.0); //Width
-//             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-//             List<Dimension> valuest = new List<Dimension>();
-//             valuest.Add(d2);
-//             IEnumerable<Dimension> heightDimensions = valuest;
-//             IEnumerable<Dimension> widthDimensions = valuest;
-//             IEnumerable<Dimension> depthDimensions = valuest;
-//             List<Color> colors = new List<Color>();
-//             colors.Add(color);
-
-//             List<Finish> finishes = new List<Finish>();
-//             finishes.Add(finish);
-
-//             Material material = new Material("1234", "Materail", colors, finishes);
-//             List<Material> listMaterial = new List<Material>();
-//             listMaterial.Add(material);
-//             IEnumerable<Material> materials = listMaterial;
-//             Product product1 = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-//             Component component1 = new Component(product1);
-
-//             Assert.False(component1.Equals(null));
-//         }
-
-//         /**
-//         <summary>
-//             Test to ensure that the method Equals works, for a Component and an object of another type.
-//          </summary>
-//          */
-//         [Fact]
-//         public void ensureDifferentTypesAreNotEqual()
-//         {
-//             Console.WriteLine("ensureDifferentTypesAreNotEqual");
-
-//             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-//             Finish finish = Finish.valueOf("Acabamento polido");
-//             ProductCategory prodCat = new ProductCategory("Category 1");
-//             List<Double> values2 = new List<Double>();
-//             values2.Add(500.0); //Width
-//             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-//             List<Dimension> valuest = new List<Dimension>();
-//             valuest.Add(d2);
-//             IEnumerable<Dimension> heightDimensions = valuest;
-//             IEnumerable<Dimension> widthDimensions = valuest;
-//             IEnumerable<Dimension> depthDimensions = valuest;
-//             List<Color> colors = new List<Color>();
-//             colors.Add(color);
-
-//             List<Finish> finishes = new List<Finish>();
-//             finishes.Add(finish);
-
-//             Material material = new Material("1234", "Materail", colors, finishes);
-//             List<Material> listMaterial = new List<Material>();
-//             listMaterial.Add(material);
-//             IEnumerable<Material> materials = listMaterial;
-//             Product product1 = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-//             Component component1 = new Component(product1);
-//             Assert.False(product1.Equals("stars"));
-//         }
-
-//         //ToString tests
-
-//         /**
-//         <summary>
-//             Test to ensure that the method ToString works.
-//          </summary>
-//          */
-//         [Fact]
-//         public void ensureToStringWorks()
-//         {
-//             Console.WriteLine("ensureToStringWorks");
-
-//             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-//             Finish finish = Finish.valueOf("Acabamento polido");
-//             ProductCategory prodCat = new ProductCategory("Category 1");
-//             List<Double> values2 = new List<Double>();
-//             values2.Add(500.0); //Width
-//             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-//             List<Dimension> valuest = new List<Dimension>();
-//             valuest.Add(d2);
-//             IEnumerable<Dimension> heightDimensions = valuest;
-//             IEnumerable<Dimension> widthDimensions = valuest;
-//             IEnumerable<Dimension> depthDimensions = valuest;
-//             List<Color> colors = new List<Color>();
-//             colors.Add(color);
-
-//             List<Finish> finishes = new List<Finish>();
-//             finishes.Add(finish);
-
-//             Material material = new Material("1234", "Materail", colors, finishes);
-//             List<Material> listMaterial = new List<Material>();
-//             listMaterial.Add(material);
-//             IEnumerable<Material> materials = listMaterial;
-//             Product product1 = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-//             Component component1 = new Component(product1);
-//             Component component2 = new Component(product1);
-
-//             Assert.Equal(component1.ToString(), component2.ToString());
-//         }
-//         [Fact]
-//         public void testToDTO()
-//         {
-//             Console.WriteLine("toDTO");
-//             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-//             Finish finish = Finish.valueOf("Acabamento polido");
-//             ProductCategory prodCat = new ProductCategory("Category 1");
-//             List<Double> values2 = new List<Double>();
-//             values2.Add(500.0); //Width
-//             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-//             List<Dimension> valuest = new List<Dimension>();
-//             valuest.Add(d2);
-//             IEnumerable<Dimension> heightDimensions = valuest;
-//             IEnumerable<Dimension> widthDimensions = valuest;
-//             IEnumerable<Dimension> depthDimensions = valuest;
-//             List<Color> colors = new List<Color>();
-//             colors.Add(color);
-
-//             List<Finish> finishes = new List<Finish>();
-//             finishes.Add(finish);
-
-//             Material material = new Material("1234", "Materail", colors, finishes);
-//             List<Material> listMaterial = new List<Material>();
-//             listMaterial.Add(material);
-//             IEnumerable<Material> materials = listMaterial;
-//             Product product = new Product("123", "product1", prodCat, materials, heightDimensions, widthDimensions, depthDimensions);
-
-//             Component component = new Component(product);
-
-//             ComponentDTO expected = new ComponentDTO();
-//             expected.product = product.toDTO();
-
-//             ComponentDTO actual = component.toDTO();
-//             Assert.Equal(expected.product.complements, actual.product.complements);
-//             Assert.Equal(expected.product.designation, actual.product.designation);
-//             Assert.Equal(expected.product.dimensions.depthDimensionDTOs.Capacity, actual.product.dimensions.depthDimensionDTOs.Capacity);
-//             Assert.Equal(expected.product.dimensions.depthDimensionDTOs.Count, actual.product.dimensions.depthDimensionDTOs.Count);
-//             Assert.Equal(expected.product.dimensions.heightDimensionDTOs.Count, actual.product.dimensions.heightDimensionDTOs.Count);
-//             Assert.Equal(expected.product.dimensions.heightDimensionDTOs.Capacity, actual.product.dimensions.heightDimensionDTOs.Capacity);
-//             Assert.Equal(expected.product.dimensions.widthDimensionDTOs.Capacity, actual.product.dimensions.widthDimensionDTOs.Capacity);
-//             Assert.Equal(expected.product.dimensions.widthDimensionDTOs.Count, actual.product.dimensions.widthDimensionDTOs.Count);
-//             Assert.Equal(expected.product.productCategory.name, actual.product.productCategory.name);
-//             Assert.Equal(expected.product.productCategory.parentId, actual.product.productCategory.parentId);
-//             Assert.Equal(expected.product.productMaterials.Count, actual.product.productMaterials.Count);
-//             Assert.Equal(expected.product.productMaterials.Capacity, actual.product.productMaterials.Capacity);
-//             Assert.Equal(expected.product.reference, actual.product.reference);
-//             Assert.Equal(expected.product.id, actual.product.id);
-//         }
-//     }
-// }
+using System;
+using Xunit;
+using System.Collections.Generic;
+using core.domain;
+using core.dto;
+using support.dto;
+
+namespace core_tests.domain
+{
+    /// <summary>
+    /// Tests of the class Component
+    /// </summary>
+    public class ComponentTest
+    {
+        //checkComponentProperties tests
+        [Fact]
+        public void ensureNullParentProductIsNotValid()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a product 
+            Product product = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+            Assert.Throws<ArgumentException>(() => new Component(null, product));
+        }
+
+        [Fact]
+        public void ensureNullChildProductIsNotValid()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a product 
+            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+            Product child = null;
+
+            Assert.Throws<ArgumentException>(() => new Component(parent, child));
+        }
+
+        [Fact]
+        public void ensureCreationIsSuccessfulIsBothChildAndParentAreValid()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a parent product 
+            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            //Creates a child product
+            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Assert.NotNull(new Component(parent, child));
+        }
+
+        [Fact]
+        public void ensureEmptyRestrictionsListIsNotValid()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a product 
+            Product product = new Product("0L4", "H4H4", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Assert.Throws<ArgumentException>(() => new Component(product, new List<Restriction>()));
+            Assert.Throws<ArgumentException>(() => new Component(product, new List<Restriction>(), true));
+        }
+
+        [Fact]
+        public void ensureNullRestrictionsListIsNotValid()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a product 
+            Product product = new Product("0L4", "H4H4", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            List<Restriction> restrictions = null;
+
+            Assert.Throws<ArgumentException>(() => new Component(product, restrictions));
+            Assert.Throws<ArgumentException>(() => new Component(product, restrictions, true));
+        }
+
+        [Fact]
+        public void ensureNullProductIsNotValid()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a product 
+            Product product = new Product("0L4", "H4H4", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Assert.Throws<ArgumentException>(() => new Component(null, new List<Restriction>() { new Restriction("ISTO É") }));
+            Assert.Throws<ArgumentException>(() => new Component(null, new List<Restriction>() { new Restriction("ISTO É") }, true));
+        }
+
+        [Fact]
+        public void ensureCreationIsSuccessfulWithRestrictionListAndAValidProduct()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a product 
+            Product product = new Product("0L4", "H4H4", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Assert.NotNull(new Component(product, new List<Restriction>() { new Restriction("LÁ ESTÁ") }));
+        }
+
+        [Fact]
+        public void ensureCreationIsSuccessfulWithValidRestrictionListAValidProductAndAMandatoryOption()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a product 
+            Product product = new Product("0L4", "H4H4", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Assert.NotNull(new Component(product, new List<Restriction>() { new Restriction("POIS") }, true));
+        }
+
+        //id tests
+        [Fact]
+        public void ensureIdMethodWorks()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a parent product 
+            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            //Creates a child product
+            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Component component = new Component(parent, child);
+
+            Assert.Equal(component.id(), child);
+        }
+
+        //sameAs tests
+        [Fact]
+        public void ensureComponentsWithEqualIdentitiesAreTheSame()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a parent product 
+            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            //Creates a child product
+            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Component component = new Component(parent, child);
+
+            Assert.True(component.sameAs(child));
+        }
+
+        [Fact]
+        public void ensureComponentsWithDifferentIdentitiesAreNotTheSame()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a parent product 
+            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            //Creates a child product
+            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Component component = new Component(parent, child);
+
+            Assert.False(component.sameAs(parent));
+        }
+
+        //GetHashCode tests
+        [Fact]
+        public void ensureGetHashCodeWorks()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a parent product 
+            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            //Creates a child product
+            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Component component1 = new Component(parent, child);
+            Component component2 = new Component(parent, child);
+
+            Assert.Equal(component1.GetHashCode(), component2.GetHashCode());
+        }
+
+        //Equals tests
+        [Fact]
+        public void ensureComponentsWithDifferentReferencesAreNotEqual()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a parent product 
+            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            //Creates a child product
+            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Component component1 = new Component(parent, child);
+            Component component2 = new Component(child, parent);
+
+            Assert.False(component1.Equals(component2));
+        }
+
+        [Fact]
+        public void ensureComponentsWithSameReferencesAreEqual()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a parent product 
+            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            //Creates a child product
+            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Component component1 = new Component(parent, child);
+            Component component2 = new Component(parent, child);
+            Assert.True(component1.Equals(component2));
+        }
+
+        [Fact]
+        public void ensureComponentsWithDiferentReferencesAreEqual()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a parent product 
+            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            //Creates a child product
+            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Component component1 = new Component(parent, child);
+            Component component2 = new Component(child, parent);
+            Assert.False(component1.Equals(component2));
+        }
+
+        [Fact]
+        public void ensureNullObjectIsNotEqual()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a parent product 
+            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            //Creates a child product
+            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Component component = new Component(parent, child);
+            Assert.False(component.Equals(null));
+        }
+
+        [Fact]
+        public void ensureDifferentTypesAreNotEqual()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a parent product 
+            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            //Creates a child product
+            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Component component = new Component(parent, child);
+            Assert.False(component.Equals("Def not a component"));
+        }
+
+        //ToString tests
+        [Fact]
+        public void ensureToStringWorks()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list and customized product's customized material
+            Color color = Color.valueOf("Blue", 1, 2, 3, 0);
+            List<Color> colors = new List<Color>() { color };
+
+            Finish finish = Finish.valueOf("Super shiny");
+            List<Finish> finishes = new List<Finish>() { finish };
+
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a parent product 
+            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            //Creates a child product
+            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Component component1 = new Component(parent, child);
+            Component component2 = new Component(parent, child);
+
+            Assert.Equal(component1.ToString(), component2.ToString());
+        }
+
+        //addRestriction tests
+        [Fact]
+        public void ensureNullRestrictionCantBeAddedToTheComponentsRestrictionsList()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a product 
+            Product product = new Product("0L4", "H4H4", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Assert.Throws<ArgumentException>(() => new Component(product,
+            new List<Restriction>() { new Restriction("FUNCIONE") }).addRestriction(null));
+        }
+
+        [Fact]
+        public void ensureAlreadyExistentRestrictionCantBeAddedToTheComponentsRestrictionsList()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a product 
+            Product product = new Product("0L4", "H4H4", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Restriction restriction = new Restriction("FUNCIONE");
+            Assert.Throws<ArgumentException>(() => new Component(product,
+            new List<Restriction>() { restriction }).addRestriction(restriction));
+        }
+
+        [Fact]
+        public void ensureValidRestrictionCanBeAddedToTheComponentsRestrictionsList()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+            //Creates a product 
+            Product product = new Product("0L4", "H4H4", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Assert.True(new Component(product, new List<Restriction>() { new Restriction("FUNCIONE") }).
+            addRestriction(new Restriction("FUNCIONOU")));
+        }
+
+        [Fact]
+        public void testToDTO()
+        {
+            //Creates measurements and a material for the product
+            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
+            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
+
+            //Creates colors and finishes for the product's material list 
+            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            //Creates a material list
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+
+
+            //Creates a parent product 
+            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            //Creates a child product
+            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
+            materials, measurements);
+
+            Component component = new Component(parent,child);
+
+            ComponentDTO expected = new ComponentDTO();
+            expected.product = child.toDTO();
+
+            ComponentDTO actual = component.toDTO();
+            Assert.Equal(expected.product.complements, actual.product.complements);
+            Assert.Equal(expected.product.designation, actual.product.designation);
+            Assert.Equal(expected.product.dimensions.Capacity, actual.product.dimensions.Capacity);
+            Assert.Equal(expected.product.productCategory.name, actual.product.productCategory.name);
+            Assert.Equal(expected.product.productMaterials.Count, actual.product.productMaterials.Count);
+            Assert.Equal(expected.product.productMaterials.Capacity, actual.product.productMaterials.Capacity);
+            Assert.Equal(expected.product.reference, actual.product.reference);
+            Assert.Equal(expected.product.id, actual.product.id);
+        }
+    }
+}

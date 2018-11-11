@@ -39,7 +39,17 @@ namespace backend.Controllers
         private const string NO_COM_CATALOGUES_FOUND_REFERENCE = "No Commercial Catalogues found";
 
         /// <summary>
-        /// Constant that represents the message that ocurres if the update of a material is successful
+        /// Constant that represents the message that occurs if a commercial catalogue isn't created successfully
+        /// </summary>
+        private const string COM_CATALOGUE_NOT_CREATED = "Commercial Catalogue wasn't created. Try again";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if a commercial catalogue isn't updated successfully.
+        /// </summary>
+        private const string COM_CATALOGUE_NOT_UPDATED = "Commercial Catalogue wasn't updated. Try again";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the update of a material is successful
         /// </summary>
         private const string VALID_COMMERCIAL_CATALOGUE_UPDATE_MESSAGE = "Commercial Catalogue was updated with success";
 
@@ -145,7 +155,7 @@ namespace backend.Controllers
             if (comCatalogues == null)
             {
                 logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
-                return BadRequest(NO_COM_CATALOGUES_FOUND_REFERENCE);
+                return BadRequest(new {error = NO_COM_CATALOGUES_FOUND_REFERENCE});
             }
             logger.LogInformation(LOG_GET_ALL_SUCCESS, comCatalogues);
             return Ok(comCatalogues);
@@ -167,7 +177,7 @@ namespace backend.Controllers
             if (comCatalogueDTOY == null)
             {
                 logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST, id);
-                return BadRequest(COM_CATALOGUE_NOT_FOUND_REFERENCE);
+                return BadRequest(new {error = COM_CATALOGUE_NOT_FOUND_REFERENCE});
             }
             logger.LogInformation(LOG_GET_BY_ID_SUCCESS, comCatalogueDTOY);
             return Ok(comCatalogueDTOY);
@@ -195,23 +205,23 @@ namespace backend.Controllers
                 else
                 {
                     logger.LogWarning(LOG_POST_BAD_REQUEST, comCatalogueDTO);
-                    return BadRequest();
+                    return BadRequest(new {error = COM_CATALOGUE_NOT_CREATED});
                 }
             }
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_POST_BAD_REQUEST, comCatalogueDTO);
-                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+                return BadRequest(new {error = INVALID_REQUEST_BODY_MESSAGE});
             }
             catch (InvalidOperationException invalidOperationException)
             {
                 logger.LogWarning(invalidOperationException, LOG_POST_BAD_REQUEST, comCatalogueDTO);
-                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+                return BadRequest(new {error = invalidOperationException.Message});
             }
             catch (ArgumentException argumentException)
             {
                 logger.LogWarning(argumentException, LOG_POST_BAD_REQUEST, comCatalogueDTO);
-                return BadRequest(new SimpleJSONMessageService(argumentException.Message));
+                return BadRequest(new {error = argumentException.Message});
             }
         }
 
@@ -232,27 +242,27 @@ namespace backend.Controllers
                 if (new core.application.CommercialCatalogueController().addCollection(id,catalogueCollectionDTOToAdd))
                 {
                     logger.LogInformation(LOG_PUT_SUCCESS,id,catalogueCollectionDTOToAdd);
-                    return Ok(new SimpleJSONMessageService(VALID_COMMERCIAL_CATALOGUE_UPDATE_MESSAGE));
+                    return Ok(new {message = VALID_COMMERCIAL_CATALOGUE_UPDATE_MESSAGE});
                 }
                 else
                 {
-                    return BadRequest();
+                    return BadRequest(new {error = COM_CATALOGUE_NOT_UPDATED});
                 }
             }
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException,LOG_PUT_BAD_REQUEST,id,catalogueCollectionDTOToAdd);
-                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+                return BadRequest(new {error = INVALID_REQUEST_BODY_MESSAGE});
             }
             catch (InvalidOperationException invalidOperationException)
             {
                 logger.LogWarning(invalidOperationException,LOG_PUT_BAD_REQUEST,id,catalogueCollectionDTOToAdd);
-                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+                return BadRequest(new {error = invalidOperationException.Message});
             }
             catch (ArgumentException argumentException)
             {
                 logger.LogWarning(argumentException,LOG_PUT_BAD_REQUEST,id,catalogueCollectionDTOToAdd);
-                return BadRequest(new SimpleJSONMessageService(argumentException.Message));
+                return BadRequest(new {error = argumentException.Message});
             }
         }
     }
