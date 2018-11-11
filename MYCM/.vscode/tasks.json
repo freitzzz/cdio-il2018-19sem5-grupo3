@@ -10,6 +10,22 @@
                 "${workspaceFolder}"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "dotnet: Test Coverage",
+            "type": "shell",
+            "command": "./testcoverage.sh",
+            "windows": {
+                "command": ".\\testcoverage.cmd"
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
         }
     ]
 }
