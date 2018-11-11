@@ -57,8 +57,8 @@ namespace core.dto
                 return custDimensions;
             }else{
                 return CustomizedDimensions.valueOf(MeasurementUnitService.convertFromUnit(this.height, unit)
-                                                    ,MeasurementUnitService.convertFromUnit(this.depth, unit)
-                                                    ,MeasurementUnitService.convertFromUnit(this.width, unit));
+                                                    ,MeasurementUnitService.convertFromUnit(this.width, unit)
+                                                    ,MeasurementUnitService.convertFromUnit(this.depth, unit));
             }
         }
     }

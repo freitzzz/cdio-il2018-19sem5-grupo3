@@ -179,13 +179,13 @@ namespace backend.Controllers{
         public ActionResult findByID(long id){
             logger.LogInformation(LOG_GET_BY_ID_START);
             try{
-                CustomizedProductDTO customizedProductDTO=new CustomizedProductDTO();
-                customizedProductDTO.id=id;
-                CustomizedProductDTO customizedProduct=new core.application.CustomizedProductController().findCustomizedProductByID(customizedProductDTO);
-                if(customizedProduct!=null)
+                GetCustomizedProductByIdModelView customizedProductModelView=new GetCustomizedProductByIdModelView();
+                customizedProductModelView.id=id;
+                GetCustomizedProductByIdModelView fetchedCustomizedProduct=new core.application.CustomizedProductController().findCustomizedProductByID(customizedProductModelView);
+                if(fetchedCustomizedProduct!=null)
                 {
                     logger.LogInformation(LOG_GET_BY_ID_SUCCESS);
-                    return Ok(customizedProduct);
+                    return Ok(fetchedCustomizedProduct);
                 }
                 logger.LogWarning(LOG_GET_BY_ID_NOT_FOUND,id);
                 return NotFound(new {error = RESOURCE_NOT_FOUND_MESSAGE});
@@ -204,7 +204,7 @@ namespace backend.Controllers{
         public ActionResult addCustomizedProduct([FromBody]PostCustomizedProductModelView customizedProductModelView){
             logger.LogInformation(LOG_POST_START);
             try{
-                PostCustomizedProductModelView createdCustomizedProductModelView=new core.application.CustomizedProductController().addCustomizedProduct(customizedProductModelView);
+                GetCustomizedProductByIdModelView createdCustomizedProductModelView=new core.application.CustomizedProductController().addCustomizedProduct(customizedProductModelView);
                 logger.LogInformation(LOG_POST_SUCCESS,createdCustomizedProductModelView);
                 return Created(Request.Path,createdCustomizedProductModelView);
             }catch(NullReferenceException nullReferenceException){

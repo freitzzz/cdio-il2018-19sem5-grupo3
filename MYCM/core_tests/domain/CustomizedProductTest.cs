@@ -29,7 +29,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -76,7 +76,7 @@ namespace core_tests.domain
             valuest.Add(d2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -120,7 +120,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -164,7 +164,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -211,7 +211,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -268,7 +268,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -363,7 +363,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -416,7 +416,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -449,7 +449,9 @@ namespace core_tests.domain
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
 
-            Assert.False(cp.addSlot(new Slot(CustomizedDimensions.valueOf(5, 5, 5))));
+            Action act = () => cp.addSlot(new Slot(CustomizedDimensions.valueOf(5, 5, 5)));
+
+            Assert.Throws<ArgumentException>(act);
         }
 
         /// <summary>
@@ -468,7 +470,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -500,7 +502,9 @@ namespace core_tests.domain
 
             CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
 
-            Assert.False(cp.addSlot(null));
+            Action action = () => cp.addSlot(null);
+
+            Assert.Throws<ArgumentException>(action);
         }
 
         /// <summary>
@@ -519,7 +523,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -570,7 +574,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -622,7 +626,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -676,7 +680,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -730,7 +734,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -783,7 +787,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -835,7 +839,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -883,7 +887,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -936,7 +940,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -988,7 +992,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1036,7 +1040,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1089,7 +1093,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1140,7 +1144,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1189,7 +1193,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1242,7 +1246,7 @@ namespace core_tests.domain
             valuest.Add(d2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1320,7 +1324,7 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, new List<Measurement>(){measurement1});
+            Product product = new Product("#666", "Shelf", category, matsList, new List<Measurement>() { measurement1 });
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
@@ -1328,7 +1332,7 @@ namespace core_tests.domain
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
 
             //Product2 
-            Product product2 = new Product("#666", "Shelf", category, matsList, new List<Measurement>(){measurement2});
+            Product product2 = new Product("#666", "Shelf", category, matsList, new List<Measurement>() { measurement2 });
 
             CustomizedProduct cp = new CustomizedProduct("#666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product);
 
@@ -1357,7 +1361,7 @@ namespace core_tests.domain
             valuest.Add(d2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1406,7 +1410,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1452,7 +1456,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1476,7 +1480,9 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(30, 30, 30),
+                                            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(10, 10, 10),
+                                             category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
 
             //Customized Material
@@ -1497,7 +1503,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1541,7 +1547,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1594,7 +1600,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1652,7 +1658,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1714,7 +1720,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1769,7 +1775,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1829,7 +1835,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1882,7 +1888,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1935,7 +1941,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1988,7 +1994,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -2046,7 +2052,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -2099,7 +2105,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -2152,7 +2158,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -2204,7 +2210,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -2255,7 +2261,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -2308,7 +2314,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -2360,7 +2366,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
