@@ -11,9 +11,8 @@ tsp2(Orig,L,DistanciaTotal):- todasAsCidades(NCidades), NCPorVisitar is NCidades
 													append([Orig],L1,L2), %Adicionamos a origem à lista do circuito hamiltoniano
 													append(L2,[Orig],L),%Finalmente,adicionamos a origem à cauda do caminho hamiltoniano
 													!.%Cut no final serve para evitar encontrar mais soluções
-													
+
 todasAsCidades(NCidades):- findall(X, city(X, _, _), L), length(L, NCidades). %Percorre a BC e retorna o número de cidades existente
-													
 
 percorrerCircuito(_,[],0,0,_). %Condição de paragem: Quando o número de cidades por visitar for 0, foi alcançado o objetivo
 percorrerCircuito(Orig,Lista,NCPorVisitar,DistanciaTotal,ListaVisitados):-findall((Distancia,ProxNo),temLigacao(Orig,ProxNo,ListaVisitados,Distancia),L), %Encontramos todos os destinos possíveis a partir de um determinado nó (sem repetição)
@@ -24,3 +23,4 @@ percorrerCircuito(Orig,Lista,NCPorVisitar,DistanciaTotal,ListaVisitados):-findal
 								append([C],Lista1,Lista).%Adicionamos a cidade à lista
 
 temLigacao(Orig,ProxNo,L,Distancia):- dist_cities(Orig,ProxNo,Distancia),not(member(ProxNo,L)). %Predicado que calcula a distancia entre dois nós mas verifica se o nó destino já foi visitado
+

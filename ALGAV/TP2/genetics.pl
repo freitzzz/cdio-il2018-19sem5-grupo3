@@ -1,44 +1,20 @@
 :- use_module(library(random)). % Biblioteca para uso de valores aleartórios
 :- dynamic cities/1. % Factos dinâmicos de modo a permitir inserção e remoção em runtime
 
+
 % Carrega a base de conhecimento
 carregar:-['cdio-tsp.pl'],['intersept.pl'],['parameters.pl'].
 
-numberOfCities(N):-findall(X,city(X,_,_),CT),length(CT,N).
+tsp4:-tsp4(_,_,_).
 
-sort_population(P,PS):-sort(2,@=<,P,PS). %sort/4 (Elemento,Ordem,ListaNaoSorted,ListaSorted)
-
-generate_cutpoints(P1,P2):-cities(N),random(0,N,P1),random(0,N,P2),P1 < P2.
-
-generate_cutpoints(P1,P2):-generate_cutpoints(P1,P2).
-
-sublist([_|_], 0, 0, []).
-
-sublist([X|LS],0,P2,[X|LSB]):-
-    P2 > 0,
-    P21 is P2 - 1,
-    sublist(LS,0,P21,LSB).
-
-sublist([_|SL],P1,P2,LSB):-
-    P1 > 0,
-    P11 is P1-1,
-    P21 is P2-1,
-    sublist(SL,P11,P21,LSB).
-
-rotate_right(L,R,LR):-
-    length(Back,R),
-    append(Front,Back,L),
-    append(Back,Front,LR),
+% Aplica o algoritmo genético no TSP
+tsp4(C,L,D):-
+    city(C,_,_),
+    tspG(C,L,D),
     !.
 
-
-insert(Sub1,Sub2,P2,NInd1):-
-    append(Sub1,Sub2,Sub3),
-    rotate_right(Sub3,P2,NInd1).
-
-
 % Gera "gerações"
-tsp4 :-
+tspG(C,L,D) :-
     numberOfCities(N),
     retractall(cities(_)),
     assert(cities(N)),
@@ -46,7 +22,9 @@ tsp4 :-
     evaluate_pop(Pop,PopEv),
     sort_population(PopEv,PopOrd),
     generations(NG),
-    generate_gen(NG,PopOrd),
+    generate_gen(NG,PopOrd,TMC),
+    finish_circuits(C,TMC,FTMC),
+    sort_population(FTMC,[L*D|_]),
     !.
 
 % Gera populacoes
@@ -68,12 +46,12 @@ generate_ind(CityList,Ind):-
     random_permutation(CityList,Ind).
 
 % Condição de Paragem de gerar uma geração
-generate_gen(0,Pop):-!,
+generate_gen(0,Pop,[]):-!,
     write('Generation '),write(0),write(':'),nl,
     write(Pop),nl.
 
 % Gera gerações
-generate_gen(G,Pop):-
+generate_gen(G,Pop,TG):-
     write('Generation '),write(G),write(':'),nl,
     write(Pop),nl,
     crossover(Pop,NPop1),
@@ -81,7 +59,9 @@ generate_gen(G,Pop):-
     evaluate_pop(NPop,NPopEv),
     sort_population(NPopEv,NPopSort),
     G1 is G-1,
-    generate_gen(G1,NPopSort).
+    generate_gen(G1,NPopSort,TG1),
+    [MP|_]=NPopSort,
+    append([MP],TG1,TG).
 
 % Condição de Paragem Crossover
 crossover([],[]).
@@ -112,18 +92,16 @@ evaluate_pop([Ind|Other],[Ind*V|Other1]):-
     eval(Ind,V), evaluate_pop(Other,Other1).
 
 % Avalia um individuo
-eval(Seq,V):- [I|_]=Seq,eval2(Seq,I,V).
+eval(Seq,V):- eval2(Seq,V).
 
 % Condição de paragem da avaliação de um individuo
-eval2([],_,0).
+eval2([_|[]],0).
 
-eval2([C1|[]],I,V):-dist_cities(C1,I,V).
-
-eval2([C1|[C2|Other]],I,V):-
-    dist_cities(C1,C2,Dist),
-    append([C2],Other,Other1),
-    eval2(Other1,I,Dist1),
-    V is Dist+Dist1.
+eval2([C1|[C2|T]],D):-
+    dist_cities(C1,C2,D1),
+    eval2([C2|T],D2),
+    D is D1+D2.
+    
 
 % Condição de paragem da mutação
 mutation([],[]).
@@ -149,3 +127,75 @@ mutation23(G1,1,[G2|Ind],G2,[G1|Ind]):-!.
 mutation23(G1,P,[G|Ind],G2,[G|NInd]):-
     P1 is P-1,
     mutation23(G1,P1,Ind,G2,NInd).
+
+% Indica o numero de cidades atual
+numberOfCities(N):-findall(X,city(X,_,_),CT),length(CT,N).
+
+% Ordena uma população
+sort_population(P,PS):-sort(2,@=<,P,PS). %sort/4 (Elemento,Ordem,ListaNaoSorted,ListaSorted)
+
+% Gera pontes de corte aleartorios conforme o numero de genes dos cromossomas (cidades)
+generate_cutpoints(P1,P2):-cities(N),random(0,N,P1),random(0,N,P2),P1 < P2.
+
+generate_cutpoints(P1,P2):-generate_cutpoints(P1,P2).
+
+% Gera uma sublista conforme um indice de uma lista
+
+sublist([_|_], 0, 0, []).
+
+sublist([X|LS],0,P2,[X|LSB]):-
+    P2 > 0,
+    P21 is P2 - 1,
+    sublist(LS,0,P21,LSB).
+
+sublist([_|SL],P1,P2,LSB):-
+    P1 > 0,
+    P11 is P1-1,
+    P21 is P2-1,
+    sublist(SL,P11,P21,LSB).
+
+% Roda os elementos de uma lista X posicoes para a esquerda
+rotate_left(L,R,LR):-
+    length(Back,R),
+    append(Back,Front,L),
+    append(Front,Back,LR),
+    !.
+
+% Roda os elementos de uma lista X posicoes para a direita
+rotate_right(L,R,LR):-
+    length(Back,R),
+    append(Front,Back,L),
+    append(Back,Front,LR),
+    !.
+
+% Insera uma sublista noutra sublista conforme um ponte de corte
+insert(Sub1,Sub2,P2,NInd1):-
+    append(Sub1,Sub2,Sub3),
+    rotate_right(Sub3,P2,NInd1).
+
+% Descobre a posição (indice) de um elemento numa lista
+element_position(Element,[Element|_],0):-!.
+
+element_position(Element,[_|T],N):-
+    element_position(Element,T,N1),
+    N is N1+1.
+
+% Fecha um conjunto de circuitos com base na cidade inicial
+
+finish_circuits(_,[],[]).
+
+finish_circuits(City,[H*_|T],FinishCircuits):-
+    finish_circuits(City,T,FinishCircuits1),
+    generate_mc(City,H,MC),
+    finish_circuit(City,MC,FinishCircuit),
+    eval(FinishCircuit,FD),
+    append([FinishCircuit*FD],FinishCircuits1,FinishCircuits).
+
+% Fecha uma circuito com base numa cidade
+finish_circuit(City,UFinishCircuit,FinishCircuit):-
+    append(UFinishCircuit,[City],FinishCircuit).  
+
+% Diante o melhor cromossoma de uma população, roda o caminho de modo a começar a na cidade onde é desejada
+generate_mc(Cidade,MCromossoma,GMCromossoma):-
+    element_position(Cidade,MCromossoma,Position),
+    rotate_left(MCromossoma,Position,GMCromossoma).

@@ -1,7 +1,7 @@
 %Carregar base de conhecimento
-carregar:-['cdio-tsp.pl'],['intersept.pl'],['bc_tp2_it2.pl'].
+carregar:-['cdio-tsp.pl'],['intersept.pl'],['greedy.pl'].
 
-opt2(C, D, L):- tsp2(C, L1, D1),
+tsp3(C, D, L):- tsp2(C, L1, D1),
                 opt2_segment(L1, [H|T]), %segments the list into entries (C1, C2)
 		!,
                 opt2_combinations(H, T, [H|T], L2, D1, D), %calculates the path
