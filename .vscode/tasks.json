@@ -2,12 +2,12 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "dotnet: Build Solution",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/MYCM/backend/backend.csproj"
+                "${workspaceFolder}/MYCM/"
             ],
             "problemMatcher": "$msCompile",
             "group": {

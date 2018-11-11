@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (web)",
+            "name": "Launch MYCM API",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "dotnet: Build Solution",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/MYCM/backend/bin/Debug/netcoreapp2.1/backend.dll",
             "args": [],
