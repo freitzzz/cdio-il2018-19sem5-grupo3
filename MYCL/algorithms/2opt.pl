@@ -185,6 +185,10 @@ rGraph(Orig,R,R3):-
 
 reorderGraph([],[]).
 
+reorderGraph([],[]).
+
+reorderGraph([(_,Y),(Y,_)],[]).
+
 reorderGraph([(X,Y),(Y,Z)|R],[(X,Y)|R1]):-
 	reorderGraph([(Y,Z)|R],R1).
 
