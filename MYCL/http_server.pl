@@ -11,13 +11,13 @@
 :- http_handler('/mycl/api/factories',shortest_factory,[time_limit(0)]). % Endpoint to compute the shortest factory
 
 % Loads required knowledge bases
-carregar:-['intersept.pl'],['cdio-tsp.pl'],load_computations,load_algorithms,load_json_objects.
+carregar:-['intersept.pl'],['cdio-tsp.pl'],['parameters.pl'],load_computations,load_algorithms,load_json_objects.
 
 % Loads required defined json objects
 load_json_objects:-['json_algorithms.pl'].
 
 % Loads required algorithms
-load_algorithms:- ['algorithms/bb.pl'],['algorithms/greedy.pl'],['algorithms/greedy_two_opt.pl'],['algorithms/genetic.pl'].
+load_algorithms:- ['algorithms/branch_and_bound.pl'],['algorithms/greedy.pl'],['algorithms/2opt.pl'],['algorithms/genetics.pl'].
 
 % Loads computation predicates
 load_computations:- ['algorithm_computation.pl'],['location_computation.pl'].

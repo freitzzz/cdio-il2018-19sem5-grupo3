@@ -16,7 +16,7 @@ compute_algorithm(2,Cities,CitiesToTravel,Distance):-
 compute_algorithm(3,Cities,CitiesToTravel,Distance):-
     assert_cities(Cities),
     Cities=[city(N,_,_)|_],
-    tsp3(N,CitiesToTravel,Distance),
+    tsp3(N,Distance,CitiesToTravel),
     retract_cities(Cities).
 
 % Computes Genetic Algorithm for a provided list of cities

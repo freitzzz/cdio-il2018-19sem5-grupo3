@@ -1,4 +1,4 @@
-opt2(C, D, L):- tsp2(C, L1, D1),
+tsp3(C, D, L):- tsp2(C, L1, D1),
                 opt2_segment(L1, [H|T]), %segments the list into entries (C1, C2)
 		!,
                 opt2_combinations(H, T, [H|T], L2, D1, D), %calculates the path
@@ -201,3 +201,4 @@ reorderGraph2(Y,R1,[(Y,Z)|R2]):-
 	member((Z,Y),R1),
 	delete(R1,(Z,Y),R11),
 	reorderGraph2(Z,R11,R2).
+
