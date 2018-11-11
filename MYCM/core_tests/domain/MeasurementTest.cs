@@ -85,7 +85,7 @@ namespace core_tests.domain
 
             measurement.addRestriction(restriction);
 
-            Assert.Equal(0, measurement.restrictions.Count);
+            Assert.Empty(measurement.restrictions);
         }
 
         [Fact]
@@ -115,7 +115,7 @@ namespace core_tests.domain
 
             measurement.addRestriction(restriction);
 
-            Assert.Equal(1, measurement.restrictions.Count);
+            Assert.Single(measurement.restrictions);
         }
 
         [Fact]
@@ -174,7 +174,7 @@ namespace core_tests.domain
             measurement.addRestriction(restriction);
             measurement.removeRestriction(restriction);
 
-            Assert.Equal(0, measurement.restrictions.Count);
+            Assert.Empty(measurement.restrictions);
         }
 
         [Fact]
@@ -366,7 +366,7 @@ namespace core_tests.domain
 
             Measurement measurement = new Measurement(height, width, depth);
 
-            Assert.NotEqual(measurement, null);
+            Assert.False(measurement.Equals(null));
         }
 
         [Fact]
