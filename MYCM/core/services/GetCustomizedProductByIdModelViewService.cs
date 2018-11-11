@@ -59,6 +59,7 @@ namespace core.services
                             childCustomizedProductModelView.reference = customizedProduct.reference;
                             childCustomizedProductModelView.designation = customizedProduct.designation;
                             childCustomizedProductModelView.productId = customizedProduct.product.Id;
+                            slotModelView.customizedProducts.Add(childCustomizedProductModelView);
                         }
                     }
                     fetchedCustomizedProductModelView.slots.Add(slotModelView);
