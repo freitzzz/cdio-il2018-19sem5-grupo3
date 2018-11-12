@@ -52,6 +52,22 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureSingleValueDimensionDoesNotHaveDifferentValue()
+        {
+            SingleValueDimension instance = new SingleValueDimension(28);
+
+            Assert.False(instance.hasValue(29));
+        }
+
+        [Fact]
+        public void ensureSingleValueDimensionHasValue()
+        {
+            SingleValueDimension instance = new SingleValueDimension(28);
+
+            Assert.True(instance.hasValue(28));
+        }
+
+        [Fact]
         public void ensureInstanceAndNullAreNotEqual()
         {
             SingleValueDimension instance = new SingleValueDimension(333.5);

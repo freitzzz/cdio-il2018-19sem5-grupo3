@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using core.dto;
@@ -12,6 +13,9 @@ namespace core.domain
     /// </summary>
     public abstract class Dimension : DTOAble<DimensionDTO>
     {
+
+        private const double THRESHOLD = 0.0001;
+
         /// <summary>
         /// Database identifier.
         /// </summary>
@@ -37,6 +41,13 @@ namespace core.domain
         /// Empty constructor for ORM.
         /// </summary>
         protected Dimension() { }
+
+        /// <summary>
+        /// Checks if the Dimension has the given value.
+        /// </summary>
+        /// <param name="value">double being checked.</param>
+        /// <returns>true, if the Dimension has the given; false, otherwise.</returns>
+        public abstract bool hasValue(double value);
 
         public abstract DimensionDTO toDTO();
 
