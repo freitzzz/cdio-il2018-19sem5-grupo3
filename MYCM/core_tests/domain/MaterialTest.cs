@@ -5,22 +5,25 @@ using core.domain;
 using core.dto;
 using support.dto;
 
-namespace core_tests.domain {
-    /**
-    <summary>
-        Tests of the class Material.
-    </summary>
-    */
-    public class MaterialTest {
+namespace core_tests.domain
+{
+
+    ///<summary>
+    /// Tests of the class Material.
+    ///</summary>
+
+    public class MaterialTest
+    {
         //id tests
 
-        /**
-        <summary>
-            Test to ensure that the method id works.
-         </summary>
-         */
+
+        ///<summary>
+        ///    Test to ensure that the method id works.
+        /// </summary>
+
         [Fact]
-        public void ensureIdMethodWorks() {
+        public void ensureIdMethodWorks()
+        {
             Console.WriteLine("ensureIdMethodWorks");
 
             string reference = "1160912";
@@ -41,13 +44,14 @@ namespace core_tests.domain {
 
         //sameAs tests
 
-        /**
-        <summary>
-            Test to ensure that the method sameAs works, for two equal identities.
-         </summary>
-         */
+
+        ///<summary>
+        ///   Test to ensure that the method sameAs works, for two equal identities.
+        ///</summary>
+
         [Fact]
-        public void ensureMaterialsWithEqualIdentitiesAreTheSame() {
+        public void ensureMaterialsWithEqualIdentitiesAreTheSame()
+        {
             Console.WriteLine("ensureMaterialsWithEqualIdentitiesAreTheSame");
 
             string reference = "1160912";
@@ -66,13 +70,14 @@ namespace core_tests.domain {
             Assert.True(material.sameAs(reference));
         }
 
-        /**
-        <summary>
-            Test to ensure that the method sameAs works, for two different identities.
-         </summary>
-         */
+
+        ///<summary>
+        ///   Test to ensure that the method sameAs works, for two different identities.
+        /// </summary>
+
         [Fact]
-        public void ensureMaterialsWithDifferentIdentitiesAreNotTheSame() {
+        public void ensureMaterialsWithDifferentIdentitiesAreNotTheSame()
+        {
             Console.WriteLine("ensureMaterialsWithDifferentIdentitiesAreNotTheSame");
 
             string reference = "1160912";
@@ -95,13 +100,14 @@ namespace core_tests.domain {
 
         //checkMaterialProperties tests
 
-        /**
-        <summary>
-            Test to ensure that the instance of Material isn't built if the reference is null.
-        </summary>
-         */
+
+        ///<summary>
+        ///   Test to ensure that the instance of Material isn't built if the reference is null.
+        ///</summary>
+
         [Fact]
-        public void ensureNullReferenceIsNotValid() {
+        public void ensureNullReferenceIsNotValid()
+        {
             Console.WriteLine("ensureNullReferenceIsNotValid");
 
             List<Color> colors = new List<Color>();
@@ -115,13 +121,14 @@ namespace core_tests.domain {
             Assert.Throws<ArgumentException>(() => new Material(null, "This doesn't work", colors, finishes));
         }
 
-        /**
-        <summary>
-            Test to ensure that the instance of Material isn't built if the reference is empty.
-        </summary>
-       */
+
+        ///<summary>
+        ///    Test to ensure that the instance of Material isn't built if the reference is empty.
+        ///</summary>
+
         [Fact]
-        public void ensureEmptyReferenceIsNotValid() {
+        public void ensureEmptyReferenceIsNotValid()
+        {
             Console.WriteLine("ensureEmptyReferenceIsNotValid");
 
             List<Color> colors = new List<Color>();
@@ -135,13 +142,14 @@ namespace core_tests.domain {
             Assert.Throws<ArgumentException>(() => new Material("", "Let me see...", colors, finishes));
         }
 
-        /**
-        <summary>
-            Test to ensure that the instance of Material isn't built if the designation is null.
-        </summary>
-       */
+
+        ///<summary>
+        ///    Test to ensure that the instance of Material isn't built if the designation is null.
+        ///</summary>
+
         [Fact]
-        public void ensureNullDesignationIsNotValid() {
+        public void ensureNullDesignationIsNotValid()
+        {
             Console.WriteLine("ensureNullDesignationIsNotValid");
 
             List<Color> colors = new List<Color>();
@@ -155,13 +163,14 @@ namespace core_tests.domain {
             Assert.Throws<ArgumentException>(() => new Material("Have you tried turning it off and then on again?", null, colors, finishes));
         }
 
-        /**
-        <summary>
-            Test to ensure that the instance of Material isn't built if the designation is empty.
-        </summary>
-       */
+
+        ///<summary>
+        ///    Test to ensure that the instance of Material isn't built if the designation is empty.
+        ///</summary>
+
         [Fact]
-        public void ensureEmptyDesignationIsNotValid() {
+        public void ensureEmptyDesignationIsNotValid()
+        {
             Console.WriteLine("ensureEmptyDesignationIsNotValid");
 
             List<Color> colors = new List<Color>();
@@ -175,13 +184,14 @@ namespace core_tests.domain {
             Assert.Throws<ArgumentException>(() => new Material("Still not working", "", colors, finishes));
         }
 
-        /**
-        <summary>
-            Test to ensure that the instance of Material isn't built if the list of colors is null.
-        </summary>
-       */
+
+        /// <summary>
+        ///    Test to ensure that the instance of Material isn't built if the list of colors is null.
+        ///</summary>
+
         [Fact]
-        public void ensureNullColorListIsNotValid() {
+        public void ensureNullColorListIsNotValid()
+        {
             Console.WriteLine("ensureNullColorListIsNotValid");
 
             List<Finish> finishes = new List<Finish>();
@@ -191,13 +201,14 @@ namespace core_tests.domain {
             Assert.Throws<ArgumentException>(() => new Material("Hello", "It's me, Mario", null, finishes));
         }
 
-        /**
-        <summary>
-            Test to ensure that the instance of Material isn't built if the list of colors is empty.
-        </summary>
-       */
+
+        ///<summary>
+        ///    Test to ensure that the instance of Material isn't built if the list of colors is empty.
+        ///</summary>
+
         [Fact]
-        public void ensureEmptyColorListIsNotValid() {
+        public void ensureEmptyColorListIsNotValid()
+        {
             Console.WriteLine("ensureEmptyColorListIsNotValid");
 
             List<Color> colors = new List<Color>();
@@ -209,13 +220,14 @@ namespace core_tests.domain {
             Assert.Throws<ArgumentException>(() => new Material("Goodbye", "See you later", colors, finishes));
         }
 
-        /**
-        <summary>
-            Test to ensure that the instance of Material isn't built if the list of finishes is null.
-        </summary>
-       */
+
+        ///<summary>
+        ///   Test to ensure that the instance of Material isn't built if the list of finishes is null.
+        ///</summary>
+
         [Fact]
-        public void ensureNullFinishListIsNotValid() {
+        public void ensureNullFinishListIsNotValid()
+        {
             Console.WriteLine("ensureNullFinishListIsNotValid");
 
             List<Color> colors = new List<Color>();
@@ -225,13 +237,14 @@ namespace core_tests.domain {
             Assert.Throws<ArgumentException>(() => new Material("Hello", "It's me, Mario", colors, null));
         }
 
-        /**
-        <summary>
-            Test to ensure that the instance of Material isn't built if the list of finishes is empty.
-        </summary>
-       */
+
+        ///<summary>
+        ///    Test to ensure that the instance of Material isn't built if the list of finishes is empty.
+        ///</summary>
+
         [Fact]
-        public void ensureEmptyFinishListIsNotValid() {
+        public void ensureEmptyFinishListIsNotValid()
+        {
             Console.WriteLine("ensureEmptyFinishListIsNotValid");
 
             List<Color> colors = new List<Color>();
@@ -245,13 +258,14 @@ namespace core_tests.domain {
 
         //addColor tests
 
-        /**
-        <summary>
-            Test to ensure that an already existent Color cannot be added to the Material's list of colors.
-        </summary>
-       */
+
+        ///<summary>
+        ///    Test to ensure that an already existent Color cannot be added to the Material's list of colors.
+        /// </summary>
+
         [Fact]
-        public void ensureAlreadyExistentColorCannotBeAdded() {
+        public void ensureAlreadyExistentColorCannotBeAdded()
+        {
             Console.WriteLine("ensureAlreadyExistentColorCannotBeAdded");
 
             List<Color> colors = new List<Color>();
@@ -267,13 +281,14 @@ namespace core_tests.domain {
             Assert.False(material.addColor(color));
         }
 
-        /**
-        <summary>
-            Test to ensure that a null Color cannot be added to the Material's list of colors.
-        </summary>
-       */
+
+        ///<summary>
+        ///    Test to ensure that a null Color cannot be added to the Material's list of colors.
+        ///</summary>
+
         [Fact]
-        public void ensureNullColorCannotBeAdded() {
+        public void ensureNullColorCannotBeAdded()
+        {
             Console.WriteLine("ensureNullColorCannotBeAdded");
 
             List<Color> colors = new List<Color>();
@@ -289,13 +304,14 @@ namespace core_tests.domain {
             Assert.False(material.addColor(null));
         }
 
-        /**
-        <summary>
-            Test to ensure that a valid Color can be added to the Material's list of colors.
-        </summary>
-       */
+
+        ///<summary>
+        ///   Test to ensure that a valid Color can be added to the Material's list of colors.
+        ///</summary>
+
         [Fact]
-        public void ensureValidColorCanBeAdded() {
+        public void ensureValidColorCanBeAdded()
+        {
             Console.WriteLine("ensureValidColorCanBeAdded");
 
             List<Color> colors = new List<Color>();
@@ -313,13 +329,14 @@ namespace core_tests.domain {
 
         //removeColor tests
 
-        /**
-        <summary>
-            Test to ensure that a non-existent Color cannot be removed from the Material's list of colors.
-        </summary>
-       */
+
+        ///<summary>
+        ///   Test to ensure that a non-existent Color cannot be removed from the Material's list of colors.
+        ///</summary>
+
         [Fact]
-        public void ensureNonExistentColorCannotBeRemoved() {
+        public void ensureNonExistentColorCannotBeRemoved()
+        {
             Console.WriteLine("ensureNonExistentColorCannotBeRemoved");
 
             List<Color> colors = new List<Color>();
@@ -335,13 +352,14 @@ namespace core_tests.domain {
             Assert.False(material.removeColor(Color.valueOf("Empregada", 3, 2, 1, 0)));
         }
 
-        /**
-        <summary>
-            Test to ensure that a null Color cannot be removed from the Material's list of colors.
-        </summary>
-       */
+
+        ///<summary>
+        ///     Test to ensure that a null Color cannot be removed from the Material's list of colors.
+        /// </summary>
+
         [Fact]
-        public void ensureNullColorCannotBeRemoved() {
+        public void ensureNullColorCannotBeRemoved()
+        {
             Console.WriteLine("ensureNullColorCannotBeRemoved");
 
             List<Color> colors = new List<Color>();
@@ -357,13 +375,14 @@ namespace core_tests.domain {
             Assert.False(material.removeColor(null));
         }
 
-        /**
-         <summary>
-             Test to ensure that a valid Color can be removed from the Material's list of colors.
-         </summary>
-        */
+
+        ///<summary>
+        ///   Test to ensure that a valid Color can be removed from the Material's list of colors.
+        ///</summary>
+
         [Fact]
-        public void ensureValidColorCanBeRemoved() {
+        public void ensureValidColorCanBeRemoved()
+        {
             Console.WriteLine("ensureValidColorCanBeRemoved");
 
             List<Color> colors = new List<Color>();
@@ -381,13 +400,13 @@ namespace core_tests.domain {
 
         //addFinish tests
 
-        /**
-            <summary>
-                Test to ensure that an already existent Finish cannot be added to the Material's list of finishes.
-            </summary>
-           */
+        /// <summary>
+        ///      Test to ensure that an already existent Finish cannot be added to the Material's list of finishes.
+        ///  </summary>
+
         [Fact]
-        public void ensureAlreadyExistentFinishCannotBeAdded() {
+        public void ensureAlreadyExistentFinishCannotBeAdded()
+        {
             Console.WriteLine("ensureAlreadyExistentFinishCannotBeAdded");
 
             List<Color> colors = new List<Color>();
@@ -403,13 +422,14 @@ namespace core_tests.domain {
             Assert.False(material.addFinish(finish));
         }
 
-        /**
-        <summary>
-            Test to ensure that a null Finish cannot be added to the Material's list of finishes.
-        </summary>
-       */
+
+        ///<summary>
+        ///    Test to ensure that a null Finish cannot be added to the Material's list of finishes.
+        ///</summary>
+
         [Fact]
-        public void ensureNullFinishCannotBeAdded() {
+        public void ensureNullFinishCannotBeAdded()
+        {
             Console.WriteLine("ensureNullFinishCannotBeAdded");
 
             List<Color> colors = new List<Color>();
@@ -425,13 +445,14 @@ namespace core_tests.domain {
             Assert.False(material.addFinish(null));
         }
 
-        /**
-        <summary>
-            Test to ensure that a valid Finish can be added to the Material's list of finishes.
-        </summary>
-       */
+
+        ///<summary>
+        ///  Test to ensure that a valid Finish can be added to the Material's list of finishes.
+        ///</summary>
+
         [Fact]
-        public void ensureValidFinishCanBeAdded() {
+        public void ensureValidFinishCanBeAdded()
+        {
             Console.WriteLine("ensureValidFinishCanBeAdded");
 
             List<Color> colors = new List<Color>();
@@ -449,13 +470,14 @@ namespace core_tests.domain {
 
         //removeFinish tests
 
-        /**
-        <summary>
-            Test to ensure that a non-existent Finish cannot be removed from the Material's list of finishes.
-        </summary>
-       */
+
+        ///<summary>
+        ///   Test to ensure that a non-existent Finish cannot be removed from the Material's list of finishes.
+        ///</summary>
+
         [Fact]
-        public void ensureNonExistentFinishCannotBeRemoved() {
+        public void ensureNonExistentFinishCannotBeRemoved()
+        {
             Console.WriteLine("ensureNonExistentFinishCannotBeRemoved");
 
             List<Color> colors = new List<Color>();
@@ -471,13 +493,14 @@ namespace core_tests.domain {
             Assert.False(material.removeFinish(Finish.valueOf("Não existo")));
         }
 
-        /**
-        <summary>
-            Test to ensure that a null Finish cannot be removed from the Material's list of finishes.
-        </summary>
-       */
+
+        ///<summary>
+        ///   Test to ensure that a null Finish cannot be removed from the Material's list of finishes.
+        ///</summary>
+
         [Fact]
-        public void ensureNullFinishCannotBeRemoved() {
+        public void ensureNullFinishCannotBeRemoved()
+        {
             Console.WriteLine("ensureNullFinishCannotBeRemoved");
 
             List<Color> colors = new List<Color>();
@@ -493,13 +516,14 @@ namespace core_tests.domain {
             Assert.False(material.removeFinish(null));
         }
 
-        /**
-         <summary>
-             Test to ensure that a valid Finish can be removed from the Material's list of finishes.
-         </summary>
-        */
+
+        ///<summary>
+        ///    Test to ensure that a valid Finish can be removed from the Material's list of finishes.
+        ///</summary>
+
         [Fact]
-        public void ensureValidFinishCanBeRemoved() {
+        public void ensureValidFinishCanBeRemoved()
+        {
             Console.WriteLine("ensureValidFinishCanBeRemoved");
 
             List<Color> colors = new List<Color>();
@@ -517,13 +541,14 @@ namespace core_tests.domain {
 
         //hasColor tests
 
-        /**
-        <summary>
-            Test to ensure that an existent color is found in the Material's list of colors.
-        </summary>
-        */
+
+        ///<summary>
+        ///    Test to ensure that an existent color is found in the Material's list of colors.
+        ///</summary>
+
         [Fact]
-        public void ensureValidColorExists() {
+        public void ensureValidColorExists()
+        {
             Console.WriteLine("ensureValidColorExists");
 
             List<Color> colors = new List<Color>();
@@ -538,14 +563,37 @@ namespace core_tests.domain {
 
             Assert.True(material.hasColor(color));
         }
+        ///<summary>
+        ///    Test to ensure that an not exist color is found in the Material's list of colors.
+        ///</summary>
 
-        /**
-        <summary>
-            Test to ensure that a null color is not found in the Material's list of colors.
-        </summary>
-        */
         [Fact]
-        public void ensureNullColorDoesNotExist() {
+        public void ensureValidColorNotExists()
+        {
+            Console.WriteLine("ensureValidColorExists");
+
+            List<Color> colors = new List<Color>();
+            Color color = Color.valueOf("Look at all", 1, 2, 3, 0);
+            Color color1 = Color.valueOf("Outra", 2, 2, 3, 0);
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            Finish finish = Finish.valueOf("Those chickens");
+            finishes.Add(finish);
+
+            Material material = new Material("1160912", "Wii Music", colors, finishes);
+
+            Assert.False(material.hasColor(color1));
+        }
+
+
+        ///<summary>
+        ///    Test to ensure that a null color is not found in the Material's list of colors.
+        ///</summary>
+
+        [Fact]
+        public void ensureNullColorDoesNotExist()
+        {
             Console.WriteLine("ensureNullColorDoesNotExist");
 
             List<Color> colors = new List<Color>();
@@ -563,13 +611,14 @@ namespace core_tests.domain {
 
         //hasFinish tests
 
-        /**
-        <summary>
-            Test to ensure that an existent finish is found in the Material's list of finishes.
-        </summary>
-        */
+
+        ///<summary>
+        ///    Test to ensure that an existent finish is found in the Material's list of finishes.
+        ///</summary>
+
         [Fact]
-        public void ensureValidFinishExists() {
+        public void ensureValidFinishExists()
+        {
             Console.WriteLine("ensureValidFinishExists");
 
             List<Color> colors = new List<Color>();
@@ -584,14 +633,37 @@ namespace core_tests.domain {
 
             Assert.True(material.hasFinish(finish));
         }
+         ///<summary>
+        ///    Test to ensure that an not existent finish is found in the Material's list of finishes.
+        ///</summary>
 
-        /**
-        <summary>
-            Test to ensure that a null finish is not found in the Material's list of finishes.
-        </summary>
-        */
         [Fact]
-        public void ensureNullFinishDoesNotExist() {
+        public void ensureValidFinishNotExists()
+        {
+            Console.WriteLine("ensureValidFinishExists");
+
+            List<Color> colors = new List<Color>();
+            Color color = Color.valueOf("Look at all", 1, 2, 3, 0);
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            Finish finish = Finish.valueOf("Those chickens");
+            Finish finish1 = Finish.valueOf("Outro");
+            finishes.Add(finish);
+
+            Material material = new Material("1160912", "Wii Music", colors, finishes);
+
+            Assert.False(material.hasFinish(finish1));
+        }
+
+
+        ///<summary>
+        ///    Test to ensure that a null finish is not found in the Material's list of finishes.
+        ///</summary>
+
+        [Fact]
+        public void ensureNullFinishDoesNotExist()
+        {
             Console.WriteLine("ensureNullFinishDoesNotExist");
 
             List<Color> colors = new List<Color>();
@@ -609,13 +681,14 @@ namespace core_tests.domain {
 
         //GetHashCode tests
 
-        /**
-        <summary>
-           Test to ensure that the method GetHashCode works.
-        </summary>
-        */
+
+        ///<summary>
+        ///  Test to ensure that the method GetHashCode works.
+        ///</summary>
+
         [Fact]
-        public void ensureGetHashCodeWorks() {
+        public void ensureGetHashCodeWorks()
+        {
             Console.WriteLine("ensureGetHashCodeWorks");
 
             List<Color> colors = new List<Color>();
@@ -634,13 +707,14 @@ namespace core_tests.domain {
 
         //Equals tests
 
-        /**
-        <summary>
-            Test to ensure that the method Equals works, for two Materials with different references.
-         </summary>
-         */
+
+        ///<summary>
+        ///   Test to ensure that the method Equals works, for two Materials with different references.
+        ///</summary>
+
         [Fact]
-        public void ensureMaterialsWithDifferentReferencesAreNotEqual() {
+        public void ensureMaterialsWithDifferentReferencesAreNotEqual()
+        {
             Console.WriteLine("ensureMaterialsWithDifferentReferencesAreNotEqual");
 
             List<Color> colors = new List<Color>();
@@ -657,13 +731,14 @@ namespace core_tests.domain {
             Assert.False(salt.Equals(pepper));
         }
 
-        /**
-        <summary>
-            Test to ensure that the method Equals works, for two Materials with the same reference.
-         </summary>
-         */
+
+        ///<summary>
+        ///   Test to ensure that the method Equals works, for two Materials with the same reference.
+        ///</summary>
+
         [Fact]
-        public void ensureMaterialsWithSameReferencesAreEqual() {
+        public void ensureMaterialsWithSameReferencesAreEqual()
+        {
             Console.WriteLine("ensureMaterialsWithSameReferencesAreEqual");
 
             List<Color> colors = new List<Color>();
@@ -680,13 +755,14 @@ namespace core_tests.domain {
             Assert.True(ping.Equals(pong));
         }
 
-        /**
-        <summary>
-            Test to ensure that the method Equals works, for a null Material.
-         </summary>
-         */
+
+        ///<summary>
+        ///   Test to ensure that the method Equals works, for a null Material.
+        ///</summary>
+
         [Fact]
-        public void ensureNullObjectIsNotEqual() {
+        public void ensureNullObjectIsNotEqual()
+        {
             Console.WriteLine("ensureNullObjectIsNotEqual");
 
             List<Color> colors = new List<Color>();
@@ -702,13 +778,14 @@ namespace core_tests.domain {
             Assert.False(loner.Equals(null));
         }
 
-        /**
-        <summary>
-            Test to ensure that the method Equals works, for a Material and an object of another type.
-         </summary>
-         */
+
+        ///<summary>
+        ///   Test to ensure that the method Equals works, for a Material and an object of another type.
+        ///</summary>
+
         [Fact]
-        public void ensureDifferentTypesAreNotEqual() {
+        public void ensureDifferentTypesAreNotEqual()
+        {
             Console.WriteLine("ensureDifferentTypesAreNotEqual");
 
             List<Color> colors = new List<Color>();
@@ -729,13 +806,13 @@ namespace core_tests.domain {
 
         //ToString tests
 
-        /**
-        <summary>
-            Test to ensure that the method ToString works.
-         </summary>
-         */
+        /// <summary>
+        ///    Test to ensure that the method ToString works.
+        /// </summary>
+
         [Fact]
-        public void ensureToStringWorks() {
+        public void ensureToStringWorks()
+        {
             Console.WriteLine("ensureToStringWorks");
 
             List<Color> colors = new List<Color>();
@@ -751,9 +828,32 @@ namespace core_tests.domain {
 
             Assert.Equal(balsamic.ToString(), vinegar.ToString());
         }
+         /// <summary>
+        ///    Test to ensure that the method ToString not works.
+        /// </summary>
 
         [Fact]
-        public void testToDTO() {
+        public void ensureToStringNotWorks()
+        {
+            Console.WriteLine("ensureToStringWorks");
+
+            List<Color> colors = new List<Color>();
+            Color color = Color.valueOf("Já perdi a imaginação", 1, 2, 3, 0);
+            colors.Add(color);
+
+            List<Finish> finishes = new List<Finish>();
+            Finish finish = Finish.valueOf("Foleiro");
+            finishes.Add(finish);
+
+            Material balsamic = new Material("1160912", "Cowboy Boots", colors, finishes);
+            Material vinegar = new Material("1160", "Cowboy Boots", colors, finishes);
+
+            Assert.NotEqual(balsamic.ToString(), vinegar.ToString());
+        }
+
+        [Fact]
+        public void testToDTO()
+        {
             Console.WriteLine("toDTO");
             string reference = "el. psy. kongroo.";
             string designation = "I am mad scientist!";
@@ -770,7 +870,7 @@ namespace core_tests.domain {
 
             Material material = new Material(reference, designation, colors, finishes);
 
-            
+
             MaterialDTO expected = new MaterialDTO();
             expected.reference = reference;
             expected.designation = designation;
@@ -778,7 +878,7 @@ namespace core_tests.domain {
             expected.finishes = new List<FinishDTO>(DTOUtils.parseToDTOS(finishes));
 
             MaterialDTO actual = material.toDTO();
-            
+
             Assert.Equal(expected.reference, actual.reference);
             Assert.Equal(expected.designation, actual.designation);
 
@@ -787,11 +887,12 @@ namespace core_tests.domain {
 
             Assert.Equal(expectedColorListSize, actualColorListSize);
 
-            for(int i = 0; i < actualColorListSize; i++){
+            for (int i = 0; i < actualColorListSize; i++)
+            {
                 Assert.Equal(expected.colors[i].red, actual.colors[i].red);
-                Assert.Equal(expected.colors[i].green, actual.colors[i].green);  
-                Assert.Equal(expected.colors[i].blue, actual.colors[i].blue); 
-                Assert.Equal(expected.colors[i].alpha, actual.colors[i].alpha); 
+                Assert.Equal(expected.colors[i].green, actual.colors[i].green);
+                Assert.Equal(expected.colors[i].blue, actual.colors[i].blue);
+                Assert.Equal(expected.colors[i].alpha, actual.colors[i].alpha);
             }
 
             int actualFinishListSize = actual.finishes.Count;
@@ -799,8 +900,9 @@ namespace core_tests.domain {
 
             Assert.Equal(expectedFinishListSize, actualFinishListSize);
 
-            for(int i = 0; i < actualFinishListSize; i++){
-                Assert.Equal(expected.finishes[i].description, actual.finishes[i].description); 
+            for (int i = 0; i < actualFinishListSize; i++)
+            {
+                Assert.Equal(expected.finishes[i].description, actual.finishes[i].description);
             }
         }
     }
