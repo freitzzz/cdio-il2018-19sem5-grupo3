@@ -21,6 +21,14 @@
 :- json_object
         cities_body_request(algorithmID:integer,cities:list).
 
+% JSON Object with the information regarding the request city circuit computation body request
+:- json_object
+        city_circuit_body_request(algorithmID:integer,initialCity:city_object/3,cities:list).
+
+% JSON Object with the information regarding the request cities computation body request
+:- json_object
+        cities_body_request(algorithmID:integer,cities:list).
+
 % JSON Object with the information regarding the distance of a circuit
 :- json_object
         distance_object(value:number,unit:atom).

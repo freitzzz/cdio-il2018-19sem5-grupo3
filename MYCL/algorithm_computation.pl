@@ -1,54 +1,66 @@
 % Computes B&B for a provided list of cities
-compute_algorithm(1,Cities,CitiesToTravel,Distance):-
+compute_algorithm(1,InitialCity,Cities,CitiesToTravel,Distance):-
+    assert_cities([InitialCity]),
     assert_cities(Cities),
-    Cities=[city(N,_,_)|_],
+    InitialCity=city(N,_,_),
     tsp1(N,CitiesToTravel,Distance),
     retract_cities(Cities),
+    retract_cities([InitialCity]),
     !.
 
 % Computes Genetic Algorithm for a provided list of cities
-compute_algorithm(1,Cities,_,_):-
+compute_algorithm(1,InitialCity,Cities,_,_):-
     retract_cities(Cities),
+    retract_cities([InitialCity]),
     !.
 
 % Computes Greedy Heuristic for a provided list of cities
-compute_algorithm(2,Cities,CitiesToTravel,Distance):-
+compute_algorithm(2,InitialCity,Cities,CitiesToTravel,Distance):-
+    assert_cities([InitialCity]),
     assert_cities(Cities),
-    Cities=[city(N,_,_)|_],
+    InitialCity=city(N,_,_),
     tsp2(N,CitiesToTravel,Distance),
     retract_cities(Cities),
+    retract_cities([InitialCity]),
     !.
 
 % Computes Genetic Algorithm for a provided list of cities
-compute_algorithm(2,Cities,_,_):-
+compute_algorithm(2,InitialCity,Cities,_,_):-
     retract_cities(Cities),
-    !.  
+    retract_cities([InitialCity]),
+    !.
 
 % Computes Greedy Heuristic 2 OPT for a provided list of cities
-compute_algorithm(3,Cities,CitiesToTravel,Distance):-
+compute_algorithm(3,InitialCity,Cities,CitiesToTravel,Distance):-
+    assert_cities([InitialCity]),
     assert_cities(Cities),
-    Cities=[city(N,_,_)|_],
+    InitialCity=city(N,_,_),
     tsp3(N,Distance,CitiesToTravel1),
     tuple_list_to_single_list(CitiesToTravel1,CitiesToTravel),
     retract_cities(Cities),
+    retract_cities([InitialCity]),
     !.
 
 % Computes Greedy Heuristic 2 OPT for a provided list of cities
-compute_algorithm(3,Cities,_,_):-
+compute_algorithm(3,InitialCity,Cities,_,_):-
     retract_cities(Cities),
+    retract_cities([InitialCity]),
     !.
 
 % Computes Genetic Algorithm for a provided list of cities
-compute_algorithm(4,Cities,CitiesToTravel,Distance):-
+compute_algorithm(4,InitialCity,Cities,CitiesToTravel,Distance):-
+    assert_cities([InitialCity]),
     assert_cities(Cities),
-    Cities=[city(N,_,_)|_],
+    InitialCity=city(N,_,_),
     tsp4(N,CitiesToTravel,Distance),
     retract_cities(Cities),
+    retract_cities([InitialCity]),
     !.
 
 % Computes Genetic Algorithm for a provided list of cities
-compute_algorithm(4,Cities,_,_):-
+compute_algorithm(4,InitialCity,Cities,_,_):-
     retract_cities(Cities),
+    retract_cities([InitialCity]),
     !.
 
 % Asserts a list of cities into the current knowledge base
