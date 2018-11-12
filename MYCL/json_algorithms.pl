@@ -37,6 +37,11 @@
 :- json_object
         factories_body_response(factory:city_object/3, distance:distance_object/2).
 
+% JSON Object with a message
+:- json_object
+        message_object(message:string).
+
+
 % Available algorithms
 algorithm(1,"Branch & Bound").
 algorithm(2,"Shortest Path Greedy Heuristic").

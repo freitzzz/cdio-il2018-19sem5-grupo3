@@ -46,8 +46,13 @@ compute_algorithm(Request):-
         DistanceJSON=distance_object(Distance,'KM'),
         prolog_to_json(cities_body_response(Id,JSONCitiesToTravel,DistanceJSON),RSP),
         format(user_output,"Request is: ~p~n",[JSONCitiesToTravel]),
-        reply_json(RSP).
+        reply_json(RSP),
+        !.
 
+% Replies with 404 not found if the algorithm being applied the computation doesnt exist
+compute_algorithm(_Request):-
+        prolog_to_json(message_object("No such algorithm found"),Message),
+        reply_json(Message,[status(404)]).
 
 shortest_factory(Request):-
         http_read_json(Request, JSONIn,[json_object(factories_body_request)]),
