@@ -127,14 +127,35 @@
       document.getElementById(elem).style.display = "block";
       evt.currentTarget.className += " active";
 
-      //Progress bar
-
-      var pro = document.getElementById("progress");
-      pro.style.width += 25 + '%';
-      var status = document.getElementById("percentage");
-      status = pro.style.width;
+    }
+    function changePBSlots(){
+      var divi = document.getElementById("divisionP");
+      divi.classList.add("active");
+    }
+    function changePBMaterial(){
+      var divi = document.getElementById("materialP");
+      divi.classList.add("active");
 
     }
+    function changePBCreate(){
+      var divi = document.getElementById("createP");
+      divi.classList.add("active");
+
+    }
+    function decreasePBSlots(){
+      var divi = document.getElementById("divisionP");
+      divi.classList.remove("active");
+    }
+    function decreasePBMaterial(){
+      var divi = document.getElementById("materialP");
+      divi.classList.remove("active");
+
+    }
+    /* function decreasePBCreate(){
+      var divi = document.getElementById("createP");
+      divi.classList.remove("active");
+
+    } */
   </script>
   <script>
     //document.getElementById("dimensions").click();
@@ -214,24 +235,25 @@
       align-content: right;
 
     }
+    
 
   </style>
   <div id="closet">
     <div class="container">
       <div class="section-title text-center center">
-        <h2>
-          <p></p>
-          <p></p> Create <p></p>
-        </h2>
+        <h2>Create</h2>
         <hr>
       </div>
-
-      <div class="progress  left">
-        <div class="progress-bar progress-bar-striped active row" role="progressbar" aria-valuenow="25" aria-valuemin="0"
-          aria-valuemax="100" style="width:25%" id="progress">
-          <div id="percentage">25%</div>
-        </div>
+      <div class="container">
+        <ul class="progressbar">
+          <li class="active">Dimensions</li>
+          <li class="before" id="divisionP">Number of divisions</li>
+          <li class="before" id="materialP">Material and finish</li>
+          <li class="before" id="createP">Creation</li>
+        </ul>
       </div>
+
+
       <!--<div class="tab">
         <button class="tablinks" onclick="openTab(event, 'dimensions')">Dimensions</button>
         <button class="tablinks" onclick="openTab(event, 'slots')">Slots</button>
@@ -253,7 +275,7 @@
           <option id="m" value="m" oninput="lengthConverter(this.value)" onchange="lengthConverter(this.value)">Meters</option>
         </select><br>
         <br><br>
-        <a class="btn-custom" onclick="openTab(event, 'slots')">Next</a>
+        <a class="btn-custom" onclick="openTab(event, 'slots');changePBSlots();">Next</a>
       </div>
       <div id="slots" class="column left tabcontent" style="display:none">
         <h2>Slots</h2>
@@ -263,8 +285,8 @@
         <br>
         <br>
         <br>
-        <a class="btn-custom" onclick="openTab(event, 'dimensions')">Back</a>
-        <a class="btn-custom" onclick="openTab(event,'materials')">Next</a>
+        <a class="btn-custom" onclick="openTab(event, 'dimensions');decreasePBSlots();">Back</a>
+        <a class="btn-custom" onclick="openTab(event,'materials');changePBMaterial();">Next</a>
       </div>
       <div id="materials" class="column left tabcontent" style="display:none">
         <h2>Materials</h2>
@@ -336,8 +358,8 @@
           </ul>
         </div>
         <br>
-        <a class="btn-custom" onclick="openTab(event, 'slots')">Back</a>
-        <a class="btn-custom" disabled>Next</a>
+        <a class="btn-custom" onclick="openTab(event, 'slots');decreasePBMaterial()">Back</a>
+        <a class="btn-custom" onclick="changePBCreate()">Next</a>
       </div>
       <!--<a class="btn btn-custom btn-lg page-scroll" onclick="reloadCube();">Submit</a>--->
       <div class="column right">
