@@ -141,11 +141,11 @@ namespace core.domain
         public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial,
         CustomizedDimensions customizedDimensions, Product product)
         {
-            checkCustomizedMaterial(customizedMaterial);
-            checkCustomizedDimensions(customizedDimensions);
             checkProduct(product);
             checkString(reference, INVALID_PRODUCT_REFERENCE);
             checkString(designation, INVALID_PRODUCT_DESIGNATION);
+            checkCustomizedMaterial(customizedMaterial);
+            checkCustomizedDimensions(customizedDimensions, product);
 
             this.reference = reference;
             this.designation = designation;
@@ -248,8 +248,9 @@ namespace core.domain
         /// </summary>
         /// <param name="customizedDimensions">New customized dimensions</param>
         /// <returns>true if the customized dimensions were changed successfully</returns>
-        public bool changeCustomizedDimensions(CustomizedDimensions customizedDimensions){
-            checkCustomizedDimensions(customizedDimensions);
+        public bool changeCustomizedDimensions(CustomizedDimensions customizedDimensions)
+        {
+            checkCustomizedDimensions(customizedDimensions, product);
             this.customizedDimensions = customizedDimensions;
             return true;
         }
@@ -259,7 +260,8 @@ namespace core.domain
         /// </summary>
         /// <param name="customizedMaterial">New customized material</param>
         /// <returns>true if the customized material was changed successfully</returns>
-        public bool changeCustomizedMaterial(CustomizedMaterial customizedMaterial){
+        public bool changeCustomizedMaterial(CustomizedMaterial customizedMaterial)
+        {
             checkCustomizedMaterial(customizedMaterial);
             this.customizedMaterial = customizedMaterial;
             return true;
@@ -270,7 +272,8 @@ namespace core.domain
         /// </summary>
         /// <param name="finish">new finish</param>
         /// <returns>true if the finish was changed succesfully</returns>
-        public bool changeFinish(Finish finish){
+        public bool changeFinish(Finish finish)
+        {
             return this.customizedMaterial.changeFinish(finish);
         }
 
@@ -279,7 +282,8 @@ namespace core.domain
         /// </summary>
         /// <param name="color">new color</param>
         /// <returns>true if the color successfully</returns>
-        public bool changeColor(Color color){
+        public bool changeColor(Color color)
+        {
             return this.customizedMaterial.changeColor(color);
         }
 
@@ -291,7 +295,7 @@ namespace core.domain
         public bool addSlot(Slot slot)
         {
             if (slot == null) throw new ArgumentException(NULL_SLOT);
-            if(!product.supportsSlots) throw new ArgumentException(PRODUCT_DOES_NOT_SUPPORT_SLOTS);
+            if (!product.supportsSlots) throw new ArgumentException(PRODUCT_DOES_NOT_SUPPORT_SLOTS);
             if (slot.slotDimensions.width >= product.minSlotSize.width
             && slot.slotDimensions.depth >= product.minSlotSize.depth
             && slot.slotDimensions.height >= product.minSlotSize.height
@@ -360,24 +364,26 @@ namespace core.domain
         /// Checks if the CustomizedMaterial is valid
         /// </summary>
         /// <param name="customizedMaterial">CustomizedMaterial to check</param>
-        //TODO Is the String.IsNullOrEmpty necessary
-        //TODO check if the material referenced by the customized material is in the material list of the product referenced by the customized product (bit confusing right?)
         private void checkCustomizedMaterial(CustomizedMaterial customizedMaterial)
         {
-            if (customizedMaterial == null || String.IsNullOrEmpty(customizedMaterial.ToString()))
-                throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_MATERIAL);
+            if (customizedMaterial == null) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_MATERIAL);
+            if (!product.containsMaterial(customizedMaterial.material)) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_MATERIAL);
         }
 
         /// <summary>
         /// Checks if the CustomizedDimensions are valid
         /// </summary>
         /// <param name="customizedDimensions">CustomizedDimensions to check</param>
-        //TODO should a check be performed to validate the actual sizes of each dimension?
-        //TODO Is the String.IsNullOrEmpty necessary
-        private void checkCustomizedDimensions(CustomizedDimensions customizedDimensions)
+        private void checkCustomizedDimensions(CustomizedDimensions customizedDimensions, Product product)
         {
-            if (customizedDimensions == null || String.IsNullOrEmpty(customizedDimensions.ToString()))
-                throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_DIMENSIONS);
+            if (customizedDimensions == null) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_DIMENSIONS);
+
+            List<Measurement> possibleMeasurements = product.measurements.Select(m => m.measurement).ToList();
+
+            foreach (Measurement measurement in possibleMeasurements)
+            {
+                //TODO Implement method
+            }
         }
 
         /// <summary>

@@ -39,17 +39,77 @@
       loadDepth();
       loadSlots();
     }
-    function lengthConverter(valNum) {
-      document.getElementById("outputMeters").innerHTML = valNum / 0.0022046;
+    function convertUnit(unitToConvert){
+      switch(unitToConvert){
+        case "mm":
+          document.getElementById("width").value=getCurrentClosetWidth()*10;
+          document.getElementById("height").value=getCurrentClosetHeight()*10;
+          document.getElementById("depth").value=getCurrentClosetDepth()*10;
+          break;
+        case "m":
+          document.getElementById("width").value=getCurrentClosetWidth()/100;
+          document.getElementById("height").value=getCurrentClosetHeight()/100;
+          document.getElementById("depth").value=getCurrentClosetDepth()/100;
+          break;
+        default:
+          document.getElementById("width").value=getCurrentClosetWidth();
+          document.getElementById("height").value=getCurrentClosetHeight();
+          document.getElementById("depth").value=getCurrentClosetDepth();
+          break;
+      }
+    }
+    function openSlotSliders(){
+      var container = document.getElementById("slotDiv");
+
+      if(document.getElementById("slotCheckbox").checked == true){
+        /* var currentSlotSliders = container.childNodes.length-1 - (container.childNodes.length-1)/3;
+        var slotSlidersToAdd = document.getElementById("slotsInput").value;
+        var varoia = Math.abs((slotSlidersToAdd) - parseInt(currentSlotSliders));
+        alert(varoia);
+        for(let i = 0; i < varoia; i++){
+          var slotTextNode = document.createTextNode("Slot " + (currentSlotSliders + i-2));
+          slotTextNode.id = "slotTextNode" + (currentSlotSliders + i-2);
+          container.appendChild(slotTextNode);
+          var input = document.createElement("input");
+          input.type = "range";
+          input.name = "slot" + (currentSlotSliders + i-2);
+          input.id = "slotSlider" + (currentSlotSliders + i-2);
+          container.appendChild(input);
+          container.appendChild(document.createElement("br"));
+          container.appendChild(document.createElement("br"));
+        } */
+        var initialNumberOfSlots = container.childNodes.length - 1;
+        var currentSlotSliders = parseInt(initialNumberOfSlots / 2);
+        var slotSlidersToAdd = parseInt(document.getElementById("slotsInput").value);
+        var diff = Math.abs(slotSlidersToAdd-currentSlotSliders);
+       
+       if(diff >= currentSlotSliders){
+          for(let i = currentSlotSliders; i < slotSlidersToAdd; i++){
+            var slotTextNode = document.createTextNode("Slot " + (i+1));
+            slotTextNode.id = "slotTextNode" + (i+1);
+            container.appendChild(slotTextNode);
+            var input = document.createElement("input");
+            input.type = "range";
+            input.name = "slot" + (i+1);
+            input.id = "slotSlider" + (i+1);
+            container.appendChild(input);
+            /* container.appendChild(document.createElement("br"));
+            container.appendChild(document.createElement("br")); */
+          }
+       }else{
+          for(let j = slotSlidersToAdd; j < currentSlotSliders; j++){
+            container.removeChild()
+          }
+       }
+      }
     }
     //loadDepth();
     function reloadCube() {
-
       var event = new CustomEvent("changeDimensions", {
         detail: {
-          height: document.getElementById("height").value,
-          width: document.getElementById("width").value,
-          depth: document.getElementById("depth").value
+          height: height,
+          width: width,
+          depth: depth
         }
       });
       document.dispatchEvent(event);
@@ -63,6 +123,7 @@
         }
       });
       document.dispatchEvent(eventX);
+      openSlotSliders();
     }
 
     function reloadMaterial(elementId) {
@@ -103,6 +164,15 @@
     }
     function loadSlots() {
       changeClosetSlots(document.getElementById("slotsInput").value);
+      var container = document.getElementById("slotDiv");
+      //alert(container.childNodes.length);
+      for(let i = 0; i < container.childNodes.length; i++){
+        if(container.childNodes[i].id != "slotCheckbox"){
+          container.removeChild(container.childNodes[i]);
+        }
+      }
+      document.getElementById("slotsInput").value = 3;
+      document.getElementById("slotCheckbox").checked = false;
     }
   </script>
 
@@ -268,11 +338,11 @@
         <input type="number" min="1" name="width" id="width" onchange="reloadCube();"><br>
         Depth:<br>
         <input type="number" min="1" name="depth" id="depth" onchange="reloadCube();"><br><br>
-        <select>
-          <option id="cm" value="cm" oninput="lengthConverter(this.value)" onchange="lengthConverter(this.value)">Centimeters
+        <select id="measurementUnit">
+          <option id="cm" value="cm" onclick="convertUnit(this.value)">Centimeters
           </option>
-          <option id="mm" value="mm" oninput="lengthConverter(this.value)" onchange="lengthConverter(this.value)">Milimeters</option>
-          <option id="m" value="m" oninput="lengthConverter(this.value)" onchange="lengthConverter(this.value)">Meters</option>
+          <option id="mm" value="mm" onclick="convertUnit(this.value)">Milimeters</option>
+          <option id="m" value="m" onclick="convertUnit(this.value)">Meters</option>
         </select><br>
         <br><br>
         <a class="btn-custom" onclick="openTab(event, 'slots');changePBSlots();">Next</a>
@@ -285,8 +355,15 @@
         <br>
         <br>
         <br>
-        <a class="btn-custom" onclick="openTab(event, 'dimensions');decreasePBSlots();">Back</a>
-        <a class="btn-custom" onclick="openTab(event,'materials');changePBMaterial();">Next</a>
+        <div id="slotDiv">
+          <label class="checkboxcontainer">Different slot widths
+            <input type="checkbox" checked="unchecked" id="slotCheckbox" onclick="openSlotSliders()">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+        <br><br><br><br>
+        <a class="btn-custom" id="slotBack" onclick="openTab(event, 'dimensions');decreasePBSlots()">Back</a>
+        <a class="btn-custom" id="slotNext" onclick="openTab(event,'materials');changePBMaterial()">Next</a>
       </div>
       <div id="materials" class="column left tabcontent" style="display:none">
         <h2>Materials</h2>
