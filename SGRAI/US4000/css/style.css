@@ -504,10 +504,6 @@ ul.material_list>li>img{
     background-color: #0ba2db;
 }
 
-.container {
-	width: 600px;
-	margin: 100px auto; 
-}
 .progressbar {
 	counter-reset: step;
 }
