@@ -62,25 +62,45 @@
       var container = document.getElementById("slotDiv");
 
       if(document.getElementById("slotCheckbox").checked == true){
-        var currentSlotSliders = container.childNodes.length-1 - (container.childNodes.length-1)/3 + 1;
-        for(areouahgeo = 0; areouahgeo < container.childNodes.length; areouahgeo++){
-          alert(container.childNodes[areouahgeo].id);
-        }
+        /* var currentSlotSliders = container.childNodes.length-1 - (container.childNodes.length-1)/3;
         var slotSlidersToAdd = document.getElementById("slotsInput").value;
-        var varoia = slotSlidersToAdd - currentSlotSliders;
-
-        for(let i = varoia; i < slotSlidersToAdd; i++){
-          var slotTextNode = document.createTextNode("Slot " + (i + 1));
-          slotTextNode.id = "slotTextNode" + (i+1);
+        var varoia = Math.abs((slotSlidersToAdd) - parseInt(currentSlotSliders));
+        alert(varoia);
+        for(let i = 0; i < varoia; i++){
+          var slotTextNode = document.createTextNode("Slot " + (currentSlotSliders + i-2));
+          slotTextNode.id = "slotTextNode" + (currentSlotSliders + i-2);
           container.appendChild(slotTextNode);
           var input = document.createElement("input");
           input.type = "range";
-          input.name = "slot" + (i+1);
-          input.id = "slotSlider" + (i+1);
+          input.name = "slot" + (currentSlotSliders + i-2);
+          input.id = "slotSlider" + (currentSlotSliders + i-2);
           container.appendChild(input);
           container.appendChild(document.createElement("br"));
           container.appendChild(document.createElement("br"));
-        }
+        } */
+        var initialNumberOfSlots = container.childNodes.length - 1;
+        var currentSlotSliders = parseInt(initialNumberOfSlots / 2);
+        var slotSlidersToAdd = parseInt(document.getElementById("slotsInput").value);
+        var diff = Math.abs(slotSlidersToAdd-currentSlotSliders);
+       
+       if(diff >= currentSlotSliders){
+          for(let i = currentSlotSliders; i < slotSlidersToAdd; i++){
+            var slotTextNode = document.createTextNode("Slot " + (i+1));
+            slotTextNode.id = "slotTextNode" + (i+1);
+            container.appendChild(slotTextNode);
+            var input = document.createElement("input");
+            input.type = "range";
+            input.name = "slot" + (i+1);
+            input.id = "slotSlider" + (i+1);
+            container.appendChild(input);
+            /* container.appendChild(document.createElement("br"));
+            container.appendChild(document.createElement("br")); */
+          }
+       }else{
+          for(let j = slotSlidersToAdd; j < currentSlotSliders; j++){
+            container.removeChild()
+          }
+       }
       }
     }
     //loadDepth();
@@ -339,9 +359,9 @@
           <label class="checkboxcontainer">Different slot widths
             <input type="checkbox" checked="unchecked" id="slotCheckbox" onclick="openSlotSliders()">
             <span class="checkmark"></span>
-           </label>
-           <br><br><br><br>
+          </label>
         </div>
+        <br><br><br><br>
         <a class="btn-custom" id="slotBack" onclick="openTab(event, 'dimensions');decreasePBSlots()">Back</a>
         <a class="btn-custom" id="slotNext" onclick="openTab(event,'materials');changePBMaterial()">Next</a>
       </div>
