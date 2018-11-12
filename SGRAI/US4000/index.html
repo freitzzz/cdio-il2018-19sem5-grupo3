@@ -187,7 +187,8 @@
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
   <!-- Navigation
     ==========================================-->
-  <nav id="menu" class="navbar navbar-default navbar-fixed-top">
+  
+    <!--nav id="menu" class="navbar navbar-default navbar-fixed-top"-->
     <div class="container">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
@@ -369,10 +370,14 @@
         <a class="btn-custom" onclick="openTab(event,'components');//changePBMaterial();">Next</a>
       </div>
 
-      <div id="components" class="column left tabcontent" style="display:none">
+      <div id="components" class="column left tabcontent" style="display:none;height: 100%;width: 100%">
         <h2>Components</h2>
-        <br>
-        <br>
+        <div id="component" class="left active" style="display:inherit;height: 100%;width: 100%">
+          <h3 align="center">Example</h3>
+          <a class="btn-custom" style="width:10%">Previous</a>
+          <a class="btn-custom" style="width:10%">Apply</a>
+          <a class="btn-custom" style="width:10%">Next</a>
+        </div>
         <a class="btn-custom" onclick="openTab(event, 'materials');decreasePBCreate();">Back</a>
         <a class="btn-custom" onclick="openTab(event,'save');changePBSave();">Next</a>
       </div>
