@@ -41,6 +41,21 @@ namespace core.domain
         private const string INVALID_INSERTED_IN_SLOT = "The customized products own slot is not valid";
 
         /// <summary>
+        /// Constant that represents the message that occurs if the CustomizedProducts slots is null
+        /// </summary>
+        private const string NULL_SLOT = "The customized products slots cannot be null";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if one of the CustomizedProducts slots has invalid dimensions
+        /// </summary>
+        private const string INVALID_SLOT_DIMENSIONS = "One of the customized products slots has invalid dimensions";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the CustomizedProducts product doesn't support slots
+        /// </summary>
+        private const string PRODUCT_DOES_NOT_SUPPORT_SLOTS = "This customized product doesn't support slots";
+
+        /// <summary>
         /// Long that represents the CustomizedProduct's persistence ID.
         /// </summary>
         public long Id { get; internal set; }
@@ -275,9 +290,9 @@ namespace core.domain
         /// <returns>true if the Slot is added, false if not</returns>
         public bool addSlot(Slot slot)
         {
-            if (slot == null) return false;
-            if (product.supportsSlots &&
-            slot.slotDimensions.width >= product.minSlotSize.width
+            if (slot == null) throw new ArgumentException(NULL_SLOT);
+            if(!product.supportsSlots) throw new ArgumentException(PRODUCT_DOES_NOT_SUPPORT_SLOTS);
+            if (slot.slotDimensions.width >= product.minSlotSize.width
             && slot.slotDimensions.depth >= product.minSlotSize.depth
             && slot.slotDimensions.height >= product.minSlotSize.height
             && slot.slotDimensions.width <= product.maxSlotSize.width
@@ -287,7 +302,7 @@ namespace core.domain
                 slots.Add(slot);
                 return true;
             }
-            return false;
+            throw new ArgumentException(INVALID_SLOT_DIMENSIONS);
         }
 
         /// <summary>

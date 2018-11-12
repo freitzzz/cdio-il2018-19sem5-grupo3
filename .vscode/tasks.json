@@ -2,17 +2,37 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "dotnet: Build Solution",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/"
+                "${workspaceFolder}/MYCM/"
             ],
             "problemMatcher": "$msCompile",
             "group": {
                 "kind": "build",
                 "isDefault": true
+            }
+        },
+        {
+            "label": "dotnet: MYCM API Test Coverage",
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "test",
+                "MYCM",
+                "/p:CollectCoverage=true",
+                "/p:CoverletOutputFormat=lcov",
+                "/p:CoverletOutput=./lcov.info"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
             }
         }
     ]
