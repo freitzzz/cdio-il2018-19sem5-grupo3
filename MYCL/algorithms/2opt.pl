@@ -2,7 +2,7 @@ tsp3(C, D, L):- tsp2(C, L1, D1),
                 opt2_segment(L1, [H|T]), %segments the list into entries (C1, C2)
 		!,
                 opt2_combinations(H, T, [H|T], L2, D1, D), %calculates the path
-		rGraph(C, L2, L). %reorders the path
+		rGraph(C, L2, L),!. %reorders the path
 
 opt2_segment([H1|[H]], [(H1, H)]).
 opt2_segment([H1|[H|T]], [(H1, H)|SL]):- opt2_segment([H|T], SL).
@@ -184,6 +184,8 @@ rGraph(Orig,R,R3):-
 
 
 reorderGraph([],[]).
+
+reorderGraph([(_,Y),(Y,_)],[]).
 
 reorderGraph([(X,Y),(Y,Z)|R],[(X,Y)|R1]):-
 	reorderGraph([(Y,Z)|R],R1).

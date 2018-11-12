@@ -46,14 +46,14 @@ generate_ind(CityList,Ind):-
     random_permutation(CityList,Ind).
 
 % Condição de Paragem de gerar uma geração
-generate_gen(0,Pop,[]):-!,
-    write('Generation '),write(0),write(':'),nl,
-    write(Pop),nl.
+generate_gen(0,_,[]):-!.
+    %write('Generation '),write(0),write(':'),nl,
+    %write(Pop),nl.
 
 % Gera gerações
 generate_gen(G,Pop,TG):-
-    write('Generation '),write(G),write(':'),nl,
-    write(Pop),nl,
+    %write('Generation '),write(G),write(':'),nl,
+    %write(Pop),nl,
     crossover(Pop,NPop1),
     mutation(NPop1,NPop),
     evaluate_pop(NPop,NPopEv),
