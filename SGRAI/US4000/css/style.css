@@ -503,7 +503,6 @@ ul.material_list>li>img{
     display: none;
     background-color: #0ba2db;
 }
-
 .checkboxcontainer {
     display: block;
     position: relative;
@@ -570,11 +569,6 @@ ul.material_list>li>img{
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
-}
-
-.container {
-	width: 600px;
-	margin: 100px auto; 
 }
 .progressbar {
 	counter-reset: step;
