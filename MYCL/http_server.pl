@@ -35,19 +35,42 @@ display_available_algorithms(_Request):-
         prolog_to_json(Alg,AlgJSON),
         reply_json(AlgJSON).
 
-% Computes a city circuit with a provided algorithm
+
+% Computes a city circuit with a provided algorithm (W/Initial City)
 compute_algorithm(Request):-
-        http_read_json(Request, JSONIn,[json_object(cities_body_request)]),
+        http_read_json(Request, JSONIn,[json_object(city_circuit_body_request)]),
         json_to_prolog(JSONIn, CC),
-        CC=cities_body_request(Id,L),
+        CC=city_circuit_body_request(Id,C,L),
+        json_cities_to_cities([C],[InitialCity]),
         json_cities_to_cities(L,Cities),
-        compute_algorithm(Id,Cities,CitiesToTravel,Distance),
+        compute_algorithm(Id,InitialCity,Cities,CitiesToTravel,Distance),
         cities_to_json_cities(CitiesToTravel,JSONCitiesToTravel),
         DistanceJSON=distance_object(Distance,'KM'),
         prolog_to_json(cities_body_response(Id,JSONCitiesToTravel,DistanceJSON),RSP),
         format(user_output,"Request is: ~p~n",[JSONCitiesToTravel]),
-        reply_json(RSP).
+        reply_json(RSP),
+        !.
 
+% Computes a city circuit with a provided algorithm (List Only)
+%compute_algorithm(Request):-
+%        http_read_json(Request, JSONIn,[json_object(cities_body_request)]),
+%        json_to_prolog(JSONIn, CC),
+%        CC=cities_body_request(Id,L),
+%        json_cities_to_cities(L,Cities),
+%        [OriginalCity|CircuitCities]=Cities,
+%        compute_algorithm(Id,OriginalCity,CircuitCities,CitiesToTravel,Distance),
+%        cities_to_json_cities(CitiesToTravel,JSONCitiesToTravel),
+%        DistanceJSON=distance_object(Distance,'KM'),
+%        prolog_to_json(cities_body_response(Id,JSONCitiesToTravel,DistanceJSON),RSP),
+%        format(user_output,"Request is: ~p~n",[JSONCitiesToTravel]),
+%        reply_json(RSP),
+%        !.
+
+
+% Replies with 404 not found if the algorithm being applied the computation doesnt exist
+compute_algorithm(_Request):-
+        prolog_to_json(message_object("No such algorithm found"),Message),
+        reply_json(Message,[status(404)]).
 
 shortest_factory(Request):-
         http_read_json(Request, JSONIn,[json_object(factories_body_request)]),
