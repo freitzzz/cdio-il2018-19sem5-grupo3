@@ -30,7 +30,6 @@ compute_algorithm(3,Cities,CitiesToTravel,Distance):-
     Cities=[city(N,_,_)|_],
     tsp3(N,Distance,CitiesToTravel1),
     tuple_list_to_single_list(CitiesToTravel1,CitiesToTravel),
-    format(user_output,CitiesToTravel),
     retract_cities(Cities),
     !.
 

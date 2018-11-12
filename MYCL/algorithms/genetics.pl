@@ -2,10 +2,24 @@
 :- dynamic cities/1. % Factos dinâmicos de modo a permitir inserção e remoção em runtime
 
 
-% Carrega a base de conhecimento
-carregar:-['cdio-tsp.pl'],['intersept.pl'],['parameters.pl'].
-
 tsp4:-tsp4(_,_,_).
+
+% Aplica o algoritmo genético no TSP
+tsp4(C,L,D):-
+    city(C,_,_),
+    tspG(C,L,D),
+    !.
+
+% Aplica o algoritmo genético no TSP
+% TEMP SOLUTION
+%tsp4(C,L,D):-
+%    city(C,_,_),
+%    (
+%        tspG(C,L,D),!
+%        ;
+%        tsp4(C,L,D),!
+%    ),
+%    !.
 
 % Aplica o algoritmo genético no TSP
 tsp4(C,L,D):-
