@@ -2,7 +2,7 @@ tsp3(C, D, L):- tsp2(C, L1, D1),
                 opt2_segment(L1, [H|T]), %segments the list into entries (C1, C2)
 		!,
                 opt2_combinations(H, T, [H|T], L2, D1, D), %calculates the path
-		rGraph(C, L2, L). %reorders the path
+		rGraph(C, L2, L),!. %reorders the path
 
 opt2_segment([H1|[H]], [(H1, H)]).
 opt2_segment([H1|[H|T]], [(H1, H)|SL]):- opt2_segment([H|T], SL).
@@ -167,7 +167,7 @@ doIntersect(P1,Q1,P2,Q2):-
      % p2, q2 and q1 are colinear and q1 lies on segment p2q2
     O4 == 0, onSegment(P2, Q1, Q2),!
     ).
-
+	
 %----------------------------------------------------------------------------------------------------
 % rGraph(Origin,UnorderedListOfEdges,OrderedListOfEdges)
 %
@@ -182,12 +182,9 @@ rGraph(Orig,R,R3):-
 	delete(R,(X,Orig),R2),
 	reorderGraph([(Orig,X)|R2],R3).
 
-
 reorderGraph([],[]).
 
-reorderGraph([],[]).
-
-reorderGraph([(_,Y),(Y,_)],[]).
+reorderGraph([(X,Y),(Y,Z)|[]],[(X,Y)|[(Y,Z)]]).
 
 reorderGraph([(X,Y),(Y,Z)|R],[(X,Y)|R1]):-
 	reorderGraph([(Y,Z)|R],R1).
@@ -197,10 +194,12 @@ reorderGraph([(X,Y),(Z,W)|R],[(X,Y)|R2]):-
 	reorderGraph2(Y,[(Z,W)|R],R2).
 
 reorderGraph2(_,[],[]).
+
 reorderGraph2(Y,R1,[(Y,Z)|R2]):-
 	member((Y,Z),R1),!,
 	delete(R1,(Y,Z),R11),
 	reorderGraph2(Z,R11,R2).
+
 reorderGraph2(Y,R1,[(Y,Z)|R2]):-
 	member((Z,Y),R1),
 	delete(R1,(Z,Y),R11),

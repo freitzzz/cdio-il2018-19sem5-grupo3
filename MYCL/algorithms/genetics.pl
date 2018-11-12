@@ -2,10 +2,24 @@
 :- dynamic cities/1. % Factos dinâmicos de modo a permitir inserção e remoção em runtime
 
 
-% Carrega a base de conhecimento
-carregar:-['cdio-tsp.pl'],['intersept.pl'],['parameters.pl'].
-
 tsp4:-tsp4(_,_,_).
+
+% Aplica o algoritmo genético no TSP
+tsp4(C,L,D):-
+    city(C,_,_),
+    tspG(C,L,D),
+    !.
+
+% Aplica o algoritmo genético no TSP
+% TEMP SOLUTION
+%tsp4(C,L,D):-
+%    city(C,_,_),
+%    (
+%        tspG(C,L,D),!
+%        ;
+%        tsp4(C,L,D),!
+%    ),
+%    !.
 
 % Aplica o algoritmo genético no TSP
 tsp4(C,L,D):-
@@ -46,14 +60,14 @@ generate_ind(CityList,Ind):-
     random_permutation(CityList,Ind).
 
 % Condição de Paragem de gerar uma geração
-generate_gen(0,Pop,[]):-!,
-    write('Generation '),write(0),write(':'),nl,
-    write(Pop),nl.
+generate_gen(0,_,[]):-!.
+    %write('Generation '),write(0),write(':'),nl,
+    %write(Pop),nl.
 
 % Gera gerações
 generate_gen(G,Pop,TG):-
-    write('Generation '),write(G),write(':'),nl,
-    write(Pop),nl,
+    %write('Generation '),write(G),write(':'),nl,
+    %write(Pop),nl,
     crossover(Pop,NPop1),
     mutation(NPop1,NPop),
     evaluate_pop(NPop,NPopEv),
