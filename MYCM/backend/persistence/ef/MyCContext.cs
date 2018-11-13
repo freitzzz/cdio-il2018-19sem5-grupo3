@@ -112,7 +112,7 @@ namespace backend.persistence.ef
             builder.Entity<Product>().OwnsOne(p => p.maxSlotSize);              //embedded Dimensions
             builder.Entity<Product>().OwnsOne(p => p.recommendedSlotSize);      //embedded Dimensions
 
-            builder.Entity<Component>().HasKey(c => new { c.fatherProductId, c.complementedProductId });
+            builder.Entity<Component>().HasKey(c => new { c.fatherProductId, c.complementaryProductId });
 
             builder.Entity<Component>().HasOne(c => c.fatherProduct).WithMany(p => p.components).HasForeignKey(cp => cp.fatherProductId);
             //builder.Entity<Component>().HasOne(c => c.complementedProduct).WithMany(p => p.complementedProducts).HasForeignKey(cp => cp.complementedProductId);

@@ -43,13 +43,13 @@ namespace core.domain
         /// <summary>
         /// Long with the product which has the complemented product ID
         /// </summary>
-        public long complementedProductId { get; private set; }
+        public long complementaryProductId { get; private set; }
 
         /// <summary>
         /// Product with the complemented product 
         /// </summary>
-        private Product _complementedProduct;       //!private field used for lazy loading, do not use this for storing or fetching data
-        public Product complementedProduct { get => LazyLoader.Load(this, ref _complementedProduct); set => _complementedProduct = value; }
+        private Product _complementaryProduct;       //!private field used for lazy loading, do not use this for storing or fetching data
+        public Product complementaryProduct { get => LazyLoader.Load(this, ref _complementaryProduct); set => _complementaryProduct = value; }
         /// <summary>
         /// List with the restrictions which the current component can be have
         /// </summary>
@@ -87,7 +87,7 @@ namespace core.domain
             checkComponentProduct(complementedProduct);
             checkComponentProduct(fatherProduct);
             this.fatherProduct = fatherProduct;
-            this.complementedProduct = complementedProduct;
+            this.complementaryProduct = complementedProduct;
             this.restrictions = new List<Restriction>();
             this.mandatory = false;
         }
@@ -163,7 +163,7 @@ namespace core.domain
         /// Returns the component identity
         /// </summary>
         /// <returns>Product with the component identity</returns>
-        public Product id() { return complementedProduct; }
+        public Product id() { return complementaryProduct; }
 
         /// <summary>
         /// Checks if a certain component entity is the same as the current component
@@ -178,7 +178,7 @@ namespace core.domain
         public ComponentDTO toDTO()
         {
             ComponentDTO dto = new ComponentDTO();
-            dto.product = complementedProduct.toDTO();
+            dto.product = complementaryProduct.toDTO();
             dto.mandatory = mandatory;
 
             if (this.restrictions != null)

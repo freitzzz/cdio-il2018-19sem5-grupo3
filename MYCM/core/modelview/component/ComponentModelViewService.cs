@@ -16,7 +16,7 @@ namespace core.modelview.component{
         /// <returns>GetBasicComponentModelView with the component basic information model view</returns>
         public static GetBasicComponentModelView fromEntityAsBasic(Component component){
             GetBasicComponentModelView basicComponentModelView=new GetBasicComponentModelView();
-            basicComponentModelView.id=component.complementedProductId;
+            basicComponentModelView.id=component.complementaryProductId;
             basicComponentModelView.fatherProductID=component.fatherProductId;
             basicComponentModelView.mandatory=component.mandatory;
             return basicComponentModelView;
@@ -29,7 +29,7 @@ namespace core.modelview.component{
         /// <returns>GetComponentModelView with the component information model view</returns>
         public static GetComponentModelView fromEntity(Component component){
             GetComponentModelView componentModelView=new GetComponentModelView();
-            componentModelView.id=component.complementedProductId;
+            componentModelView.id=component.complementaryProductId;
             componentModelView.fatherProductID=component.fatherProductId;
             componentModelView.mandatory=component.mandatory;
             componentModelView.restrictions=RestrictionModelViewService.fromCollection(component.restrictions);
