@@ -15,6 +15,7 @@
   <link rel="apple-touch-icon" sizes="72x72" href="img/wardrobe.png">
   <link rel="apple-touch-icon" sizes="114x114" href="img/wardrobe.png">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="drawer" href="img/armis.png">
 
 
   <!-- Bootstrap -->
@@ -371,22 +372,21 @@
         <a class="btn-custom" onclick="openTab(event,'components');//changePBMaterial();">Next</a>
       </div>
 
-      <div id="components" class="column left tabcontent" style="display:none;height: 100%;width: 100%">
+      <div id="components" class="column left tabcontent" style="display:none">
         <h2>Components</h2>
         <div id="component" class="left active" style="display:grid;height: 100%;width: 100%">
-          <h3 align="left">Example</h3>
-          <div id="componentMaterial" style="display:grid;height:25%;width: 25%">
-            <a class="btn-custom">Colors <i class="material-icons">brush</i></a>
-            <a class="btn-custom">Finishes <i class="material-icons">palette</i></a>
+          <h3 align="center">Drawer Example</h3>
+          <div id="componentMaterials" align="center">
+            <a class="btn-custom" onclick="openTab(event,'materials');">Materials</a>
           </div>
-          <div id="componentButtons" style="display:inline">
+          <div id="componentButtons">
             <br><br><!-- #TODO: Remove <br>!!!-->
-            <a class="btn-custom">Previous</a>
-            <a class="btn-custom">Apply</a>
-            <a class="btn-custom">Next</a>
+            <a class="btn-component" onclick="chooseComponent('previous')"><i class="material-icons">arrow_back</i></a>
+            <a class="btn-component" onclick="applyComponent()"><i class="material-icons">check</i></a>
+            <a class="btn-component" onclick="chooseComponent('next')"><i class="material-icons">arrow_forward</i></a>
           </div>
         </div>
-        <br><br> <!-- #TODO: Remove <br>!!!-->
+        <br><br><br><br> <!-- #TODO: Remove <br>!!!-->
         <a class="btn-custom" onclick="openTab(event, 'materials');decreasePBCreate();">Back</a>
         <a class="btn-custom" onclick="openTab(event,'save');changePBSave();">Next</a>
       </div>
@@ -394,9 +394,9 @@
       <!--<a class="btn btn-custom btn-lg page-scroll" onclick="reloadCube();">Submit</a>--->
       <div class="column right">
 
-        <!--canvas id="webgl" width="1000" height="600">
+        <canvas id="webgl" width="800" height="600">
           Please use a browser that supports "canvas"
-        </canvas-->
+        </canvas>
         <script src="../Renderer/js/threeless.js"></script>
         <script src="../Renderer/js/SceneUtils.js"></script>
         <script src="../Renderer/js/OrbitControls.js"></script>
