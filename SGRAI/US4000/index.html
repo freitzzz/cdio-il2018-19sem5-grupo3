@@ -163,10 +163,17 @@
     }
 
     function reloadClosetSlots() {
-
+      var slotDiv = document.getElementById("slotDiv");
+      var length = slotDiv.childNodes.length - 1;
+      var list = [];
+      while(length >= 1){
+        list.push(slotDiv.childNodes[length].childNodes[1].nodeValue);
+        length--;
+      }
       var eventX = new CustomEvent("changeSlots", {
         detail: {
-          slots: document.getElementById("slotsInput").value
+          slots: document.getElementById("slotsInput").value,
+          slotWidths: list
         }
       });
       document.dispatchEvent(eventX);
@@ -411,7 +418,7 @@
         <br>
         <div id="slotDiv">
           <label class="checkboxcontainer">Different slot widths
-            <input type="checkbox" checked="unchecked" id="slotCheckbox" onclick="manageSlotSliders()">
+            <input type="checkbox" checked="unchecked" id="slotCheckbox" onclick="manageSlotSliders();reloadClosetSlots();">
             <span class="checkmark"></span>
           </label>
         </div>
