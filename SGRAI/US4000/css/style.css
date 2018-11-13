@@ -141,6 +141,33 @@ hr {
 	margin-top: 20px;
 	transition: all 0.3s;
 }
+
+.btn-component{
+	text-transform: uppercase;
+	color: #fff;
+	background-color: #0ba2db;
+	border: 0;
+	padding: 14px 20px;
+	margin: 0;
+	font-size: 12px;
+	border-radius: 2px;
+	margin-top: 0px;
+	transition: all 0.3s;
+}
+
+.btn-componentLeft{
+	text-transform: uppercase;
+	color: #fff;
+	background-color: #0ba2db;
+	border: 0;
+	padding: 14px 20px;
+	margin: 0;
+	font-size: 12px;
+	border-radius: 2px;
+	margin-top: 0px;
+	transition: all 0.3s;
+}
+
 .btn-custom:hover, .btn-custom:focus, .btn-custom.focus, .btn-custom:active, .btn-custom.active {
 	color: #fff;
 	background-color: #444;
@@ -503,6 +530,12 @@ ul.material_list>li>img{
     display: none;
     background-color: #0ba2db;
 }
+
+.checkboxcontainer{
+	width: 600px;
+	margin: 0px auto;
+}
+
 .checkboxcontainer {
     display: block;
     position: relative;

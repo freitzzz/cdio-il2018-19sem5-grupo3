@@ -152,11 +152,12 @@ function initCloset(textureSource){
  * Initializes the scene's lighting.
  */
 function initLighting(){
-    var spotlight = new THREE.SpotLight();
-    spotlight.position.set(400, 400, 0.70);
+    var spotlight = new THREE.SpotLight(0x404040);
+    camera.add(spotlight);
+
     spotlight.target = group;
     var lightAmbient = new THREE.AmbientLight(0x404040);
-    scene.add(spotlight, lightAmbient);
+    scene.add(lightAmbient);
 }
 
 /**
@@ -255,7 +256,7 @@ function changeColor(color){
  * Changes the current closet slots
  * @param {number} slots Number with the new closet slots
  */
-function changeClosetSlots(slots) {
+function changeClosetSlots(slots,slotWidths) {
     var newSlots = closet.computeNewClosetSlots(slots);
     if (newSlots > 0) {
         for (var i = 0; i < newSlots; i++) {
@@ -268,7 +269,17 @@ function changeClosetSlots(slots) {
             removeSlot();
         }
     }
+    /* if(slotWidths.length > 0){
+        updateSlotWidths(slotWidths);
+    } */
     updateClosetGV();
+}
+
+function updateSlotWidths(slotWidths){
+    for(let i = 0; i < slotWidths.length; i++){
+        var closet_face = group.getObjectById(closet_slots_faces_ids[i]);
+        closet_face.position.x = slotWidths[i];
+    }
 }
 
 /**
@@ -377,7 +388,7 @@ function registerEvents() {
     });
 
     document.addEventListener("changeSlots", function (changeSlotsEvent) {
-        changeClosetSlots(changeSlotsEvent.detail.slots);
+        changeClosetSlots(changeSlotsEvent.detail.slots, changeSlotsEvent.detail.slotWidths);
     });
     document.addEventListener("changeMaterial", function(changeMaterialEvent){
         applyTexture(changeMaterialEvent.detail.material);

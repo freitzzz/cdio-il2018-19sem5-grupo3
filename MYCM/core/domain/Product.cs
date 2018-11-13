@@ -103,8 +103,8 @@ namespace core.domain {
         /// </summary>
         /// <value>Gets/protected sets the value of the Component list.</value>
         //TODO: Should complemented products be a list and not a set?
-        private List<Component> _complementedProducts;//!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Component> complementedProducts { get => LazyLoader.Load(this, ref _complementedProducts); protected set => _complementedProducts = value; }
+        private List<Component> _components;//!private field used for lazy loading, do not use this for storing or fetching data
+        public List<Component> components { get => LazyLoader.Load(this, ref _components); protected set => _components = value; }
         /// <summary>
         /// List with the materials which the product can be made of
         /// </summary>
@@ -117,8 +117,8 @@ namespace core.domain {
         /// List containg all of the Product's measurements.
         /// </summary>
         /// <value>Gets/sets the measurements list value.</value>
-        private List<ProductMeasurement> _measurements;
-        public List<ProductMeasurement> measurements {get => LazyLoader.Load(this, ref _measurements); protected set => _measurements = value;}
+        private List<ProductMeasurement> _productMeasurements;
+        public List<ProductMeasurement> productMeasurements {get => LazyLoader.Load(this, ref _productMeasurements); protected set => _productMeasurements = value;}
 
         /// <summary>
         /// ProductCategory with the category which the product belongs to
@@ -198,10 +198,10 @@ namespace core.domain {
             foreach (Material mat in materials) {
                 this.productMaterials.Add(new ProductMaterial(this, mat));
             }
-            this.complementedProducts = new List<Component>();
-            this.measurements = new List<ProductMeasurement>();
+            this.components = new List<Component>();
+            this.productMeasurements = new List<ProductMeasurement>();
             foreach(Measurement measurement in measurements){
-                this.measurements.Add(new ProductMeasurement(this, measurement));
+                this.productMeasurements.Add(new ProductMeasurement(this, measurement));
             }
             this.productCategory = productCategory;
             //!MaxValue assigned here because customized dimensions can't have value 0
@@ -228,9 +228,9 @@ namespace core.domain {
                         IEnumerable<Measurement> measurements) :
                         this(reference, designation, productCategory, materials, measurements) {
             checkProductComplementedProducts(complementedProducts);
-            this.complementedProducts = new List<Component>();
+            this.components = new List<Component>();
             foreach (Product complementedProduct in complementedProducts) {
-                this.complementedProducts.Add(new Component(this, complementedProduct));
+                this.components.Add(new Component(this, complementedProduct));
             }
         }
 
@@ -280,9 +280,9 @@ namespace core.domain {
                         this(reference, designation, maxSlotSize, minSlotSize,
                         recommendedSlotSize, productCategory, materials, measurements) {
             checkProductComplementedProducts(complementedProducts);
-            this.complementedProducts = new List<Component>();
+            this.components = new List<Component>();
             foreach (Product complementedProduct in complementedProducts) {
-                this.complementedProducts.Add(new Component(this, complementedProduct));
+                this.components.Add(new Component(this, complementedProduct));
             }
         }
 
@@ -294,7 +294,7 @@ namespace core.domain {
         public bool addComplementedProduct(Product complementedProduct) {
             if (!isComplementedProductValidForAddition(complementedProduct))
                 return false;
-            complementedProducts.Add(new Component(this, complementedProduct));
+            components.Add(new Component(this, complementedProduct));
             return true;
         }
 
@@ -320,9 +320,9 @@ namespace core.domain {
             if(!isProductMeasurementValidForAddition(measurement)){
                 return false;
             }
-            int beforeCount = this.measurements.Count;
-            this.measurements.Add(new ProductMeasurement(this, measurement));
-            int afterCount = this.measurements.Count;
+            int beforeCount = this.productMeasurements.Count;
+            this.productMeasurements.Add(new ProductMeasurement(this, measurement));
+            int afterCount = this.productMeasurements.Count;
             return beforeCount + 1 == afterCount;
         }
 
@@ -362,8 +362,8 @@ namespace core.domain {
         /// <param name="measurement">Measurement being removed.</param>
         /// <returns>True if there is more than one Measurement in the list and Measurement could be removed; false otherwise.</returns>
         public bool removeMeasurement(Measurement measurement){
-            return measurements.Count > 1 && measurements.Remove(
-                measurements.Where(pm => pm.measurement.Equals(measurement)).SingleOrDefault()
+            return productMeasurements.Count > 1 && productMeasurements.Remove(
+                productMeasurements.Where(pm => pm.measurement.Equals(measurement)).SingleOrDefault()
                 );
         }
 
@@ -384,7 +384,7 @@ namespace core.domain {
         /// </summary>
         /// <param name="complementedProduct">Product with the complemented product being removed</param>
         /// <returns>boolean true if the complemented product was removed with success, false if not</returns>
-        public bool removeComplementedProduct(Product complementedProduct) { return complementedProducts.Remove(new Component(this, complementedProduct)); }
+        public bool removeComplementedProduct(Product complementedProduct) { return components.Remove(new Component(this, complementedProduct)); }
 
         /// <summary>
         /// Returns the product identity
@@ -421,11 +421,11 @@ namespace core.domain {
             dto.productCategory = productCategory.toDTO();
 
             if (dtoOptions.requiredUnit == null) {
-                dto.dimensions = new List<MeasurementDTO>(DTOUtils.parseToDTOS(measurements.Select(pm => pm.measurement)));
+                dto.dimensions = new List<MeasurementDTO>(DTOUtils.parseToDTOS(productMeasurements.Select(pm => pm.measurement)));
             } else {
                 dto.dimensions = new List<MeasurementDTO>();
 
-                foreach(ProductMeasurement measurement in this.measurements){
+                foreach(ProductMeasurement measurement in this.productMeasurements){
                     dto.dimensions.Add(measurement.measurement.toDTO(dtoOptions.requiredUnit));
                 }
             }
@@ -435,10 +435,10 @@ namespace core.domain {
                 dto.productMaterials.Add(pm.material.toDTO());
             }
             //TODO: remove null check once complement database mappping is complete
-            if (complementedProducts != null && complementedProducts.Count >= 0) {
+            if (components != null && components.Count >= 0) {
                 List<ComponentDTO> complementDTOList = new List<ComponentDTO>();
 
-                foreach (Component complement in complementedProducts) {
+                foreach (Component complement in components) {
                     complementDTOList.Add(complement.toDTO());
                 }
                 dto.complements = complementDTOList;
@@ -502,7 +502,7 @@ namespace core.domain {
         /// <returns>boolean true if the complemented product is valid for addition, false if not</returns>
         private bool isComplementedProductValidForAddition(Product complementedProduct) {
             if (complementedProduct == null || complementedProduct.Equals(this)) return false;
-            return !complementedProducts.Contains(new Component(this, complementedProduct));
+            return !components.Contains(new Component(this, complementedProduct));
         }
 
         /// <summary>
@@ -523,7 +523,7 @@ namespace core.domain {
         /// <param name="measurement">Measurement being validated.</param>
         /// <returns>True if the Measurement is not null nor has it been previously added to the list of Measurement; false otherwise.</returns>
         private bool isProductMeasurementValidForAddition(Measurement measurement){
-            return measurement != null && !measurements.Where(pm => pm.measurement.Equals(measurement)).Any();
+            return measurement != null && !productMeasurements.Where(pm => pm.measurement.Equals(measurement)).Any();
         }
 
         /// <summary>
@@ -689,7 +689,7 @@ namespace core.domain {
             if (component == null) {
                 throw new ArgumentNullException(INVALID_COMPONENT);
             }
-            foreach (Component comp in complementedProducts) {
+            foreach (Component comp in components) {
                 if (comp.complementedProduct.Equals(component)) {
                     comp.addRestriction(restriction);
                 }

@@ -169,6 +169,38 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureContinuousDimensionIntervalDoesNotHaveValueLessThanMinValue()
+        {
+            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(100.0, 200.0, 1.0);
+
+            Assert.False(instance.hasValue(99.9));
+        }
+
+        [Fact]
+        public void ensureContinuousDimensionIntervalDoesNotHaveValueGreaterThanMaxValue()
+        {
+            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(100.0, 200.0, 1.0);
+
+            Assert.False(instance.hasValue(200.1));
+        }
+
+        [Fact]
+        public void ensureContinuousDimensionIntervalDoesNotHaveValueNotMultipleOfIncrement()
+        {
+            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(100.0, 200.0, 1.0);
+
+            Assert.False(instance.hasValue(125.6));
+        }
+
+        [Fact]
+        public void ensureContinuousDimensionIntervalHasValue()
+        {
+            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(100.0, 200.0, 0.1);
+
+            Assert.True(instance.hasValue(125.6));
+        }
+
+        [Fact]
         public void ensureInstanceAndNullAreNotEqual()
         {
             ContinuousDimensionInterval instance = new ContinuousDimensionInterval(100.0, 150.0, 0.5);
