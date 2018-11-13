@@ -152,11 +152,12 @@ function initCloset(textureSource){
  * Initializes the scene's lighting.
  */
 function initLighting(){
-    var spotlight = new THREE.SpotLight();
-    spotlight.position.set(400, 400, 0.70);
+    var spotlight = new THREE.SpotLight(0x404040);
+    camera.add(spotlight);
+
     spotlight.target = group;
     var lightAmbient = new THREE.AmbientLight(0x404040);
-    scene.add(spotlight, lightAmbient);
+    scene.add(lightAmbient);
 }
 
 /**

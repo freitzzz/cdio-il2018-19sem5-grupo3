@@ -41,17 +41,114 @@
       loadDepth();
       loadSlots();
     }
-    function lengthConverter(valNum) {
-      document.getElementById("outputMeters").innerHTML = valNum / 0.0022046;
+    var lastUnit = "cm";
+    function convertUnit(unitToConvert){
+      var height,width,depth;
+      height = document.getElementById("height").value;
+      width = document.getElementById("width").value;
+      depth = document.getElementById("depth").value
+      switch(unitToConvert){
+        case "mm":
+          switch(lastUnit){
+            case "cm": 
+              document.getElementById("width").value=width*10;
+              document.getElementById("height").value=height*10;
+              document.getElementById("depth").value=depth*10;  
+              break;
+            case "m":
+              document.getElementById("width").value=width*1000;
+              document.getElementById("height").value=height*1000;
+              document.getElementById("depth").value=depth*1000;
+              break;
+          }
+          lastUnit = "mm";
+          break;
+        case "m":
+            switch(lastUnit){
+              case "cm": 
+                document.getElementById("width").value=width/100;
+                document.getElementById("height").value=height/100;
+                document.getElementById("depth").value=depth/100;  
+                break;
+              case "mm":
+                document.getElementById("width").value=width/1000;
+                document.getElementById("height").value=height/1000;
+                document.getElementById("depth").value=depth/1000;
+                break;
+            }
+          lastUnit = "m";
+          break;
+        default:
+          switch(lastUnit){
+            case "mm": 
+              document.getElementById("width").value=width/10;
+              document.getElementById("height").value=height/10;
+              document.getElementById("depth").value=depth/10;  
+              break;
+            case "m":
+              document.getElementById("width").value=width*100;
+              document.getElementById("height").value=height*100;
+              document.getElementById("depth").value=depth*100;
+              break;
+          }
+          lastUnit = "cm";
+          break;
+      }
+  
+    }
+    function openSlotSliders(){
+      var container = document.getElementById("slotDiv");
+
+      if(document.getElementById("slotCheckbox").checked == true){
+         var currentSlotSliders = container.childNodes.length-1 - (container.childNodes.length-1)/3;
+        var slotSlidersToAdd = document.getElementById("slotsInput").value;
+        var varoia = Math.abs((slotSlidersToAdd) - parseInt(currentSlotSliders));
+        alert(varoia);
+        for(let i = 0; i < varoia; i++){
+          var slotTextNode = document.createTextNode("Slot " + (currentSlotSliders + i-2));
+          slotTextNode.id = "slotTextNode" + (currentSlotSliders + i-2);
+          container.appendChild(slotTextNode);
+          var input = document.createElement("input");
+          input.type = "range";
+          input.name = "slot" + (currentSlotSliders + i-2);
+          input.id = "slotSlider" + (currentSlotSliders + i-2);
+          container.appendChild(input);
+          container.appendChild(document.createElement("br"));
+          container.appendChild(document.createElement("br"));
+        }
+        var initialNumberOfSlots = container.childNodes.length - 1;
+        var currentSlotSliders = parseInt(initialNumberOfSlots / 2);
+        var slotSlidersToAdd = parseInt(document.getElementById("slotsInput").value);
+        var diff = Math.abs(slotSlidersToAdd-currentSlotSliders);
+       
+       if(diff >= currentSlotSliders){
+          for(let i = currentSlotSliders; i < slotSlidersToAdd; i++){
+            var slotTextNode = document.createTextNode("Slot " + (i+1));
+            slotTextNode.id = "slotTextNode" + (i+1);
+            container.appendChild(slotTextNode);
+            var input = document.createElement("input");
+            input.type = "range";
+            input.name = "slot" + (i+1);
+            input.id = "slotSlider" + (i+1);
+            container.appendChild(input);
+            /* container.appendChild(document.createElement("br"));
+            container.appendChild(document.createElement("br")); */
+          }
+       }else{
+          for(let j = slotSlidersToAdd; j < currentSlotSliders; j++){
+            container.removeChild()
+          }
+       }
+      }
     }
     //loadDepth();
     function reloadCube() {
 
       var event = new CustomEvent("changeDimensions", {
         detail: {
-          height: document.getElementById("height").value,
-          width: document.getElementById("width").value,
-          depth: document.getElementById("depth").value
+          height: height,
+          width: width,
+          depth: depth
         }
       });
       document.dispatchEvent(event);
@@ -65,6 +162,7 @@
         }
       });
       document.dispatchEvent(eventX);
+      openSlotSliders();
     }
 
     function reloadMaterial(elementId) {
@@ -105,6 +203,15 @@
     }
     function loadSlots() {
       changeClosetSlots(document.getElementById("slotsInput").value);
+      var container = document.getElementById("slotDiv");
+      //alert(container.childNodes.length);
+      for(let i = 0; i < container.childNodes.length; i++){
+        if(container.childNodes[i].id != "slotCheckbox"){
+          container.removeChild(container.childNodes[i]);
+        }
+      }
+      document.getElementById("slotsInput").value = 3;
+      document.getElementById("slotCheckbox").checked = false;
     }
   </script>
 
@@ -278,11 +385,10 @@
         <input type="number" min="1" name="width" id="width" onchange="reloadCube();"><br>
         Depth:<br>
         <input type="number" min="1" name="depth" id="depth" onchange="reloadCube();"><br><br>
-        <select>
-          <option id="cm" value="cm" oninput="lengthConverter(this.value)" onchange="lengthConverter(this.value)">Centimeters
-          </option>
-          <option id="mm" value="mm" oninput="lengthConverter(this.value)" onchange="lengthConverter(this.value)">Milimeters</option>
-          <option id="m" value="m" oninput="lengthConverter(this.value)" onchange="lengthConverter(this.value)">Meters</option>
+        <select id="measurementUnit" onchange="convertUnit(this.value)">
+          <option id="cm" value="cm" >Centimeters</option>
+          <option id="mm" value="mm">Milimeters</option>
+          <option id="m" value="m" >Meters</option>
         </select><br>
         <br><br>
         <a class="btn-custom" onclick="openTab(event, 'slots');changePBSlots();">Next</a>
@@ -295,8 +401,15 @@
         <br>
         <br>
         <br>
-        <a class="btn-custom" onclick="openTab(event, 'dimensions');decreasePBSlots();">Back</a>
-        <a class="btn-custom" onclick="openTab(event,'materials');changePBMaterial();">Next</a>
+        <div id="slotDiv">
+          <label class="checkboxcontainer">Different slot widths
+            <input type="checkbox" checked="unchecked" id="slotCheckbox" onclick="openSlotSliders()">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+        <br><br><br><br>
+        <a class="btn-custom" id="slotBack" onclick="openTab(event, 'dimensions');decreasePBSlots()">Back</a>
+        <a class="btn-custom" id="slotNext" onclick="openTab(event,'materials');changePBMaterial()">Next</a>
       </div>
       <div id="materials" class="column left tabcontent" style="display:none">
         <h2>Materials</h2>
@@ -368,10 +481,9 @@
           </ul>
         </div>
         <br>
-        <a class="btn-custom" onclick="openTab(event, 'materials');//decreasePBSlots();">Back</a>
-        <a class="btn-custom" onclick="openTab(event,'components');//changePBMaterial();">Next</a>
+        <a class="btn-custom" onclick="openTab(event, 'slots');decreasePBMaterial();decreasePBCreate();">Back</a>
+        <a class="btn-custom" onclick="openTab(event, 'components');changePBCreate()">Next</a>
       </div>
-
       <div id="components" class="column left tabcontent" style="display:none">
         <h2>Components</h2>
         <div id="component" class="left active" style="display:grid;height: 100%;width: 100%">

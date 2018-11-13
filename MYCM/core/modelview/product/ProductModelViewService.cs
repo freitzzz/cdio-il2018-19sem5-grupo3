@@ -37,11 +37,11 @@ namespace core.modelview.product{
             productModelView.reference=product.reference;
             productModelView.designation=product.designation;
             productModelView.category=ProductCategoryModelViewService.fromEntityAsBasic(product.productCategory);
-            if(product.complementedProducts.Any()){
-                productModelView.components=ComponentModelViewService.fromCollection(product.complementedProducts);
+            if(product.components.Any()){
+                productModelView.components=ComponentModelViewService.fromCollection(product.components);
             }
             productModelView.materials=MaterialModelViewService.fromCollection(product.productMaterials.Select(pm => pm.material));
-            productModelView.measurements=MeasurementModelViewService.fromCollection(product.measurements.Select(pm => pm.measurement)).ToList();
+            productModelView.measurements=MeasurementModelViewService.fromCollection(product.productMeasurements.Select(pm => pm.measurement)).ToList();
             if(product.supportsSlots){
                 productModelView.slotSizes = new GetSlotDimensionsModelView();
                 productModelView.slotSizes.minSize = CustomizedDimensionsModelViewService.fromEntity(product.minSlotSize);

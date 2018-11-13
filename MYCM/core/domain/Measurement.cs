@@ -190,6 +190,23 @@ namespace core.domain
             return true;
         }
 
+        /// <summary>
+        /// Checks if all the specified values are contained in this instance.
+        /// </summary>
+        /// <param name="height">Height value being checked.</param>
+        /// <param name="width">Width value being checked.</param>
+        /// <param name="depth">Depth value being checked.</param>
+        /// <returns>true if all the given values are available in this instance; false, otherwise.</returns>
+        //TODO: should this throw an exception rather than returning a boolean?
+        public bool hasValues(double height, double width, double depth)
+        {
+            bool hasHeightValue = this.height.hasValue(height);
+            bool hasWidthvalue = this.width.hasValue(width);
+            bool hasDepthValue = this.depth.hasValue(depth);
+
+            return (hasHeightValue && hasWidthvalue && hasDepthValue);
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null || !obj.GetType().Equals(this.GetType()))

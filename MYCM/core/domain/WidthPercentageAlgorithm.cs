@@ -127,7 +127,7 @@ namespace core.domain
             List<Measurement> measurementsToRemove = new List<Measurement>();
             List<Measurement> measurementsToAdd = new List<Measurement>();
 
-            List<Measurement> productMeasurements = product.measurements.Select(m => m.measurement).ToList();
+            List<Measurement> productMeasurements = product.productMeasurements.Select(m => m.measurement).ToList();
 
             foreach (Measurement measurement in productMeasurements)
             {

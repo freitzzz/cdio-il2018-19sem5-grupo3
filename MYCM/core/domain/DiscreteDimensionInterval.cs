@@ -104,6 +104,26 @@ namespace core.domain
             }
         }
 
+        public override bool hasValue(double value)
+        {
+            bool matchingValueFound = false;
+
+            foreach (double dimensionValue in values)
+            {
+
+                decimal dimensionValueAsDecimal = (decimal)dimensionValue;
+                decimal valueAsDecimal = (decimal)value;
+
+                if (decimal.Compare(dimensionValueAsDecimal, valueAsDecimal) == 0)
+                {
+                    matchingValueFound = true;
+                    break;
+                }
+            }
+
+            return matchingValueFound;
+        }
+
         /// <summary>
         /// Equals method of DiscreteDimensionInterval
         /// Two objects are the same if they have the same list of values
