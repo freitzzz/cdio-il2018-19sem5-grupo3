@@ -3,6 +3,7 @@ using core.dto;
 using core.services;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace core.domain
 {
@@ -116,7 +117,7 @@ namespace core.domain
                 throw new ArgumentException(INCREMENT_INFINITY_REFERENCE);
             }
 
-            if (minValue <= 0|| maxValue <= 0 || increment <= 0)
+            if (minValue <= 0 || maxValue <= 0 || increment <= 0)
             {
                 throw new ArgumentException(NEGATIVE_OR_ZERO_VALUES_REFERENCE);
             }
@@ -134,6 +135,21 @@ namespace core.domain
             this.minValue = minValue;
             this.maxValue = maxValue;
             this.increment = increment;
+        }
+
+        public override bool hasValue(double value)
+        {
+            if (value < minValue || value > maxValue)
+            {
+                return false;
+            }
+            
+            decimal valueAsDecimal = (decimal)value;
+            decimal incrementAsDecimal = (decimal)increment;
+
+            decimal remainder = valueAsDecimal % incrementAsDecimal;
+
+            return decimal.Compare(remainder, 0) == 0;
         }
 
         /// <summary>

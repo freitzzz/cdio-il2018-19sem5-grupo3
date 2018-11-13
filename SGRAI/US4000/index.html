@@ -14,6 +14,8 @@
   <link rel="apple-touch-icon" href="img/wardrobe.png">
   <link rel="apple-touch-icon" sizes="72x72" href="img/wardrobe.png">
   <link rel="apple-touch-icon" sizes="114x114" href="img/wardrobe.png">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="drawer" href="img/armis.png">
 
 
   <!-- Bootstrap -->
@@ -39,24 +41,60 @@
       loadDepth();
       loadSlots();
     }
+    var lastUnit = "cm";
     function convertUnit(unitToConvert){
+      var height,width,depth;
+      height = document.getElementById("height").value;
+      width = document.getElementById("width").value;
+      depth = document.getElementById("depth").value
       switch(unitToConvert){
         case "mm":
-          document.getElementById("width").value=getCurrentClosetWidth()*10;
-          document.getElementById("height").value=getCurrentClosetHeight()*10;
-          document.getElementById("depth").value=getCurrentClosetDepth()*10;
+          switch(lastUnit){
+            case "cm": 
+              document.getElementById("width").value=width*10;
+              document.getElementById("height").value=height*10;
+              document.getElementById("depth").value=depth*10;  
+              break;
+            case "m":
+              document.getElementById("width").value=width*1000;
+              document.getElementById("height").value=height*1000;
+              document.getElementById("depth").value=depth*1000;
+              break;
+          }
+          lastUnit = "mm";
           break;
         case "m":
-          document.getElementById("width").value=getCurrentClosetWidth()/100;
-          document.getElementById("height").value=getCurrentClosetHeight()/100;
-          document.getElementById("depth").value=getCurrentClosetDepth()/100;
+            switch(lastUnit){
+              case "cm": 
+                document.getElementById("width").value=width/100;
+                document.getElementById("height").value=height/100;
+                document.getElementById("depth").value=depth/100;  
+                break;
+              case "mm":
+                document.getElementById("width").value=width/1000;
+                document.getElementById("height").value=height/1000;
+                document.getElementById("depth").value=depth/1000;
+                break;
+            }
+          lastUnit = "m";
           break;
         default:
-          document.getElementById("width").value=getCurrentClosetWidth();
-          document.getElementById("height").value=getCurrentClosetHeight();
-          document.getElementById("depth").value=getCurrentClosetDepth();
+          switch(lastUnit){
+            case "mm": 
+              document.getElementById("width").value=width/10;
+              document.getElementById("height").value=height/10;
+              document.getElementById("depth").value=depth/10;  
+              break;
+            case "m":
+              document.getElementById("width").value=width*100;
+              document.getElementById("height").value=height*100;
+              document.getElementById("depth").value=depth*100;
+              break;
+          }
+          lastUnit = "cm";
           break;
       }
+  
     }
     function manageSlotSliders(){
       var container = document.getElementById("slotDiv");
@@ -113,6 +151,7 @@
     }
     //loadDepth();
     function reloadCube() {
+
       var event = new CustomEvent("changeDimensions", {
         detail: {
           height: height,
@@ -220,6 +259,13 @@
       divi.classList.add("active");
 
     }
+
+    function changePBSave(){
+      var divi = document.getElementById("saveP");
+      divi.classList.add("active");
+
+    }
+
     function decreasePBSlots(){
       var divi = document.getElementById("divisionP");
       divi.classList.remove("active");
@@ -229,11 +275,10 @@
       divi.classList.remove("active");
 
     }
-    /* function decreasePBCreate(){
+    function decreasePBCreate(){
       var divi = document.getElementById("createP");
       divi.classList.remove("active");
-
-    } */
+    }
   </script>
   <script>
     //document.getElementById("dimensions").click();
@@ -259,7 +304,8 @@
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
   <!-- Navigation
     ==========================================-->
-  <nav id="menu" class="navbar navbar-default navbar-fixed-top">
+  
+    <!--nav id="menu" class="navbar navbar-default navbar-fixed-top"-->
     <div class="container">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
@@ -328,6 +374,7 @@
           <li class="before" id="divisionP">Number of divisions</li>
           <li class="before" id="materialP">Material and finish</li>
           <li class="before" id="createP">Creation</li>
+          <li class="before" id="saveP">Save</li>
         </ul>
       </div>
 
@@ -346,11 +393,10 @@
         <input type="number" min="1" name="width" id="width" onchange="reloadCube();"><br>
         Depth:<br>
         <input type="number" min="1" name="depth" id="depth" onchange="reloadCube();"><br><br>
-        <select id="measurementUnit">
-          <option id="cm" value="cm" onclick="convertUnit(this.value)">Centimeters
-          </option>
-          <option id="mm" value="mm" onclick="convertUnit(this.value)">Milimeters</option>
-          <option id="m" value="m" onclick="convertUnit(this.value)">Meters</option>
+        <select id="measurementUnit" onchange="convertUnit(this.value)">
+          <option id="cm" value="cm" >Centimeters</option>
+          <option id="mm" value="mm">Milimeters</option>
+          <option id="m" value="m" >Meters</option>
         </select><br>
         <br><br>
         <a class="btn-custom" onclick="openTab(event, 'slots');changePBSlots();">Next</a>
@@ -443,13 +489,32 @@
           </ul>
         </div>
         <br>
-        <a class="btn-custom" onclick="openTab(event, 'slots');decreasePBMaterial()">Back</a>
-        <a class="btn-custom" onclick="changePBCreate()">Next</a>
+        <a class="btn-custom" onclick="openTab(event, 'slots');decreasePBMaterial();decreasePBCreate();">Back</a>
+        <a class="btn-custom" onclick="openTab(event, 'components');changePBCreate()">Next</a>
       </div>
+      <div id="components" class="column left tabcontent" style="display:none">
+        <h2>Components</h2>
+        <div id="component" class="left active" style="display:grid;height: 100%;width: 100%">
+          <h3 align="center">Drawer Example</h3>
+          <div id="componentMaterials" align="center">
+            <a class="btn-custom" onclick="openTab(event,'materials');">Materials</a>
+          </div>
+          <div id="componentButtons">
+            <br><br><!-- #TODO: Remove <br>!!!-->
+            <a class="btn-component" onclick="chooseComponent('previous')"><i class="material-icons">arrow_back</i></a>
+            <a class="btn-component" onclick="applyComponent()"><i class="material-icons">check</i></a>
+            <a class="btn-component" onclick="chooseComponent('next')"><i class="material-icons">arrow_forward</i></a>
+          </div>
+        </div>
+        <br><br><br><br> <!-- #TODO: Remove <br>!!!-->
+        <a class="btn-custom" onclick="openTab(event, 'materials');decreasePBCreate();">Back</a>
+        <a class="btn-custom" onclick="openTab(event,'save');changePBSave();">Next</a>
+      </div>
+
       <!--<a class="btn btn-custom btn-lg page-scroll" onclick="reloadCube();">Submit</a>--->
       <div class="column right">
 
-        <canvas id="webgl" width="1000" height="600">
+        <canvas id="webgl" width="800" height="600">
           Please use a browser that supports "canvas"
         </canvas>
         <script src="../Renderer/js/threeless.js"></script>

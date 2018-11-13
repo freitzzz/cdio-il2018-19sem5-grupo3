@@ -86,6 +86,34 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureDiscreteDimensionIntervalDoesNotHaveValue()
+        {
+            List<double> values = new List<double>();
+            values.Add(12);
+            values.Add(13);
+            values.Add(13.5);
+            values.Add(14);
+
+            DiscreteDimensionInterval discreteDimension = new DiscreteDimensionInterval(values);
+
+            Assert.False(discreteDimension.hasValue(15));
+        }
+
+        [Fact]
+        public void ensureDiscretDimensioIntervalHasValue()
+        {
+            List<double> values = new List<double>();
+            values.Add(12);
+            values.Add(13);
+            values.Add(13.5);
+            values.Add(14);
+
+            DiscreteDimensionInterval discreteDimension = new DiscreteDimensionInterval(values);
+
+            Assert.True(discreteDimension.hasValue(13.5));
+        }
+
+        [Fact]
         public void ensureInstanceAndNullAreNotEqual()
         {
             var list = new List<double>();

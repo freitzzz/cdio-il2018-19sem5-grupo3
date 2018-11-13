@@ -16,6 +16,83 @@ namespace core_tests.domain
     //TODO Create a method that returns a customized product to substantially reduce lines of code
     public class CustomizedProductTest
     {
+        //These are all seperated into their own methods in order to allow for each property to be tested
+
+        private ProductCategory buildValidCategory()
+        {
+            return new ProductCategory("Closets");
+        }
+
+        private Finish buildGlossyFinish()
+        {
+            return Finish.valueOf("Glossy");
+        }
+
+        private Finish buildMatteFinish()
+        {
+            return Finish.valueOf("Matte");
+        }
+
+        private Color buildRedColor()
+        {
+            return Color.valueOf("Deep Red", 255, 0, 0, 0);
+        }
+
+        private Color buildGreenColor()
+        {
+            return Color.valueOf("Totally Green", 0, 255, 0, 0);
+        }
+
+        private Material buildValidMaterial()
+        {
+
+            Finish glossy = buildGlossyFinish();
+            Finish matte = buildMatteFinish();
+
+            Color red = buildRedColor();
+            Color green = buildGreenColor();
+
+
+            return new Material("#123", "MDF", new List<Color>() { red, green }, new List<Finish>() { glossy, matte });
+        }
+
+        private Product buildValidProduct()
+        {
+            Dimension firstHeightDimension = new ContinuousDimensionInterval(50, 100, 2);
+            Dimension firstWidthDimension = new DiscreteDimensionInterval(new List<double>() { 75, 80, 85, 90, 95, 120 });
+            Dimension firstDepthDimension = new SingleValueDimension(25);
+
+            Measurement firstMeasurement = new Measurement(firstHeightDimension, firstWidthDimension, firstDepthDimension);
+
+            Dimension sideDimension = new SingleValueDimension(60);
+            Measurement secondMeasurement = new Measurement(sideDimension, sideDimension, sideDimension);
+
+            return new Product("#429", "Fabulous Closet", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { firstMeasurement, secondMeasurement });
+        }
+
+
+        private CustomizedDimensions buildCustomizedProductDimensions()
+        {
+            return CustomizedDimensions.valueOf(76, 80, 25);
+        }
+
+        private CustomizedMaterial buildCustomizedMaterial()
+        {
+            Material material = buildValidMaterial();
+            Finish selectedFinish = buildMatteFinish();
+            Color selectedColor = buildRedColor();
+            return CustomizedMaterial.valueOf(material, selectedColor, selectedFinish);
+        }
+
+        private CustomizedProduct buildValidInstance()
+        {
+            CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
+
+            CustomizedDimensions selectedDimensions = buildCustomizedProductDimensions();
+
+            return new CustomizedProduct("#429", "Fabulous Closet", customizedMaterial, selectedDimensions, buildValidProduct());
+        }
+
         [Fact]
         public void ensureCustomizedProductCannotBeCreatedWithNullReference()
         {
@@ -54,7 +131,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -101,7 +178,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -145,7 +222,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -189,7 +266,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -232,7 +309,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
             string condition = ";";
             try
             {
@@ -296,7 +373,7 @@ namespace core_tests.domain
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
-            //CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            //CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
             string condition = ";";
             try
             {
@@ -330,7 +407,7 @@ namespace core_tests.domain
 
             Material material = new Material("11", "mat", colors, finishes);
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
             string condition = ";";
             try
             {
@@ -390,7 +467,7 @@ namespace core_tests.domain
             Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -442,7 +519,7 @@ namespace core_tests.domain
 
             Product product = new Product("#666", "Shelf", category,
             matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -495,7 +572,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -548,7 +625,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -600,7 +677,7 @@ namespace core_tests.domain
 
             Product product = new Product("#666", "Shelf", category,
             matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -653,7 +730,7 @@ namespace core_tests.domain
             Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -707,7 +784,7 @@ namespace core_tests.domain
             Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -761,7 +838,7 @@ namespace core_tests.domain
             Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -814,7 +891,7 @@ namespace core_tests.domain
             Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -866,7 +943,7 @@ namespace core_tests.domain
             Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -914,7 +991,7 @@ namespace core_tests.domain
             Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -967,7 +1044,7 @@ namespace core_tests.domain
             Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1019,7 +1096,7 @@ namespace core_tests.domain
             Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1067,7 +1144,7 @@ namespace core_tests.domain
             Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(5, 5, 5),
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), category,
             matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1118,7 +1195,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1169,7 +1246,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1218,7 +1295,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1271,7 +1348,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1326,7 +1403,8 @@ namespace core_tests.domain
 
             Product product = new Product("#666", "Shelf", category, matsList, new List<Measurement>() { measurement1 });
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions1 = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
+            CustomizedDimensions customizedDimensions2 = CustomizedDimensions.valueOf(666.1, 666.1, 666.1);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1334,10 +1412,10 @@ namespace core_tests.domain
             //Product2 
             Product product2 = new Product("#666", "Shelf", category, matsList, new List<Measurement>() { measurement2 });
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = new CustomizedProduct("#666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions1, product);
 
 
-            CustomizedProduct cp1 = new CustomizedProduct("#66666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions, product2);
+            CustomizedProduct cp1 = new CustomizedProduct("#66666", "AND READ-ER-BIBLE", custMaterial1, customizedDimensions2, product2);
 
             Assert.NotEqual(cp, cp1);
         }
@@ -1386,7 +1464,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1435,7 +1513,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1480,15 +1558,24 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", CustomizedDimensions.valueOf(30, 30, 30),
-                                            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(10, 10, 10),
+            CustomizedDimensions maxSlotSize = CustomizedDimensions.valueOf(60, 80, 60);
+            CustomizedDimensions minSlotSize = CustomizedDimensions.valueOf(15, 15, 15);
+            CustomizedDimensions recommendedSlotSize = CustomizedDimensions.valueOf(40, 50, 30);
+
+            Product product = new Product("#666", "Shelf", maxSlotSize,
+                                           minSlotSize, recommendedSlotSize,
                                              category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+
+            //these dimensions have to be coherent with the Product's available dimensions
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
+
+            //all the values in this dimension are in the range defined by the min and max sizes
+            CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(40, 80, 25);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
-            Slot slot = new Slot(customizedDimensions);
-            Assert.NotNull(new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product, new List<Slot>(new[] { slot })));
+            Slot slot = new Slot(slotDimensions);
+            Assert.NotNull(new CustomizedProduct("#666", "Shelf", custMaterial1, customizedProductDimensions, product, new List<Slot>(new[] { slot })));
         }
         [Fact]
         public void ensureGetHashCodeWorks()
@@ -1528,7 +1615,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1572,7 +1659,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("#666", "Shelf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1635,7 +1722,7 @@ namespace core_tests.domain
             List<Slot> slotList = new List<Slot>();
             slotList.Add(slot);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1696,7 +1783,7 @@ namespace core_tests.domain
             slotList.Add(slot);
             otherSlotList.Add(otherSlot);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color1, finish2);
 
@@ -1751,7 +1838,7 @@ namespace core_tests.domain
             Product product = new Product("#555", "designation", maxSlotSize, minSlotSize, recommendedSlotSize, category,
                 matsList, measurements);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1810,7 +1897,7 @@ namespace core_tests.domain
             Product product = new Product("#555", "designation", maxSlotSize, minSlotSize, recommendedSlotSize, category,
                 matsList, measurements);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1832,10 +1919,13 @@ namespace core_tests.domain
 
             values2.Add(500.0); //Width
 
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            DiscreteDimensionInterval discreteDimension = new DiscreteDimensionInterval(values2);
 
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
+            ContinuousDimensionInterval continuousDimension = new ContinuousDimensionInterval(100.0, 350.0, 2.0);
+
+            Measurement measurement = new Measurement(discreteDimension, discreteDimension, discreteDimension);
+            Measurement otherMeasurement = new Measurement(continuousDimension, discreteDimension, continuousDimension);
+            List<Measurement> measurements = new List<Measurement>() { measurement, otherMeasurement };
 
             //Creating a material
             string reference = "1160912";
@@ -1862,14 +1952,14 @@ namespace core_tests.domain
             Product product = new Product("#555", "designation", category,
                 matsList, measurements);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color1, finish2);
 
             CustomizedProduct customizedProduct = new CustomizedProduct("#444", "Hi", customizedMaterial, customizedDimensions, product);
 
-            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(20, 20, 20);
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(182.0, 500.0, 200.0);
 
             Assert.True(customizedProduct.changeCustomizedDimensions(otherCustomizedDimensions));
             Assert.NotEqual(customizedProduct.customizedDimensions, customizedDimensions);
@@ -1915,7 +2005,7 @@ namespace core_tests.domain
             Product product = new Product("#555", "designation", category,
                 matsList, measurements);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -1968,7 +2058,7 @@ namespace core_tests.domain
             Product product = new Product("#555", "designation", category,
                 matsList, measurements);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -2025,7 +2115,7 @@ namespace core_tests.domain
             Product product = new Product("#555", "designation", category,
                 matsList, measurements);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
@@ -2079,7 +2169,7 @@ namespace core_tests.domain
             Product product = new Product("#555", "designation", category,
                 matsList, measurements);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -2132,7 +2222,7 @@ namespace core_tests.domain
             Product product = new Product("#555", "designation", category,
                 matsList, measurements);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -2184,7 +2274,7 @@ namespace core_tests.domain
             Product product = new Product("#555", "designation", category,
                 matsList, measurements);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color1, finish);
@@ -2237,7 +2327,7 @@ namespace core_tests.domain
             Product product = new Product("#555", "designation", category,
                 matsList, measurements);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -2288,7 +2378,7 @@ namespace core_tests.domain
             Product product = new Product("#555", "designation", category,
                 matsList, measurements);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color1, finish2);
@@ -2340,7 +2430,7 @@ namespace core_tests.domain
             Product product = new Product("#555", "designation", category,
                 matsList, measurements);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish2);
@@ -2393,7 +2483,7 @@ namespace core_tests.domain
             Product product = new Product("#555", "designation", category,
                 matsList, measurements);
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color1, finish2);
