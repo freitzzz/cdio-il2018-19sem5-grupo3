@@ -58,50 +58,58 @@
           break;
       }
     }
-    function openSlotSliders(){
+    function manageSlotSliders(){
       var container = document.getElementById("slotDiv");
-
+      
       if(document.getElementById("slotCheckbox").checked == true){
-        /* var currentSlotSliders = container.childNodes.length-1 - (container.childNodes.length-1)/3;
-        var slotSlidersToAdd = document.getElementById("slotsInput").value;
-        var varoia = Math.abs((slotSlidersToAdd) - parseInt(currentSlotSliders));
-        alert(varoia);
-        for(let i = 0; i < varoia; i++){
-          var slotTextNode = document.createTextNode("Slot " + (currentSlotSliders + i-2));
-          slotTextNode.id = "slotTextNode" + (currentSlotSliders + i-2);
-          container.appendChild(slotTextNode);
-          var input = document.createElement("input");
-          input.type = "range";
-          input.name = "slot" + (currentSlotSliders + i-2);
-          input.id = "slotSlider" + (currentSlotSliders + i-2);
-          container.appendChild(input);
-          container.appendChild(document.createElement("br"));
-          container.appendChild(document.createElement("br"));
-        } */
-        var initialNumberOfSlots = container.childNodes.length - 1;
-        var currentSlotSliders = parseInt(initialNumberOfSlots / 2);
+        var initialNumberOfSlots = parseInt(container.childNodes.length - 1);
         var slotSlidersToAdd = parseInt(document.getElementById("slotsInput").value);
-        var diff = Math.abs(slotSlidersToAdd-currentSlotSliders);
-       
-       if(diff >= currentSlotSliders){
-          for(let i = currentSlotSliders; i < slotSlidersToAdd; i++){
-            var slotTextNode = document.createTextNode("Slot " + (i+1));
-            slotTextNode.id = "slotTextNode" + (i+1);
-            container.appendChild(slotTextNode);
-            var input = document.createElement("input");
-            input.type = "range";
-            input.name = "slot" + (i+1);
-            input.id = "slotSlider" + (i+1);
-            container.appendChild(input);
-            /* container.appendChild(document.createElement("br"));
-            container.appendChild(document.createElement("br")); */
-          }
-       }else{
-          for(let j = slotSlidersToAdd; j < currentSlotSliders; j++){
-            container.removeChild()
-          }
-       }
+        var diff = Math.abs(slotSlidersToAdd-initialNumberOfSlots);
+       if(slotSlidersToAdd < initialNumberOfSlots){
+        removeSlotSliders(container,initialNumberOfSlots,slotSlidersToAdd);
+        }else{
+          addSlotSliders(container,initialNumberOfSlots,slotSlidersToAdd);
+        }
+      }else{
+        var length = container.childNodes.length;
+        while(length > 1){
+          container.removeChild(container.childNodes[length-1]);
+          length--;
+        }
       }
+    }
+    function addSlotSliders(container,currentSlotSliders,slotSlidersToAdd){
+      for(let i = currentSlotSliders; i < slotSlidersToAdd; i++){
+                var span = document.createElement("span");
+                span.id = "slotTextNode" + (i+1);
+                var slotTextNode = document.createTextNode("Slot " + (i+1)+ ":   ");
+                var input = document.createElement("input");
+                input.type = "range";
+                input.name = "slot" + (i+1);
+                //TODO communicate with MYCM for slot min, max and recommended sizes
+                input.min = "1";
+                input.max = "5";
+                input.value = "3";
+                input.id = "slotSlider" + (i+1);
+                var value = document.createTextNode(input.value);
+                value.id = "slotValue"+(i+1);
+                span.appendChild(slotTextNode);
+                span.appendChild(value);
+                span.appendChild(document.createElement("br"));
+                span.appendChild(input);
+                span.addEventListener("input",sliderOnInput(span));
+                container.appendChild(span);
+      }
+    }
+    function removeSlotSliders(container,initialNumberOfSlots,slotSlidersToAdd){
+      for(let j = slotSlidersToAdd; j < initialNumberOfSlots; j++){
+            container.removeChild(container.childNodes[initialNumberOfSlots]);
+      }
+    }
+    function sliderOnInput(span){
+      span.childNodes[3].oninput = function (){
+                  span.childNodes[1].textContent = span.childNodes[3].value;
+                }
     }
     //loadDepth();
     function reloadCube() {
@@ -123,7 +131,7 @@
         }
       });
       document.dispatchEvent(eventX);
-      openSlotSliders();
+      manageSlotSliders();
     }
 
     function reloadMaterial(elementId) {
@@ -357,7 +365,7 @@
         <br>
         <div id="slotDiv">
           <label class="checkboxcontainer">Different slot widths
-            <input type="checkbox" checked="unchecked" id="slotCheckbox" onclick="openSlotSliders()">
+            <input type="checkbox" checked="unchecked" id="slotCheckbox" onclick="manageSlotSliders()">
             <span class="checkmark"></span>
           </label>
         </div>
