@@ -439,7 +439,7 @@ namespace core_tests.domain {
             ContinuousDimensionInterval continuous2 = new ContinuousDimensionInterval(50.0, 80.0, 2.0);
             Measurement measurement1 = new Measurement(continuous1, continuous1, continuous1);
             Measurement measurement2 = new Measurement(continuous2, continuous2, continuous2);
-            ContinuousDimensionInterval continuous3 = new ContinuousDimensionInterval(35.0, 45.0, 2.0);
+            ContinuousDimensionInterval continuous3 = new ContinuousDimensionInterval(35.0, 45.0, 1.0);
             ContinuousDimensionInterval continuous4 = new ContinuousDimensionInterval(10.0, 20.0, 2.0);
             Measurement measurement3 = new Measurement(continuous3, continuous3, continuous3);
             Measurement measurement4 = new Measurement(continuous4, continuous4, continuous4);
