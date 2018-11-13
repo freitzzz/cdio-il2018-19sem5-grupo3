@@ -14,6 +14,7 @@
   <link rel="apple-touch-icon" href="img/wardrobe.png">
   <link rel="apple-touch-icon" sizes="72x72" href="img/wardrobe.png">
   <link rel="apple-touch-icon" sizes="114x114" href="img/wardrobe.png">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 
   <!-- Bootstrap -->
@@ -372,12 +373,20 @@
 
       <div id="components" class="column left tabcontent" style="display:none;height: 100%;width: 100%">
         <h2>Components</h2>
-        <div id="component" class="left active" style="display:inherit;height: 100%;width: 100%">
-          <h3 align="center">Example</h3>
-          <a class="btn-custom" style="width:10%">Previous</a>
-          <a class="btn-custom" style="width:10%">Apply</a>
-          <a class="btn-custom" style="width:10%">Next</a>
+        <div id="component" class="left active" style="display:grid;height: 100%;width: 100%">
+          <h3 align="left">Example</h3>
+          <div id="componentMaterial" style="display:grid;height:25%;width: 25%">
+            <a class="btn-custom">Colors</a>
+            <a class="btn-custom">Finishes</a>
+          </div>
+          <div id="componentButtons" style="display:inline">
+            <br><br><!-- #TODO: Remove <br>!!!-->
+            <a class="btn-custom">Previous</a>
+            <a class="btn-custom">Apply</a>
+            <a class="btn-custom">Next</a>
+          </div>
         </div>
+        <br><br> <!-- #TODO: Remove <br>!!!-->
         <a class="btn-custom" onclick="openTab(event, 'materials');decreasePBCreate();">Back</a>
         <a class="btn-custom" onclick="openTab(event,'save');changePBSave();">Next</a>
       </div>
