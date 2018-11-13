@@ -144,7 +144,7 @@ namespace core.domain
             checkProduct(product);
             checkString(reference, INVALID_PRODUCT_REFERENCE);
             checkString(designation, INVALID_PRODUCT_DESIGNATION);
-            checkCustomizedMaterial(customizedMaterial);
+            checkCustomizedMaterial(customizedMaterial, product);
             checkCustomizedDimensions(customizedDimensions, product);
 
             this.reference = reference;
@@ -250,7 +250,8 @@ namespace core.domain
         /// <returns>true if the customized dimensions were changed successfully</returns>
         public bool changeCustomizedDimensions(CustomizedDimensions customizedDimensions)
         {
-            checkCustomizedDimensions(customizedDimensions, product);
+            //!An exception is thrown if this is not true, yet this returns a boolean
+            checkCustomizedDimensions(customizedDimensions, this.product);
             this.customizedDimensions = customizedDimensions;
             return true;
         }
@@ -262,7 +263,8 @@ namespace core.domain
         /// <returns>true if the customized material was changed successfully</returns>
         public bool changeCustomizedMaterial(CustomizedMaterial customizedMaterial)
         {
-            checkCustomizedMaterial(customizedMaterial);
+            //!An exception is thrown if this is not true, yet this returns a boolean
+            checkCustomizedMaterial(customizedMaterial, this.product);
             this.customizedMaterial = customizedMaterial;
             return true;
         }
@@ -364,7 +366,7 @@ namespace core.domain
         /// Checks if the CustomizedMaterial is valid
         /// </summary>
         /// <param name="customizedMaterial">CustomizedMaterial to check</param>
-        private void checkCustomizedMaterial(CustomizedMaterial customizedMaterial)
+        private void checkCustomizedMaterial(CustomizedMaterial customizedMaterial, Product product)
         {
             if (customizedMaterial == null) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_MATERIAL);
             if (!product.containsMaterial(customizedMaterial.material)) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_MATERIAL);
