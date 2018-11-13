@@ -254,8 +254,8 @@ namespace core_tests.domain {
             inputs.Add(maxInput);
             algorithm.setInputValues(inputs);
             Product alteredProduct = algorithm.apply(custom, component);
-            Assert.True(alteredProduct.measurements.Count == 1);
-            double remainingValue = ((SingleValueDimension)alteredProduct.measurements[0].measurement.width).value;
+            Assert.True(alteredProduct.productMeasurements.Count == 1);
+            double remainingValue = ((SingleValueDimension)alteredProduct.productMeasurements[0].measurement.width).value;
             Assert.True(remainingValue == 100);
         }
         /// <summary>
@@ -311,7 +311,7 @@ namespace core_tests.domain {
             inputs.Add(maxInput);
             algorithm.setInputValues(inputs);
             Product alteredProduct = algorithm.apply(custom, component);
-            DiscreteDimensionInterval discreteDimension = (DiscreteDimensionInterval)alteredProduct.measurements[0].measurement.width;
+            DiscreteDimensionInterval discreteDimension = (DiscreteDimensionInterval)alteredProduct.productMeasurements[0].measurement.width;
             DiscreteDimensionInterval expected = new DiscreteDimensionInterval(new List<double>(new[] { 90.0, 100.0 }));
             Assert.True(discreteDimension.Equals(expected));
         }
@@ -339,8 +339,8 @@ namespace core_tests.domain {
             inputs.Add(maxInput);
             algorithm.setInputValues(inputs);
             Product alteredProduct = algorithm.apply(custom, component);
-            Assert.True(alteredProduct.measurements[0].measurement.width.GetType() == typeof(SingleValueDimension));
-            Assert.True(((SingleValueDimension)alteredProduct.measurements[0].measurement.width).value == 100);
+            Assert.True(alteredProduct.productMeasurements[0].measurement.width.GetType() == typeof(SingleValueDimension));
+            Assert.True(((SingleValueDimension)alteredProduct.productMeasurements[0].measurement.width).value == 100);
         }
         /// <summary>
         /// Ensures method apply removes discrete dimensions with no values
@@ -392,8 +392,8 @@ namespace core_tests.domain {
             inputs.Add(maxInput);
             algorithm.setInputValues(inputs);
             Product alteredProduct = algorithm.apply(custom, component);
-            Assert.True(((ContinuousDimensionInterval)alteredProduct.measurements[0].measurement.width).minValue == 90);
-            Assert.True(((ContinuousDimensionInterval)alteredProduct.measurements[0].measurement.width).maxValue == 100);
+            Assert.True(((ContinuousDimensionInterval)alteredProduct.productMeasurements[0].measurement.width).minValue == 90);
+            Assert.True(((ContinuousDimensionInterval)alteredProduct.productMeasurements[0].measurement.width).maxValue == 100);
         }
         /// <summary>
         /// Ensures method apply condenses continuous dimension intervals with same minimum and maximum value into a single value dimension
@@ -419,8 +419,8 @@ namespace core_tests.domain {
             inputs.Add(maxInput);
             algorithm.setInputValues(inputs);
             Product alteredProduct = algorithm.apply(custom, component);
-            Assert.True(alteredProduct.measurements[0].measurement.width.GetType() == typeof(SingleValueDimension));
-            Assert.True(((SingleValueDimension)alteredProduct.measurements[0].measurement.width).value == 100);
+            Assert.True(alteredProduct.productMeasurements[0].measurement.width.GetType() == typeof(SingleValueDimension));
+            Assert.True(((SingleValueDimension)alteredProduct.productMeasurements[0].measurement.width).value == 100);
         }
         /// <summary>
         /// Ensures method apply removes continuous dimension intervals whose interval does not fit allowed dimension
