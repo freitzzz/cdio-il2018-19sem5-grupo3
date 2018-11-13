@@ -375,10 +375,10 @@
         <input type="number" min="1" name="width" id="width" onchange="reloadCube();"><br>
         Depth:<br>
         <input type="number" min="1" name="depth" id="depth" onchange="reloadCube();"><br><br>
-        <select id="measurementUnit">
-          <option id="cm" value="cm" onclick="convertUnit(this.value)">Centimeters</option>
-          <option id="mm" value="mm" onclick="convertUnit(this.value)">Milimeters</option>
-          <option id="m" value="m" onclick="convertUnit(this.value)">Meters</option>
+        <select id="measurementUnit" onchange="convertUnit(this.value)">
+          <option id="cm" value="cm" >Centimeters</option>
+          <option id="mm" value="mm">Milimeters</option>
+          <option id="m" value="m" >Meters</option>
         </select><br>
         <br><br>
         <a class="btn-custom" onclick="openTab(event, 'slots');changePBSlots();">Next</a>
