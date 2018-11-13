@@ -14,6 +14,8 @@
   <link rel="apple-touch-icon" href="img/wardrobe.png">
   <link rel="apple-touch-icon" sizes="72x72" href="img/wardrobe.png">
   <link rel="apple-touch-icon" sizes="114x114" href="img/wardrobe.png">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="drawer" href="img/armis.png">
 
 
   <!-- Bootstrap -->
@@ -249,6 +251,13 @@
       divi.classList.add("active");
 
     }
+
+    function changePBSave(){
+      var divi = document.getElementById("saveP");
+      divi.classList.add("active");
+
+    }
+
     function decreasePBSlots(){
       var divi = document.getElementById("divisionP");
       divi.classList.remove("active");
@@ -258,11 +267,10 @@
       divi.classList.remove("active");
 
     }
-     function decreasePBCreate(){
+    function decreasePBCreate(){
       var divi = document.getElementById("createP");
       divi.classList.remove("active");
-
-    } 
+    }
   </script>
   <script>
     //document.getElementById("dimensions").click();
@@ -288,7 +296,8 @@
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
   <!-- Navigation
     ==========================================-->
-  <nav id="menu" class="navbar navbar-default navbar-fixed-top">
+  
+    <!--nav id="menu" class="navbar navbar-default navbar-fixed-top"-->
     <div class="container">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
@@ -357,6 +366,7 @@
           <li class="before" id="divisionP">Number of divisions</li>
           <li class="before" id="materialP">Material and finish</li>
           <li class="before" id="createP">Creation</li>
+          <li class="before" id="saveP">Save</li>
         </ul>
       </div>
 
@@ -472,12 +482,31 @@
         </div>
         <br>
         <a class="btn-custom" onclick="openTab(event, 'slots');decreasePBMaterial();decreasePBCreate();">Back</a>
-        <a class="btn-custom" onclick="changePBCreate()">Next</a>
+        <a class="btn-custom" onclick="openTab(event, 'components');changePBCreate()">Next</a>
       </div>
+      <div id="components" class="column left tabcontent" style="display:none">
+        <h2>Components</h2>
+        <div id="component" class="left active" style="display:grid;height: 100%;width: 100%">
+          <h3 align="center">Drawer Example</h3>
+          <div id="componentMaterials" align="center">
+            <a class="btn-custom" onclick="openTab(event,'materials');">Materials</a>
+          </div>
+          <div id="componentButtons">
+            <br><br><!-- #TODO: Remove <br>!!!-->
+            <a class="btn-component" onclick="chooseComponent('previous')"><i class="material-icons">arrow_back</i></a>
+            <a class="btn-component" onclick="applyComponent()"><i class="material-icons">check</i></a>
+            <a class="btn-component" onclick="chooseComponent('next')"><i class="material-icons">arrow_forward</i></a>
+          </div>
+        </div>
+        <br><br><br><br> <!-- #TODO: Remove <br>!!!-->
+        <a class="btn-custom" onclick="openTab(event, 'materials');decreasePBCreate();">Back</a>
+        <a class="btn-custom" onclick="openTab(event,'save');changePBSave();">Next</a>
+      </div>
+
       <!--<a class="btn btn-custom btn-lg page-scroll" onclick="reloadCube();">Submit</a>--->
       <div class="column right">
 
-        <canvas id="webgl" width="1000" height="600">
+        <canvas id="webgl" width="800" height="600">
           Please use a browser that supports "canvas"
         </canvas>
         <script src="../Renderer/js/threeless.js"></script>
