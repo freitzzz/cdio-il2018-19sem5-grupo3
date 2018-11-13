@@ -241,7 +241,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("Kinda dead", "So tired", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             //Customized Material
             CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
@@ -388,7 +388,7 @@ namespace core_tests.domain
             IEnumerable<Material> matsList = materials;
 
             Product product = new Product("Kinda dead", "So tired", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(1.2, 1.5, 20.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             //Customized Material
             CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);

@@ -3,7 +3,7 @@ using Xunit;
 using core.domain;
 using System.Collections.Generic;
 
-namespace support_tests.domain
+namespace core_tests.domain
 {
     /// <summary>
     /// Unit testing for class CommercialCatalogueCatalogueCollection.
@@ -43,7 +43,7 @@ namespace support_tests.domain
             measurements);
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             CustomizedProduct customizedProduct = new CustomizedProduct("gonna", "roll", customizedMaterial,
             customizedDimensions, product);
 
@@ -95,7 +95,7 @@ namespace support_tests.domain
             measurements);
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             CustomizedProduct customizedProduct = new CustomizedProduct("gonna", "roll", customizedMaterial,
             customizedDimensions, product);
 
@@ -150,7 +150,7 @@ namespace support_tests.domain
             measurements);
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             CustomizedProduct customizedProduct = new CustomizedProduct("gonna", "roll", customizedMaterial,
             customizedDimensions, product);
 

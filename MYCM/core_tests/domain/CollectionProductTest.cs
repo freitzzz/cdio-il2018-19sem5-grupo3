@@ -34,7 +34,7 @@ namespace core_tests.domain
 
             Assert.NotNull(new CollectionProduct(new CustomizedProductCollection("Hang in there"),
             new CustomizedProduct("Or dont", "You choose", CustomizedMaterial.valueOf(material, color, finish),
-            CustomizedDimensions.valueOf(1.2, 1.5, 20.3), product)));
+            CustomizedDimensions.valueOf(500.0, 500.0, 500.0), product)));
         }
 
         [Fact]

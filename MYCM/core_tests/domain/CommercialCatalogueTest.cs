@@ -34,7 +34,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Acabamento polido");
 
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
             Dimension widthDimension = new SingleValueDimension(30);
@@ -91,7 +91,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Acabamento polido");
 
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
             Dimension widthDimension = new SingleValueDimension(30);
@@ -147,7 +147,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
             Dimension widthDimension = new SingleValueDimension(30);
@@ -206,7 +206,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
             Dimension widthDimension = new SingleValueDimension(30);
@@ -264,7 +264,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
             Dimension widthDimension = new SingleValueDimension(30);
@@ -320,7 +320,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
             Dimension widthDimension = new SingleValueDimension(30);
@@ -377,7 +377,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
             Dimension widthDimension = new SingleValueDimension(30);
@@ -437,7 +437,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
@@ -499,7 +499,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
@@ -557,7 +557,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
@@ -610,7 +610,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
@@ -663,7 +663,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
@@ -717,7 +717,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
             Dimension widthDimension = new SingleValueDimension(30);
@@ -801,7 +801,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
 
@@ -858,7 +858,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
 
@@ -914,7 +914,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
 
@@ -970,7 +970,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Acabamento polido");
 
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
 
@@ -1026,7 +1026,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Acabamento polido");
 
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
 
@@ -1084,7 +1084,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Acabamento polido");
 
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
 
@@ -1138,7 +1138,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Acabamento polido");
 
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
 
@@ -1189,7 +1189,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Acabamento polido");
 
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
 
@@ -1244,7 +1244,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
 
             Dimension heightDimension = new SingleValueDimension(21);
@@ -1303,7 +1303,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
@@ -1363,7 +1363,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
 
@@ -1424,7 +1424,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
 
@@ -1482,7 +1482,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
 
@@ -1543,7 +1543,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
 
@@ -1597,7 +1597,7 @@ namespace core_tests.domain
             string designation = "Commercial Catalogue 2019";
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.5, 10, 4.3);
+            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);
             Dimension widthDimension = new SingleValueDimension(30);

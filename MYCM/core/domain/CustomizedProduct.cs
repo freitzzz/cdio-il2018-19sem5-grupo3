@@ -373,19 +373,30 @@ namespace core.domain
         }
 
         /// <summary>
-        /// Checks if the CustomizedDimensions are valid
+        /// Checks if the CustomizedDimensions are valid, that means that they are not null and that they must represent a selection of values available from the Product's collection of Measurement.
         /// </summary>
         /// <param name="customizedDimensions">CustomizedDimensions to check</param>
+        /// <param name="product">Product to which this instance of CustomizedProduct is associated.</param>
         private void checkCustomizedDimensions(CustomizedDimensions customizedDimensions, Product product)
         {
             if (customizedDimensions == null) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_DIMENSIONS);
 
-            List<Measurement> possibleMeasurements = product.measurements.Select(m => m.measurement).ToList();
+            List<Measurement> possibleMeasurements = product.productMeasurements.Select(m => m.measurement).ToList();
 
             foreach (Measurement measurement in possibleMeasurements)
             {
-                //TODO Implement method
+                double height = customizedDimensions.height;
+                double width = customizedDimensions.width;
+                double depth = customizedDimensions.depth;
+
+                bool hasDimensionValues = measurement.hasValues(height, width, depth);
+
+                if(hasDimensionValues){
+                    return; //return immediately if all the values match
+                }
             }
+
+            throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_DIMENSIONS);
         }
 
         /// <summary>
