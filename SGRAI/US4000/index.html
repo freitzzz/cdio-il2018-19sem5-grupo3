@@ -97,8 +97,8 @@
     }
     function manageSlotSliders(){
       var container = document.getElementById("slotDiv");
-      
-      if(document.getElementById("slotCheckbox").checked == true){
+      var checkbox = document.getElementById("slotCheckbox");
+      if(checkbox.checked == true && document.getElementById("slotsInput").value > 1){
         var initialNumberOfSlots = parseInt(container.childNodes.length - 1);
         var slotSlidersToAdd = parseInt(document.getElementById("slotsInput").value);
         var diff = Math.abs(slotSlidersToAdd-initialNumberOfSlots);
@@ -112,6 +112,13 @@
         while(length > 1){
           container.removeChild(container.childNodes[length-1]);
           length--;
+        }
+        if(document.getElementById("slotsInput").value == 1){
+          checkbox.checked = false;
+          checkbox.disabled = true;
+          alert("You can't edit slot widths since there is only one");
+        }else{
+          checkbox.disabled = false;
         }
       }
     }
@@ -134,7 +141,7 @@
                 span.appendChild(value);
                 span.appendChild(document.createElement("br"));
                 span.appendChild(input);
-                span.addEventListener("input",sliderOnInput(span));
+                span.addEventListener("input",sliderOnInput(container,span,i));
                 container.appendChild(span);
       }
     }
@@ -143,9 +150,41 @@
             container.removeChild(container.childNodes[initialNumberOfSlots]);
       }
     }
-    function sliderOnInput(span){
+    function sliderOnInput(slotDiv,span,spanIndex){
+
+      if(spanIndex < 0) return; 
+
       span.childNodes[3].oninput = function (){
-                  span.childNodes[1].textContent = span.childNodes[3].value;
+
+                  var value = parseInt(span.childNodes[3].value)-1;
+                  alert(value);
+                  span.childNodes[1].textContent = parseInt(span.childNodes[3].value);
+                  var previousIndex = spanIndex - 1;
+                  var nextIndex = spanIndex + 1;
+      
+                  if(previousIndex >= 0){
+                    let newValue = value + 1;
+                    if(newValue >= span.childNodes[3].min){
+                      slotDiv.childNodes[previousIndex+1].childNodes[3].value = newValue;
+                      slotDiv.childNodes[previousIndex+1].childNodes[1].textContent = newValue;
+                    }else{
+                      alert("You have reached the minimum slot width for slot " + (previousIndex + 1));
+                      slotDiv.childNodes[previousIndex+1].childNodes[3].value = value - 1;
+                      slotDiv.childNodes[previousIndex+1].childNodes[1].textContent = value - 1;
+                    }
+                  }
+
+                  if(nextIndex >= 0 && nextIndex < slotDiv.childNodes.length - 1){
+                    let newValue = value - 1;
+                    if(newValue <= span.childNodes[3].max){
+                      slotDiv.childNodes[nextIndex+1].childNodes[3].value = newValue;
+                      slotDiv.childNodes[nextIndex+1].childNodes[1].textContent = newValue;
+                    }else{
+                      alert("You have reached the maximum slot width for slot " + (nextIndex + 1));
+                      slotDiv.childNodes[nextIndex+1].childNodes[3].value = value + 1;
+                      slotDiv.childNodes[nextIndex+1].childNodes[1].textContent = value + 1;
+                    }
+                  }
                 }
     }
     //loadDepth();
@@ -226,6 +265,7 @@
       }
       document.getElementById("slotsInput").value = 3;
       document.getElementById("slotCheckbox").checked = false;
+      reloadClosetSlots();
     }
   </script>
 
