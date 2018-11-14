@@ -153,9 +153,9 @@
 
       var event = new CustomEvent("changeDimensions", {
         detail: {
-          height: height,
-          width: width,
-          depth: depth
+          height: document.getElementById("height").value,
+          width: document.getElementById("width").value,
+          depth: document.getElementById("depth").value
         }
       });
       document.dispatchEvent(event);
