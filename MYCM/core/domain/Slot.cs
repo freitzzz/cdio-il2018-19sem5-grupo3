@@ -5,13 +5,11 @@ using support.dto;
 using core.dto;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace core.domain
-{
+namespace core.domain {
     /// <summary>
     /// Represents a product slot
     /// </summary>
-    public class Slot : DTOAble<SlotDTO>
-    {
+    public class Slot : DTOAble<SlotDTO> {
 
         /// <summary>
         /// Constant that represents the message that occurs if the slot dimensions are null
@@ -27,25 +25,25 @@ namespace core.domain
         /// DoubleValue with the width of the slot
         /// </summary>
         private CustomizedDimensions _slotDimensions;   //!private field used for lazy loading, do not use this for storing or fetching data
-        public CustomizedDimensions slotDimensions {get => LazyLoader.Load(this, ref _slotDimensions); protected set => _slotDimensions = value;}
+        public CustomizedDimensions slotDimensions { get => LazyLoader.Load(this, ref _slotDimensions); protected set => _slotDimensions = value; }
 
         /// <summary>
         /// Customized Products that are inside a slot
         /// </summary>
         private List<CustomizedProduct> _customizedProducts;    //!private field used for lazy loading, do not use this for storing or fetching data
-        public List<CustomizedProduct> customizedProducts {get => LazyLoader.Load(this, ref _customizedProducts); protected set => _customizedProducts = value;}
+        public List<CustomizedProduct> customizedProducts { get => LazyLoader.Load(this, ref _customizedProducts); protected set => _customizedProducts = value; }
 
         /// <summary>
         /// Injected LazyLoader.
         /// </summary>
         /// <value>Gets/sets the value of the LazyLoader.</value>
-        private ILazyLoader LazyLoader{get; set;}
+        private ILazyLoader LazyLoader { get; set; }
 
         /// <summary>
         /// Constructor used for injecting the LazyLoader.
         /// </summary>
         /// <param name="lazyLoader">LazyLoader being injected.</param>
-        private Slot(ILazyLoader lazyLoader){
+        private Slot(ILazyLoader lazyLoader) {
             this.LazyLoader = lazyLoader;
         }
 
@@ -59,8 +57,7 @@ namespace core.domain
         /// width, height and depth
         /// </summary>
         /// <param name="slotDimensions">Slots customized dimensions</param>
-        public Slot(CustomizedDimensions slotDimensions)
-        {
+        public Slot(CustomizedDimensions slotDimensions) {
             checkSlotDimensions(slotDimensions);
             this.slotDimensions = slotDimensions;
             customizedProducts = new List<CustomizedProduct>();
@@ -70,10 +67,8 @@ namespace core.domain
         /// Checks if the DoubleValues used to instantiate a Slot are valid
         /// </summary>
         /// <param name="slotDimensions">Slots customized dimensions</param>
-        private void checkSlotDimensions(CustomizedDimensions slotDimensions)
-        {
-            if (slotDimensions == null)
-            {
+        private void checkSlotDimensions(CustomizedDimensions slotDimensions) {
+            if (slotDimensions == null) {
                 throw new ArgumentException(NULL_DIMENSIONS);
             }
         }
@@ -83,11 +78,12 @@ namespace core.domain
         /// </summary>
         /// <param name="productToAdd">customized product to be added</param>
         /// <returns>true if the customized product is added, false if otherwise</returns>
-        public bool addCustomizedProduct(CustomizedProduct productToAdd)
-        {
+        public bool addCustomizedProduct(CustomizedProduct productToAdd) {
             //TODO take restrictions into account
-            if (productToAdd == null)
-            {
+            if (productToAdd == null) {
+                return false;
+            }
+            if (!productFits(productToAdd)) {
                 return false;
             }
             int previousCount = customizedProducts.Count;
@@ -103,19 +99,28 @@ namespace core.domain
         public bool removeCustomizedProduct(CustomizedProduct productToRemove) => productToRemove == null ? false : customizedProducts.Remove(productToRemove);
 
         /// <summary>
+        /// Checks if customized product fits into the slot
+        /// </summary>
+        /// <param name="component">customized product to check</param>
+        /// <returns>true if product fits, false if not</returns>
+        private bool productFits(CustomizedProduct component) {
+            CustomizedDimensions componentDimensions = component.customizedDimensions;
+            if (componentDimensions.height <= slotDimensions.height && componentDimensions.width <= slotDimensions.width && componentDimensions.depth <= slotDimensions.depth) {
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
         /// Equals of Slot
         /// </summary>
         /// <param name="obj">object to be compared</param>
         /// <returns>true if the objects are equal, false if otherwise</returns>
-        public override bool Equals(object obj)
-        {
-            if (this == obj)
-            {
+        public override bool Equals(object obj) {
+            if (this == obj) {
                 return true;
             }
 
-            if (obj == null || !obj.GetType().Equals(this.GetType()))
-            {
+            if (obj == null || !obj.GetType().Equals(this.GetType())) {
                 return false;
             }
 
@@ -128,11 +133,9 @@ namespace core.domain
         /// Hash Code of Slot
         /// </summary>
         /// <returns>hash code of a slot instance</returns>
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             int hashCode = slotDimensions.GetHashCode();
-            foreach (CustomizedProduct customizedProduct in customizedProducts)
-            {
+            foreach (CustomizedProduct customizedProduct in customizedProducts) {
                 hashCode *= customizedProduct.GetHashCode();
             }
             return hashCode;
@@ -142,19 +145,16 @@ namespace core.domain
         /// ToString of Slot
         /// </summary>
         /// <returns>string description of a slot instance</returns>
-        public override string ToString()
-        {
+        public override string ToString() {
             return String.Format("Slot Dimensions: {0}\nSlot Products:{1}", slotDimensions.ToString(), customizedProducts.ToString());
         }
 
-        public SlotDTO toDTO()
-        {
+        public SlotDTO toDTO() {
             SlotDTO slotDTO = new SlotDTO();
             slotDTO.Id = Id;
             slotDTO.customizedDimensions = slotDimensions.toDTO();
             slotDTO.customizedProducts = new List<CustomizedProductDTO>();
-            foreach (CustomizedProduct customizedProduct in customizedProducts)
-            {
+            foreach (CustomizedProduct customizedProduct in customizedProducts) {
                 slotDTO.customizedProducts.Add(customizedProduct.toDTO());
             }
             return slotDTO;
