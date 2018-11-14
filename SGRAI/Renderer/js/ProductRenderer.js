@@ -264,9 +264,10 @@ function changeClosetSlots(slots, slotWidths) {
         }
     } else {
         newSlots = -newSlots;
-        if (newSlots == 0) removeSlot();
-        for (var i = 0; i < newSlots; i++) {
-            removeSlot();
+        if (newSlots > 0){
+            for (var i = 0; i < newSlots; i++) {
+                removeSlot();
+            }
         }
     }
     /* if(slotWidths.length > 0){
