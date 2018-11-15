@@ -110,7 +110,7 @@ function main(textureSource) {
 
     scene.add(dispPlane);
     scene.add(camera);
-
+    loadMax();
     registerEvents();
     animate();
 }
@@ -236,7 +236,6 @@ function changeClosetDimensions(width, height, depth) {
         var wall = Math.abs(group.getObjectById(closet_faces_ids[2]).position.x) - firstSlot;
 
         if (wall <= firstSlot) { //!TODO change if-condition from wall <= firstSlot to wall <= minimumSlotSize
-            alert("The width has reached its minimum limit.");
             document.getElementById("width").value = getCurrentClosetWidth();
         } else {
             closet.changeClosetWidth(width);
@@ -293,16 +292,14 @@ function changeClosetSlots(slots) {
 
 function reloadClosetSlots2(slotWidths) {
     changeClosetSlots(slots);
+
     if (slotWidths.length > 0) {
-        updateSlotWidths(slotWidths);
-    }
-}
-
-function updateSlotWidths(slotWidths) {
-    for (let i = 0; i < slotWidths.length; i++) {
-        var closetSlot = group.getObjectById(closet_slots_faces_ids[i]);
-
-        closetSlot.position.x = slotWidths[i];
+        for (let i = 0; i < slotWidths.length; i++) {
+            var maxPosition = group.getObjectById(closet_faces_ids[3]).position.x;
+            var closetWidth = getCurrentClosetWidth();
+            var newPosition = (slotWidths[i] * maxPosition) / closetWidth;
+            group.getObjectById(closet_slots_faces_ids[i]).position.x = newPosition;
+        }
     }
 }
 
@@ -432,6 +429,15 @@ function registerEvents() {
     });
 }
 
+function loadMax() {
+    var event = new CustomEvent("loadMax", {
+        detail: {
+            max: group.getObjectById(closet_faces_ids[3]).position.x
+        }
+    })
+    document.dispatchEvent(event);
+}
+
 /**
  * Represents the action that occurs when the mouse's left button is pressed (mouse down),
  * which is recognizing the object being clicked on, setting it as the selected one if
@@ -539,6 +545,23 @@ function moveSlot() {
         var valueCloset = group.getObjectById(closet_faces_ids[2]).position.x;
         if (Math.abs(newPosition) < Math.abs(valueCloset)) { //Doesn't allow the slot to overlap the faces of the closet
             selected_slot.position.x = newPosition;
+            var container = document.getElementById("slotDiv");
+
+
+            if (document.getElementById("slotCheckbox").checked == true) {
+                for (let i = 0; i < closet_slots_faces_ids.length; i++) {
+                    if (group.getObjectById(closet_slots_faces_ids[i]) == selected_slot) {
+                        var span = container.childNodes[i + 1];
+
+                        var aux = parseInt(((newPosition + group.getObjectById(closet_faces_ids[3]).position.x)*getCurrentClosetWidth()*2)/
+                        (Math.abs(group.getObjectById(closet_faces_ids[3]).position.x)+Math.abs(group.getObjectById(closet_faces_ids[2]).position.x)));
+
+
+                        span.childNodes[3].value = aux;
+                        span.childNodes[1].textContent = aux;
+                    }
+                }
+            }
         }
     }
 }

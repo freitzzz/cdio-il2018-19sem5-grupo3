@@ -148,10 +148,14 @@
         input.type = "range";
         input.name = "slot" + (i + 1);
         //TODO communicate with MYCM for slot min, max and recommended sizes
-        input.min = "0";
-        input.max = document.getElementById("width").value;
-        var medio = parseInt(document.getElementById("width").value) / 2;
-        input.value = medio;
+        document.addEventListener("loadMax", function (loadMaxEvent) {
+          input.max = loadMaxEvent.detail.max,
+            input.min = - loadMaxEvent.detail.max
+        });
+
+        input.min = 0;
+        input.max = parseFloat(document.getElementById("width").value);
+
         input.id = "slotSlider" + (i + 1);
         var value = document.createTextNode(input.value);
         value.id = "slotValue" + (i + 1);
@@ -161,6 +165,18 @@
         span.appendChild(input);
         span.addEventListener("input", sliderOnInput(container, span, i));
         container.appendChild(span);
+      }
+      changeSliderInputValue(container);
+    }
+
+    function changeSliderInputValue(container) {
+      var width = parseFloat(document.getElementById("width").value);
+
+      for (let i = 1; i < container.childNodes.length; i++) {
+        var value = Math.round((i * width) / container.childNodes.length);
+
+        container.childNodes[i].childNodes[3].value = value;
+        container.childNodes[i].childNodes[1].textContent = value;
       }
     }
 
@@ -211,7 +227,17 @@
 
       if (length > 0) {
         for (let i = 1; i < length; i++) {
-          list.push(parseInt(slotDiv.childNodes[i].childNodes[3].value));
+          var sliderValue = parseFloat(slotDiv.childNodes[i].childNodes[3].value);
+          var sliderWidth = parseFloat(document.getElementById("width").value);
+          var actualWidth = sliderWidth / 2;
+
+          if (sliderValue >= actualWidth) {
+            var converted = (actualWidth * sliderValue) / sliderWidth;
+            list.push(parseFloat(converted));
+          } else {
+            var converted = sliderValue - actualWidth;
+            list.push(parseFloat(converted));
+          }
         }
       }
 
@@ -252,7 +278,7 @@
     }
 
     function loadWidth() {
-      document.getElementById("width").value = getCurrentClosetWidth();
+      document.getElementById("width").value = getCurrentClosetWidth() * 2;
     }
     function loadHeight() {
       document.getElementById("height").value = getCurrentClosetHeight();
