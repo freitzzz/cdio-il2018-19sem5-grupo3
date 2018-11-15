@@ -32,7 +32,8 @@ class TicTacToeGame extends Game{
      * @param {Player} player Player with the player being checked
      */
     won(player){
-        return TIC_TAC_TOE_UTILS.won(player,this._board.getBoard());
+        if(TIC_TAC_TOE_UTILS.won(player,this._board.getBoard()))
+            throw `Player $player has won the game!`;
     }
 }
 

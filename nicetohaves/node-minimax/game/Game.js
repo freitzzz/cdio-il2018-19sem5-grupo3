@@ -40,7 +40,7 @@ class Game{
      * @param {Player} player Player with the player being checked 
      */
     _grantPlayerIsAtGame(player){
-        if(this._playerX!=player||this._playerY!=player){
+        if(this._playerX!==player&&this._playerY!==player){
             throw `Player $player is not on the current game`;
         }
     }

@@ -30,7 +30,6 @@ function won(player,board){
             }
             currentBoardIndex++;
         }
-        console.log("->>>>>>>>>>>>> "+playedPositions);
         if(isWinningPlay(playedPositions)){
             return true;
         }
@@ -47,7 +46,6 @@ function won(player,board){
             currentBoardIndex++;
         }
         if(isWinningPlay(playedPositions)){
-            console.log("????????");
             return true;
         }
     }
