@@ -163,7 +163,7 @@ namespace core.application
             //TODO:CHECK PRODUCT EXISTENCE
             Product componentBeingAdded=productRepository.find(addComponentToProductDTO.complementedProductID);
             //TODO:CHECK COMPLEMENTED PRODUCT EXISTENCE
-            productToAddComponent.addComplementedProduct(componentBeingAdded);
+            productToAddComponent.addComplementaryProduct(componentBeingAdded);
             //TODO:CHECK PRODUCT UPDATE SUCCESS
             productRepository.update(productToAddComponent);
             //TODO:REPLACE WITH MODEL VIEW DTO (ComponentDetailsDTO)
@@ -181,7 +181,7 @@ namespace core.application
             //TODO:CHECK PRODUCT EXISTENCE
             Product productBeingDeleted=productRepository.find(deleteComponentFromProductDTO.componentID);
             //TODO:CHECK COMPLEMENTED PRODUCT EXISTENCE
-            productToRemoveComponent.removeComplementedProduct(productBeingDeleted);
+            productToRemoveComponent.removecomplementaryProduct(productBeingDeleted);
             //TODO:CHECK PRODUCT UPDATE SUCCESS
             productRepository.update(productToRemoveComponent);
         }

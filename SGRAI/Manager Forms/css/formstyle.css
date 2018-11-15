@@ -16,7 +16,6 @@ h2 {
 	font-weight: 300;
 	font-size: 35px;
 	color: #444;
-	
 }
 h4 {
   color:  #0ba2db;
@@ -80,6 +79,18 @@ select:active {
   color: #b9b9b9;
   border-color:  #0ba2db;
 }
+input[type="color"] {
+	-webkit-appearance: none;
+	border: none;
+	width: 50px;
+	height: 50px;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+	border: none;
+}
 input[type="checkbox"] {
   display: none;
 }
@@ -112,7 +123,6 @@ input:checked + label:after {
   opacity: 1;
 }
 select {
-
   height: 3.4em;
   line-height: 2;
 }
@@ -233,53 +243,4 @@ select option {
 	border-radius: 2px;
 	margin-top: 20px;
 	transition: all 0.3s;
-}
-/* colorpicker styles */
-.colorpicker {
-  background-color: #222222;
-  border-radius: 5px 5px 5px 5px;
-  box-shadow: 2px 2px 2px #444444;
-  color: #FFFFFF;
-  font-size: 12px;
-  position: absolute;
-  width: 460px;
-}
-#picker {
-  cursor: crosshair;
-  float: left;
-  margin: 10px;
-  border: 0;
-}
-.preview {
-  background: url("../images/select.png") repeat scroll center center transparent;
-  border-radius: 3px;
-  box-shadow: 2px 2px 2px #444444;
-  cursor: pointer;
-  height: 30px;
-  width: 30px;
-}
-.controls {
-  float: right;
-  margin: 10px;
-}
-.controls > div {
-  border: 1px solid #2F2F2F;
-  margin-bottom: 5px;
-  overflow: hidden;
-  padding: 5px;
-}
-.controls label {
-  float: left;
-}
-.controls > div input {
-  background-color: #121212;
-  border: 1px solid #2F2F2F;
-  color: #DDDDDD;
-  float: right;
-  font-size: 10px;
-  height: 14px;
-  margin-left: 6px;
-  text-align: center;
-  text-transform: uppercase;
-  width: 75px;
 }
