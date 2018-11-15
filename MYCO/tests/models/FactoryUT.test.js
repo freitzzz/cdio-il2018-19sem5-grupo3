@@ -37,6 +37,10 @@ describe('create',()=>{
             test('cant-create-factory-with-null-designation',ensureCantCreateFactoryWithNullDesignation);
             test('cant-create-factory-with-empty-designation',ensureCantCreateFactoryWithEmptyDesignation);
         });
+        describe('invalid-locations-creations',()=>{
+            test('cant-create-factory-with-null-location',ensureCantCreateFactoryWithNullLocation);
+            test('cant-create-factory-with-empty-location',ensureCantCreateFactoryWithEmptyLocation);
+        });
     });
 });
 
@@ -47,7 +51,7 @@ function ensureCantCreateFactoryWithNullReference(){
     let factory=()=>{
         createFactory(null
         ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
-        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION)
+        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION);
     };
     expect(factory).toThrow();
 }
@@ -59,7 +63,7 @@ function ensureCantCreateFactoryWithEmptyReference(){
     let factory=()=>{
         createFactory(""
         ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
-        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION)
+        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION);
     };
     expect(factory).toThrow();
 }
@@ -71,7 +75,7 @@ function ensureCantCreateFactoryWithNullDesignation(){
     let factory=()=>{
         createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
         ,null
-        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION)
+        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION);
     };
     expect(factory).toThrow();
 }
@@ -83,7 +87,31 @@ function ensureCantCreateFactoryWithEmptyDesignation(){
     let factory=()=>{
         createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
         ,""
-        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION)
+        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION);
+    };
+    expect(factory).toThrow();
+}
+
+/**
+ * Ensures that its not possible to create a factory with a null location
+ */
+function ensureCantCreateFactoryWithNullLocation(){
+    let factory=()=>{
+        createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+        ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
+        ,null);
+    };
+    expect(factory).toThrow();
+}
+
+/**
+ * Ensures that its not possible to create a factory with an empty location
+ */
+function ensureCantCreateFactoryWithEmptyLocation(){
+    let factory=()=>{
+        createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+        ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
+        ,{});
     };
     expect(factory).toThrow();
 }
