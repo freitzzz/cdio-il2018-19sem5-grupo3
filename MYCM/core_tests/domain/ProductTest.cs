@@ -212,7 +212,7 @@ namespace core_tests.domain {
             Material productMaterial = PREDEFINED_MATERIAL;
             Product product = new Product("#666", "Shelf", PREDEFEFINED_CATEGORY, new List<Material>(new[] { productMaterial }), PREDEFINED_MEASUREMENTS);
             //Since we added a null complemented product then it should return false
-            Assert.False(product.addComplementedProduct(null));
+            Assert.False(product.addComplementaryProduct(null));
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace core_tests.domain {
             Product complementedProduct = new Product("#665", "Shelf", PREDEFEFINED_CATEGORY, new List<Material>(new[] { productMaterial }), PREDEFINED_MEASUREMENTS);
             Product product = new Product("#666", "Shelf", PREDEFEFINED_CATEGORY, new List<Material>(){ productMaterial }, new List<Product>(){complementedProduct}, PREDEFINED_MEASUREMENTS);
             //Since we added a duplicated complemented product then it should return false
-            Assert.False(product.addComplementedProduct(complementedProduct));
+            Assert.False(product.addComplementaryProduct(complementedProduct));
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace core_tests.domain {
             Product complementedProduct = new Product("#665", "Shelf", PREDEFEFINED_CATEGORY, new List<Material>(new[] { productMaterial }), PREDEFINED_MEASUREMENTS);
             Product product = new Product("#666", "Shelf", PREDEFEFINED_CATEGORY, new List<Material>(new[] { productMaterial }), new List<Product>(){complementedProduct}, PREDEFINED_MEASUREMENTS);
             //Since we added a complemented product which is the same reference as the base product then it should return false
-            Assert.False(product.addComplementedProduct(product));
+            Assert.False(product.addComplementaryProduct(product));
         }
 
         /// <summary>

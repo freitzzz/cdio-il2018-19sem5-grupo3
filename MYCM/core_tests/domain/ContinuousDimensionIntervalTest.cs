@@ -161,6 +161,14 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureConstructorDetectsIfMaxValueIsNotMultipleOfIncrement()
+        {
+            Action act = () => new ContinuousDimensionInterval(100, 200, 7);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
         public void ensureInstanceIsCreated()
         {
             ContinuousDimensionInterval instance = new ContinuousDimensionInterval(100.0, 200.0, 1.0);

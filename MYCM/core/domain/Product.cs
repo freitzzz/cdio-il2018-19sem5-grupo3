@@ -33,7 +33,7 @@ namespace core.domain {
         /// </summary>
         private const string INVALID_PRODUCT_DESIGNATION = "The product designation is invalid";
         /// <summary>
-        /// Constant that represents the message that occurs if the product complemented products are invalid
+        /// Constant that represents the message that occurs if the product complementary products are invalid
         /// </summary>
         private const string INVALID_PRODUCT_COMPLEMENTED_PRODUCTS = "The products which the product can be complemented by are invalid";
         /// <summary>
@@ -41,7 +41,7 @@ namespace core.domain {
         /// </summary>
         private const string INVALID_COMPONENT = "The component is not valid!";
         /// <summary>
-        /// Constant that represents the message that occurs if the product complemented products are invalid
+        /// Constant that represents the message that occurs if the product complementary products are invalid
         /// </summary>
         private const string INVALID_PRODUCT_MATERIALS = "The materials which the product can be made of are invalid";
         /// <summary>
@@ -102,7 +102,7 @@ namespace core.domain {
         /// List with the components which the current product can be complemented by
         /// </summary>
         /// <value>Gets/protected sets the value of the Component list.</value>
-        //TODO: Should complemented products be a list and not a set?
+        //TODO: Should complementary products be a list and not a set?
         private List<Component> _components;//!private field used for lazy loading, do not use this for storing or fetching data
         public List<Component> components { get => LazyLoader.Load(this, ref _components); protected set => _components = value; }
         /// <summary>
@@ -213,24 +213,24 @@ namespace core.domain {
 
         //*CONSTRUCTOR WITH COMPONENTS */
         /// <summary>
-        /// Builds a new product with its reference, designation and complemented products
+        /// Builds a new product with its reference, designation and complementary products
         /// </summary>
         /// <param name="reference">String with the product reference</param>
         /// <param name="designation">String with the product designation</param>
         /// <param name="productCategory">ProductCategory with the product category</param>
         /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
-        /// <param name="complementedProducts">IEnumerable with the product complemented products</param>
+        /// <param name="complementaryProducts">IEnumerable with the product complementary products</param>
         /// <param name="measurements">IEnumerable with the product measurements</param>
         public Product(string reference, string designation,
                         ProductCategory productCategory,
                         IEnumerable<Material> materials,
-                        IEnumerable<Product> complementedProducts,
+                        IEnumerable<Product> complementaryProducts,
                         IEnumerable<Measurement> measurements) :
                         this(reference, designation, productCategory, materials, measurements) {
-            checkProductComplementedProducts(complementedProducts);
+            checkComplementaryProducts(complementaryProducts);
             this.components = new List<Component>();
-            foreach (Product complementedProduct in complementedProducts) {
-                this.components.Add(new Component(this, complementedProduct));
+            foreach (Product complementaryProduct in complementaryProducts) {
+                this.components.Add(new Component(this, complementaryProduct));
             }
         }
 
@@ -261,7 +261,7 @@ namespace core.domain {
 
         //*CONSTRUCTOR WITH SLOT DIMENSIONS AND COMPONENTS */
         /// <summary>
-        /// Builds a new product with its reference, designation and complemented products
+        /// Builds a new product with its reference, designation and complementary products
         /// </summary>
         /// <param name="reference">String with the product reference</param>
         /// <param name="designation">String with the product designation</param>
@@ -270,31 +270,31 @@ namespace core.domain {
         /// <param name="recommendedSlotSize">Recommended slot dimensions</param>
         /// <param name="productCategory">ProductCategory with the product category</param>
         /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
-        /// <param name="complementedProducts">IEnumerable with the product complemented products</param>
+        /// <param name="complementaryProducts">IEnumerable with the product complementary products</param>
         /// <param name="measurements">IEnumerable with the product measurements</param>
         public Product(string reference, string designation,
                         CustomizedDimensions maxSlotSize, CustomizedDimensions minSlotSize,
                         CustomizedDimensions recommendedSlotSize, ProductCategory productCategory,
-                        IEnumerable<Material> materials, IEnumerable<Product> complementedProducts,
+                        IEnumerable<Material> materials, IEnumerable<Product> complementaryProducts,
                         IEnumerable<Measurement> measurements) :
                         this(reference, designation, maxSlotSize, minSlotSize,
                         recommendedSlotSize, productCategory, materials, measurements) {
-            checkProductComplementedProducts(complementedProducts);
+            checkComplementaryProducts(complementaryProducts);
             this.components = new List<Component>();
-            foreach (Product complementedProduct in complementedProducts) {
-                this.components.Add(new Component(this, complementedProduct));
+            foreach (Product complementaryProduct in complementaryProducts) {
+                this.components.Add(new Component(this, complementaryProduct));
             }
         }
 
         /// <summary>
-        /// Adds a new product which the current product can be complemented by
+        /// Adds a new instance of Product which complements this instance.
         /// </summary>
-        /// <param name="complementedProduct">Product with the complemented product</param>
-        /// <returns>boolean true if the complemented product was added with success, false if not</returns>
-        public bool addComplementedProduct(Product complementedProduct) {
-            if (!isComplementedProductValidForAddition(complementedProduct))
+        /// <param name="complementaryProduct">Instance of Product representing the complementary product.</param>
+        /// <returns>true if the complementary product was added with success, false if not</returns>
+        public bool addComplementaryProduct(Product complementaryProduct) {
+            if (!iscomplementaryProductValidForAddition(complementaryProduct))
                 return false;
-            components.Add(new Component(this, complementedProduct));
+            components.Add(new Component(this, complementaryProduct));
             return true;
         }
 
@@ -380,11 +380,11 @@ namespace core.domain {
         }
 
         /// <summary>
-        /// Removes a complemented which the current product can be complemented with
+        /// Removes a complementary Product which the current Product can be complemented by
         /// </summary>
-        /// <param name="complementedProduct">Product with the complemented product being removed</param>
-        /// <returns>boolean true if the complemented product was removed with success, false if not</returns>
-        public bool removeComplementedProduct(Product complementedProduct) { return components.Remove(new Component(this, complementedProduct)); }
+        /// <param name="complementaryProduct">Instance of Product which complements this instance.</param>
+        /// <returns>boolean true if the complementary product was removed with success, false if not</returns>
+        public bool removecomplementaryProduct(Product complementaryProduct) { return components.Remove(new Component(this, complementaryProduct)); }
 
         /// <summary>
         /// Returns the product identity
@@ -461,7 +461,7 @@ namespace core.domain {
         /// </summary>
         /// <returns>String with the textual representation of the product</returns>
         public override string ToString() {
-            //Should ToString List the Product Complemented Products?
+            //Should ToString List the Product complementary Products?
             return String.Format("Product Information\n- Designation: {0}\n- Reference: {1}", designation, reference);
         }
 
@@ -496,13 +496,13 @@ namespace core.domain {
             return false;
         }
         /// <summary>
-        /// Checks if a complemented product is valid for additon on the current product
+        /// Checks if a complementary product is valid for additon on the current product
         /// </summary>
-        /// <param name="complementedProduct">Product with the complemented product being validated</param>
-        /// <returns>boolean true if the complemented product is valid for addition, false if not</returns>
-        private bool isComplementedProductValidForAddition(Product complementedProduct) {
-            if (complementedProduct == null || complementedProduct.Equals(this)) return false;
-            return !components.Contains(new Component(this, complementedProduct));
+        /// <param name="complementaryProduct">Product with the complementary product being validated</param>
+        /// <returns>boolean true if the complementary product is valid for addition, false if not</returns>
+        private bool iscomplementaryProductValidForAddition(Product complementaryProduct) {
+            if (complementaryProduct == null || complementaryProduct.Equals(this)) return false;
+            return !components.Contains(new Component(this, complementaryProduct));
         }
 
         /// <summary>
@@ -600,13 +600,13 @@ namespace core.domain {
         }
 
         /// <summary>
-        /// Checks if the products which a product can be complemented by are valid
+        /// Checks if the products which a product can be complementary by are valid
         /// </summary>
-        /// <param name="complementedProducts">IEnumerable with the complemented products</param>
-        private void checkProductComplementedProducts(IEnumerable<Product> complementedProducts) {
-            if (Collections.isEnumerableNullOrEmpty(complementedProducts))
+        /// <param name="complementaryProducts">IEnumerable with the complementary products</param>
+        private void checkComplementaryProducts(IEnumerable<Product> complementaryProducts) {
+            if (Collections.isEnumerableNullOrEmpty(complementaryProducts))
                 throw new ArgumentException(INVALID_PRODUCT_COMPLEMENTED_PRODUCTS);
-            checkDuplicatedComplementedProducts(complementedProducts);
+            checkDuplicatedComplementaryProducts(complementaryProducts);
         }
 
         /// <summary>
@@ -637,14 +637,14 @@ namespace core.domain {
         /// <summary>
         /// Checks if a enumerable of products has duplicates
         /// </summary>
-        /// <param name="complementedProducts">IEnumerable with the complemented products</param>
-        private void checkDuplicatedComplementedProducts(IEnumerable<Product> complementedProducts) {
-            HashSet<string> complementedProductsRefereces = new HashSet<string>();
-            IEnumerator<Product> complementedProductsEnumerator = complementedProducts.GetEnumerator();
-            Product complementedProduct = complementedProductsEnumerator.Current;
-            while (complementedProductsEnumerator.MoveNext()) {
-                complementedProduct = complementedProductsEnumerator.Current;
-                if (!complementedProductsRefereces.Add(complementedProduct.id())) {
+        /// <param name="complementaryProducts">IEnumerable with the complementary products</param>
+        private void checkDuplicatedComplementaryProducts(IEnumerable<Product> complementaryProducts) {
+            HashSet<string> complementaryProductsRefereces = new HashSet<string>();
+            IEnumerator<Product> complementaryProductsEnumerator = complementaryProducts.GetEnumerator();
+            Product complementaryProduct = complementaryProductsEnumerator.Current;
+            while (complementaryProductsEnumerator.MoveNext()) {
+                complementaryProduct = complementaryProductsEnumerator.Current;
+                if (!complementaryProductsRefereces.Add(complementaryProduct.id())) {
                     throw new ArgumentException(INVALID_PRODUCT_COMPLEMENTED_PRODUCTS);
                 }
             }
@@ -690,7 +690,7 @@ namespace core.domain {
                 throw new ArgumentNullException(INVALID_COMPONENT);
             }
             foreach (Component comp in components) {
-                if (comp.complementedProduct.Equals(component)) {
+                if (comp.complementaryProduct.Equals(component)) {
                     comp.addRestriction(restriction);
                 }
             }
@@ -741,12 +741,12 @@ namespace core.domain {
             }
 
             /// <summary>
-            /// Adds complemented products to the current product builder
+            /// Adds complementary products to the current product builder
             /// </summary>
-            /// <param name="complementedProducts">IEnumerable with the product complemented products</param>
+            /// <param name="complementaryProducts">IEnumerable with the product complementary products</param>
             /// <returns>ProductBuilder with the updated builder</returns>
-            public ProductBuilder withComplementedProducts(IEnumerable<ComponentDTO> complementedProducts) {
-                builderDTO.complements = new List<ComponentDTO>(complementedProducts);
+            public ProductBuilder withcomplementaryProducts(IEnumerable<ComponentDTO> complementaryProducts) {
+                builderDTO.complements = new List<ComponentDTO>(complementaryProducts);
                 return this;
             }
 
@@ -805,8 +805,8 @@ namespace core.domain {
             /// </summary>
             /// <returns>Product with the product based on the builder input</returns>
             public Product build() {
-                IEnumerable<ComponentDTO> complementedProducts = builderDTO.complements;
-                if (complementedProducts == null) {
+                IEnumerable<ComponentDTO> complementaryProducts = builderDTO.complements;
+                if (complementaryProducts == null) {
                     return new Product(builderDTO.reference
                                     , builderDTO.designation
                                     , DTOUtils.reverseDTO(builderDTO.productCategory)
@@ -819,7 +819,7 @@ namespace core.domain {
                                     , builderDTO.designation
                                     , DTOUtils.reverseDTO(builderDTO.productCategory)
                                     , DTOUtils.reverseDTOS(builderDTO.productMaterials)
-                                    , DTOUtils.reverseDTOS(complementedProducts)
+                                    , DTOUtils.reverseDTOS(complementaryProducts)
                                     , DTOUtils.reverseDTOS(builderDTO.heightDimensions)
                                     , DTOUtils.reverseDTOS(builderDTO.widthDimensions)
                                     , DTOUtils.reverseDTOS(builderDTO.depthDimensions));

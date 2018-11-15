@@ -59,6 +59,11 @@ namespace core.domain
         private const string INCREMENT_GREATER_THAN_MAX_MIN_DIFFERENCE_REFERENCE = "Increment can't be greater than the difference between the max and min values";
 
         /// <summary>
+        /// Constant that represents the message that occurs if the max value is not a multiple of the increment.
+        /// </summary>
+        private const string MAXIMUM_VALUE_NOT_MULTIPLE_OF_INCREMENT = "The maximum value is not a multiple of increment.";
+
+        /// <summary>
         /// Minimum value of the interval
         /// </summary>
         public double minValue { get; set; }
@@ -132,9 +137,28 @@ namespace core.domain
                 throw new ArgumentException(INCREMENT_GREATER_THAN_MAX_MIN_DIFFERENCE_REFERENCE);
             }
 
+            checkIfMaxValueIsMultipleOfIncrement(maxValue, increment);
+
             this.minValue = minValue;
             this.maxValue = maxValue;
             this.increment = increment;
+        }
+
+        /// <summary>
+        /// Method used in constructor used for validating if the maximum value is reachable with a given increment.
+        /// </summary>
+        /// <param name="maxValue">double representing the interval's maximum value.</param>
+        /// <param name="increment">double representing the interval's increment value.</param>
+        private void checkIfMaxValueIsMultipleOfIncrement(double maxValue, double increment)
+        {
+            decimal maxValueAsDecimal = (decimal)maxValue;
+            decimal incrementAsDecimal = (decimal)increment;
+
+            decimal remainder = maxValueAsDecimal % incrementAsDecimal;
+
+            if(decimal.Compare(decimal.Zero, remainder) != 0){
+                throw new ArgumentException(MAXIMUM_VALUE_NOT_MULTIPLE_OF_INCREMENT);
+            }
         }
 
         public override bool hasValue(double value)
@@ -143,7 +167,7 @@ namespace core.domain
             {
                 return false;
             }
-            
+
             decimal valueAsDecimal = (decimal)value;
             decimal incrementAsDecimal = (decimal)increment;
 
