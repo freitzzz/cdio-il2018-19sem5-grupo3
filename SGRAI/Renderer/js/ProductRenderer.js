@@ -137,7 +137,7 @@ function initCloset(textureSource) {
     //A MeshPhongMaterial allows for shiny surfaces
     //A soft white light is being as specular light
     //The shininess value is the same as the matte finishing's value
-    material = new THREE.MeshPhongMaterial({ map: texture, specular: 0x404040, shininess: 20 });
+    material = new THREE.MeshPhongMaterial({ /*map: texture, specular: 0x404040, shininess: 20*/ });
 
     for (var i = 0; i < faces.length; i++) {
         closet_faces_ids.push(generateParellepiped(faces[i][0], faces[i][1], faces[i][2]
@@ -224,10 +224,27 @@ function removeSlot() {
  * @param {number} depth Number with the closet depth
  */
 function changeClosetDimensions(width, height, depth) {
-    closet.changeClosetWidth(width);
-    closet.changeClosetHeight(height);
-    closet.changeClosetDepth(depth);
-    updateClosetGV();
+
+    //If there aren't any slots, the width has no restrictions
+    if (closet_slots_faces_ids.length == 0) {
+        closet.changeClosetWidth(width);
+        closet.changeClosetHeight(height);
+        closet.changeClosetDepth(depth);
+        updateClosetGV();
+    } else { //If there is at least one slot, the closet wall can't overlap it
+        var firstSlot = Math.abs(group.getObjectById(closet_slots_faces_ids[0]).position.x);
+        var wall = Math.abs(group.getObjectById(closet_faces_ids[2]).position.x) - firstSlot;
+
+        if (wall <= firstSlot) { //!TODO change if-condition from wall <= firstSlot to wall <= minimumSlotSize
+            alert("The width has reached its minimum limit.");
+            document.getElementById("width").value = getCurrentClosetWidth();
+        } else {
+            closet.changeClosetWidth(width);
+        }
+        closet.changeClosetHeight(height);
+        closet.changeClosetDepth(depth);
+        updateClosetGV();
+    }
 }
 
 /**
@@ -256,7 +273,7 @@ function changeColor(color) {
  * Changes the current closet slots
  * @param {number} slots Number with the new closet slots
  */
-function changeClosetSlots(slots, slotWidths) {
+function changeClosetSlots(slots) {
     var newSlots = closet.computeNewClosetSlots(slots);
     if (newSlots > 0) {
         for (var i = 0; i < newSlots; i++) {
@@ -264,22 +281,28 @@ function changeClosetSlots(slots, slotWidths) {
         }
     } else {
         newSlots = -newSlots;
-        if (newSlots > 0){
+        if (newSlots > 0) {
             for (var i = 0; i < newSlots; i++) {
                 removeSlot();
             }
         }
     }
-    /* if(slotWidths.length > 0){
-        updateSlotWidths(slotWidths);
-    } */
+
     updateClosetGV();
+}
+
+function reloadClosetSlots2(slotWidths) {
+    changeClosetSlots(slots);
+    if (slotWidths.length > 0) {
+        updateSlotWidths(slotWidths);
+    }
 }
 
 function updateSlotWidths(slotWidths) {
     for (let i = 0; i < slotWidths.length; i++) {
-        var closet_face = group.getObjectById(closet_slots_faces_ids[i]);
-        closet_face.position.x = slotWidths[i];
+        var closetSlot = group.getObjectById(closet_slots_faces_ids[i]);
+
+        closetSlot.position.x = slotWidths[i];
     }
 }
 
@@ -389,14 +412,21 @@ function registerEvents() {
     });
 
     document.addEventListener("changeSlots", function (changeSlotsEvent) {
-        changeClosetSlots(changeSlotsEvent.detail.slots, changeSlotsEvent.detail.slotWidths);
+        changeClosetSlots(changeSlotsEvent.detail.slots);
     });
+
+    document.addEventListener("reloadClosetSlots", function (reloadClosetSlotsEvent) {
+        reloadClosetSlots2(reloadClosetSlotsEvent.detail.slotWidths);
+    });
+
     document.addEventListener("changeMaterial", function (changeMaterialEvent) {
         applyTexture(changeMaterialEvent.detail.material);
     });
+
     document.addEventListener("changeShininess", function (changeShininessEvent) {
         changeShininess(changeShininessEvent.detail.shininess);
     });
+
     document.addEventListener("changeColor", function (changeColorEvent) {
         changeColorEvent(changeColorEvent.detail.color);
     });
@@ -520,30 +550,48 @@ function moveFace() {
     if (raycaster.ray.intersectPlane(plane, intersection)) {
 
         var rightFacePosition = intersection.x - offset + selected_face.position.x; //Position of the right closet face
-        var rightSlotPosition = group.getObjectById(closet_slots_faces_ids[closet_slots_faces_ids.length - 1]).position.x; //Position of the last (more to the right) slot 
-
         var leftFacePosition = - intersection.x - offset - selected_face.position.x; //Position of the left closet face
-        var leftSlotPosition = - group.getObjectById(closet_slots_faces_ids[0]).position.x; //Position of the first (more to the left) slot
 
-        /**
-         * Checks if...
-         * - ... the selected face is the right face of the closet
-         * - ... the position of the face doesn't overlap the position of the last (more to the right) slot
-         */
-        if (JSON.stringify(selected_face) == JSON.stringify(group.getObjectById(closet_faces_ids[3])) &&
-            rightFacePosition - rightSlotPosition > rightSlotPosition) {
-            selected_face.position.x = rightFacePosition;
-            changeClosetDimensions(rightFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
-        }
-        /**
-         * Checks if...
-         * - ... the selected face is the left face of the closet
-         * - ... the position of the face doesn't overlap the position of the first (more to the left) slot
-         */
-        else if (JSON.stringify(selected_face) == JSON.stringify(group.getObjectById(closet_faces_ids[2])) &&
-            leftFacePosition - leftSlotPosition > leftSlotPosition) {
-            selected_face.position.x = leftFacePosition;
-            changeClosetDimensions(leftFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
+
+        if (closet_slots_faces_ids.length == 0) {
+
+            //Checks if the selected face is the right face of the closet
+            if (JSON.stringify(selected_face) == JSON.stringify(group.getObjectById(closet_faces_ids[3]))) {
+                selected_face.position.x = rightFacePosition;
+                changeClosetDimensions(rightFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
+            }
+
+            //Checks if the selected face is the left face of the closet
+            else if (JSON.stringify(selected_face) == JSON.stringify(group.getObjectById(closet_faces_ids[2]))) {
+                selected_face.position.x = leftFacePosition;
+                changeClosetDimensions(leftFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
+            }
+
+        } else {
+
+            var rightSlotPosition = group.getObjectById(closet_slots_faces_ids[closet_slots_faces_ids.length - 1]).position.x; //Position of the last (more to the right) slot 
+            var leftSlotPosition = - group.getObjectById(closet_slots_faces_ids[0]).position.x; //Position of the first (more to the left) slot
+
+            /**
+             * Checks if...
+             * - ... the selected face is the right face of the closet
+             * - ... the position of the face doesn't overlap the position of the last (more to the right) slot
+             */
+            if (JSON.stringify(selected_face) == JSON.stringify(group.getObjectById(closet_faces_ids[3])) &&
+                rightFacePosition - rightSlotPosition > rightSlotPosition) {
+                selected_face.position.x = rightFacePosition;
+                changeClosetDimensions(rightFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
+            }
+            /**
+             * Checks if...
+             * - ... the selected face is the left face of the closet
+             * - ... the position of the face doesn't overlap the position of the first (more to the left) slot
+             */
+            else if (JSON.stringify(selected_face) == JSON.stringify(group.getObjectById(closet_faces_ids[2])) &&
+                leftFacePosition - leftSlotPosition > leftSlotPosition) {
+                selected_face.position.x = leftFacePosition;
+                changeClosetDimensions(leftFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
+            }
         }
     }
 }
