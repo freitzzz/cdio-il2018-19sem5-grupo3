@@ -37,7 +37,7 @@ var designationValidator={
  * Represents a Factory Schema
  */
 var factorySchema=new Schema({
-    reference:{type: String, validate: referenceValidator, required:true},
+    reference:{type: String, validate: referenceValidator, unique:true, required:true},
     designation:{type: String, validate: designationValidator, required:true},
     location:{type: location.schema, required:true},
     city:{type: city.schema, required:false},

@@ -82,7 +82,7 @@ function grantLongitudeIsValidForUpdate(longitude){
  * @param {Number} latitude Number with the latitude being checked
  */
 function checkLatitudeBusinessRule(latitude){
-    return latitude>=-90 && latitude<=90;
+    return latitude && latitude>=-90 && latitude<=90;
 }
 
 /**
@@ -90,7 +90,7 @@ function checkLatitudeBusinessRule(latitude){
  * @param {Number} longitude Number with the longitude being checked
  */
 function checkLongitudeBusinessRule(longitude){
-    return longitude>=-180 && longitude<=180;
+    return longitude && longitude>=-180 && longitude<=180;
 }
 
 /**
