@@ -61,6 +61,12 @@ describe('changes',()=>{
             test('cant-change-factory-designation-to-null-designation',ensureCantChangeFactoryDesignationToNullDesignation);
             test('cant-change-factory-designation-to-empty-designation',ensureCantChangeFactoryDesignationToEmptyDesignation);
         });
+        describe('invalid-location-changes',()=>{
+            test('cant-change-factory-location-latitude-to-null-location-latitude',ensureCantChangeFactoryLocationLatitudeToNullLocationLatitude);
+            test('cant-change-factory-location-latitude-to-empty-location-latitude',ensureCantChangeFactoryLocationLatitudeToEmptyLocationLatitude);
+            test('cant-change-factory-location-longitude-to-null-location-longitude',ensureCantChangeFactoryLocationLongitudeToNullLocationLongitude);
+            test('cant-change-factory-location-longitude-to-empty-location-longitude',ensureCantChangeFactoryLocationLongitudeToEmptyLocationLongitude);
+        });
     });
 });
 
@@ -181,6 +187,40 @@ function ensureCantChangeFactoryDesignationToEmptyDesignation(){
     let factoryChange=()=>{createValidFactorySchema().changeDesignation("")};
     expect(factoryChange).toThrow();
 }
+
+/**
+ * Ensures that its not possible to change a factory location latitude to a null location latitude
+ */
+function ensureCantChangeFactoryLocationLatitudeToNullLocationLatitude(){
+    let factoryChange=()=>{createValidFactorySchema().changeLatitude(null)};
+    expect(factoryChange).toThrow();
+}
+
+/**
+ * Ensures that its not possible to change a factory location latitude to an empty location latitude
+ */
+function ensureCantChangeFactoryLocationLatitudeToEmptyLocationLatitude(){
+    let factoryChange=()=>{createValidFactorySchema().changeLatitude({})};
+    expect(factoryChange).toThrow();
+}
+
+/**
+ * Ensures that its not possible to change a factory location longitude to a null location longitude
+ */
+function ensureCantChangeFactoryLocationLongitudeToNullLocationLongitude(){
+    let factoryChange=()=>{createValidFactorySchema().changeLongitude(null)};
+    expect(factoryChange).toThrow();
+}
+
+/**
+ * Ensures that its not possible to change a factory location longitude to an empty location longitude
+ */
+function ensureCantChangeFactoryLocationLongitudeToEmptyLocationLongitude(){
+    let factoryChange=()=>{createValidFactorySchema().changeLongitude({})};
+    expect(factoryChange).toThrow();
+}
+
+//TODO: ENSURE CANT CHANGE TO INVALID LOCATION LATITUDE/LONGITUDE VALUES (RESPONSIBILITY OF LOCATIONUT?)
 
 //UTILITIES
 
