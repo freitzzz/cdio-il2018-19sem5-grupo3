@@ -1,3 +1,7 @@
+/**
+ * Requires Mongoose for Data Modeling
+ */
+var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var city = require('../models/City');
 var factory = require('../models/Factory');
