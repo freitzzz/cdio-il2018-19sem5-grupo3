@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up Form</title>
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+  <link rel='stylesheet' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+
+      <link rel="stylesheet" href="css/formstyle.css">
+</head>
+<body>
+<div class="container">
+  <form>
+    <div class="row">
+      <br>
+      <h2>Edit Material</h2>
+      <br>
+      <h4>Choose Material</h4>
+      <div class="input-group">
+        <!--TODO: Load from View Js-->
+        <select>
+          <option>Material 1</option>
+          <option>Material 2</option>
+        </select>
+    </div>
+      <br>
+      <div class="input-group ">
+        <input type="text" placeholder="Name"/>
+      </div>
+    </div>
+      <h4>Color</h4>
+
+      <div class="container">
+
+      <!-- preview element -->
+
+      <div class="colorpicker" style="display:none">
+        <canvas id="picker" var="1" width="300" height="300"></canvas>
+        <div class="controls">
+                <div><label>R</label> <input type="text" id="rVal" /></div>
+                <div><label>G</label> <input type="text" id="gVal" /></div>
+                <div><label>B</label> <input type="text" id="bVal" /></div>
+                <div><label>RGB</label> <input type="text" id="rgbVal" /></div>
+                <div><label>HEX</label> <input type="text" id="hexVal" /></div>
+        </div>
+      </div>
+    </div>
+        <div class="input-icon"><i class="fa fa-plus"></i> <i class="fa fa-minus"></i></div>
+        
+      <h4>Finish </h4>
+      <div class="input-group">
+        <!--TODO: Load from View Js-->
+        <select>
+          <option>Finish 1</option>
+          <option>Finish 2</option>
+        </select>
+      
+           <div class="input-icon"><i class="fa fa-plus"></i> <i class="fa fa-minus"></i></div>
+      </div>
+
+
+      <br><br><br>
+      <a class="btn-custom" align="right" onclick="alert('Parabéns')">Submit</a>
+  </form>
+</div>
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+  
+
+    <script  src="js/index.js"></script>
+
+
+
+
+</body>
+
+</html>

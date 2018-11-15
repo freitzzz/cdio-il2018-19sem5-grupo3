@@ -10,39 +10,23 @@
   <link rel='stylesheet' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
 
   <link rel="stylesheet" href="css/formstyle.css">
+
 </head>
 
-<script>
-function create_color(){
-  <input type="color" name="color" id="color" >
-    }
-</script>
 <body>
   <div class="container">
     <form>
       <div class="row">
         <br>
-        <h2>Manage Material</h2>
+        <h2>Remove Material</h2>
         <br><br>
-        <div class="input-group ">
-          <input type="text" placeholder="Name" />
-        </div>
-
-        <h4>Color</h4>
-        <input type="color" name="color" id="color">
-          <i class="input-icon"> 
-            <i class="fa fa-plus" onclick = "create_color()"></i>
-            <i class="fa fa-minus"></i>
-          </i>
-        </div>
-        <h4>Finish </h4>
+        <h4>Choose Material</h4>
         <div class="input-group">
           <!--TODO: Load from View Js-->
           <select>
-            <option>Finish 1</option>
-            <option>Finish 2</option>
+            <option>Material 1</option>
+            <option>Material 2</option>
           </select>
-          <i class="input-icon"><i class="fa fa-plus"></i></i>
         </div>
         <br><br><br>
         <a class="btn-custom" align="right" onclick="alert('Parabéns')">Submit</a>
