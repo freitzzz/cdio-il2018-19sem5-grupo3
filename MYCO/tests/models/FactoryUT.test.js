@@ -48,82 +48,70 @@ describe('create',()=>{
  * Ensures that its not possible to create a factory with a null reference
  */
 function ensureCantCreateFactoryWithNullReference(){
-    let factory=()=>{
-        createFactory(null
+    ensureSchemaIsInvalid(createFactory(null
         ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
-        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION);
-    };
-    expect(factory).toThrow();
+        ,LocationUT.createValidLocation())
+    );
 }
 
 /**
  * Ensures that its not possible to create a factory with an empty reference
  */
 function ensureCantCreateFactoryWithEmptyReference(){
-    let factory=()=>{
-        createFactory(""
+    ensureSchemaIsInvalid(createFactory(""
         ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
-        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION);
-    };
-    expect(factory).toThrow();
+        ,LocationUT.createValidLocation())
+    );
 }
 
 /**
  * Ensures that its not possible to create a factory with a null designation
  */
 function ensureCantCreateFactoryWithNullDesignation(){
-    let factory=()=>{
-        createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+    ensureSchemaIsInvalid(createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
         ,null
-        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION);
-    };
-    expect(factory).toThrow();
+        ,LocationUT.createValidLocation())
+    );
 }
 
 /**
  * Ensures that its not possible to create a factory with an empty designation
  */
 function ensureCantCreateFactoryWithEmptyDesignation(){
-    let factory=()=>{
-        createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+    ensureSchemaIsInvalid(createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
         ,""
-        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION);
-    };
-    expect(factory).toThrow();
+        ,LocationUT.createValidLocation())
+    );
 }
 
 /**
  * Ensures that its not possible to create a factory with a null location
  */
 function ensureCantCreateFactoryWithNullLocation(){
-    let factory=()=>{
-        createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+    ensureSchemaIsInvalid(createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
         ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
-        ,null);
-    };
-    expect(factory).toThrow();
+        ,{latitude:null,longitude:null})
+    );
 }
 
 /**
  * Ensures that its not possible to create a factory with an empty location
  */
 function ensureCantCreateFactoryWithEmptyLocation(){
-    let factory=()=>{
-        createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+    ensureSchemaIsInvalid(createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
         ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
-        ,{});
-    };
-    expect(factory).toThrow();
+        ,{})
+    );
 }
 
 /**
- * Creates a new Factory
- * @param {String} reference String with the factory reference
- * @param {String} designation String with the factory designation
- * @param {Location} location String with the factory location
+ * Ensures that a schema is not valid
+ * @param {Schema} schema Schema with the schema being ensured that its not valid
  */
-function createFactory(reference,designation,location){
-    return new Factory.schema(Factory.createFactory(reference,designation,location));
+function ensureSchemaIsInvalid(schema){
+    schema.validate((_error)=>{
+        expect(_error).not.toBeUndefined();
+    });
 }
 
 /**
@@ -134,5 +122,5 @@ function createFactory(reference,designation,location){
  * @param {City} city City with the factory city
  */
 function createFactory(reference,designation,location,city){
-    return new Factory.schema(Factory.createFactory(reference,designation,location,city));
+    return new Factory(Factory.createFactory(reference,designation,location.latitude,location.longitude,city));
 }
