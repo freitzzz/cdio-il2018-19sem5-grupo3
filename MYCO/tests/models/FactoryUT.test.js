@@ -25,7 +25,7 @@ const VALID_FACTORY_PROPERTIES={
 };
 
 /**
- * Tests the creation of a Factory
+ * Tests the creations of a Factory
  */
 describe('create',()=>{
     describe('invalid-creations',()=>{
@@ -49,10 +49,22 @@ describe('create',()=>{
 });
 
 /**
+ * Tests the variety of changes of a Factory
+ */
+describe('changes',()=>{
+    describe('invalid-changes',()=>{
+        describe('invalid-reference-changes',()=>{
+            test('cant-change-factory-reference-to-null-reference',ensureCantChangeFactoryReferenceToNullReference);
+            test('cant-change-factory-reference-to-empty-reference',ensureCantChangeFactoryReferenceToEmptyReference);
+        });
+    });
+});
+
+/**
  * Ensures that its not possible to create a factory with a null reference
  */
 function ensureCantCreateFactoryWithNullReference(){
-    ensureSchemaIsInvalid(createFactory(null
+    ensureSchemaIsInvalid(createFactorySchema(null
         ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
         ,LocationUT.createValidLocation())
     );
@@ -62,7 +74,7 @@ function ensureCantCreateFactoryWithNullReference(){
  * Ensures that its not possible to create a factory with an empty reference
  */
 function ensureCantCreateFactoryWithEmptyReference(){
-    ensureSchemaIsInvalid(createFactory(""
+    ensureSchemaIsInvalid(createFactorySchema(""
         ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
         ,LocationUT.createValidLocation())
     );
@@ -72,7 +84,7 @@ function ensureCantCreateFactoryWithEmptyReference(){
  * Ensures that its not possible to create a factory with a null designation
  */
 function ensureCantCreateFactoryWithNullDesignation(){
-    ensureSchemaIsInvalid(createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+    ensureSchemaIsInvalid(createFactorySchema(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
         ,null
         ,LocationUT.createValidLocation())
     );
@@ -82,7 +94,7 @@ function ensureCantCreateFactoryWithNullDesignation(){
  * Ensures that its not possible to create a factory with an empty designation
  */
 function ensureCantCreateFactoryWithEmptyDesignation(){
-    ensureSchemaIsInvalid(createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+    ensureSchemaIsInvalid(createFactorySchema(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
         ,""
         ,LocationUT.createValidLocation())
     );
@@ -92,7 +104,7 @@ function ensureCantCreateFactoryWithEmptyDesignation(){
  * Ensures that its not possible to create a factory with a null location
  */
 function ensureCantCreateFactoryWithNullLocation(){
-    ensureSchemaIsInvalid(createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+    ensureSchemaIsInvalid(createFactorySchema(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
         ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
         ,{latitude:null,longitude:null})
     );
@@ -102,7 +114,7 @@ function ensureCantCreateFactoryWithNullLocation(){
  * Ensures that its not possible to create a factory with an empty location
  */
 function ensureCantCreateFactoryWithEmptyLocation(){
-    ensureSchemaIsInvalid(createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+    ensureSchemaIsInvalid(createFactorySchema(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
         ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
         ,{})
     );
@@ -112,7 +124,7 @@ function ensureCantCreateFactoryWithEmptyLocation(){
  * Ensures that its not possible to create a factory with a null city
  */
 function ensureCantCreateFactoryWithNullCity(){
-    ensureSchemaIsInvalid(createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+    ensureSchemaIsInvalid(createFactorySchema(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
         ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
         ,LocationUT.createValidLocation()
         ,null)
@@ -123,11 +135,27 @@ function ensureCantCreateFactoryWithNullCity(){
  * Ensures that its not possible to create a factory with an empty city
  */
 function ensureCantCreateFactoryWithEmptyCity(){
-    ensureSchemaIsInvalid(createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+    ensureSchemaIsInvalid(createFactorySchema(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
         ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
         ,LocationUT.createValidLocation()
         ,{})
     );
+}
+
+/**
+ * Ensures that its not possible to change a factory reference to a null reference
+ */
+function ensureCantChangeFactoryReferenceToNullReference(){
+    let factoryChange=()=>{createValidFactorySchema().changeReference(null)};
+    expect(factoryChange).toThrow();
+}
+
+/**
+ * Ensures that its not possible to change a factory reference to an empty reference
+ */
+function ensureCantChangeFactoryReferenceToEmptyReference(){
+    let factoryChange=()=>{createValidFactorySchema().changeReference("")};
+    expect(factoryChange).toThrow();
 }
 
 /**
@@ -141,6 +169,33 @@ function ensureSchemaIsInvalid(schema){
 }
 
 /**
+ * Creates a valid Factory schema
+ */
+function createValidFactorySchema(){
+    return new Factory(createValidFactory());
+}
+
+/**
+ * Creates a new Factory schema
+ * @param {String} reference String with the factory reference
+ * @param {String} designation String with the factory designation
+ * @param {Location} location Location with the factory location
+ * @param {City} city City with the factory city
+ */
+function createFactorySchema(reference,designation,location,city){
+    return new Factory(Factory.createFactory(reference,designation,location.latitude,location.longitude,city));
+}
+
+/**
+ * Creates a valid Factory
+ */
+function createValidFactory(){
+    return createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+                                ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
+                                ,VALID_FACTORY_PROPERTIES.VALID_LOCATION);
+}
+
+/**
  * Creates a new Factory
  * @param {String} reference String with the factory reference
  * @param {String} designation String with the factory designation
@@ -148,5 +203,5 @@ function ensureSchemaIsInvalid(schema){
  * @param {City} city City with the factory city
  */
 function createFactory(reference,designation,location,city){
-    return new Factory(Factory.createFactory(reference,designation,location.latitude,location.longitude,city));
+    return Factory.createFactory(reference,designation,location.latitude,location.longitude,city);
 }
