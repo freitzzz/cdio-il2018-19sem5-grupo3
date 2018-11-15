@@ -34,9 +34,9 @@ var canvasWebGL;
 
 // ------------ Global variables used to dinamically resize Slots ------------
 /**
- * Global variable that represents the currently selected slot (null if none)
+ * Global variables that represent the currently selected slot and face (null if none)
  */
-var selected_object = null;
+var selected_slot = null, selected_face = null;
 
 /**
  * Global variable that represents the object being hovered (null if none)
@@ -77,8 +77,8 @@ var raycaster = new THREE.Raycaster();
  * Initial Product Draw function
  */
 function main(textureSource) {
-    canvasWebGL=document.getElementById("webgl");
-    renderer = new THREE.WebGLRenderer({canvas:canvasWebGL, antialias: true});
+    canvasWebGL = document.getElementById("webgl");
+    renderer = new THREE.WebGLRenderer({ canvas: canvasWebGL, antialias: true });
     //renderer.setSize(window.innerWidth, window.innerHeight);
     initCamera();
     initControls();
@@ -119,30 +119,30 @@ function main(textureSource) {
  * Initiates the closet
  * @param {*} textureSource - Source of the texture being loaded.
  */
-function initCloset(textureSource){
-    scene=new THREE.Scene();
-    group=new THREE.Group();
-    closet=new Closet([204.5,4.20,100,0,0,0]
-                     ,[204.5,4.20,100,0,100,0]
-                     ,[4.20,100,100,-100,50,0]
-                     ,[4.20,100,100,100,50,0]
-                     ,[200,100,0,0,50,-50]);
-    var faces=closet.closet_faces;
+function initCloset(textureSource) {
+    scene = new THREE.Scene();
+    group = new THREE.Group();
+    closet = new Closet([204.5, 4.20, 100, 0, 0, 0]
+        , [204.5, 4.20, 100, 0, 100, 0]
+        , [4.20, 100, 100, -100, 50, 0]
+        , [4.20, 100, 100, 100, 50, 0]
+        , [200, 100, 0, 0, 50, -50]);
+    var faces = closet.closet_faces;
 
 
     //var src = 'http://127.0.0.1:8000/Renderer/textures/cherry_wood_cabinets.jpg';
 
     textureLoader = new THREE.TextureLoader();
-    var texture = textureLoader.load( textureSource );
+    var texture = textureLoader.load(textureSource);
     //A MeshPhongMaterial allows for shiny surfaces
     //A soft white light is being as specular light
     //The shininess value is the same as the matte finishing's value
-    material = new THREE.MeshPhongMaterial( { map: texture, specular: 0x404040, shininess: 20 } );
+    material = new THREE.MeshPhongMaterial({ map: texture, specular: 0x404040, shininess: 20 });
 
-    for(var i=0;i<faces.length;i++){
-        closet_faces_ids.push(generateParellepiped(faces[i][0],faces[i][1],faces[i][2]
-                                    ,faces[i][3],faces[i][4],faces[i][5]
-                                    ,material,group));
+    for (var i = 0; i < faces.length; i++) {
+        closet_faces_ids.push(generateParellepiped(faces[i][0], faces[i][1], faces[i][2]
+            , faces[i][3], faces[i][4], faces[i][5]
+            , material, group));
     }
     scene.add(group);
     renderer.setClearColor(0xFFFFFF, 1);
@@ -151,7 +151,7 @@ function initCloset(textureSource){
 /**
  * Initializes the scene's lighting.
  */
-function initLighting(){
+function initLighting() {
     var spotlight = new THREE.SpotLight(0x404040);
     camera.add(spotlight);
 
@@ -197,12 +197,12 @@ function addSlot() {
 /**
  * Adds a specified number of slots to the current closet
  */
-function addSlotNumbered(slotsToAdd){
-    for(var i=0;i<slotsToAdd;i++){
-        var slotFace=closet.addSlot();
-        closet_slots_faces_ids.push(generateParellepiped(slotFace[0],slotFace[1],slotFace[2]
-                                    ,slotFace[3],slotFace[4],slotFace[5]
-                                    ,material,group));
+function addSlotNumbered(slotsToAdd) {
+    for (var i = 0; i < slotsToAdd; i++) {
+        var slotFace = closet.addSlot();
+        closet_slots_faces_ids.push(generateParellepiped(slotFace[0], slotFace[1], slotFace[2]
+            , slotFace[3], slotFace[4], slotFace[5]
+            , material, group));
     }
     updateClosetGV();
 }
@@ -234,8 +234,8 @@ function changeClosetDimensions(width, height, depth) {
  * Applies the texture to the closet.
  * @param {*} texture - texture being applied.
  */
-function applyTexture(texture){
-    textureLoader.load(texture, function(tex){
+function applyTexture(texture) {
+    textureLoader.load(texture, function (tex) {
         material.map = tex;
     })
 }
@@ -244,11 +244,11 @@ function applyTexture(texture){
  * Changes the closet's material's shininess.
  * @param {*} shininess - new shininess value
  */
-function changeShininess(shininess){
+function changeShininess(shininess) {
     material.shininess = shininess;
 }
 
-function changeColor(color){
+function changeColor(color) {
     material.color.setHex(color);
 }
 
@@ -256,7 +256,7 @@ function changeColor(color){
  * Changes the current closet slots
  * @param {number} slots Number with the new closet slots
  */
-function changeClosetSlots(slots,slotWidths) {
+function changeClosetSlots(slots, slotWidths) {
     var newSlots = closet.computeNewClosetSlots(slots);
     if (newSlots > 0) {
         for (var i = 0; i < newSlots; i++) {
@@ -264,9 +264,10 @@ function changeClosetSlots(slots,slotWidths) {
         }
     } else {
         newSlots = -newSlots;
-        if (newSlots == 0) removeSlot();
-        for (var i = 0; i < newSlots; i++) {
-            removeSlot();
+        if (newSlots > 0){
+            for (var i = 0; i < newSlots; i++) {
+                removeSlot();
+            }
         }
     }
     /* if(slotWidths.length > 0){
@@ -275,8 +276,8 @@ function changeClosetSlots(slots,slotWidths) {
     updateClosetGV();
 }
 
-function updateSlotWidths(slotWidths){
-    for(let i = 0; i < slotWidths.length; i++){
+function updateSlotWidths(slotWidths) {
+    for (let i = 0; i < slotWidths.length; i++) {
         var closet_face = group.getObjectById(closet_slots_faces_ids[i]);
         closet_face.position.x = slotWidths[i];
     }
@@ -308,9 +309,9 @@ function generateParellepiped(width, height, depth, x, y, z, material, group) {
  */
 function animate() {
     //animate the scene at 60 frames per second
-    setTimeout(function(){
+    setTimeout(function () {
         requestAnimationFrame(animate);
-    }, 1000/60);
+    }, 1000 / 60);
     controls.update();
     render();
 }
@@ -390,13 +391,13 @@ function registerEvents() {
     document.addEventListener("changeSlots", function (changeSlotsEvent) {
         changeClosetSlots(changeSlotsEvent.detail.slots, changeSlotsEvent.detail.slotWidths);
     });
-    document.addEventListener("changeMaterial", function(changeMaterialEvent){
+    document.addEventListener("changeMaterial", function (changeMaterialEvent) {
         applyTexture(changeMaterialEvent.detail.material);
     });
-    document.addEventListener("changeShininess", function(changeShininessEvent){
+    document.addEventListener("changeShininess", function (changeShininessEvent) {
         changeShininess(changeShininessEvent.detail.shininess);
     });
-    document.addEventListener("changeColor", function(changeColorEvent){
+    document.addEventListener("changeColor", function (changeColorEvent) {
         changeColorEvent(changeColorEvent.detail.color);
     });
 }
@@ -426,56 +427,24 @@ function onDocumentMouseDown(event) {
                 //Disables rotation while moving the slot
                 controls.enabled = false;
                 //Sets the selection to the current slot
-                selected_object = face;
+                selected_slot = face;
                 if (raycaster.ray.intersectPlane(plane, intersection)) {
-                    offset = intersection.x - selected_object.position.x;
+                    offset = intersection.x - selected_slot.position.x;
                 }
             }
         }
-    }
-}
 
-/**
- * Represents the action that occurs when the mouse is dragged (mouse move), which
- * is interacting with the previously picked object on mouse down (moving it accross
- * the x axis)
- */
-function onDocumentMouseMove(event) {
-    event.preventDefault();
-    //Get mouse position
-    var rect = event.target.getBoundingClientRect();
-    var x = event.clientX;
-
-    mouse.x = (x - rect.left) / (canvasWebGL.clientWidth / 2.0) - 1.0;
-
-    //Set raycast position
-    raycaster.setFromCamera(mouse, camera);
-
-    if (selected_object) {
-        if (raycaster.ray.intersectPlane(plane, intersection)) {
-            var aux = intersection.x - offset;
-            //    if (aux.x <= group.getObjectById(closet_faces_ids[3]).position.x
-            //      && aux.x >= group.getObjectById(closet_faces_ids[2].position.x)) {
-                var valueCloset = group.getObjectById(closet_faces_ids[2]).position.x;
-            if (Math.abs(aux) < Math.abs(valueCloset)) {
-                selected_object.position.x = aux;
+        //Checks if the selected closet face isn't a slot
+        if (JSON.stringify(group.getObjectById(closet_faces_ids[3])) == JSON.stringify(face) ||
+            JSON.stringify(group.getObjectById(closet_faces_ids[2])) == JSON.stringify(face)) {
+            //Disables rotation while moving the face
+            controls.enabled = false;
+            //Sets the selection to the current face
+            selected_face = face;
+            if (raycaster.ray.intersectPlane(plane, intersection)) {
+                offset = intersection.x - selected_face.position.x;
             }
-           
-            // }
         }
-        return;
-    }
-
-    var intersects = raycaster.intersectObjects(scene.children[0].children);
-    if (intersects.length > 0) {
-        //Updates plane position to look at the camera
-        var face = intersects[0].object;
-        plane.setFromNormalAndCoplanarPoint(camera.position, face.position);
-
-        if (hovered_object !== face) hovered_object = face;
-
-    } else {
-        if (hovered_object !== null) hovered_object = null;
     }
 }
 
@@ -487,8 +456,96 @@ function onDocumentMouseMove(event) {
 function onDocumentMouseUp(event) {
     //Enables rotation again
     controls.enabled = true;
-    //Sets the selection to null (the slot stops being selected)
-    selected_object = null;
+    //Sets the selected slot to null (the slot stops being selected)
+    selected_slot = null;
+    //Sets the selected face to null (the face stops being selected)
+    selected_face = null;
+}
+
+/**
+ * Represents the action that occurs when the mouse is dragged (mouse move), which
+ * is interacting with the previously picked object on mouse down (moving it accross
+ * the x axis)
+ */
+function onDocumentMouseMove(event) {
+    event.preventDefault();
+
+    var rect = event.target.getBoundingClientRect();
+    var x = event.clientX;
+    mouse.x = (x - rect.left) / (canvasWebGL.clientWidth / 2.0) - 1.0; //Get mouse x position
+
+    raycaster.setFromCamera(mouse, camera); //Set raycast position
+
+    //If the selected object is a slot
+    if (selected_slot) {
+        moveSlot();
+        return;
+    }
+
+    //If the selected object is a closet face
+    if (selected_face) {
+        moveFace();
+        return;
+    }
+
+    var intersects = raycaster.intersectObjects(scene.children[0].children);
+    if (intersects.length > 0) {
+        //Updates plane position to look at the camera
+        var face = intersects[0].object;
+        plane.setFromNormalAndCoplanarPoint(camera.position, face.position);
+
+        if (hovered_object !== face) hovered_object = face;
+    } else {
+        if (hovered_object !== null) hovered_object = null;
+    }
+}
+
+/**
+ * Moves the slot across the defined plan that intersects the closet, without overlapping the closet's faces
+ */
+function moveSlot() {
+    if (raycaster.ray.intersectPlane(plane, intersection)) {
+        var newPosition = intersection.x - offset; //Subtracts the offset to the x coordinate of the intersection point
+        var valueCloset = group.getObjectById(closet_faces_ids[2]).position.x;
+        if (Math.abs(newPosition) < Math.abs(valueCloset)) { //Doesn't allow the slot to overlap the faces of the closet
+            selected_slot.position.x = newPosition;
+        }
+    }
+}
+
+/**
+ * Moves the face across the defined plan that intersects the closet, without overlapping the closet's slots
+ */
+function moveFace() {
+    if (raycaster.ray.intersectPlane(plane, intersection)) {
+
+        var rightFacePosition = intersection.x - offset + selected_face.position.x; //Position of the right closet face
+        var rightSlotPosition = group.getObjectById(closet_slots_faces_ids[closet_slots_faces_ids.length - 1]).position.x; //Position of the last (more to the right) slot 
+
+        var leftFacePosition = - intersection.x - offset - selected_face.position.x; //Position of the left closet face
+        var leftSlotPosition = - group.getObjectById(closet_slots_faces_ids[0]).position.x; //Position of the first (more to the left) slot
+
+        /**
+         * Checks if...
+         * - ... the selected face is the right face of the closet
+         * - ... the position of the face doesn't overlap the position of the last (more to the right) slot
+         */
+        if (JSON.stringify(selected_face) == JSON.stringify(group.getObjectById(closet_faces_ids[3])) &&
+            rightFacePosition - rightSlotPosition > rightSlotPosition) {
+            selected_face.position.x = rightFacePosition;
+            changeClosetDimensions(rightFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
+        }
+        /**
+         * Checks if...
+         * - ... the selected face is the left face of the closet
+         * - ... the position of the face doesn't overlap the position of the first (more to the left) slot
+         */
+        else if (JSON.stringify(selected_face) == JSON.stringify(group.getObjectById(closet_faces_ids[2])) &&
+            leftFacePosition - leftSlotPosition > leftSlotPosition) {
+            selected_face.position.x = leftFacePosition;
+            changeClosetDimensions(leftFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
+        }
+    }
 }
 
 /**
