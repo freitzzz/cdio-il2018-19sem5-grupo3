@@ -89,7 +89,7 @@ hr {
 	color: #0ba2db;
 }
 .container {
-	width: 800px;
+	width: 1000px;
 	clear: both;
   }
   
@@ -530,6 +530,12 @@ ul.material_list>li>img{
     display: none;
     background-color: #0ba2db;
 }
+
+.checkboxcontainer{
+	width: 600px;
+	margin: 0px auto;
+}
+
 .checkboxcontainer {
     display: block;
     position: relative;
@@ -602,7 +608,7 @@ ul.material_list>li>img{
 }
 .progressbar li {
 	list-style-type: none;
-	width: 25%;
+	width: 20%;
 	float: left;
 	font-size: 12px;
 	position: relative;
