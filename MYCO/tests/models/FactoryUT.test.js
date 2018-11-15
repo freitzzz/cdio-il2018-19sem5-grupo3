@@ -41,6 +41,10 @@ describe('create',()=>{
             test('cant-create-factory-with-null-location',ensureCantCreateFactoryWithNullLocation);
             test('cant-create-factory-with-empty-location',ensureCantCreateFactoryWithEmptyLocation);
         });
+        describe('invalid-cities-creations',()=>{
+            test('cant-create-factory-with-null-city',ensureCantCreateFactoryWithNullCity);
+            test('cant-create-factory-with-empty-city',ensureCantCreateFactoryWithEmptyCity);
+        });
     });
 });
 
@@ -100,6 +104,28 @@ function ensureCantCreateFactoryWithNullLocation(){
 function ensureCantCreateFactoryWithEmptyLocation(){
     ensureSchemaIsInvalid(createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
         ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
+        ,{})
+    );
+}
+
+/**
+ * Ensures that its not possible to create a factory with a null city
+ */
+function ensureCantCreateFactoryWithNullCity(){
+    ensureSchemaIsInvalid(createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+        ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
+        ,LocationUT.createValidLocation()
+        ,null)
+    );
+}
+
+/**
+ * Ensures that its not possible to create a factory with an empty city
+ */
+function ensureCantCreateFactoryWithEmptyCity(){
+    ensureSchemaIsInvalid(createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+        ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
+        ,LocationUT.createValidLocation()
         ,{})
     );
 }
