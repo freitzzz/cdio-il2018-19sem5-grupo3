@@ -30,16 +30,35 @@ const VALID_FACTORY_PROPERTIES={
 describe('create',()=>{
     describe('invalid-creations',()=>{
         describe('invalid-references-creations',()=>{
-            test('cant-create-factory-with-null-reference',()=>{
-                let factory=()=>{let asd=createFactory(null
-                    ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
-                    ,VALID_FACTORY_PROPERTIES.VALID_LOCATION)
-                };
-                expect(factory).toThrow();
-            });
+            test('cant-create-factory-with-null-reference',ensureCantCreateFactoryWithNullReference);
+            test('cant-create-factory-with-empty-reference',ensureCantCreateFactoryWithEmptyReference);
         })
     });
 });
+
+/**
+ * Ensures that its not possible to create a factory with a null reference
+ */
+function ensureCantCreateFactoryWithNullReference(){
+    let factory=()=>{
+        createFactory(null
+        ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
+        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION)
+    };
+    expect(factory).toThrow();
+}
+
+/**
+ * Ensures that its not possible to create a factory with an empty reference
+ */
+function ensureCantCreateFactoryWithEmptyReference(){
+    let factory=()=>{
+        createFactory(""
+        ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
+        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION)
+    };
+    expect(factory).toThrow();
+}
 
 /**
  * Creates a new Factory
