@@ -32,7 +32,11 @@ describe('create',()=>{
         describe('invalid-references-creations',()=>{
             test('cant-create-factory-with-null-reference',ensureCantCreateFactoryWithNullReference);
             test('cant-create-factory-with-empty-reference',ensureCantCreateFactoryWithEmptyReference);
-        })
+        });
+        describe('invalid-designations-creations',()=>{
+            test('cant-create-factory-with-null-designation',ensureCantCreateFactoryWithNullDesignation);
+            test('cant-create-factory-with-empty-designation',ensureCantCreateFactoryWithEmptyDesignation);
+        });
     });
 });
 
@@ -55,6 +59,30 @@ function ensureCantCreateFactoryWithEmptyReference(){
     let factory=()=>{
         createFactory(""
         ,VALID_FACTORY_PROPERTIES.VALID_DESIGNATION
+        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION)
+    };
+    expect(factory).toThrow();
+}
+
+/**
+ * Ensures that its not possible to create a factory with a null designation
+ */
+function ensureCantCreateFactoryWithNullDesignation(){
+    let factory=()=>{
+        createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+        ,null
+        ,VALID_FACTORY_PROPERTIES.VALID_LOCATION)
+    };
+    expect(factory).toThrow();
+}
+
+/**
+ * Ensures that its not possible to create a factory with an empty designation
+ */
+function ensureCantCreateFactoryWithEmptyDesignation(){
+    let factory=()=>{
+        createFactory(VALID_FACTORY_PROPERTIES.VALID_REFERENCE
+        ,""
         ,VALID_FACTORY_PROPERTIES.VALID_LOCATION)
     };
     expect(factory).toThrow();
