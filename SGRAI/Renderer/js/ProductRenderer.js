@@ -71,8 +71,6 @@ var intersection = new THREE.Vector3(0, 0, 0);
 var raycaster = new THREE.Raycaster();
 // ------------ End of global variables used to dinamically resize Slots ------------
 
-
-
 /**
  * Initial Product Draw function
  */
@@ -408,6 +406,10 @@ function registerEvents() {
         changeClosetDimensions(changeDimensionsEvent.detail.width, changeDimensionsEvent.detail.height, changeDimensionsEvent.detail.depth);
     });
 
+    document.addEventListener("forceOnMouseUp", function (forceOnMouseUpEvent) {
+        onDocumentMouseUp(forceOnMouseUpEvent);
+    });
+
     document.addEventListener("changeSlots", function (changeSlotsEvent) {
         changeClosetSlots(changeSlotsEvent.detail.slots);
     });
@@ -455,30 +457,34 @@ function onDocumentMouseDown(event) {
         //Gets the closest (clicked) object
         var face = intersects[0].object;
 
-        //Checks if the selected closet face is a slot 
-        for (var i = 0; i < closet_slots_faces_ids.length; i++) {
-            var closet_face = group.getObjectById(closet_slots_faces_ids[i]);
+        if (document.getElementById("slots").style.display != "none") {
+            //Checks if the selected closet face is a slot 
+            for (var i = 0; i < closet_slots_faces_ids.length; i++) {
+                var closet_face = group.getObjectById(closet_slots_faces_ids[i]);
 
-            if (JSON.stringify(closet_face) == JSON.stringify(face)) {
-                //Disables rotation while moving the slot
-                controls.enabled = false;
-                //Sets the selection to the current slot
-                selected_slot = face;
-                if (raycaster.ray.intersectPlane(plane, intersection)) {
-                    offset = intersection.x - selected_slot.position.x;
+                if (JSON.stringify(closet_face) == JSON.stringify(face)) {
+                    //Disables rotation while moving the slot
+                    controls.enabled = false;
+                    //Sets the selection to the current slot
+                    selected_slot = face;
+                    if (raycaster.ray.intersectPlane(plane, intersection)) {
+                        offset = intersection.x - selected_slot.position.x;
+                    }
                 }
             }
         }
 
         //Checks if the selected closet face isn't a slot
-        if (JSON.stringify(group.getObjectById(closet_faces_ids[3])) == JSON.stringify(face) ||
-            JSON.stringify(group.getObjectById(closet_faces_ids[2])) == JSON.stringify(face)) {
-            //Disables rotation while moving the face
-            controls.enabled = false;
-            //Sets the selection to the current face
-            selected_face = face;
-            if (raycaster.ray.intersectPlane(plane, intersection)) {
-                offset = intersection.x - selected_face.position.x;
+        if (document.getElementById("dimensions").style.display != "none") {
+            if (JSON.stringify(group.getObjectById(closet_faces_ids[3])) == JSON.stringify(face) ||
+                JSON.stringify(group.getObjectById(closet_faces_ids[2])) == JSON.stringify(face)) {
+                //Disables rotation while moving the face
+                controls.enabled = false;
+                //Sets the selection to the current face
+                selected_face = face;
+                if (raycaster.ray.intersectPlane(plane, intersection)) {
+                    offset = intersection.x - selected_face.position.x;
+                }
             }
         }
     }
@@ -490,12 +496,12 @@ function onDocumentMouseDown(event) {
  * the rotation control
  */
 function onDocumentMouseUp(event) {
-    //Enables rotation again
-    controls.enabled = true;
     //Sets the selected slot to null (the slot stops being selected)
     selected_slot = null;
     //Sets the selected face to null (the face stops being selected)
     selected_face = null;
+    //Enables rotation again
+    controls.enabled = true;
 }
 
 /**
@@ -514,6 +520,7 @@ function onDocumentMouseMove(event) {
 
     //If the selected object is a slot
     if (selected_slot) {
+
         moveSlot();
         return;
     }
@@ -540,26 +547,20 @@ function onDocumentMouseMove(event) {
  * Moves the slot across the defined plan that intersects the closet, without overlapping the closet's faces
  */
 function moveSlot() {
-    if (raycaster.ray.intersectPlane(plane, intersection)) {
+    if (raycaster.ray.intersectPlane(plane, intersection) && document.getElementById("slotCheckbox").checked == true) {
         var newPosition = intersection.x - offset; //Subtracts the offset to the x coordinate of the intersection point
         var valueCloset = group.getObjectById(closet_faces_ids[2]).position.x;
         if (Math.abs(newPosition) < Math.abs(valueCloset)) { //Doesn't allow the slot to overlap the faces of the closet
             selected_slot.position.x = newPosition;
             var container = document.getElementById("slotDiv");
 
-
-            if (document.getElementById("slotCheckbox").checked == true) {
-                for (let i = 0; i < closet_slots_faces_ids.length; i++) {
-                    if (group.getObjectById(closet_slots_faces_ids[i]) == selected_slot) {
-                        var span = container.childNodes[i + 1];
-
-                        var aux = parseInt(((newPosition + group.getObjectById(closet_faces_ids[3]).position.x)*getCurrentClosetWidth()*2)/
-                        (Math.abs(group.getObjectById(closet_faces_ids[3]).position.x)+Math.abs(group.getObjectById(closet_faces_ids[2]).position.x)));
-
-
-                        span.childNodes[3].value = aux;
-                        span.childNodes[1].textContent = aux;
-                    }
+            for (let i = 0; i < closet_slots_faces_ids.length; i++) {
+                if (group.getObjectById(closet_slots_faces_ids[i]) == selected_slot) {
+                    var span = container.childNodes[i + 1];
+                    var conversion = parseInt(((newPosition + group.getObjectById(closet_faces_ids[3]).position.x) * getCurrentClosetWidth() * 2) /
+                        (Math.abs(group.getObjectById(closet_faces_ids[3]).position.x) + Math.abs(group.getObjectById(closet_faces_ids[2]).position.x)));
+                    span.childNodes[3].value = conversion;
+                    span.childNodes[1].textContent = conversion;
                 }
             }
         }
@@ -575,18 +576,28 @@ function moveFace() {
         var rightFacePosition = intersection.x - offset + selected_face.position.x; //Position of the right closet face
         var leftFacePosition = - intersection.x - offset - selected_face.position.x; //Position of the left closet face
 
-
         if (closet_slots_faces_ids.length == 0) {
+
+            var conversion = parseInt(((rightFacePosition + group.getObjectById(closet_faces_ids[3]).position.x) * getCurrentClosetWidth() * 2) /
+                (Math.abs(group.getObjectById(closet_faces_ids[3]).position.x) + Math.abs(group.getObjectById(closet_faces_ids[2]).position.x)));
 
             //Checks if the selected face is the right face of the closet
             if (JSON.stringify(selected_face) == JSON.stringify(group.getObjectById(closet_faces_ids[3]))) {
                 selected_face.position.x = rightFacePosition;
+
+                document.getElementById("width").value = conversion;
+
                 changeClosetDimensions(rightFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
             }
 
             //Checks if the selected face is the left face of the closet
             else if (JSON.stringify(selected_face) == JSON.stringify(group.getObjectById(closet_faces_ids[2]))) {
+                var conversion = parseInt(((leftFacePosition + group.getObjectById(closet_faces_ids[3]).position.x) * getCurrentClosetWidth() * 2) /
+                    (Math.abs(group.getObjectById(closet_faces_ids[3]).position.x) + Math.abs(group.getObjectById(closet_faces_ids[2]).position.x)));
+
                 selected_face.position.x = leftFacePosition;
+                document.getElementById("width").value = conversion;
+
                 changeClosetDimensions(leftFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
             }
 
@@ -602,7 +613,13 @@ function moveFace() {
              */
             if (JSON.stringify(selected_face) == JSON.stringify(group.getObjectById(closet_faces_ids[3])) &&
                 rightFacePosition - rightSlotPosition > rightSlotPosition) {
+
+                var conversion = parseInt(((rightFacePosition + group.getObjectById(closet_faces_ids[3]).position.x) * getCurrentClosetWidth() * 2) /
+                    (Math.abs(group.getObjectById(closet_faces_ids[3]).position.x) + Math.abs(group.getObjectById(closet_faces_ids[2]).position.x)));
+
                 selected_face.position.x = rightFacePosition;
+                document.getElementById("width").value = conversion;
+
                 changeClosetDimensions(rightFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
             }
             /**
@@ -612,7 +629,12 @@ function moveFace() {
              */
             else if (JSON.stringify(selected_face) == JSON.stringify(group.getObjectById(closet_faces_ids[2])) &&
                 leftFacePosition - leftSlotPosition > leftSlotPosition) {
+                var conversion = parseInt(((leftFacePosition + group.getObjectById(closet_faces_ids[3]).position.x) * getCurrentClosetWidth() * 2) /
+                    (Math.abs(group.getObjectById(closet_faces_ids[3]).position.x) + Math.abs(group.getObjectById(closet_faces_ids[2]).position.x)));
+
                 selected_face.position.x = leftFacePosition;
+                document.getElementById("width").value = conversion;
+
                 changeClosetDimensions(leftFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
             }
         }

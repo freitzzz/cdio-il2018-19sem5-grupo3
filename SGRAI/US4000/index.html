@@ -40,6 +40,7 @@
       loadDepth();
       loadSlots();
     }
+
     var lastUnit = "cm";
 
     /**
@@ -123,6 +124,7 @@
           container.removeChild(container.childNodes[length - 1]);
           length--;
         }
+        reloadClosetSlots();
         if (document.getElementById("slotsInput").value == 1) { //Disables the option for different widths since there is only one slot
           checkbox.checked = false;
           checkbox.disabled = true;
@@ -199,14 +201,19 @@
     }
 
     function reloadCube() {
+      var aux = parseInt(document.getElementById("width").value) / 2;
       var event = new CustomEvent("changeDimensions", {
         detail: {
           height: document.getElementById("height").value,
-          width: document.getElementById("width").value,
+          width: aux,
           depth: document.getElementById("depth").value
         }
       });
       document.dispatchEvent(event);
+    }
+
+    function forceOnMouseUp() {
+      document.dispatchEvent(new CustomEvent("forceOnMouseUp"));
     }
 
     function manageClosetSlots() {
@@ -278,7 +285,7 @@
     }
 
     function loadWidth() {
-      document.getElementById("width").value = getCurrentClosetWidth() * 2;
+      document.getElementById("width").value = parseInt(getCurrentClosetWidth() * 2);
     }
     function loadHeight() {
       document.getElementById("height").value = getCurrentClosetHeight();
@@ -289,7 +296,7 @@
     function loadSlots() {
       changeClosetSlots(document.getElementById("slotsInput").value);
       var container = document.getElementById("slotDiv");
-      //alert(container.childNodes.length);
+
       for (let i = 0; i < container.childNodes.length; i++) {
         if (container.childNodes[i].id != "slotCheckbox") {
           container.removeChild(container.childNodes[i]);
@@ -356,9 +363,6 @@
       var divi = document.getElementById("createP");
       divi.classList.remove("active");
     }
-  </script>
-  <script>
-    //document.getElementById("dimensions").click();
   </script>
   <script>
     /* Set the width of the sidebar to 250px (show it) */
@@ -473,7 +477,7 @@
           <option id="m" value="m">Meters</option>
         </select><br>
         <br><br>
-        <a class="btn-custom" onclick="openTab(event, 'slots');changePBSlots();">Next</a>
+        <a class="btn-custom" onclick="openTab(event, 'slots');changePBSlots();forceOnMouseUp()">Next</a>
       </div>
       <div id="slots" class="column left tabcontent" style="display:none">
         <h2>Slots</h2>
@@ -490,8 +494,8 @@
           </label>
         </div>
         <br><br><br><br>
-        <a class="btn-custom" id="slotBack" onclick="openTab(event, 'dimensions');decreasePBSlots()">Back</a>
-        <a class="btn-custom" id="slotNext" onclick="openTab(event,'materials');changePBMaterial()">Next</a>
+        <a class="btn-custom" id="slotBack" onclick="openTab(event, 'dimensions');decreasePBSlots();reloadCube();forceOnMouseUp()">Back</a>
+        <a class="btn-custom" id="slotNext" onclick="openTab(event,'materials');changePBMaterial();forceOnMouseUp()">Next</a>
       </div>
       <div id="materials" class="column left tabcontent" style="display:none">
         <h2>Materials</h2>
@@ -563,8 +567,8 @@
           </ul>
         </div>
         <br>
-        <a class="btn-custom" onclick="openTab(event, 'slots');decreasePBMaterial();decreasePBCreate();">Back</a>
-        <a class="btn-custom" onclick="openTab(event, 'components');changePBCreate()">Next</a>
+        <a class="btn-custom" onclick="openTab(event, 'slots');decreasePBMaterial();decreasePBCreate();forceOnMouseUp()">Back</a>
+        <a class="btn-custom" onclick="openTab(event, 'components');changePBCreate();forceOnMouseUp()">Next</a>
       </div>
       <div id="components" class="column left tabcontent" style="display:none">
         <h2>Components</h2>
@@ -582,8 +586,8 @@
           </div>
         </div>
         <br><br><br><br> <!-- #TODO: Remove <br>!!!-->
-        <a class="btn-custom" onclick="openTab(event, 'materials');decreaseToMaterial();">Back</a>
-        <a class="btn-custom" onclick="openTab(event,'save');changePBSave();">Next</a>
+        <a class="btn-custom" onclick="openTab(event, 'materials');decreaseToMaterial();forceOnMouseUp()">Back</a>
+        <a class="btn-custom" onclick="openTab(event,'save');changePBSave();forceOnMouseUp()">Next</a>
       </div>
 
       <div class="column right">
