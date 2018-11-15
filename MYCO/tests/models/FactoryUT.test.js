@@ -57,8 +57,14 @@ describe('changes',()=>{
             test('cant-change-factory-reference-to-null-reference',ensureCantChangeFactoryReferenceToNullReference);
             test('cant-change-factory-reference-to-empty-reference',ensureCantChangeFactoryReferenceToEmptyReference);
         });
+        describe('invalid-designation-changes',()=>{
+            test('cant-change-factory-designation-to-null-designation',ensureCantChangeFactoryDesignationToNullDesignation);
+            test('cant-change-factory-designation-to-empty-designation',ensureCantChangeFactoryDesignationToEmptyDesignation);
+        });
     });
 });
+
+//CREATIONS
 
 /**
  * Ensures that its not possible to create a factory with a null reference
@@ -142,6 +148,8 @@ function ensureCantCreateFactoryWithEmptyCity(){
     );
 }
 
+//CHANGES
+
 /**
  * Ensures that its not possible to change a factory reference to a null reference
  */
@@ -157,6 +165,24 @@ function ensureCantChangeFactoryReferenceToEmptyReference(){
     let factoryChange=()=>{createValidFactorySchema().changeReference("")};
     expect(factoryChange).toThrow();
 }
+
+/**
+ * Ensures that its not possible to change a factory designation to a null designation
+ */
+function ensureCantChangeFactoryDesignationToNullDesignation(){
+    let factoryChange=()=>{createValidFactorySchema().changeDesignation(null)};
+    expect(factoryChange).toThrow();
+}
+
+/**
+ * Ensures that its not possible to change a factory designation to an empty designation
+ */
+function ensureCantChangeFactoryDesignationToEmptyDesignation(){
+    let factoryChange=()=>{createValidFactorySchema().changeDesignation("")};
+    expect(factoryChange).toThrow();
+}
+
+//UTILITIES
 
 /**
  * Ensures that a schema is not valid
