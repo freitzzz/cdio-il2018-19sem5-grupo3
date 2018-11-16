@@ -1,11 +1,12 @@
 const express = require('express');
 const ordersRoute = express.Router();
 const Order = require('../models/order');
-const Factory=require('../models/Factory');
+const Factory = require('../models/Factory');
 const http = require('http');
 const City = require('../models/City');
-const axios=require('axios');
-const config=require('../config');
+const axios = require('axios');
+const config = require('../config');
+const Package = require('../models/Package');
 
 //Get all orders in the database
 //Handle errors by using the ones available in the mongoose schema
@@ -102,39 +103,39 @@ function getCustomizedProduct(customizedProductId) {
 //TODO Handle errors by using the ones available in the mongoose schema
 ordersRoute.route('/orders').post(function (req, res, next) {
     City.findById(req.body.cityToDeliverId)
-        .then((city)=>{
+        .then((city) => {
             Factory
                 .find()
-                    .then(async function(availableFactories){
-                        isCityInFactories(city,availableFactories)
-                        .then((_shortestFactory)=>{
-                            createOrder(req.body.orderContents,city,_shortestFactory)
-                            .then((_createdOrder)=>{
-                                res.status(201).json(_createdOrder);
-                            }).catch((_error)=>{
-                                //TODO: REWORK : )
-                                res.status(400).json({message:'An error occured while processing the order'});
-                            });
-                        })
-                        .catch(()=>{
-                            fetchShortestFactory(city,availableFactories)
-                            .then((_shortestFactory)=>{
-                                createOrder(req.body.orderContents,city,_shortestFactory)
-                                .then((_createdOrder)=>{
+                .then(async function (availableFactories) {
+                    isCityInFactories(city, availableFactories)
+                        .then((_shortestFactory) => {
+                            createOrder(req.body.orderContents, city, _shortestFactory)
+                                .then((_createdOrder) => {
                                     res.status(201).json(_createdOrder);
-                                }).catch((_error)=>{
+                                }).catch((_error) => {
                                     //TODO: REWORK : )
-                                    res.status(400).json({message:'An error occured while processing the order'});
+                                    res.status(400).json({ message: 'An error occured while processing the order' });
                                 });
-                            }).catch((_error)=>{
-                                //TODO: REWORK :) (Happens when there is an error while processing the shortest factory computation in MYCL)
-                                res.status(402).json({message:'An error occurd while processing the order'});
-                            });
-                        });                        
-                    });
+                        })
+                        .catch(() => {
+                            fetchShortestFactory(city, availableFactories)
+                                .then((_shortestFactory) => {
+                                    createOrder(req.body.orderContents, city, _shortestFactory)
+                                        .then((_createdOrder) => {
+                                            res.status(201).json(_createdOrder);
+                                        }).catch((_error) => {
+                                            //TODO: REWORK : )
+                                            res.status(400).json({ message: 'An error occured while processing the order' });
+                                        });
+                                }).catch((_error) => {
+                                    //TODO: REWORK :) (Happens when there is an error while processing the shortest factory computation in MYCL)
+                                    res.status(402).json({ message: 'An error occurd while processing the order' });
+                                });
+                        });
+                });
         })
-        .catch((_error)=>{
-            res.status(400).json({message:'There is no city with the given id'});
+        .catch((_error) => {
+            res.status(400).json({ message: 'There is no city with the given id' });
         });
 });
 
@@ -144,11 +145,11 @@ ordersRoute.route('/orders').post(function (req, res, next) {
  * @param {List} factories Collection with the factories being checked
  * @returns Promise with the condition information
  */
-function isCityInFactories(city,factories){
-    return new Promise((resolve,reject)=>{
-        let _factories=[];
-        factories.forEach((factory)=>{
-            if(factory.isLocated(city)){resolve(factory);}
+function isCityInFactories(city, factories) {
+    return new Promise((resolve, reject) => {
+        let _factories = [];
+        factories.forEach((factory) => {
+            if (factory.isLocated(city)) { resolve(factory); }
             //TODO: REWORK : )
         })
         return _factories ? resolve(_factories) : reject(null);
@@ -162,12 +163,26 @@ function isCityInFactories(city,factories){
  * @param {Factory.Schema} factoryOfProduction Factory with the factory where the order will be produced
  * @returns Order with the created order
  */
-function createOrder(orderContents,cityToDeliver,factoryOfProduction){
+function createOrder(orderContents, cityToDeliver, factoryOfProduction) {
     return Order.create({
-        orderContents:orderContents,
-        cityToDeliver:cityToDeliver,
-        factoryOfProduction:factoryOfProduction
+        orderContents: orderContents,
+        packages: createPackages(orderContents),
+        cityToDeliver: cityToDeliver,
+        factoryOfProduction: factoryOfProduction
     });
+}
+
+/**
+ * Creates the necessary packages for the order
+ * @param {List} orderContents Collection with the order contents
+ * @returns Packages with ids and size
+ */
+function createPackages(orderContents) {
+    var array = [];
+    orderContents.forEach(element => {
+        array.push(element.customizedproduct);
+    });
+    return [Package.createPackage("L", array)];
 }
 
 /**
@@ -176,14 +191,14 @@ function createOrder(orderContents,cityToDeliver,factoryOfProduction){
  * @param {List} factories Collection with the available production factories
  * @returns Promise with the fetch callback
  */
-async function fetchShortestFactory(city,factories){
-    return new Promise((resolve,reject)=>{
-        let _requestBody={city:serializeCity(city),factories:serializeFactories(factories)};
-        axios.post(config.MYCL_URL+"mycl/api/factories",_requestBody)
-            .then(function(response){
-                resolve(factoryByName(factories,response.data.factory.name));
+async function fetchShortestFactory(city, factories) {
+    return new Promise((resolve, reject) => {
+        let _requestBody = { city: serializeCity(city), factories: serializeFactories(factories) };
+        axios.post(config.MYCL_URL + "mycl/api/factories", _requestBody)
+            .then(function (response) {
+                resolve(factoryByName(factories, response.data.factory.name));
             })
-            .catch(function(_error){
+            .catch(function (_error) {
                 reject(_error);
             });
     })
@@ -193,11 +208,11 @@ async function fetchShortestFactory(city,factories){
  * Serializes a city into a basic city
  * @param {City.Schema} city City with the city being serialized
  */
-function serializeCity(city){
+function serializeCity(city) {
     return {
-        name:city.name,
-        latitude:city.location.latitude,
-        longitude:city.location.longitude
+        name: city.name,
+        latitude: city.location.latitude,
+        longitude: city.location.longitude
     }
 }
 
@@ -205,11 +220,11 @@ function serializeCity(city){
  * Serializes a factory into a basic factory
  * @param {Factory.Schema} factory Factory with the factory being serialized
  */
-function serializeFactory(factory){
+function serializeFactory(factory) {
     return {
-        name:factory.reference,
-        latitude:factory.location.latitude,
-        longitude:factory.location.longitude
+        name: factory.reference,
+        latitude: factory.location.latitude,
+        longitude: factory.location.longitude
     }
 }
 
@@ -217,9 +232,9 @@ function serializeFactory(factory){
  * Serializes a collection of factories
  * @param {List} factories Collection with the factories being serialized 
  */
-function serializeFactories(factories){
-    let serializedFactories=[];
-    factories.forEach((factory)=>{serializedFactories.push(serializeFactory(factory));});
+function serializeFactories(factories) {
+    let serializedFactories = [];
+    factories.forEach((factory) => { serializedFactories.push(serializeFactory(factory)); });
     return serializedFactories;
 }
 
@@ -228,9 +243,9 @@ function serializeFactories(factories){
  * @param {List} factories Collection with the factories
  * @param {String} name  String with the factory name being fetched
  */
-function factoryByName(factories,name){
-    for(let i=0;i<factories.length;i++)
-        if(factories[i].reference==name)return factories[i];
+function factoryByName(factories, name) {
+    for (let i = 0; i < factories.length; i++)
+        if (factories[i].reference == name) return factories[i];
 }
 
 /**
