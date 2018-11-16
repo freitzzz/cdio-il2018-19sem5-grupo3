@@ -221,7 +221,7 @@ function removeSlot() {
  * @param {number} height Number with the closet height
  * @param {number} depth Number with the closet depth
  */
-function changeClosetDimensions(width, height, depth) {
+function changeClosetDimensions(width, height, depth,index) {
 
     //If there aren't any slots, the width has no restrictions
     if (closet_slots_faces_ids.length == 0) {
@@ -231,7 +231,7 @@ function changeClosetDimensions(width, height, depth) {
         updateClosetGV();
     } else { //If there is at least one slot, the closet wall can't overlap it
         var firstSlot = Math.abs(group.getObjectById(closet_slots_faces_ids[0]).position.x);
-        var wall = Math.abs(group.getObjectById(closet_faces_ids[2]).position.x) - firstSlot;
+        var wall = Math.abs(group.getObjectById(closet_faces_ids[index]).position.x) - firstSlot;
 
         if (wall <= firstSlot) { //!TODO change if-condition from wall <= firstSlot to wall <= minimumSlotSize
             document.getElementById("width").value = getCurrentClosetWidth();
@@ -587,7 +587,7 @@ function moveFace() {
 
                 document.getElementById("width").value = conversion;
 
-                changeClosetDimensions(rightFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
+                changeClosetDimensions(rightFacePosition, closet.getClosetHeight(), closet.getClosetDepth(),3);
             }
 
             //Checks if the selected face is the left face of the closet
@@ -598,7 +598,7 @@ function moveFace() {
                 selected_face.position.x = leftFacePosition;
                 document.getElementById("width").value = conversion;
 
-                changeClosetDimensions(leftFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
+                changeClosetDimensions(leftFacePosition, closet.getClosetHeight(), closet.getClosetDepth(),2);
             }
 
         } else {
@@ -620,7 +620,7 @@ function moveFace() {
                 selected_face.position.x = rightFacePosition;
                 document.getElementById("width").value = conversion;
 
-                changeClosetDimensions(rightFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
+                changeClosetDimensions(rightFacePosition, closet.getClosetHeight(), closet.getClosetDepth(),3);
             }
             /**
              * Checks if...
@@ -635,7 +635,7 @@ function moveFace() {
                 selected_face.position.x = leftFacePosition;
                 document.getElementById("width").value = conversion;
 
-                changeClosetDimensions(leftFacePosition, closet.getClosetHeight(), closet.getClosetDepth());
+                changeClosetDimensions(leftFacePosition, closet.getClosetHeight(), closet.getClosetDepth(),2);
             }
         }
     }
