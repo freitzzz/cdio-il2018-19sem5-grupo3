@@ -1,5 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
+var THREE = require('three')
 
 module.exports = {
   entry: './src/main.js',
@@ -16,7 +17,7 @@ module.exports = {
           'vue-style-loader',
           'css-loader'
         ],
-      },      {
+      }, {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
@@ -36,12 +37,17 @@ module.exports = {
         options: {
           name: '[name].[ext]?[hash]'
         }
+      },
+      {
+        test: /three\/examples\/js/,
+        use: 'imports-loader?THREE=three'
       }
     ]
   },
   resolve: {
     alias: {
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.esm.js',
+      'three-examples': path.join(__dirname, './node_modules/three/examples/js')
     },
     extensions: ['*', '.js', '.vue', '.json']
   },
@@ -73,6 +79,9 @@ if (process.env.NODE_ENV === 'production') {
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
+    }),
+    new webpack.ProvidePlugin({
+      'THREE': 'three'
     })
   ])
 }
