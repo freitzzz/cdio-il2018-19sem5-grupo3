@@ -81,6 +81,7 @@ class Closet{
         this.closet_right_face_dimensions_axes=closet_right_face_dimensions_axes.slice();
         this.closet_back_face_dimensions_axes=closet_back_face_dimensions_axes.slice();
         this._prepare_closet_init();
+        this.poles = [];
     }
 
     //Closet Logic
@@ -174,6 +175,21 @@ class Closet{
             this.initial_closet_slots_faces.pop();
             this._updateClosetSlots(this);
         }
+    }
+
+    /**
+     * Adds a pole to the closet
+     * @param {Pole} pole to add 
+     */
+    addPole(pole){
+        this.poles.push(pole);
+    }
+
+    /**
+     * Removes a pole from the closet
+     */
+    removePole(){
+        this.poles.pop();
     }
     
     //Accessors
