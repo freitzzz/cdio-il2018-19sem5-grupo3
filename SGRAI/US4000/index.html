@@ -40,6 +40,8 @@
       loadDepth();
       loadSlots();
     }
+    
+
     var lastUnit = "cm";
     function convertUnit(unitToConvert){
       var height,width,depth;
@@ -95,6 +97,31 @@
       }
   
     }
+      //loadDepth();
+    function reloadCube() {
+      var height,width,depth;
+      switch(lastUnit){
+            case "mm": 
+              height  = document.getElementById("height").value/10;
+              width = document.getElementById("width").value/10;
+              depth = document.getElementById("depth").value/10;  
+              break;
+            case "m":
+              width =document.getElementById("width").value*100;
+              height =document.getElementById("height").value*100;
+              depth = document.getElementById("depth").value*100;
+              break;
+      }
+      var event = new CustomEvent("changeDimensions", {
+
+      detail: {
+      height: height,
+      width: width,
+      depth: depth
+      }
+    });
+document.dispatchEvent(event);
+}
     function manageSlotSliders(){
       var container = document.getElementById("slotDiv");
       var checkbox = document.getElementById("slotCheckbox");
@@ -187,19 +214,7 @@
                   }
                 }
     }
-    //loadDepth();
-    function reloadCube() {
-
-      var event = new CustomEvent("changeDimensions", {
-        detail: {
-          height: document.getElementById("height").value,
-          width: document.getElementById("width").value,
-          depth: document.getElementById("depth").value
-        }
-      });
-      document.dispatchEvent(event);
-    }
-
+  
     function reloadClosetSlots() {
       var slotDiv = document.getElementById("slotDiv");
       var length = slotDiv.childNodes.length - 1;
