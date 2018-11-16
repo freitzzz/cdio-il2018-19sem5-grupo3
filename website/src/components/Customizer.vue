@@ -1,15 +1,54 @@
 <template>
+  <div>
+    <customizer-side-bar></customizer-side-bar>
+      <canvas ref="threeCanvas" @mouseup="onMouseUp" @mousedown="onMouseDown" @mousemove="onMouseMove" :width="initialWidth" :height="initialHeight">
+          Could not load the canvas :(
+      </canvas>
+  </div>
 </template>
 
 <script>
+import ProductRenderer from "./../3d/ProductRenderer.js";
+import CustomizerSideBar from "./CustomizerSideBar";
 export default {
-  data() {},
+  name: "Customizer",
+  data() {
+    return {
+      productRenderer: {}
+    };
+  },
+  computed: {
+    initialWidth() {
+      return document.documentElement.clientWidth;
+    },
+    initialHeight() {
+      return document.documentElement.clientHeight;
+    }
+  },
+  components: {
+    CustomizerSideBar
+  },
   //*Change the functions so that they don't access the DOM
   methods: {
-    loadCustomizer() {
-      alert("load the customizer canvas");
+    /**
+     * Mouse move event handler propagated to the instance of ProductRenderer.
+     */
+    onMouseMove: function(event) {
+      this.productRenderer.onMouseMove(event);
     },
-    reloadCube() {
+    /**
+     * Mouse click release event handler propagated to the instance of ProductRenderer.
+     */
+    onMouseUp: function(event) {
+      this.productRenderer.onMouseUp(event);
+    },
+    /**
+     * Mouse click press/hold event handler propagated to the instance of ProductRenderer.
+     */
+    onMouseDown: function(event) {
+      this.productRenderer.onMouseDown(event);
+    }
+    /* reloadCube() {
       var event = new CustomEvent("changeDimensions", {
         detail: {
           height: height,
@@ -59,7 +98,11 @@ export default {
           color: color
         }
       });
-    }
+    } */
+  },
+  mounted() {
+    var canvas = this.$refs.threeCanvas;
+    this.productRenderer = new ProductRenderer(canvas);
   }
 };
 </script>
