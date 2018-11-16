@@ -40,6 +40,7 @@
       loadDepth();
       loadSlots();
     }
+    
 
     var lastUnit = "cm";
 
@@ -99,6 +100,33 @@
           break;
       }
     }
+
+      //loadDepth();
+    function reloadCube() {
+      var height,width,depth;
+      switch(lastUnit){
+            case "mm": 
+              height  = document.getElementById("height").value/10;
+              width = document.getElementById("width").value/20;
+              depth = document.getElementById("depth").value/10;  
+              break;
+            case "m":
+              width =parseInt((document.getElementById("width").value*100)/2);
+              height =document.getElementById("height").value*100;
+              depth = document.getElementById("depth").value*100;
+              break;
+      }
+      var event = new CustomEvent("changeDimensions", {
+
+        detail: {
+        height: height,
+        width: width,
+        depth: depth
+        }
+      });
+      document.dispatchEvent(event);
+      }
+
 
     /**
      * Manages the slots' sliders to change their width if the check box that allows different widths is checked
@@ -200,17 +228,6 @@
       }
     }
 
-    function reloadCube() {
-      var aux = parseInt(document.getElementById("width").value) / 2;
-      var event = new CustomEvent("changeDimensions", {
-        detail: {
-          height: document.getElementById("height").value,
-          width: aux,
-          depth: document.getElementById("depth").value
-        }
-      });
-      document.dispatchEvent(event);
-    }
 
     function forceOnMouseUp() {
       document.dispatchEvent(new CustomEvent("forceOnMouseUp"));
@@ -225,6 +242,7 @@
       document.dispatchEvent(eventX);
       manageSlotSliders();
     }
+
 
     function reloadClosetSlots() {
       var slotDiv = document.getElementById("slotDiv");
@@ -600,6 +618,7 @@
         <script src="../Renderer/js/OrbitControls.js"></script>
         <script src="../Renderer/js/ProductRenderer.js"></script>
         <script src="../Renderer/js/Closet.js"></script>
+        <script src="../Renderer/js/Pole.js"></script>
         <!--Change the texture source, if the server or the port need to change-->
         <script> main('http://127.0.0.1:8002/US4000/img/cherry_wood.jpeg');</script>
       </div>
