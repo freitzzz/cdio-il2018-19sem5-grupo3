@@ -114,14 +114,14 @@
       }
       var event = new CustomEvent("changeDimensions", {
 
-      detail: {
-      height: height,
-      width: width,
-      depth: depth
+        detail: {
+        height: height,
+        width: width,
+        depth: depth
+        }
+      });
+      document.dispatchEvent(event);
       }
-    });
-document.dispatchEvent(event);
-}
     function manageSlotSliders(){
       var container = document.getElementById("slotDiv");
       var checkbox = document.getElementById("slotCheckbox");
