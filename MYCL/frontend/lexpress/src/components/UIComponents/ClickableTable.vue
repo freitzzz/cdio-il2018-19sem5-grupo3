@@ -10,6 +10,7 @@
                 :columns="columns"
                 :data="data"
                 :selected.sync="selected"
+                @click="emitSelected()"
                 focusable>
             </b-table>
         </div>
@@ -24,5 +25,10 @@ export default {
         title: String,
         selected: Array
     },
+    methods:{
+        emitSelected(){
+            this.$emit('clicked', this.selected)
+        }
+    }
 }
 </script>
