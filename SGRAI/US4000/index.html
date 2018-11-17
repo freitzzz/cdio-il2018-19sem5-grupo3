@@ -115,13 +115,20 @@
               height =document.getElementById("height").value*100;
               depth = document.getElementById("depth").value*100;
               break;
+            default:
+              width = document.getElementById("width").value;
+              height = document.getElementById("height").value;
+              depth = document.getElementById("depth").value;
+              break;
       }
       var event = new CustomEvent("changeDimensions", {
 
         detail: {
         height: height,
         width: width,
-        depth: depth
+        depth: depth,
+        //!Temporary solution
+        index: 3
         }
       });
       document.dispatchEvent(event);
