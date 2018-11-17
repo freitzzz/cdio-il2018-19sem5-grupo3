@@ -9,7 +9,8 @@
             <b-table
                 :columns="columns"
                 :data="data"
-                >
+                :selected.sync="selected"
+                focusable>
             </b-table>
         </div>
     </div>
@@ -20,7 +21,8 @@ export default {
     props: {
         columns: Array,
         data: Array,
-        title: String
-    }
+        title: String,
+        selected: Array
+    },
 }
 </script>
