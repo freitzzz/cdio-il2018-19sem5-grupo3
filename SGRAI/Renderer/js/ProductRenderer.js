@@ -501,7 +501,8 @@ function createMaterialWithTexture() {
  */
 function registerEvents() {
     document.addEventListener("changeDimensions", function (changeDimensionsEvent) {
-        changeClosetDimensions(changeDimensionsEvent.detail.width, changeDimensionsEvent.detail.height, changeDimensionsEvent.detail.depth);
+        changeClosetDimensions(changeDimensionsEvent.detail.width, changeDimensionsEvent.detail.height,
+                                changeDimensionsEvent.detail.depth,changeDimensionsEvent.detail.index);
     });
 
     document.addEventListener("forceOnMouseUp", function (forceOnMouseUpEvent) {
