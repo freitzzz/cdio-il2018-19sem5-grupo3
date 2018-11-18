@@ -4,11 +4,16 @@
       <div ref="customizerSidenav" class="sidenav">
         <i class="closebtn material-icons md-36" @click="closeNav()">close</i>
         <h3>{{panels[currentPanelIndex].title}}</h3>
-        <component :is="panels[currentPanelIndex].component"></component>
-          <div class="sidenav-controls">
-            <button class="btn btn-primary" @click="previousPanel()" v-if="hasPrevious">Back</button>
-            <button class="btn btn-primary" @click="nextPanel()" v-if="hasNext">Next</button>
-          </div>
+        <!--The child component changes dinamically depending on tthe currently selected component.-->
+        <!--The Sidebar component listens out for any event that the child may trigger-->
+        <customizer-side-bar-products-panel v-if="currentPanelIndex == 0" @select-product-identifier="storeProductIdentifier"></customizer-side-bar-products-panel>
+        <customizer-side-bar-dimensions-panel v-if="currentPanelIndex == 1"></customizer-side-bar-dimensions-panel>
+        <customizer-side-bar-slots-panel v-if="currentPanelIndex == 2"></customizer-side-bar-slots-panel>
+        <customizer-side-bar-materials-panel v-if="currentPanelIndex == 3"></customizer-side-bar-materials-panel>
+        <div class="sidenav-controls">
+          <i class="btn btn-primary material-icons" @click="previousPanel()" v-if="canDisplayPreviousButton">arrow_back</i>
+          <i class="btn btn-primary material-icons" @click="nextPanel()" v-if="canDisplayNextButton">arrow_forward</i>
+        </div>
       </div>
     </div>
 </template>
@@ -17,6 +22,7 @@
 import CustomizerSideBarProductsPanel from "./CustomizerSideBarProductsPanel";
 import CustomizerSideBarDimensionsPanel from "./CustomizerSideBarDimensionsPanel";
 import CustomizerSideBarMaterialsPanel from "./CustomizerSideBarMaterialsPanel";
+import CustomizerSideBarSlotsPanel from "./CustomizerSideBarSlotsPanel";
 
 export default {
   name: "CustomizerSideBar",
@@ -25,18 +31,19 @@ export default {
       //chave: fase atual de configuração
       //valor: painel a ser rendered
       currentPanelIndex: 0,
+      selectedProductId: 0,
       panels: [
         {
           title: "Products",
-          component: CustomizerSideBarProductsPanel
         },
         {
           title: "Dimensions",
-          component: CustomizerSideBarDimensionsPanel
+        },
+        {
+          title: "Slots",
         },
         {
           title: "Materials",
-          component: CustomizerSideBarMaterialsPanel
         }
       ]
     };
@@ -44,14 +51,19 @@ export default {
   components: {
     CustomizerSideBarProductsPanel,
     CustomizerSideBarDimensionsPanel,
-    CustomizerSideBarMaterialsPanel
+    CustomizerSideBarMaterialsPanel,
+    CustomizerSideBarSlotsPanel
   },
   computed: {
-    hasPrevious() {
+    canDisplayPreviousButton() {
       return this.currentPanelIndex > 0;
     },
-    hasNext() {
-      return this.currentPanelIndex < this.panels.length - 1;
+    canDisplayNextButton() {
+      //Do not display next button for the Products tab nor for the last tab
+      return (
+        this.currentPanelIndex > 0 &&
+        this.currentPanelIndex < this.panels.length - 1
+      );
     }
   },
   methods: {
@@ -78,13 +90,17 @@ export default {
       if (this.currentPanelIndex < this.panels.length - 1) {
         this.currentPanelIndex++;
       }
+    },
+    storeProductIdentifier(id) {
+      //When a product is selected, proceed to the next panel
+      this.selectedProductId = id;
+      this.nextPanel();
     }
   }
 };
 </script>
 
 <style scoped>
-
 .sidenav {
   height: 100%; /* Full height */
   width: 0; /*0 width, changed with Vue*/
