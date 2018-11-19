@@ -156,7 +156,8 @@ namespace core.domain
 
             decimal remainder = maxValueAsDecimal % incrementAsDecimal;
 
-            if(decimal.Compare(decimal.Zero, remainder) != 0){
+            if (decimal.Compare(decimal.Zero, remainder) != 0)
+            {
                 throw new ArgumentException(MAXIMUM_VALUE_NOT_MULTIPLE_OF_INCREMENT);
             }
         }
@@ -174,6 +175,18 @@ namespace core.domain
             decimal remainder = valueAsDecimal % incrementAsDecimal;
 
             return decimal.Compare(remainder, 0) == 0;
+        }
+
+        //*These methods may seem redundant in instances of this particular class, but these belong to the abstract Dimension 
+
+        public override double getMaxValue()
+        {
+            return maxValue;
+        }
+
+        public override double getMinValue()
+        {
+            return minValue;
         }
 
         /// <summary>

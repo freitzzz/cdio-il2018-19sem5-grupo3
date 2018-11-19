@@ -114,6 +114,38 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureDiscreteDimensionIntervalGetMaxValueIsTheSameAsTheLargestValueOnTheCollection()
+        {
+            double maxValue = 14;
+            List<double> values = new List<double>();
+            values.Add(12);
+            values.Add(13);
+            values.Add(13.5);
+            values.Add(maxValue);
+
+            DiscreteDimensionInterval discreteDimension = new DiscreteDimensionInterval(values);
+
+            double obtainedMaxValue = discreteDimension.getMaxValue();
+            Assert.Equal(maxValue, obtainedMaxValue, 0);
+        }
+
+        [Fact]
+        public void ensureDiscreteDimensionIntervalGetMinValueIsTheSameAsTheLowestValueOnTheCollection()
+        {
+            double minValue = 12;
+            List<double> values = new List<double>();
+            values.Add(minValue);
+            values.Add(13);
+            values.Add(13.5);
+            values.Add(14);
+
+            DiscreteDimensionInterval discreteDimension = new DiscreteDimensionInterval(values);
+
+            double obtainedMinValue = discreteDimension.getMinValue();
+            Assert.Equal(minValue, obtainedMinValue, 0);
+        }
+
+        [Fact]
         public void ensureInstanceAndNullAreNotEqual()
         {
             var list = new List<double>();
