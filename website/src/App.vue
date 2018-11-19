@@ -23,4 +23,4 @@ export default {
     Customizer
   }
 };
-</script>
+</script> 
