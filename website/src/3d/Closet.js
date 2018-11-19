@@ -1,7 +1,7 @@
 /**
  * Represents the internal core of a Closet
  */
-class Closet{
+export default class Closet{
     //This is the representation of a Closet as an ES6 class
     //In ES6 no properties are defined out of constructors context
     //So properties should only be defined in constructor context
@@ -81,7 +81,6 @@ class Closet{
         this.closet_right_face_dimensions_axes=closet_right_face_dimensions_axes.slice();
         this.closet_back_face_dimensions_axes=closet_back_face_dimensions_axes.slice();
         this._prepare_closet_init();
-        this.poles = [];
     }
 
     //Closet Logic
@@ -175,21 +174,6 @@ class Closet{
             this.initial_closet_slots_faces.pop();
             this._updateClosetSlots(this);
         }
-    }
-
-    /**
-     * Adds a pole to the closet
-     * @param {Pole} pole to add 
-     */
-    addPole(pole){
-        this.poles.push(pole);
-    }
-
-    /**
-     * Removes a pole from the closet
-     */
-    removePole(){
-        this.poles.pop();
     }
     
     //Accessors

@@ -1,20 +1,22 @@
 <template>
     <div id="app">
+      <customizer v-if="customizerEnabled"></customizer>
+      <button v-else @click="enableCustomizer">Get Started</button>
     </div>
 </template>
 
 <script>
-import Product from "./components/Product.vue";
 import Customizer from "./components/Customizer.vue";
 export default {
   name: "app",
   data() {
     return {
-      title: "Make Your Closet"
+      customizerEnabled: false
     };
   },
   methods: {
-    loadCustomizer(){
+    enableCustomizer(){
+      this.customizerEnabled = true;
     }
   },
   components: {

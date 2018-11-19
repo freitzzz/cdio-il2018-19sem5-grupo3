@@ -32,6 +32,7 @@ namespace backend
             });*/
             DatabaseConfiguration.ConfigureDatabase(Configuration, services);
 
+            services.AddCors();
             services.AddHttpClient("CurrencyConversion", client =>
             {
                 client.BaseAddress = new Uri("http://rate-exchange-1.appspot.com");
@@ -56,7 +57,12 @@ namespace backend
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();*/
+            app.UseCookiePolicy(); */
+
+            //Allow requests from MYC's website
+            app.UseCors(builder => 
+            builder.WithOrigins("http://localhost:8080")
+            .AllowAnyMethod().AllowAnyHeader());
 
             app.UseMvc();
         }
