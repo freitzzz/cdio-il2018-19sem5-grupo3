@@ -66,15 +66,15 @@ namespace core.domain
         /// <summary>
         /// Minimum value of the interval
         /// </summary>
-        public double minValue { get; set; }
+        public double minValue { get; protected set; }
         /// <summary>
         /// Maximum value of the interval
         /// </summary>
-        public double maxValue { get; set; }
+        public double maxValue { get; protected set; }
         /// <summary>
         /// Increment value of the interval
         /// </summary>
-        public double increment { get; set; }
+        public double increment { get; protected set; }
 
         private ContinuousDimensionInterval(ILazyLoader lazyLoader) : base(lazyLoader) { }
 
