@@ -1,6 +1,6 @@
 //@ts-check
 import * as THREE from 'three'
-import 'three-examples/controls/OrbitControls'
+import 'three/examples/js/controls/OrbitControls'
 import Closet from './Closet'
 
 export default class ProductRenderer {
