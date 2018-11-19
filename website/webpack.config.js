@@ -1,6 +1,5 @@
 var path = require('path')
 var webpack = require('webpack')
-var THREE = require('three')
 
 module.exports = {
   entry: './src/main.js',
@@ -47,7 +46,8 @@ module.exports = {
   resolve: {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      'three-examples': path.join(__dirname, './node_modules/three/examples/js')
+      'three$': 'three/build/three.js',
+      'three/.*$': 'three' 
     },
     extensions: ['*', '.js', '.vue', '.json']
   },
