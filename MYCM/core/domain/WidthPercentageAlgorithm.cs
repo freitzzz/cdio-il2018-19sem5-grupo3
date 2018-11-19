@@ -99,6 +99,9 @@ namespace core.domain {
             }
             return minPercentage >= 0 && minPercentage <= 1 && maxPercentage >= minPercentage && maxPercentage <= 1 ? true : throw new ArgumentOutOfRangeException(INPUT_OUTSIDE_RANGE);
         }
+
+        //TODO: refactor this method
+
         /// <summary>
         /// Applies the algorithm that restricts a component's width to a certain percentage of the customized father product's width
         /// </summary>
@@ -106,7 +109,7 @@ namespace core.domain {
         /// <param name="product">component product</param>
         /// <returns>component with restricted dimensions, null if the component is not compatible with any of the allowed dimensions</returns>
         public Product apply(CustomizedProduct customProduct, Product product) {
-            double width = customProduct.customizedDimensions.width;
+            /* double width = customProduct.customizedDimensions.width;
             double minWidth = width * minPercentage;
             double maxWidth = width * maxPercentage;
 
@@ -156,12 +159,24 @@ namespace core.domain {
                     }
                 }
             }
-            foreach (Measurement measurement in measurementsToRemove) {
-                bool res = product.removeMeasurement(measurement);
-                if (!res) {
+             foreach (Measurement measurement in measurementsToRemove) {
+
+                //TODO: find a better solution than catching exception
+                //?Should this be handled like this?
+
+                bool caught = false;
+
+                try{
+                    product.removeMeasurement(measurement);
+                }catch(InvalidOperationException){
+                    caught = true;
+                }catch(ArgumentException){
+                    caught = true;
+                }
+                if(caught){
                     return null;
                 }
-            }
+            } */
             return product;
         }
     }
