@@ -13,7 +13,7 @@ using core.services.ensurance;
 namespace core.services
 {
     /// <summary>
-    /// Service used for creating a new i
+    /// Service used for creating a new instance of Product.
     /// </summary>
     public static class CreateProductService
     {
@@ -118,18 +118,18 @@ namespace core.services
                 CustomizedDimensions recommendedSize = CustomizedDimensionsModelViewService.fromModelView(addProductMV.slotSizes.recommendedSize);
                 if (hasComponents)
                 {
-                    return new Product(reference, designation, maxSize, minSize, recommendedSize, category, materials, getComplementaryProducts(componentModelViews), measurements);
+                    return new Product(reference, designation, category, materials, measurements, getComplementaryProducts(componentModelViews), minSize, maxSize, recommendedSize);
                 }
                 else
                 {
-                    return new Product(reference, designation, maxSize, minSize, recommendedSize, category, materials, measurements);
+                    return new Product(reference, designation, category, materials, measurements, minSize, maxSize, recommendedSize);
                 }
             }
             else
             {
                 if (hasComponents)
                 {
-                    return new Product(reference, designation, category, materials, getComplementaryProducts(componentModelViews), measurements);
+                    return new Product(reference, designation, category, materials, measurements, getComplementaryProducts(componentModelViews));
                 }
                 else
                 {

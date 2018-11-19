@@ -1,7 +1,7 @@
 /**
  * Global Variables for Graphic Control (Camera, Rendering, Scene, etc...)
  */
-var camera, controls, scene,  renderer, group, groupB;
+var camera, controls, scene, renderer, group, groupB;
 /**
  * Global variable for 
  */
@@ -65,7 +65,6 @@ function main(textureSource) {
     var dispPlane = new THREE.Mesh(planeGeometry, planeMaterial);
     dispPlane.visible = false;
     //Finishes creating the intersection plane
-
     scene.add(dispPlane);
     scene.add(camera);
 
@@ -87,11 +86,11 @@ function initShelf(textureSource) {
     material = new THREE.MeshPhongMaterial({ /*map: texture, specular: 0x404040, shininess: 20*/ });
 
     shelf_faces_ids.push(generateParellepiped(shelf.shelf_base_face_dimensions_axes[0],
-         shelf.shelf_base_face_dimensions_axes[1], 
-         shelf.shelf_base_face_dimensions_axes[2]
-               , shelf.shelf_base_face_dimensions_axes[3], 
-               shelf.shelf_base_face_dimensions_axes[4], 
-               shelf.shelf_base_face_dimensions_axes[5], material, group));
+        shelf.shelf_base_face_dimensions_axes[1],
+        shelf.shelf_base_face_dimensions_axes[2]
+        , shelf.shelf_base_face_dimensions_axes[3],
+        shelf.shelf_base_face_dimensions_axes[4],
+        shelf.shelf_base_face_dimensions_axes[5], material, group));
     scene.add(group);
     renderer.setClearColor(0xFFFFFF, 1);
 }
@@ -165,7 +164,7 @@ function initControls() {
 
     controls.maxPolarAngle = Math.PI / 2;
 
-   
+
 }
 
 /**

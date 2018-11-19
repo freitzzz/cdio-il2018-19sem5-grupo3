@@ -66,15 +66,15 @@ namespace core.domain
         /// <summary>
         /// Minimum value of the interval
         /// </summary>
-        public double minValue { get; set; }
+        public double minValue { get; protected set; }
         /// <summary>
         /// Maximum value of the interval
         /// </summary>
-        public double maxValue { get; set; }
+        public double maxValue { get; protected set; }
         /// <summary>
         /// Increment value of the interval
         /// </summary>
-        public double increment { get; set; }
+        public double increment { get; protected set; }
 
         private ContinuousDimensionInterval(ILazyLoader lazyLoader) : base(lazyLoader) { }
 
@@ -156,7 +156,8 @@ namespace core.domain
 
             decimal remainder = maxValueAsDecimal % incrementAsDecimal;
 
-            if(decimal.Compare(decimal.Zero, remainder) != 0){
+            if (decimal.Compare(decimal.Zero, remainder) != 0)
+            {
                 throw new ArgumentException(MAXIMUM_VALUE_NOT_MULTIPLE_OF_INCREMENT);
             }
         }
@@ -174,6 +175,18 @@ namespace core.domain
             decimal remainder = valueAsDecimal % incrementAsDecimal;
 
             return decimal.Compare(remainder, 0) == 0;
+        }
+
+        //*These methods may seem redundant in instances of this particular class, but these belong to the abstract Dimension 
+
+        public override double getMaxValue()
+        {
+            return maxValue;
+        }
+
+        public override double getMinValue()
+        {
+            return minValue;
         }
 
         /// <summary>
