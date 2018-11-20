@@ -613,8 +613,9 @@ function onDocumentMouseMove(event) {
 
     var rect = event.target.getBoundingClientRect();
     var x = event.clientX;
+    var y = event.clientY;
     mouse.x = (x - rect.left) / (canvasWebGL.clientWidth / 2.0) - 1.0; //Get mouse x position
-
+    mouse.y = - ((y - rect.bottom) / (canvasWebGL.clientHeight / 2.0) + 1.0); //Get mouse y position
     raycaster.setFromCamera(mouse, camera); //Set raycast position
 
     //If the selected object is a slot
