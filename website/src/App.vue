@@ -17,7 +17,7 @@ export default {
     };
   },
   methods: {
-    enableCustomizer(){
+    enableCustomizer() {
       this.customizerEnabled = true;
     }
   },

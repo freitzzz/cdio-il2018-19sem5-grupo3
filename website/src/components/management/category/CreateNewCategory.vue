@@ -15,17 +15,17 @@
                                 required>
                             </b-input>
                         </b-field>                     
-                        <b-field label="Category">
-                            <b-select v-model="parentCategory" placeholder="Select a category" icon="tag" >
-                             <optgroup>
-                                <option v-for="category in parentCategory" :key="category.id" :value="category.id">{{category.name}}</option>
-                              </optgroup>
+                        <b-field label="Parent Category">
+                            <b-select placeholder="Select a category" icon="tag" v-model="parentCategoryId">
+                                  <option :value="null"></option>
+                                  <option v-for="category in availableCategories" 
+                                    :key="category.id" :value="category.id">{{category.name}}</option>
                             </b-select>
                         </b-field>
                      
                     </section>
                     <footer class="modal-card-foot">
-                        <button class="button is-primary" @click="postCategory()">Create</button>
+                        <button class="button is-primary" @click="postCategory">Create</button>
                     </footer>
                 </div>
             </form>
@@ -39,7 +39,8 @@ export default {
   data() {
     return {
       nameCategory: "",
-      parentCategory: ""
+      parentCategoryId: null, //this value needs to be null for the placeholder to work
+      availableCategories: []
     };
   },
   props: {
@@ -52,43 +53,34 @@ export default {
   /*  */
   methods: {
     postCategory() {
-      alert(parentCategory);
-      if (parentCategory === "") {
+      if (this.parentCategoryId === null) {
         /* Post with just a name */
         Axios.post("http://localhost:5000/mycm/api/categories", {
-          name: nameCategory
+          name: this.nameCategory
         })
-          .then(function(response) {
-            alert("Vinho");
-            console.log(response);
-          })
-          .catch(function(error) {
-            alert("Vinho Branco");
-            console.log(error);
-          });
+          .then(response => {})
+          .catch(error => {});
       } else {
         /* Post with just a name */
         Axios.post(
-          "http://localhost:5000/mycm/api/categories/parentCategory/subcategories",
+          `http://localhost:5000/mycm/api/categories/${
+            this.parentCategoryId
+          }/subcategories`,
           {
-            name: nameCategory
+            name: this.nameCategory
           }
         )
-          .then(function(response) {
-            console.log(response);
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
+          .then(response => {})
+          .catch(error => {});
       }
     }
   },
   created() {
     Axios.get("http://localhost:5000/mycm/api/categories")
-      .then(response => this.parentCategory.push(response.data))
+      .then(response => this.availableCategories.push(...response.data)) //push all elements onto the array
       .catch(function(error) {
-         alert("Não há categorias, volte noutro dia.");
-          });
+        //TODO: inform an error occured while fetching categories
+      });
   }
 };
 </script>
