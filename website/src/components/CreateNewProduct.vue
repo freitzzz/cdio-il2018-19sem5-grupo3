@@ -1,5 +1,5 @@
 <template>
-    <b-modal :active.sync="active" has-modal-card>
+    <b-modal :active.sync="active" has-modal-card scroll="keep">
                 <div class="modal-card" style="width: auto">
                     <header class="modal-card-head">
                         <p class="modal-card-title">New Product</p>
@@ -55,10 +55,19 @@
                                     <option value="flint">MDF</option>
                                 </b-select>
                                 <div class="has-text-centered">
-                                    <button class="button is-danger" @click="showMaterials">
+                                    <button class="button is-danger" @click="showComponents()">
                                         <b-icon icon="magnify"/>
                                     </button>
                                 </div>
+                            </b-field>
+                        </div>
+                        <b-checkbox @input="enableSlots()">Slots</b-checkbox>
+                        <div v-if="slots">
+                            <b-field label="Minimum Slot Size">
+                            </b-field>
+                            <b-field label="Recommended Slot Size">
+                            </b-field>
+                            <b-field label="Maximum Slot Size">
                             </b-field>
                         </div>
                     </section>
@@ -85,7 +94,8 @@ export default {
     },
     data(){
         return{
-            components:false
+            components:false,
+            slots:false
         }
     },
     methods:{
@@ -95,6 +105,9 @@ export default {
         },
         enableComponents(){
             this.components=!this.components;
+        },
+        enableSlots(){
+            this.slots=!this.slots;
         },
         showMaterials(){
             //TODO: Open modal with all available materials
