@@ -455,7 +455,7 @@ export default class ProductRenderer {
             for (var i = 0; i < this.closet_slots_faces_ids.length; i++) {
                 var closet_face = this.group.getObjectById(this.closet_slots_faces_ids[i]);
 
-                if(closet_face == face) {
+                if (closet_face == face) {
                     //Disables rotation while moving the slot
                     this.controls.enabled = false;
                     //Sets the selection to the current slot
@@ -550,30 +550,33 @@ export default class ProductRenderer {
      */
     moveFace() {
         if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+            if (this.selected_face == this.group.getObjectById(this.closet_faces_ids[3])) { //If the selected face is the right one
+                
+                var rightFacePosition = this.intersection.x - this.offset + this.selected_face.position.x; //Position of the right closet face
 
-            var rightFacePosition = this.intersection.x - this.offset + this.selected_face.position.x; //Position of the right closet face
-            var leftFacePosition = - this.intersection.x - this.offset - this.selected_face.position.x; //Position of the left closet face
-
-            if (this.selected_face == this.group.getObjectById(this.closet_faces_ids[3])) {
-                if (this.closet_slots_faces_ids.length == 0) {
+                if (this.closet_slots_faces_ids.length == 0) { //If there are no slots
                     this.selected_face.position.x = rightFacePosition;
                     this.changeClosetDimensions(rightFacePosition, this.closet.getClosetHeight(), this.closet.getClosetDepth());
+               
                 } else {
                     var rightSlotPosition = this.group.getObjectById(this.closet_slots_faces_ids[this.closet_slots_faces_ids.length - 1]).position.x; //Position of the last (more to the right) slot 
 
-                    if (rightFacePosition - rightSlotPosition > rightSlotPosition) {
+                    if (rightFacePosition - rightSlotPosition > rightSlotPosition) { //Checks if right face doesn't intersect the slot
                         this.selected_face.position.x = rightFacePosition;
                         this.changeClosetDimensions(rightFacePosition, this.closet.getClosetHeight(), this.closet.getClosetDepth());
                     }
                 }
-            } else if (this.selected_face == this.group.getObjectById(this.closet_faces_ids[2])) {
-                if (this.closet_slots_faces_ids.length == 0) {
+            } else if (this.selected_face == this.group.getObjectById(this.closet_faces_ids[2])) { //If the selected face is the left one
+
+                var leftFacePosition = - this.intersection.x - this.offset - this.selected_face.position.x; //Position of the left closet face
+                
+                if (this.closet_slots_faces_ids.length == 0) { //If there are no slots
                     this.selected_face.position.x = leftFacePosition;
                     this.changeClosetDimensions(leftFacePosition, this.closet.getClosetHeight(), this.closet.getClosetDepth());
                 } else {
                     var leftSlotPosition = - this.group.getObjectById(this.closet_slots_faces_ids[0]).position.x; //Position of the first (more to the left) slot
 
-                    if (leftFacePosition - leftSlotPosition > leftSlotPosition) {
+                    if (leftFacePosition - leftSlotPosition > leftSlotPosition) { //Checks if left face doesn't intersect the slot
                         this.selected_face.position.x = leftFacePosition;
                         this.changeClosetDimensions(leftFacePosition, this.closet.getClosetHeight(), this.closet.getClosetDepth());
                     }

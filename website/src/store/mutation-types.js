@@ -1,0 +1,1 @@
+export const INIT_PRODUCT = 'INIT_PRODUCT'
