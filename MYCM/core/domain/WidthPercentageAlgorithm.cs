@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -99,20 +100,36 @@ namespace core.domain {
             }
             return minPercentage >= 0 && minPercentage <= 1 && maxPercentage >= minPercentage && maxPercentage <= 1 ? true : throw new ArgumentOutOfRangeException(INPUT_OUTSIDE_RANGE);
         }
+
+        //TODO: refactor this method
+
         /// <summary>
         /// Applies the algorithm that restricts a component's width to a certain percentage of the customized father product's width
         /// </summary>
         /// <param name="customProduct">customized product</param>
         /// <param name="product">component product</param>
         /// <returns>component with restricted dimensions, null if the component is not compatible with any of the allowed dimensions</returns>
-        public Product apply(CustomizedProduct customProduct, Product product) {
+        public Product apply(CustomizedProduct customProduct, Product originalProduct) {
+            List<Material> materials = new List<Material>();
+            foreach (ProductMaterial productMaterial in originalProduct.productMaterials) {
+                materials.Add(productMaterial.material);
+            }
+            List<Measurement> measurements = new List<Measurement>();
+            foreach (ProductMeasurement productMeasurement in originalProduct.productMeasurements) {
+                measurements.Add(productMeasurement.measurement);
+            }
+            List<Product> components = new List<Product>();
+            foreach (Component component in originalProduct.components) {
+                components.Add(component.complementaryProduct);
+            }
+            Product copyProduct = new Product(originalProduct.reference, originalProduct.designation, originalProduct.productCategory, materials, measurements, components, originalProduct.minSlotSize, originalProduct.maxSlotSize, originalProduct.recommendedSlotSize);
             double width = customProduct.customizedDimensions.width;
             double minWidth = width * minPercentage;
             double maxWidth = width * maxPercentage;
 
             List<Measurement> measurementsToRemove = new List<Measurement>();
 
-            List<Measurement> productMeasurements = product.productMeasurements.Select(m => m.measurement).ToList();
+            List<Measurement> productMeasurements = copyProduct.productMeasurements.Select(m => m.measurement).ToList();
 
             foreach (Measurement measurement in productMeasurements) {
                 Dimension dimension = measurement.width;
@@ -143,13 +160,15 @@ namespace core.domain {
                     if (continuous.minValue > maxWidth || continuous.maxValue < minWidth) {
                         measurementsToRemove.Add(measurement);
                     } else {
+                        double currentMin = continuous.minValue, currentMax = continuous.maxValue;
                         if (continuous.minValue < minWidth) {
-                            continuous.minValue = minWidth;
+                            currentMin = minWidth;
                         }
                         if (continuous.maxValue > maxWidth) {
-                            continuous.maxValue = maxWidth;
+                            currentMax = maxWidth;
                         }
-                        if (continuous.maxValue == continuous.minValue) {
+                        ContinuousDimensionInterval newContinuous = new ContinuousDimensionInterval(currentMin, currentMax, continuous.increment);
+                        if (newContinuous.maxValue == newContinuous.minValue) {
                             SingleValueDimension single = new SingleValueDimension(continuous.maxValue);
                             measurement.changeWidthDimension(single);
                         }
@@ -157,12 +176,24 @@ namespace core.domain {
                 }
             }
             foreach (Measurement measurement in measurementsToRemove) {
-                bool res = product.removeMeasurement(measurement);
-                if (!res) {
+
+                //TODO: find a better solution than catching exception
+                //?Should this be handled like this?
+
+                bool caught = false;
+
+                try {
+                    copyProduct.removeMeasurement(measurement);
+                } catch (InvalidOperationException) {
+                    caught = true;
+                } catch (ArgumentException) {
+                    caught = true;
+                }
+                if (caught) {
                     return null;
                 }
             }
-            return product;
+            return copyProduct;
         }
     }
 }

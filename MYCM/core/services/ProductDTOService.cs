@@ -11,6 +11,7 @@ namespace core.services{
     /// <summary>
     /// Service class that helps the transformation of ProductDTO into Product since some information needs to be accessed on the persistence context
     /// </summary>
+    [Obsolete]
     public sealed class ProductDTOService{
 
         /// <summary>
@@ -43,34 +44,34 @@ namespace core.services{
                 CustomizedDimensions minSlotDimension=slotDimensions.minimumSlotDimensions.toEntity();
                 CustomizedDimensions recommendedSlotDimension = slotDimensions.recommendedSlotDimensions.toEntity();
 
-                return new Product(reference, designation,
-                                            maxSlotDimension,
-                                            minSlotDimension,
-                                            recommendedSlotDimension,
-                                            productCategory,
-                                            productMaterials,
-                                            productComplementedProducts,
-                                            productMeasurements);     
+                return new Product(reference, designation, 
+                                    productCategory, 
+                                    productMaterials, 
+                                    productMeasurements, 
+                                    productComplementedProducts, 
+                                    minSlotDimension, 
+                                    maxSlotDimension, 
+                                    recommendedSlotDimension); 
             }   
             if(productComplementedProducts==null&&slotDimensions!=null){
                 CustomizedDimensions maxSlotDimension=slotDimensions.maximumSlotDimensions.toEntity();
                 CustomizedDimensions minSlotDimension=slotDimensions.minimumSlotDimensions.toEntity();
                 CustomizedDimensions recommendedSlotDimension = slotDimensions.recommendedSlotDimensions.toEntity();
 
-                return new Product(reference,designation,
-                                            maxSlotDimension,
-                                            minSlotDimension,
-                                            recommendedSlotDimension,
-                                            productCategory, 
-                                            productMaterials,
-                                            productMeasurements);
+                return new Product(reference,designation, 
+                                    productCategory, 
+                                    productMaterials, 
+                                    productMeasurements, 
+                                    minSlotDimension, 
+                                    maxSlotDimension, 
+                                    recommendedSlotDimension);
             }
             if(productComplementedProducts!=null&&slotDimensions==null){
                 return new Product(reference,designation,
                                             productCategory, 
                                             productMaterials,
-                                            productComplementedProducts,
-                                            productMeasurements);
+                                            productMeasurements,
+                                            productComplementedProducts);
             }
             return new Product(reference,designation,productCategory
                                             ,productMaterials

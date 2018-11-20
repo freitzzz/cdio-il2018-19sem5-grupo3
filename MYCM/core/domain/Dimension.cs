@@ -49,6 +49,18 @@ namespace core.domain
         /// <returns>true, if the Dimension has the given; false, otherwise.</returns>
         public abstract bool hasValue(double value);
 
+        /// <summary>
+        /// Retrieves this instance of Dimension's minimum value.
+        /// </summary>
+        /// <returns>The minimum value.</returns>
+        public abstract double getMaxValue();
+
+        /// <summary>
+        /// Retrieves this instance of Dimension's maximum value.
+        /// </summary>
+        /// <returns>The maximum value.</returns>
+        public abstract double getMinValue();
+
         public abstract DimensionDTO toDTO();
 
         /// <summary>

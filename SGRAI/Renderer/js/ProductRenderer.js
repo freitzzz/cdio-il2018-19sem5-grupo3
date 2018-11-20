@@ -141,7 +141,6 @@ function initCloset(textureSource) {
     //A soft white light is being as specular light
     //The shininess value is the same as the matte finishing's value
     material = new THREE.MeshPhongMaterial({ /*map: texture, specular: 0x404040, shininess: 20*/ });
-
     for (var i = 0; i < faces.length; i++) {
         closet_faces_ids.push(generateParellepiped(faces[i][0], faces[i][1], faces[i][2]
             , faces[i][3], faces[i][4], faces[i][5]
@@ -226,7 +225,7 @@ function removeSlot() {
  * @param {number} height Number with the closet height
  * @param {number} depth Number with the closet depth
  */
-function changeClosetDimensions(width, height, depth,index) {
+function changeClosetDimensions(width, height, depth, index) {
 
     //If there aren't any slots, the width has no restrictions
     if (closet_slots_faces_ids.length == 0) {
@@ -330,7 +329,7 @@ function generateParellepiped(width, height, depth, x, y, z, material, group) {
 /**
  * Removes a pole from the current closet
  */
-function removePole(){
+function removePole() {
     closet.removePole();
     var closet_pole_id = closet_poles_ids.pop();
     group.remove(group.getObjectById(closet_pole_id));
@@ -342,7 +341,7 @@ function removePole(){
  * @param {THREE.Material} material cylinder's material
  * @param {THREE.Group} group cylinder's group
  */
-function generateCylinder(material,group){
+function generateCylinder(material, group) {
 
     var leftFace = group.getObjectById(closet_faces_ids[2]);
     var rightFace = group.getObjectById(closet_faces_ids[3]);
@@ -351,29 +350,29 @@ function generateCylinder(material,group){
     var openEnded = false;
     var thetaStart = 0, thetaLength = Math.PI * 2;
     var height;
-    var x,y,z;
+    var x, y, z;
 
-    var pole = new Pole(radiusTop,radiusBottom,height,radialSegments,heightSegments,openEnded,thetaStart,thetaLength);
-    
+    var pole = new Pole(radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength);
+
     //If the closet has no slots, the pole's height needs to be the width of the closet
     //Otherwise the pole needs to go from the closet's left wall to a slot, 
     //from a slot to another slot or from a slot to the closet's right wall
-    if(closet_slots_faces_ids.length == 0){
+    if (closet_slots_faces_ids.length == 0) {
         height = getCurrentClosetWidth();
-        pole.changePoleHeight(height-1);
-        x = calculatePolePosition(rightFace.position.x,leftFace.position.x);
-        y = calculatePolePosition(rightFace.position.y,leftFace.position.y);
-        z = calculatePolePosition(rightFace.position.z,leftFace.position.z);
-    //First pole being added is between the left wall of the closet and the first slot
-    }else if(closet.poles.length == 0){
+        pole.changePoleHeight(height - 1);
+        x = calculatePolePosition(rightFace.position.x, leftFace.position.x);
+        y = calculatePolePosition(rightFace.position.y, leftFace.position.y);
+        z = calculatePolePosition(rightFace.position.z, leftFace.position.z);
+        //First pole being added is between the left wall of the closet and the first slot
+    } else if (closet.poles.length == 0) {
         let firstSlot = group.getObjectById(closet_slots_faces_ids[0]);
         height = calculatePoleHeight(leftFace.position.x, firstSlot.position.x);
         pole.changePoleHeight(height);
         x = calculatePolePosition(leftFace.position.x, firstSlot.position.x);
         y = calculatePolePosition(leftFace.position.y, firstSlot.position.y);
         z = calculatePolePosition(leftFace.position.z, firstSlot.position.z);
-    //Remaining poles are going to be added between slots
-    }else if(closet_slots_faces_ids.length > 0 && closet_poles_ids.length < closet_slots_faces_ids.length){
+        //Remaining poles are going to be added between slots
+    } else if (closet_slots_faces_ids.length > 0 && closet_poles_ids.length < closet_slots_faces_ids.length) {
         let slotToTheLeft = group.getObjectById(closet_slots_faces_ids[closet_poles_ids.length - 1]);
         let slotToTheRight = group.getObjectById(closet_slots_faces_ids[closet_poles_ids.length]);
         height = calculatePoleHeight(slotToTheLeft.position.x, slotToTheRight.position.x);
@@ -381,8 +380,8 @@ function generateCylinder(material,group){
         x = calculatePolePosition(slotToTheLeft.position.x, slotToTheRight.position.x);
         y = calculatePolePosition(slotToTheLeft.position.y, slotToTheRight.position.y);
         z = calculatePolePosition(slotToTheLeft.position.z, slotToTheRight.position.z);
-    //Last pole is added between the last slot and the closet's right wall
-    }else{
+        //Last pole is added between the last slot and the closet's right wall
+    } else {
         let lastSlot = group.getObjectById(closet_slots_faces_ids[closet_poles_ids.length]);
         height = calculatePoleHeight(lastSlot.position.x, rightFace.position.x);
         pole.changePoleHeight(height);
@@ -390,9 +389,9 @@ function generateCylinder(material,group){
         y = calculatePolePosition(lastSlot.position.y, rightFace.position.y);
         z = calculatePolePosition(lastSlot.position.z, rightFace.position.z);
     }
-    var cylinderGeometry = new THREE.CylinderGeometry(radiusTop,radiusBottom,pole.getPoleHeight(),
-                                    radialSegments,heightSegments,openEnded,thetaStart,thetaLength);
-    var poleMesh = new THREE.Mesh(cylinderGeometry,material);
+    var cylinderGeometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, pole.getPoleHeight(),
+        radialSegments, heightSegments, openEnded, thetaStart, thetaLength);
+    var poleMesh = new THREE.Mesh(cylinderGeometry, material);
     poleMesh.position.x = x;
     poleMesh.position.y = y;
     poleMesh.position.z = z;
@@ -402,12 +401,53 @@ function generateCylinder(material,group){
     closet_poles_ids.push(poleMesh.id);
 }
 
+function generateShelf(material, group) {
+
+    var leftFace = group.getObjectById(closet_faces_ids[2]);
+    var rightFace = group.getObjectById(closet_faces_ids[3]);
+    var height = 3;
+    var depth = closet.getClosetDepth();
+    var width;
+    var x, y, z;
+
+    //For now this follows the same logic as the pole, it should be changed to whatever dimensions the shelf is allowed to have
+    if (closet_slots_faces_ids.length == 0) {
+        width = getCurrentClosetWidth();
+        x = calculatePolePosition(rightFace.position.x, leftFace.position.x);
+        y = calculatePolePosition(rightFace.position.y, leftFace.position.y);
+        z = calculatePolePosition(rightFace.position.z, leftFace.position.z);
+    } else if (closet.poles.length == 0) {
+        let firstSlot = group.getObjectById(closet_slots_faces_ids[0]);
+        width = calculatePoleHeight(leftFace.position.x, firstSlot.position.x);
+        x = calculatePolePosition(leftFace.position.x, firstSlot.position.x);
+        y = calculatePolePosition(leftFace.position.y, firstSlot.position.y);
+        z = calculatePolePosition(leftFace.position.z, firstSlot.position.z);
+    } else if (closet_slots_faces_ids.length > 0 && closet_poles_ids.length < closet_slots_faces_ids.length) {
+        let slotToTheLeft = group.getObjectById(closet_slots_faces_ids[closet_poles_ids.length - 1]);
+        let slotToTheRight = group.getObjectById(closet_slots_faces_ids[closet_poles_ids.length]);
+        width = calculatePoleHeight(slotToTheLeft.position.x, slotToTheRight.position.x);
+        x = calculatePolePosition(slotToTheLeft.position.x, slotToTheRight.position.x);
+        y = calculatePolePosition(slotToTheLeft.position.y, slotToTheRight.position.y);
+        z = calculatePolePosition(slotToTheLeft.position.z, slotToTheRight.position.z);
+    } else {
+        let lastSlot = group.getObjectById(closet_slots_faces_ids[closet_poles_ids.length]);
+        width = calculatePoleHeight(lastSlot.position.x, rightFace.position.x);
+        x = calculatePolePosition(lastSlot.position.x, rightFace.position.x);
+        y = calculatePolePosition(lastSlot.position.y, rightFace.position.y);
+        z = calculatePolePosition(lastSlot.position.z, rightFace.position.z);
+    }
+    var shelf = new Shelf([width, height, depth, x, y + 40, z]);
+    var meshID = generateParellepiped(width, height, depth, x, y + 40, z, material, group);
+    closet.addShelf(shelf);
+    closet_poles_ids.push(meshID);
+}
+
 /**
  * Calculates a pole's height
  * @param {Number} topPosition position of the top surface of the pole 
  * @param {Number} bottomPosition position of the bottom surface of the pole
  */
-function calculatePoleHeight(topPosition,bottomPosition){
+function calculatePoleHeight(topPosition, bottomPosition) {
     return Math.abs(topPosition - bottomPosition) / 2;
 }
 
@@ -416,7 +456,7 @@ function calculatePoleHeight(topPosition,bottomPosition){
  * @param {Number} leftMostCoordinate xyz coordinate of a closet's wall or a slot that is more to the left
  * @param {Number} rightMostCoordinate xyz coordinate of a closet's wall or a slot that is more to the right
  */
-function calculatePolePosition(leftMostCoordinate,rightMostCoordinate){
+function calculatePolePosition(leftMostCoordinate, rightMostCoordinate) {
     return (leftMostCoordinate + rightMostCoordinate) / 2;
 }
 
@@ -502,7 +542,7 @@ function createMaterialWithTexture() {
 function registerEvents() {
     document.addEventListener("changeDimensions", function (changeDimensionsEvent) {
         changeClosetDimensions(changeDimensionsEvent.detail.width, changeDimensionsEvent.detail.height,
-                                changeDimensionsEvent.detail.depth,changeDimensionsEvent.detail.index);
+            changeDimensionsEvent.detail.depth, changeDimensionsEvent.detail.index);
     });
 
     document.addEventListener("forceOnMouseUp", function (forceOnMouseUpEvent) {
@@ -686,7 +726,7 @@ function moveFace() {
 
                 document.getElementById("width").value = conversion;
 
-                changeClosetDimensions(rightFacePosition, closet.getClosetHeight(), closet.getClosetDepth(),3);
+                changeClosetDimensions(rightFacePosition, closet.getClosetHeight(), closet.getClosetDepth(), 3);
             }
 
             //Checks if the selected face is the left face of the closet
@@ -697,7 +737,7 @@ function moveFace() {
                 selected_face.position.x = leftFacePosition;
                 document.getElementById("width").value = conversion;
 
-                changeClosetDimensions(leftFacePosition, closet.getClosetHeight(), closet.getClosetDepth(),2);
+                changeClosetDimensions(leftFacePosition, closet.getClosetHeight(), closet.getClosetDepth(), 2);
             }
 
         } else {
@@ -719,7 +759,7 @@ function moveFace() {
                 selected_face.position.x = rightFacePosition;
                 document.getElementById("width").value = conversion;
 
-                changeClosetDimensions(rightFacePosition, closet.getClosetHeight(), closet.getClosetDepth(),3);
+                changeClosetDimensions(rightFacePosition, closet.getClosetHeight(), closet.getClosetDepth(), 3);
             }
             /**
              * Checks if...
@@ -734,7 +774,7 @@ function moveFace() {
                 selected_face.position.x = leftFacePosition;
                 document.getElementById("width").value = conversion;
 
-                changeClosetDimensions(leftFacePosition, closet.getClosetHeight(), closet.getClosetDepth(),2);
+                changeClosetDimensions(leftFacePosition, closet.getClosetHeight(), closet.getClosetDepth(), 2);
             }
         }
     }

@@ -35,7 +35,7 @@ namespace core.domain {
         /// <summary>
         /// Constant that represents the message that occurs if the product complementary products are invalid
         /// </summary>
-        private const string INVALID_PRODUCT_COMPLEMENTED_PRODUCTS = "The products which the product can be complemented by are invalid";
+        private const string INVALID_PRODUCT_COMPLEMENTARY_PRODUCTS = "The products which the product can be complemented by are invalid";
         /// <summary>
         /// Constant that represents the message that occurs if the product component is not valid
         /// </summary>
@@ -82,6 +82,70 @@ namespace core.domain {
         /// Constant that represents the message that ocurrs if the product category change is invalid
         /// </summary>
         private const string INVALID_PRODUCT_CATEGORY_CHANGE="The product category being changed is the same as the actual one";
+
+        /// <summary>
+        /// Constant that represents the message that is presented if the given maximum slot dimensions are null.
+        /// </summary>
+        private const string MAXIMUM_SLOT_DIMENSIONS_NULL = "The maximum slot dimensions can not be null";
+        /// <summary>
+        /// Constant that represents the message that is presented if the given minimum slot dimensions are null.
+        /// </summary>
+        private const string MINIMUM_SLOT_DIMENSONS_NULL = "The minimum slot dimensions can not be null";
+        /// <summary>
+        /// Constant that represents the message that is presented if the given recommended slot dimensions are null.
+        /// </summary>
+        private const string RECOMMENDED_SLOT_DIMENSIONS_NULL = "The recommended slot dimensions can not be null";
+
+        /// <summary>
+        /// Constant that represents the message that is presented if a null Material is attempted to be added.
+        /// </summary>
+        private const string MATERIAL_NULL = "The given material can not be null.";
+        /// <summary>
+        /// Constant that represents the message that is presented if a duplicate Material is attempted to be added.
+        /// </summary>
+        private const string MATERIAL_ALREADY_ADDED = "An equal material has already been added.";
+        /// <summary>
+        /// Constant that represents the message that is presented if the last Material is attempted to be removed.
+        /// </summary>
+        private const string MATERIAL_UNABLE_TO_REMOVE_LAST = "Unable to remove the last material, the product needs to have atleast one material.";
+        /// <summary>
+        /// Constant that represents the message that is presented if the Material could not be removed.
+        /// </summary>
+        private const string MATERIAL_UNABLE_TO_REMOVE = "The given material could not be removed.";
+
+        /// <summary>
+        /// Constant that represents the message that is presented if a null complementary Product is attempted to be added.
+        /// </summary>
+        private const string COMPLEMENTARY_PRODUCT_NULL = "The given complementary product can not be null.";
+        /// <summary>
+        /// Constant that represents the message that is presented if the complementary Product being added is equal to the parent Product.
+        /// </summary>
+        private const string COMPLEMENTARY_PRODUCT_EQUALS_PRODUCT = "The given complementary product can not be equal to the parent product";
+        /// <summary>
+        /// Constant that represents the messsage that is presented if a duplicate complementary Product is attempted to be added.
+        /// </summary>
+        private const string COMPLEMENTARY_PRODUCT_ALREADY_ADDED = "An equal complementary product has already been added.";
+        /// <summary>
+        /// Constant that represents the message that is presented if a complementary Product could not be removed.
+        /// </summary>
+        private const string COMPLEMENTARY_PRODUCT_UNABLE_TO_REMOVE = "The given complementary product could not be removed.";
+
+        /// <summary>
+        /// Constant that represents the message that is presented if a null Measurement is attempted to be added.
+        /// </summary>
+        private const string MEASUREMENT_NULL = "The given measurement can not be null.";
+        /// <summary>
+        /// Constant that represents the message that is presented if a duplicate Measurement is attempted to be added.
+        /// </summary>
+        private const string MEASUREMENT_ALREADY_ADDED = "An equal measurement has already been added.";
+        /// <summary>
+        /// Constant that represents the message that is presented if the last Measurement is attempted to be removed.
+        /// </summary>
+        private const string MEASUREMENT_UNABLE_TO_REMOVE_LAST = "Unable to remove the last measurement, the product needs to have atleast one measurement.";
+        /// <summary>
+        /// Constant that represents the message that is presented if the Measurement could not be removed.
+        /// </summary>
+        private const string MEASUREMENT_UNABLE_TO_REMOVE = "The given measurement could not be removed.";
 
         /// <summary>
         /// Long property with the persistence iD
@@ -219,13 +283,13 @@ namespace core.domain {
         /// <param name="designation">String with the product designation</param>
         /// <param name="productCategory">ProductCategory with the product category</param>
         /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
-        /// <param name="complementaryProducts">IEnumerable with the product complementary products</param>
         /// <param name="measurements">IEnumerable with the product measurements</param>
+        /// <param name="complementaryProducts">IEnumerable with the product complementary products</param>
         public Product(string reference, string designation,
                         ProductCategory productCategory,
                         IEnumerable<Material> materials,
-                        IEnumerable<Product> complementaryProducts,
-                        IEnumerable<Measurement> measurements) :
+                        IEnumerable<Measurement> measurements,
+                        IEnumerable<Product> complementaryProducts) :
                         this(reference, designation, productCategory, materials, measurements) {
             checkComplementaryProducts(complementaryProducts);
             this.components = new List<Component>();
@@ -241,21 +305,22 @@ namespace core.domain {
         /// </summary>
         /// <param name="reference">Reference of the Product</param>
         /// <param name="designation">Designation of the Product</param>
-        /// <param name="maxSlotSize">Maximum slot dimensions</param>
-        /// <param name="minSlotSize">Minimum slot dimensions</param>
-        /// <param name="recommendedSlotSize">Recommended slot dimensions</param>
         /// <param name="productCategory">ProductCategory with the product's category</param>
         /// <param name="materials">Materials the product can be made of</param>
         /// <param name="measurements">Product measurements</param>
+        /// <param name="minSlotSize">Minimum slot dimensions</param>
+        /// <param name="maxSlotSize">Maximum slot dimensions</param>
+        /// <param name="recommendedSlotSize">Recommended slot dimensions</param>
         public Product(string reference, string designation,
-                        CustomizedDimensions maxSlotSize, CustomizedDimensions minSlotSize,
-                        CustomizedDimensions recommendedSlotSize, ProductCategory productCategory,
-                        IEnumerable<Material> materials, IEnumerable<Measurement> measurements) :
+                        ProductCategory productCategory,
+                        IEnumerable<Material> materials, IEnumerable<Measurement> measurements,
+                        CustomizedDimensions minSlotSize, CustomizedDimensions maxSlotSize, 
+                        CustomizedDimensions recommendedSlotSize) :
                         this(reference, designation, productCategory, materials, measurements) {
             checkProductSlotsDimensions(maxSlotSize, minSlotSize, recommendedSlotSize);
             this.supportsSlots = true;
-            this.maxSlotSize = maxSlotSize;
             this.minSlotSize = minSlotSize;
+            this.maxSlotSize = maxSlotSize;
             this.recommendedSlotSize = recommendedSlotSize;
         }
 
@@ -273,29 +338,56 @@ namespace core.domain {
         /// <param name="complementaryProducts">IEnumerable with the product complementary products</param>
         /// <param name="measurements">IEnumerable with the product measurements</param>
         public Product(string reference, string designation,
-                        CustomizedDimensions maxSlotSize, CustomizedDimensions minSlotSize,
-                        CustomizedDimensions recommendedSlotSize, ProductCategory productCategory,
-                        IEnumerable<Material> materials, IEnumerable<Product> complementaryProducts,
-                        IEnumerable<Measurement> measurements) :
-                        this(reference, designation, maxSlotSize, minSlotSize,
-                        recommendedSlotSize, productCategory, materials, measurements) {
-            checkComplementaryProducts(complementaryProducts);
-            this.components = new List<Component>();
-            foreach (Product complementaryProduct in complementaryProducts) {
-                this.components.Add(new Component(this, complementaryProduct));
-            }
+                        ProductCategory productCategory, IEnumerable<Material> materials, 
+                        IEnumerable<Measurement> measurements, IEnumerable<Product> complementaryProducts,
+                        CustomizedDimensions minSlotSize, CustomizedDimensions maxSlotSize,
+                        CustomizedDimensions recommendedSlotSize) : 
+                        this(reference, designation, productCategory, materials, measurements, complementaryProducts) {
+            checkProductSlotsDimensions(maxSlotSize, minSlotSize, recommendedSlotSize);
+            this.supportsSlots = true;
+            this.minSlotSize = minSlotSize;
+            this.maxSlotSize = maxSlotSize;
+            this.recommendedSlotSize = recommendedSlotSize;
         }
+
+        //*BEGINING OF ADD METHODS */
 
         /// <summary>
         /// Adds a new instance of Product which complements this instance.
         /// </summary>
         /// <param name="complementaryProduct">Instance of Product representing the complementary product.</param>
-        /// <returns>true if the complementary product was added with success, false if not</returns>
-        public bool addComplementaryProduct(Product complementaryProduct) {
-            if (!iscomplementaryProductValidForAddition(complementaryProduct))
-                return false;
+        /// <exception cref="System.ArgumentException">Thrown when the </exception>
+        public void addComplementaryProduct(Product complementaryProduct) {
+            checkIfComplementaryProductIsValidForAddition(complementaryProduct);
             components.Add(new Component(this, complementaryProduct));
-            return true;
+        }
+
+        /// <summary>
+        /// Adds a new instance of Product which mandatorily complements this instance.
+        /// </summary>
+        /// <param name="complementaryProduct">Instance of Product representing the complementary product.</param>
+        /// <exception cref="System.ArgumentException"></exception>
+        public void addMandatoryComplementaryProduct(Product complementaryProduct) {
+            checkIfComplementaryProductIsValidForAddition(complementaryProduct);
+            components.Add(new Component(this, complementaryProduct, true));
+        }
+
+        /// <summary>
+        /// Adds a restriction to a component
+        /// </summary>
+        /// <param name="component">component to add restriction to</param>
+        /// <param name="restriction">restriction to be added</param>
+        /// <exception cref="System.ArgumentException">Thrown when the restriction could not be applied</exception>
+        public void addComponentRestriction(Product component, Restriction restriction) {
+            //TODO: validate restriction
+            if (component == null) {
+                throw new ArgumentNullException(INVALID_COMPONENT);
+            }
+            Component comp = this.components.Where(c => c.complementaryProduct.Equals(component)).SingleOrDefault();
+            if(comp == null){
+                
+            }
+            comp.addRestriction(restriction);
         }
 
         /// <summary>
@@ -303,12 +395,13 @@ namespace core.domain {
         /// </summary>
         /// <param name="productMaterial">Material with the product material</param>
         /// <returns>boolean true if the product material was added with success, false if not</returns>
-        public bool addMaterial(Material productMaterial) {
-            if (!isProductMaterialValidForAddition(productMaterial)) {
-                return false;
-            }
+        public void addMaterial(Material productMaterial) {
+            checkIfMaterialIsValidForAddition(productMaterial);
             this.productMaterials.Add(new ProductMaterial(this, productMaterial));
-            return true;
+        }
+
+        public void addMaterialRestriction(Material material, Restriction restriction){
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -316,34 +409,26 @@ namespace core.domain {
         /// </summary>
         /// <param name="measurement">Measurement being added.</param>
         /// <returns>Returns true if the Measurement is not null nor has it been previosuly added; false otherwise.</returns>
-        public bool addMeasurement(Measurement measurement){
-            if(!isProductMeasurementValidForAddition(measurement)){
-                return false;
-            }
-            int beforeCount = this.productMeasurements.Count;
+        public void addMeasurement(Measurement measurement){
+            checkIfMeasurementIsValidForAddition(measurement);
             this.productMeasurements.Add(new ProductMeasurement(this, measurement));
-            int afterCount = this.productMeasurements.Count;
-            return beforeCount + 1 == afterCount;
         }
 
-        /// <summary>
-        /// Changes the current product category
-        /// </summary>
-        /// <param name="productCategory">ProductCategory with the new product category</param>
-        /// <returns>boolean true if the product category was changed, false if not</returns>
-        public bool changeProductCategory(ProductCategory productCategory) {
-            if (productCategory == null || this.productCategory.Equals(productCategory))
-                return false;
-            this.productCategory = productCategory;
-            return true;
+        public void addMeasurementRestriction(Measurement measurement, Restriction restriction){
+            throw new NotImplementedException();
         }
+
+        //*END OF ADD METHODS */
+
+
+        //*BEGINNING OF CHANGE METHODS */
 
         /// <summary>
         /// Changes the current product reference
         /// </summary>
         /// <param name="reference">String with the reference being updated</param>
         public void changeProductReference(string reference) {
-            grantProductReferenceIsValidForChange(reference);
+            checkIfProductReferenceIsValidForChange(reference);
             this.reference = reference;
         }
 
@@ -352,39 +437,113 @@ namespace core.domain {
         /// </summary>
         /// <param name="designation">String with the designation being updated</param>
         public void changeProductDesignation(string designation) {
-            grantProductDesignationIsValidForChange(designation);
+            checkIfProductDesignationIsValidForChange(designation);
             this.designation=designation;
         }
+
+        /// <summary>
+        /// Changes the current product category
+        /// </summary>
+        /// <param name="productCategory">ProductCategory with the new product category</param>
+        public void changeProductCategory(ProductCategory productCategory) {
+            checkIfProductCategoryIsValidForChange(productCategory);
+            this.productCategory = productCategory;
+        }
+
+        //*END OF CHANGE METHODS */
+
+        //*BEGINNING OF REMOVE METHODS */
 
         /// <summary>
         /// Removes an instance of Measurement from the Product's list of Measurement.
         /// </summary>
         /// <param name="measurement">Measurement being removed.</param>
-        /// <returns>True if there is more than one Measurement in the list and Measurement could be removed; false otherwise.</returns>
-        public bool removeMeasurement(Measurement measurement){
-            return productMeasurements.Count > 1 && productMeasurements.Remove(
-                productMeasurements.Where(pm => pm.measurement.Equals(measurement)).SingleOrDefault()
-                );
+        /// <exception cref="System.InvalidOperationException">If this instance does not contain more than one Measurement.</exception>
+        /// <exception cref="System.ArgumentException">If the given instance of Measurement could not be removed.</exception>
+        public void removeMeasurement(Measurement measurement){
+
+            if(this.containsMeasurement(measurement) && this.productMeasurements.Count <= 1){
+                //this operation is not allowed no matter the validity of the argument
+                throw new InvalidOperationException(MEASUREMENT_UNABLE_TO_REMOVE_LAST);
+            }
+
+            if(!this.productMeasurements.Remove(
+                this.productMeasurements.Where(pm => pm.measurement.Equals(measurement)).SingleOrDefault()
+                )){
+                    throw new ArgumentException(MEASUREMENT_UNABLE_TO_REMOVE);
+                }
         }
 
         /// <summary>
         /// Removes a material which the current product can be made of
         /// </summary>
         /// <param name="material">Material with the material being removed</param>
-        /// <returns>boolean true if the material was removed with success, false if not</returns>
-        public bool removeMaterial(Material material) {
+        /// <exception cref="System.InvalidOperationException">If this instance does not contain more than one Material.</param>
+        /// <exception cref="System.ArgumentException">If the given instance of Material could not be removed.</param>
+        public void removeMaterial(Material material) {
 
-            ProductMaterial productMaterial = this.productMaterials.Where(pm => pm.material.Equals(material)).FirstOrDefault();
+            if(this.containsMaterial(material) && this.productMaterials.Count <= 1){
+                //this operation is not valid no matter the validity of the argument
+                throw new InvalidOperationException(MATERIAL_UNABLE_TO_REMOVE_LAST);
+            }
 
-            return productMaterials.Count > 1 && productMaterials.Remove(productMaterial);
+            if(!this.productMaterials.Remove(
+                this.productMaterials.Where(pm => pm.material.Equals(material)).SingleOrDefault()
+                )){
+                    throw new ArgumentException(MATERIAL_UNABLE_TO_REMOVE);
+            }
         }
 
         /// <summary>
         /// Removes a complementary Product which the current Product can be complemented by
         /// </summary>
         /// <param name="complementaryProduct">Instance of Product which complements this instance.</param>
-        /// <returns>boolean true if the complementary product was removed with success, false if not</returns>
-        public bool removecomplementaryProduct(Product complementaryProduct) { return components.Remove(new Component(this, complementaryProduct)); }
+        /// <exception cref="System.ArgumentException">If the given instance of Product could not be removed.</exception>
+        public void removecomplementaryProduct(Product complementaryProduct) {
+            if(!this.components.Remove(
+                this.components.Where(pc => pc.complementaryProduct.Equals(complementaryProduct)).SingleOrDefault()
+                )){
+                    throw new ArgumentException(COMPLEMENTARY_PRODUCT_UNABLE_TO_REMOVE);
+            } 
+        }
+
+        //*END OF REMOVE METHODS */
+
+        //*BEGINNING OF CONTAINS METHODS */
+
+        /// <summary>
+        /// Checks if this instance of Product has a given Material.
+        /// </summary>
+        /// <param name="material">Instance of Material being checked.</param>
+        /// <returns>true if the product has the given Material; false, otherwise</returns>
+        public bool containsMaterial(Material material) {
+            foreach (ProductMaterial prodM in this.productMaterials) {
+                if (prodM.hasMaterial(material)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if this instance of Product is complemented by a given Product.
+        /// </summary>
+        /// <param name="complementaryProduct">Instance of Product being checked.</param>
+        /// <returns>true if this instance is complemented by the given Product; false, otherwise.</returns>
+        public bool containsComplementaryProduct(Product complementaryProduct){
+            return this.components.Where(comp => comp.complementaryProduct.Equals(complementaryProduct)).Any();
+        }
+
+        /// <summary>
+        /// Checks if this instance of Product has a given Measurement.
+        /// </summary>
+        /// <param name="measurement">Instance of Measurement being checked.</param>
+        /// <returns>true if this instance has the given Measurement; false, otherwise.</returns>
+        public bool containsMeasurement(Measurement measurement){
+            return this.productMeasurements.Where(pm => pm.measurement.Equals(measurement)).Any();
+        }
+
+        //*END OF CONTAINS METHODS */
 
         /// <summary>
         /// Returns the product identity
@@ -398,6 +557,33 @@ namespace core.domain {
         /// <param name="comparingEntity">string with the comparing product identity</param>
         /// <returns>boolean true if both entities identity are the same, false if not</returns>
         public bool sameAs(string comparingEntity) { return id().Equals(comparingEntity); }
+
+        /// <summary>
+        /// Represents the product hashcode
+        /// </summary>
+        /// <returns>Integer with the current product hashcode</returns>
+        public override int GetHashCode() {
+            return id().GetHashCode();
+        }
+
+        /// <summary>
+        /// Checks if two products are equal
+        /// </summary>
+        /// <param name="comparingProduct">Product with the product being compared to the current one</param>
+        /// <returns>boolean true if both products are equal, false if not</returns>
+        public override bool Equals(object comparingProduct) {
+            if (this == comparingProduct) return true;
+            return comparingProduct is Product && this.id().Equals(((Product)comparingProduct).id());
+        }
+
+        /// <summary>
+        /// Represents the textual information of the Product
+        /// </summary>
+        /// <returns>String with the textual representation of the product</returns>
+        public override string ToString() {
+            //Should ToString List the Product complementary Products?
+            return String.Format("Product Information\n- Designation: {0}\n- Reference: {1}", designation, reference);
+        }
 
         /// <summary>
         /// Returns the current product as a DTO
@@ -456,74 +642,60 @@ namespace core.domain {
 
         }
 
+        //*BEGINNING OF CONSTRUCTOR CHECK METHODS */
+
         /// <summary>
-        /// Represents the textual information of the Product
+        /// Checks if the product properties are valid
         /// </summary>
-        /// <returns>String with the textual representation of the product</returns>
-        public override string ToString() {
-            //Should ToString List the Product complementary Products?
-            return String.Format("Product Information\n- Designation: {0}\n- Reference: {1}", designation, reference);
+        /// <param name="reference">String with the product reference</param>
+        /// <param name="designation">String with the product designation</param>
+        /// <exception cref="System.ArgumentException">If any of the given arguments are null or empty.</exception>
+        private void checkProductProperties(string reference, string designation) {
+            checkProductReference(reference);
+            checkProductDesignation(designation);
         }
 
         /// <summary>
-        /// Checks if two products are equal
+        /// Checks if the product category is valid
         /// </summary>
-        /// <param name="comparingProduct">Product with the product being compared to the current one</param>
-        /// <returns>boolean true if both products are equal, false if not</returns>
-        public override bool Equals(object comparingProduct) {
-            if (this == comparingProduct) return true;
-            return comparingProduct is Product && this.id().Equals(((Product)comparingProduct).id());
+        /// <param name="productCategory">Instance of ProductCategory being checked.</param>
+        /// <exception cref="System.ArgumentNullException">If the given instance of ProductCategory is null.</exception>
+        private void checkProductCategory(ProductCategory productCategory) {
+            if (productCategory == null) throw new ArgumentNullException(INVALID_PRODUCT_CATEGORY);
         }
 
         /// <summary>
-        /// Represents the product hashcode
+        /// Checks if the materials which a product can be made of are valid
         /// </summary>
-        /// <returns>Integer with the current product hashcode</returns>
-        public override int GetHashCode() {
-            return id().GetHashCode();
+        /// <param name="productMaterials">IEnumerable with the product materials</param>
+        /// <exception cref="System.ArgumentException">If the IEnumerable is null, empty or contains duplicates.</exception>
+        private void checkProductMaterials(IEnumerable<Material> productMaterials) {
+            if (Collections.isEnumerableNullOrEmpty(productMaterials))
+                throw new ArgumentException(INVALID_PRODUCT_MATERIALS);
+            checkDuplicatedMaterials(productMaterials);
         }
+
         /// <summary>
-        /// Checks if the Product already has a material
+        /// Checks if the IEnumerable of Measurement in which this instance of Product can be made of are valid.
         /// </summary>
-        /// <param name="material">material to be checked for</param>
-        /// <returns>true if the product has the material, false if not</returns>
-        public bool containsMaterial(Material material) {
-            foreach (ProductMaterial prodM in this.productMaterials) {
-                if (prodM.hasMaterial(material)) {
-                    return true;
-                }
+        /// <param name="measurements">IEnumerable of Measurement being checked.</param>
+        /// <exception cref="System.ArgumentException">If the IEnumerable is null, empty or contains duplicates.</exception>
+        private void checkProductMeasurements(IEnumerable<Measurement> measurements){
+            if(Collections.isEnumerableNullOrEmpty(measurements)){
+                throw new ArgumentException(INVALID_PRODUCT_DIMENSIONS);
             }
-            return false;
-        }
-        /// <summary>
-        /// Checks if a complementary product is valid for additon on the current product
-        /// </summary>
-        /// <param name="complementaryProduct">Product with the complementary product being validated</param>
-        /// <returns>boolean true if the complementary product is valid for addition, false if not</returns>
-        private bool iscomplementaryProductValidForAddition(Product complementaryProduct) {
-            if (complementaryProduct == null || complementaryProduct.Equals(this)) return false;
-            return !components.Contains(new Component(this, complementaryProduct));
+            checkDuplicatedMeasurements(measurements);
         }
 
         /// <summary>
-        /// Checks if a product material is valid for addition on the current product
+        /// Checks if the products which a product can be complementary by are valid
         /// </summary>
-        /// <param name="productMaterial">Material with the product material being validated</param>
-        /// <returns>boolean true if the product material is valid for addition, false if not</returns>
-        private bool isProductMaterialValidForAddition(Material productMaterial) {
-            if (productMaterial == null) {
-                return false;
-            }
-            return !containsMaterial(productMaterial);
-        }
-
-        /// <summary>
-        /// Checks if an instance of Measurement is valid for addition on the current Product's list of Measurement.
-        /// </summary>
-        /// <param name="measurement">Measurement being validated.</param>
-        /// <returns>True if the Measurement is not null nor has it been previously added to the list of Measurement; false otherwise.</returns>
-        private bool isProductMeasurementValidForAddition(Measurement measurement){
-            return measurement != null && !productMeasurements.Where(pm => pm.measurement.Equals(measurement)).Any();
+        /// <param name="complementaryProducts">IEnumerable with the complementary products</param>
+        /// <exception cref="System.ArgumentException">If the IEnumerable is null, empty or contains duplicates.</exception>
+        private void checkComplementaryProducts(IEnumerable<Product> complementaryProducts) {
+            if (Collections.isEnumerableNullOrEmpty(complementaryProducts))
+                throw new ArgumentException(INVALID_PRODUCT_COMPLEMENTARY_PRODUCTS);
+            checkDuplicatedComplementaryProducts(complementaryProducts);
         }
 
         /// <summary>
@@ -532,7 +704,17 @@ namespace core.domain {
         /// <param name="maxSlotSize">CustomizedDimensions with the maximum size of the slots</param>
         /// <param name="minSlotSize">CustomizedDimensions with the minimum size of the slots</param>
         /// <param name="recommendedSlotSize">CustomizedDimensions with the recommended size of the slots</param>
+        /// <exception cref="System.ArgumentException">Thrown when any of the instances of CustomizedDimensions are</exception>
         private void checkProductSlotsDimensions(CustomizedDimensions maxSlotSize, CustomizedDimensions minSlotSize, CustomizedDimensions recommendedSlotSize) {
+            if(maxSlotSize == null){
+                throw new ArgumentNullException(MAXIMUM_SLOT_DIMENSIONS_NULL);
+            }
+            if(minSlotSize == null){
+                throw new ArgumentNullException(MINIMUM_SLOT_DIMENSONS_NULL);
+            }
+            if(recommendedSlotSize == null){
+                throw new ArgumentNullException(RECOMMENDED_SLOT_DIMENSIONS_NULL);
+            }
             if (minSlotSize.depth > maxSlotSize.depth || minSlotSize.height > maxSlotSize.height || minSlotSize.width > maxSlotSize.width)
                 throw new ArgumentException(INVALID_MIN_TO_MAX_SLOT_SIZE_RATIO);
 
@@ -543,117 +725,17 @@ namespace core.domain {
                 throw new ArgumentException(INVALID_RECOMMENDED_TO_MIN_SLOT_SIZE_RATIO);
         }
 
-        /// <summary>
-        /// Grants that a product reference is valid for change
-        /// </summary>
-        /// <param name="designation">String with the product reference being changed</param>
-        private void grantProductReferenceIsValidForChange(string reference){
-            checkProductReference(designation);
-            if(this.reference.Equals(designation))
-                throw new InvalidOperationException(INVALID_PRODUCT_REFERENCE_CHANGE);
-        }
+        //*END OF CONSTRUCTOR CHECK METHODS */
+
+        //*BEGINNING OF DUPLICATE CHECK METHODS */
+
+        //TODO: Inform in Exception which one of the elements was duplicated
 
         /// <summary>
-        /// Grants that a product designation is valid for change
+        /// Checks if an IEnumerable of Material contains duplicates.
         /// </summary>
-        /// <param name="designation">String with the product designation being changed</param>
-        private void grantProductDesignationIsValidForChange(string designation){
-            checkProductDesignation(designation);
-            if(this.designation.Equals(designation))
-                throw new InvalidOperationException(INVALID_PRODUCT_DESIGNATION_CHANGE);
-        }
-
-        /// <summary>
-        /// Grants that a product category is valid for change
-        /// </summary>
-        /// <param name="category">ProductCategory with the product category being changed</param>
-        private void grantProductCategoryIsValidForChange(ProductCategory category){
-            checkProductCategory(category);
-            if(this.productCategory.Equals(category))
-                throw new InvalidOperationException(INVALID_PRODUCT_CATEGORY_CHANGE);
-        }
-
-        /// <summary>
-        /// Checks if the product properties are valid
-        /// </summary>
-        /// <param name="reference">String with the product reference</param>
-        /// <param name="designation">String with the product designation</param>
-        private void checkProductProperties(string reference, string designation) {
-            checkProductReference(reference);
-            checkProductDesignation(designation);
-        }
-
-        /// <summary>
-        /// Checks if the product reference is valid
-        /// </summary>
-        /// <param name="reference">String with the product reference being checked</param>
-        private void checkProductReference(string reference){
-            if (Strings.isNullOrEmpty(reference)) throw new ArgumentException(INVALID_PRODUCT_REFERENCE);
-        }
-
-        /// <summary>
-        /// Checks if the product designation is valid
-        /// </summary>
-        /// <param name="designation">String with the product designation being checked</param>
-        private void checkProductDesignation(string designation){
-            if (Strings.isNullOrEmpty(designation)) throw new ArgumentException(INVALID_PRODUCT_REFERENCE);
-        }
-
-        /// <summary>
-        /// Checks if the products which a product can be complementary by are valid
-        /// </summary>
-        /// <param name="complementaryProducts">IEnumerable with the complementary products</param>
-        private void checkComplementaryProducts(IEnumerable<Product> complementaryProducts) {
-            if (Collections.isEnumerableNullOrEmpty(complementaryProducts))
-                throw new ArgumentException(INVALID_PRODUCT_COMPLEMENTED_PRODUCTS);
-            checkDuplicatedComplementaryProducts(complementaryProducts);
-        }
-
-        /// <summary>
-        /// Checks if the materials which a product can be made of are valid
-        /// </summary>
-        /// <param name="productMaterials">IEnumerable with the product materials</param>
-        private void checkProductMaterials(IEnumerable<Material> productMaterials) {
-            if (Collections.isEnumerableNullOrEmpty(productMaterials))
-                throw new ArgumentException(INVALID_PRODUCT_MATERIALS);
-            checkDuplicatedMaterials(productMaterials);
-        }
-
-        private void checkProductMeasurements(IEnumerable<Measurement> measurements){
-            if(Collections.isEnumerableNullOrEmpty(measurements)){
-                throw new ArgumentException(INVALID_PRODUCT_DIMENSIONS);
-            }
-            checkDuplicatedMeasurements(measurements);
-        }
-
-        /// <summary>
-        /// Checks if the product category is valid
-        /// </summary>
-        /// <param name="productCategory">ProductCategory with the product category</param>
-        private void checkProductCategory(ProductCategory productCategory) {
-            if (productCategory == null) throw new ArgumentException(INVALID_PRODUCT_CATEGORY);
-        }
-
-        /// <summary>
-        /// Checks if a enumerable of products has duplicates
-        /// </summary>
-        /// <param name="complementaryProducts">IEnumerable with the complementary products</param>
-        private void checkDuplicatedComplementaryProducts(IEnumerable<Product> complementaryProducts) {
-            HashSet<string> complementaryProductsRefereces = new HashSet<string>();
-            IEnumerator<Product> complementaryProductsEnumerator = complementaryProducts.GetEnumerator();
-            Product complementaryProduct = complementaryProductsEnumerator.Current;
-            while (complementaryProductsEnumerator.MoveNext()) {
-                complementaryProduct = complementaryProductsEnumerator.Current;
-                if (!complementaryProductsRefereces.Add(complementaryProduct.id())) {
-                    throw new ArgumentException(INVALID_PRODUCT_COMPLEMENTED_PRODUCTS);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Checks if an enumerable of materials has duplicates
-        /// </summary>
-        /// <param name="productMaterials">IEnumerable with the product materials</param>
+        /// <param name="productMaterials">IEnumerable with the product materials.</param>
+        /// <exception cref="System.ArgumentException">Thrown when the IEnumerable has any duplicates.</exception>
         private void checkDuplicatedMaterials(IEnumerable<Material> productMaterials) {
             HashSet<string> productMaterialsReferences = new HashSet<string>();
             IEnumerator<Material> productMaterialsEnumerator = productMaterials.GetEnumerator();
@@ -667,9 +749,27 @@ namespace core.domain {
         }
 
         /// <summary>
-        /// Checks if an IEnumerable of Measurement contains duplicates
+        /// Checks if a IEnumerable of Product contains duplicates.
         /// </summary>
-        /// <param name="measurements"></param>
+        /// <param name="complementaryProducts">IEnumerable of Product being checked.</param>
+        /// <exception cref="System.ArgumentException">Thrown when the IEnumerable has any duplicates.</exception>
+        private void checkDuplicatedComplementaryProducts(IEnumerable<Product> complementaryProducts) {
+            HashSet<string> complementaryProductsRefereces = new HashSet<string>();
+            IEnumerator<Product> complementaryProductsEnumerator = complementaryProducts.GetEnumerator();
+            Product complementaryProduct = complementaryProductsEnumerator.Current;
+            while (complementaryProductsEnumerator.MoveNext()) {
+                complementaryProduct = complementaryProductsEnumerator.Current;
+                if (!complementaryProductsRefereces.Add(complementaryProduct.id())) {
+                    throw new ArgumentException(INVALID_PRODUCT_COMPLEMENTARY_PRODUCTS);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks if an IEnumerable of Measurement contains duplicates.
+        /// </summary>
+        /// <param name="measurements">IEnumerable of Measurement being checked.</param>
+        /// <exception cref="System.ArgumentException">Thrown when the IEnumerable has any duplicates.</exception>
         private void checkDuplicatedMeasurements(IEnumerable<Measurement> measurements){
             HashSet<Measurement> measurementsSet = new HashSet<Measurement>();
             foreach(Measurement measurement in measurements){
@@ -679,22 +779,105 @@ namespace core.domain {
             }
         }
 
+        //*END OF DUPLICATE CHECK METHODS */
+
+        //*BEGINNING OF AUXILIARY CHECK METHODS */
+
         /// <summary>
-        /// Adds a restriction to a component
+        /// Checks if the product reference is valid (not null nor empty).
         /// </summary>
-        /// <param name="component">component to add restriction to</param>
-        /// <param name="restriction">restriction to be added</param>
-        /// <returns></returns>
-        public bool addComponentRestriction(Product component, Restriction restriction) {
-            if (component == null) {
-                throw new ArgumentNullException(INVALID_COMPONENT);
+        /// <param name="reference">String with the product reference being checked.</param>
+        /// <exception cref="System.ArgumentException">Thrown when the given reference is null or empty.</exception>
+        private void checkProductReference(string reference){
+            if (Strings.isNullOrEmpty(reference)) throw new ArgumentException(INVALID_PRODUCT_REFERENCE);
+        }
+
+        /// <summary>
+        /// Checks if the product designation is valid (not null nor empty).
+        /// </summary>
+        /// <param name="designation">String with the product designation being checked.</param>
+        /// <exception cref="System.ArgumentException">Thrown when the given designation is null or empty.</exception>
+        private void checkProductDesignation(string designation){
+            if (Strings.isNullOrEmpty(designation)) throw new ArgumentException(INVALID_PRODUCT_DESIGNATION);
+        }
+
+        /// <summary>
+        /// Checks if the given product reference is valid for change (not null, empty nor equal to the current reference).
+        /// </summary>
+        /// <param name="designation">String with the product reference being changed.</param>
+        /// <exception cref="System.ArgumentException">Throw when the given reference is null, empty or equal to the current reference.</exception>
+        private void checkIfProductReferenceIsValidForChange(string reference){
+            checkProductReference(reference);
+            if(this.reference.Equals(reference))
+                throw new ArgumentException(INVALID_PRODUCT_REFERENCE_CHANGE);
+        }
+
+        /// <summary>
+        /// Checks if the given product designation is valid for change (not null, empty nor equal to the current reference).
+        /// </summary>
+        /// <param name="designation">String with the product designation being changed.</param>
+        /// <exception cref="System.ArgumentException">Thrown when the given designation is null, empty or equal to the current designation.</exception>
+        private void checkIfProductDesignationIsValidForChange(string designation){
+            checkProductDesignation(designation);
+            if(this.designation.Equals(designation))
+                throw new ArgumentException(INVALID_PRODUCT_DESIGNATION_CHANGE);
+        }
+
+        /// <summary>
+        /// Checks if the given instance of Productcategory is valid for change (not null nor equal to the current instance of ProductCategory).
+        /// </summary>
+        /// <param name="category">ProductCategory with the product category being changed</param>
+        /// <exception cref="System.ArgumentException">Throw when the given instance of ProductCategory is null or equal to the current instance of ProductCategory.</exception>
+        private void checkIfProductCategoryIsValidForChange(ProductCategory category){
+            checkProductCategory(category);
+            if(this.productCategory.Equals(category))
+                throw new ArgumentException(INVALID_PRODUCT_CATEGORY_CHANGE);
+        }
+
+        /// <summary>
+        /// Checks if an instance of Material can be added to this instance of Product.
+        /// </summary>
+        /// <param name="productMaterial">Instance of Material being checked..</param>
+        /// <exception cref="System.ArgumentException">Thrown when the given instance of Material is null or has been added previously.</exception>
+        private void checkIfMaterialIsValidForAddition(Material productMaterial) {
+            if (productMaterial == null) {
+                throw new ArgumentNullException(MATERIAL_NULL);
             }
-            foreach (Component comp in components) {
-                if (comp.complementaryProduct.Equals(component)) {
-                    comp.addRestriction(restriction);
-                }
+            if(containsMaterial(productMaterial)){
+                throw new ArgumentException(MATERIAL_ALREADY_ADDED);
             }
-            return true;
+        }
+
+        /// <summary>
+        /// Checks if a complementary product is valid for additon on the current product.
+        /// </summary>
+        /// <param name="complementaryProduct">Product with the complementary product being validated</param>
+        /// <exception cref="System.ArgumentException">Thrown when the given instance of Product is null,
+        ///  is equal to this instance of Product or an equal instance of Product has been added previously.</exception>
+        private void checkIfComplementaryProductIsValidForAddition(Product complementaryProduct) {
+            if(complementaryProduct == null){
+                throw new ArgumentNullException(COMPLEMENTARY_PRODUCT_NULL);
+            }
+            if(complementaryProduct.Equals(this)){
+                throw new ArgumentException(COMPLEMENTARY_PRODUCT_EQUALS_PRODUCT);
+            }
+            if(this.containsComplementaryProduct(complementaryProduct)){
+                throw new ArgumentException(COMPLEMENTARY_PRODUCT_ALREADY_ADDED);
+            }
+        }
+
+        /// <summary>
+        /// Checks if an instance of Measurement is valid for addition on the current Product's list of Measurement.
+        /// </summary>
+        /// <param name="measurement">Measurement being validated.</param>
+        /// <exception cref="System.ArgumentException">Thrown when the given instance of Measurement is null or an equal instance of Measurement has been added previously.</exception>
+        private void checkIfMeasurementIsValidForAddition(Measurement measurement){
+            if(measurement == null){
+                throw new ArgumentNullException(MEASUREMENT_NULL);
+            }
+            if(containsMeasurement(measurement)){
+                throw new ArgumentException(MEASUREMENT_ALREADY_ADDED);
+            }
         }
 
         /*
