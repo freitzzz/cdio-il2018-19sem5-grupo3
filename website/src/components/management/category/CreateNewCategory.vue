@@ -57,7 +57,8 @@ export default {
   /*  */
   methods: {
     postCategory() {
-      if (new String(parentCategory).equals("---")) {
+
+      if (parentCategory ==="") {
         /* Post with just a name */
         Axios.post("http://localhost:5000/mycm/api/categories", {
           name: nameCategory
@@ -73,7 +74,7 @@ export default {
       } else {
         /* Post with just a name */
         Axios.post(
-          "http://localhost:5000/mycm/api//categories/parentCategory/subcategories",
+          "http://localhost:5000/mycm/api/categories/parentCategory/subcategories",
           {
             name: nameCategory
           }
