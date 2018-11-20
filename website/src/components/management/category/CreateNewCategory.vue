@@ -17,20 +17,15 @@
                         </b-field>                     
                         <b-field label="Category">
                             <b-select v-model="parentCategory" placeholder="Select a category" icon="tag" >
-                                <optgroup label="Parent Categories">
-                                <!--  <ul id = "example-1"> <li v-for = "item in items">     {{ item.message }} </li > </ul > -->
-
-                                    <option value="flint">---</option>
-                                    <option value="flint">Category 1</option>
-                                    <option value="flint">Category 2</option>
-                                    <option value="flint">Category 3</option>
-                                </optgroup>
+                             <optgroup>
+                                <option v-for="category in parentCategory" :key="category.id" :value="category.id">{{category.name}}</option>
+                              </optgroup>
                             </b-select>
                         </b-field>
                      
                     </section>
                     <footer class="modal-card-foot">
-                        <button class="button is-primary" @click="postCategory">Create</button>
+                        <button class="button is-primary" @click="postCategory()">Create</button>
                     </footer>
                 </div>
             </form>
@@ -57,8 +52,8 @@ export default {
   /*  */
   methods: {
     postCategory() {
-
-      if (parentCategory ==="") {
+      alert(parentCategory);
+      if (parentCategory === "") {
         /* Post with just a name */
         Axios.post("http://localhost:5000/mycm/api/categories", {
           name: nameCategory
@@ -87,9 +82,13 @@ export default {
           });
       }
     }
+  },
+  created() {
+    Axios.get("http://localhost:5000/mycm/api/categories")
+      .then(response => this.parentCategory.push(response.data))
+      .catch(function(error) {
+         alert("Não há categorias, volte noutro dia.");
+          });
   }
-  /*  created() {
-    this.getCategories();
-  } */
 };
 </script>
