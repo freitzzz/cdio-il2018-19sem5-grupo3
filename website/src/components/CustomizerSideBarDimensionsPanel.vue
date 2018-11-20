@@ -10,6 +10,8 @@
         <option value="dm">Decimeters</option>
         <option value="m">Meters</option>
       </select>
+            {{$store.state}}
+
     </div>
 </template>
 
