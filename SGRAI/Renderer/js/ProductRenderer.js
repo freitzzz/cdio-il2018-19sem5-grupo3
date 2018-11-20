@@ -401,7 +401,7 @@ function generateCylinder(material, group) {
     closet_poles_ids.push(poleMesh.id);
 }
 
-function generateShelf(material, group) {
+function generateShelf() {
 
     var leftFace = group.getObjectById(closet_faces_ids[2]);
     var rightFace = group.getObjectById(closet_faces_ids[3]);
@@ -418,26 +418,26 @@ function generateShelf(material, group) {
         z = calculatePolePosition(rightFace.position.z, leftFace.position.z);
     } else if (closet.poles.length == 0) {
         let firstSlot = group.getObjectById(closet_slots_faces_ids[0]);
-        width = calculatePoleHeight(leftFace.position.x, firstSlot.position.x);
+        width = calculateDistance(leftFace.position.x, firstSlot.position.x);
         x = calculatePolePosition(leftFace.position.x, firstSlot.position.x);
         y = calculatePolePosition(leftFace.position.y, firstSlot.position.y);
         z = calculatePolePosition(leftFace.position.z, firstSlot.position.z);
     } else if (closet_slots_faces_ids.length > 0 && closet_poles_ids.length < closet_slots_faces_ids.length) {
         let slotToTheLeft = group.getObjectById(closet_slots_faces_ids[closet_poles_ids.length - 1]);
         let slotToTheRight = group.getObjectById(closet_slots_faces_ids[closet_poles_ids.length]);
-        width = calculatePoleHeight(slotToTheLeft.position.x, slotToTheRight.position.x);
+        width = calculateDistance(slotToTheLeft.position.x, slotToTheRight.position.x);
         x = calculatePolePosition(slotToTheLeft.position.x, slotToTheRight.position.x);
         y = calculatePolePosition(slotToTheLeft.position.y, slotToTheRight.position.y);
         z = calculatePolePosition(slotToTheLeft.position.z, slotToTheRight.position.z);
     } else {
         let lastSlot = group.getObjectById(closet_slots_faces_ids[closet_poles_ids.length]);
-        width = calculatePoleHeight(lastSlot.position.x, rightFace.position.x);
+        width = calculateDistance(lastSlot.position.x, rightFace.position.x);
         x = calculatePolePosition(lastSlot.position.x, rightFace.position.x);
         y = calculatePolePosition(lastSlot.position.y, rightFace.position.y);
         z = calculatePolePosition(lastSlot.position.z, rightFace.position.z);
     }
-    var shelf = new Shelf([width, height, depth, x, y + 40, z]);
-    var meshID = generateParellepiped(width, height, depth, x, y + 40, z, material, group);
+    var shelf = new Shelf([width, height, depth, x, y, z]);
+    var meshID = generateParellepiped(width, height, depth, x, y, z, material, group);
     closet.addShelf(shelf);
     closet_poles_ids.push(meshID);
 }
@@ -458,6 +458,10 @@ function calculatePoleHeight(topPosition, bottomPosition) {
  */
 function calculatePolePosition(leftMostCoordinate, rightMostCoordinate) {
     return (leftMostCoordinate + rightMostCoordinate) / 2;
+}
+
+function calculateDistance(topPosition, bottomPosition) {
+    return Math.abs(topPosition - bottomPosition);
 }
 
 /**
