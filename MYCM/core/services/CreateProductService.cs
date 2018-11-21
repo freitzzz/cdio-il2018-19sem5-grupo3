@@ -9,6 +9,7 @@ using core.modelview.product;
 using core.modelview.slotdimensions;
 using core.persistence;
 using core.services.ensurance;
+using support.utils;
 
 namespace core.services
 {
@@ -47,13 +48,23 @@ namespace core.services
         /// </summary>
         private const string ERROR_NO_MEASUREMENTS_DEFINED = "No dimensions were provided, please provide dimensions.";
 
+        /// <summary>
+        /// Constant representing the message presented when an error occured while attempting to save a Product.
+        /// </summary>
+        private const string ERROR_PRODUCT_SAVE = "An error occured while attempting to save the product. Make sure the reference is unique.";
+
         //TODO: use ProductBuilder here
 
+        //*NOTE: We're currently having to use a workaround to persist Products with multiple components.*/ 
+        //*Rather than creating a new entry with all the components defined, a new Product is created and then */
+        //* the components are added and the Product is updated*/
+
         /// <summary>
-        /// 
+        /// Creates a new instance of Product and saves it to the Repository.
         /// </summary>
-        /// <param name="addProductMV"></param>
-        /// <returns></returns>
+        /// <param name="addProductMV">AddProductModelView containing the new Product's information.</param>
+        /// <returns>Created instance of Product.</returns>
+        /// <exception cref="System.ArgumentException">Throw </exception>
         public static Product create(AddProductModelView addProductMV)
         {
             string reference = addProductMV.reference;
@@ -62,6 +73,7 @@ namespace core.services
 
             List<AddMeasurementModelView> measurementModelViews = addProductMV.measurements;
 
+            //NOTE: these checks are made here in order to avoid making requests to repositories unnecessarily
             if (measurementModelViews == null || !measurementModelViews.Any())
             {
                 throw new ArgumentException(ERROR_NO_MEASUREMENTS_DEFINED);
@@ -111,31 +123,38 @@ namespace core.services
             bool hasComponents = componentModelViews != null && componentModelViews.Any();
             bool hasSlots = slotDimensionsModelView != null;
 
+            Product product = null;
+
             if (hasSlots)
             {
                 CustomizedDimensions minSize = CustomizedDimensionsModelViewService.fromModelView(addProductMV.slotSizes.minSize);
                 CustomizedDimensions maxSize = CustomizedDimensionsModelViewService.fromModelView(addProductMV.slotSizes.maxSize);
                 CustomizedDimensions recommendedSize = CustomizedDimensionsModelViewService.fromModelView(addProductMV.slotSizes.recommendedSize);
-                if (hasComponents)
-                {
-                    return new Product(reference, designation, category, materials, measurements, getComplementaryProducts(componentModelViews), minSize, maxSize, recommendedSize);
-                }
-                else
-                {
-                    return new Product(reference, designation, category, materials, measurements, minSize, maxSize, recommendedSize);
-                }
+
+                product = new Product(reference, designation, category, materials, measurements, minSize, maxSize, recommendedSize);
             }
             else
             {
-                if (hasComponents)
-                {
-                    return new Product(reference, designation, category, materials, measurements, getComplementaryProducts(componentModelViews));
-                }
-                else
-                {
-                    return new Product(reference, designation, category, materials, measurements);
-                }
+                product = new Product(reference, designation, category, materials, measurements);
             }
+
+            ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
+
+            product = productRepository.save(product);
+
+            if (product == null)
+            {
+                throw new ArgumentException(ERROR_PRODUCT_SAVE);
+            }
+
+            //since there's no constructor that allows for specifying whether or not a component is mandatory, just add them
+            if (hasComponents)
+            {
+                product = addComplementaryProducts(product, componentModelViews);
+                product = productRepository.update(product);
+            }
+
+            return product;
         }
 
         /// <summary>
@@ -143,25 +162,31 @@ namespace core.services
         /// </summary>
         /// <param name="componentModelViews">ModelViews containing component information.</param>
         /// <returns>List of Product.</returns>
-        private static List<Product> getComplementaryProducts(List<AddComponentToProductModelView> componentModelViews)
+        /// <exception cref="System.ArgumentException">Thrown when any complementary Product could not be found.</exception>
+        private static Product addComplementaryProducts(Product product, IEnumerable<AddComponentToProductModelView> componentModelViews)
         {
-            List<Product> complementaryProducts = new List<Product>();
-            List<long> componentIds = componentModelViews.Select(c => c.complementedProductID).ToList();
-
             ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
 
-            foreach (long componentId in componentIds)
+            foreach (AddComponentToProductModelView addComponentToProductModelView in componentModelViews)
             {
-                Product complementaryProduct = productRepository.find(componentId);
+                Product complementaryProduct = productRepository.find(addComponentToProductModelView.complementedProductID);
 
                 if (complementaryProduct == null)
                 {
-                    throw new ArgumentException(string.Format(ERROR_PRODUCT_NOT_FOUND, componentId));
+                    throw new ArgumentException(string.Format(ERROR_PRODUCT_NOT_FOUND, addComponentToProductModelView.complementedProductID));
                 }
-                complementaryProducts.Add(complementaryProduct);
+
+                if (addComponentToProductModelView.mandatory)
+                {
+                    product.addMandatoryComplementaryProduct(complementaryProduct);
+                }
+                else
+                {
+                    product.addComplementaryProduct(complementaryProduct);
+                }
             }
 
-            return complementaryProducts;
+            return product;
         }
     }
 }
