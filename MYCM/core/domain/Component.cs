@@ -28,34 +28,33 @@ namespace core.domain
         /// <summary>
         /// Long with the product which has the complemented product ID
         /// </summary>
-        public long fatherProductId { get; private set; }
+        public long fatherProductId { get; protected set; }
         /// <summary>
         /// Boolean value that dictates whether the component is mandatory or not
         /// </summary>
-        public bool mandatory { get; private set; }
+        public bool mandatory { get; protected set; }
 
         /// <summary>
         /// Product with the product which has the current complemented product
         /// </summary>
         private Product _fatherProduct;             //!private field used for lazy loading, do not use this for storing or fetching data
-        public Product fatherProduct { get => LazyLoader.Load(this, ref _fatherProduct); set => _fatherProduct = value; }
+        public Product fatherProduct { get => LazyLoader.Load(this, ref _fatherProduct); protected set => _fatherProduct = value; }
 
         /// <summary>
         /// Long with the product which has the complemented product ID
         /// </summary>
-        public long complementaryProductId { get; private set; }
+        public long complementaryProductId { get; protected set; }
 
         /// <summary>
         /// Product with the complemented product 
         /// </summary>
         private Product _complementaryProduct;       //!private field used for lazy loading, do not use this for storing or fetching data
-        public Product complementaryProduct { get => LazyLoader.Load(this, ref _complementaryProduct); set => _complementaryProduct = value; }
+        public Product complementaryProduct { get => LazyLoader.Load(this, ref _complementaryProduct); protected set => _complementaryProduct = value; }
         /// <summary>
         /// List with the restrictions which the current component can be have
         /// </summary>
-        [NotMapped] //!remove this annotation once we figure out how to persist interfaces
         private List<Restriction> _restrictions;    //!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); set => _restrictions = value; }
+        public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); protected set => _restrictions = value; }
 
         /// <summary>
         /// LazyLoader being injected by the Framework.
