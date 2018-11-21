@@ -258,6 +258,10 @@ function applyTexture(texture) {
     })
 }
 
+function addComponent(){
+    generateCylinder();
+}
+
 /**
  * Changes the closet's material's shininess.
  * @param {*} shininess - new shininess value
@@ -563,6 +567,10 @@ function registerEvents() {
 
     document.addEventListener("changeMaterial", function (changeMaterialEvent) {
         applyTexture(changeMaterialEvent.detail.material);
+    });
+
+    document.addEventListener("addComponent", function(addComponentEvent){
+        addComponent(addComponentEvent.component);
     });
 
     document.addEventListener("changeShininess", function (changeShininessEvent) {

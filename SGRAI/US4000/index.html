@@ -41,7 +41,6 @@
       loadSlots();
       loadPoles();
     }
-    
 
     var lastUnit = "cm";
 
@@ -102,38 +101,39 @@
       }
     }
 
-      //loadDepth();
+    //loadDepth();
     function reloadCube() {
-      var height,width,depth;
-      switch(lastUnit){
-            case "mm": 
-              height  = document.getElementById("height").value/10;
-              width = document.getElementById("width").value/20;
-              depth = document.getElementById("depth").value/10;  
-              break;
-            case "m":
-              width =parseInt((document.getElementById("width").value*100)/2);
-              height =document.getElementById("height").value*100;
-              depth = document.getElementById("depth").value*100;
-              break;
-            default:
-              width = document.getElementById("width").value;
-              height = document.getElementById("height").value;
-              depth = document.getElementById("depth").value;
-              break;
+      var height, width, depth;
+      switch (lastUnit) {
+        case "mm":
+          height = document.getElementById("height").value / 10;
+          width = document.getElementById("width").value / 20;
+          depth = document.getElementById("depth").value / 10;
+          break;
+        case "m":
+          width = parseInt((document.getElementById("width").value * 100) / 2);
+          height = document.getElementById("height").value * 100;
+          depth = document.getElementById("depth").value * 100;
+          break;
+        default:
+          width = document.getElementById("width").value;
+          height = document.getElementById("height").value;
+          depth = document.getElementById("depth").value;
+          break;
       }
+
       var event = new CustomEvent("changeDimensions", {
 
         detail: {
-        height: height,
-        width: width,
-        depth: depth,
-        //!Temporary solution
-        index: 3
+          height: height,
+          width: width,
+          depth: depth,
+          //!Temporary solution
+          index: 3
         }
       });
       document.dispatchEvent(event);
-      }
+    }
 
 
     /**
@@ -283,6 +283,15 @@
       document.dispatchEvent(eventX);
     }
 
+    function addComponent(elementId) {
+      var event = new CustomEvent("addComponent", {
+        detail: {
+          component: document.getElementById(elementId).getAttribute("src")
+        }
+      })
+      document.dispatchEvent(event);
+    }
+
     function reloadMaterial(elementId) {
       var event = new CustomEvent("changeMaterial", {
         detail: {
@@ -330,13 +339,6 @@
       }
       document.getElementById("slotsInput").value = 3;
       document.getElementById("slotCheckbox").checked = false;
-    }
-    function loadPoles(){
-      var currentSlots = parseInt(document.getElementById("slotsInput").value) + 1;
-      var container = document.getElementById("slotDiv");
-      for(let i = 0; i < currentSlots; i++){
-        generateCylinder();
-      }
     }
   </script>
 
@@ -491,8 +493,6 @@
           <li class="before" id="saveP">Save</li>
         </ul>
       </div>
-
-
       <br><br>
       <div id="dimensions" class="column left tabcontent active">
         <h2>Dimensions</h2>
@@ -606,19 +606,46 @@
       <div id="components" class="column left tabcontent" style="display:none">
         <h2>Components</h2>
         <br>
-        <div id="component" class="left active" style="display:grid;height: 100%;width: 100%">
-          <h3 align="center">Drawer Example</h3>
-          <div id="componentMaterials" align="center">
-            <a class="btn-custom" onclick="openTab(event,'materials');">Materials</a>
+        <div id="component-scrollable-div" class="div" style="height: 250px; width: 100%;">
+          <div id="component_sidepanel" class="sidepanel">
+            <a id="closebtn" href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+            <a class="sidepanel-entry">Components
+              <i class="fa fa-caret-down"></i>
+            </a>
           </div>
-          <div id="componentButtons">
-            <br><br><!-- #TODO: Remove <br>!!!-->
-            <a class="btn-component" onclick="chooseComponent('previous')"><i class="material-icons">arrow_back</i></a>
-            <a class="btn-component" onclick="applyComponent()"><i class="material-icons">check</i></a>
-            <a class="btn-component" onclick="chooseComponent('next')"><i class="material-icons">arrow_forward</i></a>
-          </div>
+          <ul class="component_list">
+            <li>
+              <div class="component-btn" onclick="openNav(); addComponent('pole')">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="pole" src="http://127.0.0.1:8002/US4000/img/pole.jpeg" alt="Pole" width="100%" />
+                <p>Pole</p>
+              </div>
+            </li>
+            <li>
+              <div class="component-btn" onclick="openNav(); addComponent('shelf')">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="shelf" src="http://127.0.0.1:8002/US4000/img/shelf.jpeg" alt="Shelf" width="100%" />
+                <p>Shelf</p>
+              </div>
+            </li>
+            <li>
+              <div class="component-btn" onclick="openNav(); addComponent('drawer')">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="drawer" src="http://127.0.0.1:8002/US4000/img/drawer.jpeg" alt="Drawer" width="100%" />
+                <p>Drawer</p>
+              </div>
+            </li>
+            <li>
+              <div class="component-btn" onclick="openNav(); addComponent('door')">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="door" src="http://127.0.0.1:8002/US4000/img/door.jpeg" alt="Door" width="100%" />
+                <p>Sliding Door</p>
+              </div>
+            </li>
+          </ul>
         </div>
-        <br><br><br><br> <!-- #TODO: Remove <br>!!!-->
+        <div id="component_customize_div">
+        </div> <br>
         <a class="btn-custom" onclick="openTab(event, 'materials');decreaseToMaterial();forceOnMouseUp()">Back</a>
         <a class="btn-custom" onclick="openTab(event,'save');changePBSave();forceOnMouseUp()">Next</a>
       </div>
@@ -640,7 +667,6 @@
     </div>
   </div>
   </div>
-
 
 
   <!-- Contact Section -->
