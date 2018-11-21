@@ -4,7 +4,7 @@
       <input type="number" min="1" name="height" v-model="height" @change="updateHeight">
       <input type="number" min="1" name="width" v-model="width" @change="updateWidth">
       <input type="number" min="1" name="depth" v-model="depth" @change="updateDepth">
-      <select>
+      <select v-model="unit" @change="updateUnit">
         <option value="mm">Milimeters</option>
         <option value="cm">Centimeters</option>
         <option value="dm">Decimeters</option>
@@ -19,7 +19,8 @@ import store from "./../store";
 import {
   SET_CUSTOMIZED_PRODUCT_WIDTH,
   SET_CUSTOMIZED_PRODUCT_HEIGHT,
-  SET_CUSTOMIZED_PRODUCT_DEPTH
+  SET_CUSTOMIZED_PRODUCT_DEPTH,
+  SET_CUSTOMIZED_PRODUCT_UNIT
 } from "./../store/mutation-types.js";
 
 import { error } from "three";
@@ -29,19 +30,20 @@ export default {
   data() {
     return {
       // //TODO: replace hardcoded values ASAP
-      height: 0,
-      width: 0,
-      depth: 0
+      height: 100,
+      width: 100,
+      depth: 100,
+      unit: "cm"
     };
   },
   created() {
     store.dispatch(SET_CUSTOMIZED_PRODUCT_WIDTH, { width: this.width });
     store.dispatch(SET_CUSTOMIZED_PRODUCT_HEIGHT, { height: this.height });
     store.dispatch(SET_CUSTOMIZED_PRODUCT_DEPTH, { depth: this.depth });
+    store.dispatch(SET_CUSTOMIZED_PRODUCT_UNIT, { unit: this.unit });
   },
   methods: {
     updateHeight(e) {
-      alert(e.target.value);
       store.dispatch(SET_CUSTOMIZED_PRODUCT_HEIGHT, { height: e.target.value });
     },
     updateWidth(e) {
@@ -49,6 +51,9 @@ export default {
     },
     updateDepth(e) {
       store.dispatch(SET_CUSTOMIZED_PRODUCT_DEPTH, { depth: e.target.value });
+    },
+    updateUnit(e) {
+      store.dispatch(SET_CUSTOMIZED_PRODUCT_UNIT, { unit: e.target.value });
     }
   }
 };

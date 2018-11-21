@@ -29,4 +29,11 @@ export const actions = {
     [types.SET_CUSTOMIZED_PRODUCT_DEPTH]: ({ commit }, payload) => {
         commit(types.SET_CUSTOMIZED_PRODUCT_DEPTH, payload);
     },
+
+    /**
+     * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_UNIT
+     */
+    [types.SET_CUSTOMIZED_PRODUCT_UNIT]: ({ commit }, payload) => {
+        commit(types.SET_CUSTOMIZED_PRODUCT_UNIT, payload);
+    }
 }

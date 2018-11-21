@@ -11,11 +11,41 @@ Vue.use(Vuex)
  */
 const state = {
     product: {},
+    
     customizedProduct: {
+        designation: "",
+        reference: "",
+        product: {
+            id: ""
+        },
+        customizedMaterial: {
+            material: {
+                id: ""
+            },
+            color: {
+                name: "",
+                red: "",
+                green: "",
+                blue: "",
+                alpha: ""
+            },
+            finish: {
+                description: ""
+            }
+        },
+        slots: [
+            {
+                depth: "",
+                width: "",
+                height: "",
+                unit: ""
+            }
+        ],
         customizedDimensions: {
             width: "",
             height: "",
-            depth: ""
+            depth: "",
+            unit: ""
         }
     }
 }
