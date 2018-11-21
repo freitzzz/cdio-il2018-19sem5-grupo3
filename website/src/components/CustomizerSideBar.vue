@@ -6,8 +6,8 @@
         <h3>{{panels[currentPanelIndex].title}}</h3>
         <!--The child component changes dinamically depending on tthe currently selected component.-->
         <!--The Sidebar component listens out for any event that the child may trigger-->
-        <customizer-side-bar-products-panel v-if="currentPanelIndex == 0" @select-product-identifier="storeProductIdentifier"></customizer-side-bar-products-panel>
-        <customizer-side-bar-dimensions-panel v-if="currentPanelIndex == 1"></customizer-side-bar-dimensions-panel>
+        <customizer-side-bar-products-panel v-if="currentPanelIndex == 0" @progress-to-product-dimensions="nextPanel"></customizer-side-bar-products-panel>
+        <customizer-side-bar-dimensions-panel v-if="currentPanelIndex == 1" @progress-to-product-slots="nextPanel"></customizer-side-bar-dimensions-panel>
         <customizer-side-bar-slots-panel v-if="currentPanelIndex == 2"></customizer-side-bar-slots-panel>
         <customizer-side-bar-materials-panel v-if="currentPanelIndex == 3"></customizer-side-bar-materials-panel>
         <div class="sidenav-controls">
@@ -31,7 +31,6 @@ export default {
       //chave: fase atual de configuração
       //valor: painel a ser rendered
       currentPanelIndex: 0,
-      selectedProductId: 0,
       panels: [
         {
           title: "Products",
@@ -90,11 +89,6 @@ export default {
       if (this.currentPanelIndex < this.panels.length - 1) {
         this.currentPanelIndex++;
       }
-    },
-    storeProductIdentifier(id) {
-      //When a product is selected, proceed to the next panel
-      this.selectedProductId = id;
-      this.nextPanel();
     }
   }
 };

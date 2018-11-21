@@ -1,8 +1,8 @@
 <template>
     <div id="app">
-<!--       <customizer v-if="customizerEnabled"></customizer>
-      <button v-else @click="enableCustomizer">Get Started</button> -->
-      <create-new-category :active=true></create-new-category>
+       <customizer v-if="customizerEnabled"></customizer>
+      <button v-else @click="enableCustomizer">Get Started</button> 
+      <!--create-new-category :active=true></create-new-category-->
     </div>
 </template>
 

@@ -10,12 +10,13 @@
         <option value="dm">Decimeters</option>
         <option value="m">Meters</option>
       </select>
-            {{$store.state}}
-
+              {{$store.state.product}}
     </div>
 </template>
 
 <script>
+import store from "./../store";
+
 export default {
   name: "CustomizerSideBarDimensionsPanel",
   data() {
@@ -25,6 +26,14 @@ export default {
       width: 409,
       depth: 100
     };
+  },
+  methods: {
+    changeDimensions() {
+      store.state.customizedProduct.customizedDimensions.height = height;
+      store.state.customizedProduct.customizedDimensions.width = width;
+      store.state.customizedProduct.customizedDimensions.depth = depth;
+      this.$emit("progress-to-product-slots");
+    }
   }
 };
 </script>
