@@ -1,11 +1,7 @@
  <template>
-
- <nav class="navbar" role="navigation" aria-label="main navigation">
+<nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
-    <a class="navbar-item" >
-      <img src="https://www.flaticon.com/free-icon/closet_171728#" width="112" height="28">
-    </a>
-
+    
     <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
@@ -13,94 +9,91 @@
     </a>
   </div>
 
-  <div id="navbarBasicExample" class="navbar-menu">
+  <div id="navBarManagement" class="navbar-menu">
     <div class="navbar-start">
-      <a class="navbar-item">
-        Home
-      </a>
-
-      <a class="navbar-item">
-        Documentation
-      </a>
-
-      <div class="navbar-item has-dropdown is-hoverable">
+        <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link">
-          More
+          Category
         </a>
 
         <div class="navbar-dropdown">
           <a class="navbar-item">
-            About
+            Create Category
           </a>
           <a class="navbar-item">
-            Jobs
+            Edit Category
           </a>
           <a class="navbar-item">
-            Contact
-          </a>
-          <hr class="navbar-divider">
-          <a class="navbar-item">
-            Report an issue
+            Remove Category
           </a>
         </div>
+      </div>
+
+    <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          Material
+        </a>
+
+        <div class="navbar-dropdown">
+          <a class="navbar-item">
+            Add Material
+          </a>
+          <a class="navbar-item">
+            Edit Material
+          </a>
+          <a class="navbar-item">
+            Remove Material
+          </a>
+         
+        </div>
+      </div>
+
+       
+        <div class="navbar-start">
+        <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          Product
+        </a>
+
+        <div class="navbar-dropdown">
+          <a class="navbar-item">
+            Create Product
+          </a>
+          <a class="navbar-item">
+            Edit Product
+          </a>
+          <a class="navbar-item">
+            Remove Product
+          </a>
+        </div>
+
+     
+      </div>
+        <a class="navbar-item">
+            Create Customized Product
+        </a>
+         
+    
       </div>
     </div>
 
     <div class="navbar-end">
       <div class="navbar-item">
-        <div class="buttons">
-          <a class="button is-primary">
-            <strong>Sign up</strong>
-          </a>
-          <a class="button is-light">
-            Log in
-          </a>
-        </div>
+        <a class="navbar-item">
+            Welcome, Content Manager
+        </a>
+        <i class="far fa-user-circle" style="font-size:30px"></i>
       </div>
     </div>
   </div>
 </nav>
 
-   <!--  <section>
-        <b-dropdown hoverable>
-            <button class="button is-info" slot="trigger">
-                <span>Category</span>
-                <b-icon icon="menu-down"></b-icon>
-            </button>
-
-            <b-dropdown-item>Add Category</b-dropdown-item>
-            <b-dropdown-item>Edit Category</b-dropdown-item>
-            <b-dropdown-item>Remove Category</b-dropdown-item>
-        </b-dropdown>
-        <b-dropdown hoverable>
-            <button class="button is-info" slot="trigger">
-                <span>Material</span>
-                <b-icon icon="menu-down"></b-icon>
-            </button>
-
-            <b-dropdown-item>Add Material</b-dropdown-item>
-            <b-dropdown-item>Edit Material</b-dropdown-item>
-            <b-dropdown-item>Remove Material</b-dropdown-item>
-        </b-dropdown>
-        <b-dropdown hoverable>
-            <button class="button is-info" slot="trigger">
-                <span>Product</span>
-                <b-icon icon="menu-down"></b-icon>
-            </button>
-
-            <b-dropdown-item>Add Product</b-dropdown-item>
-            <b-dropdown-item>Edit Product</b-dropdown-item>
-            <b-dropdown-item>Remove Product</b-dropdown-item>
-        </b-dropdown>
-
-    
-    </section> -->
 </template> 
 
 <style scoped>
-    .tag {
-        cursor: pointer;
-    }
+.tag {
+  cursor: pointer;
+}
 </style>
 
 
