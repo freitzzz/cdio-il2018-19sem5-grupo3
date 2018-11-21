@@ -8,4 +8,25 @@ export const actions = {
     [types.INIT_PRODUCT]: ({ commit }, payload) => {
         commit(types.INIT_PRODUCT, payload)
     },
+
+    /**
+     * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_WIDTH
+     */
+    [types.SET_CUSTOMIZED_PRODUCT_WIDTH]: ({ commit }, payload) => {
+        commit(types.SET_CUSTOMIZED_PRODUCT_WIDTH, payload);
+    },
+
+    /**
+     * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_HEIGHT
+     */
+    [types.SET_CUSTOMIZED_PRODUCT_HEIGHT]: ({ commit }, payload) => {
+        commit(types.SET_CUSTOMIZED_PRODUCT_HEIGHT, payload);
+    },
+
+    /**
+     * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_DEPTH
+     */
+    [types.SET_CUSTOMIZED_PRODUCT_DEPTH]: ({ commit }, payload) => {
+        commit(types.SET_CUSTOMIZED_PRODUCT_DEPTH, payload);
+    },
 }
