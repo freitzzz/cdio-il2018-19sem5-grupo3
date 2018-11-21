@@ -3,34 +3,30 @@
         <form action="">
                 <div class="modal-card" style="width: auto">
                     <header class="modal-card-head">
-                        <p class="modal-card-title">Edit Category</p>
+                        <p class="modal-card-title">New Category</p>
                     </header>
-                    <section class="modal-card-body">
-                      
-    
-                        <b-field label="Category">
-                            <b-select placeholder="Select a category" icon="tag">
-                                <optgroup label="Wardrobes">
-                                    <option value="flint">Classy</option>
-                                    <option value="flint">Devil</option>
-                                    <option value="flint">Professional</option>
-                                </optgroup>
+                    <b-field label="Category">
+                            <b-select placeholder="Select a category" icon="tag" v-model="categoryId">
+                                  <option :value="null"></option>
+                                  <option v-for="category in availableCategories" 
+                                    :key="category.id" :value="category.id">{{category.name}}</option>
                             </b-select>
                         </b-field>
-
-                          <b-field label="Name">
-                            <b-input
+                    <section class="modal-card-body">
+                        <b-field label="Name">
+                            <b-input 
+                                v-model="nameCategory"
                                 type="String"
-                                :value.sync="reference"
-                                placeholder="#666"
+                                placeholder="#Category"
                                 icon="pound"
                                 required>
                             </b-input>
-                        </b-field>
+                        </b-field>                     
+                        
                      
                     </section>
                     <footer class="modal-card-foot">
-                        <button class="button is-primary" @click="create($parent)">Create</button>
+                        <button class="button is-primary" @click="postCategory">Create</button>
                     </footer>
                 </div>
             </form>
@@ -38,15 +34,65 @@
 </template> 
 
 <script>
+import Axios from "axios";
 export default {
-    name:"EditCategory",
-    props:{
-        active:{
-            type: Boolean,
-            default: false
-        }
-    },
-    methods:{
+  name: "CreateNewCategory",
+  data() {
+    return {
+      nameCategory: "",
+      categoryId: null, //this value needs to be null for the placeholder to work
+      availableCategories: []
+    };
+  },
+  props: {
+    active: {
+      type: Boolean,
+      default: false
     }
-}
+  },
+
+  /*  */
+  methods: {
+    //    postCategory() {
+    //       if (this.categoryId === null) {
+    //         /* Post with just a name */
+    //         Axios.post("http://localhost:5000/mycm/api/categories", {
+    //           name: this.nameCategory
+    //         })
+    //           .then(response => {})
+    //           .catch(error => {});
+    //       } else {
+    //         /* Post with just a name */
+    //         Axios.post(
+    //           `http://localhost:5000/mycm/api/categories/${
+    //             this.categoryId
+    //           }/subcategories`,
+    //           {
+    //             name: this.nameCategory
+    //           }
+    //         )
+    //           .then(response => {})
+    //           .catch(error => {});
+    //       }
+    //     }
+  },
+  created() {
+    // Axios.get("http://localhost:5000/mycm/api/categories/${
+    //         this.categoryId
+    //       }/subcategories`,
+    //   .then(response => this.availableCategories.push(...response.data),this.nameCategory) //push all elements onto the array
+    //   .catch(function(error) {
+    //     //TODO: inform an error occured while fetching categories
+    //   });
+    Axios.get(`http://localhost:5000/mycm/api/categories/${this.categoryId}/subcategories`)
+        .then(response => {
+          this.nameCategory = response.data;
+          this.httpCode = response.status;
+        })
+        .catch(error => {
+          
+          this.httpCode = error.response.status;
+        });
+  }
+};
 </script>
