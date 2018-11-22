@@ -4,88 +4,110 @@
         <b-section>
                 <b-section v-if="widthDimension.single">
                     <b-field>
-                        <b-input
-                            type="Number"
-                            :value.sync="width"
-                            placeholder="200"
-                            icon="wrench"
-                            expanded=true
-                            required>
-                        </b-input>
-                        <b-select v-model="widthDimension.selected" @input="changeWidthDimensionType">
-                            <option 
-                                    v-for="(dimensionType,index) in widthDimension.availableDimensionTypes" 
-                                    :key="index"
-                                    :value="dimensionType.id"
-                            >
-                                {{dimensionType.name}}
-                            </option>
-                        </b-select>
+                        <b-field label="Dimension Value">
+                            <b-input
+                                type="Number"
+                                :value.sync="width"
+                                placeholder="200"
+                                icon="wrench"
+                                expanded=true
+                                required>
+                            </b-input>
+                        </b-field>
+                        <b-field label="Dimension Type">
+                            <b-select v-model="widthDimension.selected" @input="changeWidthDimensionType">
+                                <option 
+                                        v-for="(dimensionType,index) in widthDimension.availableDimensionTypes" 
+                                        :key="index"
+                                        :value="dimensionType.id"
+                                >
+                                    {{dimensionType.name}}
+                                </option>
+                            </b-select>
+                        </b-field>
                     </b-field>
                 </b-section>
                 <b-section v-if="widthDimension.continuous">
                     <b-field>
-                        <b-input
-                            type="Number"
-                            :value.sync="width"
-                            placeholder="200"
-                            icon="wrench"
-                            expanded=true
-                            required>
-                        </b-input>
-                        <b-select/>
-                        <button class="button is-danger" @click="addContinuousWidthValue()">
-                            <b-icon icon="plus"/>
-                        </button>
-                        <button class="button is-danger" @click="removeContinuousWidthValue()">
-                            <b-icon icon="minus"/>
-                        </button>
-                        <b-select v-model="widthDimension.selected" @input="changeWidthDimensionType">
-                            <option 
-                                    v-for="(dimensionType,index) in widthDimension.availableDimensionTypes" 
-                                    :key="index"
-                                    :value="dimensionType.id"
-                            >
-                                {{dimensionType.name}}
-                            </option>
-                        </b-select>
+                        <b-field label="Dimension Value" >
+                            <b-input
+                                type="Number"
+                                :value.sync="width"
+                                placeholder="200"
+                                icon="wrench"
+                                expanded=true
+                                required>
+                            </b-input>
+                        </b-field>
+                        <b-field label="Values">
+                            <b-select/>
+                        </b-field>
+                            <b-field label="Add">
+                                <button class="button is-danger" @click="addContinuousWidthValue()">
+                                    <b-icon icon="plus"/>
+                                </button>
+                            </b-field>
+                            <b-field label="Remove">
+                                <button class="button is-danger" @click="removeContinuousWidthValue()">
+                                    <b-icon icon="minus"/>
+                                </button>
+                            </b-field>
+                        <b-field label="Dimension Type">
+                            <b-select v-model="widthDimension.selected" @input="changeWidthDimensionType">
+                                <option 
+                                        v-for="(dimensionType,index) in widthDimension.availableDimensionTypes" 
+                                        :key="index"
+                                        :value="dimensionType.id"
+                                >
+                                    {{dimensionType.name}}
+                                </option>
+                            </b-select>
+                        </b-field>
                     </b-field>
                 </b-section>
                 <b-section v-if="widthDimension.discrete">
                     <b-field>
-                        <b-input
-                            type="Number"
-                            :value.sync="width"
-                            placeholder="200"
-                            icon="wrench"
-                            expanded=true
-                            required>
-                        </b-input>
-                        <b-input
-                            type="Number"
-                            :value.sync="width"
-                            placeholder="200"
-                            icon="wrench"
-                            expanded=true
-                            required>
-                        </b-input>
-                        <b-input
-                            type="Number"
-                            :value.sync="width"
-                            placeholder="200"
-                            icon="wrench"
-                            expanded=true
-                            required>
-                        </b-input>
-                        <b-select v-model="widthDimension.selected" @input="changeWidthDimensionType">
-                            <option 
-                                    v-for="(dimensionType,index) in widthDimension.availableDimensionTypes" 
-                                    :key="index"
-                                    :value="dimensionType.id"
-                            >
-                                {{dimensionType.name}}
-                            </option>
-                        </b-select>
+                        <b-field label="Min Value">
+                            <b-input
+                                type="Number"
+                                :value.sync="width"
+                                placeholder="200"
+                                icon="wrench"
+                                expanded=true
+                                required>
+                            </b-input>
+                        </b-field>
+                        <b-field label="Max Value">
+                            <b-input
+                                type="Number"
+                                :value.sync="width"
+                                placeholder="200"
+                                icon="wrench"
+                                expanded=true
+                                required>
+                            </b-input>
+                        </b-field>
+                        <b-field label="Increment">
+                            <b-input
+                                type="Number"
+                                :value.sync="width"
+                                placeholder="200"
+                                icon="wrench"
+                                expanded=true
+                                required>
+                            </b-input>
+                        </b-field>
+                        <b-field label="Dimension Type">
+                            <b-select v-model="widthDimension.selected" @input="changeWidthDimensionType">
+                                <option 
+                                        v-for="(dimensionType,index) in widthDimension.availableDimensionTypes" 
+                                        :key="index"
+                                        :value="dimensionType.id"
+                                >
+                                    {{dimensionType.name}}
+                                </option>
+                            </b-select>
+                        </b-field>
                     </b-field>
                 </b-section>
         </b-section>
