@@ -1,13 +1,13 @@
  <template>
 <nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
+  <!-- <div class="navbar-brand">
     
     <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
     </a>
-  </div>
+  </div> -->
 
   <div id="navBarManagement" class="navbar-menu">
     <div class="navbar-start">
@@ -17,10 +17,10 @@
         </a>
 
         <div class="navbar-dropdown">
-          <a class="navbar-item">
+          <a class="navbar-item" >
             Create Category
           </a>
-          <a class="navbar-item">
+          <a class="navbar-item" @click="enableEdit">
             Edit Category
           </a>
           <a class="navbar-item">
@@ -86,7 +86,15 @@
       </div>
     </div>
   </div>
+<div id="app">
+
+  <edit-category v-if="CustomEdit">
+    TESTE
+  </edit-category>
+</div>
 </nav>
+
+
 
 </template> 
 
@@ -99,12 +107,22 @@
 
 
 <script>
+import EditCategory from "./management/category/EditCategory.vue";
 export default {
   data() {
     return {
       activeTab: 0,
-      showBooks: false
+      showBooks: false,
+      CustomEdit: false
     };
+  },
+  methods: {
+    enableEdit() {
+      this.CustomEdit = true;
+    }
+  },
+  components: {
+    EditCategory
   }
 };
 </script>
