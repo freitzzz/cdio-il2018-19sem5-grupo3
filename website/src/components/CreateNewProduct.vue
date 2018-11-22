@@ -44,7 +44,7 @@
                             :customized-label="materials.customizedLabel"
                             :icon="materials.icon"
                             :place-holder="materials.placeholder"
-                            @getAddedItems="changeCurrentMaterials(materials)"
+                            @getAddedItems="changeCurrentMaterials"
                         />
                         <b-checkbox @input="enableComponents()">Components</b-checkbox>
                         <div v-if="components">
@@ -86,9 +86,9 @@
                         </div>
                         <b-checkbox @input="enableSlots()">Slots</b-checkbox>
                         <div v-if="slots">
-                            <slots-size :slotName="minSlotName"/>
-                            <slots-size :slotName="recommendedSlotName" />
-                            <slots-size :slotName="maxSlotName" />
+                            <slots-size :slotName="minSlotName" @getSlotValues="changeCurrentMinSlotDimensions"/>
+                            <slots-size :slotName="recommendedSlotName" @getSlotValues="changeCurrentRecommendedSlotDimensions"/>
+                            <slots-size :slotName="maxSlotName" @getSlotValues="changeCurrentMaxSlotDimensions"/>
                         </div>
                     </section>
                     <footer class="modal-card-foot">
@@ -198,6 +198,11 @@ export default {
                 selected:0,
                 values:[]
             },
+            slotDimensionsItem:{
+                min:null,
+                recommended:null,
+                max:null
+            },
             materials:{
                 availableItems:['MDF','Cherry','Orange'],
                 customizedLabel:"Materials",
@@ -217,6 +222,15 @@ export default {
                 depth:this.addDimensionItems.depth,
             });
         },
+        removeDimensions(){
+            let newDimensions=[];
+            this.dimensionsItems.values.forEach((dimension)=>{
+                if(dimension!=this.dimensionsItems.selected){
+                    newDimensions.push(dimension);
+                }
+            });
+            this.dimensionsItems.values=newDimensions.slice();
+        },
         /**
          * Changes the current category item
          */
@@ -233,7 +247,9 @@ export default {
          * Changes the current materials item
          */
         changeCurrentMaterials(materials){
-            this.materialsItem.value=materials;
+            let addedMaterials=[];
+            materials.forEach((material)=>{addedMaterials.push({id:material});});
+            this.materialsItem.value=addedMaterials.slice();
         },
         /**
          * Changes the current width dimension item
@@ -254,19 +270,47 @@ export default {
             this.addDimensionItems.depth=dimension;
         },
         /**
+         * Changes the current minimum slot dimensions
+         */
+        changeCurrentMinSlotDimensions(slotDimension){
+            this.slotDimensionsItem.min=slotDimension;
+        },
+        /**
+         * Changes the current recommended slot dimensions
+         */
+        changeCurrentRecommendedSlotDimensions(slotDimension){
+            this.slotDimensionsItem.recommended=slotDimension;
+        },
+        /**
+         * Changes the current maximum slot dimensions
+         */
+        changeCurrentMaxSlotDimensions(slotDimension){
+            this.slotDimensionsItem.max=slotDimension;
+        },
+        /**
+         * Changes the current slot dimensions sizes
+         */
+        changeCurrentSlotDimensionsSizes(){
+            this.slotsItem.value={
+                minSize:this.slotDimensionsItem.min,
+                recommendedSize:this.slotDimensionsItem.recommended,
+                maxSize:this.slotDimensionsItem.max
+            };
+        },
+        /**
          * Emits the product to the father component
          */
         emitProduct(modal){
+            this.changeCurrentSlotDimensionsSizes();
             let productDetails={
                 reference:this.referenceItem.value,
-                designaton:this.designationItem.value,
-                category:this.categoryItem.value,
+                designation:this.designationItem.value,
+                categoryId:this.categoryItem.value,
                 materials:this.materialsItem.value,
-                dimensions:this.dimensionsItem.value,
+                dimensions:this.dimensionsItems.values,
                 components:this.componentsItem.value,
-                slots:this.slotsItem.value
+                slotsSize:this.slotsItem.value
             };
-            console.log(productDetails);
             //modal.close();
             this.$emit('emitProduct',productDetails);
         },
