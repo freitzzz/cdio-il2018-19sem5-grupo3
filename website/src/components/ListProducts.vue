@@ -5,25 +5,41 @@
             <button class="button is-danger" @click="createNewProduct()">
                 <b-icon icon="plus"/>
             </button>
+            <create-new-product :active="create" />
+            <button class="button is-danger" @click="removeSelectedProduct()">
+                <b-icon icon="minus"/>
+            </button>
+            <button class="button is-danger" @click="updateSelectedProduct()">
+                <b-icon 
+                    icon="refresh"
+                    custom-class="fa-spin"/>
+            </button>
+            <CreateNewProduct :active="createNewProductModal"/>
         </div>
-        
         <PaginatedTable 
         :total.sync="total" 
         :columns.sync="columns"
         :data.sync="data"
         :title.sync="title"
+        :showTotalInput=false
+        :showItemsPerPageInput=false
+        @clicked="changeSelectedProduct"
         />
     </div>
 </template>
 
 <script>
 
-import PaginatedTable from './UIComponents/PaginatedTable.vue'
+import CreateNewProduct from './CreateNewProduct.vue';
+import PaginatedTable from './UIComponents/PaginatedTable.vue';
+import NotificationSnackbar from './UIComponents/NotificationSnackbar.vue';
 import Axios from 'axios';
+import NotificationSnackbarVue from './UIComponents/NotificationSnackbar.vue';
 
 export default {
     components:{
-        PaginatedTable
+        PaginatedTable,
+        CreateNewProduct,
     },
     /**
      * Function that is called when the component is created
@@ -33,18 +49,42 @@ export default {
     },
     data(){
         return{
+            createNewProductModal:false,
+            currentSelectedProduct:0,
             availableProducts:Array,
             columns:[],
             data:Array,
-            total:Number
+            total:Number,
+            failedToFetchProductsNotification:false
         }
     },
     methods:{
         /**
+         * Changes the current selected product
+         */
+        changeSelectedProduct(tableRow){
+            this.currentSelectedProduct=tableRow.id;
+        },
+        /**
+         * Triggers the creation of a new product
+         */
+        createNewProduct(){
+            this.createNewProductModal=true;
+        },
+        /**
+         * Triggers the deletion of the selected product
+         */
+        removeSelectedProduct(){
+            Axios
+            .delete('http://localhost:5000/mycm/api/products/'+this.currentSelectedProduct)
+            .then((response)=>{
+                console.log(response.data)
+            });
+        },
+        /**
          * Fetches all available products
          */
         updateFetchedProducts(){
-            console.log("->>>>>>>>>>> "+this.reference);
             Axios.get('http://localhost:5000/mycm/api/products')
             .then((_response)=>{
                 this.data=this.generateProductsTableData(_response.data);
@@ -74,11 +114,6 @@ export default {
                     field:"designation",
                     label:"Designation",
                     centered:true   
-                },
-                {
-                    field:"edit",
-                    label:"Edit",
-                    centered:true
                 }
             ];
         },
