@@ -2,61 +2,6 @@
  * Represents the internal core of a Closet
  */
 class Closet {
-    //This is the representation of a Closet as an ES6 class
-    //In ES6 no properties are defined out of constructors context
-    //So properties should only be defined in constructor context
-    //The properties defined below are only for allowing a better comprehensive state of the object
-
-    /**
-     * Dimensions and Axes values for the closet base face
-     */
-    //closet_base_face_dimensions_axes=[];
-
-    /**
-     * Dimensions and Axes values for the closet top face
-     */
-    //closet_top_face_dimensions_axes=[];
-
-    /**
-     * Dimensions and Axes values for the closet left face
-     */
-    //closet_left_face_dimensions_axes=[];
-
-    /**
-     * Dimensions and Axes values for the closet right face
-     */
-    //closet_right_face_dimensions_axes=[];
-
-    /**
-     * Dimensions and Axes values for the closet back face
-     */
-    //closet_back_face_dimensions_axes=[];
-
-    /**
-     * Array with all closet faces
-     */
-    //closet_faces=[];
-
-    /**
-     * Array with the initial closet faces values
-     */
-    //initial_closet_faces=[];
-
-    /**
-     * Current closet slots
-     */
-    //closet_slots=1;
-
-    /**
-     * Current closet slots faces
-     */
-    //closet_slots_faces=[];
-
-    /**
-     * Array with the initial closet faces values
-     */
-    //initial_closet_slots_faces=[];
-
     /**
      * Builds a new Closet with the dimensions and axes values for all faces
      * @param {Array} closet_base_face_dimensions_axes Array with the base face dimensions and axes values
@@ -70,11 +15,6 @@ class Closet {
         , closet_left_face_dimensions_axes
         , closet_right_face_dimensions_axes
         , closet_back_face_dimensions_axes) {
-        this._checkClosetFace(closet_base_face_dimensions_axes);
-        this._checkClosetFace(closet_top_face_dimensions_axes);
-        this._checkClosetFace(closet_left_face_dimensions_axes);
-        this._checkClosetFace(closet_right_face_dimensions_axes);
-        this._checkClosetFace(closet_back_face_dimensions_axes);
         this.closet_base_face_dimensions_axes = closet_base_face_dimensions_axes.slice();
         this.closet_top_face_dimensions_axes = closet_top_face_dimensions_axes.slice();
         this.closet_left_face_dimensions_axes = closet_left_face_dimensions_axes.slice();
@@ -98,8 +38,6 @@ class Closet {
             this.closet_back_face_dimensions_axes[0] = width;
             this.closet_left_face_dimensions_axes[3] = -axesWidth;
             this.closet_right_face_dimensions_axes[3] = axesWidth;
-        } else {
-            //THROW ERROR
         }
     }
 
@@ -118,8 +56,6 @@ class Closet {
             for (var i = 0; i < this.closet_slots_faces.length; i++) {
                 this.closet_slots_faces[i][1] = height;
             }
-        } else {
-            //THROW ERROR
         }
     }
 
@@ -137,8 +73,6 @@ class Closet {
             for (var i = 0; i < this.closet_slots_faces.length; i++) {
                 this.closet_slots_faces[i][2] = depth;
             }
-        } else {
-            //THROW ERROR
         }
     }
 
@@ -271,12 +205,5 @@ class Closet {
         this.closet_slots = 1;
         this.closet_slots_faces = [];
         this.initial_closet_slots_faces = [];
-    }
-
-    /**
-     * Checks if a closet face is valid
-     */
-    _checkClosetFace() {
-        //TODO: Implement method
     }
 }
