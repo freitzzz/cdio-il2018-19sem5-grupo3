@@ -43,9 +43,13 @@ namespace core.application
         /// <value></value>
         private const string ERROR_UNABLE_TO_FIND_MEASUREMENT_BY_ID = "Unable to find dimensions with an identifier of: {0}";
         /// <summary>
-        /// Constant representing the message presented when no Restrictiong is found with a given identifier.
+        /// Constant representing the message presented when no Restriction is found with a given identifier.
         /// </summary>
         private const string ERROR_UNABLE_FIND_RESTRICTION_BY_ID = "Unable to find restrictiong with an identifier of: {0}";
+        /// <summary>
+        /// Constant representing the message presented when the new Product could not be saved.
+        /// </summary>
+        private const string ERROR_UNABLE_TO_SAVE_PRODUCT = "Unable to save the product, make sure the reference is unique.";
 
         /// <summary>
         /// Builds a new ProductController
@@ -233,6 +237,11 @@ namespace core.application
         public GetProductModelView addProduct(AddProductModelView addProductMV){
             Product newProduct= CreateProductService.create(addProductMV);
             newProduct = PersistenceContext.repositories().createProductRepository().save(newProduct);
+            //an entity will be null after save if an equal entity was found in the repository
+            if(newProduct == null){
+                throw new ArgumentException(ERROR_UNABLE_TO_SAVE_PRODUCT);
+            }
+
             return ProductModelViewService.fromEntity(newProduct);
         }
 
