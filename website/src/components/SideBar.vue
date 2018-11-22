@@ -27,13 +27,13 @@
         </a>
 
         <div class="navbar-dropdown">
-          <a class="navbar-item">
+          <a class="navbar-item" @click="enableCreateMaterial">
             Add Material
           </a>
-          <a class="navbar-item">
+          <a class="navbar-item" @click="enableEditMaterial">
             Edit Material
           </a>
-          <a class="navbar-item">
+          <a class="navbar-item"  @click="enableRemoveMaterial">
             Remove Material
           </a>
          
@@ -85,6 +85,9 @@
   <create-category v-if="CustomCreateCategory"></create-category>
   <edit-category v-if="CustomEditCategory"></edit-category>
   <remove-category v-if="CustomRemoveCategory"></remove-category>
+  <create-material v-if="CustomCreateMaterial"></create-material>
+  <edit-material v-if="CustomEditMaterial"></edit-material>
+  <remove-material v-if="CustomRemoveMaterial"></remove-material>
 </div>
 </nav>
 
@@ -104,6 +107,9 @@
 import CreateCategory from "./management/category/CreateNewCategory.vue";
 import EditCategory from "./management/category/EditCategory.vue";
 import RemoveCategory from "./management/category/RemoveCategory.vue";
+import CreateMaterial from "./management/material/CreateMaterial.vue";
+import EditMaterial from "./management/material/EditMaterial.vue";
+import RemoveMaterial from "./management/material/RemoveMaterial.vue";
 export default {
   data() {
     return {
@@ -112,17 +118,17 @@ export default {
       CustomCreateCategory: false,
       CustomEditCategory: false,
       CustomRemoveCategory: false,
+      CustomCreateMaterial: false,
+      CustomEditMaterial: false,
+      CustomRemoveMaterial: false,
       WIPFlag: false
     };
   },
   methods: {
     enableCreateCategory() {
-      
         this.CustomCreateCategory = true;
         this.CustomEditCategory = false;
         this.CustomRemoveCategory = false;
- 
- 
     },
     enableEditCategory() {
       this.CustomEditCategory = true;
@@ -134,6 +140,21 @@ export default {
       this.CustomCreateCategory = false;
       this.CustomEditCategory = false;
     },
+    enableCreateMaterial() {
+        this.CustomCreateMaterial = true;
+        this.CustomEditMaterial = false;
+        this.CustomRemoveMaterial = false;
+    },
+    enableEditMaterial() {
+      this.CustomEditMaterial = true;
+      this.CustomCreateMaterial = false;
+      this.CustomRemoveMaterial = false;
+    },
+    enableRemoveMaterial() {
+      this.CustomRemoveMaterial = true;
+      this.CustomCreateMaterial = false;
+      this.CustomEditMaterial = false;
+    },
     enableWIP() {
       WIPFlag = true;
     }
@@ -141,7 +162,10 @@ export default {
   components: {
     CreateCategory,
     EditCategory,
-    RemoveCategory
+    RemoveCategory,
+    CreateMaterial,
+    EditMaterial,
+    RemoveMaterial
   }
 };
 </script>
