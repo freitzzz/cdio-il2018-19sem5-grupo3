@@ -41,7 +41,7 @@ var canvasWebGL;
 /**
  * Global variables that represent the currently selected slot and face (null if none)
  */
-var selected_slot = null, selected_face = null;
+var selected_slot = null, selected_face = null, selected_pole = null;
 
 /**
  * Global variable that represents the object being hovered (null if none)
@@ -142,9 +142,9 @@ function initCloset(textureSource) {
     //The shininess value is the same as the matte finishing's value
     material = new THREE.MeshPhongMaterial({ /*map: texture, specular: 0x404040, shininess: 20*/ });
     for (var i = 0; i < faces.length; i++) {
-        closet_faces_ids.push(generateParellepiped(faces[i][0], faces[i][1], faces[i][2]
-            , faces[i][3], faces[i][4], faces[i][5]
-            , material, group));
+            closet_faces_ids.push(generateParellepiped(faces[i][0], faces[i][1], faces[i][2]
+                , faces[i][3], faces[i][4], faces[i][5]
+                , material, group));
     }
     scene.add(group);
     renderer.setClearColor(0xFFFFFF, 1);
@@ -225,8 +225,8 @@ function removeSlot() {
  * @param {number} height Number with the closet height
  * @param {number} depth Number with the closet depth
  */
-function changeClosetDimensions(width, height, depth, index) {
-
+function changeClosetDimensions(width, height, depth,index) {
+    width = width / 2;
     //If there aren't any slots, the width has no restrictions
     if (closet_slots_faces_ids.length == 0) {
         closet.changeClosetWidth(width);
@@ -256,6 +256,10 @@ function applyTexture(texture) {
     textureLoader.load(texture, function (tex) {
         material.map = tex;
     })
+}
+
+function addComponent(){
+    generateCylinder();
 }
 
 /**
@@ -341,7 +345,7 @@ function removePole() {
  * @param {THREE.Material} material cylinder's material
  * @param {THREE.Group} group cylinder's group
  */
-function generateCylinder(material, group) {
+function generateCylinder(){
 
     var leftFace = group.getObjectById(closet_faces_ids[2]);
     var rightFace = group.getObjectById(closet_faces_ids[3]);
@@ -359,12 +363,12 @@ function generateCylinder(material, group) {
     //from a slot to another slot or from a slot to the closet's right wall
     if (closet_slots_faces_ids.length == 0) {
         height = getCurrentClosetWidth();
-        pole.changePoleHeight(height - 1);
-        x = calculatePolePosition(rightFace.position.x, leftFace.position.x);
-        y = calculatePolePosition(rightFace.position.y, leftFace.position.y);
-        z = calculatePolePosition(rightFace.position.z, leftFace.position.z);
-        //First pole being added is between the left wall of the closet and the first slot
-    } else if (closet.poles.length == 0) {
+        pole.changePoleHeight(height);
+        x = calculatePolePosition(rightFace.position.x,leftFace.position.x);
+        y = calculatePolePosition(rightFace.position.y,leftFace.position.y);
+        z = calculatePolePosition(rightFace.position.z,leftFace.position.z);
+    //First pole being added is between the left wall of the closet and the first slot
+    }else if(closet.poles.length == 0){
         let firstSlot = group.getObjectById(closet_slots_faces_ids[0]);
         height = calculatePoleHeight(leftFace.position.x, firstSlot.position.x);
         pole.changePoleHeight(height);
@@ -380,9 +384,9 @@ function generateCylinder(material, group) {
         x = calculatePolePosition(slotToTheLeft.position.x, slotToTheRight.position.x);
         y = calculatePolePosition(slotToTheLeft.position.y, slotToTheRight.position.y);
         z = calculatePolePosition(slotToTheLeft.position.z, slotToTheRight.position.z);
-        //Last pole is added between the last slot and the closet's right wall
-    } else {
-        let lastSlot = group.getObjectById(closet_slots_faces_ids[closet_poles_ids.length]);
+    //Last pole is added between the last slot and the closet's right wall
+    }else{
+        let lastSlot = group.getObjectById(closet_slots_faces_ids[closet_poles_ids.length-1]);
         height = calculatePoleHeight(lastSlot.position.x, rightFace.position.x);
         pole.changePoleHeight(height);
         x = calculatePolePosition(lastSlot.position.x, rightFace.position.x);
@@ -401,7 +405,7 @@ function generateCylinder(material, group) {
     closet_poles_ids.push(poleMesh.id);
 }
 
-function generateShelf(material, group) {
+function generateShelf() {
 
     var leftFace = group.getObjectById(closet_faces_ids[2]);
     var rightFace = group.getObjectById(closet_faces_ids[3]);
@@ -418,26 +422,26 @@ function generateShelf(material, group) {
         z = calculatePolePosition(rightFace.position.z, leftFace.position.z);
     } else if (closet.poles.length == 0) {
         let firstSlot = group.getObjectById(closet_slots_faces_ids[0]);
-        width = calculatePoleHeight(leftFace.position.x, firstSlot.position.x);
+        width = calculateDistance(leftFace.position.x, firstSlot.position.x);
         x = calculatePolePosition(leftFace.position.x, firstSlot.position.x);
         y = calculatePolePosition(leftFace.position.y, firstSlot.position.y);
         z = calculatePolePosition(leftFace.position.z, firstSlot.position.z);
     } else if (closet_slots_faces_ids.length > 0 && closet_poles_ids.length < closet_slots_faces_ids.length) {
         let slotToTheLeft = group.getObjectById(closet_slots_faces_ids[closet_poles_ids.length - 1]);
         let slotToTheRight = group.getObjectById(closet_slots_faces_ids[closet_poles_ids.length]);
-        width = calculatePoleHeight(slotToTheLeft.position.x, slotToTheRight.position.x);
+        width = calculateDistance(slotToTheLeft.position.x, slotToTheRight.position.x);
         x = calculatePolePosition(slotToTheLeft.position.x, slotToTheRight.position.x);
         y = calculatePolePosition(slotToTheLeft.position.y, slotToTheRight.position.y);
         z = calculatePolePosition(slotToTheLeft.position.z, slotToTheRight.position.z);
     } else {
         let lastSlot = group.getObjectById(closet_slots_faces_ids[closet_poles_ids.length]);
-        width = calculatePoleHeight(lastSlot.position.x, rightFace.position.x);
+        width = calculateDistance(lastSlot.position.x, rightFace.position.x);
         x = calculatePolePosition(lastSlot.position.x, rightFace.position.x);
         y = calculatePolePosition(lastSlot.position.y, rightFace.position.y);
         z = calculatePolePosition(lastSlot.position.z, rightFace.position.z);
     }
-    var shelf = new Shelf([width, height, depth, x, y + 40, z]);
-    var meshID = generateParellepiped(width, height, depth, x, y + 40, z, material, group);
+    var shelf = new Shelf([width, height, depth, x, y, z]);
+    var meshID = generateParellepiped(width, height, depth, x, y, z, material, group);
     closet.addShelf(shelf);
     closet_poles_ids.push(meshID);
 }
@@ -447,8 +451,8 @@ function generateShelf(material, group) {
  * @param {Number} topPosition position of the top surface of the pole 
  * @param {Number} bottomPosition position of the bottom surface of the pole
  */
-function calculatePoleHeight(topPosition, bottomPosition) {
-    return Math.abs(topPosition - bottomPosition) / 2;
+function calculatePoleHeight(topPosition,bottomPosition){
+    return Math.abs(topPosition - bottomPosition);
 }
 
 /**
@@ -458,6 +462,10 @@ function calculatePoleHeight(topPosition, bottomPosition) {
  */
 function calculatePolePosition(leftMostCoordinate, rightMostCoordinate) {
     return (leftMostCoordinate + rightMostCoordinate) / 2;
+}
+
+function calculateDistance(topPosition, bottomPosition) {
+    return Math.abs(topPosition - bottomPosition);
 }
 
 /**
@@ -561,6 +569,10 @@ function registerEvents() {
         applyTexture(changeMaterialEvent.detail.material);
     });
 
+    document.addEventListener("addComponent", function(addComponentEvent){
+        addComponent(addComponentEvent.component);
+    });
+
     document.addEventListener("changeShininess", function (changeShininessEvent) {
         changeShininess(changeShininessEvent.detail.shininess);
     });
@@ -587,7 +599,6 @@ function loadMax() {
 function onDocumentMouseDown(event) {
     event.preventDefault();
     raycaster.setFromCamera(mouse, camera);
-
     //Finds all intersected objects (closet faces)
     var intersects = raycaster.intersectObjects(scene.children[0].children);
 
@@ -609,6 +620,22 @@ function onDocumentMouseDown(event) {
                     if (raycaster.ray.intersectPlane(plane, intersection)) {
                         offset = intersection.x - selected_slot.position.x;
                     }
+                }
+            }
+        }
+
+        //Checks if the selected object is a pole
+        for (let j = 0; j < closet_poles_ids.length; j++){
+            
+            let pole = group.getObjectById(closet_poles_ids[j]);
+
+            if(pole == face){
+
+                controls.enabled = false;
+
+                selected_pole = face;
+                if(raycaster.ray.intersectPlane(plane,intersection)){
+                    offset = intersection.x - selected_pole.position.x;
                 }
             }
         }
@@ -639,6 +666,8 @@ function onDocumentMouseUp(event) {
     selected_slot = null;
     //Sets the selected face to null (the face stops being selected)
     selected_face = null;
+    //Sets the selected pole to null (the pole stops being selected)
+    selected_pole = null;
     //Enables rotation again
     controls.enabled = true;
 }
@@ -653,8 +682,9 @@ function onDocumentMouseMove(event) {
 
     var rect = event.target.getBoundingClientRect();
     var x = event.clientX;
+    var y = event.clientY;
     mouse.x = (x - rect.left) / (canvasWebGL.clientWidth / 2.0) - 1.0; //Get mouse x position
-
+    mouse.y = - ((y - rect.bottom) / (canvasWebGL.clientHeight / 2.0) + 1.0); //Get mouse y position
     raycaster.setFromCamera(mouse, camera); //Set raycast position
 
     //If the selected object is a slot
@@ -667,6 +697,12 @@ function onDocumentMouseMove(event) {
     //If the selected object is a closet face
     if (selected_face) {
         moveFace();
+        return;
+    }
+
+    //If the selected object is a closet pole
+    if (selected_pole){
+        movePole();
         return;
     }
 
@@ -703,6 +739,15 @@ function moveSlot() {
                 }
             }
         }
+    }
+}
+
+/**
+ * Moves a pole across the y and z axis without overlapping the slots planes or the closets planes
+ */
+function movePole(){
+    if(raycaster.ray.intersectPlane(plane, intersection)){
+        //TODO do stuff
     }
 }
 

@@ -504,8 +504,9 @@ export default class ProductRenderer {
 
         var rect = event.target.getBoundingClientRect();
         var x = event.clientX;
+        var y = event.clientY;
         this.mouse.x = (x - rect.left) / (this.canvasWebGL.clientWidth / 2.0) - 1.0; //Get mouse x position
-
+        this.mouse.y = - ((y - rect.bottom) / (this.canvasWebGL.clientHeight / 2.0) + 1.0); //Get mouse y position
         this.raycaster.setFromCamera(this.mouse, this.camera); //Set raycast position
 
         //If the selected object is a slot
