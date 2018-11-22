@@ -8,8 +8,8 @@
                         <b-field label="Reference">
                             <b-input
                                 type="String"
-                                :value.sync="reference"
-                                placeholder="#666"
+                                v-model="referenceItem.value"
+                                :placeholder="placeholders.reference"
                                 icon="pound"
                                 required>
                             </b-input>
@@ -17,58 +17,78 @@
                         <b-field label="Designation">
                             <b-input
                                 type="String"
-                                :value.sync="designation"
-                                placeholder="Devil Wardrobe"
+                                v-model="designationItem.value"
+                                :placeholder="placeholders.designation"
                                 icon="pencil"
                                 required>
                             </b-input>
                         </b-field>
                         <b-field label="Category">
-                            <b-select placeholder="Select a category" icon="tag">
-                                <optgroup label="Wardrobes">
-                                    <option value="flint">Classy</option>
-                                    <option value="flint">Devil</option>
-                                    <option value="flint">Professional</option>
-                                </optgroup>
-                                <optgroup label="Shelves">
-                                    <option value="flint">For the Kids</option>
-                                    <option value="flint">KKB</option>
-                                </optgroup>
+                            <b-select 
+                                v-model="categoryItem.selected"
+                                :placeholder="placeholders.category"
+                                expanded="true" 
+                                icon="tag"
+                                @input="changeCurrentCategory">
+                                <option 
+                                    v-for="(category,index) in availableCategories" 
+                                    :key="index"
+                                    :value="category.id"
+                                >
+                                    {{category.name}}
+                                </option>
                             </b-select>
                         </b-field>
-                        <b-field label="Materials">
-                            <b-select placeholder="MDF" icon="brush">
-                                <option value="flint">MDF</option>
-                                <option value="flint">Cherry</option>
-                                <option value="flint">Orange</option>
-                            </b-select>
-                            <div class="has-text-centered">
-                                <button class="button is-danger" @click="showMaterials">
-                                    <b-icon icon="magnify"/>
-                                </button>
-                            </div>
-                        </b-field>
+                        <customized-selected-items
+                            :available-items="availableMaterials"
+                            :customized-label="materials.customizedLabel"
+                            :icon="materials.icon"
+                            :place-holder="materials.placeholder"
+                            @getAddedItems="changeCurrentMaterials(materials)"
+                        />
                         <b-checkbox @input="enableComponents()">Components</b-checkbox>
                         <div v-if="components">
-                            <b-field label="Components">
-                                <b-select placeholder="Kelf" icon="archive">
-                                    <option value="flint">MDF</option>
+                            <customized-selected-items
+                            :available-items="availableComponents"
+                            :customized-label="componentsItems.customizedLabel"
+                            :icon="componentsItems.icon"
+                            :place-holder="componentsItems.placeholder"
+                            @getAddedItems="changeCurrentComponents(components)"
+                        />
+                        </div>
+                        <b-checkbox @input="enableDimensions()">Dimensions</b-checkbox>
+                        <div v-if="dimensions">
+                            <b-field label="Dimensions"/>
+                            <b-field>
+                                <b-select
+                                    v-model="dimensionsItems.selected"
+                                    expanded
+                                    icon="wrench"
+                                >
+                                    <option 
+                                        v-for="(dimension,index) in dimensionsItems.values" 
+                                        :key="index"
+                                        :value="dimension"
+                                    >
+                                        {{dimension}}
+                                    </option>
                                 </b-select>
-                                <div class="has-text-centered">
-                                    <button class="button is-danger" @click="showComponents()">
-                                        <b-icon icon="magnify"/>
-                                    </button>
-                                </div>
+                                <button class="button is-danger" @click="addDimensions()">
+                                    <b-icon icon="plus"/>
+                                </button>
+                                <button class="button is-danger" @click="removeDimensions()">
+                                    <b-icon icon="minus"/>
+                                </button>
                             </b-field>
+                            <product-dimensions dimension-label="Width" @getDimension="changeCurrentWidthDimension"/>
+                            <product-dimensions dimension-label="Height" @getDimension="changeCurrentHeightDimension"/>
+                            <product-dimensions dimension-label="Depth" @getDimension="changeCurrentDepthDimension"/>
                         </div>
                         <b-checkbox @input="enableSlots()">Slots</b-checkbox>
                         <div v-if="slots">
-                            <b-field label="Minimum Slot Size">
-                            </b-field>
-                            <b-field label="Recommended Slot Size">
-                            </b-field>
-                            <b-field label="Maximum Slot Size">
-                            </b-field>
+                            <slots-size :slotName="minSlotName"/>
+                            <slots-size :slotName="recommendedSlotName" />
+                            <slots-size :slotName="maxSlotName" />
                         </div>
                     </section>
                     <footer class="modal-card-foot">
@@ -77,43 +97,196 @@
                         </div>
                     </footer>
                 </div>
-   
     </b-modal>
 </template>
 
 <script>
+
+/**
+ * Requires SlotsSize component
+ */
+import SlotsSize from './SlotsSize.vue'
+/**
+ * Requires CustomizedSelectedItems component
+ */
+import CustomizedSelectedItems from './UIComponents/CustomizedSelectedItems.vue'
+/**
+ * Requires ProductDimensions component
+ */
+import ProductDimensions from './ProductDimensions.vue';
+
 export default {
+    /**
+     * Exported used components
+     */
+    components:{
+        SlotsSize,
+        CustomizedSelectedItems,
+        ProductDimensions
+    },
+    /**
+     * Received properties from father component
+     */
     props:{
+        availableMaterials:{
+            type:Array,
+            required:true
+        },
+        availableComponents:{
+            type:Array,
+            required:true
+        },
+        availableCategories:{
+            type:Array,
+            required:true
+        },
         active:{
             type: Boolean,
             default: false
-        },
-        reference:String,
-        designation:String,
-        category:String,
-    },
-    data(){
-        return{
-            components:false,
-            slots:false
         }
     },
+    /**
+     * Component data
+     */
+    data(){
+        return{
+            referenceItem:{
+                value:null
+            },
+            designationItem:{
+                value:null
+            },
+            categoryItem:{
+                selected:0,
+                value:null
+            },
+            materialsItem:{
+                value:null
+            },
+            componentsItem:{
+                value:null
+            },
+            dimensionsItem:{
+                value:null
+            },
+            slotsItem:{
+                value:null
+            },
+            placeholders:{
+                reference:"#666",
+                designation:"Devil Wardrobe",
+                category:"Select a category"
+            },
+            components:false,
+            slots:false,
+            dimensions:false,
+            minSlotName:"Minimum Slot Size",
+            recommendedSlotName:"Recommended Slot Size",
+            maxSlotName:"Maximum Slot Size",
+            componentsItems:{
+                availableItems:['Drawer','Shelf'],
+                customizedLabel:"Components",
+                icon:"buffer",
+                placeHolder:"Select a component"
+            },
+            addDimensionItems:{
+                width:null,
+                height:null,
+                depth:null
+            },
+            dimensionsItems:{
+                selected:0,
+                values:[]
+            },
+            materials:{
+                availableItems:['MDF','Cherry','Orange'],
+                customizedLabel:"Materials",
+                icon:"brush",
+                placeHolder:"Select a material"
+            }
+        }
+    },
+    /**
+     * Component methods
+     */
     methods:{
-        emitProduct(modal){
-            //modal.close();
-            this.$emit('emitProduct',{});
+        addDimensions(){
+            this.dimensionsItems.values.push({
+                width:this.addDimensionItems.width,
+                height:this.addDimensionItems.height,
+                depth:this.addDimensionItems.depth,
+            });
         },
+        /**
+         * Changes the current category item
+         */
+        changeCurrentCategory(){
+            this.categoryItem.value=this.categoryItem.selected;
+        },
+        /**
+         * Changes the current components item
+         */
+        changeCurrentComponents(components){
+            this.componentsItem.value=components;
+        },
+        /**
+         * Changes the current materials item
+         */
+        changeCurrentMaterials(materials){
+            this.materialsItem.value=materials;
+        },
+        /**
+         * Changes the current width dimension item
+         */
+        changeCurrentWidthDimension(dimension){
+            this.addDimensionItems.width=dimension;
+        },
+        /**
+         * Changes the current height dimension item
+         */
+        changeCurrentHeightDimension(dimension){
+            this.addDimensionItems.height=dimension;
+        },
+        /**
+         * Changes the current depth dimension item
+         */
+        changeCurrentDepthDimension(dimension){
+            this.addDimensionItems.depth=dimension;
+        },
+        /**
+         * Emits the product to the father component
+         */
+        emitProduct(modal){
+            let productDetails={
+                reference:this.referenceItem.value,
+                designaton:this.designationItem.value,
+                category:this.categoryItem.value,
+                materials:this.materialsItem.value,
+                dimensions:this.dimensionsItem.value,
+                components:this.componentsItem.value,
+                slots:this.slotsItem.value
+            };
+            console.log(productDetails);
+            //modal.close();
+            this.$emit('emitProduct',productDetails);
+        },
+        /**
+         * Enables components section
+         */
         enableComponents(){
             this.components=!this.components;
         },
+        /**
+         * Enables slots section
+         */
         enableSlots(){
             this.slots=!this.slots;
         },
-        showMaterials(){
-            //TODO: Open modal with all available materials
-        },
-        showComponents(){
-            //TODO: Open modal with all available components
+        /**
+         * Enables dimensions section
+         */
+        enableDimensions(){
+            this.dimensions=!this.dimensions;
         }
     }
 }
