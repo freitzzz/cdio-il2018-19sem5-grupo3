@@ -1,13 +1,5 @@
  <template>
 <nav class="navbar" role="navigation" aria-label="main navigation">
-  <!-- <div class="navbar-brand">
-    
-    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div> -->
 
   <div id="navBarManagement" class="navbar-menu">
     <div class="navbar-start">
@@ -69,7 +61,7 @@
 
      
       </div>
-        <a class="navbar-item">
+        <a class="navbar-item"  @click="enableWIP">
             Create Customized Product
         </a>
          
@@ -87,6 +79,9 @@
     </div>
   </div>
 <div id="management">
+  <b-message title="Default" v-if="WIPFlag">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh id hendrerit imperdiet, elit sapien laoreet elit
+  </b-message>
   <create-category v-if="CustomCreateCategory"></create-category>
   <edit-category v-if="CustomEditCategory"></edit-category>
   <remove-category v-if="CustomRemoveCategory"></remove-category>
@@ -116,30 +111,37 @@ export default {
       showBooks: false,
       CustomCreateCategory: false,
       CustomEditCategory: false,
-      CustomRemoveCategory: false
+      CustomRemoveCategory: false,
+      WIPFlag: false
     };
   },
   methods: {
     enableCreateCategory() {
-      this.CustomCreateCategory = true;
-      this.CustomEditCategory = false;
-      this.CustomRemoveCategory = false;
+      
+        this.CustomCreateCategory = true;
+        this.CustomEditCategory = false;
+        this.CustomRemoveCategory = false;
+ 
+ 
     },
     enableEditCategory() {
       this.CustomEditCategory = true;
       this.CustomCreateCategory = false;
       this.CustomRemoveCategory = false;
     },
-    enableRemoveCategory(){
+    enableRemoveCategory() {
       this.CustomRemoveCategory = true;
       this.CustomCreateCategory = false;
       this.CustomEditCategory = false;
+    },
+    enableWIP() {
+      WIPFlag = true;
     }
   },
   components: {
     CreateCategory,
-    EditCategory ,
-    RemoveCategory   
+    EditCategory,
+    RemoveCategory
   }
 };
 </script>

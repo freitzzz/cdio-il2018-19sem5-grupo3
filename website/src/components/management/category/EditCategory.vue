@@ -1,6 +1,6 @@
 <template>
-    <b-modal :active.sync="active" has-modal-card>
-        <form action="">
+    <b-modal :active.sync="activeFlag" has-modal-card>
+      
                 <div class="modal-card" style="width: auto">
                     <header class="modal-card-head">
                         <p class="modal-card-title">Edit Category</p>
@@ -30,13 +30,13 @@
                         <button class="button is-primary" @click="editCategory">Edit</button>                    
                     </footer>
                 </div>
-            </form>
+       
     </b-modal>
 </template> 
 
 <script>
 import Axios from "axios";
-import { Dialog } from 'buefy/dist/components/dialog';
+import { Dialog } from "buefy/dist/components/dialog";
 export default {
   name: "EditCategory",
   data() {
@@ -44,10 +44,9 @@ export default {
       categoryData: "",
       nameCategory: "",
       availableCategories: [],
-      active:true
+      activeFlag: true
     };
   },
-
 
   /*  */
   methods: {
@@ -56,37 +55,23 @@ export default {
       cat = this.categoryData;
       nameCat = this.nameCategory;
 
-      Axios.delete(
-        `http://localhost:5000/mycm/api/categories/${this.categoryData}`
+      Axios.put(
+        `http://localhost:5000/mycm/api/categories/${this.categoryData}`,
+        {
+          name: nameCat
+        }
       )
-        .then(response => {})
-        .catch(error => {});
-      /* Clear buffer of all available categories */
-      availableCategories: [];
-      Axios.get("http://localhost:5000/mycm/api/categories")
-        .then(response => this.availableCategories.push(...response.data)) //push all elements onto the array
-        .catch(function(error) {
-          //TODO: inform an error occured while fetching categories
-          console.log(error);
-        });
+        .then(response => {this.$toast.open('Category Edited');activeFlag=false;})
+        .catch(error => {this.$toast.open(error.response.status + 'An error occurred');});
 
-      /* Post with just a name */
-      Axios.post(`http://localhost:5000/mycm/api/categories/`, {
-        name: nameCat
-      })
-        .then(response => {})
-        .catch(function(error) {
-          //TODO: inform an error occured while fetching categories
-          console.log(error);
-        });
+    
     }
   },
   created() {
     Axios.get("http://localhost:5000/mycm/api/categories")
       .then(response => this.availableCategories.push(...response.data)) //push all elements onto the array
-      .catch(function(error) {
+      .catch(error => {this.$toast.open(error.response.status + 'An error occurred');
         availableCategories: [];
-        /* this.$dialog.alert('Everything looks fine!'); */
       });
   }
 };

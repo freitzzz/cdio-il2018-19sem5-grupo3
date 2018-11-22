@@ -1,6 +1,6 @@
 <template>
     <b-modal :active.sync="active" has-modal-card>
-        <form action="">
+
                 <div class="modal-card" style="width: auto">
                     <header class="modal-card-head">
                         <p class="modal-card-title">Remove Category</p>
@@ -24,7 +24,7 @@
                         Removed Succesfully
                     </b-message>
                 </div>
-        </form>
+        
     </b-modal>
 </template> 
 
