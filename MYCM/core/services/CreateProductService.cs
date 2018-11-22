@@ -132,7 +132,8 @@ namespace core.services
                 CustomizedDimensions recommendedSize = CustomizedDimensionsModelViewService.fromModelView(addProductMV.slotSizes.recommendedSize);
                 if (hasComponents)
                 {
-                    return new Product(reference, designation, category, materials, measurements, getComplementaryProducts(componentModelViews), minSize, maxSize, recommendedSize);
+                    product = new Product(reference, designation, category, materials, measurements, minSize, maxSize, recommendedSize);
+                    return addComplementaryProducts(product, componentModelViews);
                 }
                 else
                 {
@@ -143,7 +144,8 @@ namespace core.services
             {
                 if (hasComponents)
                 {
-                    return new Product(reference, designation, category, materials, measurements, getComplementaryProducts(componentModelViews));
+                    product = new Product(reference, designation, category, materials, measurements);
+                    return addComplementaryProducts(product, componentModelViews);
                 }
                 else
                 {
@@ -153,29 +155,36 @@ namespace core.services
         }
 
         /// <summary>
-        /// Creates a List containg instances of Product, which represent a Product's complements.
+        /// Adds complementary Products to an instance of Product.
         /// </summary>
+        /// <param name="product">Product to which the complementary Products will be added.</exception>
         /// <param name="componentModelViews">ModelViews containing component information.</param>
-        /// <returns>List of Product.</returns>
-        private static List<Product> getComplementaryProducts(List<AddComponentToProductModelView> componentModelViews)
+        /// <returns>Product updated with a list of complementary Products.</returns>
+        /// <exception cref="System.ArgumentException">Thrown when any complementary Product could not be found.</exception>
+        private static Product addComplementaryProducts(Product product, IEnumerable<AddComponentToProductModelView> componentModelViews)
         {
-            List<Product> complementaryProducts = new List<Product>();
-            List<long> componentIds = componentModelViews.Select(c => c.complementedProductID).ToList();
-
             ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
 
-            foreach (long componentId in componentIds)
+            foreach (AddComponentToProductModelView addComponentToProductModelView in componentModelViews)
             {
-                Product complementaryProduct = productRepository.find(componentId);
+                Product complementaryProduct = productRepository.find(addComponentToProductModelView.complementedProductID);
 
                 if (complementaryProduct == null)
                 {
-                    throw new ArgumentException(string.Format(ERROR_PRODUCT_NOT_FOUND, componentId));
+                    throw new ArgumentException(string.Format(ERROR_PRODUCT_NOT_FOUND, addComponentToProductModelView.complementedProductID));
                 }
-                complementaryProducts.Add(complementaryProduct);
+
+                if (addComponentToProductModelView.mandatory)
+                {
+                    product.addMandatoryComplementaryProduct(complementaryProduct);
+                }
+                else
+                {
+                    product.addComplementaryProduct(complementaryProduct);
+                }
             }
 
-            return complementaryProducts;
+            return product;
         }
     }
 }
