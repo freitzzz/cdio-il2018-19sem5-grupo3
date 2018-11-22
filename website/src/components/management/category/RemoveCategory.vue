@@ -6,38 +6,70 @@
                         <p class="modal-card-title">Remove Category</p>
                     </header>
                     <section class="modal-card-body">
-                      
-    
+                                            
                         <b-field label="Category">
-                            <b-select placeholder="Select a category" icon="tag">
-                                <optgroup label="Wardrobes">
-                                    <option value="flint">Classy</option>
-                                    <option value="flint">Devil</option>
-                                    <option value="flint">Professional</option>
-                                </optgroup>
-                            </b-select>
+                            <b-select placeholder="Select a category" icon="tag" v-model="categoryData">
+                                  <option :value="null"></option>
+                                  <option v-for="category in availableCategories" 
+                                    :key="category.id" :value="category.id">{{category.name}} </option>
+                            </b-select>                          
                         </b-field>
-
-                        
-                     
+                    
                     </section>
                     <footer class="modal-card-foot">
-                        <button class="button is-primary" @click="create($parent)">Create</button>
+                        <button class="button is-primary" @click="removeCategory">Edit</button>                    
                     </footer>
+
+                    <b-message title="Message" :active.sync="isActive">
+                        Removed Succesfully
+                    </b-message>
                 </div>
-            </form>
+        </form>
     </b-modal>
 </template> 
 
 <script>
+import Axios from "axios";
 export default {
   name: "RemoveCategory",
+  data() {
+    return {
+      isActive: false,
+      categoryData: "",
+      availableCategories: []
+    };
+  },
   props: {
     active: {
       type: Boolean,
       default: false
     }
   },
-  methods: {}
+  methods: {
+    removeCategory() {
+      Axios.delete(
+        `http://localhost:5000/mycm/api/categories/${this.categoryData}`
+      )
+        .then(response => {
+          isActive = true;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+        availableCategories: [];
+      Axios.get("http://localhost:5000/mycm/api/categories")
+        .then(response => this.availableCategories.push(...response.data)) //push all elements onto the array
+        .catch(function(error) {
+          //TODO: inform an error occured while fetching categories
+        });
+    }
+  },
+  created() {
+    Axios.get("http://localhost:5000/mycm/api/categories")
+      .then(response => this.availableCategories.push(...response.data)) //push all elements onto the array
+      .catch(function(error) {
+        //TODO: inform an error occured while fetching categories
+      });
+  }
 };
 </script>
