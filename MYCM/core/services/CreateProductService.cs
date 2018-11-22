@@ -130,31 +130,26 @@ namespace core.services
                 CustomizedDimensions minSize = CustomizedDimensionsModelViewService.fromModelView(addProductMV.slotSizes.minSize);
                 CustomizedDimensions maxSize = CustomizedDimensionsModelViewService.fromModelView(addProductMV.slotSizes.maxSize);
                 CustomizedDimensions recommendedSize = CustomizedDimensionsModelViewService.fromModelView(addProductMV.slotSizes.recommendedSize);
-
-                product = new Product(reference, designation, category, materials, measurements, minSize, maxSize, recommendedSize);
+                if (hasComponents)
+                {
+                    return new Product(reference, designation, category, materials, measurements, getComplementaryProducts(componentModelViews), minSize, maxSize, recommendedSize);
+                }
+                else
+                {
+                    return new Product(reference, designation, category, materials, measurements, minSize, maxSize, recommendedSize);
+                }
             }
             else
             {
-                product = new Product(reference, designation, category, materials, measurements);
+                if (hasComponents)
+                {
+                    return new Product(reference, designation, category, materials, measurements, getComplementaryProducts(componentModelViews));
+                }
+                else
+                {
+                    return new Product(reference, designation, category, materials, measurements);
+                }
             }
-
-            ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
-
-            product = productRepository.save(product);
-
-            if (product == null)
-            {
-                throw new ArgumentException(ERROR_PRODUCT_SAVE);
-            }
-
-            //since there's no constructor that allows for specifying whether or not a component is mandatory, just add them
-            if (hasComponents)
-            {
-                product = addComplementaryProducts(product, componentModelViews);
-                product = productRepository.update(product);
-            }
-
-            return product;
         }
 
         /// <summary>
@@ -162,31 +157,25 @@ namespace core.services
         /// </summary>
         /// <param name="componentModelViews">ModelViews containing component information.</param>
         /// <returns>List of Product.</returns>
-        /// <exception cref="System.ArgumentException">Thrown when any complementary Product could not be found.</exception>
-        private static Product addComplementaryProducts(Product product, IEnumerable<AddComponentToProductModelView> componentModelViews)
+        private static List<Product> getComplementaryProducts(List<AddComponentToProductModelView> componentModelViews)
         {
+            List<Product> complementaryProducts = new List<Product>();
+            List<long> componentIds = componentModelViews.Select(c => c.complementedProductID).ToList();
+
             ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
 
-            foreach (AddComponentToProductModelView addComponentToProductModelView in componentModelViews)
+            foreach (long componentId in componentIds)
             {
-                Product complementaryProduct = productRepository.find(addComponentToProductModelView.complementedProductID);
+                Product complementaryProduct = productRepository.find(componentId);
 
                 if (complementaryProduct == null)
                 {
-                    throw new ArgumentException(string.Format(ERROR_PRODUCT_NOT_FOUND, addComponentToProductModelView.complementedProductID));
+                    throw new ArgumentException(string.Format(ERROR_PRODUCT_NOT_FOUND, componentId));
                 }
-
-                if (addComponentToProductModelView.mandatory)
-                {
-                    product.addMandatoryComplementaryProduct(complementaryProduct);
-                }
-                else
-                {
-                    product.addComplementaryProduct(complementaryProduct);
-                }
+                complementaryProducts.Add(complementaryProduct);
             }
 
-            return product;
+            return complementaryProducts;
         }
     }
 }
