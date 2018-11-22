@@ -158,18 +158,7 @@ namespace core.domain
             restrictions.Add(restriction);
             return true;
         }
-        /// <summary>
-        /// Returns the component identity
-        /// </summary>
-        /// <returns>Product with the component identity</returns>
-        public Product id() { return complementaryProduct; }
-
-        /// <summary>
-        /// Checks if a certain component entity is the same as the current component
-        /// </summary>
-        /// <param name="comparingEntity">Product with the comparing component identity</param>
-        /// <returns>boolean true if both entities identity are the same, false if not</returns>
-        public bool sameAs(Product comparingEntity) { return id().Equals(comparingEntity); }
+        
         /// <summary>
         /// Returns the current component as a DTO
         /// </summary>
@@ -192,35 +181,5 @@ namespace core.domain
             }
             return dto;
         }
-
-        /// <summary>
-        /// Checks if two components are equal
-        /// </summary>
-        /// <param name="comparingComponent">Component with the component being compared to the current one</param>
-        /// <returns>boolean true if both components are equal, false if not</returns>
-        public override bool Equals(object comparingComponent)
-        {
-            if (this == comparingComponent) return true;
-            return comparingComponent is Component && this.id().Equals(((Component)comparingComponent).id());
-        }
-
-        /// <summary>
-        /// Represents the component hashcode
-        /// </summary>
-        /// <returns>Integer with the current component hashcode</returns>
-        public override int GetHashCode()
-        {
-            return id().GetHashCode();
-        }
-        /// <summary>
-        /// Represents the textual information of the Component
-        /// </summary>
-        /// <returns>String with the textual representation of the component</returns>
-        public override string ToString()
-        {
-            //Should ToString List the Component Complemented Component?
-            return String.Format("Component Information\n- List of restrictions: {0}\n", restrictions);
-        }
-
     }
 }
