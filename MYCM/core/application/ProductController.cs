@@ -232,6 +232,7 @@ namespace core.application
         /// <returns>GetProductModelView with the created product, null if the product was not created</returns>
         public GetProductModelView addProduct(AddProductModelView addProductMV){
             Product newProduct= CreateProductService.create(addProductMV);
+            newProduct = PersistenceContext.repositories().createProductRepository().save(newProduct);
             return ProductModelViewService.fromEntity(newProduct);
         }
 
