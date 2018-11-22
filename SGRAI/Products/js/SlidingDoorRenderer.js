@@ -50,7 +50,7 @@ var selected_door = null;
 var hovered_object = null;
 
 /**
- * Global variable that represents the plane that intersects the closet
+ * Global variable that represents the plane that intersects the door
  */
 var plane = null;
 
@@ -123,26 +123,24 @@ function initSlidingDoor(textureSource) {
     scene = new THREE.Scene();
     group = new THREE.Group();
 
-    var front_door = new SlidingDoor([150, 187, 5, -30, 27.5, 0]);
+    var front_door = new SlidingDoor([160, 190, 5, -30, 27.5, 0]);
 
     var front_frame = new Module([224.5, 4.20, 5, 0, -70, 0],
         [224.5, 4.20, 5, 0, 125, 0],
         [4.20, 195, 5, -110, 27.5, 0],
         [4.20, 195, 5, 110, 27.5, 0]);
 
-    textureLoader = new THREE.TextureLoader();
-
-    var back_door = new SlidingDoor([150, 187, 5, 30, 27.5, -7]);
+    var back_door = new SlidingDoor([160, 190, 5, 30, 27.5, -7]);
 
     var back_frame = new Module([224.5, 4.20, 5, 0, -70, -7],
         [224.5, 4.20, 5, 0, 125, -7],
         [4.20, 195, 5, -110, 27.5, -7],
         [4.20, 195, 5, 110, 27.5, -7]);
 
-    //A MeshPhongMaterial allows for shiny surfaces
-    //A soft white light is being as specular light
-    //The shininess value is the same as the matte finishing's value
-    material = new THREE.MeshPhongMaterial({ /*map: texture, specular: 0x404040, shininess: 20*/ });
+
+    textureLoader = new THREE.TextureLoader();
+    var texture = textureLoader.load(textureSource);
+    material = new THREE.MeshPhongMaterial({ map: texture, specular: 0x404040, shininess: 20 });
 
     //Adds front door
     front_door_faces_ids.push(generateParellepiped(

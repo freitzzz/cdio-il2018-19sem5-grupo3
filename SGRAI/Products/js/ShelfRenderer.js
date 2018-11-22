@@ -17,7 +17,7 @@ var material;
  */
 var shelf = null;
 /**
- * Global variable with the current closet faces ids (Mesh IDS from Three.js)
+ * Global variable with the current shelf faces ids (Mesh IDS from Three.js)
  */
 var shelf_faces_ids = [];
 
@@ -25,11 +25,6 @@ var shelf_faces_ids = [];
  * Global variable with the WebGL canvas
  */
 var canvasWebGL;
-
-/**
- * Global variable that represents the plane that intersects the closet
- */
-var plane = null;
 
 /**
  * Initial Product Draw function
@@ -43,29 +38,6 @@ function main(textureSource) {
     initShelf(textureSource);
     initLighting();
 
-    //Creates the intersection plane
-    plane = new THREE.Plane();
-    plane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 200, 0)).normalize();
-
-    var planeGeometry = new THREE.PlaneGeometry(500, 500);
-
-    var coplanarPoint = plane.coplanarPoint();
-
-    var focalPoint = new THREE.Vector3().copy(coplanarPoint).add(plane.normal);
-
-    planeGeometry.lookAt(focalPoint);
-
-    planeGeometry.translate(coplanarPoint.x, coplanarPoint.y, coplanarPoint.z);
-
-    var planeMaterial = new THREE.MeshLambertMaterial({
-        color: 0xffff00,
-        side: THREE.DoubleSide
-    });
-
-    var dispPlane = new THREE.Mesh(planeGeometry, planeMaterial);
-    dispPlane.visible = false;
-    //Finishes creating the intersection plane
-    scene.add(dispPlane);
     scene.add(camera);
 
     animate();
@@ -76,14 +48,9 @@ function initShelf(textureSource) {
 
     shelf = new Shelf([200, 10, 200, 0, 0, 0]);
 
-    //var src = 'http://127.0.0.1:8000/Renderer/textures/cherry_wood_cabinets.jpg';
-
     textureLoader = new THREE.TextureLoader();
     var texture = textureLoader.load(textureSource);
-    //A MeshPhongMaterial allows for shiny surfaces
-    //A soft white light is being as specular light
-    //The shininess value is the same as the matte finishing's value
-    material = new THREE.MeshPhongMaterial({ /*map: texture, specular: 0x404040, shininess: 20*/ });
+    material = new THREE.MeshPhongMaterial({ map: texture, specular: 0x404040, shininess: 20 });
 
     shelf_faces_ids.push(generateParellepiped(shelf.shelf_base_face_dimensions_axes[0],
         shelf.shelf_base_face_dimensions_axes[1],
@@ -163,8 +130,6 @@ function initControls() {
     controls.maxDistance = 500;
 
     controls.maxPolarAngle = Math.PI / 2;
-
-
 }
 
 /**
