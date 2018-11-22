@@ -5,7 +5,13 @@
             <button class="button is-danger" @click="createNewProduct()">
                 <b-icon icon="plus"/>
             </button>
-            <create-new-product :active="create" />
+            <create-new-product 
+                :active="createNewProductModal" 
+                :available-materials="availableMaterials"
+                :available-categories="availableCategories"
+                :available-components="availableComponents"
+                @emitProduct="postProduct"
+            />
             <button class="button is-danger" @click="removeSelectedProduct()">
                 <b-icon icon="minus"/>
             </button>
@@ -14,7 +20,6 @@
                     icon="refresh"
                     custom-class="fa-spin"/>
             </button>
-            <CreateNewProduct :active="createNewProductModal"/>
         </div>
         <PaginatedTable 
         :total.sync="total" 
@@ -36,6 +41,10 @@ import NotificationSnackbar from './UIComponents/NotificationSnackbar.vue';
 import Axios from 'axios';
 import NotificationSnackbarVue from './UIComponents/NotificationSnackbar.vue';
 
+let categories=[];
+let components=[];
+let materials=[];
+
 export default {
     components:{
         PaginatedTable,
@@ -46,12 +55,18 @@ export default {
      */
     created(){
         this.updateFetchedProducts();
+        this.fetchAvailableCategories();
+        this.fetchAvailableComponents();
+        this.fetchAvailableMaterials();
     },
     data(){
         return{
             createNewProductModal:false,
             currentSelectedProduct:0,
             availableProducts:Array,
+            availableCategories:categories,
+            availableComponents:components,
+            availableMaterials:materials,
             columns:[],
             data:Array,
             total:Number,
@@ -72,6 +87,17 @@ export default {
             this.createNewProductModal=true;
         },
         /**
+         * Posts a new product
+         */
+        postProduct(productDetails){
+            Axios
+                .post('http://localhost:5000/mycm/api/products',productDetails)
+                .then((response)=>{ this.$toast.open({message:"The product was created with success!"});})
+                .catch((_error)=>{
+                    this.$toast.open({message:_error.response.data.error});
+                });
+        },
+        /**
          * Triggers the deletion of the selected product
          */
         removeSelectedProduct(){
@@ -80,6 +106,51 @@ export default {
             .then((response)=>{
                 console.log(response.data)
             });
+        },
+        fetchAvailableCategories(){
+        Axios
+          .get('http://localhost:5000/mycm/api/categories')
+          .then((response)=>{
+            let availableCategories=response.data;
+            availableCategories.forEach((category)=>{
+              categories.push(category);
+            });
+          })
+          .catch(()=>{
+
+          });
+    },
+    fetchAvailableComponents(){
+        Axios
+          .get('http://localhost:5000/mycm/api/products')
+          .then((response)=>{
+            let availableComponents=response.data;
+            availableComponents.forEach((component)=>{
+              components.push({
+                id:component.id,
+                value:component.designation
+              });
+            });
+          })
+          .catch(()=>{
+            
+          });
+    },
+    fetchAvailableMaterials(){
+        Axios
+          .get('http://localhost:5000/mycm/api/materials')
+          .then((response)=>{
+            let availableMaterials=response.data;
+            availableMaterials.forEach((material)=>{
+              materials.push({
+                id:material.id,
+                value:material.designation
+              });
+            });
+          })
+          .catch(()=>{
+            
+          });
         },
         /**
          * Fetches all available products
@@ -91,7 +162,7 @@ export default {
                 this.columns=this.generateProductsTableColumns();
                 this.total=this.data.length;
             })
-            .then((_error)=>{
+            .catch((_error)=>{
                 console.log(_error);
             });
         },
