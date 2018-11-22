@@ -53,7 +53,7 @@ namespace backend.persistence.ef
         /// Database set containing all of the saved instances of MaterialPriceTableEntry
         /// </summary>
         /// <value>Gets/Sets the database set containing all the saved instances of MaterialPriceTableEntry</value>
-        public DbSet<MaterialPriceTableEntry> MaterialPriceTable{ get; set; }
+        public DbSet<MaterialPriceTableEntry> MaterialPriceTable { get; set; }
 
         /// <summary>
         /// Database set containing all of the saved instances of FinishPriceTableEntry
@@ -96,14 +96,14 @@ namespace backend.persistence.ef
             builder.Entity<Material>().HasMany(m => m.Finishes);                //one-to-many relationship
 
             //Configure many-to-many relationship between Product and Material
-            builder.Entity<ProductMaterial>().HasKey(pm => new {pm.productId, pm.materialId});
+            builder.Entity<ProductMaterial>().HasKey(pm => new { pm.productId, pm.materialId });
             builder.Entity<ProductMaterial>().HasOne(pm => pm.product).WithMany(p => p.productMaterials).HasForeignKey(pm => pm.productId);
             builder.Entity<ProductMaterial>().HasOne(pm => pm.material).WithMany().HasForeignKey(pm => pm.materialId);
             builder.Entity<ProductMaterial>().HasMany(pm => pm.restrictions);
 
-             //TODO: remove join class, if possible
+            //TODO: remove join class, if possible
             //NOTE: This "join class" is only here as a workaround for now
-            builder.Entity<ProductMeasurement>().HasKey(pm => new {pm.productId, pm.measurementId});
+            builder.Entity<ProductMeasurement>().HasKey(pm => new { pm.productId, pm.measurementId });
             builder.Entity<ProductMeasurement>().HasOne(pm => pm.product).WithMany(p => p.productMeasurements).HasForeignKey(pm => pm.productId);
             builder.Entity<ProductMeasurement>().HasOne(pm => pm.measurement);
 
@@ -113,9 +113,9 @@ namespace backend.persistence.ef
             builder.Entity<Product>().OwnsOne(p => p.recommendedSlotSize);      //embedded Dimensions
 
             builder.Entity<Component>().HasKey(c => new { c.fatherProductId, c.complementaryProductId });
-
             builder.Entity<Component>().HasOne(c => c.fatherProduct).WithMany(p => p.components).HasForeignKey(cp => cp.fatherProductId);
-            //builder.Entity<Component>().HasOne(c => c.complementedProduct).WithMany(p => p.complementedProducts).HasForeignKey(cp => cp.complementedProductId);
+            builder.Entity<Component>().HasOne(c => c.complementaryProduct).WithMany().HasForeignKey(cp => cp.complementaryProductId);
+            builder.Entity<Component>().HasMany(c => c.restrictions);
 
             builder.Entity<CustomizedProduct>().HasOne(cp => cp.product);       //one-to-one relationship
             builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedDimensions); //embedded Dimensions

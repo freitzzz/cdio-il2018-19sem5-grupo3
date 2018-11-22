@@ -55,7 +55,7 @@ namespace core.modelview.product{
         /// </summary>
         /// <value>Get/set the list of ModelView.</value>
         [DataMember(Name="dimensions")]
-        public List<GetMeasurementModelView> measurements {get; set;}
+        public GetAllMeasurementsModelView measurements {get; set;}
 
         /// <summary>
         /// ModelView containing Product's slot sizes.

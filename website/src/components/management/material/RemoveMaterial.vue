@@ -5,30 +5,32 @@
                     <header class="modal-card-head">
                         <p class="modal-card-title">Remove Material</p>
                     </header>
-                    <section class="modal-card-body">
+                    <section class="modal-card-body">  
                         <b-field label="Choose Material">
-                            <b-select placeholder="Select a material" icon="tag" v-model="materialchoose">
-                                  <option :value="null"></option>
+                            <b-select placeholder="Select a material" icon="tag" v-model="materialData">
                                   <option v-for="material in availableMaterials" 
-                                    :key="material.id" :value="material.id">{{material.name}}</option>
+                                    :key="material.id" :value="material.id">{{material.designation}} </option>
                             </b-select>
                         </b-field>
                     </section>
                     <footer class="modal-card-foot">
-                        <button class="button is-primary" @click="deleteMaterial">Submit</button>
+                        <button class="button is-primary" @click="deleteMaterial()">Remove</button>                    
                     </footer>
                 </div>
             </form>
     </b-modal>
-</template>
+</template> 
 
 <script>
 import Axios from "axios";
 export default {
-  name: "RemoveMaterial",
+  name: "EditMaterial",
   data() {
     return {
-      materialchoose: null, //this value needs to be null for the placeholder to work
+      materialData: "",
+      colorsData: "",
+      referenceMaterial:"",
+      designationMaterial:"",
       availableMaterials: []
     };
   },
@@ -38,24 +40,21 @@ export default {
       default: false
     }
   },
-
   methods: {
     deleteMaterial() {
-      if (this.materialchoose != null) {
-          id: this.materialchoose.id,
-        Axios.post("http://localhost:5000/mycm/api/materials/id")
-          .then(response => {})
-          .catch(error => {});
-      } 
-    }
+    Axios.delete(`http://localhost:5000/mycm/api/materials/${this.materialData}`)
+      .then() //push all elements onto the array
+      .catch(function(error) {
+        //TODO: inform an error occured while fetching categories
+      });
+  }
   },
   created() {
     Axios.get("http://localhost:5000/mycm/api/materials")
       .then(response => this.availableMaterials.push(...response.data)) //push all elements onto the array
       .catch(function(error) {
-        //TODO: inform an error occured while fetching materials
+        //TODO: inform an error occured while fetching categories
       });
   }
 };
 </script>
-
