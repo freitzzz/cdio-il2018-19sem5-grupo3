@@ -1,12 +1,12 @@
 <template>
     <b-field :label="customizedLabel">
         <b-field>
-            <b-select v-model="addedItems" :icon="icon">
+            <b-select expanded=true v-model="addedItems" :icon="icon">
                 <option :placeholder="placeHolder" v-for="(item,index) in addedItems" :value="item" :key="index">
                     {{item}}
                 </option>
             </b-select>
-            <b-select v-model="availableItems" :placeholder="placeHolder" :icon="icon" v-on="currentSelectedItem">
+            <b-select expanded=true v-model="availableItems" :placeholder="placeHolder" :icon="icon" v-on="currentSelectedItem">
                 <option :placeholder="placeHolder" v-for="(item,index) in addedItems" :value="item" :key="index">
                     {{item}}
                 </option>
@@ -35,6 +35,12 @@ export default {
                 this.activateAddedItems();
                 this.addedItems.push(this.currentSelectedItem);
             }
+        },
+        /**
+         * Emits all added items
+         */
+        getAddedItems(){
+            this.$emit('getAddedItems',this.addedItems);
         },
         /**
          * Removes the current selected item from the added items list
