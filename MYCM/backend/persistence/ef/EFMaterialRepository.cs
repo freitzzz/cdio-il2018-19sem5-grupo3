@@ -37,7 +37,9 @@ namespace backend.persistence.ef
             MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
             Material material = materialRepository.find(idMaterial);
 
-            foreach (Finish finish in material.Finishes)
+            List<Finish> finishes =material.Finishes;
+
+            foreach (Finish finish in finishes.ToList())
             {
                 if (finish.Id.Equals(idFinish))
                 {
@@ -61,7 +63,9 @@ namespace backend.persistence.ef
             MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
             Material material = materialRepository.find(idMaterial);
 
-            foreach (Color color in material.Colors)
+            List<Color> colors =material.Colors;
+
+            foreach (Color color in colors.ToList())
             {
                 if (color.Id.Equals(idColor))
                 {
