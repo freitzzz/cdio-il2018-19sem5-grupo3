@@ -7,11 +7,12 @@
                         <b-field label="Dimension Value">
                             <b-input
                                 type="Number"
-                                :value.sync="dimension.single.value"
+                                v-model="dimension.single.value"
                                 placeholder="200"
                                 icon="wrench"
                                 expanded=true
-                                required>
+                                required
+                                @input="emitDimension">
                             </b-input>
                         </b-field>
                         <b-field label="Dimension Type">
@@ -32,10 +33,12 @@
                         <b-field label="Dimension Value" >
                             <b-input
                                 type="Number"
+                                v-model="dimension.discrete.value"
                                 placeholder="200"
                                 icon="wrench"
                                 expanded=true
-                                required>
+                                required
+                                @input="emitDimension">
                             </b-input>
                         </b-field>
                         <b-field label="Values">
@@ -80,31 +83,34 @@
                         <b-field label="Min Value">
                             <b-input
                                 type="Number"
-                                :value.sync="dimension.continuous.minValue"
+                                v-model="dimension.continuous.minValue"
                                 placeholder="200"
                                 icon="wrench"
                                 expanded=true
-                                required>
+                                required
+                                @input="emitDimension">
                             </b-input>
                         </b-field>
                         <b-field label="Max Value">
                             <b-input
                                 type="Number"
-                                :value.sync="dimension.continuous.maxValue"
+                                v-model="dimension.continuous.maxValue"
                                 placeholder="200"
                                 icon="wrench"
                                 expanded=true
-                                required>
+                                required
+                                @input="emitDimension">
                             </b-input>
                         </b-field>
                         <b-field label="Increment">
                             <b-input
                                 type="Number"
-                                :value.sync="dimension.continuous.increment"
+                                v-model="dimension.continuous.increment"
                                 placeholder="200"
                                 icon="wrench"
                                 expanded=true
-                                required>
+                                required
+                                @input="emitDimension">
                             </b-input>
                         </b-field>
                         <b-field label="Dimension Type">
@@ -180,6 +186,7 @@ export default {
                 discrete:{
                     available:false,
                     selected:0,
+                    value:Number,
                     values:[]
                 },
                 availableDimensionTypes:availableDimensionTypes
@@ -189,10 +196,53 @@ export default {
     },
     methods:{
         /**
+         * Adds a new discrete value to the discrete values list
+         */
+        addDiscreteValue(){
+            this.dimension.discrete.values.push(this.dimension.discrete.value);
+        },
+        /**
+         * Removes a discrete value from the discrete values list
+         */
+        removeDiscreteValue(){
+            let newDiscreteValues=[];
+            this.dimension.discrete.values.forEach((value)=>{
+                if(value!=this.dimension.discrete.selected)
+                    newDiscreteValues.push(value);
+            });
+            this.dimension.discrete.values=newDiscreteValues.slice();
+        },
+        /**
+         * Returns the current dimension values
+         */
+        getCurrentDimension(){
+            if(this.dimension.single.available){
+                return {
+                    type:SINGLE,
+                    value:this.dimension.single.value
+                };
+            }else if(this.dimension.continuous.available){
+                return {
+                    type:CONTINUOUS,
+                    minValue:this.dimension.continuous.minValue,
+                    maxValue:this.dimension.continuous.maxValue,
+                    increment:this.dimension.continuous.increment,
+                };
+            }else{
+                return {
+                    type:DISCRETE,
+                    values:this.dimension.discrete.values
+                };
+            }
+        },
+        emitDimension(){
+            this.$emit('getDimension',this.getCurrentDimension());
+        },
+        /**
          * Changes the current dimension type
          */
         changeDimensionType(){
-            switch(this.availableDimensionTypes[this.dimension.selected]){
+            switch(this.dimension.availableDimensionTypes[this.dimension.selected-1].name){
                 case SINGLE:
                     this.toggleDimensionSingle();
                     break;
