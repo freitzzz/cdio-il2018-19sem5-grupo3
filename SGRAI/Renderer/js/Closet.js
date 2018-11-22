@@ -23,6 +23,8 @@ class Closet {
         this._prepare_closet_init();
         this.poles = [];
         this.shelves = [];
+        this.doors = [];
+        this.drawers = [];
     }
 
     //Closet Logic
@@ -138,8 +140,24 @@ class Closet {
     /**
      * Removes a shelf from the closet
      */
-    removeRemoveShelf() {
+    removeShelf() {
         this.shelves.pop();
+    }
+
+    /**
+     * Adds a door to the closet
+     * @param {SlidingDoor} door to add 
+     */
+    addDoor(door) {
+        this.doors.push(door);
+    }
+
+    /**
+     * Removes a door from the closet
+     *  @param {SlidingDoor} door to remove
+     */
+    removeDoor() {
+        this.doors.pop();
     }
 
     //Accessors

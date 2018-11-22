@@ -39,7 +39,6 @@
       loadWidth();
       loadDepth();
       loadSlots();
-      //  loadPoles();
     }
 
     var lastUnit = "cm";
@@ -298,7 +297,7 @@
 
       var number_of_slots = document.getElementById("slotsInput").value;
 
-      if (number_of_slots > 1) {
+      if (number_of_slots > 1 && component.textContent != "Sliding Door") {
         element.appendChild(document.createElement("br"));
         element.appendChild(document.createTextNode("Slot:    "));
 
@@ -324,7 +323,9 @@
           }
         });
         element.appendChild(apply_btn);
+
       } else {
+        element.appendChild(document.createTextNode("     "));
         var apply_btn = document.createElement("button");
         apply_btn.setAttribute("class", "btn-custom-2");
         apply_btn.appendChild(document.createTextNode("Apply"));
@@ -671,7 +672,6 @@
         <a class="btn-custom" onclick="openTab(event, 'slots');decreasePBMaterial();decreasePBComponents();forceOnMouseUp()">Back</a>
         <a class="btn-custom" onclick="openTab(event, 'components');changePBComponents();forceOnMouseUp()">Next</a>
       </div>
-
       <div id="components" class="column left tabcontent" style="display:none">
         <h2>Components</h2>
         <br>
@@ -728,6 +728,10 @@
         <script src="../Renderer/js/ProductRenderer.js"></script>
         <script src="../Renderer/js/Closet.js"></script>
         <script src="../Renderer/js/Pole.js"></script>
+        <script src="../Renderer/js/Shelf.js"></script>
+        <script src="../Renderer/js/Drawer.js"></script>
+        <script src="../Renderer/js/Module.js"></script>
+        <script src="../Renderer/js/SlidingDoor.js"></script>
         <!--Change the texture source, if the server or the port need to change-->
         <script> main('http://127.0.0.1:8002/US4000/img/cherry_wood.jpeg');</script>
       </div>
