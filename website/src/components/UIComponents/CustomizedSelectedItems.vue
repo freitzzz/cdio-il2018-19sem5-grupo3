@@ -1,14 +1,26 @@
 <template>
     <b-field :label="customizedLabel">
         <b-field>
-            <b-select expanded=true v-model="addedItems" :icon="icon">
-                <option :placeholder="placeHolder" v-for="(item,index) in addedItems" :value="item" :key="index">
-                    {{item}}
+            <b-select 
+                expanded=true 
+                v-model="currentSelectedAddedItem" 
+                :icon="icon">
+                <option
+                    v-for="(item,index) in addedItems" 
+                    :value="item.id" 
+                    :key="index">
+                        {{item.value}}
                 </option>
             </b-select>
-            <b-select expanded=true v-model="availableItems" :placeholder="placeHolder" :icon="icon" v-on="currentSelectedItem">
-                <option :placeholder="placeHolder" v-for="(item,index) in addedItems" :value="item" :key="index">
-                    {{item}}
+            <b-select 
+                :placeholder="placeHolder" 
+                :icon="icon" 
+                v-model="currentSelectedItem">
+                <option 
+                    v-for="(item,index) in availableItems" 
+                    :value="item.id" 
+                    :key="index">
+                        {{item.value}}
                 </option>
             </b-select>
             <button class="button is-danger" @click="addSelectedItem()">
@@ -33,7 +45,7 @@ export default {
         addSelectedItem(){
             if(this.currentSelectedItem!=null){
                 this.activateAddedItems();
-                this.addedItems.push(this.currentSelectedItem);
+                this.addedItems.push(this.availableItems[this.currentSelectedItem-1]);
             }
         },
         /**
@@ -46,22 +58,19 @@ export default {
          * Removes the current selected item from the added items list
          */
         removeSelectedItem(){
-            console.log(this.addedItems);
             let newAddedItems=[];
-            let removedWithSucess=this.addedItems.length==0 ? true : false;
-            while(!removedWithSucess){
-                let removedItem=this.addedItems.pop();
-                removedWithSucess&=removedItem===this.currentSelectedItem;
-                if(!removedWithSucess)newAddedItems.push(removedItem);
-            }
-            this.addedItems.push(...newAddedItems);
+            this.addedItems.forEach((item)=>{
+                if(item.id!=this.currentSelectedAddedItem)
+                    newAddedItems.push(item);
+            });
+            this.addedItems=newAddedItems;
         }
     },
     data(){
         return {
-            currentSelectedItem:null,
+            currentSelectedItem:0,
             addedItems:[],
-            currentSelectedAddedItem:null
+            currentSelectedAddedItem:0
         }
     },
     props:{
