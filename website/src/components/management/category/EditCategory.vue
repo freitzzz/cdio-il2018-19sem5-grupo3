@@ -55,37 +55,33 @@ export default {
   /*  */
   methods: {
     editCategory() {
-      var nameCat,cat;
+      var nameCat, cat;
       cat = this.categoryData;
       nameCat = this.nameCategory;
-      
+
       Axios.delete(
         `http://localhost:5000/mycm/api/categories/${this.categoryData}`
       )
         .then(response => {})
-        .catch(error => {
-          console.log("NAO DEU");
-        });
+        .catch(error => {});
       /* Clear buffer of all available categories */
       availableCategories: [];
       Axios.get("http://localhost:5000/mycm/api/categories")
         .then(response => this.availableCategories.push(...response.data)) //push all elements onto the array
         .catch(function(error) {
           //TODO: inform an error occured while fetching categories
-          console.log("O get nao funcionou");
+          console.log(error);
         });
 
-     
-        /* Post with just a name */
-        Axios.post(
-          `http://localhost:5000/mycm/api/categories/`,
-          {
-            name: nameCat
-          }
-        )
-          .then(response => {})
-          .catch(error => {});
-      
+      /* Post with just a name */
+      Axios.post(`http://localhost:5000/mycm/api/categories/`, {
+        name: nameCat
+      })
+        .then(response => {})
+        .catch(function(error) {
+          //TODO: inform an error occured while fetching categories
+          console.log(error);
+        });
     }
   },
   created() {
