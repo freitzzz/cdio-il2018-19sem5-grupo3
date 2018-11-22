@@ -26,10 +26,9 @@ namespace core_tests.domain
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
 
-            //Creates a product 
-            Product product = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            //Creates a parent product 
+            Product product = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             Assert.Throws<ArgumentException>(() => new Component(null, product));
             Assert.Throws<ArgumentException>(() => new Component(null, product, true));
@@ -50,10 +49,9 @@ namespace core_tests.domain
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
 
-            //Creates a product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            //Creates a parent product 
+            Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             Assert.Throws<ArgumentException>(() => new Component(parent, null));
             Assert.Throws<ArgumentException>(() => new Component(parent, null, true));
@@ -75,14 +73,12 @@ namespace core_tests.domain
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
 
             //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product child = new Product("Not so bad", "Luke", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             Assert.NotNull(new Component(parent, child));
         }
@@ -101,14 +97,12 @@ namespace core_tests.domain
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
 
             //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product child = new Product("Not so bad", "Luke", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             Assert.Throws<ArgumentException>(() => new Component(parent, child, new List<Restriction>()));
             Assert.Throws<ArgumentException>(() => new Component(parent, child, new List<Restriction>(), true));
@@ -127,15 +121,13 @@ namespace core_tests.domain
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
 
-            //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+           //Creates a parent product 
+            Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product child = new Product("Not so bad", "Luke", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             List<Restriction> restrictions = null;
 
@@ -157,14 +149,12 @@ namespace core_tests.domain
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
 
             //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product child = new Product("Not so bad", "Luke", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             Assert.NotNull(new Component(parent, child, new List<Restriction>() { new Restriction("LÁ ESTÁ") }));
         }
@@ -183,306 +173,16 @@ namespace core_tests.domain
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
 
             //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product child = new Product("Not so bad", "Luke", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             Assert.NotNull(new Component(parent, child, new List<Restriction>() { new Restriction("POIS") }, true));
         }
 
-        //id tests
-        [Fact]
-        public void ensureIdMethodWorks()
-        {
-            //Creates measurements and a material for the product
-            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
-            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
-
-            //Creates colors and finishes for the product's material list 
-            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
-            //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
-
-            //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            Component component = new Component(parent, child);
-
-            Assert.Equal(component.id(), child);
-        }
-
-        //sameAs tests
-        [Fact]
-        public void ensureComponentsWithEqualIdentitiesAreTheSame()
-        {
-            //Creates measurements and a material for the product
-            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
-            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
-
-            //Creates colors and finishes for the product's material list 
-            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
-            //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
-
-            //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            Component component = new Component(parent, child);
-
-            Assert.True(component.sameAs(child));
-        }
-
-        [Fact]
-        public void ensureComponentsWithDifferentIdentitiesAreNotTheSame()
-        {
-            //Creates measurements and a material for the product
-            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
-            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
-
-            //Creates colors and finishes for the product's material list 
-            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
-            //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
-
-            //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            Component component = new Component(parent, child);
-
-            Assert.False(component.sameAs(parent));
-        }
-
-        //GetHashCode tests
-        [Fact]
-        public void ensureGetHashCodeWorks()
-        {
-            //Creates measurements and a material for the product
-            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
-            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
-
-            //Creates colors and finishes for the product's material list 
-            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
-            //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
-
-            //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            Component component1 = new Component(parent, child);
-            Component component2 = new Component(parent, child);
-
-            Assert.Equal(component1.GetHashCode(), component2.GetHashCode());
-        }
-
-        //Equals tests
-        [Fact]
-        public void ensureComponentsWithDifferentReferencesAreNotEqual()
-        {
-            //Creates measurements and a material for the product
-            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
-            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
-
-            //Creates colors and finishes for the product's material list 
-            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
-            //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
-
-            //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            Component component1 = new Component(parent, child);
-            Component component2 = new Component(child, parent);
-
-            Assert.False(component1.Equals(component2));
-        }
-
-        [Fact]
-        public void ensureComponentsWithSameReferencesAreEqual()
-        {
-            //Creates measurements and a material for the product
-            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
-            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
-
-            //Creates colors and finishes for the product's material list 
-            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
-            //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
-
-            //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            Component component1 = new Component(parent, child);
-            Component component2 = new Component(parent, child);
-            Assert.True(component1.Equals(component2));
-        }
-
-        [Fact]
-        public void ensureComponentsWithDiferentReferencesAreEqual()
-        {
-            //Creates measurements and a material for the product
-            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
-            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
-
-            //Creates colors and finishes for the product's material list 
-            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
-            //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
-
-            //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            Component component1 = new Component(parent, child);
-            Component component2 = new Component(child, parent);
-            Assert.False(component1.Equals(component2));
-        }
-
-        [Fact]
-        public void ensureNullObjectIsNotEqual()
-        {
-            //Creates measurements and a material for the product
-            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
-            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
-
-            //Creates colors and finishes for the product's material list 
-            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
-            //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
-
-            //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            Component component = new Component(parent, child);
-            Assert.False(component.Equals(null));
-        }
-
-        [Fact]
-        public void ensureDifferentTypesAreNotEqual()
-        {
-            //Creates measurements and a material for the product
-            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
-            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
-
-            //Creates colors and finishes for the product's material list 
-            List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
-            //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
-
-            //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            Component component = new Component(parent, child);
-            Assert.False(component.Equals("Def not a component"));
-        }
-
-        //ToString tests
-        [Fact]
-        public void ensureToStringWorks()
-        {
-            //Creates measurements and a material for the product
-            List<Measurement> measurements = new List<Measurement>() { new Measurement(new DiscreteDimensionInterval( new List<Double>() { 500.0 }),
-            new DiscreteDimensionInterval( new List<Double>() { 500.0 }), new DiscreteDimensionInterval( new List<Double>() { 500.0 })) };
-
-            //Creates colors and finishes for the product's material list and customized product's customized material
-            Color color = Color.valueOf("Blue", 1, 2, 3, 0);
-            List<Color> colors = new List<Color>() { color };
-
-            Finish finish = Finish.valueOf("Super shiny");
-            List<Finish> finishes = new List<Finish>() { finish };
-
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
-
-            //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
-
-            Component component1 = new Component(parent, child);
-            Component component2 = new Component(parent, child);
-
-            Assert.Equal(component1.ToString(), component2.ToString());
-        }
 
         //addRestriction tests
         [Fact]
@@ -499,14 +199,12 @@ namespace core_tests.domain
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
 
             //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements, 
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product child = new Product("Not so bad", "Luke", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             Assert.Throws<ArgumentException>(() => new Component(parent, child,
             new List<Restriction>() { new Restriction("FUNCIONE") }).addRestriction(null));
@@ -526,14 +224,12 @@ namespace core_tests.domain
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
 
             //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements, 
+            CustomizedDimensions.valueOf(1, 1, 1),  CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product child = new Product("Not so bad", "Luke", new ProductCategory("Drawers"), materials, measurements, 
+             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             Restriction restriction = new Restriction("FUNCIONE");
             Assert.Throws<ArgumentException>(() => new Component(parent, child,
@@ -554,14 +250,12 @@ namespace core_tests.domain
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
 
             //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product child = new Product("Not so bad", "Luke", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             Assert.True(new Component(parent, child, new List<Restriction>() { new Restriction("FUNCIONE") }).
             addRestriction(new Restriction("FUNCIONOU")));
@@ -582,14 +276,12 @@ namespace core_tests.domain
 
 
             //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             //Creates a child product
-            Product child = new Product("Not so bad", "Luke", CustomizedDimensions.valueOf(5, 5, 5),
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(4, 4, 4), new ProductCategory("Drawers"),
-            materials, measurements);
+            Product child = new Product("Not so bad", "Luke",  new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             Component component = new Component(parent, child);
 

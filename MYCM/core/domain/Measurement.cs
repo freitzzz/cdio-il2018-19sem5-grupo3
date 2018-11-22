@@ -81,10 +81,10 @@ namespace core.domain
         /// <summary>
         /// Creates a new instance of Measurement with the given instances of Dimension.
         /// </summary>
-        /// <param name="height"></param>
-        /// <param name="depth"></param>
-        /// <param name="width"></param>
-        /// <exception cref="System.ArgumentException">Throws an ArgumentException if the either of the arguments are null.</exception>
+        /// <param name="height">Instance of Dimension attributed to the Measurement's height Dimension.</param>
+        /// <param name="depth">Instance of Dimension attributed to the Measurement's depth Dimension.</param>
+        /// <param name="width">Instance of Dimension attributed to the Measurement's width Dimension.</param>
+        /// <exception cref="System.ArgumentException">Throws an ArgumentException if any of the arguments are null.</exception>
         public Measurement(Dimension height, Dimension width, Dimension depth)
         {
             checkAttributes(height, width, depth);
@@ -100,20 +100,20 @@ namespace core.domain
         /// <param name="height">Height Dimension being checked.</param>
         /// <param name="width">Width Dimension being checked.</param>
         /// <param name="depth">Depth Dimension being checked.</param>
-        /// <exception cref="System.ArgumentException">Throws an ArgumentException if the either of the arguments are null.</exception>
+        /// <exception cref="System.ArgumentException">Throws an ArgumentException if any of the arguments are null.</exception>
         private void checkAttributes(Dimension height, Dimension width, Dimension depth)
         {
             if (height == null)
             {
-                throw new ArgumentException();
+                throw new ArgumentException(ERROR_NULL_HEIGHT_DIMENSION);
             }
             else if (width == null)
             {
-                throw new ArgumentException();
+                throw new ArgumentException(ERROR_NULL_WIDTH_DIMENSION);
             }
             else if (depth == null)
             {
-                throw new ArgumentException();
+                throw new ArgumentException(ERROR_NULL_DEPTH_DIMENSION);
             }
         }
 
@@ -197,7 +197,6 @@ namespace core.domain
         /// <param name="width">Width value being checked.</param>
         /// <param name="depth">Depth value being checked.</param>
         /// <returns>true if all the given values are available in this instance; false, otherwise.</returns>
-        //TODO: should this throw an exception rather than returning a boolean?
         public bool hasValues(double height, double width, double depth)
         {
             bool hasHeightValue = this.height.hasValue(height);

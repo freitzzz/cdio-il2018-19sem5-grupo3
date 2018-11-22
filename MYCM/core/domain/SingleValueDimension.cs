@@ -74,6 +74,18 @@ namespace core.domain
             return decimal.Compare(valueAsDecimal, otherValueAsDecimal) == 0;
         }
 
+
+        //*These two methods should return the same value in instances of this particular class, since there's only value. */
+        public override double getMaxValue()
+        {
+            return value;
+        }
+
+        public override double getMinValue()
+        {
+            return value;
+        }
+
         /// <summary>
         /// Equals method of Dimension
         /// Two instances are equal if they share the same value

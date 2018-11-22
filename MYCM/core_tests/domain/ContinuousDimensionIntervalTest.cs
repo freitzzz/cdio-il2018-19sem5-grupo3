@@ -209,6 +209,28 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureContinuousDimensionIntervalGetMaxValueIsTheSameAsMaxValue()
+        {
+            double minValue = 100.0;
+            double maxValue = 200.0;
+            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(minValue, maxValue, 0.1);
+
+            double obtainedMaxValue = instance.getMaxValue();
+            Assert.Equal(maxValue, obtainedMaxValue, 1);
+        }
+
+        [Fact]
+        public void ensureContinuousDimensionIntervalGetMinValueIsTheSameAsMinValue()
+        {
+            double minValue = 100.0;
+            double maxValue = 200.0;
+            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(minValue, maxValue, 0.1);
+
+            double obtainedMinValue = instance.getMinValue();
+            Assert.Equal(minValue, obtainedMinValue, 1);
+        }
+
+        [Fact]
         public void ensureInstanceAndNullAreNotEqual()
         {
             ContinuousDimensionInterval instance = new ContinuousDimensionInterval(100.0, 150.0, 0.5);

@@ -18,6 +18,7 @@ using core.dto;
 using core.modelview.material;
 using backend.utils;
 using Microsoft.Extensions.Logging;
+using core.exceptions;
 
 namespace backend.Controllers
 {
@@ -154,6 +155,11 @@ namespace backend.Controllers
         private const string LOG_PUT_SUCCESS = "Material with id {id} updated with info {@updateInfo}";
 
         /// <summary>
+        /// Constant representing the message presented when an unexpected error occurs.
+        /// </summary>
+        private const string UNEXPECTED_ERROR = "An unexpected error occurred, please try again later.";
+
+        /// <summary>
         /// Repository used to manipulate Material instances
         /// </summary>
         private readonly MaterialRepository materialRepository;
@@ -277,16 +283,17 @@ namespace backend.Controllers
             logger.LogInformation(LOG_DELETE_START);
             MaterialDTO materialDTO = new MaterialDTO();
             materialDTO.id = id;
-            bool disabledWithSuccess = new core.application.MaterialsController().disableMaterial(materialDTO);
-            if (disabledWithSuccess)
-            {
+
+            try{
+                new core.application.MaterialsController().disableMaterial(materialDTO);
                 logger.LogInformation(LOG_DELETE_SUCCESS, id);
                 return NoContent();
-            }
-            else
-            {
+            }catch(ResourceNotFoundException e){
                 logger.LogWarning(LOG_DELETE_BAD_REQUEST, id);
-                return BadRequest(new{error = MATERIAL_NOT_REMOVED_REFERENCE});
+                return NotFound(new{error = MATERIAL_NOT_REMOVED_REFERENCE});
+            }catch(Exception e){
+                logger.LogWarning(e, UNEXPECTED_ERROR);
+                return StatusCode(500, new {error = UNEXPECTED_ERROR});
             }
         }
         /// <summary>

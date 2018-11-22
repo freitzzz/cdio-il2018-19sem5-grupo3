@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -40,7 +40,6 @@
       loadDepth();
       loadSlots();
     }
-    
 
     var lastUnit = "cm";
 
@@ -101,38 +100,39 @@
       }
     }
 
-      //loadDepth();
+    //loadDepth();
     function reloadCube() {
-      var height,width,depth;
-      switch(lastUnit){
-            case "mm": 
-              height  = document.getElementById("height").value/10;
-              width = document.getElementById("width").value/20;
-              depth = document.getElementById("depth").value/10;  
-              break;
-            case "m":
-              width =parseInt((document.getElementById("width").value*100)/2);
-              height =document.getElementById("height").value*100;
-              depth = document.getElementById("depth").value*100;
-              break;
-            default:
-              width = document.getElementById("width").value;
-              height = document.getElementById("height").value;
-              depth = document.getElementById("depth").value;
-              break;
+      var height, width, depth;
+      switch (lastUnit) {
+        case "mm":
+          height = document.getElementById("height").value / 10;
+          width = document.getElementById("width").value / 20;
+          depth = document.getElementById("depth").value / 10;
+          break;
+        case "m":
+          width = parseInt((document.getElementById("width").value * 100) / 2);
+          height = document.getElementById("height").value * 100;
+          depth = document.getElementById("depth").value * 100;
+          break;
+        default:
+          width = document.getElementById("width").value;
+          height = document.getElementById("height").value;
+          depth = document.getElementById("depth").value;
+          break;
       }
+
       var event = new CustomEvent("changeDimensions", {
 
         detail: {
-        height: height,
-        width: width,
-        depth: depth,
-        //!Temporary solution
-        index: 3
+          height: height,
+          width: width,
+          depth: depth,
+          //!Temporary solution
+          index: 3
         }
       });
       document.dispatchEvent(event);
-      }
+    }
 
 
     /**
@@ -282,6 +282,78 @@
       document.dispatchEvent(eventX);
     }
 
+    function createComponent(elementId) {
+      document.getElementById("div_customize_component").setAttribute("style", "visibility:visible"); //Shows components scrollable div
+
+      var list = document.getElementById("list_components");
+
+      var element = document.createElement("li");
+      element.id = "component-" + list.childNodes.length;
+      element.appendChild(document.createTextNode("-------- Component " + list.childNodes.length + " --------"));
+      element.appendChild(document.createElement("br"));
+
+      var component = document.createTextNode(document.getElementById(elementId).getAttribute("alt"));
+      element.appendChild(component);
+
+      var number_of_slots = document.getElementById("slotsInput").value;
+
+      if (number_of_slots > 1 && component.textContent != "Sliding Door") {
+        element.appendChild(document.createElement("br"));
+        element.appendChild(document.createTextNode("Slot:    "));
+
+        var slot_number_input = document.createElement("input");
+        slot_number_input.setAttribute("type", "number");
+        slot_number_input.setAttribute("value", "1");
+        slot_number_input.setAttribute("min", "1");
+        slot_number_input.setAttribute("max", number_of_slots);
+        slot_number_input.setAttribute("style", "width:40px");
+
+        element.appendChild(slot_number_input);
+        element.appendChild(document.createTextNode("     "));
+
+        var apply_btn = document.createElement("button");
+        apply_btn.setAttribute("class", "btn-custom-2");
+        apply_btn.appendChild(document.createTextNode("Apply"));
+
+        apply_btn.addEventListener("click", function () {
+          apply_btn.onclick = function () {
+            var slot_number_input_value = slot_number_input.value;
+            if (slot_number_input_value > 0 && slot_number_input_value <= number_of_slots) addComponent(component, slot_number_input_value);
+            else alert("There is no such slot!");
+          }
+        });
+        element.appendChild(apply_btn);
+
+      } else {
+        element.appendChild(document.createTextNode("     "));
+        var apply_btn = document.createElement("button");
+        apply_btn.setAttribute("class", "btn-custom-2");
+        apply_btn.appendChild(document.createTextNode("Apply"));
+        apply_btn.addEventListener("click", function () {
+
+          apply_btn.onclick = function () {
+            addComponent(component, 1);
+          }
+        });
+
+        element.appendChild(apply_btn);
+      }
+
+      element.appendChild(document.createElement("br"));
+      list.appendChild(element);
+    }
+
+    function addComponent(element, slotNumber) {
+      var event = new CustomEvent("addComponent", {
+        detail: {
+          component: element,
+          slot: slotNumber
+        }
+      })
+      document.dispatchEvent(event);
+    }
+
+
     function reloadMaterial(elementId) {
       var event = new CustomEvent("changeMaterial", {
         detail: {
@@ -361,18 +433,14 @@
     function changePBMaterial() {
       var divi = document.getElementById("materialP");
       divi.classList.add("active");
-
     }
-    function changePBCreate() {
-      var divi = document.getElementById("createP");
+    function changePBComponents() {
+      var divi = document.getElementById("componentsP");
       divi.classList.add("active");
-
     }
-
     function changePBSave() {
       var divi = document.getElementById("saveP");
       divi.classList.add("active");
-
     }
 
     function decreasePBSlots() {
@@ -382,12 +450,23 @@
     function decreasePBMaterial() {
       var divi = document.getElementById("materialP");
       divi.classList.remove("active");
-
     }
-    function decreasePBCreate() {
-      var divi = document.getElementById("createP");
+    function decreasePBComponents() {
+      var divi = document.getElementById("componentsP");
       divi.classList.remove("active");
     }
+
+    function removeComponents() {
+      document.getElementById("div_customize_component").setAttribute("style", "visibility:hidden"); //Hides scroll panel
+      var list = document.getElementById("list_components");
+
+      var nrChilds = list.childNodes.length;
+      for (let i = 0; i < nrChilds; i++) {
+        list.removeChild(list.childNodes[nrChilds - 1]); //Removes all elements of the list
+      }
+      //!TODO remove webgl components when going back on the wizard
+    }
+
   </script>
   <script>
     /* Set the width of the sidebar to 250px (show it) */
@@ -479,12 +558,10 @@
           <li class="active">Dimensions</li>
           <li class="before" id="divisionP">Number of divisions</li>
           <li class="before" id="materialP">Material and finish</li>
-          <li class="before" id="createP">Creation</li>
+          <li class="before" id="componentsP">Components</li>
           <li class="before" id="saveP">Save</li>
         </ul>
       </div>
-
-
       <br><br>
       <div id="dimensions" class="column left tabcontent active">
         <h2>Dimensions</h2>
@@ -592,26 +669,51 @@
           </ul>
         </div>
         <br>
-        <a class="btn-custom" onclick="openTab(event, 'slots');decreasePBMaterial();decreasePBCreate();forceOnMouseUp()">Back</a>
-        <a class="btn-custom" onclick="openTab(event, 'components');changePBCreate();forceOnMouseUp()">Next</a>
+        <a class="btn-custom" onclick="openTab(event, 'slots');decreasePBMaterial();decreasePBComponents();forceOnMouseUp()">Back</a>
+        <a class="btn-custom" onclick="openTab(event, 'components');changePBComponents();forceOnMouseUp()">Next</a>
       </div>
       <div id="components" class="column left tabcontent" style="display:none">
         <h2>Components</h2>
         <br>
-        <div id="component" class="left active" style="display:grid;height: 100%;width: 100%">
-          <h3 align="center">Drawer Example</h3>
-          <div id="componentMaterials" align="center">
-            <a class="btn-custom" onclick="openTab(event,'materials');">Materials</a>
-          </div>
-          <div id="componentButtons">
-            <br><br><!-- #TODO: Remove <br>!!!-->
-            <a class="btn-component" onclick="chooseComponent('previous')"><i class="material-icons">arrow_back</i></a>
-            <a class="btn-component" onclick="applyComponent()"><i class="material-icons">check</i></a>
-            <a class="btn-component" onclick="chooseComponent('next')"><i class="material-icons">arrow_forward</i></a>
-          </div>
+        <div id="component-scrollable-div" class="scrollable-div" style="height: 270px; width: 100%;">
+          <ul class="material_list">
+            <li>
+              <div class="material-btn" onclick="createComponent('pole');">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="pole" src="http://127.0.0.1:8002/US4000/img/pole.jpeg" alt="Pole" width="100%" />
+                <p>Pole</p>
+              </div>
+            </li>
+            <li>
+              <div class="material-btn" onclick="createComponent('shelf')">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="shelf" src="http://127.0.0.1:8002/US4000/img/shelf.jpeg" alt="Shelf" width="100%" />
+                <p>Shelf</p>
+              </div>
+            </li>
+            <li>
+              <div class="material-btn" onclick="createComponent('drawer');">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="drawer" src="http://127.0.0.1:8002/US4000/img/drawer.jpeg" alt="Drawer" width="100%" />
+                <p>Drawer</p>
+              </div>
+            </li>
+            <li>
+              <div class="material-btn" onclick="createComponent('door');">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="door" src="http://127.0.0.1:8002/US4000/img/door.jpeg" alt="Sliding Door" width="100%" />
+                <p>Sliding Door</p>
+              </div>
+            </li>
+          </ul>
         </div>
-        <br><br><br><br> <!-- #TODO: Remove <br>!!!-->
-        <a class="btn-custom" onclick="openTab(event, 'materials');decreaseToMaterial();forceOnMouseUp()">Back</a>
+        <br>
+        <div id="div_customize_component" class="scrollable-div" style="height: 130; width: 100%; visibility: hidden">
+          <ul id="list_components">
+          </ul>
+        </div>
+        <br>
+        <a class="btn-custom" onclick="openTab(event, 'materials');removeComponents();decreasePBComponents();forceOnMouseUp()">Back</a>
         <a class="btn-custom" onclick="openTab(event,'save');changePBSave();forceOnMouseUp()">Next</a>
       </div>
 
@@ -626,13 +728,16 @@
         <script src="../Renderer/js/ProductRenderer.js"></script>
         <script src="../Renderer/js/Closet.js"></script>
         <script src="../Renderer/js/Pole.js"></script>
+        <script src="../Renderer/js/Shelf.js"></script>
+        <script src="../Renderer/js/Drawer.js"></script>
+        <script src="../Renderer/js/Module.js"></script>
+        <script src="../Renderer/js/SlidingDoor.js"></script>
         <!--Change the texture source, if the server or the port need to change-->
         <script> main('http://127.0.0.1:8002/US4000/img/cherry_wood.jpeg');</script>
       </div>
     </div>
   </div>
   </div>
-
 
 
   <!-- Contact Section -->

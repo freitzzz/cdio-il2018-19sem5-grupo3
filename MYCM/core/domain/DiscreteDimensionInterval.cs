@@ -124,6 +124,16 @@ namespace core.domain
             return matchingValueFound;
         }
 
+        public override double getMaxValue()
+        {
+            return this.values.Max();
+        }
+
+        public override double getMinValue()
+        {
+            return this.values.Min();
+        }
+
         /// <summary>
         /// Equals method of DiscreteDimensionInterval
         /// Two objects are the same if they have the same list of values

@@ -414,25 +414,25 @@ export default class ProductRenderer {
     /**
      * Register the events that can be communicated through the document
      */
-/*     registerEvents() {
-
-        document.addEventListener("changeDimensions", (changeDimensionsEvent) => {
-            this.changeClosetDimensions(changeDimensionsEvent.detail.width, changeDimensionsEvent.detail.height, changeDimensionsEvent.detail.depth);
-        });
-
-        document.addEventListener("changeSlots", (changeSlotsEvent) => {
-            this.changeClosetSlots(changeSlotsEvent.detail.slots, changeSlotsEvent.detail.slotWidths);
-        });
-        document.addEventListener("changeMaterial", (changeMaterialEvent) => {
-            this.applyTexture(changeMaterialEvent.detail.material);
-        });
-        document.addEventListener("changeShininess", (changeShininessEvent) => {
-            this.changeShininess(changeShininessEvent.detail.shininess);
-        });
-        document.addEventListener("changeColor", (changeColorEvent) => {
-            this.changeColor(changeColorEvent.detail.color);
-        });
-    } */
+    /*     registerEvents() {
+    
+            document.addEventListener("changeDimensions", (changeDimensionsEvent) => {
+                this.changeClosetDimensions(changeDimensionsEvent.detail.width, changeDimensionsEvent.detail.height, changeDimensionsEvent.detail.depth);
+            });
+    
+            document.addEventListener("changeSlots", (changeSlotsEvent) => {
+                this.changeClosetSlots(changeSlotsEvent.detail.slots, changeSlotsEvent.detail.slotWidths);
+            });
+            document.addEventListener("changeMaterial", (changeMaterialEvent) => {
+                this.applyTexture(changeMaterialEvent.detail.material);
+            });
+            document.addEventListener("changeShininess", (changeShininessEvent) => {
+                this.changeShininess(changeShininessEvent.detail.shininess);
+            });
+            document.addEventListener("changeColor", (changeColorEvent) => {
+                this.changeColor(changeColorEvent.detail.color);
+            });
+        } */
 
     /**
      * Represents the action that occurs when the mouse's left button is pressed (mouse down),
@@ -455,7 +455,7 @@ export default class ProductRenderer {
             for (var i = 0; i < this.closet_slots_faces_ids.length; i++) {
                 var closet_face = this.group.getObjectById(this.closet_slots_faces_ids[i]);
 
-                if (JSON.stringify(closet_face) == JSON.stringify(face)) {
+                if (closet_face == face) {
                     //Disables rotation while moving the slot
                     this.controls.enabled = false;
                     //Sets the selection to the current slot
@@ -467,8 +467,8 @@ export default class ProductRenderer {
             }
 
             //Checks if the selected closet face isn't a slot
-            if (JSON.stringify(this.group.getObjectById(this.closet_faces_ids[3])) == JSON.stringify(face) ||
-                JSON.stringify(this.group.getObjectById(this.closet_faces_ids[2])) == JSON.stringify(face)) {
+            if (this.group.getObjectById(this.closet_faces_ids[3]) == face ||
+                this.group.getObjectById(this.closet_faces_ids[2]) == face) {
                 //Disables rotation while moving the face
                 this.controls.enabled = false;
                 //Sets the selection to the current face
@@ -504,8 +504,9 @@ export default class ProductRenderer {
 
         var rect = event.target.getBoundingClientRect();
         var x = event.clientX;
+        var y = event.clientY;
         this.mouse.x = (x - rect.left) / (this.canvasWebGL.clientWidth / 2.0) - 1.0; //Get mouse x position
-
+        this.mouse.y = - ((y - rect.bottom) / (this.canvasWebGL.clientHeight / 2.0) + 1.0); //Get mouse y position
         this.raycaster.setFromCamera(this.mouse, this.camera); //Set raycast position
 
         //If the selected object is a slot
@@ -550,32 +551,37 @@ export default class ProductRenderer {
      */
     moveFace() {
         if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+            if (this.selected_face == this.group.getObjectById(this.closet_faces_ids[3])) { //If the selected face is the right one
+                
+                var rightFacePosition = this.intersection.x - this.offset + this.selected_face.position.x; //Position of the right closet face
 
-            var rightFacePosition = this.intersection.x - this.offset + this.selected_face.position.x; //Position of the right closet face
-            var rightSlotPosition = this.group.getObjectById(this.closet_slots_faces_ids[this.closet_slots_faces_ids.length - 1]).position.x; //Position of the last (more to the right) slot 
+                if (this.closet_slots_faces_ids.length == 0) { //If there are no slots
+                    this.selected_face.position.x = rightFacePosition;
+                    this.changeClosetDimensions(rightFacePosition, this.closet.getClosetHeight(), this.closet.getClosetDepth());
+               
+                } else {
+                    var rightSlotPosition = this.group.getObjectById(this.closet_slots_faces_ids[this.closet_slots_faces_ids.length - 1]).position.x; //Position of the last (more to the right) slot 
 
-            var leftFacePosition = - this.intersection.x - this.offset - this.selected_face.position.x; //Position of the left closet face
-            var leftSlotPosition = - this.group.getObjectById(this.closet_slots_faces_ids[0]).position.x; //Position of the first (more to the left) slot
+                    if (rightFacePosition - rightSlotPosition > rightSlotPosition) { //Checks if right face doesn't intersect the slot
+                        this.selected_face.position.x = rightFacePosition;
+                        this.changeClosetDimensions(rightFacePosition, this.closet.getClosetHeight(), this.closet.getClosetDepth());
+                    }
+                }
+            } else if (this.selected_face == this.group.getObjectById(this.closet_faces_ids[2])) { //If the selected face is the left one
 
-            /**
-             * Checks if...
-             * - ... the selected face is the right face of the closet
-             * - ... the position of the face doesn't overlap the position of the last (more to the right) slot
-             */
-            if (JSON.stringify(this.selected_face) == JSON.stringify(this.group.getObjectById(this.closet_faces_ids[3])) &&
-                rightFacePosition - rightSlotPosition > rightSlotPosition) {
-                this.selected_face.position.x = rightFacePosition;
-                this.changeClosetDimensions(rightFacePosition, this.closet.getClosetHeight(), this.closet.getClosetDepth());
-            }
-            /**
-             * Checks if...
-             * - ... the selected face is the left face of the closet
-             * - ... the position of the face doesn't overlap the position of the first (more to the left) slot
-             */
-            else if (JSON.stringify(this.selected_face) == JSON.stringify(this.group.getObjectById(this.closet_faces_ids[2])) &&
-                leftFacePosition - leftSlotPosition > leftSlotPosition) {
-                this.selected_face.position.x = leftFacePosition;
-                this.changeClosetDimensions(leftFacePosition, this.closet.getClosetHeight(), this.closet.getClosetDepth());
+                var leftFacePosition = - this.intersection.x - this.offset - this.selected_face.position.x; //Position of the left closet face
+                
+                if (this.closet_slots_faces_ids.length == 0) { //If there are no slots
+                    this.selected_face.position.x = leftFacePosition;
+                    this.changeClosetDimensions(leftFacePosition, this.closet.getClosetHeight(), this.closet.getClosetDepth());
+                } else {
+                    var leftSlotPosition = - this.group.getObjectById(this.closet_slots_faces_ids[0]).position.x; //Position of the first (more to the left) slot
+
+                    if (leftFacePosition - leftSlotPosition > leftSlotPosition) { //Checks if left face doesn't intersect the slot
+                        this.selected_face.position.x = leftFacePosition;
+                        this.changeClosetDimensions(leftFacePosition, this.closet.getClosetHeight(), this.closet.getClosetDepth());
+                    }
+                }
             }
         }
     }

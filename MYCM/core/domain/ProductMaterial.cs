@@ -25,13 +25,13 @@ namespace core.domain
         /// </summary>
         /// 
         private Material _material;//!private field used for lazy loading, do not use this for storing or fetching data
-        public Material material { get => LazyLoader.Load(this, ref _material); set => _material = value; }
+        public Material material { get => LazyLoader.Load(this, ref _material); protected set => _material = value; }
 
         /// <summary>
         /// List of restrictions in this relation
         /// </summary>
         private List<Restriction> _restrictions;//!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); set => _restrictions = value; }
+        public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); protected set => _restrictions = value; }
 
         /// <summary>
         /// Product's database identifier (Foreign Key, part of this class's Primary Key).
@@ -43,7 +43,7 @@ namespace core.domain
         /// Product
         /// </summary>
         private Product _product;//!private field used for lazy loading, do not use this for storing or fetching data
-        public Product product { get => LazyLoader.Load(this, ref _product); set => _product = value; }
+        public Product product { get => LazyLoader.Load(this, ref _product); protected set => _product = value; }
 
         /// <summary>
         /// LazyLoader injected by the framework.
