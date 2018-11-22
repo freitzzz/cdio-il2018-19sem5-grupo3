@@ -1,4 +1,5 @@
 using core.domain;
+using core.modelview.algorithm;
 using System;
 using System.Collections.Generic;
 
@@ -17,7 +18,9 @@ namespace core.modelview.restriction{
             GetBasicRestrictionModelView basicRestrictionModelView=new GetBasicRestrictionModelView();
             basicRestrictionModelView.id=restriction.Id;
             basicRestrictionModelView.description=restriction.description;
-            throw new NotImplementedException();
+            basicRestrictionModelView.algorithm = new GetBasicAlgorithmModelView();
+            basicRestrictionModelView.algorithm.id = restriction.algorithm;
+            return basicRestrictionModelView;
         }
 
         /// <summary>

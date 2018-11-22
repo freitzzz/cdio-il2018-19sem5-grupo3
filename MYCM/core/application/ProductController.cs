@@ -11,6 +11,9 @@ using core.services;
 using support.dto;
 using support.utils;
 using core.services.ensurance;
+using core.modelview.measurement;
+using System.Linq;
+using core.exceptions;
 
 namespace core.application
 {
@@ -18,35 +21,35 @@ namespace core.application
     /// Core ProductController class
     /// </summary>
     public class ProductController{
-
-        /// <summary>
-        /// Constant that represents the message that occurs if the update of a product wasn't successful
-        /// </summary>
-        public const string INVALID_PRODUCT_UPDATE="An error occured while updating the product";
         /// <summary>
         /// Constant that represents the message that occurs if the user does not provide inputs
         /// </summary>
         private const string LIST_OF_INPUTS_MISSING = "The selected algorithm requires inputs!";
         /// <summary>
-        /// Constant that represents the message that occures if the materials being fetched 
-        /// are invalid
+        /// Constant representing the message presented when no Product is found with a given identifier.
         /// </summary>
-        private const string INVALID_MATERIALS_FETCH="The materials being fetched are invalid";
+        private const string ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID = "Unable to find a product with an identifier of: {0}";
         /// <summary>
-        /// Constant that represents the message that occures if the components being fetched 
-        /// are invalid
+        /// Constant representing the message presented when no Product is found with a given reference.
         /// </summary>
-        private const string INVALID_COMPONENTS_FETCH="The components being fetched are invalid";
+        private const string ERROR_UNABLE_TO_FIND_PRODUCT_BY_REFERENCE = "Unable to find a product with a reference of: {0}";
         /// <summary>
-        /// Constant that represents the message that occures if the products being fetched 
-        /// are invalid
+        /// Constant representing the message presented when no Material is found with a given identifier.
         /// </summary>
-        private const string INVALID_PRODUCTS_FETCH="The products being fetched are invalid";
+        private const string ERROR_UNABLE_TO_FIND_MATERIAL_BY_ID = "Unable to find a material with an identifier of: {0}";
         /// <summary>
-        /// Constant that represents the message that occures if the dimensions being fetched 
-        /// are invalid
+        /// Constant representing the message presented when no Measurement is found with a given identifier.
         /// </summary>
-        private const string INVALID_DIMENSIONS_FETCH="The dimensions being fetched are invalid";
+        /// <value></value>
+        private const string ERROR_UNABLE_TO_FIND_MEASUREMENT_BY_ID = "Unable to find dimensions with an identifier of: {0}";
+        /// <summary>
+        /// Constant representing the message presented when no Restriction is found with a given identifier.
+        /// </summary>
+        private const string ERROR_UNABLE_FIND_RESTRICTION_BY_ID = "Unable to find restrictiong with an identifier of: {0}";
+        /// <summary>
+        /// Constant representing the message presented when the new Product could not be saved.
+        /// </summary>
+        private const string ERROR_UNABLE_TO_SAVE_PRODUCT = "Unable to save the product, make sure the reference is unique.";
 
         /// <summary>
         /// Builds a new ProductController
@@ -54,15 +57,365 @@ namespace core.application
         public ProductController(){ }
 
         /// <summary>
-        /// Adds a new product
+        /// Retrieves a Collection of all the Products in the Product Repository.
         /// </summary>
-        /// <param name="addProductMV">ModelView with the product information</param>
+        /// <returns>An instance of GetAllProductsModelView with all the Products.</returns>
+        public GetAllProductsModelView findAllProducts(){
+            return ProductModelViewService.fromCollection(
+                PersistenceContext.repositories().createProductRepository().findAll()
+            );
+        }
+
+        /// <summary>
+        /// Retrieves a Collection of all the base Products in the Product Repository.
+        /// A base Product is a Product that is not owned by any other Product.
+        /// </summary>
+        /// <returns>An instance of GetAllProductsModelView with all the base Products.</returns>
+        public GetAllProductsModelView findBaseProducts(){
+            return ProductModelViewService.fromCollection(
+                PersistenceContext.repositories().createProductRepository().findBaseProducts()
+            );
+        }
+
+        /// <summary>
+        /// Finds a Product by an identifier, be it a business identifier or a persistence identifier.
+        /// </summary>
+        /// <param name="fetchProductDTO">DTO containing information used for querying and data conversion.</param>
+        /// <returns>An instance of GetProductModelView with the Product's information.</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when the Product is not found.</exception>
+        public GetProductModelView findProduct(FetchProductDTO fetchProductDTO){
+
+            Product product = null;
+
+            //if no reference value is specified, search by id
+            if(Strings.isNullOrEmpty(fetchProductDTO.reference)){
+                product = PersistenceContext.repositories().createProductRepository().find(fetchProductDTO.id);
+
+                if(product == null){
+                    throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, fetchProductDTO.id));
+                }
+            }
+            else{
+                product = PersistenceContext.repositories().createProductRepository().find(fetchProductDTO.reference);
+
+                if(product == null){
+                    throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_REFERENCE, fetchProductDTO.reference));
+                }
+            }
+
+            return ProductModelViewService.fromEntity(product, fetchProductDTO.productDTOOptions.requiredUnit);
+        }
+
+        /// <summary>
+        /// Finds a Product's Collection of Measurement.
+        /// </summary>
+        /// <param name="fetchProductDTO">DTO containing information used for querying and data conversion.</param>
+        /// <returns>GetAllMeasurementsModelView with all of the elements in the Product's Collection of Measurement.</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when the Product could not be found.</exception>
+        public GetAllMeasurementsModelView findProductMeasurements(FetchProductDTO fetchProductDTO){
+            
+            Product product = PersistenceContext.repositories().createProductRepository().find(fetchProductDTO.id);
+
+            if(product == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, fetchProductDTO.id));
+            }
+
+            //allow unit conversion
+            return MeasurementModelViewService.fromCollection(product.productMeasurements.Select(pm => pm.measurement), fetchProductDTO.productDTOOptions.requiredUnit);
+        }
+
+        /// <summary>
+        /// Finds a Product's collection of Component.
+        /// </summary>
+        /// <param name="fetchProductDTO">DTO containing information used for querying.</param>
+        /// <returns>GetAllComponentsModelView with all of the elements in the Product's Collection of Component.</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when the Product could not be found.</exception>
+        public GetAllComponentsModelView findProductComponents(FetchProductDTO fetchProductDTO){
+            
+            Product product = PersistenceContext.repositories().createProductRepository().find(fetchProductDTO.id);
+
+            if(product == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, fetchProductDTO.id));
+            }
+
+            return ComponentModelViewService.fromCollection(product.components);
+        }
+
+        /// <summary>
+        /// Finds a Product's Collection of Material.
+        /// </summary>
+        /// <param name="fetchProductDTO">DTO containing information used for querying.</param>
+        /// <returns>GetAllMaterialsModelView with all of the elements in the Product's Collection of Material.</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when the Product could not be found.</exception>
+        public GetAllMaterialsModelView findProductMaterials(FetchProductDTO fetchProductDTO){
+            Product product = PersistenceContext.repositories().createProductRepository().find(fetchProductDTO.id);
+
+            if(product == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, fetchProductDTO.id));
+            }
+            return MaterialModelViewService.fromCollection(product.productMaterials.Select(pm => pm.material));
+        }
+
+        /// <summary>
+        /// Finds a Product's Measurement's Collection of Restriction.
+        /// </summary>
+        /// <param name="productMeasurementModelView">GetProductMeasurementModelView with the Product's and the Measurement's persistence identifier.</param>
+        /// <returns>An instance of GetAllRestrictionsModelView containing the information of all the Measurement's restrictions.</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when either the Product or the Measurement could not be found.</exception>
+        public GetAllRestrictionsModelView findMeasurementRestrictions(GetProductMeasurementModelView productMeasurementModelView){
+            
+            Product product = PersistenceContext.repositories().createProductRepository().find(productMeasurementModelView.productId);
+
+            if(product == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, productMeasurementModelView.productId));
+            }
+
+            //filter through the product's measurements
+            Measurement measurement = product.productMeasurements
+                .Where(productMeasurement => productMeasurement.measurementId == productMeasurementModelView.measurementId)
+                    .Select(productMeasurement => productMeasurement.measurement).SingleOrDefault();
+            
+            if(measurement == null){
+                throw new ResourceNotFoundException(
+                    string.Format(ERROR_UNABLE_TO_FIND_MEASUREMENT_BY_ID, productMeasurementModelView.measurementId)
+                    );
+            }
+
+            return RestrictionModelViewService.fromCollection(measurement.restrictions);
+        }
+
+        /// <summary>
+        /// Finds a Product's Component's Collection of Restriction.
+        /// </summary>
+        /// <param name="componentModelView">GetComponentModelView with the parent and child Products' persistence identifiers.</param>
+        /// <returns>An instance of GetAllRestrictionsModelView containing the information of all the Component's restrictions.</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when either of the Products could not be found.</exception>
+        public GetAllRestrictionsModelView findComponentRestrictions(GetComponentModelView componentModelView){
+            Product parentProduct = PersistenceContext.repositories().createProductRepository().find(componentModelView.fatherProductID);
+
+            if(parentProduct == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, componentModelView.fatherProductID));
+            }
+
+            Component component = parentProduct.components.Where(c => c.complementaryProductId == componentModelView.id).SingleOrDefault();
+
+            if(component == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, componentModelView.fatherProductID));
+            }
+
+            return RestrictionModelViewService.fromCollection(component.restrictions);
+        }
+
+        /// <summary>
+        /// Finds a Product's Material's Collection of Restriction.
+        /// </summary>
+        /// <param name="productMaterialModelView">GetProductMaterialModelView with the Product and Material persistence identifiers.</param>
+        /// <returns>An instance of GetAllRestrictionsModelView containing the information of all the Materials's restrictions.</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when either the Product or the Material could not be found.</exception>
+        public GetAllRestrictionsModelView findMaterialRestrictions(GetProductMaterialModelView productMaterialModelView){
+            Product product = PersistenceContext.repositories().createProductRepository().find(productMaterialModelView.productId);
+
+            if(product == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, productMaterialModelView.productId));
+            }
+
+            ProductMaterial productMaterial = product.productMaterials
+                .Where(pm => pm.materialId == productMaterialModelView.materialId).SingleOrDefault();
+
+            if(productMaterial == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MATERIAL_BY_ID, productMaterialModelView.materialId));
+            }
+
+            return RestrictionModelViewService.fromCollection(productMaterial.restrictions);
+        }
+
+        /// <summary>
+        /// Adds a new instance of Product.
+        /// </summary>
+        /// <param name="addProductMV">AddProductModelView with the product information</param>
         /// <returns>GetProductModelView with the created product, null if the product was not created</returns>
         public GetProductModelView addProduct(AddProductModelView addProductMV){
             Product newProduct= CreateProductService.create(addProductMV);
-            newProduct=PersistenceContext.repositories().createProductRepository().save(newProduct);
-            if (newProduct == null) return null;
+            newProduct = PersistenceContext.repositories().createProductRepository().save(newProduct);
+            //an entity will be null after save if an equal entity was found in the repository
+            if(newProduct == null){
+                throw new ArgumentException(ERROR_UNABLE_TO_SAVE_PRODUCT);
+            }
+
             return ProductModelViewService.fromEntity(newProduct);
+        }
+
+        /// <summary>
+        /// Adds a Measurement to a Product.
+        /// </summary>
+        /// <param name="addMeasurementToProductMV">AddMeasurementToProductModelView containing the data of the Measurement instance being added.</param>
+        /// <returns>GetProductModelView with updated Product information.</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when the Product could not be found.</exception>
+        public GetProductModelView addMeasurementToProduct(AddMeasurementToProductModelView addMeasurementToProductMV){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product product = PersistenceContext.repositories().createProductRepository().find(addMeasurementToProductMV.productID);
+
+            if(product == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, addMeasurementToProductMV.productID));
+            }
+
+            Measurement measurement = MeasurementModelViewService.fromModelView(addMeasurementToProductMV);
+
+            product.addMeasurement(measurement);
+
+            product = productRepository.update(product);
+
+            return ProductModelViewService.fromEntity(product);
+        }
+
+
+        /// <summary>
+        /// Adds a complementary Product to a Product.
+        /// </summary>
+        /// <param name="addComponentToProductMV">AddComponentToProductModelView containing the data of the complementary Product being added.</param>
+        /// <returns>GetProductModelView with updated Product information.</returns>
+        /// <exception cref="ResourceNotFoundException">Throw when either of the Products could not be found.</exception>
+        public GetProductModelView addComponentToProduct(AddComponentToProductModelView addComponentToProductMV){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productToAddComponent=productRepository.find(addComponentToProductMV.productID);
+
+            if(productToAddComponent == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, addComponentToProductMV.productID));
+            }
+
+            Product componentBeingAdded=productRepository.find(addComponentToProductMV.complementedProductID);
+
+            if(componentBeingAdded == null){
+               throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, addComponentToProductMV.complementedProductID));
+            }
+
+            if(addComponentToProductMV.mandatory){
+                productToAddComponent.addMandatoryComplementaryProduct(componentBeingAdded);
+            }else{
+                productToAddComponent.addComplementaryProduct(componentBeingAdded);
+            }
+            
+            productToAddComponent = productRepository.update(productToAddComponent);
+
+            return ProductModelViewService.fromEntity(productToAddComponent);
+        }
+
+        /// <summary>
+        /// Adds a Material to a Product.
+        /// </summary>
+        /// <param name="addMaterialToProductMV">AddMaterialToProductModelView with the material addition information</param>
+        /// <returns>GetProductModelView with updated Product information.</returns>
+        ///<exception cref="ResourceNotFoundException">Thrown when either the Product or the Material could not be found.</exception>
+        public GetProductModelView addMaterialToProduct(AddMaterialToProductModelView addMaterialToProductMV){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product productToAddMaterial=productRepository.find(addMaterialToProductMV.productID);
+
+            if(productToAddMaterial == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, addMaterialToProductMV.productID));
+            }
+
+            Material materialBeingAdded=PersistenceContext.repositories().createMaterialRepository().find(addMaterialToProductMV.materialID);
+
+            if(materialBeingAdded == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MATERIAL_BY_ID, addMaterialToProductMV.materialID));
+            }
+            
+            productToAddMaterial.addMaterial(materialBeingAdded);
+            
+            productToAddMaterial = productRepository.update(productToAddMaterial);
+
+            return ProductModelViewService.fromEntity(productToAddMaterial);
+        }
+
+        /// <summary>
+        /// Adds a Restriction to a Product's Measurement.
+        /// </summary>
+        /// <param name="addRestrictionToProductMeasurementMV">AddRestrictionToProductMeasurementModelView with the Product's and Measurement's persistence identifiers
+        /// as well as the Restriction's data.</param>
+        /// <returns>GetProductModelView with updated Product information.</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when either the Product or the Measurement could not be found.</exception>
+        public GetProductModelView addRestrictionToProductMeasurement(AddRestrictionToProductMeasurementModelView addRestrictionToProductMeasurementMV){
+            
+            ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
+        
+            Product product = productRepository.find(addRestrictionToProductMeasurementMV.productId);
+
+            if(product == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, addRestrictionToProductMeasurementMV.productId));
+            }
+
+            Measurement measurement = product.productMeasurements
+                .Where(pm => pm.measurementId == addRestrictionToProductMeasurementMV.measurementId).Select(pm => pm.measurement).SingleOrDefault();
+
+            if(measurement == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MEASUREMENT_BY_ID, addRestrictionToProductMeasurementMV.measurementId));
+            }
+
+            Restriction restriction = addRestrictionToProductMeasurementMV.restriction.toEntity();
+
+            product.addMeasurementRestriction(measurement, restriction);
+
+            product = productRepository.update(product);
+
+            return ProductModelViewService.fromEntity(product);
+        }
+
+        /// <summary>
+        /// Adds a Restriction to a Product's complementary Product.
+        /// </summary>
+        /// <param name="addRestrictionToProductComponentMV">AddRestrictionToProductComponentModelView containing the data of the Restriction instance being added.</param>
+        /// <returns>GetProductModelView with updated Product information.</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when either of the Products could not be found.</exception>
+        public GetProductModelView addRestrictionToProductComponent(AddRestrictionToProductComponentModelView addRestrictionToProductComponentMV){
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product parentProduct=productRepository.find(addRestrictionToProductComponentMV.productID);
+
+            if(parentProduct == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, addRestrictionToProductComponentMV.productID));
+            }
+
+            //filter product's components rather than accessing the repository
+            Product childProduct = parentProduct.components
+                .Where(component => component.complementaryProduct.Id == addRestrictionToProductComponentMV.componentID)
+                .Select(component => component.complementaryProduct).SingleOrDefault();
+
+            if(childProduct == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, addRestrictionToProductComponentMV.componentID));
+            }
+            Restriction restriction = addRestrictionToProductComponentMV.restriction.toEntity();
+            parentProduct.addComponentRestriction(childProduct, restriction);
+            parentProduct = productRepository.update(parentProduct);
+            return ProductModelViewService.fromEntity(parentProduct);
+        }
+
+        /// <summary>
+        /// Adds a Restriction to a Product's Material.
+        /// </summary>
+        /// <param name="addRestrictionModelView">AddRestrictionToProductMaterialModelView containing the data of the Restriction instance being added.</param>
+        /// <returns>GetProductModelView with updated Product information.</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when the Product or the Material could not be found.</exception>
+        public GetProductModelView addRestrictionToProductMaterial(AddRestrictionToProductMaterialModelView addRestrictionModelView){
+            ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
+            Product product = productRepository.find(addRestrictionModelView.productId);
+        
+            if(product == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, addRestrictionModelView.productId));
+            }
+
+            //filter product's materials rather than accessing the repository
+            Material material = product.productMaterials
+                .Where(productMaterial => productMaterial.materialId == addRestrictionModelView.materialId)
+                .Select(productMaterial => productMaterial.material).SingleOrDefault();
+
+            if(material == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MATERIAL_BY_ID, addRestrictionModelView.materialId));
+            }
+
+            Restriction restriction = addRestrictionModelView.restriction.toEntity();
+
+            product.addMaterialRestriction(material, restriction);
+            product = productRepository.update(product);
+            return ProductModelViewService.fromEntity(product);
         }
 
         /// <summary>
@@ -101,170 +454,192 @@ namespace core.application
         }
 
         /// <summary>
-        /// Adds a material to a product
+        /// Disables a Product.
         /// </summary>
-        /// <param name="addComponentToProductDTO">AddMaterialToProductDTO with the material addition information</param>
-        /// <returns>MaterialDTO with the material that was added to the product</returns>
-        public GetProductModelView addMaterialToProduct(AddMaterialToProductModelView addMaterialToProductDTO){
+        /// <param name="deleteProductMV">DeleteProductModelView with the Product data being disabled.</param>
+        /// <exception cref="ResourceNotFoundException">Thrown when the Product is not found.</exception>
+        public void disableProduct(DeleteProductModelView deleteProductMV){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productToAddMaterial=productRepository.find(addMaterialToProductDTO.productID);
-            //TODO:CHECK PRODUCT EXISTENCE
-            if(productToAddMaterial == null){
-                throw new ArgumentException();
+            Product productBeingDisabled=productRepository.find(deleteProductMV.productId);
+
+            if(productBeingDisabled == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteProductMV.productId));
             }
-            Material materialBeingAdded=PersistenceContext.repositories().createMaterialRepository().find(addMaterialToProductDTO.materialID);
-            if(materialBeingAdded == null){
-                throw new ArgumentException();
-            }
-            //TODO:CHECK MATERIAL EXISTENCE
-            bool added = productToAddMaterial.addMaterial(materialBeingAdded);
-            if(!added){
-                throw new ArgumentException();
-            }
-            //TODO:CHECK PRODUCT UPDATE SUCCESS
-            productToAddMaterial = productRepository.update(productToAddMaterial);
-            return ProductModelViewService.fromEntity(productToAddMaterial);
+
+            productRepository.remove(productBeingDisabled);
         }
 
         /// <summary>
-        /// Deletes a material from a product
+        /// Deletes an instance of Measurement from a Product.
         /// </summary>
-        /// <param name="deleteMaterialFromProductDTO">DeleteMaterialFromProductDTO with the material deletion information</param>
-        public GetProductModelView deleteMaterialFromProduct(DeleteMaterialFromProducModelView deleteMaterialFromProductDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productToRemoveMaterial=productRepository.find(deleteMaterialFromProductDTO.productID);
-            if(productToRemoveMaterial == null){
-                throw new ArgumentException();
+        /// <param name="deleteMeasurementModelView">DeleteMeasurementFromProductModelView with the Product's and the Measurement's persistence identifiers.</param>
+        /// <exception cref="ResourceNotFoundException">Throw when either the Product or the Measurement could not be found.</exception>
+        public void deleteMeasurementFromProduct(DeleteMeasurementFromProductModelView deleteMeasurementModelView){
+            Product product = PersistenceContext.repositories().createProductRepository().find(deleteMeasurementModelView.productId);
+    
+            if(product == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteMeasurementModelView.productId));
             }
-            //TODO:CHECK PRODUCT EXISTENCE
-            Material materialBeingDeleted=PersistenceContext.repositories().createMaterialRepository().find(deleteMaterialFromProductDTO.materialID);
-            if(materialBeingDeleted == null){
-                throw new ArgumentException();
-            }
-            //TODO:CHECK MATERIAL EXISTENCE
-            bool removed = productToRemoveMaterial.removeMaterial(materialBeingDeleted);
-            if(!removed){
-                throw new ArgumentException();
-            }
-            //TODO:CHECK PRODUCT UPDATE SUCCESS
-            productToRemoveMaterial = productRepository.update(productToRemoveMaterial);
 
-            return ProductModelViewService.fromEntity(productToRemoveMaterial);
-        }
+            Measurement measurement = product.productMeasurements.Where(pm => pm.measurementId == deleteMeasurementModelView.measurementId)
+                .Select(pm => pm.measurement).SingleOrDefault();
 
-        /// <summary>
-        /// Adds a component to a product
-        /// </summary>
-        /// <param name="addComponentToProductDTO">AddComponentToProductDTO with the component addition information</param>
-        /// <returns>ComponentDTO with the component that was added to the product</returns>
-        public GetComponentModelView addComponentToProduct(AddComponentToProductModelView addComponentToProductDTO){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productToAddComponent=productRepository.find(addComponentToProductDTO.productID);
-            //TODO:CHECK PRODUCT EXISTENCE
-            Product componentBeingAdded=productRepository.find(addComponentToProductDTO.complementedProductID);
-            //TODO:CHECK COMPLEMENTED PRODUCT EXISTENCE
-            productToAddComponent.addComplementaryProduct(componentBeingAdded);
-            //TODO:CHECK PRODUCT UPDATE SUCCESS
-            productRepository.update(productToAddComponent);
-            //TODO:REPLACE WITH MODEL VIEW DTO (ComponentDetailsDTO)
-            //return componentBeingAdded.toDTO();
-            return null;
+            if(measurement == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MEASUREMENT_BY_ID, deleteMeasurementModelView.measurementId));
+            }
+
+            product.removeMeasurement(measurement);
         }
         
         /// <summary>
-        /// Deletes a component from a product
+        /// Deletes a Product's complementary Product.
         /// </summary>
-        /// <param name="deleteComponentFromProductDTO">DeleteComponentFromProductDTO with the component deletion information</param>
-        public void deleteComponentFromProduct(DeleteComponentFromProductModelView deleteComponentFromProductDTO){
+        /// <param name="deleteComponentFromProductMV">DeleteComponentFromProductDTO with the component deletion information<</param>
+        ///<exception cref="ResourceNotFoundException">Thrown when either of the Products could not be found.</exception>
+        public void deleteComponentFromProduct(DeleteComponentFromProductModelView deleteComponentFromProductMV){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productToRemoveComponent=productRepository.find(deleteComponentFromProductDTO.productID);
-            //TODO:CHECK PRODUCT EXISTENCE
-            Product productBeingDeleted=productRepository.find(deleteComponentFromProductDTO.componentID);
-            //TODO:CHECK COMPLEMENTED PRODUCT EXISTENCE
+            Product productToRemoveComponent=productRepository.find(deleteComponentFromProductMV.productID);
+
+            if(productToRemoveComponent == null){
+                throw new ArgumentException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteComponentFromProductMV.productID));
+            }
+
+            //filter product's components rather than accessing the repository
+            Product productBeingDeleted = productToRemoveComponent.components
+                .Where(component => component.complementaryProduct.Id == deleteComponentFromProductMV.componentID)
+                .Select(component => component.complementaryProduct).SingleOrDefault();
+
+            if(productBeingDeleted == null){
+                throw new ArgumentException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteComponentFromProductMV.componentID));
+            }
+            
             productToRemoveComponent.removecomplementaryProduct(productBeingDeleted);
-            //TODO:CHECK PRODUCT UPDATE SUCCESS
-            productRepository.update(productToRemoveComponent);
+
+            productToRemoveComponent = productRepository.update(productToRemoveComponent);
         }
 
         /// <summary>
-        /// Adds a restriction to a product component
+        /// Deletes a Material from a Product's Collection of Material.
         /// </summary>
-        /// <param name="addRestrictionToProductComponentDTO">AddRestrictionToProductComponentDTO with the restriction addition information</param>
-        /// <returns>RestrictionDTO with the product component added restriction</returns>
-        public GetRestrictionModelView addRestrictionToProductComponent(AddRestrictionToProductComponentModelView addRestrictionToProductComponentDTO){
+        /// <param name="deleteMaterialFromProductMV">DeleteMaterialFromProductDTO with the material deletion information</param>
+        /// <exception cref="ResourceNotFoundException">Thrown when either Product or the Material could not be found.</exception>
+        public void deleteMaterialFromProduct(DeleteMaterialFromProducModelView deleteMaterialFromProductMV){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productWithComponentBeingAddedRestriction=productRepository.find(addRestrictionToProductComponentDTO.productID);
-            //TODO: CHECK PRODUCT EXISTENCE
-            Product productComponentBeingAddedRestriction=productRepository.find(addRestrictionToProductComponentDTO.componentID);
-            //TODO: CHECK COMPLEMENTED PRODUCT EXISTENCE
-            //TODO: RESTRICTION DTO SERVICE
+            Product productToRemoveMaterial = productRepository.find(deleteMaterialFromProductMV.productID);
 
-            productRepository.update(productWithComponentBeingAddedRestriction);
-            //TODO: CHECK UPDATE SUCCESS
-            throw new NotImplementedException();
+            if(productToRemoveMaterial == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteMaterialFromProductMV.productID));
+            }
+
+            //filter through the product's current materials
+            Material materialBeingDeleted = productToRemoveMaterial.productMaterials
+                .Where(productMaterial => productMaterial.materialId == deleteMaterialFromProductMV.materialID)
+                .Select(productMaterial => productMaterial.material).SingleOrDefault();
+
+            if(materialBeingDeleted == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MATERIAL_BY_ID, deleteMaterialFromProductMV.materialID));
+            }
+            
+            productToRemoveMaterial.removeMaterial(materialBeingDeleted);
+
+            productToRemoveMaterial = productRepository.update(productToRemoveMaterial);
         }
+        
 
         /// <summary>
-        /// Deletes a restriction from a product component
+        /// Deletes a Restriction from a Product's Measurement.
         /// </summary>
-        /// <param name="deleteRestrictionFromProductComponentDTO">DeleteRestrictionFromProductComponentDTO with the restriction deletion information</param>
-        public void deleteRestrictionFromProductComponent(DeleteRestrictionFromProductComponentModelView deleteRestrictionFromProductComponentDTO){
+        /// <param name="deleteRestrictionFromProductMeasurementMV">DeleteRestrictionFromProductMeasurementModelView with the Product's, the Measurement's and the Restriction's persistence identifier.</param>
+        /// <exception cref="ResourceNotFoundException">Thrown when the Product, the Measurement or the Restriction could not be found.</exception>
+        public void deleteRestrictionFromProductMeasurement(DeleteRestrictionFromProductMeasurementModelView deleteRestrictionFromProductMeasurementMV){
+            ProductRepository productRepository = PersistenceContext.repositories().createProductRepository(); 
+            Product product = productRepository.find(deleteRestrictionFromProductMeasurementMV.productId);
+
+            if(product == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteRestrictionFromProductMeasurementMV.productId));
+            }
+
+            Measurement measurement = product.productMeasurements.Where(pm => pm.measurementId == deleteRestrictionFromProductMeasurementMV.measurementId)
+                .Select(pm => pm.measurement).SingleOrDefault();
+
+            if(measurement == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MEASUREMENT_BY_ID, deleteRestrictionFromProductMeasurementMV.measurementId));
+            }
+
+            Restriction restriction = measurement.restrictions.Where(r => r.Id == deleteRestrictionFromProductMeasurementMV.restrictionId).SingleOrDefault();
+
+            if(restriction == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_FIND_RESTRICTION_BY_ID, deleteRestrictionFromProductMeasurementMV.restrictionId));
+            }
+
+            measurement.restrictions.Remove(restriction);
+            product = productRepository.update(product);
+        }
+
+
+        /// <summary>
+        /// Deletes an instance of Restriction from a Product's Component.
+        /// </summary>
+        /// <param name="deleteRestrictionFromProductComponentMV">DeleteRestrictionFromProductComponentDTO with the restriction deletion information</param>
+        /// <exception cref="ResourceNotFoundException">Thrown when either of the Products or the Restriction could not be found.</exception>
+        public void deleteRestrictionFromProductComponent(DeleteRestrictionFromProductComponentModelView deleteRestrictionFromProductComponentMV){
+            
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productWithComponentBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductComponentDTO.productID);
-            //TODO: CHECK PRODUCT EXISTENCE
-            Product productComponentBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductComponentDTO.componentID);
-            //TODO: CHECK COMPLEMENTED PRODUCT EXISTENCE
-            //TODO: RESTRICTION REPOSITORY ? ? ? ? ? ? :\
+            Product productWithComponentBeingDeletedRestriction=productRepository.find(deleteRestrictionFromProductComponentMV.productID);
 
-            productRepository.update(productWithComponentBeingDeletedRestriction);
-            //TODO:CHECK PRODUCT UPDATE SUCCESS
-            throw new NotImplementedException();
+            if(productWithComponentBeingDeletedRestriction == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteRestrictionFromProductComponentMV.productID));
+            }
+
+            Component productComponentBeingDeletedRestriction=productWithComponentBeingDeletedRestriction.components
+                .Where(component => component.complementaryProduct.Id == deleteRestrictionFromProductComponentMV.componentID).SingleOrDefault();
+
+            if(productComponentBeingDeletedRestriction == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteRestrictionFromProductComponentMV.componentID));
+            }
+
+            Restriction restriction = productComponentBeingDeletedRestriction.restrictions
+                .Where(r => r.Id == deleteRestrictionFromProductComponentMV.restrictionID).SingleOrDefault();
+
+            if(restriction == null){
+                throw new ResourceNotFoundException();
+            }
+
+            productComponentBeingDeletedRestriction.restrictions.Remove(restriction);
+
+            productWithComponentBeingDeletedRestriction = productRepository.update(productWithComponentBeingDeletedRestriction);
         }
-
-
+        
         /// <summary>
-        /// Disables a product
+        /// Deletes an instance of Restriction from a Product's Material.
         /// </summary>
-        /// <param name="deleteProductMV">DeleteProductModelView with the product data being disabled</param>
-        /// <returns>boolean true if the product was disabled with success, false if not</returns>
-        public bool disableProduct(DeleteProductModelView deleteProductMV){
-            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
-            Product productBeingDisabled=productRepository.find(deleteProductMV.productId);
-            return productBeingDisabled!=null && productBeingDisabled.deactivate() && productRepository.update(productBeingDisabled)!=null;
-        }
+        /// <param name="deleteRestrictionFromProductMaterialMV">DeleteRestrictionFromProductMaterialModelView containing the Product's, the Materials's and the Restriction's persistence identifiers.</param>
+        /// <exception cref="ResourceNotFoundException">Thrown when the Product, the Material or the Restriction could not be found.</exception>
+        public void deleteRestrictionFromProductMaterial(DeleteRestrictionFromProductMaterialModelView deleteRestrictionFromProductMaterialMV){
+            ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
 
-        /// <summary>
-        /// Fetches a list of all products present in the product repository
-        /// </summary>
-        /// <returns>a list of all of the products model views</returns>
-        public GetAllProductsModelView findAllProducts(){
-            return ProductModelViewService.fromCollection(
-                PersistenceContext.repositories().createProductRepository().findAll()
-            );
-        }
+            Product product = productRepository.find(deleteRestrictionFromProductMaterialMV.productId);
 
-        /// <summary>
-        /// Returns a product which has a certain persistence id
-        /// </summary>
-        /// <param name="productDTO">FetchProductDTO with the product fetch information</param>
-        /// <returns>GetProductModelView with the product which has a certain persistence id</returns>
-        public GetProductModelView findProductByID(FetchProductDTO fetchProductDTO){
-            return ProductModelViewService.fromEntity(
-                PersistenceContext.repositories().createProductRepository().find(
-                    fetchProductDTO.id
-                ));
-        }
+            if(product == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteRestrictionFromProductMaterialMV.productId));
+            }
 
-        /// <summary>
-        /// Returns a product which has a certain reference
-        /// </summary>
-        /// <param name="productDTO">FetchProductDTO with the product fetch information</param>
-        /// <returns>GetProductModelView with the product which has a certain reference</returns>
-        public GetProductModelView findByReference(FetchProductDTO fetchProductDTO){
-            return ProductModelViewService.fromEntity(
-                PersistenceContext.repositories().createProductRepository().find(
-                    fetchProductDTO.reference
-                ));
+            ProductMaterial productMaterial = product.productMaterials.
+                Where(pm => pm.materialId == deleteRestrictionFromProductMaterialMV.materialId).SingleOrDefault();
+
+            if(productMaterial == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MATERIAL_BY_ID, deleteRestrictionFromProductMaterialMV.materialId));
+            }
+
+            Restriction restriction = productMaterial.restrictions.Where(r => r.Id == deleteRestrictionFromProductMaterialMV.restrictionId).SingleOrDefault();
+
+            if(restriction == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_FIND_RESTRICTION_BY_ID, deleteRestrictionFromProductMaterialMV.restrictionId));
+            }
+
+            productMaterial.restrictions.Remove(restriction);
+
+            product = productRepository.update(product);
         }
 
         /// <summary>
@@ -274,6 +649,7 @@ namespace core.application
         /// <param name="productComponentID">product's component id</param>
         /// <param name="restDTO">Data Transfer Object of the restriction to add</param>
         /// <returns>list of inputs for the restriction's algorithm</returns>
+        [Obsolete]
         public RestrictionDTO addComponentRestriction(long productID, long productComponentID, RestrictionDTO restDTO){
             if(Collections.isEnumerableNullOrEmpty(restDTO.inputs)){
                 //gets required list of inputs for the algorithm
@@ -308,6 +684,7 @@ namespace core.application
         /// </summary>
         /// <param name="productDTO">DTO with the product DTO</param>
         /// <returns>IEnumerable with the dimensions found on a product DTO</returns>
+        [Obsolete]
         internal IEnumerable<Dimension> getProductDTOEnumerableDimensions(List<DimensionDTO> dimensionsDTOs){
             List<Dimension> dimensions=new List<Dimension>();
             foreach (DimensionDTO dimensionDTO in dimensionsDTOs){
@@ -333,6 +710,7 @@ namespace core.application
         /// </summary>
         /// <param name="componentDTO">IEnumerable with the components dto</param>
         /// <returns>IEnumerable with the extracted products dto</returns>
+        [Obsolete]
         private IEnumerable<ProductDTO> extractProductsDTOFromComponentsDTO(IEnumerable<ComponentDTO> componentsDTO){
             List<ProductDTO> productsDTO=new List<ProductDTO>();
             foreach (ComponentDTO componentDTO in componentsDTO) productsDTO.Add(componentDTO.product);

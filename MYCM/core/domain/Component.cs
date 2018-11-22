@@ -28,34 +28,33 @@ namespace core.domain
         /// <summary>
         /// Long with the product which has the complemented product ID
         /// </summary>
-        public long fatherProductId { get; private set; }
+        public long fatherProductId { get; protected set; }
         /// <summary>
         /// Boolean value that dictates whether the component is mandatory or not
         /// </summary>
-        public bool mandatory { get; private set; }
+        public bool mandatory { get; protected set; }
 
         /// <summary>
         /// Product with the product which has the current complemented product
         /// </summary>
         private Product _fatherProduct;             //!private field used for lazy loading, do not use this for storing or fetching data
-        public Product fatherProduct { get => LazyLoader.Load(this, ref _fatherProduct); set => _fatherProduct = value; }
+        public Product fatherProduct { get => LazyLoader.Load(this, ref _fatherProduct); protected set => _fatherProduct = value; }
 
         /// <summary>
         /// Long with the product which has the complemented product ID
         /// </summary>
-        public long complementaryProductId { get; private set; }
+        public long complementaryProductId { get; protected set; }
 
         /// <summary>
         /// Product with the complemented product 
         /// </summary>
         private Product _complementaryProduct;       //!private field used for lazy loading, do not use this for storing or fetching data
-        public Product complementaryProduct { get => LazyLoader.Load(this, ref _complementaryProduct); set => _complementaryProduct = value; }
+        public Product complementaryProduct { get => LazyLoader.Load(this, ref _complementaryProduct); protected set => _complementaryProduct = value; }
         /// <summary>
         /// List with the restrictions which the current component can be have
         /// </summary>
-        [NotMapped] //!remove this annotation once we figure out how to persist interfaces
         private List<Restriction> _restrictions;    //!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); set => _restrictions = value; }
+        public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); protected set => _restrictions = value; }
 
         /// <summary>
         /// LazyLoader being injected by the Framework.
@@ -159,18 +158,7 @@ namespace core.domain
             restrictions.Add(restriction);
             return true;
         }
-        /// <summary>
-        /// Returns the component identity
-        /// </summary>
-        /// <returns>Product with the component identity</returns>
-        public Product id() { return complementaryProduct; }
-
-        /// <summary>
-        /// Checks if a certain component entity is the same as the current component
-        /// </summary>
-        /// <param name="comparingEntity">Product with the comparing component identity</param>
-        /// <returns>boolean true if both entities identity are the same, false if not</returns>
-        public bool sameAs(Product comparingEntity) { return id().Equals(comparingEntity); }
+        
         /// <summary>
         /// Returns the current component as a DTO
         /// </summary>
@@ -193,35 +181,5 @@ namespace core.domain
             }
             return dto;
         }
-
-        /// <summary>
-        /// Checks if two components are equal
-        /// </summary>
-        /// <param name="comparingComponent">Component with the component being compared to the current one</param>
-        /// <returns>boolean true if both components are equal, false if not</returns>
-        public override bool Equals(object comparingComponent)
-        {
-            if (this == comparingComponent) return true;
-            return comparingComponent is Component && this.id().Equals(((Component)comparingComponent).id());
-        }
-
-        /// <summary>
-        /// Represents the component hashcode
-        /// </summary>
-        /// <returns>Integer with the current component hashcode</returns>
-        public override int GetHashCode()
-        {
-            return id().GetHashCode();
-        }
-        /// <summary>
-        /// Represents the textual information of the Component
-        /// </summary>
-        /// <returns>String with the textual representation of the component</returns>
-        public override string ToString()
-        {
-            //Should ToString List the Component Complemented Component?
-            return String.Format("Component Information\n- List of restrictions: {0}\n", restrictions);
-        }
-
     }
 }

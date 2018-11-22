@@ -142,6 +142,18 @@ hr {
 	transition: all 0.3s;
 }
 
+.btn-custom-2 {
+	color: #fff;
+	background-color: #0ba2db;
+	border: 3px;
+	padding: 6px 6px;
+	margin: 0;
+	font-size: 15px;
+	border-radius: 1px;
+	margin-top: 5px;
+	transition: all 0.3s;
+}
+
 .btn-component{
 	text-transform: uppercase;
 	color: #fff;
@@ -435,7 +447,7 @@ a:focus, .btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:acti
 .scrollable-div{
 	overflow-y: scroll;
 	border: thin solid #0ba2db;
-	background-color: rgb(243, 235, 235)
+	background-color: rgb(255, 255, 255)
 }
 .sidepanel {
     height: 0; /* Specify a height */

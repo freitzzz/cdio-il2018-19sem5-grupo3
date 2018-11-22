@@ -158,7 +158,7 @@ namespace backend_tests.Controllers
         {
             var response = await client.DeleteAsync(String.Format(urlBase + "/{0}", -1));
 
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact, TestPriority(8)]
