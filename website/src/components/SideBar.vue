@@ -17,13 +17,13 @@
         </a>
 
         <div class="navbar-dropdown">
-          <a class="navbar-item" >
+          <a class="navbar-item" @click="enableCreateCategory">
             Create Category
           </a>
-          <a class="navbar-item" @click="enableEdit">
+          <a class="navbar-item" @click="enableEditCategory">
             Edit Category
           </a>
-          <a class="navbar-item">
+          <a class="navbar-item" @click="enableRemoveCategory">
             Remove Category
           </a>
         </div>
@@ -86,11 +86,10 @@
       </div>
     </div>
   </div>
-<div id="app">
-
-  <edit-category v-if="CustomEdit">
-    TESTE
-  </edit-category>
+<div id="management">
+  <create-category v-if="CustomCreateCategory"></create-category>
+  <edit-category v-if="CustomEditCategory"></edit-category>
+  <remove-category v-if="CustomRemoveCategory"></remove-category>
 </div>
 </nav>
 
@@ -107,22 +106,40 @@
 
 
 <script>
+import CreateCategory from "./management/category/CreateNewCategory.vue";
 import EditCategory from "./management/category/EditCategory.vue";
+import RemoveCategory from "./management/category/RemoveCategory.vue";
 export default {
   data() {
     return {
       activeTab: 0,
       showBooks: false,
-      CustomEdit: false
+      CustomCreateCategory: false,
+      CustomEditCategory: false,
+      CustomRemoveCategory: false
     };
   },
   methods: {
-    enableEdit() {
-      this.CustomEdit = true;
+    enableCreateCategory() {
+      this.CustomCreateCategory = true;
+      this.CustomEditCategory = false;
+      this.CustomRemoveCategory = false;
+    },
+    enableEditCategory() {
+      this.CustomEditCategory = true;
+      this.CustomCreateCategory = false;
+      this.CustomRemoveCategory = false;
+    },
+    enableRemoveCategory(){
+      this.CustomRemoveCategory = true;
+      this.CustomCreateCategory = false;
+      this.CustomEditCategory = false;
     }
   },
   components: {
-    EditCategory
+    CreateCategory,
+    EditCategory ,
+    RemoveCategory   
   }
 };
 </script>
