@@ -26,6 +26,7 @@
                     </section>
                     <footer class="modal-card-foot">
                         <button class="button is-primary" @click="postCategory">Create</button>
+                        
                     </footer>
                 </div>
             </form>
@@ -40,15 +41,11 @@ export default {
     return {
       nameCategory: "",
       parentCategoryId: null, //this value needs to be null for the placeholder to work
-      availableCategories: []
+      availableCategories: [],
+      active:true
     };
   },
-  props: {
-    active: {
-      type: Boolean,
-      default: false
-    }
-  },
+
 
   /*  */
   methods: {
@@ -73,7 +70,7 @@ export default {
           .then(response => {})
           .catch(error => {});
       }
-    }
+    },
   },
   created() {
     Axios.get("http://localhost:5000/mycm/api/categories")

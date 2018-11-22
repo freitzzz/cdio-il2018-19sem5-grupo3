@@ -36,21 +36,18 @@
 
 <script>
 import Axios from "axios";
+import { Dialog } from 'buefy/dist/components/dialog';
 export default {
   name: "EditCategory",
   data() {
     return {
       categoryData: "",
       nameCategory: "",
-      availableCategories: []
+      availableCategories: [],
+      active:true
     };
   },
-  props: {
-    active: {
-      type: Boolean,
-      default: false
-    }
-  },
+
 
   /*  */
   methods: {
@@ -88,7 +85,8 @@ export default {
     Axios.get("http://localhost:5000/mycm/api/categories")
       .then(response => this.availableCategories.push(...response.data)) //push all elements onto the array
       .catch(function(error) {
-        //TODO: inform an error occured while fetching categories
+        availableCategories: [];
+        /* this.$dialog.alert('Everything looks fine!'); */
       });
   }
 };

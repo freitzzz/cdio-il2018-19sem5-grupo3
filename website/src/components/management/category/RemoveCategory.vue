@@ -20,7 +20,7 @@
                         <button class="button is-primary" @click="removeCategory">Edit</button>                    
                     </footer>
 
-                    <b-message title="Message" :active.sync="isActive">
+                    <b-message title="Message" :active.sync="activeMessage">
                         Removed Succesfully
                     </b-message>
                 </div>
@@ -34,24 +34,21 @@ export default {
   name: "RemoveCategory",
   data() {
     return {
-      isActive: false,
+      activeMessage: false,
       categoryData: "",
-      availableCategories: []
+      availableCategories: [],
+      active:true
     };
   },
-  props: {
-    active: {
-      type: Boolean,
-      default: false
-    }
-  },
+
   methods: {
+    
     removeCategory() {
       Axios.delete(
         `http://localhost:5000/mycm/api/categories/${this.categoryData}`
       )
         .then(response => {
-          isActive = true;
+          activeMessage = true;
         })
         .catch(error => {
           console.log(error);
