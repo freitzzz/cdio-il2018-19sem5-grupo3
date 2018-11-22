@@ -64,7 +64,7 @@
                     </section>
                     <footer class="modal-card-foot">
                       <button class="button is-primary" @click="newFinish()">+</button>
-                      <button class="button is-primary" @click="desabelFinis()">Back</button>
+                      <button class="button is-primary" @click="desabelFinish()">Back</button>
                     </footer>
                 </div>
                 <div v-if="createColorPanelEnabled" >
@@ -72,11 +72,10 @@
                         <p class="modal-card-title">Create Color</p>
                     </header>
                     <section class="modal-card-body">
-                        <b-field label="Designation: ">
-                            
-                                <swatches v-model="color" colors="text-advanced"></swatches>
+                    <b-field label="Designation: ">
+                            <swatches v-model="color" colors="text-advanced"></swatches>
                     </b-field>
-                    
+                    <br> <br> <br> <br> <br><br> <br> <br>
                     </section>
                     <footer class="modal-card-foot">
                       <button class="button is-primary" @click="newColor()">+</button>
@@ -87,10 +86,10 @@
     </b-modal>
 </template>
 <script>
-import Swatches from 'vue-swatches'
- 
-import "vue-swatches/dist/vue-swatches.min.css"
- 
+import Swatches from "vue-swatches";
+
+import "vue-swatches/dist/vue-swatches.min.css";
+
 export default {
   name: "CreateMaterial",
   data() {
@@ -105,12 +104,12 @@ export default {
       createNewFinish: false,
       availableFinishes: [],
       availableColors: [],
-      color: '#000000'
+      color: "#000000"
     };
   },
-  components: { 
-      Swatches
-   }, // window.VueSwatches.default - from CDN
+  components: {
+    Swatches
+  }, // window.VueSwatches.default - from CDN
   props: {
     active: {
       type: Boolean,
@@ -121,9 +120,31 @@ export default {
   /*  */
   methods: {
     postMaterial() {
+     alert(this.referenceMaterial);
+     alert(this.designation);
+
       Axios.post("http://localhost:5000/mycm/api/materials", {
         reference: this.referenceMaterial,
-        designation: this.designation
+        designation: this.designation,
+        colors: [
+          this.availableColors.forEach(element => {
+            element = element.replace("#", "");
+            r = parseInt(hex.substring(0, 2), 16);
+            g = parseInt(hex.substring(2, 4), 16);
+            b = parseInt(hex.substring(4, 6), 16);
+
+            name: element;
+            red: r;
+            green: g;
+            blue: b;
+            alpha: 0;
+          })
+        ],
+        finishes: [
+          this.availableFinishes.forEach(element => {
+            description: element;
+          })
+        ]
       })
         .then(response => {})
         .catch(error => {});
@@ -136,33 +157,33 @@ export default {
       this.panelCreateMaterial = false;
       this.createFinishPanelEnabled = true;
     },
-    desabelFinis() {
+    desabelFinish() {
       this.panelCreateMaterial = true;
       this.createFinishPanelEnabled = false;
+      this.referenceFinish = "";
     },
     desabelColor() {
       this.panelCreateMaterial = true;
       this.createColorPanelEnabled = false;
     },
-    createEditFinish() {
-        alert("nahanha");
-    },
+    createEditFinish() {},
     newFinish() {
-      if(this.referenceFinish != null && 
-            this.referenceFinish.trim() != "" && 
-            this.availableFinishes.indexOf(this.referenceFinish.trim()) < 0){
-
-        this.availableFinishes.push(this.referenceFinish);    
+      if (
+        this.referenceFinish != null &&
+        this.referenceFinish.trim() != "" &&
+        this.availableFinishes.indexOf(this.referenceFinish.trim()) < 0
+      ) {
+        this.availableFinishes.push(this.referenceFinish);
         alert("The reference was successfully inserted!");
-      }else{
-          alert("The inserted reference is invalid!");
-      };
-      this.referenceFinish="";
+      } else {
+        alert("The inserted reference is invalid!");
+      }
+      this.referenceFinish = "";
     },
     newColor() {
-        this.availableColors.push(this.color);    
-        alert("The color was successfully inserted!");
-    },
+      this.availableColors.push(this.color);
+      alert("The color was successfully inserted!");
+    }
   }
 };
 </script>
