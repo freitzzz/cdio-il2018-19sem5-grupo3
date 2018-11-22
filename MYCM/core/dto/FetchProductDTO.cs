@@ -23,6 +23,6 @@ namespace core.dto{
         /// <summary>
         /// ProductDTOOptions with the set of options which the product information can have 
         /// </summary>
-        public ProductDTOOptions productDTOOptions{get;set;}
+        public ProductDTOOptions productDTOOptions{get;set;} = new ProductDTOOptions();
     }
 }
