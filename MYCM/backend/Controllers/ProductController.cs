@@ -432,14 +432,17 @@ namespace backend.Controllers {
         }
 
         [HttpGet("{productId}/dimensions")]
-        public ActionResult findProductMeasurements(long productId){
+        public ActionResult findProductMeasurements(long productId, [FromQuery] string unit){
             logger.LogInformation(LOG_GET_PRODUCT_MEASUREMENTS_STARTED);
             FetchProductDTO fetchProductDTO = new FetchProductDTO(){id = productId};
+            fetchProductDTO.productDTOOptions.requiredUnit = unit;
             try{
                 GetAllMeasurementsModelView allMeasurementsModelView = 
                     new core.application.ProductController().findProductMeasurements(fetchProductDTO);
                 logger.LogInformation(LOG_GET_PRODUCT_MEASUREMENTS_SUCCESS, productId, allMeasurementsModelView);
                 return Ok(allMeasurementsModelView);
+            }catch(ArgumentException e){
+                return BadRequest(new {error = e.Message});
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_GET_PRODUCT_MEASUREMENTS_NOT_FOUND, productId);
                 return NotFound(new {error = e.Message});
