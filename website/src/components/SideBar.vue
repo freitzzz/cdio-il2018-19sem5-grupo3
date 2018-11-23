@@ -48,14 +48,8 @@
         </a>
 
         <div class="navbar-dropdown">
-          <a class="navbar-item">
-            Create Product
-          </a>
-          <a class="navbar-item">
-            Edit Product
-          </a>
-          <a class="navbar-item">
-            Remove Product
+          <a class="navbar-item" @click="enableListProducts">
+            List Products
           </a>
         </div>
 
@@ -88,8 +82,14 @@
 
   <create-material v-if="CustomCreateMaterial"></create-material>
    <edit-material v-if="CustomEditMaterial"></edit-material>
-  <remove-material v-if="CustomRemoveMaterial"></remove-material> 
+  <remove-material v-if="CustomRemoveMaterial"></remove-material>
 </div>
+
+
+
+<section v-if="CustomListProducts" style="width:100%">
+    <list-products />
+  </section>
 </nav>
 
 
@@ -110,7 +110,8 @@ import EditCategory from "./management/category/EditCategory.vue";
 import RemoveCategory from "./management/category/RemoveCategory.vue";
 import CreateMaterial from "./management/material/CreateMaterial.vue";
 import EditMaterial from "./management/material/EditMaterial.vue";
-import RemoveMaterial from "./management/material/RemoveMaterial.vue"; 
+import RemoveMaterial from "./management/material/RemoveMaterial.vue";
+import ListProducts from './management/product/ListProducts.vue';
 export default {
   data() {
     return {
@@ -123,7 +124,9 @@ export default {
       /*   CountSamePage: 0, //Counts the amount of times*/
       CustomCreateMaterial: false,
       CustomEditMaterial: false,
-      CustomRemoveMaterial: false, 
+      CustomRemoveMaterial: false,
+
+      CustomListProducts:false
     };
   },
   methods: {
@@ -158,6 +161,12 @@ export default {
       this.CustomEditMaterial = false;
       this.CustomRemoveMaterial = false;
       disableCategory();
+    },
+    enableListProducts(){
+      this.CustomCreateMaterial = false;
+      this.CustomEditMaterial = false;
+      this.CustomRemoveMaterial = false;
+      this.CustomListProducts=true;
     },
     disableCategory(){
       /* Category: */
@@ -194,7 +203,8 @@ export default {
     RemoveCategory,
     CreateMaterial,
     EditMaterial,
-    RemoveMaterial 
+    RemoveMaterial,
+    ListProducts
   }
 };
 </script>
