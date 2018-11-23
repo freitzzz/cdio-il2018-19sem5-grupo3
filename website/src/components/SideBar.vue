@@ -79,8 +79,8 @@
     </div>
   </div>
 <div id="management">
-  <b-message title="Default" v-if="WIPFlag">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh id hendrerit imperdiet, elit sapien laoreet elit
+  <b-message title="Information" v-if="WIPFlag">
+    Feature is not implemented yet.
   </b-message>
   <create-category v-if="CustomCreateCategory"></create-category>
   <edit-category v-if="CustomEditCategory"></edit-category>
@@ -112,30 +112,34 @@ export default {
       CustomCreateCategory: false,
       CustomEditCategory: false,
       CustomRemoveCategory: false,
-      WIPFlag: false
+      WIPFlag: false,
+      CountSamePage: 0 //Counts the amount of times
     };
   },
   methods: {
     enableCreateCategory() {
-      
-        this.CustomCreateCategory = true;
-        this.CustomEditCategory = false;
-        this.CustomRemoveCategory = false;
- 
- 
+      if (this.CustomCreateCategory===true) {
+        this.CustomCreateCategory = false;
+      }
+      this.CustomCreateCategory = true;
+      this.CustomEditCategory = false;
+      this.CustomRemoveCategory = false;
+      this.WIPFlag = false;
     },
     enableEditCategory() {
       this.CustomEditCategory = true;
       this.CustomCreateCategory = false;
       this.CustomRemoveCategory = false;
+      this.WIPFlag = false;
     },
     enableRemoveCategory() {
       this.CustomRemoveCategory = true;
       this.CustomCreateCategory = false;
       this.CustomEditCategory = false;
+      this.WIPFlag = false;
     },
     enableWIP() {
-      WIPFlag = true;
+      this.WIPFlag = true;
     }
   },
   components: {
