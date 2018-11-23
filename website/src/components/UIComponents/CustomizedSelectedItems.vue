@@ -2,9 +2,11 @@
     <b-field :label="customizedLabel">
         <b-field>
             <b-select 
-                expanded=true 
+                expanded 
                 v-model="currentSelectedAddedItem" 
-                :icon="icon">
+                :icon="icon"
+                @input="getAddedItems"
+                >
                 <option
                     v-for="(item,index) in addedItems" 
                     :value="item.id" 
@@ -45,14 +47,19 @@ export default {
         addSelectedItem(){
             if(this.currentSelectedItem!=null){
                 this.activateAddedItems();
-                this.addedItems.push(this.availableItems[this.currentSelectedItem-1]);
+                let item=this.containsItem(this.addedItems,this.currentSelectedItem);
+                if(item!=null)return;
+                item=this.containsItem(this.availableItems,this.currentSelectedItem);
+                this.addedItems.push(item);
             }
         },
         /**
          * Emits all added items
          */
         getAddedItems(){
-            this.$emit('getAddedItems',this.addedItems);
+            let realAddedItems=[];
+            this.addedItems.forEach((item)=>{realAddedItems.push(item.id)});
+            this.$emit('getAddedItems',realAddedItems.slice());
         },
         /**
          * Removes the current selected item from the added items list
@@ -64,6 +71,13 @@ export default {
                     newAddedItems.push(item);
             });
             this.addedItems=newAddedItems;
+        },
+        containsItem(collection,itemID){
+            for(let i=0;i<collection.length;i++){
+                if(collection[i]!=null&&collection[i].id==itemID)
+                    return collection[i];
+            }
+            return null;
         }
     },
     data(){
