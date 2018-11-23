@@ -1,10 +1,10 @@
 <template>
     <section>
     <b-field grouped group-multiline>
-            <b-field label="Total">
+            <b-field v-if="showTotalInput" label="Total">
                 <b-input type="number" v-model="total"></b-input>
             </b-field>
-            <b-field label="Items per page">
+            <b-field v-if="showItemsPerPageInput" label="Items per page">
                 <b-input type="number" v-model="perPage"></b-input>
             </b-field>
         </b-field>
@@ -13,7 +13,12 @@
             <b-switch v-if="showRoundedSlider" v-model="isRounded">Rounded</b-switch>
         </div>
         <hr>
-        <ClickableTable :title="title" :columns="columns" :data="data">
+        <ClickableTable 
+            :title.sync="title" 
+            :columns.sync="columns" 
+            :data.sync="data"
+            @clicked="emitTableRow"
+        >
 
     </ClickableTable>
     <b-pagination
@@ -35,6 +40,11 @@ import ClickableTable from './ClickableTable.vue'
 export default {
     components:{
         ClickableTable
+    },
+    methods:{
+        emitTableRow(row){
+            this.$emit('clicked',row);
+        }
     },
     props: {
         total: {
@@ -73,11 +83,22 @@ export default {
             type:Boolean,
             default:false
         },
+        showTotalInput:{
+            type:Boolean,
+            default:true
+        },
+        showItemsPerPageInput:{
+            type:Boolean,
+            default:true
+        },
         columns:{
             type:Array
         },
         data:{
             type:Array
+        },
+        title:{
+            type:String
         }
     }
 };
