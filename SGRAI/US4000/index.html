@@ -282,15 +282,16 @@
     }
 
     function createComponent(elementId) {
-      document.getElementById("div_customize_component").setAttribute("style", "visibility:visible"); //Shows components scrollable div
+      var div = document.getElementById("div_customize_component");
+      div.setAttribute("style", "height:130px;width:100%;visibility:visible"); 
+      div.setAttribute("class","scrollable-div");
 
-      var list = document.getElementById("list_components");
       var component = document.createTextNode(document.getElementById(elementId).getAttribute("alt"));
       var component_text = component.textContent;
 
-      var element = document.createElement("li");
-      element.id = "component" + list.childNodes.length;
-      element.appendChild(document.createTextNode("-------- Component " + list.childNodes.length + " --------"));
+      var element = document.createElement("span");
+      element.id = "component" + div.childNodes.length;
+      element.appendChild(document.createTextNode("-------- Component " + div.childNodes.length + " --------"));
       element.appendChild(document.createElement("br"));
 
       element.appendChild(component);
@@ -316,13 +317,13 @@
         apply_btn.appendChild(document.createTextNode("Apply"));
 
         apply_btn.addEventListener("click", function () {
-          apply_btn.onclick = function () {
-            var slot_number_input_value = parseInt(slot_number_input.value);
-            if (slot_number_input_value > 0 && slot_number_input_value <= number_of_slots) addComponent(component_text, slot_number_input_value);
-            else {
-              alert("There is no such slot!");
-              slot_number_input.value = 1;
-            }
+          var slot_number_input_value = parseInt(slot_number_input.value);
+          if (slot_number_input_value > 0 && slot_number_input_value <= number_of_slots) {
+            addComponent(component_text, slot_number_input_value);
+          }
+          else {
+            alert("There is no such slot!");
+            slot_number_input.value = 1;
           }
         });
         element.appendChild(apply_btn);
@@ -334,30 +335,28 @@
         apply_btn.setAttribute("class", "btn-custom-2");
         apply_btn.appendChild(document.createTextNode("Apply"));
         apply_btn.addEventListener("click", function () {
-
-          apply_btn.onclick = function () {
-            addComponent(component_text, 1);
-          }
+          addComponent(component_text, 1);
         });
-
         element.appendChild(apply_btn);
       }
 
       element.appendChild(document.createElement("br"));
-      list.appendChild(element);
+
+      div.appendChild(element);
     }
 
     function createDoor(elementId) {
       if (!hasDoors) {
-        document.getElementById("div_customize_component").setAttribute("style", "visibility:visible"); //Shows components scrollable div
+        var div = document.getElementById("div_customize_component");
+        div.setAttribute("style", "height:130px;width:100%;visibility:visible"); 
+      div.setAttribute("class","scrollable-div");
 
-        var list = document.getElementById("list_components");
         var component = document.createTextNode(document.getElementById(elementId).getAttribute("alt"));
         var component_text = component.textContent;
 
-        var element = document.createElement("li");
-        element.id = "component" + list.childNodes.length;
-        element.appendChild(document.createTextNode("-------- Component " + list.childNodes.length + " --------"));
+        var element = document.createElement("span");
+        element.id = "component" + div.childNodes.length;
+        element.appendChild(document.createTextNode("-------- Component " + div.childNodes.length + " --------"));
         element.appendChild(document.createElement("br"));
 
         element.appendChild(component);
@@ -367,22 +366,16 @@
         apply_btn.setAttribute("class", "btn-custom-2");
         apply_btn.appendChild(document.createTextNode("Apply"));
         apply_btn.addEventListener("click", function () {
-
-          apply_btn.onclick = function () {
-            if (canClick) {
-              addComponent(component_text, 1);
-              canClick = false;
-            } else {
-              alert("There is already a door!");
-            }
+          if (canClick) {
+            addComponent(component_text, 1);
+            canClick = false;
+          } else {
+            alert("There is already a door!");
           }
         });
-
         element.appendChild(apply_btn);
-
-
         element.appendChild(document.createElement("br"));
-        list.appendChild(element);
+        div.appendChild(element);
 
         hasDoors = true;
 
@@ -578,8 +571,8 @@
     .column {
       float: left;
       width: 100%;
-
     }
+
     .left {
       width: 30%;
       align-content: left;
@@ -588,10 +581,8 @@
     .right {
       width: 10%;
       align-content: right;
-
     }
     
-
   </style>
   <div id="closet">
     <div class="container">
@@ -754,9 +745,7 @@
           </ul>
         </div>
         <br>
-        <div id="div_customize_component" class="scrollable-div" style="height: 130; width: 100%; visibility: hidden">
-          <ul id="list_components">
-          </ul>
+        <div id="div_customize_component" class="scrollable-div" style="height: 130px; width: 100%; visibility:hidden"/>
         </div>
         <br>
         <a class="btn-custom" onclick="openTab(event, 'materials');removeComponents();decreasePBComponents();forceOnMouseUp()">Back</a>

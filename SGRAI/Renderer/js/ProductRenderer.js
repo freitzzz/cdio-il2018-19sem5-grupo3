@@ -103,6 +103,17 @@ function main(textureSource) {
     initCloset(textureSource);
     initLighting();
 
+    // var geometry = new THREE.SphereBufferGeometry(500, 60, 40);
+    // geometry.scale(-1, 1, 1);
+
+    // var material = new THREE.MeshBasicMaterial({
+    //     map: new THREE.TextureLoader().load("./../../US4000/img/background.jpg")
+    // });
+
+    // var mesh = new THREE.Mesh(geometry, material);
+
+    // renderer.setPixelRatio(window.devicePixelRatio);
+
     //Creates the intersection plane
     plane = new THREE.Plane();
     plane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 200, 0)).normalize();
@@ -127,8 +138,8 @@ function main(textureSource) {
     //Finishes creating the intersection plane
     scene.add(dispPlane);
     scene.add(camera);
+  //  scene.add(mesh);
 
-    loadMax();
     registerEvents();
     animate();
 }
@@ -140,15 +151,23 @@ function main(textureSource) {
 function initCloset(textureSource) {
     scene = new THREE.Scene();
     group = new THREE.Group();
-    closet = new Closet([204.5, thickness, 100, 0, 0, 0]
-        , [204.5, thickness, 100, 0, 100, 0]
-        , [thickness, 100, 100, -100, 50, 0]
-        , [thickness, 100, 100, 100, 50, 0]
-        , [200, 100, 0, 0, 50, -50]);
+    // closet = new Closet([604.5, thickness, 100, 0, -210, -295] //c a p x y z baixo
+    //     , [604.5, thickness, 100, 0, 90, -295] // cima
+    //     , [thickness, 300, 100, -300, -60, -295] // esq
+    //     , [thickness, 300, 100, 300, -60, -295] //dir
+    //     , [600, 300, 0, 0, -60, -345]); //tras
+
+    closet = new Closet([204.5, thickness, 100, 0, 0,0] //c a p x y z baixo
+        , [204.5, thickness, 100, 0, 100,0] // cima
+        , [thickness, 100,100,-100,50,0] // esq
+        , [thickness, 100,100,100,50,0] //dir
+        , [200, 100, 0, 0, 50,-50]); //tras
+
     var faces = closet.closet_faces;
 
     textureLoader = new THREE.TextureLoader();
     var texture = textureLoader.load(textureSource);
+
     //A MeshPhongMaterial allows for shiny surfaces
     //A soft white light is being as specular light
     //The shininess value is the same as the matte finishing's value
@@ -460,9 +479,9 @@ function generateSlidingDoor() {
     var rightFace = group.getObjectById(closet_faces_ids[3]);
     var topFace = group.getObjectById(closet_faces_ids[1]);
     var bottomFace = group.getObjectById(closet_faces_ids[0]);
-    var height = getCurrentClosetHeight();
-    var width = getCurrentClosetWidth();
-    var y = getCurrentClosetDepth() / 2;
+    var height = closet.getClosetHeight();
+    var width = closet.getClosetWidth();
+    var y = closet.getClosetDepth() / 2;
 
     var front_door = new SlidingDoor([width / 2, (height - thickness), 5, leftFace.position.x / 2, leftFace.position.y, y + 7]);
 
@@ -655,15 +674,6 @@ function registerEvents() {
     document.addEventListener("changeColor", function (changeColorEvent) {
         changeColorEvent(changeColorEvent.detail.color);
     });
-}
-
-function loadMax() {
-    var event = new CustomEvent("loadMax", {
-        detail: {
-            max: group.getObjectById(closet_faces_ids[3]).position.x
-        }
-    })
-    document.dispatchEvent(event);
 }
 
 /**
@@ -904,7 +914,7 @@ function moveFace() {
                 (Math.abs(group.getObjectById(closet_faces_ids[3]).position.x) + Math.abs(group.getObjectById(closet_faces_ids[2]).position.x)));
 
             //Checks if the selected face is the right face of the closet
-            if ((selected_face) == (group.getObjectById(closet_faces_ids[3]))) {
+            if (selected_face == group.getObjectById(closet_faces_ids[3])) {
                 selected_face.position.x = rightFacePosition;
 
                 document.getElementById("width").value = conversion;
@@ -913,7 +923,7 @@ function moveFace() {
             }
 
             //Checks if the selected face is the left face of the closet
-            else if ((selected_face) == (group.getObjectById(closet_faces_ids[2]))) {
+            else if (selected_face == group.getObjectById(closet_faces_ids[2])) {
                 var conversion = parseInt(((leftFacePosition + group.getObjectById(closet_faces_ids[3]).position.x) * getCurrentClosetWidth() * 2) /
                     (Math.abs(group.getObjectById(closet_faces_ids[3]).position.x) + Math.abs(group.getObjectById(closet_faces_ids[2]).position.x)));
 
@@ -933,8 +943,8 @@ function moveFace() {
              * - ... the selected face is the right face of the closet
              * - ... the position of the face doesn't overlap the position of the last (more to the right) slot
              */
-            if ((selected_face) == (group.getObjectById(closet_faces_ids[3])) &&
-                rightFacePosition - rightSlotPosition > rightSlotPosition) {
+            if (selected_face == group.getObjectById(closet_faces_ids[3]) &&
+                rightFacePosition - rightSlotPosition > rightSlotPosition + rightFacePosition / 2) {
 
                 var conversion = parseInt(((rightFacePosition + group.getObjectById(closet_faces_ids[3]).position.x) * getCurrentClosetWidth() * 2) /
                     (Math.abs(group.getObjectById(closet_faces_ids[3]).position.x) + Math.abs(group.getObjectById(closet_faces_ids[2]).position.x)));
@@ -949,8 +959,8 @@ function moveFace() {
              * - ... the selected face is the left face of the closet
              * - ... the position of the face doesn't overlap the position of the first (more to the left) slot
              */
-            else if ((selected_face) == (group.getObjectById(closet_faces_ids[2])) &&
-                leftFacePosition - leftSlotPosition > leftSlotPosition) {
+            else if (selected_face == group.getObjectById(closet_faces_ids[2]) &&
+                leftFacePosition - leftSlotPosition > leftSlotPosition + leftFacePosition / 2) {
                 var conversion = parseInt(((leftFacePosition + group.getObjectById(closet_faces_ids[3]).position.x) * getCurrentClosetWidth() * 2) /
                     (Math.abs(group.getObjectById(closet_faces_ids[3]).position.x) + Math.abs(group.getObjectById(closet_faces_ids[2]).position.x)));
 
