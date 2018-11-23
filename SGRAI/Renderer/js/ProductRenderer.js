@@ -271,10 +271,10 @@ function applyTexture(texture) {
 }
 
 function addComponent(component, slot) {
-    if (component.textContent == "Pole") generateCylinder(slot);
-    // if(component.textContent == "Drawer") generateDrawer();
-    if (component.textContent == "Shelf") generateShelf(slot);
-    if (component.textContent == "Sliding Door") generateSlidingDoor();
+    if (component == "Pole") generateCylinder(slot);
+    // if(component == "Drawer") generateDrawer(slot);
+    if (component == "Shelf") generateShelf(slot);
+    if (component == "Sliding Door") generateSlidingDoor();
 }
 
 /**
@@ -726,10 +726,10 @@ function onDocumentMouseDown(event) {
                 }
             }
 
-             //Checks if the selected object is a shelf
-             for (let j = 0; j < closet_shelves_ids.length; j++) {
-                let pole = group.getObjectById(closet_shelves_ids[j]);
-                if (pole == face) {
+            //Checks if the selected object is a shelf
+            for (let j = 0; j < closet_shelves_ids.length; j++) {
+                let shelf = group.getObjectById(closet_shelves_ids[j]);
+                if (shelf == face) {
                     controls.enabled = false;
                     selected_component = face;
                     if (raycaster.ray.intersectPlane(plane, intersection)) {

@@ -41,7 +41,7 @@
       loadSlots();
     }
 
-    var lastUnit = "cm";
+    var lastUnit = "cm", hasDoors = false, canClick = true;
 
     /**
      * Converts the dimensions' values according to the selected unit on the HTML page 
@@ -163,7 +163,6 @@
         if (document.getElementById("slotsInput").value == 1) { //Disables the option for different widths since there is only one slot
           checkbox.checked = false;
           checkbox.disabled = true;
-          alert("You can't edit slot widths since there is only one.");
         } else if (document.getElementById("slotsInput").value == 0) { //Prevents the user from inserting the value "0" as the input
           document.getElementById("slotsInput").value = 1;
           alert("You need to add at least one slot!");
@@ -286,18 +285,19 @@
       document.getElementById("div_customize_component").setAttribute("style", "visibility:visible"); //Shows components scrollable div
 
       var list = document.getElementById("list_components");
+      var component = document.createTextNode(document.getElementById(elementId).getAttribute("alt"));
+      var component_text = component.textContent;
 
       var element = document.createElement("li");
-      element.id = "component-" + list.childNodes.length;
+      element.id = "component" + list.childNodes.length;
       element.appendChild(document.createTextNode("-------- Component " + list.childNodes.length + " --------"));
       element.appendChild(document.createElement("br"));
 
-      var component = document.createTextNode(document.getElementById(elementId).getAttribute("alt"));
       element.appendChild(component);
 
       var number_of_slots = document.getElementById("slotsInput").value;
 
-      if (number_of_slots > 1 && component.textContent != "Sliding Door") {
+      if (number_of_slots > 1) {
         element.appendChild(document.createElement("br"));
         element.appendChild(document.createTextNode("Slot:    "));
 
@@ -317,14 +317,18 @@
 
         apply_btn.addEventListener("click", function () {
           apply_btn.onclick = function () {
-            var slot_number_input_value = slot_number_input.value;
-            if (slot_number_input_value > 0 && slot_number_input_value <= number_of_slots) addComponent(component, slot_number_input_value);
-            else alert("There is no such slot!");
+            var slot_number_input_value = parseInt(slot_number_input.value);
+            if (slot_number_input_value > 0 && slot_number_input_value <= number_of_slots) addComponent(component_text, slot_number_input_value);
+            else {
+              alert("There is no such slot!");
+              slot_number_input.value = 1;
+            }
           }
         });
         element.appendChild(apply_btn);
 
       } else {
+
         element.appendChild(document.createTextNode("     "));
         var apply_btn = document.createElement("button");
         apply_btn.setAttribute("class", "btn-custom-2");
@@ -332,7 +336,7 @@
         apply_btn.addEventListener("click", function () {
 
           apply_btn.onclick = function () {
-            addComponent(component, 1);
+            addComponent(component_text, 1);
           }
         });
 
@@ -341,6 +345,48 @@
 
       element.appendChild(document.createElement("br"));
       list.appendChild(element);
+    }
+
+    function createDoor(elementId) {
+      if (!hasDoors) {
+        document.getElementById("div_customize_component").setAttribute("style", "visibility:visible"); //Shows components scrollable div
+
+        var list = document.getElementById("list_components");
+        var component = document.createTextNode(document.getElementById(elementId).getAttribute("alt"));
+        var component_text = component.textContent;
+
+        var element = document.createElement("li");
+        element.id = "component" + list.childNodes.length;
+        element.appendChild(document.createTextNode("-------- Component " + list.childNodes.length + " --------"));
+        element.appendChild(document.createElement("br"));
+
+        element.appendChild(component);
+
+        element.appendChild(document.createTextNode("     "));
+        var apply_btn = document.createElement("button");
+        apply_btn.setAttribute("class", "btn-custom-2");
+        apply_btn.appendChild(document.createTextNode("Apply"));
+        apply_btn.addEventListener("click", function () {
+
+          apply_btn.onclick = function () {
+            if (canClick) {
+              addComponent(component_text, 1);
+              canClick = false;
+            } else {
+              alert("There is already a door!");
+            }
+          }
+        });
+
+        element.appendChild(apply_btn);
+
+
+        element.appendChild(document.createElement("br"));
+        list.appendChild(element);
+
+        hasDoors = true;
+
+      } else alert("There is already a door!");
     }
 
     function addComponent(element, slotNumber) {
@@ -699,7 +745,7 @@
               </div>
             </li>
             <li>
-              <div class="material-btn" onclick="createComponent('door');">
+              <div class="material-btn" onclick="createDoor('door');">
                 <!--Change the texture source, if the server or the port need to change-->
                 <img id="door" src="http://127.0.0.1:8002/US4000/img/door.jpeg" alt="Sliding Door" width="100%" />
                 <p>Sliding Door</p>
