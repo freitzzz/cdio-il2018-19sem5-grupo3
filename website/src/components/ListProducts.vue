@@ -20,8 +20,16 @@
                     icon="refresh"
                     custom-class="fa-spin"/>
             </button>
+            <edit-product
+                :active="updateProductModal"
+                :product="product"
+                :available-materials="availableMaterials"
+                :available-categories="availableCategories"
+                :available-components="availableComponents"
+                @emitProduct="updateProduct"
+                />
         </div>
-        <PaginatedTable 
+        <paginated-table 
         :total.sync="total" 
         :columns.sync="columns"
         :data.sync="data"
@@ -36,6 +44,7 @@
 <script>
 
 import CreateNewProduct from './CreateNewProduct.vue';
+import EditProduct from './EditProduct.vue';
 import PaginatedTable from './UIComponents/PaginatedTable.vue';
 import NotificationSnackbar from './UIComponents/NotificationSnackbar.vue';
 import Axios from 'axios';
@@ -49,19 +58,20 @@ export default {
     components:{
         PaginatedTable,
         CreateNewProduct,
+        EditProduct
     },
     /**
      * Function that is called when the component is created
      */
     created(){
-        this.updateFetchedProducts();
-        this.fetchAvailableCategories();
-        this.fetchAvailableComponents();
-        this.fetchAvailableMaterials();
+        this.fetchRequests();
     },
     data(){
         return{
             createNewProductModal:false,
+            updateProductModal:false,
+            product:null,
+            productClone:null,
             currentSelectedProduct:0,
             availableProducts:Array,
             availableCategories:categories,
@@ -87,14 +97,46 @@ export default {
             this.createNewProductModal=true;
         },
         /**
+         * Triggers the update of a selected product
+         */
+        updateSelectedProduct(){
+            this.fetchSelectedProduct();
+            this.updateProductModal=true;
+        },
+        /**
          * Posts a new product
          */
         postProduct(productDetails){
             Axios
                 .post('http://localhost:5000/mycm/api/products',productDetails)
-                .then((response)=>{ this.$toast.open({message:"The product was created with success!"});})
+                .then((response)=>{
+                    this.$toast.open({message:"The product was created with success!"});
+                    this.createNewProductModal=false;    
+                    this.fetchRequests();
+                })
                 .catch((_error)=>{
                     this.$toast.open({message:_error.response.data.error});
+                });
+        },
+        updateProduct(productDetails){
+            this.updateProductProperties(productDetails);
+        },
+        updateProductProperties(productDetails){
+            let productProperties={};
+            if(this.productClone.reference!=productDetails.reference)productProperties.reference=productDetails.reference;
+            if(this.productClone.designation!=productDetails.designation)productProperties.designation=productDetails.designation
+            if(this.productClone.category!=productDetails.category)productProperties.categoryId=productDetails.category;
+            Axios
+                .put('http://localhost:5000/mycm/api/products/'+this.currentSelectedProduct
+                    ,productProperties)
+                .then((_response)=>{
+                    this.$toast.open({message:"The product properties were updated with success"});
+                    this.updateProductFromData(_response.data);
+                    this.fetchRequests();
+                    this.updateProductModal=false;
+                })
+                .catch((_error)=>{
+                    this.$toast.open({message:"An error ocurrd while updating the product properties"})
                 });
         },
         /**
@@ -104,12 +146,68 @@ export default {
             Axios
             .delete('http://localhost:5000/mycm/api/products/'+this.currentSelectedProduct)
             .then((response)=>{
-                console.log(response.data)
+                this.$toast.open({message:"The product was deleted with success!"});
+                this.fetchRequests();
+            })
+            .catch(()=>{
+                this.$toast.open({message:"An error occurred while deleting the product"});
             });
+        },
+        updateProductFromData(data){
+            let productDetails=data;
+            this.product={
+                id:productDetails.id,
+                reference:productDetails.reference,
+                designation:productDetails.designation,
+                category:productDetails.category.id,
+                materials:materials
+            };
+            this.productClone={
+                id:productDetails.id,
+                reference:productDetails.reference,
+                designation:productDetails.designation,
+                category:productDetails.category.id,
+                materials:materials
+            };
+        },
+        fetchSelectedProduct(){
+            Axios
+                .get('http://localhost:5000/mycm/api/products/'+this.currentSelectedProduct)
+                .then((response)=>{
+                    let productDetails=response.data;
+                    let materials=[];
+                    productDetails.material.forEach((material)=>{
+                        materials.push({id:material.id,value:material.designation});
+                    });
+                    this.product={
+                        id:productDetails.id,
+                        reference:productDetails.reference,
+                        designation:productDetails.designation,
+                        category:productDetails.category.id,
+                        materials:materials
+                    };
+                    this.productClone={
+                        id:productDetails.id,
+                        reference:productDetails.reference,
+                        designation:productDetails.designation,
+                        category:productDetails.category.id,
+                        materials:materials
+                    };
+                    console.log(productDetails)
+                })
+                .catch(()=>{
+                    this.$toast.open({message:"An error occurred while fetching the product"});
+                });
+        },
+        fetchRequests(){
+            this.updateFetchedProducts();
+            this.fetchAvailableCategories();
+            this.fetchAvailableComponents();
+            this.fetchAvailableMaterials();
         },
         fetchAvailableCategories(){
         Axios
-          .get('http://localhost:5000/mycm/api/categories')
+          .get('http://localhost:5000/mycm/api/categories/leaves')
           .then((response)=>{
             let availableCategories=response.data;
             availableCategories.forEach((category)=>{
