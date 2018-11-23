@@ -1,15 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace core.domain
-{
+namespace core.domain {
     /// <summary>
     /// Class that represents the algorithm that checks if complement occupies a certain percentage of the parent product
     /// </summary>
-    public class WidthPercentageAlgorithm : Algorithm
-    {
+    public class WidthPercentageAlgorithm : Algorithm {
         /// <summary>
         /// Name of minimum percentage input
         /// </summary>
@@ -37,15 +36,13 @@ namespace core.domain
         /// <summary>
         /// Empty constructor
         /// </summary>
-        public WidthPercentageAlgorithm()
-        {
+        public WidthPercentageAlgorithm() {
         }
         /// <summary>
         /// Returns a list of the required inputs to apply the algorithm
         /// </summary>
         /// <returns>list of the required inputs</returns>
-        public List<Input> getRequiredInputs()
-        {
+        public List<Input> getRequiredInputs() {
             List<Input> inputs = new List<Input>();
             Input input1 = new Input(MINIMUM_PERCENTAGE_INPUT_NAME);
             Input input2 = new Input(MAXIMUM_PERCENTAGE_INPUT_NAME);
@@ -58,17 +55,13 @@ namespace core.domain
         /// </summary>
         /// <param name="inputs">list of inputs with values</param>
         /// <returns>true if the values were successfully set, throws ArgumentException if any value was not valid</returns>
-        public bool setInputValues(List<Input> inputs)
-        {
-            if (inputs == null || inputs.Count == 0 || inputs.Count != 2)
-            {
+        public bool setInputValues(List<Input> inputs) {
+            if (inputs == null || inputs.Count == 0 || inputs.Count != 2) {
                 throw new ArgumentException(INVALID_INPUT);
             }
             isWithinDataRange(inputs);
-            foreach (Input input in inputs)
-            {
-                switch (input.name)
-                {
+            foreach (Input input in inputs) {
+                switch (input.name) {
                     case MINIMUM_PERCENTAGE_INPUT_NAME:
                         minPercentage = Convert.ToDouble(input.value, CultureInfo.InvariantCulture);
                         break;
@@ -84,22 +77,17 @@ namespace core.domain
         /// </summary>
         /// <param name="inputs">list of inputs with values to check</param>
         /// <returns>true if values are within allowed range, throws ArgumentException if any value was not within the allowed range, throws FormatException if any input value is not a double</returns>
-        public bool isWithinDataRange(List<Input> inputs)
-        {
-            if (inputs == null || inputs.Count == 0 || inputs.Count != 2)
-            {
+        public bool isWithinDataRange(List<Input> inputs) {
+            if (inputs == null || inputs.Count == 0 || inputs.Count != 2) {
                 throw new ArgumentException(INVALID_INPUT);
             }
             double minPercentage = -1;
             double maxPercentage = -1;
-            foreach (Input input in inputs)
-            {
-                if (String.IsNullOrEmpty(input.name))
-                {
+            foreach (Input input in inputs) {
+                if (String.IsNullOrEmpty(input.name)) {
                     throw new ArgumentException(INVALID_INPUT);
                 }
-                switch (input.name)
-                {
+                switch (input.name) {
                     case MINIMUM_PERCENTAGE_INPUT_NAME:
                         minPercentage = Convert.ToDouble(input.value, CultureInfo.InvariantCulture);
                         break;
@@ -112,99 +100,100 @@ namespace core.domain
             }
             return minPercentage >= 0 && minPercentage <= 1 && maxPercentage >= minPercentage && maxPercentage <= 1 ? true : throw new ArgumentOutOfRangeException(INPUT_OUTSIDE_RANGE);
         }
+
+        //TODO: refactor this method
+
         /// <summary>
         /// Applies the algorithm that restricts a component's width to a certain percentage of the customized father product's width
         /// </summary>
         /// <param name="customProduct">customized product</param>
         /// <param name="product">component product</param>
         /// <returns>component with restricted dimensions, null if the component is not compatible with any of the allowed dimensions</returns>
-        public Product apply(CustomizedProduct customProduct, Product product)
-        {
+        public Product apply(CustomizedProduct customProduct, Product originalProduct) {
+            List<Material> materials = new List<Material>();
+            foreach (ProductMaterial productMaterial in originalProduct.productMaterials) {
+                materials.Add(productMaterial.material);
+            }
+            List<Measurement> measurements = new List<Measurement>();
+            foreach (ProductMeasurement productMeasurement in originalProduct.productMeasurements) {
+                measurements.Add(productMeasurement.measurement);
+            }
+            List<Product> components = new List<Product>();
+            foreach (Component component in originalProduct.components) {
+                components.Add(component.complementaryProduct);
+            }
+            Product copyProduct = new Product(originalProduct.reference, originalProduct.designation, originalProduct.productCategory, materials, measurements, components, originalProduct.minSlotSize, originalProduct.maxSlotSize, originalProduct.recommendedSlotSize);
             double width = customProduct.customizedDimensions.width;
             double minWidth = width * minPercentage;
             double maxWidth = width * maxPercentage;
 
             List<Measurement> measurementsToRemove = new List<Measurement>();
-            List<Measurement> measurementsToAdd = new List<Measurement>();
 
-            List<Measurement> productMeasurements = product.measurements.Select(m => m.measurement).ToList();
+            List<Measurement> productMeasurements = copyProduct.productMeasurements.Select(m => m.measurement).ToList();
 
-            foreach (Measurement measurement in productMeasurements)
-            {
+            foreach (Measurement measurement in productMeasurements) {
                 Dimension dimension = measurement.width;
 
-                if (dimension.GetType() == typeof(SingleValueDimension))
-                {
+                if (dimension.GetType() == typeof(SingleValueDimension)) {
                     SingleValueDimension single = (SingleValueDimension)dimension;
-                    if (single.value < minWidth || single.value > maxWidth)
-                    {
+                    if (single.value < minWidth || single.value > maxWidth) {
                         measurementsToRemove.Add(measurement);
                     }
-                }
-                else if (dimension.GetType() == typeof(DiscreteDimensionInterval))
-                {
+                } else if (dimension.GetType() == typeof(DiscreteDimensionInterval)) {
                     DiscreteDimensionInterval discrete = (DiscreteDimensionInterval)dimension;
                     List<DoubleValue> valToRemove = new List<DoubleValue>();
-                    foreach (double value in discrete.values)
-                    {
-                        if (value < minWidth || value > maxWidth)
-                        {
+                    foreach (double value in discrete.values) {
+                        if (value < minWidth || value > maxWidth) {
                             valToRemove.Add(value);
                         }
                     }
-                    foreach (double val in valToRemove)
-                    {
+                    foreach (double val in valToRemove) {
                         discrete.values.Remove(val);
                     }
-                    if (discrete.values.Count == 0)
-                    {
+                    if (discrete.values.Count == 0) {
                         measurementsToRemove.Add(measurement);
-                    }
-                    else if (discrete.values.Count == 1)
-                    {
+                    } else if (discrete.values.Count == 1) {
                         measurement.changeWidthDimension(new SingleValueDimension(discrete.values[0]));
                     }
-                }
-                else if (dimension.GetType() == typeof(ContinuousDimensionInterval))
-                {
+                } else if (dimension.GetType() == typeof(ContinuousDimensionInterval)) {
                     ContinuousDimensionInterval continuous = (ContinuousDimensionInterval)dimension;
-                    if (continuous.minValue > maxWidth || continuous.maxValue < minWidth)
-                    {
+                    if (continuous.minValue > maxWidth || continuous.maxValue < minWidth) {
                         measurementsToRemove.Add(measurement);
-                    }
-                    else
-                    {
-                        if (continuous.minValue < minWidth)
-                        {
-                            continuous.minValue = minWidth;
+                    } else {
+                        double currentMin = continuous.minValue, currentMax = continuous.maxValue;
+                        if (continuous.minValue < minWidth) {
+                            currentMin = minWidth;
                         }
-                        if (continuous.maxValue > maxWidth)
-                        {
-                            continuous.maxValue = maxWidth;
+                        if (continuous.maxValue > maxWidth) {
+                            currentMax = maxWidth;
                         }
-                        if (continuous.maxValue == continuous.minValue)
-                        {
+                        ContinuousDimensionInterval newContinuous = new ContinuousDimensionInterval(currentMin, currentMax, continuous.increment);
+                        if (newContinuous.maxValue == newContinuous.minValue) {
                             SingleValueDimension single = new SingleValueDimension(continuous.maxValue);
                             measurement.changeWidthDimension(single);
                         }
                     }
                 }
-
             }
+            foreach (Measurement measurement in measurementsToRemove) {
 
-            foreach (Measurement measurement in measurementsToAdd)
-            {
-                product.addMeasurement(measurement);
-            }
-            foreach (Measurement measurement in measurementsToRemove)
-            {
-                bool res = product.removeMeasurement(measurement);
-                if (!res)
-                {
+                //TODO: find a better solution than catching exception
+                //?Should this be handled like this?
+
+                bool caught = false;
+
+                try {
+                    copyProduct.removeMeasurement(measurement);
+                } catch (InvalidOperationException) {
+                    caught = true;
+                } catch (ArgumentException) {
+                    caught = true;
+                }
+                if (caught) {
                     return null;
                 }
             }
-            return product;
+            return copyProduct;
         }
     }
 }

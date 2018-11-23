@@ -88,7 +88,7 @@ namespace backend.Controllers {
             List<GetBasicAlgorithmModelView> algorithms = new core.application.AlgorithmController().getAllAlgorithms();
             if (Collections.isListEmpty(algorithms)) {
                 logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
-                return BadRequest(new SimpleJSONMessageService(NO_ALGORITHMS_FOUND));
+                return BadRequest(new {error = NO_ALGORITHMS_FOUND});
             }
             logger.LogInformation(LOG_GET_ALL_SUCCESS, algorithms);
             return Ok(algorithms);
@@ -109,7 +109,7 @@ namespace backend.Controllers {
                 return Ok(algDTO);
             } catch (ArgumentOutOfRangeException ex) {
                 logger.LogWarning(LOG_GET_ID_BAD_REQUEST);
-                return BadRequest(new SimpleJSONMessageService(ex.Message));
+                return BadRequest(new {error = ex.Message});
             }
         }
         /// <summary>
@@ -126,13 +126,13 @@ namespace backend.Controllers {
                 List<InputDTO> inputs = new core.application.AlgorithmController().getAlgorithmInputs((RestrictionAlgorithm)id);
                 if (Collections.isListEmpty(inputs)) {
                     logger.LogInformation(LOG_GET_INPUTS_SUCCESS_NO_INPUTS);
-                    return BadRequest(new SimpleJSONMessageService(NO_INPUTS_NEEDED_MESSAGE));
+                    return BadRequest(new {error = NO_INPUTS_NEEDED_MESSAGE});
                 }
                 logger.LogInformation(LOG_GET_INPUTS_SUCCESS, inputs);
                 return Ok(inputs);
             } catch (ArgumentOutOfRangeException ex) {
                 logger.LogWarning(LOG_GET_INPUTS_BAD_REQUEST);
-                return BadRequest(new SimpleJSONMessageService(ex.Message));
+                return BadRequest(new {error = ex.Message});
             }
         }
     }

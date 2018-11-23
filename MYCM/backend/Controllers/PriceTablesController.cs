@@ -131,7 +131,7 @@ namespace backend.Controllers
                 GetAllMaterialPriceHistoryModelView materialPriceHistoryModelView=new core.application.PriceTablesController().fetchMaterialPriceHistory(fetchMaterialPriceHistoryDTO);
                 return Ok(materialPriceHistoryModelView);
             }catch(InvalidOperationException invalidOperationException){
-                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+                return BadRequest(new{error=invalidOperationException.Message});
             }
         }
 
@@ -152,7 +152,7 @@ namespace backend.Controllers
                 GetAllMaterialFinishPriceHistoryModelView materialFinishPriceHistoryModelView=new core.application.PriceTablesController().fetchMaterialFinishPriceHistory(fetchMaterialFinishPriceHistoryDTO);
                 return Ok(materialFinishPriceHistoryModelView);
             }catch(InvalidOperationException invalidOperationException){
-                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+                return BadRequest(new{error=invalidOperationException.Message});
             }
         }
 

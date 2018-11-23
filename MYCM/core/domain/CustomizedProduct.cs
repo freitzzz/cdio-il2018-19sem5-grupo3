@@ -41,6 +41,21 @@ namespace core.domain
         private const string INVALID_INSERTED_IN_SLOT = "The customized products own slot is not valid";
 
         /// <summary>
+        /// Constant that represents the message that occurs if the CustomizedProducts slots is null
+        /// </summary>
+        private const string NULL_SLOT = "The customized products slots cannot be null";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if one of the CustomizedProducts slots has invalid dimensions
+        /// </summary>
+        private const string INVALID_SLOT_DIMENSIONS = "One of the customized products slots has invalid dimensions";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the CustomizedProducts product doesn't support slots
+        /// </summary>
+        private const string PRODUCT_DOES_NOT_SUPPORT_SLOTS = "This customized product doesn't support slots";
+
+        /// <summary>
         /// Long that represents the CustomizedProduct's persistence ID.
         /// </summary>
         public long Id { get; internal set; }
@@ -126,11 +141,11 @@ namespace core.domain
         public CustomizedProduct(string reference, string designation, CustomizedMaterial customizedMaterial,
         CustomizedDimensions customizedDimensions, Product product)
         {
-            checkCustomizedMaterial(customizedMaterial);
-            checkCustomizedDimensions(customizedDimensions);
             checkProduct(product);
             checkString(reference, INVALID_PRODUCT_REFERENCE);
             checkString(designation, INVALID_PRODUCT_DESIGNATION);
+            checkCustomizedMaterial(customizedMaterial, product);
+            checkCustomizedDimensions(customizedDimensions, product);
 
             this.reference = reference;
             this.designation = designation;
@@ -233,8 +248,10 @@ namespace core.domain
         /// </summary>
         /// <param name="customizedDimensions">New customized dimensions</param>
         /// <returns>true if the customized dimensions were changed successfully</returns>
-        public bool changeCustomizedDimensions(CustomizedDimensions customizedDimensions){
-            checkCustomizedDimensions(customizedDimensions);
+        public bool changeCustomizedDimensions(CustomizedDimensions customizedDimensions)
+        {
+            //!An exception is thrown if this is not true, yet this returns a boolean
+            checkCustomizedDimensions(customizedDimensions, this.product);
             this.customizedDimensions = customizedDimensions;
             return true;
         }
@@ -244,8 +261,10 @@ namespace core.domain
         /// </summary>
         /// <param name="customizedMaterial">New customized material</param>
         /// <returns>true if the customized material was changed successfully</returns>
-        public bool changeCustomizedMaterial(CustomizedMaterial customizedMaterial){
-            checkCustomizedMaterial(customizedMaterial);
+        public bool changeCustomizedMaterial(CustomizedMaterial customizedMaterial)
+        {
+            //!An exception is thrown if this is not true, yet this returns a boolean
+            checkCustomizedMaterial(customizedMaterial, this.product);
             this.customizedMaterial = customizedMaterial;
             return true;
         }
@@ -255,7 +274,8 @@ namespace core.domain
         /// </summary>
         /// <param name="finish">new finish</param>
         /// <returns>true if the finish was changed succesfully</returns>
-        public bool changeFinish(Finish finish){
+        public bool changeFinish(Finish finish)
+        {
             return this.customizedMaterial.changeFinish(finish);
         }
 
@@ -264,7 +284,8 @@ namespace core.domain
         /// </summary>
         /// <param name="color">new color</param>
         /// <returns>true if the color successfully</returns>
-        public bool changeColor(Color color){
+        public bool changeColor(Color color)
+        {
             return this.customizedMaterial.changeColor(color);
         }
 
@@ -275,9 +296,9 @@ namespace core.domain
         /// <returns>true if the Slot is added, false if not</returns>
         public bool addSlot(Slot slot)
         {
-            if (slot == null) return false;
-            if (product.supportsSlots &&
-            slot.slotDimensions.width >= product.minSlotSize.width
+            if (slot == null) throw new ArgumentException(NULL_SLOT);
+            if (!product.supportsSlots) throw new ArgumentException(PRODUCT_DOES_NOT_SUPPORT_SLOTS);
+            if (slot.slotDimensions.width >= product.minSlotSize.width
             && slot.slotDimensions.depth >= product.minSlotSize.depth
             && slot.slotDimensions.height >= product.minSlotSize.height
             && slot.slotDimensions.width <= product.maxSlotSize.width
@@ -287,7 +308,7 @@ namespace core.domain
                 slots.Add(slot);
                 return true;
             }
-            return false;
+            throw new ArgumentException(INVALID_SLOT_DIMENSIONS);
         }
 
         /// <summary>
@@ -345,24 +366,37 @@ namespace core.domain
         /// Checks if the CustomizedMaterial is valid
         /// </summary>
         /// <param name="customizedMaterial">CustomizedMaterial to check</param>
-        //TODO Is the String.IsNullOrEmpty necessary
-        //TODO check if the material referenced by the customized material is in the material list of the product referenced by the customized product (bit confusing right?)
-        private void checkCustomizedMaterial(CustomizedMaterial customizedMaterial)
+        private void checkCustomizedMaterial(CustomizedMaterial customizedMaterial, Product product)
         {
-            if (customizedMaterial == null || String.IsNullOrEmpty(customizedMaterial.ToString()))
-                throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_MATERIAL);
+            if (customizedMaterial == null) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_MATERIAL);
+            if (!product.containsMaterial(customizedMaterial.material)) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_MATERIAL);
         }
 
         /// <summary>
-        /// Checks if the CustomizedDimensions are valid
+        /// Checks if the CustomizedDimensions are valid, that means that they are not null and that they must represent a selection of values available from the Product's collection of Measurement.
         /// </summary>
         /// <param name="customizedDimensions">CustomizedDimensions to check</param>
-        //TODO should a check be performed to validate the actual sizes of each dimension?
-        //TODO Is the String.IsNullOrEmpty necessary
-        private void checkCustomizedDimensions(CustomizedDimensions customizedDimensions)
+        /// <param name="product">Product to which this instance of CustomizedProduct is associated.</param>
+        private void checkCustomizedDimensions(CustomizedDimensions customizedDimensions, Product product)
         {
-            if (customizedDimensions == null || String.IsNullOrEmpty(customizedDimensions.ToString()))
-                throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_DIMENSIONS);
+            if (customizedDimensions == null) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_DIMENSIONS);
+
+            List<Measurement> possibleMeasurements = product.productMeasurements.Select(m => m.measurement).ToList();
+
+            foreach (Measurement measurement in possibleMeasurements)
+            {
+                double height = customizedDimensions.height;
+                double width = customizedDimensions.width;
+                double depth = customizedDimensions.depth;
+
+                bool hasDimensionValues = measurement.hasValues(height, width, depth);
+
+                if(hasDimensionValues){
+                    return; //return immediately if all the values match
+                }
+            }
+
+            throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_DIMENSIONS);
         }
 
         /// <summary>

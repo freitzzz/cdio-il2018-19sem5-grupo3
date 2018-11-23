@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -10,10 +10,11 @@
 
   <!-- Favicons
     ================================================== -->
-  <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="img/wardrobe.png">
   <link rel="apple-touch-icon" sizes="72x72" href="img/wardrobe.png">
   <link rel="apple-touch-icon" sizes="114x114" href="img/wardrobe.png">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="drawer" href="img/armis.png">
 
 
   <!-- Bootstrap -->
@@ -39,31 +40,358 @@
       loadDepth();
       loadSlots();
     }
-    function lengthConverter(valNum) {
-      document.getElementById("outputMeters").innerHTML = valNum / 0.0022046;
+
+    var lastUnit = "cm", hasDoors = false, canClick = true;
+
+    /**
+     * Converts the dimensions' values according to the selected unit on the HTML page 
+     **/
+    function convertUnit(unitToConvert) {
+      var height, width, depth;
+      height = document.getElementById("height").value;
+      width = document.getElementById("width").value;
+      depth = document.getElementById("depth").value
+      switch (unitToConvert) {
+        case "mm":
+          switch (lastUnit) {
+            case "cm":
+              document.getElementById("width").value = width * 10;
+              document.getElementById("height").value = height * 10;
+              document.getElementById("depth").value = depth * 10;
+              break;
+            case "m":
+              document.getElementById("width").value = width * 1000;
+              document.getElementById("height").value = height * 1000;
+              document.getElementById("depth").value = depth * 1000;
+              break;
+          }
+          lastUnit = "mm";
+          break;
+        case "m":
+          switch (lastUnit) {
+            case "cm":
+              document.getElementById("width").value = width / 100;
+              document.getElementById("height").value = height / 100;
+              document.getElementById("depth").value = depth / 100;
+              break;
+            case "mm":
+              document.getElementById("width").value = width / 1000;
+              document.getElementById("height").value = height / 1000;
+              document.getElementById("depth").value = depth / 1000;
+              break;
+          }
+          lastUnit = "m";
+          break;
+        default:
+          switch (lastUnit) {
+            case "mm":
+              document.getElementById("width").value = width / 10;
+              document.getElementById("height").value = height / 10;
+              document.getElementById("depth").value = depth / 10;
+              break;
+            case "m":
+              document.getElementById("width").value = width * 100;
+              document.getElementById("height").value = height * 100;
+              document.getElementById("depth").value = depth * 100;
+              break;
+          }
+          lastUnit = "cm";
+          break;
+      }
     }
+
     //loadDepth();
     function reloadCube() {
+      var height, width, depth;
+      switch (lastUnit) {
+        case "mm":
+          height = document.getElementById("height").value / 10;
+          width = document.getElementById("width").value / 20;
+          depth = document.getElementById("depth").value / 10;
+          break;
+        case "m":
+          width = parseInt((document.getElementById("width").value * 100) / 2);
+          height = document.getElementById("height").value * 100;
+          depth = document.getElementById("depth").value * 100;
+          break;
+        default:
+          width = document.getElementById("width").value;
+          height = document.getElementById("height").value;
+          depth = document.getElementById("depth").value;
+          break;
+      }
 
       var event = new CustomEvent("changeDimensions", {
+
         detail: {
-          height: document.getElementById("height").value,
-          width: document.getElementById("width").value,
-          depth: document.getElementById("depth").value
+          height: height,
+          width: width,
+          depth: depth,
+          //!Temporary solution
+          index: 3
         }
       });
       document.dispatchEvent(event);
     }
 
-    function reloadClosetSlots() {
 
+    /**
+     * Manages the slots' sliders to change their width if the check box that allows different widths is checked
+     **/
+    function manageSlotSliders() {
+      var container = document.getElementById("slotDiv");
+      var checkbox = document.getElementById("slotCheckbox");
+
+      if (checkbox.checked == true && document.getElementById("slotsInput").value > 1) {
+        var initialNumberOfSlots = parseInt(container.childNodes.length - 1);
+        var slotSlidersToAdd = parseInt(document.getElementById("slotsInput").value) - 1;
+        var diff = Math.abs(slotSlidersToAdd - initialNumberOfSlots);
+
+        if (slotSlidersToAdd < initialNumberOfSlots) {
+          removeSlotSliders(container, initialNumberOfSlots, slotSlidersToAdd);
+        } else {
+          addSlotSliders(container, initialNumberOfSlots, slotSlidersToAdd);
+        }
+
+      } else {
+        var length = container.childNodes.length;
+        while (length > 1) { //Removes all sliders if the checkbox isn't checked
+          container.removeChild(container.childNodes[length - 1]);
+          length--;
+        }
+        reloadClosetSlots();
+        if (document.getElementById("slotsInput").value == 1) { //Disables the option for different widths since there is only one slot
+          checkbox.checked = false;
+          checkbox.disabled = true;
+        } else if (document.getElementById("slotsInput").value == 0) { //Prevents the user from inserting the value "0" as the input
+          document.getElementById("slotsInput").value = 1;
+          alert("You need to add at least one slot!");
+        } else { //Enables the checkbox
+          checkbox.disabled = false;
+        }
+      }
+    }
+
+    /**
+     * Adds slots
+     **/
+    function addSlotSliders(container, currentSlotSliders, slotSlidersToAdd) {
+      for (let i = currentSlotSliders; i < slotSlidersToAdd; i++) {
+        var span = document.createElement("span");
+        span.id = "slotTextNode" + (i + 1);
+        var slotTextNode = document.createTextNode("Division " + (i + 1) + ":   ");
+        var input = document.createElement("input");
+        input.type = "range";
+        input.name = "slot" + (i + 1);
+        //TODO communicate with MYCM for slot min, max and recommended sizes
+        document.addEventListener("loadMax", function (loadMaxEvent) {
+          input.max = loadMaxEvent.detail.max,
+            input.min = - loadMaxEvent.detail.max
+        });
+
+        input.min = 0;
+        input.max = parseFloat(document.getElementById("width").value);
+
+        input.id = "slotSlider" + (i + 1);
+        var value = document.createTextNode(input.value);
+        value.id = "slotValue" + (i + 1);
+        span.appendChild(slotTextNode);
+        span.appendChild(value);
+        span.appendChild(document.createElement("br"));
+        span.appendChild(input);
+        span.addEventListener("input", sliderOnInput(container, span, i));
+        container.appendChild(span);
+      }
+      changeSliderInputValue(container);
+    }
+
+    function changeSliderInputValue(container) {
+      var width = parseFloat(document.getElementById("width").value);
+
+      for (let i = 1; i < container.childNodes.length; i++) {
+        var value = Math.round((i * width) / container.childNodes.length);
+
+        container.childNodes[i].childNodes[3].value = value;
+        container.childNodes[i].childNodes[1].textContent = value;
+      }
+    }
+
+    function removeSlotSliders(container, initialNumberOfSlots, slotSlidersToAdd) {
+      for (let j = slotSlidersToAdd; j < initialNumberOfSlots; j++) {
+        container.removeChild(container.childNodes[container.childNodes.length - 1]);
+      }
+    }
+
+    function sliderOnInput(slotDiv, span, spanIndex) {
+      if (spanIndex < 0) return;
+
+      span.childNodes[3].oninput = function () {
+
+        var sliderValue = parseInt(span.childNodes[3].value);
+        span.childNodes[1].textContent = sliderValue; //Sets the text content of the text node to the selected value on the slider      
+
+        reloadClosetSlots();
+      }
+    }
+
+
+    function forceOnMouseUp() {
+      document.dispatchEvent(new CustomEvent("forceOnMouseUp"));
+    }
+
+    function manageClosetSlots() {
       var eventX = new CustomEvent("changeSlots", {
         detail: {
           slots: document.getElementById("slotsInput").value
         }
       });
       document.dispatchEvent(eventX);
+      manageSlotSliders();
     }
+
+
+    function reloadClosetSlots() {
+      var slotDiv = document.getElementById("slotDiv");
+      var length = slotDiv.childNodes.length;
+
+      var list = new Array();
+
+      if (length > 0) {
+        for (let i = 1; i < length; i++) {
+          var sliderValue = parseFloat(slotDiv.childNodes[i].childNodes[3].value);
+          var sliderWidth = parseFloat(document.getElementById("width").value);
+          var actualWidth = sliderWidth / 2;
+
+          if (sliderValue >= actualWidth) {
+            var converted = (actualWidth * sliderValue) / sliderWidth;
+            list.push(parseFloat(converted));
+          } else {
+            var converted = sliderValue - actualWidth;
+            list.push(parseFloat(converted));
+          }
+        }
+      }
+
+      var eventX = new CustomEvent("reloadClosetSlots", {
+        detail: {
+          slotWidths: list
+        }
+      });
+
+      document.dispatchEvent(eventX);
+    }
+
+    function createComponent(elementId) {
+      var div = document.getElementById("div_customize_component");
+      div.setAttribute("style", "height:130px;width:100%;visibility:visible"); 
+      div.setAttribute("class","scrollable-div");
+
+      var component = document.createTextNode(document.getElementById(elementId).getAttribute("alt"));
+      var component_text = component.textContent;
+
+      var element = document.createElement("span");
+      element.id = "component" + div.childNodes.length;
+      element.appendChild(document.createTextNode("-------- Component " + div.childNodes.length + " --------"));
+      element.appendChild(document.createElement("br"));
+
+      element.appendChild(component);
+
+      var number_of_slots = document.getElementById("slotsInput").value;
+
+      if (number_of_slots > 1) {
+        element.appendChild(document.createElement("br"));
+        element.appendChild(document.createTextNode("Slot:    "));
+
+        var slot_number_input = document.createElement("input");
+        slot_number_input.setAttribute("type", "number");
+        slot_number_input.setAttribute("value", "1");
+        slot_number_input.setAttribute("min", "1");
+        slot_number_input.setAttribute("max", number_of_slots);
+        slot_number_input.setAttribute("style", "width:40px");
+
+        element.appendChild(slot_number_input);
+        element.appendChild(document.createTextNode("     "));
+
+        var apply_btn = document.createElement("button");
+        apply_btn.setAttribute("class", "btn-custom-2");
+        apply_btn.appendChild(document.createTextNode("Apply"));
+
+        apply_btn.addEventListener("click", function () {
+          var slot_number_input_value = parseInt(slot_number_input.value);
+          if (slot_number_input_value > 0 && slot_number_input_value <= number_of_slots) {
+            addComponent(component_text, slot_number_input_value);
+          }
+          else {
+            alert("There is no such slot!");
+            slot_number_input.value = 1;
+          }
+        });
+        element.appendChild(apply_btn);
+
+      } else {
+
+        element.appendChild(document.createTextNode("     "));
+        var apply_btn = document.createElement("button");
+        apply_btn.setAttribute("class", "btn-custom-2");
+        apply_btn.appendChild(document.createTextNode("Apply"));
+        apply_btn.addEventListener("click", function () {
+          addComponent(component_text, 1);
+        });
+        element.appendChild(apply_btn);
+      }
+
+      element.appendChild(document.createElement("br"));
+
+      div.appendChild(element);
+    }
+
+    function createDoor(elementId) {
+      if (!hasDoors) {
+        var div = document.getElementById("div_customize_component");
+        div.setAttribute("style", "height:130px;width:100%;visibility:visible"); 
+      div.setAttribute("class","scrollable-div");
+
+        var component = document.createTextNode(document.getElementById(elementId).getAttribute("alt"));
+        var component_text = component.textContent;
+
+        var element = document.createElement("span");
+        element.id = "component" + div.childNodes.length;
+        element.appendChild(document.createTextNode("-------- Component " + div.childNodes.length + " --------"));
+        element.appendChild(document.createElement("br"));
+
+        element.appendChild(component);
+
+        element.appendChild(document.createTextNode("     "));
+        var apply_btn = document.createElement("button");
+        apply_btn.setAttribute("class", "btn-custom-2");
+        apply_btn.appendChild(document.createTextNode("Apply"));
+        apply_btn.addEventListener("click", function () {
+          if (canClick) {
+            addComponent(component_text, 1);
+            canClick = false;
+          } else {
+            alert("There is already a door!");
+          }
+        });
+        element.appendChild(apply_btn);
+        element.appendChild(document.createElement("br"));
+        div.appendChild(element);
+
+        hasDoors = true;
+
+      } else alert("There is already a door!");
+    }
+
+    function addComponent(element, slotNumber) {
+      var event = new CustomEvent("addComponent", {
+        detail: {
+          component: element,
+          slot: slotNumber
+        }
+      })
+      document.dispatchEvent(event);
+    }
+
 
     function reloadMaterial(elementId) {
       var event = new CustomEvent("changeMaterial", {
@@ -93,7 +421,7 @@
     }
 
     function loadWidth() {
-      document.getElementById("width").value = getCurrentClosetWidth();
+      document.getElementById("width").value = parseInt(getCurrentClosetWidth() * 2);
     }
     function loadHeight() {
       document.getElementById("height").value = getCurrentClosetHeight();
@@ -103,6 +431,15 @@
     }
     function loadSlots() {
       changeClosetSlots(document.getElementById("slotsInput").value);
+      var container = document.getElementById("slotDiv");
+
+      for (let i = 0; i < container.childNodes.length; i++) {
+        if (container.childNodes[i].id != "slotCheckbox") {
+          container.removeChild(container.childNodes[i]);
+        }
+      }
+      document.getElementById("slotsInput").value = 3;
+      document.getElementById("slotCheckbox").checked = false;
     }
   </script>
 
@@ -127,17 +464,48 @@
       document.getElementById(elem).style.display = "block";
       evt.currentTarget.className += " active";
 
-      //Progress bar
-
-      var pro = document.getElementById("progress");
-      pro.style.width += 25 + '%';
-      var status = document.getElementById("percentage");
-      status = pro.style.width;
-
     }
-  </script>
-  <script>
-    //document.getElementById("dimensions").click();
+    function changePBSlots() {
+      var divi = document.getElementById("divisionP");
+      divi.classList.add("active");
+    }
+    function changePBMaterial() {
+      var divi = document.getElementById("materialP");
+      divi.classList.add("active");
+    }
+    function changePBComponents() {
+      var divi = document.getElementById("componentsP");
+      divi.classList.add("active");
+    }
+    function changePBSave() {
+      var divi = document.getElementById("saveP");
+      divi.classList.add("active");
+    }
+
+    function decreasePBSlots() {
+      var divi = document.getElementById("divisionP");
+      divi.classList.remove("active");
+    }
+    function decreasePBMaterial() {
+      var divi = document.getElementById("materialP");
+      divi.classList.remove("active");
+    }
+    function decreasePBComponents() {
+      var divi = document.getElementById("componentsP");
+      divi.classList.remove("active");
+    }
+
+    function removeComponents() {
+      document.getElementById("div_customize_component").setAttribute("style", "visibility:hidden"); //Hides scroll panel
+      var list = document.getElementById("list_components");
+
+      var nrChilds = list.childNodes.length;
+      for (let i = 0; i < nrChilds; i++) {
+        list.removeChild(list.childNodes[nrChilds - 1]); //Removes all elements of the list
+      }
+      //!TODO remove webgl components when going back on the wizard
+    }
+
   </script>
   <script>
     /* Set the width of the sidebar to 250px (show it) */
@@ -160,26 +528,27 @@
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
   <!-- Navigation
     ==========================================-->
-  <nav id="menu" class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-          <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span>
-          <span class="icon-bar"></span> </button>
-        <a class="navbar-brand page-scroll" href="#page-top"><i class="fa fa-bookmark-o"></i> Make your closet</a>
-      </div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="#closet" class="page-scroll">Create a closet</a></li>
-          <li><a href="#contact" class="page-scroll">Contact</a></li>
-        </ul>
-      </div>
-      <!-- /.navbar-collapse -->
+  <!--nav id="menu" class="navbar navbar-default navbar-fixed-top"-->
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+        <span class="icon-bar"></span> </button>
+      <a class="navbar-brand page-scroll" href="#page-top"><i class="fa fa-bookmark-o"></i> Make your closet</a>
     </div>
-    <!-- /.container-fluid -->
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#closet" class="page-scroll">Create a closet</a></li>
+        <li><a href="#contact" class="page-scroll">Contact</a></li>
+      </ul>
+    </div>
+    <!-- /.navbar-collapse -->
+  </div>
+  <!-- /.container-fluid -->
   </nav>
   <!-- Header -->
   <header id="header">
@@ -202,8 +571,8 @@
     .column {
       float: left;
       width: 100%;
-
     }
+
     .left {
       width: 30%;
       align-content: left;
@@ -212,30 +581,25 @@
     .right {
       width: 10%;
       align-content: right;
-
     }
-
+    
   </style>
   <div id="closet">
     <div class="container">
       <div class="section-title text-center center">
-        <h2>
-          <p></p>
-          <p></p> Create <p></p>
-        </h2>
+        <h2>Create</h2>
         <hr>
       </div>
-
-      <div class="progress  left">
-        <div class="progress-bar progress-bar-striped active row" role="progressbar" aria-valuenow="25" aria-valuemin="0"
-          aria-valuemax="100" style="width:25%" id="progress">
-          <div id="percentage">25%</div>
-        </div>
+      <div class="container">
+        <ul class="progressbar">
+          <li class="active">Dimensions</li>
+          <li class="before" id="divisionP">Number of divisions</li>
+          <li class="before" id="materialP">Material and finish</li>
+          <li class="before" id="componentsP">Components</li>
+          <li class="before" id="saveP">Save</li>
+        </ul>
       </div>
-      <!--<div class="tab">
-        <button class="tablinks" onclick="openTab(event, 'dimensions')">Dimensions</button>
-        <button class="tablinks" onclick="openTab(event, 'slots')">Slots</button>
-      </div>-->
+      <br><br>
       <div id="dimensions" class="column left tabcontent active">
         <h2>Dimensions</h2>
         <br>
@@ -246,25 +610,31 @@
         <input type="number" min="1" name="width" id="width" onchange="reloadCube();"><br>
         Depth:<br>
         <input type="number" min="1" name="depth" id="depth" onchange="reloadCube();"><br><br>
-        <select>
-          <option id="cm" value="cm" oninput="lengthConverter(this.value)" onchange="lengthConverter(this.value)">Centimeters
-          </option>
-          <option id="mm" value="mm" oninput="lengthConverter(this.value)" onchange="lengthConverter(this.value)">Milimeters</option>
-          <option id="m" value="m" oninput="lengthConverter(this.value)" onchange="lengthConverter(this.value)">Meters</option>
+        <select id="measurementUnit" onchange="convertUnit(this.value)">
+          <option id="cm" value="cm">Centimeters</option>
+          <option id="mm" value="mm">Milimeters</option>
+          <option id="m" value="m">Meters</option>
         </select><br>
         <br><br>
-        <a class="btn-custom" onclick="openTab(event, 'slots')">Next</a>
+        <a class="btn-custom" onclick="openTab(event, 'slots');changePBSlots();forceOnMouseUp()">Next</a>
       </div>
       <div id="slots" class="column left tabcontent" style="display:none">
         <h2>Slots</h2>
         <br>
         Number of slots:<br>
-        <input type="number" min="1" name="slot" value="3" id="slotsInput" onchange="reloadClosetSlots();">
+        <input type="number" min="1" name="slot" value="3" id="slotsInput" onchange="manageClosetSlots();">
         <br>
         <br>
         <br>
-        <a class="btn-custom" onclick="openTab(event, 'dimensions')">Back</a>
-        <a class="btn-custom" onclick="openTab(event,'materials')">Next</a>
+        <div id="slotDiv">
+          <label class="checkboxcontainer">Different slot widths
+            <input type="checkbox" checked="unchecked" id="slotCheckbox" onclick="manageSlotSliders();">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+        <br><br><br><br>
+        <a class="btn-custom" id="slotBack" onclick="openTab(event, 'dimensions');decreasePBSlots();reloadCube();forceOnMouseUp()">Back</a>
+        <a class="btn-custom" id="slotNext" onclick="openTab(event,'materials');changePBMaterial();forceOnMouseUp()">Next</a>
       </div>
       <div id="materials" class="column left tabcontent" style="display:none">
         <h2>Materials</h2>
@@ -336,13 +706,55 @@
           </ul>
         </div>
         <br>
-        <a class="btn-custom" onclick="openTab(event, 'slots')">Back</a>
-        <a class="btn-custom" disabled>Next</a>
+        <a class="btn-custom" onclick="openTab(event, 'slots');decreasePBMaterial();decreasePBComponents();forceOnMouseUp()">Back</a>
+        <a class="btn-custom" onclick="openTab(event, 'components');changePBComponents();forceOnMouseUp()">Next</a>
       </div>
-      <!--<a class="btn btn-custom btn-lg page-scroll" onclick="reloadCube();">Submit</a>--->
+      <div id="components" class="column left tabcontent" style="display:none">
+        <h2>Components</h2>
+        <br>
+        <div id="component-scrollable-div" class="scrollable-div" style="height: 270px; width: 100%;">
+          <ul class="material_list">
+            <li>
+              <div class="material-btn" onclick="createComponent('pole');">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="pole" src="http://127.0.0.1:8002/US4000/img/pole.jpeg" alt="Pole" width="100%" />
+                <p>Pole</p>
+              </div>
+            </li>
+            <li>
+              <div class="material-btn" onclick="createComponent('shelf')">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="shelf" src="http://127.0.0.1:8002/US4000/img/shelf.jpeg" alt="Shelf" width="100%" />
+                <p>Shelf</p>
+              </div>
+            </li>
+            <li>
+              <div class="material-btn" onclick="createComponent('drawer');">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="drawer" src="http://127.0.0.1:8002/US4000/img/drawer.jpeg" alt="Drawer" width="100%" />
+                <p>Drawer</p>
+              </div>
+            </li>
+            <li>
+              <div class="material-btn" onclick="createDoor('door');">
+                <!--Change the texture source, if the server or the port need to change-->
+                <img id="door" src="http://127.0.0.1:8002/US4000/img/door.jpeg" alt="Sliding Door" width="100%" />
+                <p>Sliding Door</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <br>
+        <div id="div_customize_component" class="scrollable-div" style="height: 130px; width: 100%; visibility:hidden"/>
+        </div>
+        <br>
+        <a class="btn-custom" onclick="openTab(event, 'materials');removeComponents();decreasePBComponents();forceOnMouseUp()">Back</a>
+        <a class="btn-custom" onclick="openTab(event,'save');changePBSave();forceOnMouseUp()">Next</a>
+      </div>
+
       <div class="column right">
 
-        <canvas id="webgl" width="1000" height="600">
+        <canvas id="webgl" width="800" height="600">
           Please use a browser that supports "canvas"
         </canvas>
         <script src="../Renderer/js/threeless.js"></script>
@@ -350,13 +762,17 @@
         <script src="../Renderer/js/OrbitControls.js"></script>
         <script src="../Renderer/js/ProductRenderer.js"></script>
         <script src="../Renderer/js/Closet.js"></script>
+        <script src="../Renderer/js/Pole.js"></script>
+        <script src="../Renderer/js/Shelf.js"></script>
+        <script src="../Renderer/js/Drawer.js"></script>
+        <script src="../Renderer/js/Module.js"></script>
+        <script src="../Renderer/js/SlidingDoor.js"></script>
         <!--Change the texture source, if the server or the port need to change-->
         <script> main('http://127.0.0.1:8002/US4000/img/cherry_wood.jpeg');</script>
       </div>
     </div>
   </div>
   </div>
-
 
 
   <!-- Contact Section -->

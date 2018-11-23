@@ -35,7 +35,7 @@ namespace core.domain
         /// </summary>
         public double value { get; set; }
 
-        private SingleValueDimension(ILazyLoader lazyLoader) : base(lazyLoader) {}
+        private SingleValueDimension(ILazyLoader lazyLoader) : base(lazyLoader) { }
 
         /// <summary>
         /// Empty constructor for ORM.
@@ -64,6 +64,26 @@ namespace core.domain
             }
 
             this.value = value;
+        }
+
+        public override bool hasValue(double value)
+        {
+            decimal valueAsDecimal = (decimal)this.value;
+            decimal otherValueAsDecimal = (decimal)value;
+
+            return decimal.Compare(valueAsDecimal, otherValueAsDecimal) == 0;
+        }
+
+
+        //*These two methods should return the same value in instances of this particular class, since there's only value. */
+        public override double getMaxValue()
+        {
+            return value;
+        }
+
+        public override double getMinValue()
+        {
+            return value;
         }
 
         /// <summary>

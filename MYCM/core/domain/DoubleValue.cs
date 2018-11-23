@@ -1,3 +1,4 @@
+using System;
 using support.domain.ddd;
 
 namespace core.domain
@@ -5,7 +6,7 @@ namespace core.domain
     /// <summary>
     /// Class used for wrapping the primitive type double, so that lists of double can be persisted.
     /// </summary>
-    public class DoubleValue : ValueObject
+    public class DoubleValue : ValueObject, IComparable<DoubleValue>
     {
 
         //*Should value correctness be done here or on the dimensions that use this? */
@@ -84,6 +85,16 @@ namespace core.domain
 
         public override int GetHashCode(){
             return value.GetHashCode();
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public int CompareTo(DoubleValue other)
+        {
+            return this.value.CompareTo(other.value);
         }
     }
 }

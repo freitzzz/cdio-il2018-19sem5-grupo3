@@ -176,7 +176,7 @@ namespace backend.Controllers{
                     return Ok(customizedProductCollectionDTOS);
                 }
                 logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
-                return BadRequest(NO_COLLECTIONS_AVAILABLE);
+                return BadRequest(new {error = NO_COLLECTIONS_AVAILABLE});
             }else{
                 try{
                     logger.LogInformation(LOG_GET_BY_ID_START);
@@ -188,11 +188,11 @@ namespace backend.Controllers{
                         return Ok(customizedProductCollection);
                     }else{
                         logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST,name);
-                        return NotFound(RESOURCE_NOT_FOUND_MESSAGE);
+                        return NotFound(new {error = RESOURCE_NOT_FOUND_MESSAGE});
                     }
                 }catch(NullReferenceException){
                     logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST,name);
-                    return NotFound(RESOURCE_NOT_FOUND_MESSAGE);
+                    return NotFound(new {error = RESOURCE_NOT_FOUND_MESSAGE});
                 }
             }
         }
@@ -215,10 +215,10 @@ namespace backend.Controllers{
                     return Ok(customizedProductCollection);
                 }
                 logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST,id);
-                return NotFound(RESOURCE_NOT_FOUND_MESSAGE);
+                return NotFound(new {error = RESOURCE_NOT_FOUND_MESSAGE});
             }catch(NullReferenceException nullReferenceException){
                 logger.LogWarning(nullReferenceException,LOG_GET_BY_ID_BAD_REQUEST,id);
-                return NotFound(RESOURCE_NOT_FOUND_MESSAGE);
+                return NotFound(new {error = RESOURCE_NOT_FOUND_MESSAGE});
             }
         }
 
@@ -236,13 +236,13 @@ namespace backend.Controllers{
                 return Created(Request.Path,customizedProductCollection);
             }catch(NullReferenceException nullReferenceException){
                 logger.LogWarning(nullReferenceException,LOG_POST_BAD_REQUEST,customizedProductCollectionDTO);
-                return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
+                return BadRequest(new{error = INVALID_REQUEST_BODY_MESSAGE});
             }catch(InvalidOperationException invalidOperationException){
                 logger.LogWarning(invalidOperationException,LOG_POST_BAD_REQUEST,customizedProductCollectionDTO);
-                return BadRequest(invalidOperationException.Message);
+                return BadRequest(new{error = invalidOperationException.Message});
             }catch(ArgumentException invalidArgumentsException){
                 logger.LogWarning(invalidArgumentsException,LOG_POST_BAD_REQUEST,customizedProductCollectionDTO);
-                return BadRequest(invalidArgumentsException.Message);
+                return BadRequest(new{error = invalidArgumentsException.Message});
             }
         }
 
@@ -264,16 +264,16 @@ namespace backend.Controllers{
                     return Ok(VALID_UPDATE_MESSAGE);
                 }
                 logger.LogWarning(LOG_PUT_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
-                return BadRequest(INVALID_UPDATE_MESSAGE);
+                return BadRequest(new{error = INVALID_UPDATE_MESSAGE});
             }catch(NullReferenceException nullReferenceException){
                 logger.LogWarning(nullReferenceException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
-                return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
+                return BadRequest(new{error = INVALID_REQUEST_BODY_MESSAGE});
             }catch(InvalidOperationException invalidOperationException){
                 logger.LogWarning(invalidOperationException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
-                return BadRequest(invalidOperationException.Message);
+                return BadRequest(new{error = invalidOperationException.Message});
             }catch(ArgumentException invalidArgumentsException){
                 logger.LogWarning(invalidArgumentsException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
-                return BadRequest(invalidArgumentsException.Message);
+                return BadRequest(new{error = invalidArgumentsException.Message});
             }
         }
 
@@ -295,13 +295,13 @@ namespace backend.Controllers{
                 return BadRequest(INVALID_UPDATE_MESSAGE);
             } catch (NullReferenceException nullReferenceException){
                 logger.LogWarning(nullReferenceException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
-                return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
+                return BadRequest(new{error = INVALID_REQUEST_BODY_MESSAGE});
             } catch (InvalidOperationException invalidOperationException){
                 logger.LogWarning(invalidOperationException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
-                return BadRequest(invalidOperationException.Message);
+                return BadRequest(new{error = invalidOperationException.Message});
             } catch (ArgumentException argumentException){
                 logger.LogWarning(argumentException,LOG_POST_BAD_REQUEST,id,updateCustomizedProductCollectionDTO);
-                return BadRequest(argumentException.Message);
+                return BadRequest(new{error = argumentException.Message});
             }
         }
 
@@ -320,10 +320,10 @@ namespace backend.Controllers{
                     return NoContent();
                 }
                 logger.LogWarning(LOG_DELETE_BAD_REQUEST, customizedProductID);
-                return BadRequest(INVALID_UPDATE_MESSAGE);
+                return BadRequest(new{error = INVALID_UPDATE_MESSAGE});
             } catch (ArgumentException argumentException){
                 logger.LogWarning(argumentException, LOG_DELETE_CUSTOMIZED_PRODUCT_NOT_FOUND, customizedProductID);
-                return NotFound(RESOURCE_NOT_FOUND_MESSAGE);
+                return NotFound(new{error = RESOURCE_NOT_FOUND_MESSAGE});
             }
         }
 
@@ -344,13 +344,13 @@ namespace backend.Controllers{
                     return NoContent();
                 }
                 logger.LogWarning(LOG_DELETE_BAD_REQUEST,id);
-                return BadRequest(INVALID_UPDATE_MESSAGE);
+                return BadRequest(new{error = INVALID_UPDATE_MESSAGE});
             }catch(NullReferenceException nullReferenceException){
                 logger.LogWarning(nullReferenceException,LOG_DELETE_BAD_REQUEST,id);
-                return BadRequest(INVALID_REQUEST_BODY_MESSAGE);
+                return BadRequest(new{error = INVALID_REQUEST_BODY_MESSAGE});
             }catch(InvalidOperationException invalidOperationException){
                 logger.LogWarning(invalidOperationException,LOG_DELETE_BAD_REQUEST,id);
-                return BadRequest(invalidOperationException.Message);
+                return BadRequest(new{error = invalidOperationException.Message});
             }
         }
     }

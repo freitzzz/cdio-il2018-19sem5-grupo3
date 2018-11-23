@@ -52,6 +52,39 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureSingleValueDimensionDoesNotHaveDifferentValue()
+        {
+            SingleValueDimension instance = new SingleValueDimension(28);
+
+            Assert.False(instance.hasValue(29));
+        }
+
+        [Fact]
+        public void ensureSingleValueDimensionHasValue()
+        {
+            SingleValueDimension instance = new SingleValueDimension(28);
+
+            Assert.True(instance.hasValue(28));
+        }
+
+        [Fact]
+        public void ensureSingleValueDimensionGetMaxValueIsTheSameAsDefinedValue(){
+            double value = 28;
+            SingleValueDimension instance = new SingleValueDimension(value);
+            double maxValue = instance.getMaxValue();
+            Assert.Equal(value, maxValue, 0);
+        }
+
+        [Fact]
+        public void ensureSingleValueDimensionGetMinValueIsTheSameAsDefinedValue(){
+            double value = 28;
+            SingleValueDimension instance = new SingleValueDimension(value);
+            double minValue = instance.getMinValue();
+
+            Assert.Equal(value, minValue, 0);
+        }
+
+        [Fact]
         public void ensureInstanceAndNullAreNotEqual()
         {
             SingleValueDimension instance = new SingleValueDimension(333.5);
