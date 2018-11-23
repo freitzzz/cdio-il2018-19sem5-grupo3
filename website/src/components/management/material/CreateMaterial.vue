@@ -88,7 +88,6 @@
                       <button class="button is-primary" @click="desabelColor()">Back</button>
                     </footer>
                 </div> 
-            </div>
     </b-modal>
 </template>
 <script>
@@ -174,9 +173,6 @@ export default {
         this.availableFinishes.indexOf(this.referenceFinish.trim()) < 0
       ) {
         this.availableFinishes.push(this.referenceFinish);
-        alert("The reference was successfully inserted!");
-      } else {
-        alert("The inserted reference is invalid!");
       }
       this.referenceFinish = "";
     },

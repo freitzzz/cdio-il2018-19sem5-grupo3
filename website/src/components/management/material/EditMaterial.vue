@@ -211,13 +211,9 @@ export default {
         `http://localhost:5000/mycm/api/materials/${this.selectedMaterial.id}/finishes`,finish
         )
         .then(this.selectedMaterial.finishes.push(finish))
-        .catch(function(error) {}),
-        alert("The reference was successfully inserted!");
+        .catch(function(error) {})
         
-      } else {
-        alert("The inserted reference is invalid!");
-      }
-      
+      } 
       this.inputFinishDesignation = "";
     },
   },
