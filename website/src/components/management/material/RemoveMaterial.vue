@@ -20,7 +20,6 @@
             </form>
     </b-modal>
 </template> 
-
 <script>
 import Axios from "axios";
 export default {
@@ -45,7 +44,7 @@ export default {
     Axios.delete(`http://localhost:5000/mycm/api/materials/${this.materialData}`)
       .then() //push all elements onto the array
       .catch(function(error) {
-        //TODO: inform an error occured while fetching categories
+        //TODO: inform an error occured while fetching materials
       });
   }
   },
@@ -53,7 +52,7 @@ export default {
     Axios.get("http://localhost:5000/mycm/api/materials")
       .then(response => this.availableMaterials.push(...response.data)) //push all elements onto the array
       .catch(function(error) {
-        //TODO: inform an error occured while fetching categories
+        //TODO: inform an error occured while fetching materials
       });
   }
 };
