@@ -107,9 +107,9 @@
 import CreateCategory from "./management/category/CreateNewCategory.vue";
 import EditCategory from "./management/category/EditCategory.vue";
 import RemoveCategory from "./management/category/RemoveCategory.vue";
-import CreateMaterial from "./management/material/CreateMaterial.vue";
+/* import CreateMaterial from "./management/material/CreateMaterial.vue";
 import EditMaterial from "./management/material/EditMaterial.vue";
-import RemoveMaterial from "./management/material/RemoveMaterial.vue";
+import RemoveMaterial from "./management/material/RemoveMaterial.vue"; */
 export default {
   data() {
     return {
@@ -119,11 +119,11 @@ export default {
       CustomEditCategory: false,
       CustomRemoveCategory: false,
       WIPFlag: false,
-      CountSamePage: 0 //Counts the amount of times
+    /*   CountSamePage: 0, //Counts the amount of times
       CustomCreateMaterial: false,
       CustomEditMaterial: false,
-      CustomRemoveMaterial: false,
-      WIPFlag: false
+      CustomRemoveMaterial: false, */
+ 
     };
   },
   methods: {
@@ -171,9 +171,9 @@ export default {
     CreateCategory,
     EditCategory,
     RemoveCategory,
-    CreateMaterial,
+/*     CreateMaterial,
     EditMaterial,
-    RemoveMaterial
+    RemoveMaterial */
   }
 };
 </script>
