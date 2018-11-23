@@ -41,7 +41,7 @@ export default {
       nameCategory: "",
       parentCategoryId: null, //this value needs to be null for the placeholder to work
       availableCategories: [],
-      active: false
+      active: true
     };
   },
 
@@ -68,6 +68,7 @@ export default {
           .then(response => {})
           .catch(error => {});
         this.$toast.open("Category Created");
+        
        
       }
     }
