@@ -50,15 +50,9 @@ export default {
         .then(response => {
           activeMessage = true;
         })
-        .catch(error => {
-          console.log(error);
+        .catch(error => {this.$toast.open(error.response.status + 'An error occurred');
         });
-        availableCategories: [];
-      Axios.get("http://localhost:5000/mycm/api/categories")
-        .then(response => this.availableCategories.push(...response.data)) //push all elements onto the array
-        .catch(function(error) {
-          //TODO: inform an error occured while fetching categories
-        });
+      this.$toast.open("Category Removed!");
     }
   },
   created() {
