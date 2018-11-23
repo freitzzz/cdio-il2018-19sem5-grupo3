@@ -61,7 +61,7 @@ export default {
           name: nameCat
         }
       )
-        .then(response => {this.$toast.open('Category Edited');activeFlag=false;})
+        .then(response => {this.$toast.open('Category Edited');})
         .catch(error => {this.$toast.open(error.response.status + 'An error occurred');});
 
     
