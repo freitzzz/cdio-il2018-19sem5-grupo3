@@ -1,7 +1,7 @@
 <template>
     <b-modal :active.sync="active" has-modal-card>
-        <form action="">
-                <div class="modal-card" style="width: auto">
+        
+                <div class="modal-card" style="width: auto; heigth: auto" >
                     <header class="modal-card-head">
                         <p class="modal-card-title">Remove Material</p>
                     </header>
@@ -17,7 +17,7 @@
                         <button class="button is-primary" @click="deleteMaterial()">Remove</button>                    
                     </footer>
                 </div>
-            </form>
+        
     </b-modal>
 </template> 
 <script>
@@ -30,19 +30,14 @@ export default {
       colorsData: "",
       referenceMaterial:"",
       designationMaterial:"",
-      availableMaterials: []
+      availableMaterials: [],
+      active:true
     };
-  },
-  props: {
-    active: {
-      type: Boolean,
-      default: false
-    }
   },
   methods: {
     deleteMaterial() {
     Axios.delete(`http://localhost:5000/mycm/api/materials/${this.materialData}`)
-      .then() //push all elements onto the array
+      .then(this.availableMaterials.pop(this.materialData), this.materialData=null ) //push all elements onto the array
       .catch(function(error) {
         //TODO: inform an error occured while fetching materials
       });

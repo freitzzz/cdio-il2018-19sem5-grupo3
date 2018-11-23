@@ -14,6 +14,9 @@ import Customizer from "./components/Customizer.vue";
 import CreateNewCategory from "./components/management/category/CreateNewCategory.vue";
 import EditCategory from "./components/management/category/EditCategory.vue";
 import RemoveCategory from "./components/management/category/RemoveCategory.vue";
+import CreateMaterial from "./components/management/material/CreateMaterial.vue";
+import EditMaterial from "./components/management/material/EditMaterial.vue";
+import RemoveMaterial from "./components/management/material/RemoveMaterial.vue";
 import SideBar from "./components/SideBar.vue";
 export default {
   name: "app",
@@ -29,10 +32,13 @@ export default {
   },
   components: {
     Customizer,
-    CreateNewCategory,
     SideBar ,
+    CreateNewCategory,
     EditCategory,
-    RemoveCategory
+    RemoveCategory,
+    CreateMaterial,
+    EditMaterial,
+    RemoveMaterial
   }
 };
 </script> 

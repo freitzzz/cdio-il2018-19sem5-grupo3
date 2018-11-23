@@ -1,7 +1,6 @@
 <template>
     <b-modal :active.sync="active" as-modal-card>
-            <div  class="modal-card" style="width: auto">
-                <div v-if="panelCreateMaterial">
+                <div v-if="panelCreateMaterial" class="modal-card" style="width: auto">
                     <header class="modal-card-head">
                         <p class="modal-card-title">Create Material</p>
                     </header>
@@ -47,7 +46,7 @@
                         <button class="button is-primary" @click="postMaterial()">Create</button>
                     </footer>
                 </div>
-                <div v-if="createFinishPanelEnabled">
+                <div v-if="createFinishPanelEnabled" class="modal-card" style="width: auto">
                     <header class="modal-card-head">
                         <p class="modal-card-title">Create Finish</p>
                     </header>
@@ -67,7 +66,7 @@
                       <button class="button is-primary" @click="desabelFinish()">Back</button>
                     </footer>
                 </div>
-                <div v-if="createColorPanelEnabled" >
+                <div v-if="createColorPanelEnabled" class="modal-card" style="width: auto">
                     <header class="modal-card-head">
                         <p class="modal-card-title">Create Color</p>
                     </header>
@@ -82,7 +81,7 @@
                             </b-input>
                         </b-field>
                     <swatches v-model="color" colors="text-advanced"></swatches>
-                    <br> <br> <br> <br> <br><br> <br> <br>
+                    <br> <br> <br> <br> <br><br> <br>
                     </section>
                     <footer class="modal-card-foot">
                       <button class="button is-primary" @click="newColor()">+</button>
@@ -113,18 +112,13 @@ export default {
       availableColors: [],
       nameColors: [],
       color: "#000000",
-      nameColor: ""
+      nameColor: "",
+      active: true
     };
   },
   components: {
     Swatches
   }, // window.VueSwatches.default - from CDN
-  props: {
-    active: {
-      type: Boolean,
-      default: true
-    }
-  },
 
   /*  */
   methods: {
@@ -154,7 +148,7 @@ export default {
         .then(response => {
         })
         .catch(error => {
-        });
+        });this.$toast.open("Material Created");
     },
     createColor() {
       this.panelCreateMaterial = false;
@@ -200,7 +194,7 @@ export default {
       } else {
         alert("The inserted color is invalid!");
       }
-      nameColor: ""
+      this.nameColor = ""
     },
     
   }
