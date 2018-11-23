@@ -85,9 +85,10 @@
   <create-category v-if="CustomCreateCategory"></create-category>
   <edit-category v-if="CustomEditCategory"></edit-category>
   <remove-category v-if="CustomRemoveCategory"></remove-category>
+
   <create-material v-if="CustomCreateMaterial"></create-material>
-  <edit-material v-if="CustomEditMaterial"></edit-material>
-  <remove-material v-if="CustomRemoveMaterial"></remove-material>
+   <edit-material v-if="CustomEditMaterial"></edit-material>
+  <remove-material v-if="CustomRemoveMaterial"></remove-material> 
 </div>
 </nav>
 
@@ -107,9 +108,9 @@
 import CreateCategory from "./management/category/CreateNewCategory.vue";
 import EditCategory from "./management/category/EditCategory.vue";
 import RemoveCategory from "./management/category/RemoveCategory.vue";
-/* import CreateMaterial from "./management/material/CreateMaterial.vue";
+import CreateMaterial from "./management/material/CreateMaterial.vue";
 import EditMaterial from "./management/material/EditMaterial.vue";
-import RemoveMaterial from "./management/material/RemoveMaterial.vue"; */
+import RemoveMaterial from "./management/material/RemoveMaterial.vue"; 
 export default {
   data() {
     return {
@@ -119,49 +120,69 @@ export default {
       CustomEditCategory: false,
       CustomRemoveCategory: false,
       WIPFlag: false,
-    /*   CountSamePage: 0, //Counts the amount of times
+      /*   CountSamePage: 0, //Counts the amount of times*/
       CustomCreateMaterial: false,
       CustomEditMaterial: false,
-      CustomRemoveMaterial: false, */
- 
+      CustomRemoveMaterial: false, 
     };
   },
   methods: {
     enableCreateCategory() {
-      if (this.CustomCreateCategory===true) {
+      if (this.CustomCreateCategory === true) {
         this.CustomCreateCategory = false;
       }
       this.CustomCreateCategory = true;
       this.CustomEditCategory = false;
       this.CustomRemoveCategory = false;
       this.WIPFlag = false;
+      disableMaterial();
     },
     enableEditCategory() {
       this.CustomEditCategory = true;
       this.CustomCreateCategory = false;
       this.CustomRemoveCategory = false;
       this.WIPFlag = false;
+      disableMaterial();
+
     },
     enableRemoveCategory() {
       this.CustomRemoveCategory = true;
       this.CustomCreateCategory = false;
       this.CustomEditCategory = false;
       this.WIPFlag = false;
+      disableMaterial();
+
     },
     enableCreateMaterial() {
-        this.CustomCreateMaterial = true;
-        this.CustomEditMaterial = false;
-        this.CustomRemoveMaterial = false;
+      this.CustomCreateMaterial = true;
+      this.CustomEditMaterial = false;
+      this.CustomRemoveMaterial = false;
+      disableCategory();
     },
-    enableEditMaterial() {
+    disableCategory(){
+      /* Category: */
+      this.CustomEditCategory = false;
+      this.CustomCreateCategory = false;
+      this.CustomRemoveCategory = false;
+      this.WIPFlag = false;
+    },
+    disableMaterial(){
+      this.CustomEditMaterial = false;
+      this.CustomCreateMaterial = false;
+      this.CustomRemoveMaterial = false;
+    },
+
+     enableEditMaterial() {
       this.CustomEditMaterial = true;
       this.CustomCreateMaterial = false;
       this.CustomRemoveMaterial = false;
+      disableCategory();
     },
     enableRemoveMaterial() {
       this.CustomRemoveMaterial = true;
       this.CustomCreateMaterial = false;
       this.CustomEditMaterial = false;
+      disableCategory();
     },
     enableWIP() {
       this.WIPFlag = true;
@@ -171,9 +192,9 @@ export default {
     CreateCategory,
     EditCategory,
     RemoveCategory,
-/*     CreateMaterial,
+    CreateMaterial,
     EditMaterial,
-    RemoveMaterial */
+    RemoveMaterial 
   }
 };
 </script>
