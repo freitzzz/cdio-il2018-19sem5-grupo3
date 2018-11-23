@@ -26,7 +26,7 @@
                         </b-field>
                         <b-field label="Colors"> 
                             <b-select placeholder="Colors" icon="tag">
-                                <option  v-for="color in availableColors" 
+                                <option  v-for="color in nameColors" 
                                     :key="color" 
                                     :value="color">
                                     {{color}}</option>
@@ -72,9 +72,16 @@
                         <p class="modal-card-title">Create Color</p>
                     </header>
                     <section class="modal-card-body">
-                    <b-field label="Designation: ">
-                            <swatches v-model="color" colors="text-advanced"></swatches>
-                    </b-field>
+                    <b-field label="Name">
+                            <b-input
+                                v-model="nameColor"
+                                type="String"
+                                placeholder="Insert name"
+                                icon="pound"
+                                required>
+                            </b-input>
+                        </b-field>
+                    <swatches v-model="color" colors="text-advanced"></swatches>
                     <br> <br> <br> <br> <br><br> <br> <br>
                     </section>
                     <footer class="modal-card-foot">
@@ -87,7 +94,7 @@
 </template>
 <script>
 import Swatches from "vue-swatches";
-
+import Axios from "axios";
 import "vue-swatches/dist/vue-swatches.min.css";
 
 export default {
@@ -104,7 +111,9 @@ export default {
       createNewFinish: false,
       availableFinishes: [],
       availableColors: [],
-      color: "#000000"
+      nameColors: [],
+      color: "#000000",
+      nameColor: ""
     };
   },
   components: {
@@ -120,34 +129,32 @@ export default {
   /*  */
   methods: {
     postMaterial() {
-     alert(this.referenceMaterial);
-     alert(this.designation);
-
+      let finishesToAdd = [];
+      this.availableFinishes.forEach(element => {
+        finishesToAdd.push({
+          description: element
+        });
+      });
+      let colorsToAdd = [];
+      this.availableColors.forEach(element => {
+        colorsToAdd.push({
+          name: element,
+          red: parseInt(element.replace("#", "").substring(0, 2), 16),
+          green: parseInt(element.replace("#", "").substring(2, 4), 16),
+          blue: parseInt(element.replace("#", "").substring(4, 6), 16),
+          alpha: "0"
+        });
+      });
       Axios.post("http://localhost:5000/mycm/api/materials", {
         reference: this.referenceMaterial,
         designation: this.designation,
-        colors: [
-          this.availableColors.forEach(element => {
-            element = element.replace("#", "");
-            r = parseInt(hex.substring(0, 2), 16);
-            g = parseInt(hex.substring(2, 4), 16);
-            b = parseInt(hex.substring(4, 6), 16);
-
-            name: element;
-            red: r;
-            green: g;
-            blue: b;
-            alpha: 0;
-          })
-        ],
-        finishes: [
-          this.availableFinishes.forEach(element => {
-            description: element;
-          })
-        ]
+        colors: colorsToAdd,
+        finishes: finishesToAdd
       })
-        .then(response => {})
-        .catch(error => {});
+        .then(response => {
+        })
+        .catch(error => {
+        });
     },
     createColor() {
       this.panelCreateMaterial = false;
@@ -166,7 +173,6 @@ export default {
       this.panelCreateMaterial = true;
       this.createColorPanelEnabled = false;
     },
-    createEditFinish() {},
     newFinish() {
       if (
         this.referenceFinish != null &&
@@ -181,9 +187,22 @@ export default {
       this.referenceFinish = "";
     },
     newColor() {
-      this.availableColors.push(this.color);
-      alert("The color was successfully inserted!");
-    }
+      if (
+        this.nameColor != null &&
+        this.nameColor.trim() != "" &&
+        this.nameColors.indexOf(this.nameColor) < 0 &&
+        this.availableColors.indexOf(this.color) < 0 
+
+      ) {
+        this.nameColors.push(this.nameColor);
+        this.availableColors.push(this.color);
+        alert("The color was successfully inserted!");
+      } else {
+        alert("The inserted color is invalid!");
+      }
+      nameColor: ""
+    },
+    
   }
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
-    <b-modal :active.sync="active" has-modal-card>
-        <form action="">
+    <b-modal :active.sync="activeFlag" has-modal-card>
+      
                 <div class="modal-card" style="width: auto">
                     <header class="modal-card-head">
                         <p class="modal-card-title">Edit Category</p>
@@ -30,82 +30,48 @@
                         <button class="button is-primary" @click="editCategory">Edit</button>                    
                     </footer>
                 </div>
-            </form>
+       
     </b-modal>
 </template> 
 
 <script>
 import Axios from "axios";
+import { Dialog } from "buefy/dist/components/dialog";
 export default {
   name: "EditCategory",
   data() {
     return {
       categoryData: "",
-      nameCategory:"",
-      //categoryId: null, //this value needs to be null for the placeholder to work
-      availableCategories: []
+      nameCategory: "",
+      availableCategories: [],
+      activeFlag: true
     };
-  },
-  props: {
-    active: {
-      type: Boolean,
-      default: false
-    }
   },
 
   /*  */
   methods: {
- /*    getCategory() {
-      alert("entrou");
-      Axios.get(
-        `http://localhost:5000/mycm/api/categories/${this.categoryData}`
-      )
-        .then(response => nameCategory.value) //push all elements onto the array
-        .catch(function(error) {
-          //TODO: inform an error occured while fetching categories
-        });
-    }, */
     editCategory() {
-      alert(this.categoryData);
-      Axios.delete(
-        `http://localhost:5000/mycm/api/categories/?name=${this.categoryData}`
-      )
-        .then(response => {})
-        .catch(error => {
-          console.log("NAO DEU");
-        });
-      /*Post with just a name */
-      /* Axios.put(
+      var nameCat, cat;
+      cat = this.categoryData;
+      nameCat = this.nameCategory;
+
+      Axios.put(
         `http://localhost:5000/mycm/api/categories/${this.categoryData}`,
-         {
-           name: this.categoryData.value
-         }
-       )
-         .then(response => {})
-         .catch(error => {}); */
+        {
+          name: nameCat
+        }
+      )
+        .then(response => {this.$toast.open('Category Edited');})
+        .catch(error => {this.$toast.open(error.response.status + 'An error occurred');});
+
+    
     }
-    /*  putCategory: function() {
-      var formData = new FormData();
-      formData.append("name", this.categoryData.value);
-      this.$http.put(
-        `http://localhost:5000/mycm/api/categories/$this.categoryData.text`,
-        formData
-      );
-      success(function() {
-        this.modalName.showMod = false;
-        location.reload();
-      }).error(function(data) {
-        this.errors.title = data.title;
-        this.errors.body = data.body;
-        this.modalName.showMod = true;
-      });
-    } */
   },
   created() {
     Axios.get("http://localhost:5000/mycm/api/categories")
       .then(response => this.availableCategories.push(...response.data)) //push all elements onto the array
-      .catch(function(error) {
-        //TODO: inform an error occured while fetching categories
+      .catch(error => {this.$toast.open(error.response.status + 'An error occurred');
+        availableCategories: [];
       });
   }
 };

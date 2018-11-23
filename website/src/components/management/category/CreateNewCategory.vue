@@ -1,6 +1,5 @@
 <template>
     <b-modal :active.sync="active" has-modal-card>
-        <form action="">
                 <div class="modal-card" style="width: auto">
                     <header class="modal-card-head">
                         <p class="modal-card-title">New Category</p>
@@ -26,9 +25,10 @@
                     </section>
                     <footer class="modal-card-foot">
                         <button class="button is-primary" @click="postCategory">Create</button>
+             
                     </footer>
                 </div>
-            </form>
+       
     </b-modal>
 </template> 
 
@@ -40,14 +40,9 @@ export default {
     return {
       nameCategory: "",
       parentCategoryId: null, //this value needs to be null for the placeholder to work
-      availableCategories: []
+      availableCategories: [],
+      active: true
     };
-  },
-  props: {
-    active: {
-      type: Boolean,
-      default: false
-    }
   },
 
   /*  */
@@ -72,6 +67,9 @@ export default {
         )
           .then(response => {})
           .catch(error => {});
+        this.$toast.open("Category Created");
+        
+       
       }
     }
   },
@@ -81,6 +79,7 @@ export default {
       .catch(function(error) {
         //TODO: inform an error occured while fetching categories
       });
+
   }
 };
 </script>

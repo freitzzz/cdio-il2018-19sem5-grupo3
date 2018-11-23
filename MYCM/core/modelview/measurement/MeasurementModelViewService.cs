@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using core.domain;
 using core.modelview.dimension;
 using core.modelview.product;
+using support.utils;
 
 namespace core.modelview.measurement
 {
@@ -12,14 +13,139 @@ namespace core.modelview.measurement
     public static class MeasurementModelViewService
     {
         /// <summary>
-        /// Constant representing the error message being presented when the provided ModelView is null.
+        /// Constant representing the error message being presented when the provided AddMeasuremntModelView is null.
         /// </summary>
-        private const string ERROR_NULL_MEASUREMENT_VIEW = "No measurement data provided.";
+        private const string ERROR_NULL_MEASUREMENT_VIEW = "No measurement view provided.";
+
+        /// <summary>
+        /// Constant representing the error message being presented when a null Collection of AddMeasurementModelView is provided.
+        /// </summary>
+        private const string ERROR_NULL_MEASUREMENT_VIEW_COLLECTION = "Invalid measurement view collection provided";
 
         /// <summary>
         /// Constant representing the error message being presented when the provided Measurement is null.
         /// </summary>
         private const string ERROR_NULL_MEASUREMENT = "The provided Measurement is null.";
+
+        /// <summary>
+        /// Constant representing the error message being presente when the provided Collection of Measurement is null. 
+        /// </summary>
+        private const string ERROR_NULL_MEASUREMENT_COLLECTION = "Invalid Measurement collection";
+
+        /// <summary>
+        /// Converts an instance of Measurement into an instance of GetMeasurementModelView.
+        /// </summary>
+        /// <param name="measurement">Measurement being converted.</param>
+        /// <returns>An instance of GetMeasurementModelView with the Measurement data.</returns>
+        /// <exception cref="System.ArgumentNullException">If the provided Measurement is null.</exception>
+        public static GetMeasurementModelView fromEntity(Measurement measurement)
+        {
+            if (measurement == null)
+            {
+                throw new ArgumentNullException(ERROR_NULL_MEASUREMENT);
+            }
+
+            GetDimensionModelView heightMV = DimensionModelViewService.fromEntity(measurement.height);
+            GetDimensionModelView widthMV = DimensionModelViewService.fromEntity(measurement.width);
+            GetDimensionModelView depthMV = DimensionModelViewService.fromEntity(measurement.depth);
+
+            GetMeasurementModelView measurementModelView = new GetMeasurementModelView();
+            measurementModelView.measurementId = measurement.Id;
+            measurementModelView.height = heightMV;
+            measurementModelView.width = widthMV;
+            measurementModelView.depth = depthMV;
+
+            return measurementModelView;
+        }
+
+        /// <summary>
+        /// Converts an instance of Measurement into an instance of GetMeasurementModelView 
+        /// with the values converted to the specified unit.
+        /// </summary>
+        /// <param name="measurement">Measurement being converted.</param>
+        /// <param name="unit">Unit to which the values will be converted.</param>
+        /// <returns>An instance of GetMeasurementModelView with the Measurement data.</returns>
+        /// <exception cref="System.ArgumentNullException">If the provided Measurement is null.</exception>
+        public static GetMeasurementModelView fromEntity(Measurement measurement, string unit)
+        {
+            if (measurement == null)
+            {
+                throw new ArgumentNullException(ERROR_NULL_MEASUREMENT);
+            }
+
+            //if no unit is provided, resort to the default implementation
+            if (Strings.isNullOrEmpty(unit))
+            {
+                return fromEntity(measurement);
+            }
+
+            GetDimensionModelView heightMV = DimensionModelViewService.fromEntity(measurement.height, unit);
+            GetDimensionModelView widthMV = DimensionModelViewService.fromEntity(measurement.width, unit);
+            GetDimensionModelView depthMV = DimensionModelViewService.fromEntity(measurement.depth, unit);
+
+            GetMeasurementModelView measurementModelView = new GetMeasurementModelView();
+            measurementModelView.measurementId = measurement.Id;
+            measurementModelView.height = heightMV;
+            measurementModelView.width = widthMV;
+            measurementModelView.depth = depthMV;
+
+            return measurementModelView;
+        }
+
+        /// <summary>
+        /// Creates an IEnumerable of GetMeasurementModelView from a given IEnumerable of Measurement.
+        /// </summary>
+        /// <param name="measurements">IEnumerable of Measurement being converted.</param>
+        /// <returns>An instance of GetAllMeasurementsModelView. </returns>
+        /// <exception cref="System.ArgumentNullException">If the IEnumerable is null or 
+        /// any instance of Measurement in the IEnumerable is null.</exception>
+        public static GetAllMeasurementsModelView fromCollection(IEnumerable<Measurement> measurements)
+        {
+            if (measurements == null)
+            {
+                throw new ArgumentNullException(ERROR_NULL_MEASUREMENT_COLLECTION);
+            }
+
+            GetAllMeasurementsModelView measurementModelViews = new GetAllMeasurementsModelView();
+
+            foreach (Measurement measurement in measurements)
+            {
+                measurementModelViews.Add(fromEntity(measurement));
+            }
+
+            return measurementModelViews;
+        }
+
+        /// <summary>
+        /// Creates an IEnumerable of GetMeasurementModelView from a given IEnumerable of Measurement
+        ///  with the values converted to a given unit.
+        /// </summary>
+        /// <param name="measurements">IEnumerable of Measurement being converted.</param>
+        /// <param name="unit">Unit to which the values will be converted.</param>
+        /// <returns>An instance of GetAllMeasurementsModelView.</returns>
+        /// <exception cref="System.ArgumentNullException">If the IEnumerable is null or 
+        /// any instance of Measurement in the IEnumerable is null.</exception>
+        public static GetAllMeasurementsModelView fromCollection(IEnumerable<Measurement> measurements, string unit)
+        {
+            if (measurements == null)
+            {
+                throw new ArgumentNullException(ERROR_NULL_MEASUREMENT_COLLECTION);
+            }
+
+            GetAllMeasurementsModelView measurementModelViews = new GetAllMeasurementsModelView();
+
+            if (Strings.isNullOrEmpty(unit))
+            {
+                return fromCollection(measurements);
+            }
+
+            foreach (Measurement measurement in measurements)
+            {
+                measurementModelViews.Add(fromEntity(measurement, unit));
+            }
+
+            return measurementModelViews;
+        }
 
         /// <summary>
         /// Creates an instance of Measurement from an AddMeasurementModelView instance.
@@ -47,12 +173,12 @@ namespace core.modelview.measurement
         /// <returns>An IEnumerable of Measurement.</returns>
         public static IEnumerable<Measurement> fromModelViews(IEnumerable<AddMeasurementModelView> measurementModelViews)
         {
-            List<Measurement> measurements = new List<Measurement>();
-
             if (measurementModelViews == null)
             {
-                return measurements;
+                throw new ArgumentNullException(ERROR_NULL_MEASUREMENT_VIEW_COLLECTION);
             }
+
+            List<Measurement> measurements = new List<Measurement>();
 
             foreach (AddMeasurementModelView measurementMV in measurementModelViews)
             {
@@ -60,55 +186,6 @@ namespace core.modelview.measurement
             }
 
             return measurements;
-        }
-
-        /// <summary>
-        /// Converts an instance of Measurement into an instance of GetMeasurementModelView.
-        /// </summary>
-        /// <param name="measurement">Measurement being converted.</param>
-        /// <returns>An instance of GetMeasurementModelView with the Measurement data.</returns>
-        /// <exception cref="System.ArgumentException">If the provided Measurement is null.</exception>
-        public static GetMeasurementModelView fromEntity(Measurement measurement)
-        {
-            if (measurement == null)
-            {
-                throw new ArgumentException();
-            }
-
-            GetDimensionModelView heightMV = DimensionModelViewService.fromEntity(measurement.height);
-            GetDimensionModelView widthMV = DimensionModelViewService.fromEntity(measurement.width);
-            GetDimensionModelView depthMV = DimensionModelViewService.fromEntity(measurement.depth);
-
-            GetMeasurementModelView measurementModelView = new GetMeasurementModelView();
-            measurementModelView.measurementId = measurement.Id;
-            measurementModelView.height = heightMV;
-            measurementModelView.width = widthMV;
-            measurementModelView.depth = depthMV;
-
-            return measurementModelView;
-        }
-
-        /// <summary>
-        /// Creates an IEnumerable of GetMeasurementModelView from a given IEnumerable of Measurement.
-        /// </summary>
-        /// <param name="measurements">IEnumerable of Measurement being converted.</param>
-        /// <returns>An IEnumerable of GetMeasurementModelView </returns>
-        /// <exception cref="System.ArgumentException">If any instance of Measurement in the IEnumerable is null.</exception>
-        public static IEnumerable<GetMeasurementModelView> fromCollection(IEnumerable<Measurement> measurements)
-        {
-            List<GetMeasurementModelView> measurementModelViews = new List<GetMeasurementModelView>();
-
-            if (measurements == null)
-            {
-                return measurementModelViews;
-            }
-
-            foreach (Measurement measurement in measurements)
-            {
-                measurementModelViews.Add(fromEntity(measurement));
-            }
-
-            return measurementModelViews;
         }
     }
 }

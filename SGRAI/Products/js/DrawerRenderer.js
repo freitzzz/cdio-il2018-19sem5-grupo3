@@ -1,7 +1,7 @@
 /**
  * Global Variables for Graphic Control (Camera, Rendering, Scene, etc...)
  */
-var camera, controls, scene,  renderer, group, groupB;
+var camera, controls, scene, renderer, group;
 /**
  * Global variable for 
  */
@@ -33,95 +33,58 @@ var borders_faces_ids = [];
 var canvasWebGL;
 
 /**
- * Global variable that represents the plane that intersects the closet
- */
-var plane = null;
-
-/**
  * Initial Product Draw function
  */
 function main(textureSource) {
     canvasWebGL = document.getElementById("webgl");
     renderer = new THREE.WebGLRenderer({ canvas: canvasWebGL, antialias: true });
-    //renderer.setSize(window.innerWidth, window.innerHeight);
+
+    scene = new THREE.Scene();
+    group = new THREE.Group();
+
     initCamera();
     initControls();
     initDrawer(textureSource);
     initLighting();
 
-    //Creates the intersection plane
-    plane = new THREE.Plane();
-    plane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 200, 0)).normalize();
-
-    var planeGeometry = new THREE.PlaneGeometry(500, 500);
-
-    var coplanarPoint = plane.coplanarPoint();
-
-    var focalPoint = new THREE.Vector3().copy(coplanarPoint).add(plane.normal);
-
-    planeGeometry.lookAt(focalPoint);
-
-    planeGeometry.translate(coplanarPoint.x, coplanarPoint.y, coplanarPoint.z);
-
-    var planeMaterial = new THREE.MeshLambertMaterial({
-        color: 0xffff00,
-        side: THREE.DoubleSide
-    });
-
-    var dispPlane = new THREE.Mesh(planeGeometry, planeMaterial);
-    dispPlane.visible = false;
-    //Finishes creating the intersection plane
-
-    scene.add(dispPlane);
-    scene.add(camera);
-
     animate();
 }
 
 /**
- * Initiates the closet
+ * Initiates the drawer
  * @param {*} textureSource - Source of the texture being loaded.
  */
 function initDrawer(textureSource) {
-    scene = new THREE.Scene();
-    group = new THREE.Group();
-    groupB = new THREE.Group();
-
-    drawer = new Drawer([204.5, 4.20, 100, 0, 0, 0] ///baixo (cumprimento,largura,profun, x,y,z)
-        , [200, 50, 0, 0, 25, 50] ///frente
-        , [4.20, 50, 100, -100, 25, 0] ///Esquerdaa
-        , [4.20, 50, 100, 100, 25, 0] ///Direita
-        , [200, 50, 0, 0, 25, -50]);
+    drawer = new Drawer([204.5, 4.20, 100, 0, 0, 0] //Bottom
+        , [200, 55, 0, 0, 25, 50] //Top
+        , [4.20, 55, 100, -100, 25, 0] //Left
+        , [4.20, 55, 100, 100, 25, 0] //Right
+        , [200, 55, 0, 0, 25, -50]); //Front
     var faces = drawer.drawer_faces;
 
-     border = new Module([224.5, 4.20, 100, 0, -5, 0] ///baixo (cumprimento,largura,profun, x,y,z)
-       , [224.5, 4.20, 100, 0, 60, 0] ///cima
-       , [4.20, 65, 100, -110, 27.5, 0] ///Esquerdaa
-       , [4.20, 65, 100, 110, 27.5, 0]); ///Direita)
+    border = new Module([224.5, 4.20, 100, 0, -5, 0] //Bottom
+        , [224.5, 4.20, 100, 0, 57, 0] //Top
+        , [4.20, 61, 100, -110, 27.5, 0] //Left
+        , [4.20, 61, 100, 110, 27.5, 0]); //Right
     var borders = border.module_faces;
-
-    //var src = 'http://127.0.0.1:8000/Renderer/textures/cherry_wood_cabinets.jpg';
 
     textureLoader = new THREE.TextureLoader();
     var texture = textureLoader.load(textureSource);
-    //A MeshPhongMaterial allows for shiny surfaces
-    //A soft white light is being as specular light
-    //The shininess value is the same as the matte finishing's value
-    material = new THREE.MeshPhongMaterial({ /*map: texture, specular: 0x404040, shininess: 20*/ });
+    material = new THREE.MeshPhongMaterial({ map: texture, specular: 0x404040, shininess: 20 });
 
     for (var i = 0; i < faces.length; i++) {
         drawer_faces_ids.push(generateParellepiped(faces[i][0], faces[i][1], faces[i][2]
             , faces[i][3], faces[i][4], faces[i][5]
             , material, group));
     }
-    scene.add(group);
-     for (var i = 0; i < borders.length; i++) {
+
+    for (var i = 0; i < borders.length; i++) {
         borders_faces_ids.push(generateParellepiped(borders[i][0], borders[i][1], borders[i][2]
             , borders[i][3], borders[i][4], borders[i][5]
-            , material, groupB));
+            , material, group));
     }
-    
-    scene.add(groupB);
+
+    scene.add(group);
     renderer.setClearColor(0xFFFFFF, 1);
 }
 
@@ -194,7 +157,6 @@ function initControls() {
     controls.maxDistance = 500;
 
     controls.maxPolarAngle = Math.PI / 2;
-
 }
 
 /**
@@ -205,4 +167,6 @@ function initCamera() {
     camera.position.y = 400;
     camera.position.z = 400;
     camera.rotation.x = .70;
+
+    scene.add(camera);
 }

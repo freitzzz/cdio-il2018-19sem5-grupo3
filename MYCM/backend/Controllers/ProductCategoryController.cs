@@ -6,6 +6,7 @@ using System;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using core.modelview.productcategory;
+using core.exceptions;
 
 namespace backend.Controllers
 {
@@ -320,6 +321,22 @@ namespace backend.Controllers
             catch (ArgumentException e)
             {
                 logger.LogWarning(e, LOG_GET_BY_NAME_NOT_FOUND, name);
+                return NotFound(new { error = e.Message });
+            }
+        }
+
+        /// <summary>
+        /// Retrieves all the leaf instances of ProductCategory.
+        /// </summary>
+        /// <returns>ActionResult with the 200 HTTP code if an instance of ProductCategory if instance(s) were/was found or 
+        /// 404 HTTP code if no ProductCategory was found.</returns>
+        [HttpGet("leaves")]
+        public ActionResult findLeaves(){
+            //TODO: add logging
+            try{
+                GetAllProductCategoriesModelView result = new core.application.ProductCategoryController().findLeaves();
+                return Ok(result);
+            }catch(ResourceNotFoundException e){
                 return NotFound(new { error = e.Message });
             }
         }
