@@ -43,6 +43,16 @@ var closet_shelves_ids = [];
 var closet_doors_ids = [];
 
 /**
+ * Global variable with the current closet drawers ids (Mesh IDs from Three.js)
+ */
+var closet_drawers_ids = [];
+
+/**
+ * Global variable with the current closet drawer modules ids (Mesh IDs from Three.js)
+ */
+var closet_modules_ids = [];
+
+/**
  * Global variable with the WebGL canvas
  */
 var canvasWebGL;
@@ -51,7 +61,10 @@ var canvasWebGL;
 /**
  * Global variables that represent the currently selected closet component (null if none)
  */
-var selected_slot = null, selected_face = null, selected_component = null, selected_door = null;;
+var selected_slot = null,
+    selected_face = null,
+    selected_component = null,
+    selected_door = null;;
 
 /**
  * Global variable that represents the object being hovered (null if none)
@@ -96,7 +109,10 @@ var thickness = 4.20;
  */
 function main(textureSource) {
     canvasWebGL = document.getElementById("webgl");
-    renderer = new THREE.WebGLRenderer({ canvas: canvasWebGL, antialias: true });
+    renderer = new THREE.WebGLRenderer({
+        canvas: canvasWebGL,
+        antialias: true
+    });
 
     initCamera();
     initControls();
@@ -138,7 +154,7 @@ function main(textureSource) {
     //Finishes creating the intersection plane
     scene.add(dispPlane);
     scene.add(camera);
-  //  scene.add(mesh);
+    //  scene.add(mesh);
 
     registerEvents();
     animate();
@@ -157,11 +173,11 @@ function initCloset(textureSource) {
     //     , [thickness, 300, 100, 300, -60, -295] //dir
     //     , [600, 300, 0, 0, -60, -345]); //tras
 
-    closet = new Closet([204.5, thickness, 100, 0, 0,0] //c a p x y z baixo
-        , [204.5, thickness, 100, 0, 100,0] // cima
-        , [thickness, 100,100,-100,50,0] // esq
-        , [thickness, 100,100,100,50,0] //dir
-        , [200, 100, 0, 0, 50,-50]); //tras
+    closet = new Closet([204.5, thickness, 100, 0, 0, 0] //c a p x y z baixo
+        , [204.5, thickness, 100, 0, 100, 0] // cima
+        , [thickness, 100, 100, -100, 50, 0] // esq
+        , [thickness, 100, 100, 100, 50, 0] //dir
+        , [200, 100, 0, 0, 50, -50]); //tras
 
     var faces = closet.closet_faces;
 
@@ -171,11 +187,9 @@ function initCloset(textureSource) {
     //A MeshPhongMaterial allows for shiny surfaces
     //A soft white light is being as specular light
     //The shininess value is the same as the matte finishing's value
-    material = new THREE.MeshPhongMaterial({ map: texture, specular: 0x404040, shininess: 20 });
+    material = new THREE.MeshPhongMaterial( /*{ map: texture, specular: 0x404040, shininess: 20 }*/ );
     for (var i = 0; i < faces.length; i++) {
-        closet_faces_ids.push(generateParellepiped(faces[i][0], faces[i][1], faces[i][2]
-            , faces[i][3], faces[i][4], faces[i][5]
-            , material, group));
+        closet_faces_ids.push(generateParellepiped(faces[i][0], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], material, group));
     }
     scene.add(group);
     renderer.setClearColor(0xFFFFFF, 1);
@@ -233,9 +247,7 @@ function addSlot() {
 function addSlotNumbered(slotsToAdd) {
     for (var i = 0; i < slotsToAdd; i++) {
         var slotFace = closet.addSlot();
-        closet_slots_faces_ids.push(generateParellepiped(slotFace[0], slotFace[1], slotFace[2]
-            , slotFace[3], slotFace[4], slotFace[5]
-            , material, group));
+        closet_slots_faces_ids.push(generateParellepiped(slotFace[0], slotFace[1], slotFace[2], slotFace[3], slotFace[4], slotFace[5], material, group));
     }
     updateClosetGV();
 }
@@ -291,7 +303,7 @@ function applyTexture(texture) {
 
 function addComponent(component, slot) {
     if (component == "Pole") generateCylinder(slot);
-    // if(component == "Drawer") generateDrawer(slot);
+    if (component == "Drawer") generateDrawer(slot);
     if (component == "Shelf") generateShelf(slot);
     if (component == "Sliding Door") generateSlidingDoor();
 }
@@ -379,8 +391,14 @@ function removePole() {
  * @param {THREE.Group} group cylinder's group
  */
 function generateCylinder(slot) {
-    var leftFace = group.getObjectById(closet_faces_ids[2]), rightFace = group.getObjectById(closet_faces_ids[3]);
-    var radiusTop = 3, radiusBottom = 3, radialSegments = 20, heightSegments = 20, thetaStart = 0, thetaLength = Math.PI * 2;
+    var leftFace = group.getObjectById(closet_faces_ids[2]),
+        rightFace = group.getObjectById(closet_faces_ids[3]);
+    var radiusTop = 3,
+        radiusBottom = 3,
+        radialSegments = 20,
+        heightSegments = 20,
+        thetaStart = 0,
+        thetaLength = Math.PI * 2;
     var openEnded = false;
     var height, x, y, z;
 
@@ -472,6 +490,74 @@ function generateShelf(slot) {
     var meshID = generateParellepiped(width, height, depth, x, y, z, material, group);
     closet.addShelf(shelf);
     closet_shelves_ids.push(meshID);
+}
+
+function generateDrawer(slot) {
+
+    var leftFace = group.getObjectById(closet_faces_ids[2]);
+    var rightFace = group.getObjectById(closet_faces_ids[3]);
+    var height = 3;
+    var altura_gav = 15;
+    var depth = closet.getClosetDepth();
+    var width;
+    var x, y, z;
+
+    //For now this follows the same logic as the pole, it should be changed to whatever dimensions the shelf is allowed to have
+    if (closet_slots_faces_ids.length == 0) {
+        width = getCurrentClosetWidth();
+        x = calculateComponentPosition(rightFace.position.x, leftFace.position.x);
+        y = calculateComponentPosition(rightFace.position.y, leftFace.position.y);
+        z = calculateComponentPosition(rightFace.position.z, leftFace.position.z);
+    } else if (slot == 1) {
+        let firstSlot = group.getObjectById(closet_slots_faces_ids[0]);
+        width = calculateDistance(leftFace.position.x, firstSlot.position.x);
+        x = calculateComponentPosition(leftFace.position.x, firstSlot.position.x);
+        y = calculateComponentPosition(leftFace.position.y, firstSlot.position.y);
+        z = calculateComponentPosition(leftFace.position.z, firstSlot.position.z);
+    } else if (slot > 1 && slot <= closet_slots_faces_ids.length) {
+        let slotToTheLeft = group.getObjectById(closet_slots_faces_ids[slot - 2]);
+        let slotToTheRight = group.getObjectById(closet_slots_faces_ids[slot - 1]);
+        width = calculateDistance(slotToTheLeft.position.x, slotToTheRight.position.x);
+        x = calculateComponentPosition(slotToTheLeft.position.x, slotToTheRight.position.x);
+        y = calculateComponentPosition(slotToTheLeft.position.y, slotToTheRight.position.y);
+        z = calculateComponentPosition(slotToTheLeft.position.z, slotToTheRight.position.z);
+    } else {
+        let lastSlot = group.getObjectById(closet_slots_faces_ids[slot - 2]);
+        width = calculateDistance(lastSlot.position.x, rightFace.position.x);
+        x = calculateComponentPosition(lastSlot.position.x, rightFace.position.x);
+        y = calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
+        z = calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
+    }
+    var module = new Module([width, height, depth, x, y - 2.5, z], ///Base
+        [width, height, depth, x, y + 15 + 2.5, z], ///Cima
+        [height, altura_gav + 2.5, depth, x - (width / 2), y + 7.5, z], ///Left
+        [height, altura_gav + 2.5, depth, x + (width / 2), y + 7.5, z]); ///Rigtht
+    var borders = module.module_faces;
+    for (var i = 0; i < borders.length; i++) {
+        closet_modules_ids.push(generateParellepiped(borders[i][0],
+            borders[i][1], borders[i][2], borders[i][3],
+            borders[i][4], borders[i][5], material, group));
+    }
+    //Adds front door
+
+    var drawer = new Drawer([width - 10, height, depth, x, y + 1.5, z ], ///Base
+        [width - 10, altura_gav, height, x, y + 7.5, z + (depth / 2) - 1.5 ], ///Frent
+        [height, altura_gav, depth - 1.5, x - (width / 2) + 5, y + 7.5, z], ///Left
+        [height, altura_gav, depth - 1.5, x + (width / 2) - 5, y + 7.5, z], ///Right
+        [width - 10, altura_gav, height, x, y + 7.5, z - (depth / 2) + 1.5]); ///Back
+    var borders_drawer = drawer.drawer_faces;
+
+    for (var i = 0; i < borders_drawer.length; i++) {
+        closet_drawers_ids.push(generateParellepiped(borders_drawer[i][0],
+             borders_drawer[i][1], borders_drawer[i][2], borders_drawer[i][3],
+             borders_drawer[i][4], borders_drawer[i][5], material, group));
+    }
+
+    closet.addDrawer(module);
+    closet.addDrawer(drawer);
+    ///closet_drawers_ids.push(module_mesh_id);
+    ///closet_drawers_ids.push(drawer_mesh_id);
+
 }
 
 function generateSlidingDoor() {
@@ -759,7 +845,41 @@ function onDocumentMouseDown(event) {
                     }
                 }
             }
+
+            for (let j = 0; j < closet_drawers_ids.length; j++) {
+                let drawer = group.getObjectById(closet_drawers_ids[j]);
+                if (drawer == face) {
+                    
+                    moveDrawer(drawer);
+
+                }
+            }
+
         }
+    }
+}
+
+function moveDrawer(drawer){
+    render();
+    var closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
+    if(drawer.position.z < closet_front){
+            for(let j=0; j<closet_drawers_ids.length; j++){
+                var drawer_face = group.getObjectById(closet_drawers_ids[j]);
+                drawer_face.position.z = drawer_face.position.z + 1;
+            }
+    }else{
+        for(let j=0; j<closet_front; j++){
+            var drawer_face = group.getObjectById(closet_drawers_ids[j]);
+            drawer_face.position.z = drawer_face.position.z - 10;
+        }
+    }
+
+    if(drawer.position.z < drawer_face.position.z + 70){
+        setTimeout(function(){
+            requestAnimationFrame(moveDrawer());
+        }, 1000/60);
+        controls.update();
+        render();
     }
 }
 
@@ -793,7 +913,7 @@ function onDocumentMouseMove(event) {
     var x = event.clientX;
     var y = event.clientY;
     mouse.x = (x - rect.left) / (canvasWebGL.clientWidth / 2.0) - 1.0; //Get mouse x position
-    mouse.y = - ((y - rect.bottom) / (canvasWebGL.clientHeight / 2.0) + 1.0); //Get mouse y position
+    mouse.y = -((y - rect.bottom) / (canvasWebGL.clientHeight / 2.0) + 1.0); //Get mouse y position
     raycaster.setFromCamera(mouse, camera); //Set raycast position
 
     //If the selected object is a slot
@@ -885,7 +1005,9 @@ function moveComponent() {
         var topFacePosition = group.getObjectById(closet_faces_ids[1]).position.y;
 
         if (Math.abs(newPosition) < Math.abs(topFacePosition) - thickness &&
-            newPosition >= bottomFacePosition + thickness) { selected_component.position.y = newPosition; }
+            newPosition >= bottomFacePosition + thickness) {
+            selected_component.position.y = newPosition;
+        }
     }
 
     var intersects = raycaster.intersectObjects(scene.children[0].children);
@@ -906,7 +1028,7 @@ function moveFace() {
     if (raycaster.ray.intersectPlane(plane, intersection)) {
 
         var rightFacePosition = intersection.x - offset + selected_face.position.x; //Position of the right closet face
-        var leftFacePosition = - intersection.x - offset - selected_face.position.x; //Position of the left closet face
+        var leftFacePosition = -intersection.x - offset - selected_face.position.x; //Position of the left closet face
 
         if (closet_slots_faces_ids.length == 0) {
 
@@ -936,7 +1058,7 @@ function moveFace() {
         } else {
 
             var rightSlotPosition = group.getObjectById(closet_slots_faces_ids[closet_slots_faces_ids.length - 1]).position.x; //Position of the last (more to the right) slot 
-            var leftSlotPosition = - group.getObjectById(closet_slots_faces_ids[0]).position.x; //Position of the first (more to the left) slot
+            var leftSlotPosition = -group.getObjectById(closet_slots_faces_ids[0]).position.x; //Position of the first (more to the left) slot
 
             /**
              * Checks if...
