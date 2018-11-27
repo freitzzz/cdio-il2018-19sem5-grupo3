@@ -1,15 +1,19 @@
 <template>
   <div>
+    <customizer-progress-bar></customizer-progress-bar>
     <customizer-side-bar></customizer-side-bar>
       <canvas ref="threeCanvas" @mouseup="onMouseUp" @mousedown="onMouseDown" @mousemove="onMouseMove" :width="initialWidth" :height="initialHeight">
           Could not load the canvas :(
       </canvas>
+      
   </div>
 </template>
 
 <script>
 import ProductRenderer from "./../3d/ProductRenderer.js";
 import CustomizerSideBar from "./CustomizerSideBar";
+import CustomizerProgressBar from "./CustomizerProgressBar.vue";
+
 export default {
   name: "Customizer",
   data() {
@@ -22,11 +26,12 @@ export default {
       return document.documentElement.clientWidth;
     },
     initialHeight() {
-      return document.documentElement.clientHeight;
+      return document.documentElement.clientHeight * 0.70;
     }
   },
   components: {
-    CustomizerSideBar
+    CustomizerSideBar,
+    CustomizerProgressBar
   },
   //*Change the functions so that they don't access the DOM
   methods: {

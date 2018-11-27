@@ -1,0 +1,117 @@
+Para cada nó da arvore 1)
+    Cabe no X? 1.1)
+        Entao descemos na árvore 1.1.1)
+    Senao
+        Cabe no Y? 1.2)
+            Entao insere-se no corte (condicionado pela a altura do camiao) 1.2.1)
+            Senao muda-se de no (com o backtracking) 1.2.2)
+Caso nao haja nós insere-se automaticamente (condicionado pela o Y e altura do camião)
+
+
+
+
+[
+    ((5, 5, 5), 
+    [
+        ((5, 5, 10), 
+            [
+                ((2, 2, 12), []),  ((3, 2, 12), [])
+            ]),  
+        ((6, 6, 6), [])
+    ])
+].
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function create_corte(nos,Camiao,Corte)
+foreach(No in nos){
+    if(cabeX(No,Corte)){
+        create_corte(nos,Corte);
+    }else{
+        if(cabeY(No,Corte)){
+            if(cabeZ(No,Camiao,Corte)){
+                No.addChild(Corte);
+            }else{
+                backtracking
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+[((5, 5, 5), 
+    [((5, 5, 10), 
+        [((2, 2, 12), []),
+            ((3, 2, 12), [])
+        ])
+    ])
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[
+    ((0, 0, 0), 
+    [
+        ((5, 5, 5), []), 
+        ((5, 5, 5), []),  
+        ((2, 2, 2), []),  
+        ((3, 2, 2), []),  
+        ((6, 6, 6), [])
+    ])].
+
+
+
+
+
+
+
+
+
+[
+    ((5, 5, 5), 
+    [
+        ((5, 5, 10), 
+        [
+            ((2, 2, 12), []),  
+            ((3, 2, 12), [])
+        ])
+    ]),  
+    ((6, 6, 6), [])
+].
