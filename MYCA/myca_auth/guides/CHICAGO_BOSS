@@ -1,0 +1,13 @@
+CHICAGO_BOSS:
+	- ROUTES: (PASTA CONTROLLER)
+		=> PATH DA ROUTE ESTA SOBRE O NOME DO FICHEIRO + MODULO DESTE
+			(e.g. greeting_controller) => /greeting !!!!)
+	- MODELS: (PASTA MODEL)
+		=> DEFINICAL MODEL EM MODULE
+			(e.g. -module(greeting, [Id, GreetingText]). => DEFINE O DATA MODEL greeting )
+
+	- BOSS_DB: (ORM)
+		=> PERSISTIR
+			(e.g. SimpleAuth:save())
+		=> Encontrar Todos
+			(e.g. boss_db:find(simpleauth,[]))
