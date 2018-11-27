@@ -50,6 +50,10 @@ namespace core.application
         /// Constant representing the message presented when the new Product could not be saved.
         /// </summary>
         private const string ERROR_UNABLE_TO_SAVE_PRODUCT = "Unable to save the product, make sure the reference is unique.";
+        /// <summary>
+        /// Constant representing the message presented when an instance of Product could not be updated. 
+        /// </summary>
+        private const string ERROR_UNABLE_TO_UPDATE_PRODUCT = "Unable to update the product, make sure the reference is unique.";
 
         /// <summary>
         /// Builds a new ProductController
@@ -449,6 +453,12 @@ namespace core.application
             UpdateEnsurance.ensureAtLeastOneUpdateWasPerformed(perfomedAtLeastOneUpdate);
 
             productBeingUpdated=productRepository.update(productBeingUpdated);
+
+            //the updated product will only be null, if the reference was changed to match a previosuly added product
+            if(productBeingUpdated == null){
+                throw new ArgumentException(ERROR_UNABLE_TO_UPDATE_PRODUCT);
+            }
+
             UpdateEnsurance.ensureProductUpdateWasSuccessful(productBeingUpdated);
             return ProductModelViewService.fromEntity(productBeingUpdated);
         }
