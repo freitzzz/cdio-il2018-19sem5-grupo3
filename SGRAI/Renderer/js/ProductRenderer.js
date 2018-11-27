@@ -38,6 +38,11 @@ var closet_poles_ids = [];
 var closet_shelves_ids = [];
 
 /**
+ * Global variable with the current closet sliding doors ids (Mesh IDs from Three.js)
+ */
+var closet_sliding_doors_ids = [];
+
+/**
  * Global variable with the current closet doors ids (Mesh IDs from Three.js)
  */
 var closet_doors_ids = [];
@@ -107,10 +112,15 @@ var thickness = 4.20;
 /**
  * Global variables to know when to animate a drawer's movement
  */
-var drawer_back_face = null, drawer_base_face = null,
-     drawer_front_face = null, drawer_left_face = null,
-      drawer_right_face = null;
-
+var drawer_back_face = null,
+    drawer_base_face = null,
+    drawer_front_face = null,
+    drawer_left_face = null,
+    drawer_right_face = null;
+/**
+ * Global variables to know when to animate a door's 
+ */
+var door = null;
 /**
  * Initial Product Draw function
  */
@@ -313,6 +323,7 @@ function addComponent(component, slot) {
     if (component == "Drawer") generateDrawer(slot);
     if (component == "Shelf") generateShelf(slot);
     if (component == "Sliding Door") generateSlidingDoor();
+    if (component == "Door") generateDoor(slot);
 }
 
 /**
@@ -547,8 +558,8 @@ function generateDrawer(slot) {
     }
     //Adds front door
 
-    var drawer = new Drawer([width - 10, height, depth, x, y + 1.5, z ], ///Base
-        [width - 10, altura_gav, height, x, y + 7.5, z + (depth / 2) - 1.5 ], ///Frent
+    var drawer = new Drawer([width - 10, height, depth, x, y + 1.5, z], ///Base
+        [width - 10, altura_gav, height, x, y + 7.5, z + (depth / 2) - 1.5], ///Frent
         [height, altura_gav, depth - 1.5, x - (width / 2) + 5, y + 7.5, z], ///Left
         [height, altura_gav, depth - 1.5, x + (width / 2) - 5, y + 7.5, z], ///Right
         [width - 10, altura_gav, height, x, y + 7.5, z - (depth / 2) + 1.5]); ///Back
@@ -556,8 +567,8 @@ function generateDrawer(slot) {
 
     for (var i = 0; i < borders_drawer.length; i++) {
         closet_drawers_ids.push(generateParellepiped(borders_drawer[i][0],
-             borders_drawer[i][1], borders_drawer[i][2], borders_drawer[i][3],
-             borders_drawer[i][4], borders_drawer[i][5], material, group));
+            borders_drawer[i][1], borders_drawer[i][2], borders_drawer[i][3],
+            borders_drawer[i][4], borders_drawer[i][5], material, group));
     }
 
     closet.addDrawer(module);
@@ -565,6 +576,48 @@ function generateDrawer(slot) {
     ///closet_drawers_ids.push(module_mesh_id);
     ///closet_drawers_ids.push(drawer_mesh_id);
 
+}
+
+function generateDoor(slot) {
+    var leftFace = group.getObjectById(closet_faces_ids[2]);
+    var rightFace = group.getObjectById(closet_faces_ids[3]);
+    var depth = 3;
+    var height = closet.getClosetHeight();
+    var depth_closet = closet.getClosetDepth();
+    var width;
+    var x, y, z;
+
+    //For now this follows the same logic as the pole, it should be changed to whatever dimensions the shelf is allowed to have
+    if (closet_slots_faces_ids.length == 0) {
+        width = getCurrentClosetWidth();
+        x = calculateComponentPosition(rightFace.position.x, leftFace.position.x);
+        y = calculateComponentPosition(rightFace.position.y, leftFace.position.y);
+        z = calculateComponentPosition(rightFace.position.z, leftFace.position.z);
+    } else if (slot == 1) {
+        let firstSlot = group.getObjectById(closet_slots_faces_ids[0]);
+        width = calculateDistance(leftFace.position.x, firstSlot.position.x);
+        x = calculateComponentPosition(leftFace.position.x, firstSlot.position.x);
+        y = calculateComponentPosition(leftFace.position.y, firstSlot.position.y);
+        z = calculateComponentPosition(leftFace.position.z, firstSlot.position.z);
+    } else if (slot > 1 && slot <= closet_slots_faces_ids.length) {
+        let slotToTheLeft = group.getObjectById(closet_slots_faces_ids[slot - 2]);
+        let slotToTheRight = group.getObjectById(closet_slots_faces_ids[slot - 1]);
+        width = calculateDistance(slotToTheLeft.position.x, slotToTheRight.position.x);
+        x = calculateComponentPosition(slotToTheLeft.position.x, slotToTheRight.position.x);
+        y = calculateComponentPosition(slotToTheLeft.position.y, slotToTheRight.position.y);
+        z = calculateComponentPosition(slotToTheLeft.position.z, slotToTheRight.position.z);
+    } else {
+        let lastSlot = group.getObjectById(closet_slots_faces_ids[slot - 2]);
+        width = calculateDistance(lastSlot.position.x, rightFace.position.x);
+        x = calculateComponentPosition(lastSlot.position.x, rightFace.position.x);
+        y = calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
+        z = calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
+    }
+
+    var door = new SlidingDoor([width, height, depth, x, y, z + (depth_closet / 2)]);
+    var meshID = generateParellepiped(width, height, depth, x, y, z + (depth_closet / 2), material, group);
+    closet.addDoor(door);
+    closet_doors_ids.push(meshID);
 }
 
 function generateSlidingDoor() {
@@ -621,8 +674,8 @@ function generateSlidingDoor() {
     closet.addDoor(front_door);
     closet.addDoor(back_door);
 
-    closet_doors_ids.push(front_door_mesh_id);
-    closet_doors_ids.push(back_door_mesh_id);
+    closet_sliding_doors_ids.push(front_door_mesh_id);
+    closet_sliding_doors_ids.push(back_door_mesh_id);
 
     //Adds back frame
     var borders = back_frame.module_faces;
@@ -632,6 +685,7 @@ function generateSlidingDoor() {
             borders[i][4], borders[i][5], material, group);
     }
 }
+
 
 /**
  * Calculates a pole's height
@@ -842,8 +896,8 @@ function onDocumentMouseDown(event) {
             }
 
             //Checks if the selected object is a door
-            for (let j = 0; j < closet_doors_ids.length; j++) {
-                let door = group.getObjectById(closet_doors_ids[j]);
+            for (let j = 0; j < closet_sliding_doors_ids.length; j++) {
+                let door = group.getObjectById(closet_sliding_doors_ids[j]);
                 if (door == face) {
                     controls.enabled = false;
                     selected_door = face;
@@ -856,35 +910,99 @@ function onDocumentMouseDown(event) {
             var flagOpen = false;
             var flagClose = false;
 
-                var j = 0;
-                while(!flagOpen && !flagClose && j < closet_drawers_ids.length){
-                    //Always get the front face of any drawer at index 5*j+1
-                    drawer_front_face = group.getObjectById(closet_drawers_ids[5*j+1]);
-                    //Check if the selected object is a drawer's front face
-                    if (drawer_front_face == face) {
-                        drawer_base_face =  group.getObjectById(closet_drawers_ids[5*j]);
-                        drawer_left_face =  group.getObjectById(closet_drawers_ids[5*j+2]);
-                        drawer_right_face =  group.getObjectById(closet_drawers_ids[5*j+3]);
-                        drawer_back_face =  group.getObjectById(closet_drawers_ids[5*j+4]);
-                        if(drawer_front_face.position.z >= 130){
-                            flagClose = true;
-                        }else{
-                            flagOpen = true;
-                        }
+            var j = 0;
+            while (!flagOpen && !flagClose && j < closet_drawers_ids.length) {
+                //Always get the front face of any drawer at index 5*j+1
+                drawer_front_face = group.getObjectById(closet_drawers_ids[5 * j + 1]);
+                //Check if the selected object is a drawer's front face
+                if (drawer_front_face == face) {
+                    drawer_base_face = group.getObjectById(closet_drawers_ids[5 * j]);
+                    drawer_left_face = group.getObjectById(closet_drawers_ids[5 * j + 2]);
+                    drawer_right_face = group.getObjectById(closet_drawers_ids[5 * j + 3]);
+                    drawer_back_face = group.getObjectById(closet_drawers_ids[5 * j + 4]);
+                    if (drawer_front_face.position.z >= 130) {
+                        flagClose = true;
+                    } else {
+                        flagOpen = true;
                     }
-                    j++;
                 }
-                if(flagOpen){
-                    requestAnimationFrame(openDrawer);
-                }else if(flagClose){
-                    requestAnimationFrame(closeDrawer);
+                j++;
+            }
+            if (flagOpen) {
+                requestAnimationFrame(openDrawer);
+            } else if (flagClose) {
+                requestAnimationFrame(closeDrawer);
+            }
+
+
+            j = 0;
+            flagOpen = false;
+            flagClose = false;
+            while (!flagOpen && !flagClose && j < closet_doors_ids.length) {
+                door = group.getObjectById(closet_doors_ids[j]);
+                var closet_face = group.getObjectById(closet_faces_ids[0]);
+                if (door == face) {
+                    if (door.position.x > 53) {
+                        flagClose = true;
+                    } else {
+                        flagOpen = true;
+                    }
                 }
+            }
+            if (flagOpen) {
+                /// door.geometry.translate(door.geometry.parameters.width / 2, 0, 0);
+                requestAnimationFrame(openDoor);
+            } else if (flagClose) {
+                requestAnimationFrame(closeDoor);
+            }
         }
     }
 }
+// obj - your object (THREE.Object3D or derived)
+// point - the point of rotation (THREE.Vector3)
+// axis - the axis of rotation (normalized THREE.Vector3)
+// theta - radian value of rotation
+// pointIsWorld - boolean indicating the point is in world coordinates (default = false)
+function rotateAboutPoint(obj, point, axis, theta) {
+    /* pointIsWorld = (pointIsWorld === undefined) ? false : pointIsWorld;
 
-var openDrawer = function(){
-    if( drawer_front_face.position.z <= 130){
+    if (pointIsWorld) {
+        obj.parent.localToWorld(obj.position); // compensate for world coordinate
+    } */
+
+    obj.position.sub(point); // remove the offset
+    obj.position.applyAxisAngle(axis, theta); // rotate the POSITION
+    obj.position.add(point); // re-add the offset
+
+    /* if (pointIsWorld) {
+        obj.parent.worldToLocal(obj.position); // undo world coordinates compensation
+    } */
+
+    obj.rotateOnAxis(axis, theta); // rotate the OBJECT
+}
+var openDoor = function () {
+
+    if (door.rotation.y < Math.PI / 2) {
+        ///door.rotation.y += Math.PI / 20;
+        ///var rotationX = (door.position.x);/// + ( door.geometry.parameters.width / 2 );
+        ///rotateAboutPoint(door, new THREE.Vector3(rotationX,0,0), new THREE.Vector3(0,1,0), Math.PI / 20);
+        requestAnimationFrame(openDoor);
+        render();
+        controls.update();
+    }
+}
+var closeDoor = function () {
+    if (door.rotation.y > Math.PI / 2) {
+        door.rotation.y -= Math.PI / 20;
+        requestAnimationFrame(closeDoor);
+        render();
+        controls.update();
+    }
+
+}
+
+var openDrawer = function () {
+    if (drawer_front_face.position.z <= 130) {
 
         drawer_front_face.translateZ(1);
         drawer_back_face.translateZ(1);
@@ -898,9 +1016,9 @@ var openDrawer = function(){
     }
 }
 
-var closeDrawer = function(){
+var closeDrawer = function () {
     var closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
-    if(drawer_front_face.position.z > closet_front){
+    if (drawer_front_face.position.z > closet_front) {
         drawer_front_face.translateZ(-1);
         drawer_back_face.translateZ(-1);
         drawer_base_face.translateZ(-1);
