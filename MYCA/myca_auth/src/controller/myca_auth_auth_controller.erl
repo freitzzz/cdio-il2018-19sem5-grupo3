@@ -9,4 +9,5 @@
 % Routes a GET method to a "default" endpoint
 % By accessing /auth/default we get the defined output
 default('GET', []) ->
-    {output, "Hello, world!<br>This is a simple route configuration"}.
+    L=boss_db:find(simpleauth,[]), % Finds all simpleauth records
+    {json, [{auths,L}]}. % Serializes a JSON with the available simpleauth records
