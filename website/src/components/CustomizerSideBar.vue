@@ -1,8 +1,8 @@
 <template>
     <div>
-      <i ref="menuButton" @click="openNav()" class="material-icons md-36 btn ">menu</i>
+      <i ref="menuButton" @click="openNav()" class="material-icons md-36 btn" style="visibility:hidden">menu</i>
       <div ref="customizerSidenav" class="sidenav">
-        <i class="closebtn material-icons md-36" @click="closeNav()">close</i>
+        <i class="closebtn material-icons md-24" @click="closeNav()">close</i>
         <h3>{{panels[currentPanelIndex].title}}</h3>
         <!--The child component changes dinamically depending on tthe currently selected component.-->
         <!--The Sidebar component listens out for any event that the child may trigger-->
@@ -97,19 +97,25 @@ export default {
 <style scoped>
 .sidenav {
   height: 100%; /* Full height */
-  width: 0; /*0 width, changed with Vue*/
+  width: 250px; /*0 width, changed with Vue*/
   position: fixed; /*stay in place*/
   z-index: 1; /*stay on top*/
-  top: 0; /*Display from top left corner*/
+  top: 15%; /*Display from top left corner*/
   left: 0;
   overflow-x: hidden; /*Disable horizontal scroll*/
   padding-top: 60px;
   transition: 0.3s;
-  background-color: rgba(54, 131, 175, 0.5);
+  background-color: #dddddda0;
 }
 
 .sidenav h3 {
+  font-size: 24px;
   cursor: default;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  margin-right: 50px;
+  cursor: pointer;
 }
 
 /*Center primary buttons on the side bar*/
@@ -121,8 +127,8 @@ export default {
 /* Position and style the close button (top right corner) */
 .sidenav .closebtn {
   position: absolute;
-  top: 25px;
-  right: 25px;
+  top: 15px;
+  right: 15px;
   margin-left: 50px;
   cursor: pointer;
 }
