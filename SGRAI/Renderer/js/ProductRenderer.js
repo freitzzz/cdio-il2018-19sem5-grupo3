@@ -105,6 +105,13 @@ var raycaster = new THREE.Raycaster();
 var thickness = 4.20;
 
 /**
+ * Global variables to know when to animate a drawer's movement
+ */
+var drawer_back_face = null, drawer_base_face = null,
+     drawer_front_face = null, drawer_left_face = null,
+      drawer_right_face = null;
+
+/**
  * Initial Product Draw function
  */
 function main(textureSource) {
@@ -846,40 +853,62 @@ function onDocumentMouseDown(event) {
                 }
             }
 
-            for (let j = 0; j < closet_drawers_ids.length; j++) {
-                let drawer = group.getObjectById(closet_drawers_ids[j]);
-                if (drawer == face) {
-                    
-                    moveDrawer(drawer);
+            var flagOpen = false;
+            var flagClose = false;
 
+                var j = 0;
+                while(!flagOpen && !flagClose && j < closet_drawers_ids.length){
+                    //Always get the front face of any drawer at index 5*j+1
+                    drawer_front_face = group.getObjectById(closet_drawers_ids[5*j+1]);
+                    //Check if the selected object is a drawer's front face
+                    if (drawer_front_face == face) {
+                        drawer_base_face =  group.getObjectById(closet_drawers_ids[5*j]);
+                        drawer_left_face =  group.getObjectById(closet_drawers_ids[5*j+2]);
+                        drawer_right_face =  group.getObjectById(closet_drawers_ids[5*j+3]);
+                        drawer_back_face =  group.getObjectById(closet_drawers_ids[5*j+4]);
+                        if(drawer_front_face.position.z >= 130){
+                            flagClose = true;
+                        }else{
+                            flagOpen = true;
+                        }
+                    }
+                    j++;
                 }
-            }
-
+                if(flagOpen){
+                    requestAnimationFrame(openDrawer);
+                }else if(flagClose){
+                    requestAnimationFrame(closeDrawer);
+                }
         }
     }
 }
 
-function moveDrawer(drawer){
-    render();
-    var closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
-    if(drawer.position.z < closet_front){
-            for(let j=0; j<closet_drawers_ids.length; j++){
-                var drawer_face = group.getObjectById(closet_drawers_ids[j]);
-                drawer_face.position.z = drawer_face.position.z + 1;
-            }
-    }else{
-        for(let j=0; j<closet_front; j++){
-            var drawer_face = group.getObjectById(closet_drawers_ids[j]);
-            drawer_face.position.z = drawer_face.position.z - 10;
-        }
-    }
+var openDrawer = function(){
+    if( drawer_front_face.position.z <= 130){
 
-    if(drawer.position.z < drawer_face.position.z + 70){
-        setTimeout(function(){
-            requestAnimationFrame(moveDrawer());
-        }, 1000/60);
-        controls.update();
+        drawer_front_face.translateZ(1);
+        drawer_back_face.translateZ(1);
+        drawer_base_face.translateZ(1);
+        drawer_left_face.translateZ(1);
+        drawer_right_face.translateZ(1);
+
+        requestAnimationFrame(openDrawer);
         render();
+        controls.update();
+    }
+}
+
+var closeDrawer = function(){
+    var closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
+    if(drawer_front_face.position.z > closet_front){
+        drawer_front_face.translateZ(-1);
+        drawer_back_face.translateZ(-1);
+        drawer_base_face.translateZ(-1);
+        drawer_left_face.translateZ(-1);
+        drawer_right_face.translateZ(-1);
+        requestAnimationFrame(closeDrawer);
+        render();
+        controls.update();
     }
 }
 
