@@ -35,17 +35,5 @@ namespace backend.persistence.ef
 
             return dbContext.Product.Where(p => !childrenIdentifiers.Contains(p.Id)).Distinct();
         }
-        
-        /// <summary>
-        /// Updates a product
-        /// <br>Returns null if the update affects the entity identifier and the changing entity identifier already exists on the database
-        /// </summary>
-        /// <param name="entity">Product with the product being updated</param>
-        /// <returns>Product with the updated product</returns>
-        public override Product update(Product entity){
-            if(base.find(entity.id()).Id!=entity.Id)
-                return null;
-            return base.update(entity);
-        }
     }
 }
