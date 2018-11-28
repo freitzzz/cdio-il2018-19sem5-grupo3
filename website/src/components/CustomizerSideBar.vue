@@ -143,6 +143,7 @@ export default {
   z-index: 1; /*stay on top*/
   top: 15%; /*Display from top left corner*/
   left: 0;
+  font-family: "Roboto", sans-serif;
   overflow-x: hidden; /*Disable horizontal scroll*/
   padding-top: 60px;
   transition: 0.3s;
