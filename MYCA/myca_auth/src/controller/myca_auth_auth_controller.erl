@@ -18,6 +18,10 @@ post('POST',[]) ->
     JSON=jsx:decode(ReqBody),
     Username=proplists:get_value(<<"username">>,JSON),
     Password=proplists:get_value(<<"password">>,JSON),
-    SimpleAuth=simpleauth:new(id,Username,Password),
-    {ok,SavedSimpleAuth}=SimpleAuth:save(),
-    {json,SavedSimpleAuth}.
+    SimpleAuth=simpleauth:new(id,"!!!",""),
+    case SimpleAuth:save() of
+        {ok,SavedSimpleAuth} ->
+            {json,SavedSimpleAuth};
+        {error,ErrorList} ->
+            {json,[{"message",lists:flatten(ErrorList)}]}
+    end.
