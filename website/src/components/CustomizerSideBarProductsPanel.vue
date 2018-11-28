@@ -5,7 +5,7 @@
         <a class="product-entry" v-for="product in products" :key="product.id" @click="selectProduct(product.id)">{{product.designation}}</a>
       </div>
       <div v-else>Error: {{httpCode}}<br>Yikes! Looks like we ran into a problem here
-        <i class="material-icons md-36 btn" @click="getProducts">refresh</i>
+        <i class="material-icons md-36 btn" @click="getBaseProducts">refresh</i>
       </div>
     </div>
 </template>
@@ -14,18 +14,19 @@
 import Axios from "axios";
 import store from "./../store";
 import { INIT_PRODUCT } from "./../store/mutation-types.js";
+import { MYCM_API_URL } from "./../config.js";
 
 export default {
   name: "CustomizerSideBarProductsPanel",
   data() {
     return {
       products: [],
-      httpCode: 200
+      httpCode: null
     };
   },
   computed: {
     getProductsOk() {
-      return this.httpCode == 200;
+      return this.httpCode === 200;
     }
   },
   methods: {
@@ -33,11 +34,11 @@ export default {
      * Propagate an event to a parent component.
      */
     selectProduct(productId) {
-      Axios.get(`http://localhost:5000/mycm/api/products/${productId}`)
+      Axios.get(`${MYCM_API_URL}/products/${productId}`)
         .then(response => {
           store.dispatch(INIT_PRODUCT, { product: response.data }); //Dispatches the action INIT_PRODUCT
           this.httpCode = response.status;
-          this.$emit("progress-to-product-dimensions"); //Progresses to the next step (change product dimensions)
+          this.$emit("advance"); //Progresses to the next step (change product dimensions)
         })
         .catch(error => {
           this.httpCode = error.response.status;
@@ -46,19 +47,23 @@ export default {
     /**
      * Fetches products from the MYCM API.
      */
-    getProducts() {
-      Axios.get("http://localhost:5000/mycm/api/products")
+    getBaseProducts() {
+      Axios.get(`${MYCM_API_URL}/products/base`)
         .then(response => {
           this.products = response.data;
           this.httpCode = response.status;
         })
         .catch(error => {
-          this.httpCode = error.response.status;
+          if(error.response === undefined){
+            this.httpCode = 500;
+          }else{
+            this.httpCode = error.response.status;
+          }
         });
     }
   },
   created() {
-    this.getProducts();
+    this.getBaseProducts();
   }
 };
 </script>
