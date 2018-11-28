@@ -28,14 +28,13 @@
       </ul>
     </div> -->
     <!-- /.navbar-collapse -->
-    <!-- Header -->
     <body>
     <header id="header">
       <div class="intro">
               <div class="intro-text">
                 <h1>Make your closet</h1>
                 <p>Start now and make the closet of your dreams.</p>
-                <a class="btn btn-custom btn-lg page-scroll" @click="enableCustomizer()">Get Started</a>
+                <a class="btn btn-custom btn-lg" @click="enableCustomizer()">Get Started</a>
               </div>
       </div>
     </header>
