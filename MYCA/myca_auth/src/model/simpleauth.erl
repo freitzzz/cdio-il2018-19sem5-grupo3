@@ -6,5 +6,18 @@
 % Now to create a new object we can simply call the following statement:
 % SimpleAuth = simpleauth:new(id,"superusername","superpassword").
 
--module(simpleauth, [Id, Username, Password]).
+-module(simpleauth, [Id, Username::string(), Password::string()]).
 -compile(export_all).
+-export([validation_tests/0]).
+
+validation_tests() ->
+    [
+        {
+            fun() -> length(Username) > 5 end,
+                "Username must not be empty!"
+        },
+        {
+            fun() -> length(string:trim(Password))> 5 end,
+                "Invalid Password"
+        }
+    ].
