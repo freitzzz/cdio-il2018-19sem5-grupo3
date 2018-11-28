@@ -33,7 +33,7 @@ namespace backend.persistence.ef
         {
             List<long> childrenIdentifiers = dbContext.Set<Component>().Select(c => c.complementaryProduct.Id).ToList();
 
-            return dbContext.Product.Where(p => !childrenIdentifiers.Contains(p.Id)).Distinct();
+            return dbContext.Product.Where(p => p.activated).Where(p => !childrenIdentifiers.Contains(p.Id)).Distinct();
         }
     }
 }
