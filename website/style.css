@@ -118,8 +118,9 @@
   #menu.navbar-default .navbar-nav > li > a:hover {
     color: #0ba2db;
   }
+  
   .container {
-    width: 1000px;
+    width: 100%;
     clear: both;
     }
     
@@ -132,7 +133,7 @@
     width: 50%;
     clear: both;
     }
-  
+
    
   .on {
     background-color: #f6f6f6 !important;
@@ -212,24 +213,21 @@
   
   .btn-custom:hover, .btn-custom:focus, .btn-custom.focus, .btn-custom:active, .btn-custom.active {
     color: #fff;
-    background-color: #444;
+    background-color: #7eddff;
     cursor: pointer
   }
+
   /* Header Section */
   .intro {
     display: table;
     width: 100%;
-    padding: 0;
     background: url("./src/assets/intro-bg.jpg") no-repeat center center;
-    background-color: #e5e5e5;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
     -o-background-size: cover;
   }
-  .intro .overlay {
-    background: rgba(255,255,255,0.2);
-  }
+
   .intro h1 {
     color: #0ba2db;
     font-size: 74px;
@@ -238,83 +236,18 @@
     text-transform: uppercase;
     margin-bottom: 10px;
   }
+
   .intro p {
     color: #444;
     font-size: 28px;
-    margin-top: 10px;
-    margin-bottom: 40px;
   }
+
   header .intro-text {
     padding-top: 300px;
     padding-bottom: 200px;
     text-align: center;
   }
-  
-  .pricing-table .plan-name {
-    padding: 15px 0;
-    box-shadow: 0 0 20px rgba(0,0,0,0.05) inset;
-    border-bottom: 1px solid #eee;
-  }
-  .pricing-table .plan-name h3 {
-    font-weight: 300;
-    font-size: 32px;
-  }
-  .pricing-table .plan-price {
-    padding: 25px 0;
-  }
-  .pricing-table .plan-price .price-value {
-    font-size: 38px;
-    line-height: 52px;
-    color: #444;
-  }
-  .pricing-table .plan-price .price-value span {
-    font-size: 18px;
-    line-height: 18px;
-  }
-  .pricing-table.btn-system.border-btn {
-    border-color: #0ba2db;
-    color: #0ba2db;
-  }
-  .pricing-table .plan-list li {
-    padding: 8px;
-    font-size: 16px;
-    border-bottom: 1px solid #eee;
-  }
-  .pricing-table .plan-list strong {
-    font-weight: 400;
-  }
-  .pricing-table .btn-system {
-    padding: 10px 25px;
-    display: inline-block;
-    color: #fff;
-    background-color: #0ba2db;
-    margin-right: 5px;
-    font-size: 16px;
-    border-radius: 2px;
-    transition: all 0.3s ease-in-out;
-    border: 0;
-    text-transform: uppercase;
-  }
-  .pricing-table .btn-system:hover, .pricing-table .btn-system.border-btn:hover {
-    background-color: #444;
-  }
-  .pricing-table .btn-system:last-child {
-    margin-right: 0;
-  }
-  .pricing-table .btn-system.border-btn {
-    background-color: transparent;
-    border: 1px solid;
-    box-shadow: none;
-  }
-  .pricing-table .plan-list li:first-child {
-    border-top: 1px solid #eee;
-  }
-  .pricing-table .plan-signup {
-    padding: 25px 0;
-  }
-  .pricing-table .plan-signup a {
-    text-transform: uppercase;
-  }
+
   /* Contact Section */
   #contact {
     padding: 120px 0 60px 0;
@@ -644,54 +577,6 @@
       -webkit-transform: rotate(45deg);
       -ms-transform: rotate(45deg);
       transform: rotate(45deg);
-  }
-  .progressbar {
-    counter-reset: step;
-  }
-  .progressbar li {
-    list-style-type: none;
-    width: 20%;
-    float: left;
-    font-size: 12px;
-    position: relative;
-    text-align: center;
-    text-transform: uppercase;
-    color: #7d7d7d;
-  }
-  .progressbar li:before {
-    width: 30px;
-    height: 30px;
-    content: counter(step);
-    counter-increment: step;
-    line-height: 30px;
-    border: 2px solid #7d7d7d;
-    display: block;
-    text-align: center;
-    margin: 0 auto 10px auto;
-    border-radius: 50%;
-    background-color: white;
-  }
-  .progressbar li:after {
-    width: 100%;
-    height: 2px;
-    content: '';
-    position: absolute;
-    background-color: #7d7d7d;
-    top: 15px;
-    left: -50%;
-    z-index: -1;
-  }
-  .progressbar li:first-child:after {
-    content: none;
-  }
-  .progressbar li.active {
-    color:#0ba2db;
-  }
-  .progressbar li.active:before {
-    border-color: #0ba2db;
-  }
-  .progressbar li.active + li:after {
-    background-color: #0ba2db;
   }
 
   .column {

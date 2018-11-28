@@ -51,6 +51,21 @@ const state = {
 }
 
 const getters = {
+    productId: state => {
+        return state.product.id;
+    },
+    productDimensions: state => {
+        return state.product.dimensions;
+    }, 
+    productSlotSizes: state => {
+        return state.product.slotSizes;
+    },
+    productMaterials: state => {
+        return state.product.materials;
+    },
+    productComponents: state => {
+        return state.product.components;
+    },
     width: state => {
         return state.customizedProduct.customizedDimensions.width;
     },
