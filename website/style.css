@@ -1,5 +1,8 @@
 /**GOOGLE'S MATERIAL ICONS*/
 /* Rules for sizing the icon. */
+.material-icons.md-12 {
+  font-size: 12px;
+}
 .material-icons.md-18 {
     font-size: 18px;
   }
@@ -12,6 +15,10 @@
   .material-icons.md-48 {
     font-size: 48px;
   }
+
+  .material-icons.md-grey{
+    color: #797979;
+  }
   
   /* Rules for using icons as black on a light background. */
   .material-icons.md-dark {
@@ -21,6 +28,15 @@
     color: rgba(0, 0, 0, 0.26);
   }
   
+  /* Blue colored icons */
+  .material-icons.md-blue {
+    color: #0ba2db;
+  }
+
+  .material-icons.md-blue:hover{
+    color: #67c8eb;
+  }
+
   /* Rules for using icons as white on a dark background. */
   .material-icons.md-light {
     color: rgba(255, 255, 255, 1);
@@ -69,7 +85,7 @@
   }
   a:hover, a:focus {
     text-decoration: none;
-    color: #222;
+    color: #fff;
   }
   ul, ol {
     list-style: none;
@@ -162,7 +178,7 @@
   }
   .btn-custom {
     text-transform: uppercase;
-    color: #fff;
+    color: #fff !important;
     background-color: #0ba2db;
     border: 0;
     padding: 14px 20px;
@@ -174,7 +190,7 @@
   }
   
   .btn-custom-2 {
-    color: #fff;
+    color: #fff !important;
     background-color: #0ba2db;
     border: 3px;
     padding: 4px 4px;
@@ -212,7 +228,7 @@
   }
   
   .btn-custom:hover, .btn-custom:focus, .btn-custom.focus, .btn-custom:active, .btn-custom.active {
-    color: #fff;
+    color: #fff !important;
     background-color: #7eddff;
     cursor: pointer
   }
@@ -238,7 +254,7 @@
   }
 
   .intro p {
-    color: #444;
+    color: rgb(68, 68, 68);
     font-size: 28px;
   }
 
@@ -246,102 +262,6 @@
     padding-top: 300px;
     padding-bottom: 200px;
     text-align: center;
-  }
-
-  /* Contact Section */
-  #contact {
-    padding: 120px 0 60px 0;
-    background: #F6F6F6;
-  }
-  #contact form {
-    padding: 30px 0;
-  }
-  #contact .text-danger {
-    color: #cc0033;
-    text-align: left;
-  }
-  label {
-    font-size: 12px;
-    font-weight: 400;
-    font-family: 'Open Sans', sans-serif;
-    float: left;
-  }
-  #contact .form-control {
-    display: block;
-    width: 100%;
-    padding: 6px 12px;
-    font-size: 14px;
-    line-height: 1.42857143;
-    color: #444;
-    background-color: #fff;
-    background-image: none;
-    border: 1px solid #ddd;
-    border-radius: 0;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    -webkit-transition: none;
-    -o-transition: none;
-    transition: none;
-  }
-  #contact .form-control:focus {
-    border-color: #999;
-    outline: 0;
-    -webkit-box-shadow: transparent;
-    box-shadow: transparent;
-  }
-  .form-control::-webkit-input-placeholder {
-  color: #777;
-  }
-  .form-control:-moz-placeholder {
-  color: #777;
-  }
-  .form-control::-moz-placeholder {
-  color: #777;
-  }
-  .form-control:-ms-input-placeholder {
-  color: #777;
-  }
-  #contact .social {
-    margin-top: 80px;
-  }
-  #contact .social ul li {
-    display: inline-block;
-    margin: 0 20px;
-  }
-  #contact .social i.fa {
-    font-size: 26px;
-    padding: 4px;
-    color: #0ba2db;
-    transition: all 0.3s;
-  }
-  #contact .social i.fa:hover {
-    color: #444;
-  }
-  .btn:active, .btn.active {
-    background-image: none;
-    outline: 0;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-  }
-  a:focus, .btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn.active.focus {
-    outline: none;
-    outline-offset: none;
-  }
-  /* Footer Section*/
-  #footer {
-    background: #e6e6e6;
-    color: #888;
-    padding: 30px 0 25px 0;
-    border: 1px solid #fff;
-  }
-  #footer p {
-    font-size: 15px;
-  }
-  #footer a {
-    color: #666;
-  }
-  #footer a:hover {
-    color: #0ba2db;
   }
   
   @media (max-width: 1024px) {
@@ -516,8 +436,7 @@
       position: relative;
       padding-left: 35px;
       margin-bottom: 12px;
-    cursor: pointer;
-    font-family: 'Roboto';
+      cursor: pointer;
       font-size: 15px;
       -webkit-user-select: none;
       -moz-user-select: none;
@@ -594,3 +513,11 @@
     align-content: right;
   }
   
+  .text-entry {
+    margin: 6%;
+    margin-top: 0%;
+    text-decoration: none;
+    font-size: 16px;
+    color: #292929 !important;
+    display: block;
+  }
