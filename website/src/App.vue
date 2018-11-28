@@ -1,44 +1,24 @@
 <template>
-    <div id="app">
-      <!--  <customizer v-if="customizerEnabled"></customizer>
-      <button v-else @click="enableCustomizer">Get Started</button>  -->
-      <!--create-new-category :active=true></create-new-category-->
-      <side-bar></side-bar>
-      <!-- <edit-category :active="true"></edit-category> -->
-     <!--  <remove-category :active="true"></remove-category> -->
-    </div>
+  <div id="app">
+<!--     <side-bar></side-bar> -->
+    <home></home>
+  </div>
 </template>
 
 <script>
-import Customizer from "./components/Customizer.vue";
-import CreateNewCategory from "./components/management/category/CreateNewCategory.vue";
-import EditCategory from "./components/management/category/EditCategory.vue";
-import RemoveCategory from "./components/management/category/RemoveCategory.vue";
-import CreateMaterial from "./components/management/material/CreateMaterial.vue";
-import EditMaterial from "./components/management/material/EditMaterial.vue";
-import RemoveMaterial from "./components/management/material/RemoveMaterial.vue";
+import Home from "./components/Home.vue";
 import SideBar from "./components/SideBar.vue";
 export default {
   name: "app",
   data() {
     return {
-      customizerEnabled: false
+   
     };
   },
-  methods: {
-    enableCustomizer() {
-      this.customizerEnabled = true;
-    }
-  },
   components: {
-    Customizer,
-    SideBar ,
-    CreateNewCategory,
-    EditCategory,
-    RemoveCategory,
-    CreateMaterial,
-    EditMaterial,
-    RemoveMaterial
+    Home,
+    SideBar
+
   }
 };
 </script> 

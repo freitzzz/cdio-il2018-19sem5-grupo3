@@ -159,6 +159,21 @@ class Closet {
     removeDoor() {
         this.doors.pop();
     }
+    /**
+     * Adds a drawer to the closet
+     * @param {Drawer} drawer to add 
+     */
+    addDrawer(drawer) {
+        this.drawers.push(drawer);
+    }
+
+    /**
+     * Removes a drawer from the closet
+     *  @param {Drawer} drawer to remove
+     */
+    removeDrawer() {
+        this.drawers.pop();
+    }
 
     //Accessors
 
