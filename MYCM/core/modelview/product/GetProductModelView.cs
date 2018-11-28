@@ -40,7 +40,7 @@ namespace core.modelview.product{
         /// <summary>
         /// GetBasicMaterialModelView with the product material
         /// </summary>
-        [DataMember(Name="material")]
+        [DataMember(Name="materials")]
         public GetAllMaterialsModelView materials{get;set;}
 
         /// <summary>
