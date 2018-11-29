@@ -1,44 +1,20 @@
 <template>
-  <div class="containerDimensions" style="margin-left:30%;margin-right:auto;">
+  <div class="containerDimensions" style="margin-left:auto;margin-right:auto;">
     <div class="icon-div-top">
       <i class="material-icons md-12 md-blue btn">help</i>
       <span
-        class="tooltiptext">In this step, you must choose one of our base products in order to start customizing it.</span>
+        class="tooltiptext">TEXTO TEXTO</span>
     </div>
-    <select v-model="dimensionOp" @change="updateUnit" style="margin-bottom:10%">
-      <option  v-for="option in availableOptions" :key="option.id" :value="option">{{"Option: "+option.id}}</option>
+    <select class="dropdown" v-model="dimensionOp" @change="updateUnit">
+      <option v-for="option in availableOptionsDimensions" :key="option.id" :value="option">{{"Option: "+option.id}}</option>
     </select>
     <!--Fetch minimums from server-->
-    <input
-      class="slider"
-      type="range"
-      min="1"
-      name="height"
-      v-model="height"
-      @change="updateHeight"
-    >
-    <input
-      class="slider"
-      type="range"
-      min="1"
-      name="width"
-      v-model="width"
-      @change="updateWidth"
-    >
-    <input
-      class="slider"
-      type="range"
-      min="1"
-      name="depth"
-      v-model="depth"
-      @change="updateDepth"
-    >
+    <vue-slider class="slider" v-model="height" @change="updateHeight"></vue-slider>
+    <vue-slider class="slider" v-model="width" @change="updateWidth"></vue-slider>
+    <vue-slider class="slider" v-model="depth" @change="updateDepth"></vue-slider>
     
     <select class="dropdown" v-model="unit" @change="updateUnit">
-      <option value="mm">Milimeters</option>
-      <option value="cm">Centimeters</option>
-      <option value="dm">Decimeters</option>
-      <option value="m">Meters</option>
+      <option v-for="optionUnit in availableOptionsUnits" :key="optionUnit.id" :value="optionUnit">{{optionUnit.unit}}</option>
     </select>
   </div>
 </template>
@@ -47,6 +23,8 @@
 <script>
 import store from "./../store";
 import Axios from "axios";
+import { MYCM_API_URL } from "./../config.js";
+import vueSlider from 'vue-slider-component';
 import {
   SET_CUSTOMIZED_PRODUCT_WIDTH,
   SET_CUSTOMIZED_PRODUCT_HEIGHT,
@@ -65,9 +43,15 @@ export default {
       width: 100,
       depth: 100,
       unit: "cm",
-      dimensionOp: "",
-      availableOptions: []
+      dimensionOp: "option",
+      availableOptionsDimensions:[],
+      availableOptionsUnits:[],
+      
+
     };
+  },
+  components:{
+    vueSlider
   },
   created() {
     store.dispatch(SET_CUSTOMIZED_PRODUCT_WIDTH, { width: this.width });
@@ -75,14 +59,16 @@ export default {
     store.dispatch(SET_CUSTOMIZED_PRODUCT_DEPTH, { depth: this.depth });
     store.dispatch(SET_CUSTOMIZED_PRODUCT_UNIT, { unit: this.unit });
 
-    /*Get all available dimensions of the array*/
-    Axios.get(
-      `http://localhost:5000/mycm/api/products/${
-        store.state.product.id
-      }/dimensions`
+    /*Get all available dimensions of the given product of the array*/
+    Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions`
     )
-      .then(response => this.availableOptions.push(...response.data))
-      .catch(console.log());
+      .then(response => this.availableOptionsDimensions.push(...response.data))
+      .catch(console.log(error));
+
+   
+    Axios.get(`${MYCM_API_URL}/units`)
+    .then(response => this.availableOptionsUnits.push(...response.data))
+    .catch(console.log(error));
   },
   methods: {
     updateHeight(e) {
@@ -128,6 +114,7 @@ export default {
 
 .icon-div-top:hover .tooltiptext {
   visibility: visible;
+  position:relative;
 }
 
 .icon-div-top {
@@ -137,12 +124,14 @@ export default {
   position: absolute;
 }
 .dropdown{
+  margin-left: 15%;
   width: 60%;
   margin-bottom:10%;
 }
 .slider{
-  width:60%;
-  margin-bottom:5%;
+  width:5%;
+  margin-bottom:10%;
+  width:50%;
 }
 </style>
 
