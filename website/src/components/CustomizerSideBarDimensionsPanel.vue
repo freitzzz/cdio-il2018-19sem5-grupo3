@@ -1,16 +1,19 @@
 <template>
-    <div>
+  
+      <div class = "containerDimensions">
       <!--Fetch minimums from server-->
-      <input type="number" min="1" name="height" v-model="height" @change="updateHeight">
-      <input type="number" min="1" name="width" v-model="width" @change="updateWidth">
-      <input type="number" min="1" name="depth" v-model="depth" @change="updateDepth">
-      <select v-model="unit" @change="updateUnit">
+      <input class="baseContainer" type="range" min="1" name="height" v-model="height" @change="updateHeight">
+      <input class="baseContainer" type="range" min="1" name="width" v-model="width" @change="updateWidth">
+      <input class="baseContainer" type="range" min="1" name="depth" v-model="depth" @change="updateDepth">
+        
+      <select v-model="unit" @change="updateUnit" >
         <option value="mm">Milimeters</option>
         <option value="cm">Centimeters</option>
         <option value="dm">Decimeters</option>
         <option value="m">Meters</option>
       </select>
-    </div>
+ 
+      </div>
 </template>
 
 
@@ -59,6 +62,14 @@ export default {
 };
 </script>
 <style>
+.containerDimensions {
+  margin: 5%;
+  margin-left:22.5%;
+  margin-right: 22.5%;
+  align-content: left;
+  font-family: 'Roboto', sans-serif;  
+}
+
 
 </style>
 
