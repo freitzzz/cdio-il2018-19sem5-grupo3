@@ -241,21 +241,17 @@ namespace core.application
 
             string newName = modelView.name;
 
-            //check what attributes are to be updated
-            if (newName != null)
+            if (!category.changeName(newName))
             {
-                if (repository.find(newName) != null)
-                {
-                    throw new ArgumentException(ERROR_DUPLICATE_NAME);
-                }
-
-                if (!category.changeName(newName))
-                {
-                    throw new ArgumentException(ERROR_INVALID_NAME);
-                }
+                throw new ArgumentException(ERROR_INVALID_NAME);
             }
 
             category = repository.update(category);
+
+            if(category == null)
+            {
+                throw new ArgumentException(ERROR_DUPLICATE_NAME);
+            }
 
             return ProductCategoryModelViewService.fromEntity(category);
         }
