@@ -1,7 +1,6 @@
 <template>
-  <div class="container" >
     <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
+    <!--<div class="navbar-header">-->
      <!--  <button
         type="button"
         class="navbar-toggle collapsed"
@@ -15,7 +14,7 @@
      <!--  <a class="navbar-brand page-scroll" href="#page-top">
         <i class="account"></i> Make your closet
       </a> -->
-    </div>
+    <!--</div>-->
 <!--
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -29,41 +28,30 @@
       </ul>
     </div> -->
     <!-- /.navbar-collapse -->
-    <!-- Header -->
+    <body>
     <header id="header">
       <div class="intro">
-        <div class="overlay">
-          <div class="container">
-            <div class="row">
               <div class="intro-text">
                 <h1>Make your closet</h1>
                 <p>Start now and make the closet of your dreams.</p>
-                <a class="btn btn-custom btn-lg page-scroll" @click="enableCustomizer()">Get Started</a>
+                <a class="btn btn-custom btn-lg" @click="enableCustomizer()">Get Started</a>
               </div>
-            </div>
-          </div>
-        </div>
       </div>
     </header>
-  </div>
+  </body>
 </template>
-<script>
 
+<script>
 export default {
   name: "intro",
   data() {
-    return {
-        
-    };
+    return {};
   },
   methods: {
-      enableCustomizer(){
- 
-          this.$emit('switch-to-customizer');
-      }
+    enableCustomizer() {
+      this.$emit("switch-to-customizer");
+    }
   },
-  components: {
-
-  }
+  components: {}
 };
 </script>

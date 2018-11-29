@@ -51,6 +51,30 @@ const state = {
 }
 
 const getters = {
+    productId: state => {
+        return state.product.id;
+    },
+    productDimensions: state => {
+        return state.product.dimensions;
+    }, 
+    productSlotSizes: state => {
+        return state.product.slotSizes;
+    },
+    recommendedSlotSize: state => {
+        return state.product.slotSizes.recommendedSize;
+    },
+    maxSlotSize: state => {
+        return state.product.slotSizes.maxSize;
+    },
+    minSlotSize: state => {
+        return state.product.slotSizes.minSize;
+    },
+    productMaterials: state => {
+        return state.product.materials;
+    },
+    productComponents: state => {
+        return state.product.components;
+    },
     width: state => {
         return state.customizedProduct.customizedDimensions.width;
     },
