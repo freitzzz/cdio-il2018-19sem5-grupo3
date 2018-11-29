@@ -73,7 +73,7 @@ namespace core_tests.domain {
             Finish finish = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
 
-            Material moon = new Material("1160912", "No", colors, finishes);
+            Material moon = new Material("1160912", "No", "ola.jpg", colors, finishes);
 
             Assert.False(finish.Equals(moon));
         }

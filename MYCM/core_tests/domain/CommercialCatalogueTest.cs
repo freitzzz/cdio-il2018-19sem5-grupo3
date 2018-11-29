@@ -13,13 +13,7 @@ namespace core_tests.domain
     */
     public class CommercialCatalogueTest
     {
-        //id tests
 
-        /**
-        <summary>
-            Test to ensure that the method id works.
-         </summary>
-         */
         [Fact]
         public void ensureIdMethodWorks()
         {
@@ -48,7 +42,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -72,11 +66,7 @@ namespace core_tests.domain
 
             Assert.Equal(comCatalogue.id(), reference, true);
         }
-        /**
-        <summary>
-            Test to ensure that the method ChangeReference works.
-         </summary>
-         */
+
         [Fact]
         public void ensurechangeReferenceInComCatalogue()
         {
@@ -105,7 +95,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -129,11 +119,7 @@ namespace core_tests.domain
             comCatalogue.changeReference("Mudei referecia");
             Assert.Equal("Mudei referecia", comCatalogue.reference, true);
         }
-        /**
-               <summary>
-                   Test to ensure that the method ChangeReference works.
-                </summary>
-                */
+
         [Fact]
         public void ensurechangeNullReferenceInComCatalogue()
         {
@@ -161,7 +147,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -184,15 +170,10 @@ namespace core_tests.domain
             listCollection.Add(custProCollection);
             CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
 
-            ///comCatalogue.changeDesignation("Mudei designation");
             Assert.Throws<ArgumentException>(() => comCatalogue.changeReference(null));
 
         }
-        /**
-       <summary>
-           Test to ensure that the method ChangeReference works.
-        </summary>
-        */
+
         [Fact]
         public void ensurechangeEmpetyReferenceInComCatalogue()
         {
@@ -220,7 +201,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -242,15 +223,9 @@ namespace core_tests.domain
             listCollection.Add(custProCollection);
             CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
 
-            ///comCatalogue.changeDesignation("Mudei designation");
             Assert.Throws<ArgumentException>(() => comCatalogue.changeReference(""));
-
         }
-        /**
-       <summary>
-           Test to ensure that the method ChangeReference works.
-        </summary>
-        */
+
         [Fact]
         public void ensurechangeDesignationInComCatalogue()
         {
@@ -278,7 +253,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -302,11 +277,6 @@ namespace core_tests.domain
             Assert.Equal("Mudei designation", comCatalogue.designation, true);
         }
 
-        /**
-               <summary>
-                   Test to ensure that the method ChangeReference works.
-                </summary>
-                */
         [Fact]
         public void ensurechangeNullDesignationInComCatalogue()
         {
@@ -334,7 +304,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -359,11 +329,7 @@ namespace core_tests.domain
             Assert.Throws<ArgumentException>(() => comCatalogue.changeDesignation(null));
 
         }
-        /**
-       <summary>
-           Test to ensure that the method ChangeReference works.
-        </summary>
-        */
+
         [Fact]
         public void ensurechangeEmpetyDesignationInComCatalogue()
         {
@@ -391,7 +357,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -413,17 +379,9 @@ namespace core_tests.domain
             listCollection.Add(custProCollection);
             CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
 
-            ///comCatalogue.changeDesignation("Mudei designation");
             Assert.Throws<ArgumentException>(() => comCatalogue.changeDesignation(""));
-
         }
-        //sameAs tests
 
-        /**
-        <summary>
-            Test to ensure that the method sameAs works, for two equal identities.
-         </summary>
-         */
         [Fact]
         public void ensureComCataloguesWithEqualIdentitiesAreTheSame()
         {
@@ -452,7 +410,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -474,16 +432,9 @@ namespace core_tests.domain
             listCollection.Add(custProCollection);
             CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
 
-
-
             Assert.True(comCatalogue.sameAs(reference));
         }
 
-        /**
-                 <summary>
-            Test to ensure that the method sameAs works, for two different identities.
-         </summary>
-         */
         [Fact]
         public void ensureComCataloguesWithDifferentIdentitiesAreNotTheSame()
         {
@@ -514,7 +465,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -540,13 +491,6 @@ namespace core_tests.domain
             Assert.False(comCatalogue.sameAs(anotherReference));
         }
 
-        //checkCommercialCatalogueProperties tests
-
-        /**
-        <summary>
-            Test to ensure that the instance of CommercialCatalogue isn't built if the reference is null.
-        </summary>
-        */
         [Fact]
         public void ensureNullReferenceIsNotValid()
         {
@@ -572,7 +516,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -595,11 +539,6 @@ namespace core_tests.domain
             Assert.Throws<ArgumentException>(() => new CommercialCatalogue(null, "This doesn't work", list));
         }
 
-        /**
-        <summary>
-            Test to ensure that the instance of CommercialCatalogue isn't built if the reference is empty.
-        </summary>
-      */
         [Fact]
         public void ensureEmptyReferenceIsNotValid()
         {
@@ -625,7 +564,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -648,11 +587,6 @@ namespace core_tests.domain
             Assert.Throws<ArgumentException>(() => new CommercialCatalogue("", "Let me see...", list));
         }
 
-        /**
-        <summary>
-            Test to ensure that the instance of CommercialCatalogue isn't built if the designation is null.
-        </summary>
-       */
         [Fact]
         public void ensureNullDesignationIsNotValid()
         {
@@ -678,7 +612,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -702,11 +636,6 @@ namespace core_tests.domain
             Assert.Throws<ArgumentException>(() => new CommercialCatalogue("Have you tried turning it off and then on again?", null, list));
         }
 
-        /**
-        <summary>
-            Test to ensure that the instance of CommercialCatalogue isn't built if the designation is empty.
-        </summary>
-       */
         [Fact]
         public void ensureEmptyDesignationIsNotValid()
         {
@@ -731,7 +660,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -755,11 +684,6 @@ namespace core_tests.domain
             Assert.Throws<ArgumentException>(() => new CommercialCatalogue("Still not working", "", list));
         }
 
-        /**
-        <summary>
-            Test to ensure that the instance of CommercialCatalogue isn't built if the list of costumizedProducts is null.
-        </summary>
-       */
         [Fact]
         public void ensureNullCustProductListIsNotValid()
         {
@@ -768,11 +692,6 @@ namespace core_tests.domain
             Assert.Throws<ArgumentException>(() => new CommercialCatalogue("Hello", "It's me, Mario", null));
         }
 
-        /**
-        <summary>
-            Test to ensure that the instance of CommercialCatalogue isn't built if the list of costumizedProducts is empty.
-        </summary>
-       */
         [Fact]
         public void ensureEmptyCustProductListIsNotValid()
         {
@@ -780,18 +699,9 @@ namespace core_tests.domain
 
             List<CatalogueCollection> list = new List<CatalogueCollection>();
 
-
-
             Assert.Throws<ArgumentException>(() => new CommercialCatalogue("Goodbye", "See you later", list));
         }
 
-        /* //addCollection tests
-
-        /**
-        <summary>
-            Test to ensure that an already existent customizedProductCollections cannot be added to the CommercialCataloguev's list of customizedProduct.
-        </summary>
-       */
         [Fact]
         public void ensureAlreadyExistCollectionCannotBeAdded()
         {
@@ -818,7 +728,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -840,15 +750,9 @@ namespace core_tests.domain
 
             CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
 
-
-
             Assert.False(comCatalogue.addCollection(catalogueCollection));
         }
-        /**
-        <summary>
-            Test to ensure that an Collections can be added to the CommercialCataloguev's list of customizedProduct.
-        </summary>
-       */
+
         [Fact]
         public void ensureaddCollectionCanBeAdded()
         {
@@ -875,7 +779,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -892,19 +796,12 @@ namespace core_tests.domain
             listCustomizedProducts.Add(custProduct);
             CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
 
-
             listCollection.Add(custProCollection);
 
             CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One");
 
-
-
             Assert.True(comCatalogue.addCollection(catalogueCollection));
         }
-
-        ///<summary>
-        /// Test to ensure that a null collection cannot be added to the CommercialCatalogue's.
-        ///</summary>
 
         [Fact]
         public void ensureNullCollectionCannotBeAdded()
@@ -931,7 +828,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -955,11 +852,7 @@ namespace core_tests.domain
             CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
             Assert.False(comCatalogue.addCollection(null));
         }
-        /**
-                <summary>
-                    Test to ensure that a non-existent collestion cannot be removed from the CommercialCatalogue's.
-                </summary>
-               */
+
         [Fact]
         public void ensureNonExistentCollectionCannotBeRemoved()
         {
@@ -987,7 +880,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -1011,11 +904,7 @@ namespace core_tests.domain
             ///Assert.False(comCatalogue.removeCollection(new CatalogueCollection(custProCollection, listCustomizedProducts)));
 
         }
-        /**
-        <summary>
-            Test to ensure that a existent collestion cannot be removed from the CommercialCatalogue's.
-        </summary>
-       */
+
         [Fact]
         public void ensureExistentCollectionCannotBeRemoved()
         {
@@ -1043,7 +932,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -1064,16 +953,8 @@ namespace core_tests.domain
             CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
 
             Assert.False(comCatalogue.removeCollection(null));
-
         }
 
-        //hasCollection tests
-
-        /**
-        <summary>
-            Test to ensure that an existent customizedProduct is found in the CommercialCatalogue's list of customizedProduct.
-        </summary>
-        */
         [Fact]
         public void ensureValidCollectionExists()
         {
@@ -1101,7 +982,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -1123,11 +1004,7 @@ namespace core_tests.domain
 
             Assert.True(comCatalogue.hasCollection(custProCollection));
         }
-        /**
-        <summary>
-            Test to ensure that an existent collection is found in the CommercialCatalogue's.
-        </summary>
-        */
+
         [Fact]
         public void ensureValidCollectionNotExists()
         {
@@ -1136,7 +1013,6 @@ namespace core_tests.domain
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Finish finish = Finish.valueOf("Acabamento polido");
-
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
@@ -1155,7 +1031,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -1174,11 +1050,6 @@ namespace core_tests.domain
             Assert.False(comCatalogue.hasCollection(custProCollection));
         }
 
-        /**
-        <summary>
-            Test to ensure that a null customizedProduct is not found in the CommercialCatalogue's list of customizedProduct.
-        </summary>
-        */
         [Fact]
         public void ensureNullComCatalogueDoesNotExist()
         {
@@ -1205,7 +1076,7 @@ namespace core_tests.domain
 
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -1228,13 +1099,6 @@ namespace core_tests.domain
             Assert.False(comCatalogue.hasCollection(null));
         }
 
-        //GetHashCode tests
-
-        /**
-        <summary>
-           Test to ensure that the method GetHashCode works.
-        </summary>
-        */
         [Fact]
         public void ensureGetHashCodeWorks()
         {
@@ -1260,7 +1124,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -1287,13 +1151,6 @@ namespace core_tests.domain
             Assert.Equal(comCatalogue1.GetHashCode(), comCatalogue1.GetHashCode());
         }
 
-        //Equals tests
-
-        /**
-        <summary>
-            Test to ensure that the method Equals works, for two CommercialCatalogue with different references.
-         </summary>
-        */
         [Fact]
         public void ensureComCatalogueWithDifferentReferencesAreNotEqual()
         {
@@ -1319,7 +1176,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -1341,19 +1198,12 @@ namespace core_tests.domain
 
             listCollection.Add(custProCollection);
 
-
             CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", list);
             CommercialCatalogue comCatalogue2 = new CommercialCatalogue("Equal", "One", list);
-
 
             Assert.False(comCatalogue1.Equals(comCatalogue2));
         }
 
-        /**
-        <summary>
-            Test to ensure that the method Equals works, for two CommercialCatalogue with the same reference.
-         </summary>
-         */
         [Fact]
         public void ensureCommercialCataloguesWithSameReferencesAreEqual()
         {
@@ -1380,7 +1230,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -1405,16 +1255,9 @@ namespace core_tests.domain
             CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", list);
             CommercialCatalogue comCatalogue2 = new CommercialCatalogue("Another", "One", list);
 
-
-
             Assert.True(comCatalogue1.Equals(comCatalogue2));
         }
 
-        /**
-       <summary>
-            Test to ensure that the method Equals works, for a null CommercialCatalogue.
-         </summary>
-         */
         [Fact]
         public void ensureNullObjectIsNotEqual()
         {
@@ -1441,7 +1284,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -1463,18 +1306,11 @@ namespace core_tests.domain
 
             listCollection.Add(custProCollection);
 
-
             CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", list);
-
 
             Assert.False(comCatalogue1.Equals(null));
         }
 
-        /**
-        <summary>
-            Test to ensure that the method Equals works, for a CommercialCatalogue and an object of another type.
-         </summary>
-         */
         [Fact]
         public void ensureDifferentTypesAreNotEqual()
         {
@@ -1499,7 +1335,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -1527,13 +1363,6 @@ namespace core_tests.domain
             Assert.False(comCatalogue1.Equals("stars"));
         }
 
-        //ToString tests
-
-        /**
-        <summary>
-            Test to ensure that the method ToString works.
-         </summary>
-         */
         [Fact]
         public void ensureToStringWorks()
         {
@@ -1560,7 +1389,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -1585,10 +1414,9 @@ namespace core_tests.domain
             CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", list);
             CommercialCatalogue comCatalogue2 = new CommercialCatalogue("Another", "One", list);
 
-
-
             Assert.Equal(comCatalogue1.ToString(), comCatalogue2.ToString());
         }
+
         [Fact]
         public void testToDTO()
         {
@@ -1609,7 +1437,7 @@ namespace core_tests.domain
             colors.Add(color);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
@@ -1632,7 +1460,6 @@ namespace core_tests.domain
 
             listCollection.Add(custProCollection);
 
-
             CommercialCatalogue comCatalogue1 = new CommercialCatalogue(reference, designation, list);
             CommercialCatalogueDTO dto = new CommercialCatalogueDTO();
             dto.reference = reference;
@@ -1641,7 +1468,6 @@ namespace core_tests.domain
             CommercialCatalogueDTO dto2 = comCatalogue1.toDTO();
             Assert.Equal(dto.reference, dto2.reference);
             Assert.Equal(dto.designation, dto2.designation);
-            //Assert.Equal(dto.collectionList, dto2.collectionList);
         }
     }
 }

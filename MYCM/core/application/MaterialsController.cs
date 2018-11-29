@@ -60,6 +60,11 @@ namespace core.application
                 updatedWithSuccess &= materialBeingUpdated.changeDesignation(updateMaterialDTO.designation);
                 perfomedAtLeastOneUpdate = true;
             }
+            if (updateMaterialDTO.image != null)
+            {
+                updatedWithSuccess &= materialBeingUpdated.changeImage(updateMaterialDTO.image);
+                perfomedAtLeastOneUpdate = true;
+            }
             if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
             updatedWithSuccess &= materialRepository.update(materialBeingUpdated) != null;
             return updatedWithSuccess;
@@ -136,6 +141,7 @@ namespace core.application
 
             material.changeReference(materialDTO.reference);
             material.changeDesignation(materialDTO.designation);
+            material.changeImage(materialDTO.image);
 
             foreach (ColorDTO colorDTO in materialDTO.colors)
             {

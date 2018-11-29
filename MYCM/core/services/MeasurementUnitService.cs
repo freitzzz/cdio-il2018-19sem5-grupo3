@@ -12,9 +12,13 @@ namespace core.services
     public sealed class MeasurementUnitService
     {
         /// <summary>
-        /// Constant representing error when the given unit has not matched any measurement unit.
+        /// Constant representing the message presented when the unit from which the value will be converted is invalid.
         /// </summary>
-        private const string ERROR_UNIT_NOT_FOUND = "Unable to convert to the specified unit";
+        private const string INVALID_FROM_UNIT = "Unable to convert from the given unit. Please specify a valid unit and try again.";
+        /// <summary>
+        /// Constant representing the message presented when the unit to which the value will be converted is invalid.
+        /// </summary>
+        private const string INVALID_TO_UNIT = "Unable to convert to the given unit. Please specify a valid unit and try again.";
 
         /// <summary>
         /// Converts the dimension's measurement value in milimetres to the equivalent in the given units.
@@ -34,7 +38,7 @@ namespace core.services
             }
             if (!unitMap.TryGetValue(newUnit, out conversionValue))
             {
-                throw new ArgumentException(ERROR_UNIT_NOT_FOUND);   //throw exception if value does not exist
+                throw new ArgumentException(INVALID_TO_UNIT);   //throw exception if value does not exist
             }
 
             return value / conversionValue;
@@ -59,7 +63,7 @@ namespace core.services
 
             if (!unitMap.TryGetValue(oldUnit, out conversionValue))
             {
-                throw new ArgumentException(ERROR_UNIT_NOT_FOUND);   //throw exception if value does not exist
+                throw new ArgumentException(INVALID_FROM_UNIT);   //throw exception if value does not exist
             }
 
             return value * conversionValue;
@@ -87,6 +91,14 @@ namespace core.services
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Retrieves all the available units.
+        /// </summary>
+        /// <returns>IEnumerable of string representing all of the available units.</returns>
+        public static IEnumerable<string> getAvailableUnits(){
+            return loadUnitMap().Keys;
         }
 
 
