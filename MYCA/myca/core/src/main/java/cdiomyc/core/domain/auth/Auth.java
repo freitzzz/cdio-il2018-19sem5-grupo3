@@ -1,6 +1,8 @@
 package cdiomyc.core.domain.auth;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -11,10 +13,21 @@ import javax.persistence.Id;
 @Entity
 public abstract class Auth implements Serializable {
     /**
+     * Constant that represents the default end session time in minutes
+     */
+    private static final int DEFAULT_END_SESSION_TIME=60;
+    
+    /**
      * String with the authentication token
      */
     @Id
     private String token;
+    
+    /**
+     * Session with the current authentication session
+     */
+    @Embedded
+    private Session authSession;
     
     /**
      * Builds a new Auth
@@ -23,6 +36,7 @@ public abstract class Auth implements Serializable {
     public Auth(String token){
         checkToken(token);
         this.token=token;
+        this.authSession=Session.valueOf(LocalDateTime.now().plusMinutes(DEFAULT_END_SESSION_TIME));
     }
     
     /**

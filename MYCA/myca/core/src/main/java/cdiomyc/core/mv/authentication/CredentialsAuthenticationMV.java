@@ -7,6 +7,10 @@ package cdiomyc.core.mv.authentication;
  */
 public final class CredentialsAuthenticationMV extends AuthenticationMV{
     /**
+     * Constant that represents the authentication model view type
+     */
+    public static final String TYPE="credentials";
+    /**
      * String with the credentials username
      */
     public String username;
