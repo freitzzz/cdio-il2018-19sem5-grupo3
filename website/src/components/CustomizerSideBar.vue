@@ -142,7 +142,7 @@ export default {
 <style scoped>
 .sidenav {
   height: 100%; /* Full height */
-  width: 250px; /*full width on initial load, changed with Vue*/
+  width: 300px; /*full width on initial load, changed with Vue*/
   position: fixed; /*stay in place*/
   z-index: 1; /*stay on top*/
   top: 15%; /*Display from top left corner*/
