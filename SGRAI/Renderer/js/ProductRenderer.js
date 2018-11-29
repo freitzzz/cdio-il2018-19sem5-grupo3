@@ -942,7 +942,7 @@ function onDocumentMouseDown(event) {
                 door = group.getObjectById(closet_doors_ids[j]);
                 var closet_face = group.getObjectById(closet_faces_ids[0]);
                 if (door == face) {
-                    if (door.position.x > 53) {
+                    if (door.position.z > 50) {
                         flagClose = true;
                     } else {
                         flagOpen = true;
@@ -962,20 +962,20 @@ var openDoor = function () {
 
     if (door.rotation.y >(- Math.PI / 2)) {
         var rotationX = ( door.geometry.parameters.width / 2 );
-        door.position.sub(new THREE.Vector3(rotationX/150,0,-rotationX/150));
-        door.rotateOnAxis(new THREE.Vector3(0,1,0),0.01);
+        door.translateX(-rotationX);
         door.rotation.y -= Math.PI/150;
+        door.translateX(rotationX);
         requestAnimationFrame(openDoor);
         render();
         controls.update();
     }
 }
 var closeDoor = function () {
-    if (door.rotation.y < Math.PI / 2) {
+    if (door.rotation.y < 0) {
         var rotationX = door.geometry.parameters.width / 2;
-        door.position.sub(new THREE.Vector3(-rotationX/150,0,rotationX/150));
-        door.rotateOnAxis(new THREE.Vector3(0,1,0),0.01);
+        door.translateX(-rotationX);
         door.rotation.y += Math.PI / 150;
+        door.translateX(rotationX);
         requestAnimationFrame(closeDoor);
         render();
         controls.update();
