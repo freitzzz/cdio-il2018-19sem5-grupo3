@@ -33,6 +33,13 @@ namespace core.dto {
         public string designation { get; set; }
 
         /// <summary>
+        /// Material's image file name.
+        /// </summary>
+        /// <value>Gets/sets the value of the image field.</value>
+        [DataMember]
+        public string image {get; set;}
+
+        /// <summary>
         /// List of colors to add
         /// </summary>
         [DataMember]
