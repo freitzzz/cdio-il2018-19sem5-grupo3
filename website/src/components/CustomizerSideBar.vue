@@ -1,8 +1,8 @@
 <template>
     <div>
-      <i ref="menuButton" @click="openNav()" class="material-icons md-36 btn" style="visibility:hidden">menu</i>
+      <i ref="menuButton" @click="openNav()" class="material-icons md-36 md-grey btn" style="visibility:hidden">menu</i>
       <div ref="customizerSidenav" class="sidenav">
-        <i class="closebtn material-icons md-24" @click="closeNav()">close</i>
+        <i class="closebtn material-icons md-18 md-grey" @click="closeNav()">close</i>
         <h3>{{panels[currentPanelIndex].title}}</h3>
         <!--The child component changes dinamically depending on tthe currently selected component.-->
         <!--The Sidebar component listens out for any event that the child may trigger-->
@@ -10,6 +10,7 @@
         <customizer-side-bar-dimensions-panel v-if="currentPanelIndex == 1"></customizer-side-bar-dimensions-panel>
         <customizer-side-bar-slots-panel v-if="currentPanelIndex == 2"></customizer-side-bar-slots-panel>
         <customizer-side-bar-materials-panel v-if="currentPanelIndex == 3"></customizer-side-bar-materials-panel>
+        <customizer-side-bar-components-panel v-if="currentPanelIndex == 4"></customizer-side-bar-components-panel>
         <div class="sidenav-controls">
           <i class="btn btn-primary material-icons" @click="previousPanel()" v-if="canDisplayPreviousButton">arrow_back</i>
           <i class="btn btn-primary material-icons" @click="nextPanel()" v-if="canDisplayNextButton">arrow_forward</i>
@@ -23,6 +24,7 @@ import CustomizerSideBarProductsPanel from "./CustomizerSideBarProductsPanel";
 import CustomizerSideBarDimensionsPanel from "./CustomizerSideBarDimensionsPanel";
 import CustomizerSideBarMaterialsPanel from "./CustomizerSideBarMaterialsPanel";
 import CustomizerSideBarSlotsPanel from "./CustomizerSideBarSlotsPanel";
+import CustomizerSideBarComponentsPanel from "./CustomizerSideBarComponentsPanel";
 import Store from "./../store/index.js";
 
 export default {
@@ -62,7 +64,8 @@ export default {
     CustomizerSideBarProductsPanel,
     CustomizerSideBarDimensionsPanel,
     CustomizerSideBarMaterialsPanel,
-    CustomizerSideBarSlotsPanel
+    CustomizerSideBarSlotsPanel,
+    CustomizerSideBarComponentsPanel
   },
   computed: {
     /**
@@ -143,15 +146,16 @@ export default {
   z-index: 1; /*stay on top*/
   top: 15%; /*Display from top left corner*/
   left: 0;
-  font-family: "Roboto", sans-serif;
   overflow-x: hidden; /*Disable horizontal scroll*/
   padding-top: 60px;
+  margin: 2%;
   transition: 0.3s;
-  background-color: #dddddda0;
+  background-color: #e9e9e9a0;
 }
 
 .sidenav h3 {
   font-size: 24px;
+  color: #797979 !important;
   cursor: default;
   position: absolute;
   top: 15px;

@@ -60,6 +60,15 @@ const getters = {
     productSlotSizes: state => {
         return state.product.slotSizes;
     },
+    recommendedSlotSize: state => {
+        return state.product.slotSizes.recommendedSize;
+    },
+    maxSlotSize: state => {
+        return state.product.slotSizes.maxSize;
+    },
+    minSlotSize: state => {
+        return state.product.slotSizes.minSize;
+    },
     productMaterials: state => {
         return state.product.materials;
     },
