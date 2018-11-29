@@ -7,8 +7,8 @@ using core.dto;
 
 namespace core_tests.domain {
     public class ProductMaterialTest {
-        private static readonly Material PREDEFINED_MATERIAL = new Material("#444", "Tinta Branca", new List<Color>(new[] { Color.valueOf("White", 0, 0, 0, 0) }), new List<Finish>(new[] { Finish.valueOf("Matte") }));
-        private static readonly Material PREDEFINED_MATERIAL2 = new Material("#445", "Tinta Preta", new List<Color>(new[] { Color.valueOf("Black", 255, 255, 255, 255) }), new List<Finish>(new[] { Finish.valueOf("Matte") }));
+        private static readonly Material PREDEFINED_MATERIAL = new Material("#444", "Tinta Branca", "ola.jpg", new List<Color>(new[] { Color.valueOf("White", 0, 0, 0, 0) }), new List<Finish>(new[] { Finish.valueOf("Matte") }));
+        private static readonly Material PREDEFINED_MATERIAL2 = new Material("#445", "Tinta Preta", "ola.jpg", new List<Color>(new[] { Color.valueOf("Black", 255, 255, 255, 255) }), new List<Finish>(new[] { Finish.valueOf("Matte") }));
         private static readonly List<Material> PREDEFINED_MATERIALS = new List<Material>(new[] { PREDEFINED_MATERIAL });
          private readonly List<Measurement> PREDEFINED_MEASUREMENTS = new List<Measurement>(){new Measurement(   height: new SingleValueDimension(21),
                                                                                                                 width: new SingleValueDimension(50),
