@@ -34,7 +34,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -81,7 +81,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -110,7 +110,6 @@ namespace core_tests.domain
         {
             var category = new ProductCategory("Drawers");
 
-
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
 
@@ -137,7 +136,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -195,7 +194,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -251,7 +250,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -268,6 +267,7 @@ namespace core_tests.domain
             customCollection.addCustomizedProduct(cp);
             Assert.Equal("List of Customized Products: System.Collections.Generic.List`1[core.domain.CatalogueCollectionProduct], Customized Product Collection Name Lab Coats", new CatalogueCollection(customCollection).ToString());
         }
+
         [Fact]
         public void ensureEqualsSucceedsIfSameInstance()
         {
@@ -294,7 +294,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -312,6 +312,7 @@ namespace core_tests.domain
             CatalogueCollection collection = new CatalogueCollection(customCollection);
             Assert.True(collection.Equals(collection));
         }
+
         [Fact]
         public void ensureEqualsFailsIfObjjectIsNull()
         {
@@ -338,7 +339,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -382,7 +383,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -426,7 +427,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -470,7 +471,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -516,7 +517,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -549,7 +550,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -563,7 +564,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -597,7 +598,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -611,7 +612,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -641,7 +642,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -655,7 +656,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -686,7 +687,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -700,7 +701,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -732,7 +733,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -746,7 +747,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -776,7 +777,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -790,7 +791,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 

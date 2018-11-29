@@ -39,6 +39,7 @@ export default {
   methods: {}
 };
 </script>
+
 <style>
 .progressbar {
   counter-reset: step;
@@ -70,13 +71,13 @@ export default {
   background-color: white;
 }
 .progressbar li:after {
-  width: 88%;
+  width: 84%;
   height: 2px;
   content: "";
   position: absolute;
   background-color: #7d7d7d;
   top: 15px;
-  left: -44%;
+  left: -42%;
   z-index: 1;
 }
 .progressbar li:first-child:after {
