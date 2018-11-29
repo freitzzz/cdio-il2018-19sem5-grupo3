@@ -84,6 +84,7 @@ const getters = {
     depth: state => {
         return state.customizedProduct.customizedDimensions.depth;
     }
+    
 }
 
 export default new Vuex.Store({

@@ -1,18 +1,23 @@
 <template>
   <div class="containerDimensions" style="margin-left:auto;margin-right:auto;">
+    <div class="text-entry" style="font-family: 'Roboto', sans-serif;">Select a option:</div>
     <div class="icon-div-top">
       <i class="material-icons md-12 md-blue btn">help</i>
       <span
-        class="tooltiptext">TEXTO TEXTO</span>
+        class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
     <select class="dropdown" v-model="dimensionOp" @change="updateUnit">
       <option v-for="option in availableOptionsDimensions" :key="option.id" :value="option">{{"Option: "+option.id}}</option>
     </select>
     <!--Fetch minimums from server-->
+    <div class="text-entry">Height:</div>
     <vue-slider class="slider" v-model="height" @change="updateHeight"></vue-slider>
+    <div class="text-entry">Width:</div>
     <vue-slider class="slider" v-model="width" @change="updateWidth"></vue-slider>
+    <div class="text-entry">Depth:</div>
     <vue-slider class="slider" v-model="depth" @change="updateDepth"></vue-slider>
     
+    <div class="text-entry">Choose the available units:</div>
     <select class="dropdown" v-model="unit" @change="updateUnit">
       <option v-for="optionUnit in availableOptionsUnits" :key="optionUnit.id" :value="optionUnit">{{optionUnit.unit}}</option>
     </select>
@@ -43,11 +48,9 @@ export default {
       width: 100,
       depth: 100,
       unit: "cm",
-      dimensionOp: "option",
+      dimensionOp: "",
       availableOptionsDimensions:[],
-      availableOptionsUnits:[],
-      
-
+      availableOptionsUnits:[]
     };
   },
   components:{
@@ -65,7 +68,7 @@ export default {
       .then(response => this.availableOptionsDimensions.push(...response.data))
       .catch(console.log(error));
 
-   
+   /*Get all available units of measurement*/
     Axios.get(`${MYCM_API_URL}/units`)
     .then(response => this.availableOptionsUnits.push(...response.data))
     .catch(console.log(error));
@@ -83,17 +86,23 @@ export default {
     updateUnit(e) {
       store.dispatch(SET_CUSTOMIZED_PRODUCT_UNIT, { unit: e.target.value });
     },
- /*    //Get all available options
-    populateAvailableOptions() {} */
+    //Get all available options
+    populateAvailableOptions() {
+      //Get information of the chosed option
+      var op = this.dimensionOp;
+
+      //Populate Height:
+
+    } 
   }
 };
 </script>
 <style>
 .containerDimensions {
-  margin: 5%;/*
+  margin: 3%;
   margin-left: 22.5%;
-  margin-right: 22.5%; */
- border-bottom: 10%;
+  margin-right: 22.5%;
+  margin-bottom: 3%;
   font-family: "Roboto", sans-serif;
 }
 
@@ -114,24 +123,23 @@ export default {
 
 .icon-div-top:hover .tooltiptext {
   visibility: visible;
-  position:relative;
 }
 
 .icon-div-top {
-  top: 16.5px;
-  left: 27px;
+  top: 17px;
+  left: 30px;
   margin-left: 100px;
   position: absolute;
 }
 .dropdown{
   margin-left: 15%;
   width: 60%;
-  margin-bottom:10%;
+  margin-bottom:3%;
+  margin-right:15%;
 }
 .slider{
-  width:5%;
-  margin-bottom:10%;
-  width:50%;
+  margin-bottom:5%;
+  width:15px;
 }
 </style>
 
