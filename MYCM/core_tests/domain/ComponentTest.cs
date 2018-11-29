@@ -24,7 +24,7 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
             List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
             //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
             //Creates a parent product 
             Product product = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
@@ -47,7 +47,7 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
             List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
             //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
             //Creates a parent product 
             Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
@@ -70,7 +70,7 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
             List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
             //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
             //Creates a parent product 
             Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
@@ -94,7 +94,7 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
             List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
             //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
             //Creates a parent product 
             Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
@@ -119,9 +119,9 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
             List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
             //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
-           //Creates a parent product 
+            //Creates a parent product 
             Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
@@ -146,7 +146,7 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
             List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
             //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
             //Creates a parent product 
             Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
@@ -170,7 +170,7 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
             List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
             //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
             //Creates a parent product 
             Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
@@ -196,10 +196,10 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
             List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
             //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
             //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements, 
+            Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             //Creates a child product
@@ -221,14 +221,14 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
             List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
             //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
             //Creates a parent product 
-            Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements, 
-            CustomizedDimensions.valueOf(1, 1, 1),  CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
+            Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
+            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             //Creates a child product
-            Product child = new Product("Not so bad", "Luke", new ProductCategory("Drawers"), materials, measurements, 
+            Product child = new Product("Not so bad", "Luke", new ProductCategory("Drawers"), materials, measurements,
              CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             Restriction restriction = new Restriction("FUNCIONE");
@@ -247,7 +247,7 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
             List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
             //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
             //Creates a parent product 
             Product parent = new Product("Kinda bad", "Anakin", new ProductCategory("Drawers"), materials, measurements,
@@ -272,7 +272,7 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
             List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
             //Creates a material list
-            List<Material> materials = new List<Material>() { new Material("123", "456, how original", colors, finishes) };
+            List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
 
             //Creates a parent product 
@@ -280,7 +280,7 @@ namespace core_tests.domain
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             //Creates a child product
-            Product child = new Product("Not so bad", "Luke",  new ProductCategory("Drawers"), materials, measurements,
+            Product child = new Product("Not so bad", "Luke", new ProductCategory("Drawers"), materials, measurements,
             CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
 
             Component component = new Component(parent, child);

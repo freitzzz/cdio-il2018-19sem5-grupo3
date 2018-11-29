@@ -176,6 +176,17 @@
   .section-title p {
     font-size: 18px;
   }
+
+.btn-primary {
+  background-color: #0ba2db !important;
+  border-color: #0ba2db !important;
+}
+
+.btn-primary:hover {
+  background-color: #7eddff !important;
+  border-color: #7eddff !important;
+}
+
   .btn-custom {
     text-transform: uppercase;
     color: #fff !important;
@@ -184,7 +195,7 @@
     padding: 14px 20px;
     margin: 0;
     font-size: 16px;
-    border-radius: 2px;
+    border-radius: 8px;
     margin-top: 20px;
     transition: all 0.3s;
   }
@@ -319,29 +330,33 @@
     }
   
   }
-  .material-btn {
+
+  .img-btn {
     color:black;
     transition: all 0.3s;
   }
-  .material-btn:hover, .material-btn:focus, .material-btn.focus, .material-btn:active, .btn-custom.active {
+
+  .img-btn:hover, .img-btn:focus, .img-btn.focus, .img-btn:active, .btn-custom.active {
     color: #0ba2db;
     cursor: pointer;
   }
+
   .scrollable-div{
     overflow-y: scroll;
     border: thin solid #0ba2db;
     background-color: rgb(255, 255, 255)
   }
+
   .sidepanel {
-      height: 0; /* Specify a height */
+    height: 0; /* Specify a height */
     width: 0; /* 0 width - change this with JavaScript */
-      position: relative; /* Stay in place */
-      z-index: 1; /* Stay on top */
-      top: 0;
-      left: 0;
+    position: relative; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0;
+    left: 0;
     background-color: #0ba2db;
-      overflow-x: hidden; /* Disable horizontal scroll */
-      transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
   }
   /* The sidepanel links */
   .sidepanel-entry {
@@ -498,15 +513,15 @@
       transform: rotate(45deg);
   }
 
-  .column {
-    float: left;
-    width: 100%;
-  }
+.column {
+  float: left;
+  width: 100%;
+}
 
-  .left {
-    width: 30%;
-    align-content: left;
-  }
+.left {
+  width: 30%;
+  align-content: left;
+}
 
   .right {
     width: 10%;
@@ -518,11 +533,15 @@
     margin-bottom: 15%;
   }
   
-  .text-entry {
-    margin: 6%;
-    margin-top: 0%;
-    text-decoration: none;
-    font-size: 16px;
-    color: #292929 !important;
-    display: block;
-  }
+.text-entry {
+  margin: 6%;
+  margin-top: 0%;
+  text-decoration: none;
+  font-size: 16px;
+  color: #292929 !important;
+  display: block;
+}
+
+.padding-div {
+  margin: 6%;
+}

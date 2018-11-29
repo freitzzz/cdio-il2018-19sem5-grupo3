@@ -25,7 +25,7 @@ namespace core_tests.domain
             List<Double> values = new List<Double>();
             values.Add(500.0);
 
-            Material material = new Material("told", "me", colors, finishes);
+            Material material = new Material("told", "me", "ola.jpg", colors, finishes);
             List<Material> materialList = new List<Material>();
             materialList.Add(material);
 
@@ -36,7 +36,7 @@ namespace core_tests.domain
             Dimension depthDimension = new SingleValueDimension(17);
 
             Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
             IEnumerable<Material> materialEnumerable = materialList;
 
             Product product = new Product("world", "is", productCategory, materialEnumerable,
@@ -76,7 +76,7 @@ namespace core_tests.domain
             List<Double> values = new List<Double>();
             values.Add(500.0);
 
-            Material material = new Material("told", "me", colors, finishes);
+            Material material = new Material("told", "me", "ola.jpg", colors, finishes);
             List<Material> materialList = new List<Material>();
             materialList.Add(material);
 
@@ -87,7 +87,7 @@ namespace core_tests.domain
             Dimension depthDimension = new SingleValueDimension(17);
 
             Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             IEnumerable<Material> materialEnumerable = materialList;
 
@@ -132,7 +132,7 @@ namespace core_tests.domain
             List<Double> values = new List<Double>();
             values.Add(500.0);
 
-            Material material = new Material("told", "me", colors, finishes);
+            Material material = new Material("told", "me", "ola.jpg", colors, finishes);
             List<Material> materialList = new List<Material>();
             materialList.Add(material);
 
@@ -143,7 +143,7 @@ namespace core_tests.domain
             Dimension depthDimension = new SingleValueDimension(17);
 
             Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
             IEnumerable<Material> materialEnumerable = materialList;
 
             Product product = new Product("world", "is", productCategory, materialEnumerable,
