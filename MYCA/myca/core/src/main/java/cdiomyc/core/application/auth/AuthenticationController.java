@@ -1,7 +1,11 @@
 package cdiomyc.core.application.auth;
 
+import cdiomyc.core.domain.User;
+import cdiomyc.core.domain.auth.Session;
 import cdiomyc.core.mv.authentication.AuthenticationMV;
-import cdiomyc.core.mv.authentication.GetAuthenticationDetailsMV;
+import cdiomyc.core.mv.authentication.session.AuthenticationSessionMVService;
+import cdiomyc.core.mv.authentication.session.GetAuthenticationSessionDetailsMV;
+import cdiomyc.core.persistence.PersistenceContext;
 
 /**
  * Application controller that serves authentication operations
@@ -11,9 +15,12 @@ public final class AuthenticationController {
     /**
      * Authenticates an user into all MYCA APIs
      * @param authenticationModelView AuthenticationMV with the required authentication details
-     * @return GetAuthenticationDetailsMV with the authentication details model view
+     * @return GetAuthenticationSessionDetailsMV with the authentication details model view
      */
-    public static GetAuthenticationDetailsMV authenticate(AuthenticationMV authenticationModelView){
-        throw new UnsupportedOperationException("#TODO:Implement!!!");
+    public static GetAuthenticationSessionDetailsMV authenticate(AuthenticationMV authenticationModelView){
+        User userToAuthenticate
+                =PersistenceContext.repositories().createUserRepository().findUserByAuthenticationDetails(authenticationModelView);
+        Session createdUserSession=userToAuthenticate.createNewSession();
+        return AuthenticationSessionMVService.fromEntity(createdUserSession);
     }
 }
