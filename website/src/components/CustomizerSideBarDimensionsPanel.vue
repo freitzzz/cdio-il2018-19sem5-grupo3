@@ -3,11 +3,14 @@
     <div class="text-entry" style="font-family: 'Roboto', sans-serif;">Select a option:</div>
     <div class="icon-div-top">
       <i class="material-icons md-12 md-blue btn">help</i>
-      <span
-        class="tooltiptext">Please choose a option for the different type of dimensions.</span>
+      <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
     <select class="dropdown" v-model="dimensionOp" @change="updateUnit">
-      <option v-for="option in availableOptionsDimensions" :key="option.id" :value="option">{{"Option: "+option.id}}</option>
+      <option
+        v-for="option in availableOptionsDimensions"
+        :key="option.id"
+        :value="option"
+      >{{"Option: "+option.id}}</option>
     </select>
     <!--Fetch minimums from server-->
     <div class="text-entry">Height:</div>
@@ -16,10 +19,14 @@
     <vue-slider class="slider" v-model="width" @change="updateWidth"></vue-slider>
     <div class="text-entry">Depth:</div>
     <vue-slider class="slider" v-model="depth" @change="updateDepth"></vue-slider>
-    
+
     <div class="text-entry">Choose the available units:</div>
     <select class="dropdown" v-model="unit" @change="updateUnit">
-      <option v-for="optionUnit in availableOptionsUnits" :key="optionUnit.id" :value="optionUnit">{{optionUnit.unit}}</option>
+      <option
+        v-for="optionUnit in availableOptionsUnits"
+        :key="optionUnit.id"
+        :value="optionUnit"
+      >{{optionUnit.unit}}</option>
     </select>
   </div>
 </template>
@@ -50,7 +57,10 @@ export default {
       unit: "cm",
       dimensionOp: "",
       availableOptionsDimensions:[],
-      availableOptionsUnits:[]
+      availableOptionsUnits:[],
+      DISCRETE_INTERVAL:0,
+      CONTINUOUS_INTERVAL:1,
+      DISCRETE_VALUE:2
     };
   },
   components:{
@@ -86,13 +96,35 @@ export default {
     updateUnit(e) {
       store.dispatch(SET_CUSTOMIZED_PRODUCT_UNIT, { unit: e.target.value });
     },
+    
+    identifyTypeDimensions(dimensionObj){
+       
+      if( dimensionObj.values !=null){ //Discrete interval
+        return DISCRETE_INTERVAL;
+      }else if(dimensionObj.value !=null){ //DIscrete value
+        return DISCRETE_VALUE;
+      }else if(dimensionObj.minValue !=null && dimensionObj.maxValue!=null && dimensionObj.increment !=null){
+        return CONTINUOUS_INTERVAL;
+      }//Not yet implemented dimension
+      return -1;
+      
+    },
     //Get all available options
     populateAvailableOptions() {
       //Get information of the chosed option
       var op = this.dimensionOp;
 
+      //Create array of different dimensions h,l,d
+      //Create for to identify each type of dimension
+      //Set slider of different dimension
+      //Stop if the dimension is invalid
       //Populate Height:
 
+      //Populate Length
+
+      //Populate Depth:
+
+      
     } 
   }
 };
@@ -131,15 +163,15 @@ export default {
   margin-left: 100px;
   position: absolute;
 }
-.dropdown{
+.dropdown {
   margin-left: 15%;
   width: 60%;
-  margin-bottom:3%;
-  margin-right:15%;
+  margin-bottom: 3%;
+  margin-right: 15%;
 }
-.slider{
-  margin-bottom:5%;
-  width:15px;
+.slider {
+  margin-bottom: 5%;
+  width: 15px;
 }
 </style>
 
