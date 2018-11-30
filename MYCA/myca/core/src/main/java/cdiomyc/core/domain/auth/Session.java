@@ -1,5 +1,6 @@
 package cdiomyc.core.domain.auth;
 
+import cdiomyc.support.domain.ddd.DomainEntity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
@@ -16,7 +17,7 @@ import javax.persistence.Table;
 @Entity
 @SequenceGenerator(name = "sessionSeq",initialValue = 1, allocationSize = 1)
 @Table(name = "MYCA_USER_SESSION")
-public class Session implements Serializable{
+public class Session implements DomainEntity<String>,Serializable{
     
     /**
      * Constant that represents the message that occurs if the session being created 
@@ -58,6 +59,28 @@ public class Session implements Serializable{
      * @return boolean true if the session is active, false if not
      */
     public boolean isActive(){return this.sessionEndDateTime.isAfter(this.sessionStartDateTime);}
+    
+    /**
+     * Returns the current session identifier
+     * @return String with the session identifier
+     */
+    @Override
+    public String id(){return sessionToken;}
+    
+    /**
+     * Returns the hashcode of the domain entity
+     * @return Integer with the hash code of the domain entity
+     */
+    @Override
+    public int hashCode(){return id().hashCode();}
+    
+    /**
+     * Checks if a domain entity is equal to the current one
+     * @param otherDomainEntity DomainEntity with the comparing domain entity
+     * @return boolean true if both domain entities are equal, false if not
+     */
+    @Override
+    public boolean equals(Object otherDomainEntity){return otherDomainEntity instanceof Session && ((Session)otherDomainEntity).id().equals(id());}
     
     /**
      * Checks if the session end date time is valid
