@@ -5,7 +5,7 @@ package cdiomyc.core.mv.authentication;
  * user credentials
  * @author <a href="https://github.com/freitzzz">freitzzz</a>
  */
-public final class CredentialsAuthenticationMV extends AuthenticationMV{
+public class CredentialsAuthenticationMV extends AuthenticationMV{
     /**
      * Constant that represents the authentication model view type
      */
