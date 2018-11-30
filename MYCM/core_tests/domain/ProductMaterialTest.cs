@@ -22,7 +22,7 @@ namespace core_tests.domain {
         [Fact]
         public void ensureAddedRestrictionIsNotNull() {
             Console.WriteLine("ensureAddedRestrictionIsNotNull");
-            Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
             Assert.False(pm.addRestriction(null));
         }
@@ -32,7 +32,7 @@ namespace core_tests.domain {
         [Fact]
         public void ensureAddRestrictionSucceeds() {
             Console.WriteLine("ensureAddRestrictionSucceeds");
-            Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
             Restriction rest = new Restriction("restriction");
             Assert.True(pm.addRestriction(rest));
@@ -44,7 +44,7 @@ namespace core_tests.domain {
         [Fact]
         public void ensureAddedRestrictionIsUnique() {
             Console.WriteLine("ensureAddedRestrictionIsUnique");
-            Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
             Restriction rest = new Restriction("restriction");
             pm.addRestriction(rest);
@@ -56,7 +56,7 @@ namespace core_tests.domain {
         [Fact]
         public void ensureRestrictionExistsSucceeds() {
             Console.WriteLine("ensureRestrictionExistsSucceeds");
-            Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
             Restriction rest = new Restriction("restriction");
             pm.addRestriction(rest);
@@ -68,7 +68,7 @@ namespace core_tests.domain {
         [Fact]
         public void ensureRestrictionExistsFailsWithNullArgument() {
             Console.WriteLine("ensureRestrictionExistsFailsWithNullArgument");
-            Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
             Assert.False(pm.restrictionExists(null));
         }
@@ -78,7 +78,7 @@ namespace core_tests.domain {
         [Fact]
         public void ensureRestrictionExistsFails() {
             Console.WriteLine("ensureRestrictionExistsSucceeds");
-            Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
             Restriction rest = new Restriction("restriction");
             Assert.False(pm.restrictionExists(rest));
@@ -89,7 +89,7 @@ namespace core_tests.domain {
         [Fact]
         public void ensureRemoveRestrictionArgumentIsNotNull() {
             Console.WriteLine("ensureRemoveRestrictionArgumentIsNotNull");
-            Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
             Assert.False(pm.removeRestriction(null));
         }
@@ -99,7 +99,7 @@ namespace core_tests.domain {
         [Fact]
         public void ensureRemoveRestrictionArgumentExists() {
             Console.WriteLine("ensureRemoveRestrictionArgumentExists");
-            Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
             Restriction rest = new Restriction("restriction");
             Assert.False(pm.removeRestriction(rest));
@@ -110,7 +110,7 @@ namespace core_tests.domain {
         [Fact]
         public void ensureRemoveRestrictionSucceeds() {
             Console.WriteLine("ensureRemoveRestrictionSucceeds");
-            Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
             Restriction rest = new Restriction("restriction");
             pm.addRestriction(rest);
@@ -122,7 +122,7 @@ namespace core_tests.domain {
         [Fact]
         public void ensureHasMaterialFailsWithNullArgument() {
             Console.WriteLine("ensureHasMaterialFailsWithNullArgument");
-            Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
             Assert.False(pm.hasMaterial(null));
         }
@@ -132,7 +132,7 @@ namespace core_tests.domain {
         [Fact]
         public void ensureHasMaterialFails() {
             Console.WriteLine("ensureHasMaterialFails");
-            Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
             Assert.False(pm.hasMaterial(PREDEFINED_MATERIAL));
         }
@@ -142,7 +142,7 @@ namespace core_tests.domain {
         [Fact]
         public void ensureHasMaterialSucceeds() {
             Console.WriteLine("ensureHasMaterialSucceeds");
-            Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2, new List<Restriction>());
             Assert.True(pm.hasMaterial(PREDEFINED_MATERIAL2));
         }
@@ -152,7 +152,7 @@ namespace core_tests.domain {
         [Fact]
         public void ensureGetProductWorks() {
             Console.WriteLine("ensureGetProductWorks");
-            Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2, new List<Restriction>());
             Assert.True(pm.product.Equals(p));
         }

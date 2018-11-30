@@ -39,7 +39,7 @@ namespace core_tests.domain
             List<Measurement> measurements = new List<Measurement>() {measurement};
             IEnumerable<Material> materialEnumerable = materialList;
 
-            Product product = new Product("world", "is", productCategory, materialEnumerable,
+            Product product = new Product("world", "is", "world.glb", productCategory, materialEnumerable,
             measurements);
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
@@ -91,7 +91,7 @@ namespace core_tests.domain
 
             IEnumerable<Material> materialEnumerable = materialList;
 
-            Product product = new Product("world", "is", productCategory, materialEnumerable,
+            Product product = new Product("world", "is", "world.glb", productCategory, materialEnumerable,
             measurements);
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
@@ -146,7 +146,7 @@ namespace core_tests.domain
             List<Measurement> measurements = new List<Measurement>() {measurement};
             IEnumerable<Material> materialEnumerable = materialList;
 
-            Product product = new Product("world", "is", productCategory, materialEnumerable,
+            Product product = new Product("world", "is", "world.glb", productCategory, materialEnumerable,
             measurements);
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
