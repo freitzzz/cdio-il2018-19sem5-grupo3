@@ -84,6 +84,34 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureProductSlotWidthsCantBeCreatedIfRecommendedWidthIsPositiveInfinity()
+        {
+            Action positiveInfinityRecSlotWidth = () => ProductSlotWidths.valueOf(9, 21, double.PositiveInfinity);
+            Assert.Throws<ArgumentException>(positiveInfinityRecSlotWidth);
+        }
+
+        [Fact]
+        public void ensureProductSlotWidthsCantBeCreatedIfRecommendedWidthIsNegativeInfinity()
+        {
+            Action negativeInfinityRecSlotWidth = () => ProductSlotWidths.valueOf(9, 21, double.NegativeInfinity);
+            Assert.Throws<ArgumentException>(negativeInfinityRecSlotWidth);
+        }
+
+        [Fact]
+        public void ensureProductSlotWidthsCantBeCreatedIfRecommendedWidthIsNegative()
+        {
+            Action negativeRecSlotWidth = () => ProductSlotWidths.valueOf(9, 21, -1);
+            Assert.Throws<ArgumentException>(negativeRecSlotWidth);
+        }
+
+        [Fact]
+        public void ensureProductSlotWidthsCantBeCreatedIfRecommendedWidthIsZero()
+        {
+            Action zeroRecSlotWidth = () => ProductSlotWidths.valueOf(9, 21, 0);
+            Assert.Throws<ArgumentException>(zeroRecSlotWidth);
+        }
+
+        [Fact]
         public void ensureProductSlotWidthsCantBeCreatedIfMinWidthIsGreaterThanMaxWidth()
         {
             Action smallerMaxWidth = () => ProductSlotWidths.valueOf(9, 7, 5);
@@ -116,7 +144,7 @@ namespace core_tests.domain
         public void ensureSameInstanceIsEqual()
         {
             ProductSlotWidths slotWidths = ProductSlotWidths.valueOf(3, 14, 8);
-            Assert.Equal(slotWidths, slotWidths);
+            Assert.True(slotWidths.Equals(slotWidths));
         }
 
         [Fact]
