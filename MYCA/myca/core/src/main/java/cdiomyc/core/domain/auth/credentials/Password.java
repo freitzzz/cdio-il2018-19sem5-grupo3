@@ -1,5 +1,6 @@
 package cdiomyc.core.domain.auth.credentials;
 
+import cdiomyc.support.domain.ddd.ValueObject;
 import java.io.Serializable;
 import javax.persistence.Embeddable;
 
@@ -9,7 +10,7 @@ import javax.persistence.Embeddable;
  * @author <a href="https://github.com/freitzzz">freitzzz</a>
  */
 @Embeddable
-public class Password implements Serializable {
+public class Password implements Serializable,ValueObject {
     /**
      * Constant that represents the message that occurs if a password is invalid
      */
@@ -38,6 +39,28 @@ public class Password implements Serializable {
         checkPassword(password);
         this.value=password;
     }
+    
+    /**
+     * Returns the hashcode of the value object
+     * @return Integer with the hash code of the value object
+     */
+    @Override
+    public int hashCode(){return value.hashCode();}
+    
+    /**
+     * Checks if a value object is equal to the current one
+     * @param otherValueObject ValueObject with the comparing value object
+     * @return boolean true if both value objects are equal, false if not
+     */
+    @Override
+    public boolean equals(Object otherValueObject){return otherValueObject instanceof Password && ((Password)otherValueObject).value.equals(value);}
+    
+    /**
+     * Returns the textual representation of the value object
+     * @return String with the textual representation of the value object
+     */
+    @Override
+    public String toString(){return value;};
     
     /**
      * Checks if a password is valid
