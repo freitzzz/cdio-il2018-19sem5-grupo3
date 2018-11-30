@@ -1,6 +1,7 @@
 package cdiomyc.core.domain.auth;
 
 import cdiomyc.support.domain.ddd.DomainEntity;
+import cdiomyc.support.utils.JWTUtils;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
@@ -59,6 +60,18 @@ public class Session implements DomainEntity<String>,Serializable{
      * @return boolean true if the session is active, false if not
      */
     public boolean isActive(){return this.sessionEndDateTime.isAfter(this.sessionStartDateTime);}
+    
+    /**
+     * Returns the session token as a JWT
+     * @return String with the current session token as a JWT
+     */
+    public String tokenAsJWT(){return JWTUtils.encode(sessionToken);}
+    
+    /**
+     * Returns the session end date time
+     * @return LocalDateTime with the current session end date time
+     */
+    public LocalDateTime getSessionEndDateTime(){return sessionEndDateTime;}
     
     /**
      * Returns the current session identifier
