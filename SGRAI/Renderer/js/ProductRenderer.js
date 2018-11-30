@@ -514,11 +514,12 @@ function generateDrawer(slot) {
 
     var leftFace = group.getObjectById(closet_faces_ids[2]);
     var rightFace = group.getObjectById(closet_faces_ids[3]);
-    var height = 3;
-    var altura_gav = 15;
-    var depth = closet.getClosetDepth();
+    var depthDrawer = 3;
+    var heightDrawer = 15;
+    var depthCloset = closet.getClosetDepth();
     var width;
     var x, y, z;
+    var spaceDrawerModule = 10;
 
     //For now this follows the same logic as the pole, it should be changed to whatever dimensions the shelf is allowed to have
     if (closet_slots_faces_ids.length == 0) {
@@ -546,23 +547,21 @@ function generateDrawer(slot) {
         y = calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
         z = calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
     }
-    var module = new Module([width, height, depth, x, y - 2.5, z], ///Base
-        [width, height, depth, x, y + 15 + 2.5, z], ///Cima
-        [height, altura_gav + 2.5, depth, x - (width / 2), y + 7.5, z], ///Left
-        [height, altura_gav + 2.5, depth, x + (width / 2), y + 7.5, z]); ///Rigtht
+    var module = new Module([width, depthDrawer, depthCloset, x, y - (spaceDrawerModule / 4), z], ///Base
+        [width, depthDrawer, depthCloset, x, y + heightDrawer + (spaceDrawerModule / 4), z], ///Cima
+        [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x - (width / 2), y + (heightDrawer / 2), z], ///Left
+        [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x + (width / 2), y + (heightDrawer / 2), z]); ///Rigtht
     var borders = module.module_faces;
     for (var i = 0; i < borders.length; i++) {
         closet_modules_ids.push(generateParellepiped(borders[i][0],
             borders[i][1], borders[i][2], borders[i][3],
             borders[i][4], borders[i][5], material, group));
     }
-    //Adds front door
-
-    var drawer = new Drawer([width - 10, height, depth, x, y + 1.5, z], ///Base
-        [width - 10, altura_gav, height, x, y + 7.5, z + (depth / 2) - 1.5], ///Frent
-        [height, altura_gav, depth - 1.5, x - (width / 2) + 5, y + 7.5, z], ///Left
-        [height, altura_gav, depth - 1.5, x + (width / 2) - 5, y + 7.5, z], ///Right
-        [width - 10, altura_gav, height, x, y + 7.5, z - (depth / 2) + 1.5]); ///Back
+    var drawer = new Drawer([width - spaceDrawerModule, depthDrawer, depthCloset, x, y + (depthDrawer / 2), z], ///Base
+        [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z + (depthCloset / 2) - (depthDrawer / 2)], ///Frent
+        [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x - (width / 2) + (spaceDrawerModule / 2), y + (heightDrawer / 2), z], ///Left
+        [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x + (width / 2) - (spaceDrawerModule / 2), y + (heightDrawer / 2), z], ///Right
+        [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z - (depthCloset / 2) + (depthDrawer / 2)]); ///Back
     var borders_drawer = drawer.drawer_faces;
 
     for (var i = 0; i < borders_drawer.length; i++) {
@@ -573,8 +572,8 @@ function generateDrawer(slot) {
 
     closet.addDrawer(module);
     closet.addDrawer(drawer);
-    ///closet_drawers_ids.push(module_mesh_id);
-    ///closet_drawers_ids.push(drawer_mesh_id);
+   /// closet_drawers_ids.push(module_mesh_id);
+   /// closet_drawers_ids.push(drawer_mesh_id);
 
 }
 
@@ -715,7 +714,7 @@ function calculateDistance(topPosition, bottomPosition) {
 function animate() {
     //animate the scene at 60 frames per second
     //setTimeout(function () {
-        requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
     //}, 1000 / 60);
     controls.update();
     render();
@@ -894,6 +893,19 @@ function onDocumentMouseDown(event) {
                     }
                 }
             }
+            for (let j = 0; j < closet_modules_ids.length; j++) {
+                alert(closet_modules_ids[j].position.x);
+                let drawer = group.getObjectById(closet_modules_ids[j]);
+                if (drawer == face) {
+                    controls.enabled = false;
+                    for (let i = 0; i < closet_modules_ids.length; i++) {
+                        selected_component = closet_modules_ids[i];
+                        if (raycaster.ray.intersectPlane(plane, intersection)) {
+                            offset = intersection.x - selected_component.position.x;
+                        }
+                    }
+                }
+            }
 
             //Checks if the selected object is a door
             for (let j = 0; j < closet_sliding_doors_ids.length; j++) {
@@ -942,6 +954,7 @@ function onDocumentMouseDown(event) {
                 door = group.getObjectById(closet_doors_ids[j]);
                 var closet_face = group.getObjectById(closet_faces_ids[0]);
                 if (door == face) {
+                    alert(closet_face);
                     if (door.position.z > 50) {
                         flagClose = true;
                     } else {
@@ -958,12 +971,14 @@ function onDocumentMouseDown(event) {
     }
 }
 
+var incrementDoor = 100;
+
 var openDoor = function () {
 
-    if (door.rotation.y >(- Math.PI / 2)) {
-        var rotationX = ( door.geometry.parameters.width / 2 );
+    if (door.rotation.y > (-Math.PI / 2)) {
+        var rotationX = (door.geometry.parameters.width / 2);
         door.translateX(-rotationX);
-        door.rotation.y -= Math.PI/150;
+        door.rotation.y -= Math.PI / incrementDoor;
         door.translateX(rotationX);
         requestAnimationFrame(openDoor);
         render();
@@ -974,7 +989,7 @@ var closeDoor = function () {
     if (door.rotation.y < 0) {
         var rotationX = door.geometry.parameters.width / 2;
         door.translateX(-rotationX);
-        door.rotation.y += Math.PI / 150;
+        door.rotation.y += Math.PI / incrementDoor;
         door.translateX(rotationX);
         requestAnimationFrame(closeDoor);
         render();
@@ -983,14 +998,16 @@ var closeDoor = function () {
 
 }
 
+var incrementDrawer = 1;
+
 var openDrawer = function () {
     if (drawer_front_face.position.z <= 130) {
 
-        drawer_front_face.translateZ(1);
-        drawer_back_face.translateZ(1);
-        drawer_base_face.translateZ(1);
-        drawer_left_face.translateZ(1);
-        drawer_right_face.translateZ(1);
+        drawer_front_face.translateZ(incrementDrawer);
+        drawer_back_face.translateZ(incrementDrawer);
+        drawer_base_face.translateZ(incrementDrawer);
+        drawer_left_face.translateZ(incrementDrawer);
+        drawer_right_face.translateZ(incrementDrawer);
 
         requestAnimationFrame(openDrawer);
         render();
@@ -1001,11 +1018,11 @@ var openDrawer = function () {
 var closeDrawer = function () {
     var closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
     if (drawer_front_face.position.z > closet_front) {
-        drawer_front_face.translateZ(-1);
-        drawer_back_face.translateZ(-1);
-        drawer_base_face.translateZ(-1);
-        drawer_left_face.translateZ(-1);
-        drawer_right_face.translateZ(-1);
+        drawer_front_face.translateZ(-incrementDrawer);
+        drawer_back_face.translateZ(-incrementDrawer);
+        drawer_base_face.translateZ(-incrementDrawer);
+        drawer_left_face.translateZ(-incrementDrawer);
+        drawer_right_face.translateZ(-incrementDrawer);
         requestAnimationFrame(closeDrawer);
         render();
         controls.update();
