@@ -1,7 +1,5 @@
 package cdiomyc.support.persistence.repositories;
 
-import java.io.Serializable;
-
 /**
  * Generic Interface that represents all simple functionalities regarding data 
  * actions in repositories
@@ -9,7 +7,7 @@ import java.io.Serializable;
  * @param <E> Generic-Type of the repository entity
  * @param <ID> Generic-Type of the repository entity persistence identifier
  */
-public interface DataRepository<E,ID extends Serializable> {
+public interface DataRepository<E,ID> {
     /**
      * Method that add's a certain entity to the current entity repository
      * @param entity T with the Generic entity being added to the repository
