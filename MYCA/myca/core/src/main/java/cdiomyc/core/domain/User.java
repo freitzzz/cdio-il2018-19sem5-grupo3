@@ -2,6 +2,7 @@ package cdiomyc.core.domain;
 
 import cdiomyc.core.domain.auth.Auth;
 import cdiomyc.core.domain.auth.Session;
+import cdiomyc.support.domain.ddd.AggregateRoot;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import javax.persistence.Table;
 @Entity
 @SequenceGenerator(name = "userSeq",initialValue = 1,allocationSize = 1)
 @Table(name = "MYCA_USER")
-public class User implements Serializable{
+public class User implements AggregateRoot<Auth>,Serializable{
     /**
      * Constant that represents the default session time (in minuntes)
      */
@@ -67,6 +68,30 @@ public class User implements Serializable{
     }
     
     /**
+     * Returns the current user identifier
+     * @return Auth with the user identifier
+     */
+    @Override
+    public Auth id() {
+        return auth;
+    }
+    
+    /**
+     * Returns the hashcode of the domain entity
+     * @return Integer with the hash code of the domain entity
+     */
+    @Override
+    public int hashCode(){return id().hashCode();}
+    
+    /**
+     * Checks if a domain entity is equal to the current one
+     * @param otherDomainEntity DomainEntity with the comparing domain entity
+     * @return boolean true if both domain entities are equal, false if not
+     */
+    @Override
+    public boolean equals(Object otherDomainEntity){return otherDomainEntity instanceof User && ((User)otherDomainEntity).id().equals(id());}
+    
+    /**
      * Checks if the current user has an active session
      * @return boolean true if the user has an active session, false if not
      */
@@ -87,5 +112,8 @@ public class User implements Serializable{
             throw new IllegalArgumentException("Invalid user authentication!");
     }
     
+    /**
+     * Protected constructor in order to allow JPA persistence
+     */
     protected User(){}
 }
