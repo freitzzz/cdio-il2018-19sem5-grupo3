@@ -60,7 +60,7 @@ namespace core_tests.domain
         /// <returns>Created instance of Product.</returns>
         private Product buildValidSimpleProduct()
         {
-            return new Product("#001", "Simple Product", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+            return new Product("#001", "Simple Product", "Simple_Product_001.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace core_tests.domain
         public void ensureProductCantBeCreatedWithNullReference()
         {
             Action invalidNullProductReferenceCreation = () =>
-                new Product(null, "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+                new Product(null, "Shelf", "shelf.obj", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with a null reference then it should throw
             //An ArgumentException
             Assert.Throws<ArgumentException>(invalidNullProductReferenceCreation);
@@ -83,7 +83,7 @@ namespace core_tests.domain
         public void ensureProductCantBeCreatedWithEmptyReference()
         {
             Action invalidEmptyProductReferenceCreation = () =>
-                new Product("", "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+                new Product("", "Shelf", "shelf.dae", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with an empty reference then it should throw
             //An ArgumentException
             Assert.Throws<ArgumentException>(invalidEmptyProductReferenceCreation);
@@ -96,7 +96,7 @@ namespace core_tests.domain
         public void ensureProductCantBeCreatedWithNullDesignation()
         {
             Action invalidNullProductDesignationCreation = () =>
-                new Product("#666", null, buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+                new Product("#666", null, "666.gltf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with a null designation then it should throw
             //An ArgumentException
             Assert.Throws<ArgumentException>(invalidNullProductDesignationCreation);
@@ -109,16 +109,43 @@ namespace core_tests.domain
         public void ensureProductCantBeCreatedWithEmptyDesignation()
         {
             Action invalidEmptyProductDesignationCreation = () =>
-                new Product("#666", "", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+                new Product("#666", "", "666.fbx", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with an empty designation then it should throw
             //An ArgumentException
             Assert.Throws<ArgumentException>(invalidEmptyProductDesignationCreation);
         }
 
         [Fact]
+        public void ensureProductCantBeCreatedWithEmptyModelFilename()
+        {
+            Action emptyModelFilenameProductCreation = () => new Product("#666", "Shelf", "",
+                buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+
+            Assert.Throws<ArgumentException>(emptyModelFilenameProductCreation);
+        }
+
+        [Fact]
+        public void ensureProductCantBeCreatedWithNullModelFilename()
+        {
+            Action nullModelFilenameProductCreation = () => new Product("#666", "Shelf", null,
+                buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+
+            Assert.Throws<ArgumentException>(nullModelFilenameProductCreation);
+        }
+
+        [Fact]
+        public void ensureProductCantBeCreatedWithInvalidModelFileExtension()
+        {
+            Action invalidExtesionFilenameProductCreation = () => new Product("#666", "Shelf", "shelf666.jpg",
+               buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+
+            Assert.Throws<ArgumentException>(invalidExtesionFilenameProductCreation);
+        }
+
+        [Fact]
         public void ensureProductCantBeCreatedWithNullProductCategory()
         {
-            Action action = () => new Product("#666", "Shelf", null, new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+            Action action = () => new Product("#666", "Shelf", "shelf.glb", null, new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
             Assert.Throws<ArgumentNullException>(action);
         }
@@ -130,7 +157,7 @@ namespace core_tests.domain
         public void ensureProductCantBeCreatedWithNullMaterials()
         {
             Action invalidNullMaterialsProductCreation = () =>
-                new Product("#666", "Shelf", buildValidCategory(), null, new List<Measurement>() { buildValidMeasurement() });
+                new Product("#666", "Shelf", "shelf.glb", buildValidCategory(), null, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with null materials then it should throw
             //An ArgumentException
             Assert.Throws<ArgumentException>(invalidNullMaterialsProductCreation);
@@ -143,7 +170,7 @@ namespace core_tests.domain
         public void ensureProductCantBeCreatedWithEmptyMaterials()
         {
             Action invalidEmptyMaterialsProductCreation = () =>
-                new Product("#666", "Shelf", buildValidCategory(), new List<Material>(), new List<Measurement>() { buildValidMeasurement() });
+                new Product("#666", "Shelf", "shelf.glb", buildValidCategory(), new List<Material>(), new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with empty materials then it should throw
             //An ArgumentException
             //A product needs at least one material to be valid
@@ -158,7 +185,7 @@ namespace core_tests.domain
         {
             List<Material> duplicatedMaterials = new List<Material>() { buildValidMaterial(), buildValidMaterial() };
             Action invalidDuplicatedMaterialsProductCreation = () =>
-                new Product("#666", "Shelf", buildValidCategory(), duplicatedMaterials, new List<Measurement>() { buildValidMeasurement() });
+                new Product("#666", "Shelf", "shelf.glb", buildValidCategory(), duplicatedMaterials, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with duplicated materials, then it should throw
             //An ArgumentException
             Assert.Throws<ArgumentException>(invalidDuplicatedMaterialsProductCreation);
@@ -168,7 +195,7 @@ namespace core_tests.domain
         public void ensureProductCantBeCreatedWithNullMeasurements()
         {
             Action nullMeasurementsProductCreation = () =>
-                new Product("#666", "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, null);
+                new Product("#666", "Shelf", "shelf.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, null);
 
             Assert.Throws<ArgumentException>(nullMeasurementsProductCreation);
         }
@@ -177,7 +204,7 @@ namespace core_tests.domain
         public void ensureProductCantBeCreatedWithEmptyMeasurements()
         {
             Action emptyMeasurementsProductCreation = () =>
-                new Product("#666", "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>());
+                new Product("#666", "Shelf", "shelf.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>());
 
             Assert.Throws<ArgumentException>(emptyMeasurementsProductCreation);
         }
@@ -187,7 +214,8 @@ namespace core_tests.domain
         {
             List<Measurement> measurements = new List<Measurement>() { buildValidMeasurement(), buildValidMeasurement() };
 
-            Action duplicatedMeasurementsProductCreation = () => new Product("#666", "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, measurements);
+            Action duplicatedMeasurementsProductCreation = () => new Product("#666", "Shelf", "shelf.glb", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, measurements);
 
             Assert.Throws<ArgumentException>(duplicatedMeasurementsProductCreation);
         }
@@ -199,8 +227,11 @@ namespace core_tests.domain
         [Fact]
         public void ensureProductCantBeCreatedWithNullComplementaryProducts()
         {
+            IEnumerable<Product> complementaryProducts = null;
             Action invalidNullComplementaryProductsProductCreation = () =>
-                new Product("#666", "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, null);
+                new Product("#666", "Shelf", "shelf.glb", buildValidCategory(),
+                    new List<Material>() { buildValidMaterial() },
+                    new List<Measurement>() { buildValidMeasurement() }, complementaryProducts);
             //Since the product was created with null complementary products then it should throw
             //An ArgumentException
             Assert.Throws<ArgumentException>(invalidNullComplementaryProductsProductCreation);
@@ -213,7 +244,9 @@ namespace core_tests.domain
         public void ensureProductCantBeCreatedWithEmptyComplementaryProducts()
         {
             Action invalidEmptyComplementaryProductsProductCreation = () =>
-                new Product("#666", "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, new List<Product>());
+                new Product("#666", "Shelf", "shelf.glb", buildValidCategory(),
+                    new List<Material>() { buildValidMaterial() },
+                    new List<Measurement>() { buildValidMeasurement() }, new List<Product>());
             //Since the product was created with empty complementary products then it should throw
             //An ArgumentException
             //Even though that a product may not have complementary products, if we are 
@@ -236,52 +269,24 @@ namespace core_tests.domain
 
             List<Product> duplicatedProducts = new List<Product>() { complement1, complement2 };
 
-            Action invalidDuplicatedComplementaryProductsProductCreation = () => new Product("#665", "Structure", buildValidCategory(), materials, measurements, duplicatedProducts);
+            Action invalidDuplicatedComplementaryProductsProductCreation = () => new Product("#665", "Structure", "structure.glb",
+                buildValidCategory(), materials, measurements, duplicatedProducts);
             //Since the product was created with duplicated complementary products, then it should throw
             //An ArgumentException
             Assert.Throws<ArgumentException>(invalidDuplicatedComplementaryProductsProductCreation);
         }
 
         [Fact]
-        public void ensureProductCantBeCreatedWithNullMinSlotDimensions()
+        public void ensureProductCantBeCreatedWithNullProductSlotWidths()
         {
-            CustomizedDimensions minSlotDimensions = null;
-            CustomizedDimensions maxSlotDimensions = CustomizedDimensions.valueOf(25, 45, 15);
-            CustomizedDimensions recommendedSlotDimensions = CustomizedDimensions.valueOf(20, 35, 15);
+            ProductSlotWidths slotWidths = null;
 
             Action nullMinSlotDimensionsProductCreation = () =>
-                new Product("#500", "Invalid Product", buildValidCategory(), new List<Material>() { buildValidMaterial() },
-                    new List<Measurement>() { buildValidMeasurement() }, minSlotDimensions, maxSlotDimensions, recommendedSlotDimensions);
+                new Product("#500", "Invalid Product", "invalid_product.glb",
+                    buildValidCategory(), new List<Material>() { buildValidMaterial() },
+                    new List<Measurement>() { buildValidMeasurement() }, slotWidths);
 
             Assert.Throws<ArgumentNullException>(nullMinSlotDimensionsProductCreation);
-        }
-
-        [Fact]
-        public void ensureProductCantBeCreatedWithNullMaxSlotDimensions()
-        {
-            CustomizedDimensions minSlotDimensions = CustomizedDimensions.valueOf(10, 20, 5);
-            CustomizedDimensions maxSlotDimensions = null;
-            CustomizedDimensions recommendedSlotDimensions = CustomizedDimensions.valueOf(20, 35, 15);
-
-            Action nullMaxSlotDimensionsProductCreation = () =>
-                new Product("#500", "Invalid Product", buildValidCategory(), new List<Material>() { buildValidMaterial() },
-                    new List<Measurement>() { buildValidMeasurement() }, minSlotDimensions, maxSlotDimensions, recommendedSlotDimensions);
-
-            Assert.Throws<ArgumentNullException>(nullMaxSlotDimensionsProductCreation);
-        }
-
-        [Fact]
-        public void ensureProductCantBeCreatedWithNullRecommendedSlotDimensions()
-        {
-            CustomizedDimensions minSlotDimensions = CustomizedDimensions.valueOf(10, 20, 5);
-            CustomizedDimensions maxSlotDimensions = CustomizedDimensions.valueOf(25, 45, 15);
-            CustomizedDimensions recommendedSlotDimensions = null;
-
-            Action nullRecommendedSlotDimensionsProductCreation = () =>
-                new Product("#500", "Invalid Product", buildValidCategory(), new List<Material>() { buildValidMaterial() },
-                    new List<Measurement>() { buildValidMeasurement() }, minSlotDimensions, maxSlotDimensions, recommendedSlotDimensions);
-
-            Assert.Throws<ArgumentNullException>(nullRecommendedSlotDimensionsProductCreation);
         }
 
         [Fact]
@@ -289,16 +294,15 @@ namespace core_tests.domain
         {
             string reference = "#success";
             string designation = "it just works!";
+            string modelFilename = "valid_product.glb";
             ProductCategory category = buildValidCategory();
             List<Material> materials = new List<Material>() { buildValidMaterial() };
             List<Measurement> measurements = new List<Measurement>() { buildValidMeasurement() };
             Product childProduct = buildValidSimpleProduct();
             List<Product> complementaryProducts = new List<Product>() { childProduct };
-            CustomizedDimensions minSlotDimensions = CustomizedDimensions.valueOf(10, 20, 5);
-            CustomizedDimensions maxSlotDimensions = CustomizedDimensions.valueOf(25, 45, 15);
-            CustomizedDimensions recommendedSlotDimensions = CustomizedDimensions.valueOf(20, 35, 15);
+            ProductSlotWidths productSlotWidths = ProductSlotWidths.valueOf(10, 25, 20);
 
-            Product product = new Product(reference, designation, category, materials, measurements, complementaryProducts, minSlotDimensions, maxSlotDimensions, recommendedSlotDimensions);
+            Product product = new Product(reference, designation, modelFilename, category, materials, measurements, complementaryProducts, productSlotWidths);
 
             Assert.NotNull(product);
         }
@@ -437,10 +441,9 @@ namespace core_tests.domain
         [Fact]
         public void ensureAddingDuplicatedComplementaryProductThrowsException()
         {
-            Product child = new Product("#123", "Child Product", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+            Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
-            //create an equal product but with a different constructor
-            Product product = new Product("#001", "Simple Product", buildValidCategory(),
+            Product product = new Product("#001", "Simple Product", "simpleproduct.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, new List<Product>() { child });
 
             Action addDuplicateProductAction = () => product.addComplementaryProduct(child);
@@ -450,10 +453,9 @@ namespace core_tests.domain
         [Fact]
         public void ensureAddingDuplicatedComplementaryProductDoesNotAddProduct()
         {
-            Product child = new Product("#123", "Child Product", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+            Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
-            //create an equal product but with a different constructor
-            Product product = new Product("#001", "Simple Product", buildValidCategory(),
+            Product product = new Product("#001", "Simple Product", "simpleproduct.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, new List<Product>() { child });
 
             try
@@ -469,7 +471,7 @@ namespace core_tests.domain
         public void ensureAddingValidComplementaryProductDoesNotThrowException()
         {
             Product product = buildValidSimpleProduct();
-            Product child = new Product("#123", "Child Product", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+            Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
             Action addValidComplementaryProductAction = () => product.addComplementaryProduct(child);
             Exception exception = Record.Exception(addValidComplementaryProductAction);
@@ -480,7 +482,7 @@ namespace core_tests.domain
         public void ensureAddingValidComplementaryProductAddsComplementaryProduct()
         {
             Product product = buildValidSimpleProduct();
-            Product child = new Product("#123", "Child Product", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+            Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             product.addComplementaryProduct(child);
 
             Assert.Single(product.components);
@@ -890,7 +892,7 @@ namespace core_tests.domain
 
             List<Measurement> measurements = new List<Measurement>() { measurement1, measurement2 };
 
-            Product product = new Product("#123", "Modern Closet", buildValidCategory(), new List<Material>() { buildValidMaterial() }, measurements);
+            Product product = new Product("#123", "Modern Closet", "closet123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, measurements);
 
             Action removeValidMeasurementAction = () => product.removeMeasurement(measurement1);
 
@@ -910,7 +912,7 @@ namespace core_tests.domain
 
             List<Measurement> measurements = new List<Measurement>() { measurement1, measurement2 };
 
-            Product product = new Product("#123", "Modern Closet", buildValidCategory(), new List<Material>() { buildValidMaterial() }, measurements);
+            Product product = new Product("#123", "Modern Closet", "closet123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, measurements);
 
             product.removeMeasurement(measurement1);
 
@@ -981,7 +983,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>() { glossy, matte };
             Material material2 = new Material("#001", "Really Expensive Wood", colors, finishes);
 
-            Product product = new Product("#123", "Amazing Product", buildValidCategory(),
+            Product product = new Product("#123", "Amazing Product", "amazing123.glb", buildValidCategory(),
                 new List<Material>() { material1, material2 }, new List<Measurement>() { buildValidMeasurement() });
 
             Action removeValidMaterialAction = () => product.removeMaterial(material2);
@@ -1004,7 +1006,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>() { glossy, matte };
             Material material2 = new Material("#001", "Really Expensive Wood", colors, finishes);
 
-            Product product = new Product("#123", "Amazing Product", buildValidCategory(),
+            Product product = new Product("#123", "Amazing Product", "amazing123.glb", buildValidCategory(),
                 new List<Material>() { material1, material2 }, new List<Measurement>() { buildValidMeasurement() });
 
             product.removeMaterial(material1);
@@ -1026,7 +1028,7 @@ namespace core_tests.domain
         {
             Product child = buildValidSimpleProduct();
             //the product does not own the child
-            Product product = new Product("#003", "Super Stylish Product", buildValidCategory(),
+            Product product = new Product("#003", "Super Stylish Product", "stylish003.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
             Action removeForeignProductAction = () => product.removecomplementaryProduct(child);
@@ -1037,7 +1039,7 @@ namespace core_tests.domain
         public void ensureRemovingValidComplementaryProductDoesNotThrowException()
         {
             Product child = buildValidSimpleProduct();
-            Product product = new Product("#003", "Super Stylish Product", buildValidCategory(),
+            Product product = new Product("#003", "Super Stylish Product", "stylish003.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, new List<Product>() { child });
 
             Action removeValidProductAction = () => product.removecomplementaryProduct(child);
@@ -1049,7 +1051,7 @@ namespace core_tests.domain
         public void ensureRemovingValidComplementaryProductRemovesComplementaryProduct()
         {
             Product child = buildValidSimpleProduct();
-            Product product = new Product("#003", "Super Stylish Product", buildValidCategory(),
+            Product product = new Product("#003", "Super Stylish Product", "stylish003.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, new List<Product>() { child });
 
             product.removecomplementaryProduct(child);
@@ -1098,7 +1100,7 @@ namespace core_tests.domain
         {
             Product child = buildValidSimpleProduct();
 
-            Product product = new Product("#003", "Super Stylish Product", buildValidCategory(),
+            Product product = new Product("#003", "Super Stylish Product", "stylish003.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
             Assert.False(product.containsComplementaryProduct(child));
@@ -1109,7 +1111,7 @@ namespace core_tests.domain
         {
             Product child = buildValidSimpleProduct();
 
-            Product product = new Product("#003", "Super Stylish Product", buildValidCategory(),
+            Product product = new Product("#003", "Super Stylish Product", "stylish003.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, new List<Product>() { child });
 
             Assert.True(product.containsComplementaryProduct(child));
@@ -1160,7 +1162,7 @@ namespace core_tests.domain
         public void ensureProductIdentifierIsTheSame()
         {
             string id = "#666";
-            Product product = new Product(id, "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+            Product product = new Product(id, "Shelf", "shelf666.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with the id "#666" then its id should be "#666"
             Assert.Equal(product.id(), id);
         }
@@ -1172,64 +1174,9 @@ namespace core_tests.domain
         public void ensureProductIdentierSameAs()
         {
             string id = "#666";
-            Product product = new Product(id, "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+            Product product = new Product(id, "Shelf", "shelf666.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with the id "#666" then its id should be "#666"
             Assert.True(product.sameAs(id));
-        }
-
-        /// <summary>
-        /// Ensures that a product with a minimum slot size larger than its maximum size is invalid
-        /// </summary>
-        [Fact]
-        public void ensureInvalidMinToMaxSlotSizeRatioIsInvalid()
-        {
-            string id = "Test";
-            ///for height
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
-            CustomizedDimensions.valueOf(6, 6, 7), CustomizedDimensions.valueOf(5, 6, 7), CustomizedDimensions.valueOf(5, 6, 7)));
-            ///for width
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
-            CustomizedDimensions.valueOf(4, 9, 7), CustomizedDimensions.valueOf(5, 6, 7), CustomizedDimensions.valueOf(5, 6, 7)));
-            ///for depth
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
-            CustomizedDimensions.valueOf(4, 6, 9), CustomizedDimensions.valueOf(5, 6, 7), CustomizedDimensions.valueOf(5, 6, 7)));
-        }
-
-        /// <summary>
-        /// Ensures that a product with a recommended slot size larger than its maximum size is invalid
-        /// </summary>
-        [Fact]
-        public void ensureInvalidRecommendedToMaxSlotSizeRatioIsInvalid()
-        {
-            string id = "Test";
-            ///for height
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
-            CustomizedDimensions.valueOf(4, 4, 4),
-            CustomizedDimensions.valueOf(5, 6, 7), CustomizedDimensions.valueOf(6, 6, 7)));
-            ///for width
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
-            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(5, 6, 7), CustomizedDimensions.valueOf(5, 9, 7)));
-            ///for depth
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
-            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(5, 6, 7), CustomizedDimensions.valueOf(5, 6, 9)));
-        }
-
-        /// <summary>
-        /// Ensures that a product with a recommended slot size smaller than its minimum size is invalid
-        /// </summary>
-        [Fact]
-        public void ensureInvalidRecommendedToMinSlotSizeRatioIsInvalid()
-        {
-            string id = "Test";
-            ///for height
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
-            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(5, 6, 7), CustomizedDimensions.valueOf(2, 6, 7)));
-            ///for width
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
-            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(5, 6, 7), CustomizedDimensions.valueOf(2, 6, 7)));
-            ///for depth
-            Assert.Throws<ArgumentException>(() => new Product(id, "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
-            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(5, 6, 7), CustomizedDimensions.valueOf(5, 6, 2)));
         }
 
         /// <summary>
@@ -1239,10 +1186,10 @@ namespace core_tests.domain
         public void ensureToStringWorks()
         {
             string id = "Test";
-            Assert.Equal(new Product(id, "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
-            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(5, 6, 7), CustomizedDimensions.valueOf(5, 6, 6)).ToString(),
-            new Product(id, "Shelf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
-            CustomizedDimensions.valueOf(4, 4, 4), CustomizedDimensions.valueOf(5, 6, 7), CustomizedDimensions.valueOf(5, 6, 6)).ToString());
+            Assert.Equal(new Product(id, "Shelf", "shelf.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
+            ProductSlotWidths.valueOf(4, 4, 4)).ToString(),
+            new Product(id, "Shelf", "shelf.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
+            ProductSlotWidths.valueOf(4, 4, 4)).ToString());
         }
     }
 }
