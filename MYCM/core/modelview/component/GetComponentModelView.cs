@@ -2,34 +2,18 @@ using core.modelview.restriction;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace core.modelview.component{
+namespace core.modelview.component
+{
     /// <summary>
-    /// Model View representation for the fetch component information context
+    /// Class representing the ModelView used for retrieving a Product's component.
     /// </summary>
     [DataContract]
-    public sealed class GetComponentModelView{
-        /// <summary>
-        /// Long with the component ID
-        /// </summary>
-        [DataMember(Name="id")]
-        public long id{get;set;}
-
-        /// <summary>
-        /// Long with the product ID which was complemented by the component
-        /// </summary>
-        [DataMember(Name="productID")]
-        public long fatherProductID{get;set;}
-
-        /// <summary>
-        /// Boolean with the component mandatory
-        /// </summary>
-        [DataMember(Name="mandatory")]
-        public bool mandatory{get;set;}
-
+    public class GetComponentModelView : GetBasicComponentModelView
+    {
         /// <summary>
         /// GetAllRestrictionsModelView with all component restrictions
         /// </summary>
-        [DataMember(Name="restrictions")]
-        public GetAllRestrictionsModelView restrictions;
+        [DataMember(Name = "restrictions", EmitDefaultValue=false)]
+        public GetAllRestrictionsModelView restrictions { get; set; }
     }
 }
