@@ -12,9 +12,10 @@
         <customizer-side-bar-materials-panel v-if="currentPanelIndex == 3"></customizer-side-bar-materials-panel>
         <customizer-side-bar-components-panel v-if="currentPanelIndex == 4"></customizer-side-bar-components-panel>
         <div class="sidenav-controls">
+
           <i class="btn btn-primary material-icons" @click="previousPanel()" v-if="canDisplayPreviousButton">arrow_back</i>
           <i class="btn btn-primary material-icons" @click="nextPanel()" v-if="canDisplayNextButton">arrow_forward</i>
-        </div>
+         </div>
       </div>
     </div>
 </template>
@@ -141,7 +142,7 @@ export default {
 <style scoped>
 .sidenav {
   height: 100%; /* Full height */
-  width: 250px; /*full width on initial load, changed with Vue*/
+  width: 300px; /*full width on initial load, changed with Vue*/
   position: fixed; /*stay in place*/
   z-index: 1; /*stay on top*/
   top: 15%; /*Display from top left corner*/
