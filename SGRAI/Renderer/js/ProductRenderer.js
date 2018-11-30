@@ -894,7 +894,6 @@ function onDocumentMouseDown(event) {
                 }
             }
             for (let j = 0; j < closet_modules_ids.length; j++) {
-                alert(closet_modules_ids[j].position.x);
                 let drawer = group.getObjectById(closet_modules_ids[j]);
                 if (drawer == face) {
                     controls.enabled = false;
@@ -928,6 +927,7 @@ function onDocumentMouseDown(event) {
                 drawer_front_face = group.getObjectById(closet_drawers_ids[5 * j + 1]);
                 //Check if the selected object is a drawer's front face
                 if (drawer_front_face == face) {
+                    controls.enabled = false;
                     drawer_base_face = group.getObjectById(closet_drawers_ids[5 * j]);
                     drawer_left_face = group.getObjectById(closet_drawers_ids[5 * j + 2]);
                     drawer_right_face = group.getObjectById(closet_drawers_ids[5 * j + 3]);
@@ -954,13 +954,14 @@ function onDocumentMouseDown(event) {
                 door = group.getObjectById(closet_doors_ids[j]);
                 var closet_face = group.getObjectById(closet_faces_ids[0]);
                 if (door == face) {
-                    alert(closet_face);
-                    if (door.position.z > 50) {
+                    controls.enabled = false;
+                    if (door.rotation.y  < 0 ) {
                         flagClose = true;
                     } else {
                         flagOpen = true;
                     }
                 }
+                j++;
             }
             if (flagOpen) {
                 requestAnimationFrame(openDoor);
@@ -974,7 +975,6 @@ function onDocumentMouseDown(event) {
 var incrementDoor = 100;
 
 var openDoor = function () {
-
     if (door.rotation.y > (-Math.PI / 2)) {
         var rotationX = (door.geometry.parameters.width / 2);
         door.translateX(-rotationX);
@@ -995,7 +995,6 @@ var closeDoor = function () {
         render();
         controls.update();
     }
-
 }
 
 var incrementDrawer = 1;
