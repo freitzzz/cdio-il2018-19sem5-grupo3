@@ -60,11 +60,14 @@ public class User implements AggregateRoot<Auth>,Serializable{
     
     /**
      * Creates a new session
+     * @return Session with the new user session
      */
-    public void createNewSession(){
+    public Session createNewSession(){
         if(hasActiveSession())
             throw new IllegalArgumentException("User already has an active session!");
-        this.sessions.add(new Session(LocalDateTime.now().plusMinutes(DEFAULT_SESSION_TIME)));
+        Session createdSession=new Session(LocalDateTime.now().plusMinutes(DEFAULT_SESSION_TIME)); 
+        this.sessions.add(createdSession);
+        return createdSession;
     }
     
     /**
