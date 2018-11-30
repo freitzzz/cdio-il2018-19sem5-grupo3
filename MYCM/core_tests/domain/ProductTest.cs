@@ -1179,6 +1179,68 @@ namespace core_tests.domain
             Assert.True(product.sameAs(id));
         }
 
+
+        [Fact]
+        public void ensureSameInstanceIsEqual()
+        {
+            Product product = buildValidSimpleProduct();
+            Assert.True(product.Equals(product));
+        }
+
+        [Fact]
+        public void ensureNullObjectIsNotEqual()
+        {
+            Product product = buildValidSimpleProduct();
+            Assert.False(product.Equals(null));
+        }
+
+        [Fact]
+        public void ensureDifferentTypeObjectIsNotEqual()
+        {
+            Product product = buildValidSimpleProduct();
+            Assert.False(product.Equals("product"));
+        }
+
+        [Fact]
+        public void ensureDifferentReferenceInstanceIsNotEqual()
+        {
+            Product product = buildValidSimpleProduct();
+            Product otherProduct = new Product("#725", "This is another product", "anotherproduct.glb", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+
+            Assert.NotEqual(product, otherProduct);
+        }
+
+        [Fact]
+        public void ensureSameReferenceInstanceIsEqual()
+        {
+            Product product = buildValidSimpleProduct();
+            Product otherProduct = new Product("#001", "This is another product", "anotherproduct.glb", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+
+            Assert.Equal(product, otherProduct);
+        }
+
+        [Fact]
+        public void ensureDifferentReferenceProducesDifferentHashCode()
+        {
+            Product product = buildValidSimpleProduct();
+            Product otherProduct = new Product("#725", "This is another product", "anotherproduct.glb", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+
+            Assert.NotEqual(product.GetHashCode(), otherProduct.GetHashCode());
+        }
+
+        [Fact]
+        public void ensureSameReferenceProducesSameHashCode()
+        {
+            Product product = buildValidSimpleProduct();
+            Product otherProduct = new Product("#001", "This is another product", "anotherproduct.glb", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+
+            Assert.Equal(product.GetHashCode(), otherProduct.GetHashCode());
+        }
+
         /// <summary>
         /// Ensures that the textual description of two equal products is the same
         /// </summary>
