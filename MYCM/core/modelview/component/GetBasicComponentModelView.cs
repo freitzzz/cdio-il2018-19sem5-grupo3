@@ -21,7 +21,7 @@ namespace core.modelview.component
         /// Boolean indicating whether or not a Component is mandatory.
         /// </summary>
         /// <value>Gets/sets the mandatory flag.</value>
-        [DataMember(Name = "mandatory")]
+        [DataMember(Name = "mandatory", Order = 4)]
         public bool mandatory { get; set; }
     }
 }
