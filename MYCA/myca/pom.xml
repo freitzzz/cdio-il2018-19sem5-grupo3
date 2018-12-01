@@ -9,7 +9,8 @@
         <module>core</module>
         <module>persistence</module>
     <module>webservices</module>
-  </modules>
+        <module>support</module>
+    </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

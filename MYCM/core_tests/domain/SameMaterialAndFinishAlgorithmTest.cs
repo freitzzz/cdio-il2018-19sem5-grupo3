@@ -39,8 +39,8 @@ namespace core_tests.domain {
         [Fact]
         public void ensureApplyReturnsNullIfComponentDoesNotHaveRequiredMaterial() {
             Console.WriteLine("ensureApplyReturnsNullIfComponentDoesNotHaveRequiredMaterial");
-            Material material = new Material("#24", "K6205", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
-            Material material1 = new Material("#22", "Amadeus", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
+            Material material = new Material("#24", "K6205", "ola.jpg", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
+            Material material1 = new Material("#22", "Amadeus", "ola.jpg", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
             ProductCategory cat = new ProductCategory("AI");
             DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 90.0, 100.0, 150.0 }));
             Measurement measurement = new Measurement(discrete, discrete, discrete);
@@ -59,8 +59,8 @@ namespace core_tests.domain {
             Console.WriteLine("ensureApplyReturnsNullIfComponentDoesNotHaveRequiredFinish");
             Color color = Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100);
             Finish finish = Finish.valueOf("der alte wurfelt nicht");
-            Material material = new Material("#24", "K6205", new List<Color>(new[] { color }), new List<Finish>(new[] { finish, Finish.valueOf("schrödinger's box") }));
-            Material otherMaterial = new Material("#24", "K6205", new List<Color>(new[] { color }), new List<Finish>(new[] { Finish.valueOf("schrödinger's box") }));
+            Material material = new Material("#24", "K6205", "ola.jpg", new List<Color>(new[] { color }), new List<Finish>(new[] { finish, Finish.valueOf("schrödinger's box") }));
+            Material otherMaterial = new Material("#24", "K6205", "ola.jpg", new List<Color>(new[] { color }), new List<Finish>(new[] { Finish.valueOf("schrödinger's box") }));
             ProductCategory cat = new ProductCategory("AI");
             DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 90.0, 100.0, 150.0 }));
             Measurement measurement = new Measurement(discrete, discrete, discrete);
@@ -77,8 +77,8 @@ namespace core_tests.domain {
         [Fact]
         public void ensureApplyRemovesUnnecessaryMaterials() {
             Console.WriteLine("ensureApplyRemovesUnnecessaryMaterials");
-            Material material = new Material("#24", "K6205", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
-            Material material1 = new Material("#22", "Amadeus", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
+            Material material = new Material("#24", "K6205", "ola.jpg", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
+            Material material1 = new Material("#22", "Amadeus", "ola.jpg", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht") }));
             ProductCategory cat = new ProductCategory("AI");
             DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 90.0, 100.0, 150.0 }));
             Measurement measurement = new Measurement(discrete, discrete, discrete);
@@ -95,7 +95,7 @@ namespace core_tests.domain {
         [Fact]
         public void ensureApplyRemovesUnnecessaryFinishes() {
             Console.WriteLine("ensureApplyRemovesUnnecessaryFinishes");
-            Material material = new Material("#24", "K6205", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht"), Finish.valueOf("schrödinger's box") }));
+            Material material = new Material("#24", "K6205", "ola.jpg", new List<Color>(new[] { Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100) }), new List<Finish>(new[] { Finish.valueOf("der alte wurfelt nicht"), Finish.valueOf("schrödinger's box") }));
             ProductCategory cat = new ProductCategory("AI");
             DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 90.0, 100.0, 150.0 }));
             Measurement measurement = new Measurement(discrete, discrete, discrete);

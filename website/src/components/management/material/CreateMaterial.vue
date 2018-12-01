@@ -16,7 +16,7 @@
                         </b-field>
                         <b-field label="Designation">
                             <b-input
-                                v-model="designation"
+                                v-model="designationMaterial"
                                 type="String"
                                 placeholder="Insert designation"
                                 icon="pound"
@@ -24,23 +24,23 @@
                             </b-input>
                         </b-field>
                         <b-field label="Colors"> 
-                            <b-select placeholder="Colors" icon="tag">
+                            <b-select placeholder="Colors" icon="tag" v-model="selectedColor">
                                 <option  v-for="color in nameColors" 
                                     :key="color" 
                                     :value="color">
                                     {{color}}</option>
                             </b-select>
                         </b-field>
-                         <button class="button is-primary" @click="createColor()">+</button>
+                        <button class="button is-primary" @click="createColor()">+</button>
+                        <button class="button is-primary" @click="deleteColor()">-</button>
                         <b-field label="Finish">
-                            <b-select placeholder="Finishes" icon="tag">
-                                 <option v-for="reference in availableFinishes" 
-                                    :key="reference" 
-                                    :value="reference" @click="createEditFinish()">
-                                    {{reference}} </option>
+                            <b-select placeholder="Finishes" icon="tag" v-model="selectedFinish">
+                                 <option v-for="finish in availableFinishes" 
+                                    :key="finish.id" :value="finish">{{finish.referenceFinish}} </option>
                             </b-select>
                         </b-field>
                         <button class="button is-primary" @click="createFinish()">+</button>
+                        <button class="button is-primary" @click="deleteFinish()">-</button>
                     </section>
                     <footer class="modal-card-foot">
                         <button class="button is-primary" @click="postMaterial()">Create</button>
@@ -101,14 +101,14 @@ export default {
     return {
       referenceMaterial: "",
       referenceFinish: "",
-      designation: "",
+      designationMaterial: "",
       panelCreateMaterial: true,
       createColorPanelEnabled: false,
       createFinishPanelEnabled: false,
       defineNewFinish: false,
       createNewFinish: false,
-      availableFinishes: [],
-      availableColors: [],
+      availableFinishes: {},
+      availableColors: {},
       nameColors: [],
       color: "#000000",
       nameColor: "",
@@ -125,7 +125,7 @@ export default {
       let finishesToAdd = [];
       this.availableFinishes.forEach(element => {
         finishesToAdd.push({
-          description: element
+          description: element.description
         });
       });
       let colorsToAdd = [];
@@ -140,14 +140,31 @@ export default {
       });
       Axios.post("http://localhost:5000/mycm/api/materials", {
         reference: this.referenceMaterial,
-        designation: this.designation,
+        designation: this.designationMaterial,
         colors: colorsToAdd,
         finishes: finishesToAdd
       })
         .then(response => {
+          this.$toast.open("Material Created");
         })
-        .catch(error => {
-        });this.$toast.open("Material Created");
+        .catch(error => {});
+    },
+    deleteFinish() {
+      if (selectedFinish != null) {
+        this.availableFinishes.splice(this.selectedFinish, 1),
+          this.$toast.open("Delete finish with success!");
+          this.selectedFinish = null;
+      }
+    },
+    deleteColor() {
+      if (selectedColor != null) {
+        let selectedColorIndex = this.availableColors.indexOf(
+          this.selectedColor
+        );
+        this.availableColors.splice(selectedColorIndex, 1);
+        this.selectedColor = null;
+        this.$toast.open("Delete color with success!");
+      }
     },
     createColor() {
       this.panelCreateMaterial = false;
@@ -181,18 +198,13 @@ export default {
         this.nameColor != null &&
         this.nameColor.trim() != "" &&
         this.nameColors.indexOf(this.nameColor) < 0 &&
-        this.availableColors.indexOf(this.color) < 0 
-
+        this.availableColors.indexOf(this.color) < 0
       ) {
         this.nameColors.push(this.nameColor);
         this.availableColors.push(this.color);
-        alert("The color was successfully inserted!");
-      } else {
-        alert("The inserted color is invalid!");
       }
-      this.nameColor = ""
-    },
-    
+      this.nameColor = "";
+    }
   }
 };
 </script>

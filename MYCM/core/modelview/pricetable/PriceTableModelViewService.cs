@@ -17,12 +17,13 @@ namespace core.modelview.pricetable{
         /// <returns>GetMaterialPriceModelView with the material price information model view</returns>
         public static GetMaterialPriceModelView fromMaterialEntity(MaterialPriceTableEntry materialPriceTableEntry){
             GetMaterialPriceModelView getMaterialPriceModelView=new GetMaterialPriceModelView();
+            getMaterialPriceModelView.materialId=materialPriceTableEntry.entity.Id;
             getMaterialPriceModelView.id=materialPriceTableEntry.Id;
             getMaterialPriceModelView.value=materialPriceTableEntry.price.value;
             getMaterialPriceModelView.currency=CurrencyPerAreaConversionService.getBaseCurrency();
             getMaterialPriceModelView.area=CurrencyPerAreaConversionService.getBaseArea();
-            getMaterialPriceModelView.startingDate=materialPriceTableEntry.timePeriod.startingDate.ToString();
-            getMaterialPriceModelView.endingDate=materialPriceTableEntry.timePeriod.endingDate.ToString();
+            getMaterialPriceModelView.startingDate=LocalDateTimePattern.GeneralIso.Format(materialPriceTableEntry.timePeriod.startingDate);
+            getMaterialPriceModelView.endingDate=LocalDateTimePattern.GeneralIso.Format(materialPriceTableEntry.timePeriod.endingDate);
             return getMaterialPriceModelView;
         }
 
@@ -33,6 +34,7 @@ namespace core.modelview.pricetable{
         /// <returns>GetMaterialFinishPriceModelView with the material finish price information model view</returns>
         public static GetMaterialFinishPriceModelView fromMaterialFinishEntity(FinishPriceTableEntry materialFinishPriceTableEntry){
             GetMaterialFinishPriceModelView getMaterialFinishPriceModelView=new GetMaterialFinishPriceModelView();
+            getMaterialFinishPriceModelView.finishId=materialFinishPriceTableEntry.entity.Id;
             getMaterialFinishPriceModelView.id=materialFinishPriceTableEntry.Id;
             getMaterialFinishPriceModelView.value=materialFinishPriceTableEntry.price.value;
             getMaterialFinishPriceModelView.currency=CurrencyPerAreaConversionService.getBaseCurrency();
@@ -45,7 +47,7 @@ namespace core.modelview.pricetable{
         /// <summary>
         /// Creates a model view with a collection of material prices information
         /// </summary>
-        /// <param name="materialFinishPriceTableEntries">IEnumerable with the material prices</param>
+        /// <param name="materialPriceTableEntries">IEnumerable with the material prices</param>
         /// <returns>GetAllMaterialPriceHistoryModelView with the material price history information</returns>
         public static GetAllMaterialPriceHistoryModelView fromMaterialCollection(IEnumerable<MaterialPriceTableEntry> materialPriceTableEntries){
             GetAllMaterialPriceHistoryModelView getAllMaterialPrices=new GetAllMaterialPriceHistoryModelView();

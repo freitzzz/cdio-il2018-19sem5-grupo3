@@ -12,7 +12,6 @@ namespace core.dto {
         /// <summary>
         /// Material's database identifier.
         /// </summary>
-        /// <value></value>
         [DataMember]
         public long id { get; set; }
 
@@ -29,6 +28,13 @@ namespace core.dto {
         /// <value>Gets/sets the value of the designation field.</value>
         [DataMember]
         public string designation { get; set; }
+
+        /// <summary>
+        /// Material's image file name.
+        /// </summary>
+        /// <value>Gets/sets the value of the image file name field.</value>
+        [DataMember]
+        public string image {get; set;}
 
         /// <summary>
         /// Material's list of available colors.
@@ -48,7 +54,6 @@ namespace core.dto {
         /// </summary>
         /// <returns>DTO's equivalent Entity</returns>
         public Material toEntity() {
-
             List<Color> colors = new List<Color>();
 
             foreach(ColorDTO dto in this.colors){
@@ -61,7 +66,7 @@ namespace core.dto {
                 finishes.Add(dto.toEntity());
             }
 
-            Material material = new Material(this.reference, this.designation, colors, finishes);
+            Material material = new Material(this.reference, this.designation, this.image, colors, finishes);
             material.Id = this.id;
 
             return material;

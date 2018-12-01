@@ -234,7 +234,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -381,7 +381,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 

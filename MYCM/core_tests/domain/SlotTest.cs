@@ -6,38 +6,44 @@ using System.Collections.Generic;
 using core.dto;
 using System.Linq;
 
-namespace core_tests.domain {
+namespace core_tests.domain
+{
     /// <summary>
     /// Unit testing class for Slot
     /// </summary>
-    public class SlotTest {
+    public class SlotTest
+    {
         [Fact]
-        public void ensureConstructorDetectsNullDimensions() {
+        public void ensureConstructorDetectsNullDimensions()
+        {
             Action act = () => new Slot(null);
 
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
-        public void ensureInstanceIsCreated() {
+        public void ensureInstanceIsCreated()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(10, 20, 30));
 
             Assert.NotNull(instance);
         }
 
         [Fact]
-        public void ensureAddCustomizedProductDoesNotAddNull() {
+        public void ensureAddCustomizedProductDoesNotAddNull()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(100, 20, 300));
 
             Assert.False(instance.addCustomizedProduct(null));
         }
 
         [Fact]
-        public void ensureAddCustomizedProductWorks() {
+        public void ensureAddCustomizedProductWorks()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(100, 200, 300));
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
-            List<Double> valuesList = new List<Double>{ 100, 200, 300 };
+            List<Double> valuesList = new List<Double> { 100, 200, 300 };
             DiscreteDimensionInterval discreteDimensionInterval = new DiscreteDimensionInterval(valuesList);
             Measurement measurement = new Measurement(discreteDimensionInterval, discreteDimensionInterval, discreteDimensionInterval);
             List<Measurement> measurements = new List<Measurement>() { measurement };
@@ -54,7 +60,7 @@ namespace core_tests.domain {
             Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
             finishes.Add(finish2);
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
             IEnumerable<Material> matsList = materials;
@@ -71,7 +77,8 @@ namespace core_tests.domain {
         }
 
         [Fact]
-        public void ensureAddCustomizedProductFailsIfProductDoesNotHaveValidDimensions() {
+        public void ensureAddCustomizedProductFailsIfProductDoesNotHaveValidDimensions()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(50, 50, 50));
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
@@ -92,7 +99,7 @@ namespace core_tests.domain {
             Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
             finishes.Add(finish2);
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
             IEnumerable<Material> matsList = materials;
@@ -109,14 +116,16 @@ namespace core_tests.domain {
         }
 
         [Fact]
-        public void ensureRemoveCustomizedProductDoesNotRemoveNull() {
+        public void ensureRemoveCustomizedProductDoesNotRemoveNull()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(100, 200, 300));
 
             Assert.False(instance.removeCustomizedProduct(null));
         }
 
         [Fact]
-        public void ensureRemoveCustomizedProductDoesNotRemoveNonExistingProduct() {
+        public void ensureRemoveCustomizedProductDoesNotRemoveNonExistingProduct()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(100, 200, 300));
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
@@ -137,7 +146,7 @@ namespace core_tests.domain {
             Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
             finishes.Add(finish2);
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
             IEnumerable<Material> matsList = materials;
@@ -151,7 +160,8 @@ namespace core_tests.domain {
         }
 
         [Fact]
-        public void ensureRemoveCustomizedProductWorks() {
+        public void ensureRemoveCustomizedProductWorks()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(100, 200, 300));
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
@@ -172,7 +182,7 @@ namespace core_tests.domain {
             Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
             finishes.Add(finish2);
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
             IEnumerable<Material> matsList = materials;
@@ -188,28 +198,32 @@ namespace core_tests.domain {
         }
 
         [Fact]
-        public void ensureEqualsReturnsTrueForSameInstanceComparison() {
+        public void ensureEqualsReturnsTrueForSameInstanceComparison()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(1, 2, 3));
 
             Assert.True(instance.Equals(instance));
         }
 
         [Fact]
-        public void ensureEqualsReturnsFalseForNullComparison() {
+        public void ensureEqualsReturnsFalseForNullComparison()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(10, 20, 30));
 
             Assert.False(instance.Equals(null));
         }
 
         [Fact]
-        public void ensureEqualsReturnsFalseForInstancesOfDifferentTypes() {
+        public void ensureEqualsReturnsFalseForInstancesOfDifferentTypes()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(40, 40, 40));
 
             Assert.False(instance.Equals("bananas"));
         }
 
         [Fact]
-        public void ensureEqualsReturnsFalseForSlotsWithDifferentDimensions() {
+        public void ensureEqualsReturnsFalseForSlotsWithDifferentDimensions()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(1, 2, 3));
             Slot other = new Slot(CustomizedDimensions.valueOf(5, 5, 5));
 
@@ -217,7 +231,8 @@ namespace core_tests.domain {
         }
 
         [Fact]
-        public void ensureEqualsReturnsFalseForSlotsWithDifferentCustomizedProductsList() {
+        public void ensureEqualsReturnsFalseForSlotsWithDifferentCustomizedProductsList()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(100, 200, 300));
             Slot other = new Slot(CustomizedDimensions.valueOf(100, 200, 300));
             var category = new ProductCategory("Drawers");
@@ -239,7 +254,7 @@ namespace core_tests.domain {
             Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
             finishes.Add(finish2);
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
             IEnumerable<Material> matsList = materials;
@@ -255,7 +270,8 @@ namespace core_tests.domain {
         }
 
         [Fact]
-        public void ensureEqualsReturnsTrueForSlotsWithSameDimensionsAndCustomizedProductsList() {
+        public void ensureEqualsReturnsTrueForSlotsWithSameDimensionsAndCustomizedProductsList()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(1, 1, 1));
             Slot other = new Slot(CustomizedDimensions.valueOf(1, 1, 1));
             var category = new ProductCategory("Drawers");
@@ -277,7 +293,7 @@ namespace core_tests.domain {
             Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
             finishes.Add(finish2);
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
             IEnumerable<Material> matsList = materials;
@@ -294,7 +310,8 @@ namespace core_tests.domain {
         }
 
         [Fact]
-        public void ensureGetHashCodeIsTheSameForEqualSlots() {
+        public void ensureGetHashCodeIsTheSameForEqualSlots()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(1, 1, 1));
             Slot other = new Slot(CustomizedDimensions.valueOf(1, 1, 1));
             var category = new ProductCategory("Drawers");
@@ -316,7 +333,7 @@ namespace core_tests.domain {
             Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
             finishes.Add(finish2);
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
             IEnumerable<Material> matsList = materials;
@@ -333,7 +350,8 @@ namespace core_tests.domain {
         }
 
         [Fact]
-        public void ensureGetHashCodeIsDifferentForSlotsWithDifferentDimensions() {
+        public void ensureGetHashCodeIsDifferentForSlotsWithDifferentDimensions()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(1, 1, 1));
             Slot other = new Slot(CustomizedDimensions.valueOf(1, 2, 1));
             var category = new ProductCategory("Drawers");
@@ -355,7 +373,7 @@ namespace core_tests.domain {
             Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
             finishes.Add(finish2);
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
             IEnumerable<Material> matsList = materials;
@@ -372,7 +390,8 @@ namespace core_tests.domain {
         }
 
         [Fact]
-        public void ensureGetHashCodeIsDifferentForSlotsWithDifferentCustomizedProductsList() {
+        public void ensureGetHashCodeIsDifferentForSlotsWithDifferentCustomizedProductsList()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(100, 200, 300));
             Slot other = new Slot(CustomizedDimensions.valueOf(100, 200, 300));
             var category = new ProductCategory("Drawers");
@@ -394,7 +413,7 @@ namespace core_tests.domain {
             Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
             finishes.Add(finish2);
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
             IEnumerable<Material> matsList = materials;
@@ -410,7 +429,8 @@ namespace core_tests.domain {
         }
 
         [Fact]
-        public void ensureGetHashCodeIsDifferentForSlotsWithDifferentDimensionsAndDifferentCustomizedProductsList() {
+        public void ensureGetHashCodeIsDifferentForSlotsWithDifferentDimensionsAndDifferentCustomizedProductsList()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(1, 1, 1));
             Slot other = new Slot(CustomizedDimensions.valueOf(1, 2, 1));
             var category = new ProductCategory("Drawers");
@@ -432,7 +452,7 @@ namespace core_tests.domain {
             Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
             finishes.Add(finish2);
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
             IEnumerable<Material> matsList = materials;
@@ -448,7 +468,8 @@ namespace core_tests.domain {
         }
 
         [Fact]
-        public void ensureToStringWorks() {
+        public void ensureToStringWorks()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(1, 1, 1));
             Slot other = new Slot(CustomizedDimensions.valueOf(1, 1, 1));
             var category = new ProductCategory("Drawers");
@@ -470,7 +491,7 @@ namespace core_tests.domain {
             Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
             finishes.Add(finish2);
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
             IEnumerable<Material> matsList = materials;
@@ -487,7 +508,8 @@ namespace core_tests.domain {
         }
 
         [Fact]
-        public void ensureToDTOWorks() {
+        public void ensureToDTOWorks()
+        {
             Slot instance = new Slot(CustomizedDimensions.valueOf(1, 1, 1));
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
@@ -508,7 +530,7 @@ namespace core_tests.domain {
             Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
             finishes.Add(finish2);
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
             IEnumerable<Material> matsList = materials;

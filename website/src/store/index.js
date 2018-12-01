@@ -83,6 +83,9 @@ const getters = {
     },
     depth: state => {
         return state.customizedProduct.customizedDimensions.depth;
+    },
+    unit: state => {
+        return state.customizedPrdocut.customizedDimensions.unit;
     }
 }
 

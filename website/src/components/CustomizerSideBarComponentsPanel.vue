@@ -1,22 +1,39 @@
 <template>
   <div>
-    <div class="icon-div-top"><i class="material-icons md-12 md-blue btn">help</i>
-      <span class="tooltiptext">In this step, you can add components to the structure.</span>
+    <div v-if="getComponentsOk">
+      <div class="icon-div-top"><i class="material-icons md-12 md-blue btn">help</i>
+        <span class="tooltiptext">In this step, you can add components to the structure.</span>
+      </div>
+      <div class="text-entry">
+        Choose components to add:
+      </div>
+      <div class="padding-div">
+        <div class="scrollable-div">
+          <li v-for="component in components" :key = "component.id">
+            <div class="image-btn">
+            {{component.productID}}
+            </div>
+          </li>
+        </div>
     </div>
-    <div class="text-entry">
-      Choose components to add:
     </div>
-    <div class="scrollable-div">
+    <div v-else>
+      <div class="text-entry"><b>Error: {{httpCode}}</b></div>
+      <div class="text-entry">Yikes! Looks like we ran into a problem here...</div>
+      <div class="icon-div-center">
+        <i class="material-icons md-36 md-blue btn" @click="getProductComponents">refresh</i>
+      </div>
     </div>
   </div>
 </template>
 
 
 <script>
-import store from "./../store";
-import { SET_CUSTOMIZED_PRODUCT_COMPONENTS } from "./../store/mutation-types.js";
-
+import Axios from "axios";
 import { error } from "three";
+import store from "./../store";
+import { MYCM_API_URL } from "./../config.js";
+import { SET_CUSTOMIZED_PRODUCT_COMPONENTS } from "./../store/mutation-types.js";
 
 export default {
   name: "CustomizerSideBarComponentsPanel",
@@ -25,10 +42,49 @@ export default {
     //   components: this.components
     // });
   },
-  data() {
-
+   data() {
+    return {
+      components: [],
+      httpCode: null
+    };
   },
-  methods: {}
+  computed: {
+    getComponentsOk() {
+      return this.httpCode === 200;
+    }
+  },
+  methods: {
+    getProductComponents() {
+      Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/components`)
+        .then(response => {
+          this.components = response.data;
+          this.httpCode = response.status;
+        })
+        .catch(error => {
+          if (error.response === undefined) {
+            this.httpCode = 500;
+          } else {
+            this.httpCode = error.response.status;
+          }
+        });
+    },
+    getComponentsInformation(){
+      Axios.get(`${MYCM_API_URL}/products/${id}`)
+        .then(response => {
+          return responde.data;
+        })
+        .catch(error => {
+          if (error.response === undefined) {
+            this.httpCode = 500;
+          } else {
+            this.httpCode = error.response.status;
+          }
+        });
+    }
+  },
+  created() {
+    this.getProductComponents();
+  }
 };
 </script>
 

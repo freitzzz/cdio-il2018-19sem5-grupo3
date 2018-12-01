@@ -119,8 +119,8 @@ namespace core.services
                     createdPriceTableEntryDTO.price = new PriceDTO();
                     createdPriceTableEntryDTO.price.value = savedFinishPriceTableEntry.price.value;
                     //TODO Take area conversion into account
-                    createdPriceTableEntryDTO.price.currency = "";
-                    createdPriceTableEntryDTO.price.area = "";
+                    createdPriceTableEntryDTO.price.currency = CurrencyPerAreaConversionService.getBaseCurrency();
+                    createdPriceTableEntryDTO.price.area = CurrencyPerAreaConversionService.getBaseArea();
 
                     AddFinishPriceTableEntryModelView createdPriceModelView = new AddFinishPriceTableEntryModelView();
                     createdPriceModelView.priceTableEntry = createdPriceTableEntryDTO;

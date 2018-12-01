@@ -53,7 +53,7 @@ namespace core_tests.domain
             Color green = buildGreenColor();
 
 
-            return new Material("#123", "MDF", new List<Color>() { red, green }, new List<Finish>() { glossy, matte });
+            return new Material("#123", "MDF", "ola.jpg", new List<Color>() { red, green }, new List<Finish>() { glossy, matte });
         }
 
         private Product buildValidProduct()
@@ -124,7 +124,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -171,7 +171,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -215,7 +215,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -259,7 +259,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -302,7 +302,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Amém");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -363,7 +363,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -405,7 +405,7 @@ namespace core_tests.domain
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish2);
 
-            Material material = new Material("11", "mat", colors, finishes);
+            Material material = new Material("11", "mat", "ola.jpg", colors, finishes);
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
             string condition = ";";
@@ -458,7 +458,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -510,7 +510,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -564,7 +564,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -617,7 +617,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -668,7 +668,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -720,7 +720,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -773,7 +773,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -826,7 +826,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -878,7 +878,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -929,7 +929,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -976,7 +976,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1028,7 +1028,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1079,7 +1079,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1126,7 +1126,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1178,7 +1178,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1229,7 +1229,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1278,7 +1278,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1331,7 +1331,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1385,7 +1385,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1447,7 +1447,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1496,7 +1496,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1542,7 +1542,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1593,7 +1593,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1637,7 +1637,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1690,7 +1690,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1745,7 +1745,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1804,7 +1804,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1856,7 +1856,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1916,7 +1916,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -1969,7 +1969,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -2022,7 +2022,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -2077,8 +2077,8 @@ namespace core_tests.domain
             finishes.Add(finish);
             otherFinishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
-            Material otherMaterial = new Material("hello", "goodbye", otherColors, otherFinishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
+            Material otherMaterial = new Material("hello", "goodbye", "ola.jpg", otherColors, otherFinishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
             materials.Add(otherMaterial);
@@ -2133,7 +2133,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -2186,7 +2186,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -2238,7 +2238,7 @@ namespace core_tests.domain
             Finish finish2 = Finish.valueOf("Acabamento polido");
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -2291,7 +2291,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -2342,7 +2342,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -2394,7 +2394,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
@@ -2447,7 +2447,7 @@ namespace core_tests.domain
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 

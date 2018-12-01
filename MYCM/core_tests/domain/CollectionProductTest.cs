@@ -25,7 +25,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Super shiny");
             List<Finish> finishes = new List<Finish>() { finish };
 
-            Material material = new Material("123", "456, how original", colors, finishes);
+            Material material = new Material("123", "456, how original", "ola.jpg", colors, finishes);
 
             //Creates a product for the customized product collection's customized product
             Product product = new Product("0L4", "H4H4", "goodmeme.glb", new ProductCategory("Drawers"), new List<Material>() { material }, measurements, ProductSlotWidths.valueOf(1, 5, 4));
@@ -49,7 +49,7 @@ namespace core_tests.domain
             Finish finish = Finish.valueOf("Super shiny");
             List<Finish> finishes = new List<Finish>() { finish };
 
-            Material material = new Material("123", "456, how original", colors, finishes);
+            Material material = new Material("123", "456, how original", "ola.jpg", colors, finishes);
 
             //Creates a product for the customized product collection's customized product
             Product product = new Product("0L4", "H4H4", "goodmeme.glb", new ProductCategory("Drawers"), new List<Material>() { material },measurements, ProductSlotWidths.valueOf(1, 5, 4));
