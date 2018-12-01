@@ -24,14 +24,5 @@ namespace core.modelview.productmaterial
         /// <value>Gets/sets the Material's persistence identifier.</value>
         [DataMember(Name = "id")]
         public long materialId { get; set; }
-
-
-        /// <summary>
-        /// List containing all the Component's restrictions' information.
-        /// </summary>
-        /// <value>Get/sets the Component's restrictions' information list.</value>
-        [DataMember]
-        public List<RestrictionDTO> restrictions { get; set; }
-        //TODO: change this to ModelView ASAP
     }
 }

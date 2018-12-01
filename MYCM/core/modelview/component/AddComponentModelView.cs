@@ -31,13 +31,5 @@ namespace core.modelview.component
         /// <value>Gets/sets the mandatory flag.</value>
         [DataMember]
         public bool mandatory { get; set; }
-
-        /// <summary>
-        /// List containing all the Component's restrictions' information.
-        /// </summary>
-        /// <value>Get/sets the Component's restrictions' information list.</value>
-        [DataMember]
-        public List<RestrictionDTO> restrictions { get; set; }
-        //TODO: change this to ModelView ASAP
     }
 }
