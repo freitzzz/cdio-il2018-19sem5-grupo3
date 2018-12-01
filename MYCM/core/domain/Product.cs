@@ -419,6 +419,16 @@ namespace core.domain {
         }
 
         /// <summary>
+        /// Changes the model's filename.
+        /// </summary>
+        /// <param name="modelFilename">String with the new model's filename.</param>
+        /// <exception cref="System.ArgumentException">Thrown when the provided filename is not valid.</exception>
+        public void changeModelFilename(string modelFilename){
+            checkProductModelFilename(modelFilename);
+            this.modelFilename = modelFilename;
+        }
+
+        /// <summary>
         /// Changes the current product category
         /// </summary>
         /// <param name="productCategory">ProductCategory with the new product category</param>

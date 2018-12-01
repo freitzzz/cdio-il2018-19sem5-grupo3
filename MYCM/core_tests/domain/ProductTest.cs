@@ -773,6 +773,29 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureChangingToInvalidModelFilenameThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            string modelFilename = "newmodel.xpto";
+            Action changeToInvalidFilenameAction = () => product.changeModelFilename(modelFilename);
+
+            Assert.Throws<ArgumentException>(changeToInvalidFilenameAction);
+        }
+
+        [Fact]
+        public void ensureChangingToValidModelFilenameDoesNotThrowException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            string modelFilename = "updatedmodelfile.glb";
+            Action changeToValidFilenameAction = () => product.changeModelFilename(modelFilename);
+
+            Exception exception = Record.Exception(changeToValidFilenameAction);
+            Assert.Null(exception);
+        }
+
+        [Fact]
         public void ensureChangingToNullCategoryThrowsException()
         {
             Product product = buildValidSimpleProduct();
