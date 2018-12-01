@@ -25,6 +25,13 @@ namespace core.modelview.product{
         public string designation{get;set;}
 
         /// <summary>
+        /// Product's model's filename.
+        /// </summary>
+        /// <value>Gets/sets the product's model's filename.</value>
+        [DataMember(Name="model")]
+        public string modelFilename {get; set;}
+
+        /// <summary>
         /// Long with the ID of the category which will be updated on the product
         /// </summary>
         [DataMember(Name="categoryId")]

@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using core.modelview.component;
 using core.modelview.measurement;
-using core.modelview.slotdimensions;
+using core.modelview.productmaterial;
+using core.modelview.productslotwidths;
 
 namespace core.modelview.product
 {
@@ -26,6 +28,13 @@ namespace core.modelview.product
         public string designation { get; set; }
 
         /// <summary>
+        /// Product's model's filename.
+        /// </summary>
+        /// <value>Gets/sets the model's filename.</value>
+        [DataMember(Name = "model")]
+        public string modelFilename { get; set; }
+
+        /// <summary>
         /// Category's database identifier.
         /// </summary>
         /// <value>Gets/sets the category's database identifier.</value>
@@ -37,14 +46,14 @@ namespace core.modelview.product
         /// </summary>
         /// <value>Gets/sets the product's list of components.</value>
         [DataMember]
-        public List<AddComponentToProductModelView> components { get; set; }
+        public List<AddComponentModelView> components { get; set; }
 
         /// <summary>
         /// List of materials being added to the product.
         /// </summary>
         /// <value>Gets/sets the product's list of materials.</value>
         [DataMember]
-        public List<AddMaterialToProductModelView> materials { get; set; }
+        public List<AddProductMaterialModelView> materials { get; set; }
 
         /// <summary>
         /// List of measurements being added to the product.
@@ -54,10 +63,10 @@ namespace core.modelview.product
         public List<AddMeasurementModelView> measurements { get; set; }
 
         /// <summary>
-        /// Product's slot dimensions.
+        /// Product's slot widths.
         /// </summary>
-        /// <value>Gets/sets the slot dimensions.</value>
+        /// <value>Gets/sets the slot widths.</value>
         [DataMember]
-        public AddSlotDimensionsModelView slotSizes { get; set; }
+        public AddProductSlotWidthsModelView slotWidths { get; set; }
     }
 }
