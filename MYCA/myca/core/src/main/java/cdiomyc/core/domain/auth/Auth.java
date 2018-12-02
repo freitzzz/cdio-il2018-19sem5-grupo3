@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.SequenceGenerator;
 
 /**
@@ -13,6 +15,7 @@ import javax.persistence.SequenceGenerator;
  * @author <a href="https://github.com/freitzzz">freitzzz</a>
  */
 @Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @SequenceGenerator(name = "authSeq",initialValue = 1, allocationSize = 1)
 public abstract class Auth implements DomainEntity<String>,Serializable {
     /**

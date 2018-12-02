@@ -1,6 +1,7 @@
 package cdiomyc.core.mv.authentication.session;
 
 import cdiomyc.core.domain.auth.Session;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Service for creating and manipulating AuthenticationSession Model Views
@@ -15,7 +16,7 @@ public final class AuthenticationSessionMVService {
     public static GetAuthenticationSessionDetailsMV fromEntity(Session authenticationSession){
         GetAuthenticationSessionDetailsMV authenticationSessionDetailsMV=new GetAuthenticationSessionDetailsMV();
         authenticationSessionDetailsMV.token=authenticationSession.tokenAsJWT();
-        authenticationSessionDetailsMV.sessionEnd=authenticationSession.getSessionEndDateTime();
+        authenticationSessionDetailsMV.sessionEnd=authenticationSession.getSessionEndDateTime().format(DateTimeFormatter.ISO_DATE_TIME);
         return authenticationSessionDetailsMV;
     }
 }

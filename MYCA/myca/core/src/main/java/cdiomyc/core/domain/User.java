@@ -81,6 +81,14 @@ public class User implements AggregateRoot<Auth>,Serializable{
     }
     
     /**
+     * Returns the user last session
+     * @return Session with the user last session
+     */
+    public Session getLastSession(){
+        return !sessions.isEmpty() ? sessions.get(sessions.size()-1) : null;
+    }
+    
+    /**
      * Adds a new role to the user
      * @param role Role with the role being added to the user
      */
