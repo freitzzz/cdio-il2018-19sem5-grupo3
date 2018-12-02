@@ -90,6 +90,23 @@ namespace backend_tests.Controllers
             });
         }
 
+        [Fact, TestPriority(-7)]
+        public async void ensureAddingComponentToProductReturnsNotFoundIfNoProductsAreAvailable()
+        {
+            AddComponentModelView componentModelView = new AddComponentModelView();
+            componentModelView.mandatory = false;
+            componentModelView.childProductId = 2;
+
+            var postComponentResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/3/components", componentModelView);
+
+            Assert.Equal(HttpStatusCode.NotFound, postComponentResponse.StatusCode);
+
+            SimpleJSONMessageService postMessage = await postComponentResponse.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            //!Check if this is correct
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, postMessage.message);
+        }
+
         [Fact, TestPriority(-6)]
         public async void ensureDeletingProductMaterialReturnsNotFoundWhenNoProductsAreAvailable()
         {
@@ -3675,6 +3692,140 @@ namespace backend_tests.Controllers
             Assert.Equal(productModelViewFromGet.materials[1].reference, getAfterDeleteContent.materials[0].reference);
         }
 
+        [Fact, TestPriority(114)]
+        public async void ensureAddingComponentWithNullBodyReturnsBadRequest()
+        {
+
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("112");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("112");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "112");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            AddComponentModelView componentModelView = null;
+
+            var postComponentResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components", componentModelView);
+
+            Assert.Equal(HttpStatusCode.BadRequest, postComponentResponse.StatusCode);
+
+            //TODO Compare Messages
+        }
+
+        [Fact, TestPriority(115)]
+        public async void ensureAddingComponentToProductReturnsNotFoundIfProductIdIsInvalid()
+        {
+            AddComponentModelView componentModelView = new AddComponentModelView();
+            componentModelView.mandatory = false;
+            componentModelView.childProductId = 2;
+
+            var postComponentResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/-1/components", componentModelView);
+
+            Assert.Equal(HttpStatusCode.NotFound, postComponentResponse.StatusCode);
+        }
+
+        [Fact, TestPriority(116)]
+        public async void ensureAddingComponentToProductReturnsNotFoundIfProductIdDoesntExist()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("116");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("116");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "father product 116");
+
+            var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, productPostResponse.StatusCode);
+
+            var productModelViewFromPost = await productPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await productGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            AddComponentModelView componentModelView = new AddComponentModelView();
+            componentModelView.childProductId = 3;
+            componentModelView.mandatory = true;
+
+            var postComponentResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + 1 + "/components", componentModelView);
+
+            Assert.Equal(HttpStatusCode.NotFound, postComponentResponse.StatusCode);
+
+            //TODO Compare messages
+        }
+
+        [Fact, TestPriority(117)]
+        public async void ensureAddingComponentToProductReturnsNotFoundIfComponentIdIsInvalid()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("117");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("117");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "father product 117");
+
+            var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, productPostResponse.StatusCode);
+
+            var productModelViewFromPost = await productPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await productGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            AddComponentModelView componentModelView = new AddComponentModelView();
+            componentModelView.mandatory = false;
+            componentModelView.childProductId = -1;
+
+            var postComponentResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components", componentModelView);
+
+            Assert.Equal(HttpStatusCode.NotFound, postComponentResponse.StatusCode);
+
+            //TODO Compare messages
+        }
+
         private void assertProductModelView(GetProductModelView modelViewFromPost, GetProductModelView modelViewFromGet)
         {
 
@@ -3849,8 +4000,6 @@ namespace backend_tests.Controllers
             productModelView.components = new List<AddComponentModelView>() { componentModelView, otherComponentModelView };
             return productModelView;
         }
-
-
 
         private AddProductModelView createProductWithoutComponentsAndWithoutSlots(GetProductCategoryModelView categoryModelView, AddProductMaterialModelView materialModelView, string testNumber)
         {
