@@ -42,10 +42,6 @@ namespace core.domain {
         /// </summary>
         private const string INVALID_PRODUCT_COMPLEMENTARY_PRODUCTS = "The products which the product can be complemented by are invalid";
         /// <summary>
-        /// Constant that represents the message that occurs if the product component is not valid
-        /// </summary>
-        private const string INVALID_COMPONENT = "The component is not valid!";
-        /// <summary>
         /// Constant that represents the message that occurs if the product complementary products are invalid
         /// </summary>
         private const string INVALID_PRODUCT_MATERIALS = "The materials which the product can be made of are invalid";
@@ -81,6 +77,10 @@ namespace core.domain {
         /// </summary>
         private const string MATERIAL_NULL = "The given material can not be null.";
         /// <summary>
+        /// Constant that represents the message that is presented if the Material could not be found in the Product's list of ProductMaterial.
+        /// </summary>
+        private const string MATERIAL_NOT_FOUND = "The given material could not be found in the product's materials.";
+        /// <summary>
         /// Constant that represents the message that is presented if a duplicate Material is attempted to be added.
         /// </summary>
         private const string MATERIAL_ALREADY_ADDED = "An equal material has already been added.";
@@ -97,6 +97,10 @@ namespace core.domain {
         /// Constant that represents the message that is presented if a null complementary Product is attempted to be added.
         /// </summary>
         private const string COMPLEMENTARY_PRODUCT_NULL = "The given complementary product can not be null.";
+        /// <summary>
+        /// Constant that represents the message that is presented if the complementary Product could not be found in the Product's list of Component. 
+        /// </summary>
+        private const string COMPLEMENTARY_PRODUCT_NOT_FOUND = "The given complementary product could not be found in the main product's complementary products.";
         /// <summary>
         /// Constant that represents the message that is presented if the complementary Product being added is equal to the parent Product.
         /// </summary>
@@ -115,6 +119,10 @@ namespace core.domain {
         /// </summary>
         private const string MEASUREMENT_NULL = "The given measurement can not be null.";
         /// <summary>
+        /// Constant that represents the message that is presented if a Measurement could not be found in the Product's list of Measurement.
+        /// </summary>
+        private const string MEASUREMENT_NOT_FOUND = "The given measurement could not be found in the product's measurements.";
+        /// <summary>
         /// Constant that represents the message that is presented if a duplicate Measurement is attempted to be added.
         /// </summary>
         private const string MEASUREMENT_ALREADY_ADDED = "An equal measurement has already been added.";
@@ -127,7 +135,11 @@ namespace core.domain {
         /// </summary>
         private const string MEASUREMENT_UNABLE_TO_REMOVE = "The given measurement could not be removed.";
 
-        
+        /// <summary>
+        /// Constant representing the error message presented if a null Restriction is attempted to be added/removed.
+        /// </summary>
+        private const string RESTRICTION_NULL = "The given restriction can not be null.";
+
         /// <summary>
         /// Constant that represents the model's filename regular expression.
         /// </summary>
@@ -350,20 +362,26 @@ namespace core.domain {
         }
 
         /// <summary>
-        /// Adds a restriction to a component
+        /// Restricts a Product's complementary Product.
         /// </summary>
-        /// <param name="component">component to add restriction to</param>
-        /// <param name="restriction">restriction to be added</param>
+        /// <param name="component">Product being restricted.</param>
+        /// <param name="restriction">Restriction being added.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when any of the provided arguments is null.</exception>
         /// <exception cref="System.ArgumentException">Thrown when the restriction could not be applied</exception>
-        public void addComponentRestriction(Product component, Restriction restriction) {
-            //TODO: validate restriction
+        public void addComplementaryProductRestriction(Product component, Restriction restriction) {
             if (component == null) {
-                throw new ArgumentNullException(INVALID_COMPONENT);
+                throw new ArgumentNullException(COMPLEMENTARY_PRODUCT_NULL);
             }
+
+            if(restriction == null){
+                throw new ArgumentNullException(RESTRICTION_NULL);
+            }
+
             Component comp = this.components.Where(c => c.complementaryProduct.Equals(component)).SingleOrDefault();
             if(comp == null){
-                
+                throw new ArgumentException(COMPLEMENTARY_PRODUCT_NOT_FOUND);
             }
+            
             comp.addRestriction(restriction);
         }
 
@@ -377,8 +395,28 @@ namespace core.domain {
             this.productMaterials.Add(new ProductMaterial(this, productMaterial));
         }
 
+        /// <summary>
+        /// Restricts a Product's Material.
+        /// </summary>
+        /// <param name="material">Material being restricted.</param>
+        /// <param name="restriction">Restriction being added.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when any of the provided arguments is null.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when Restriction could not be added.</exception>
         public void addMaterialRestriction(Material material, Restriction restriction){
-            throw new NotImplementedException();
+            if(material == null){
+                throw new ArgumentNullException(MATERIAL_NULL);
+            }
+            if(restriction == null){
+                throw new ArgumentNullException(RESTRICTION_NULL);
+            }
+
+            ProductMaterial productMaterial = this.productMaterials.Where(pm => pm.material.Equals(material)).SingleOrDefault();
+
+            if(productMaterial == null){
+                throw new ArgumentException(MATERIAL_NOT_FOUND);
+            }
+
+            productMaterial.addRestriction(restriction);
         }
 
         /// <summary>
@@ -391,8 +429,29 @@ namespace core.domain {
             this.productMeasurements.Add(new ProductMeasurement(this, measurement));
         }
 
+        /// <summary>
+        /// Restricts a Product's Measurement.
+        /// </summary>
+        /// <param name="measurement">Measurement being restricted.</param>
+        /// <param name="restriction">Restriction being added.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when any of the provided arguments is null.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when Restriction could not be added.</exception>
+
         public void addMeasurementRestriction(Measurement measurement, Restriction restriction){
-            throw new NotImplementedException();
+            if(measurement == null){
+                throw new ArgumentNullException(MEASUREMENT_NULL);
+            }   
+            if(restriction == null){
+                throw new ArgumentNullException(RESTRICTION_NULL);
+            }
+
+            Measurement measurementBeingRestricted = productMeasurements.Select(pm => pm.measurement).Where(m => m.Equals(measurement)).SingleOrDefault();
+
+            if(measurementBeingRestricted == null){
+                throw new ArgumentException(MEASUREMENT_NOT_FOUND);
+            }
+
+            measurementBeingRestricted.addRestriction(restriction);
         }
 
         //*END OF ADD METHODS */
@@ -462,6 +521,32 @@ namespace core.domain {
         }
 
         /// <summary>
+        /// Removes a Restriction from a Measurement.
+        /// </summary>
+        /// <param name="measurement">Instance of Measurement.</param>
+        /// <param name="restriction">Instance of Restriction being removed.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when any of the provided arguments are null.</exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown when the Measurement could not be found in the Product's measurements or when the Restriction could not be removed.
+        /// </exception>
+        public void removeMeasurementRestriction(Measurement measurement, Restriction restriction){
+            if(measurement == null){
+                throw new ArgumentNullException(MEASUREMENT_NULL);
+            }
+            if(restriction == null){
+                throw new ArgumentNullException(RESTRICTION_NULL);
+            }
+
+            Measurement measurementBeingUnrestricted = productMeasurements.Select(pm => pm.measurement).Where(m => m.Equals(measurement)).SingleOrDefault();
+
+            if(measurementBeingUnrestricted == null){
+                throw new ArgumentException(MEASUREMENT_NOT_FOUND);
+            }
+
+            measurementBeingUnrestricted.removeRestriction(restriction);
+        }
+
+        /// <summary>
         /// Removes a material which the current product can be made of
         /// </summary>
         /// <param name="material">Material with the material being removed</param>
@@ -482,16 +567,68 @@ namespace core.domain {
         }
 
         /// <summary>
+        /// Removes a restriction from a Material.
+        /// </summary>
+        /// <param name="material">Instance of Material.</param>
+        /// <param name="restriction">Instance of Restriction being removed.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when any of the provided arguments are null.</exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown when the Material could not be found in the Product's materials or when the Restriction could not be removed.
+        /// </exception>
+        public void removeMaterialRestriction(Material material, Restriction restriction){
+            if(material == null){
+                throw new ArgumentNullException(MATERIAL_NULL);
+            }
+            if(restriction == null){
+                throw new ArgumentNullException(RESTRICTION_NULL);
+            }
+
+            ProductMaterial productMaterial = productMaterials.Where(pm => pm.material.Equals(material)).SingleOrDefault();
+
+            if(productMaterial == null){
+                throw new ArgumentException(MATERIAL_NOT_FOUND);
+            }
+
+            productMaterial.removeRestriction(restriction);
+        }
+
+        /// <summary>
         /// Removes a complementary Product which the current Product can be complemented by
         /// </summary>
         /// <param name="complementaryProduct">Instance of Product which complements this instance.</param>
         /// <exception cref="System.ArgumentException">If the given instance of Product could not be removed.</exception>
-        public void removecomplementaryProduct(Product complementaryProduct) {
+        public void removeComplementaryProduct(Product complementaryProduct) {
             if(!this.components.Remove(
                 this.components.Where(pc => pc.complementaryProduct.Equals(complementaryProduct)).SingleOrDefault()
                 )){
                     throw new ArgumentException(COMPLEMENTARY_PRODUCT_UNABLE_TO_REMOVE);
             } 
+        }
+
+        /// <summary>
+        /// Removes a restriction from a complementary Product.
+        /// </summary>
+        /// <param name="complementaryProduct">Instance of Product.</param>
+        /// <param name="restriction">Instance of Restriction being removed.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when any of the provided arguments are null.</exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown when the Component could not be found in the Product's components or when the Restriction could not be removed.
+        /// </exception>
+        public void removeComplementaryProductRestriction(Product complementaryProduct, Restriction restriction){
+            if(complementaryProduct == null){
+                throw new ArgumentNullException(COMPLEMENTARY_PRODUCT_NULL);
+            }
+            if(restriction == null){
+                throw new ArgumentNullException(RESTRICTION_NULL);
+            }
+
+            Component component = components.Where(c => c.complementaryProduct.Equals(complementaryProduct)).SingleOrDefault();
+
+            if(component == null){
+                throw new ArgumentException(COMPLEMENTARY_PRODUCT_NOT_FOUND);
+            }
+
+            component.removeRestriction(restriction);
         }
 
         //*END OF REMOVE METHODS */

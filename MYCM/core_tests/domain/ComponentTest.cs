@@ -239,8 +239,13 @@ namespace core_tests.domain
             //Creates a child product
             Product child = new Product("Not so bad", "Luke", "notsobad.glb", new ProductCategory("Drawers"), materials, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
-            Assert.True(new Component(parent, child, new List<Restriction>() { new Restriction("FUNCIONE") }).
-            addRestriction(new Restriction("FUNCIONOU")));
+            Component component = new Component(parent, child, new List<Restriction>() { new Restriction("FUNCIONE") });
+
+            Action addRestrictionAction = () => component.addRestriction(new Restriction("FUNCIONOU"));
+
+            Exception exception = Record.Exception(addRestrictionAction);
+
+            Assert.Null(exception);
         }
 
         [Fact]

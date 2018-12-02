@@ -19,34 +19,34 @@ namespace core.modelview.product
         /// <summary>
         /// GetBasicMaterialModelView with the product category
         /// </summary>
-        [DataMember(Name = "category")]
+        [DataMember(Name = "category", Order = 4)]
         public GetBasicProductCategoryModelView category { get; set; }
 
         /// <summary>
         /// GetBasicMaterialModelView with the product material
         /// </summary>
-        [DataMember(Name = "materials")]
+        [DataMember(Name = "materials", Order = 5)]
         public GetAllProductMaterialsModelView materials { get; set; }
 
         /// <summary>
         /// ModelView containing Product's components' information.
         /// </summary>
         /// <value>Gets/sets the ModelView.</value>
-        [DataMember(EmitDefaultValue = false)]  //since this is optional, don't show null values
+        [DataMember(EmitDefaultValue = false, Order = 6)]  //since this is optional, don't show null values
         public GetAllComponentsModelView components { get; set; }
 
         /// <summary>
         /// List of ModelViews containg the Product's measurements' information.
         /// </summary>
         /// <value>Get/set the list of ModelView.</value>
-        [DataMember(Name = "dimensions")]
+        [DataMember(Name = "dimensions", Order = 7)]
         public GetAllMeasurementsModelView measurements { get; set; }
 
         /// <summary>
         /// ModelView containing Product's slot widths.
         /// </summary>
         /// <value>Gets/sets the ModelView.</value>
-        [DataMember(EmitDefaultValue = false)]  //since this is optional, don't show null values
+        [DataMember(EmitDefaultValue = false, Order = 8)]  //since this is optional, don't show null values
         public GetProductSlotWidthsModelView slotWidths { get; set; }
     }
 }

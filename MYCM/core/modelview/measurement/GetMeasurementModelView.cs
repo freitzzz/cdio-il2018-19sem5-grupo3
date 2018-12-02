@@ -10,6 +10,14 @@ namespace core.modelview.measurement
     public class GetMeasurementModelView
     {
         /// <summary>
+        /// Product's persistence identifier.
+        /// </summary>
+        /// <value>Gets/sets the Product's persistence identifier.</value>
+        [IgnoreDataMember]
+        //* This property should not be included in serialization, it's only used for data transportation */
+        public long productId { get; set; }
+
+        /// <summary>
         /// Measurement's database identifier.
         /// </summary>
         /// <value>Gets/sets the database identifier.</value>

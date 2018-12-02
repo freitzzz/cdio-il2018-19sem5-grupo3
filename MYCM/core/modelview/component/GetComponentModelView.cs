@@ -13,7 +13,7 @@ namespace core.modelview.component
         /// <summary>
         /// GetAllRestrictionsModelView with all component restrictions
         /// </summary>
-        [DataMember(Name = "restrictions", EmitDefaultValue=false)]
+        [DataMember(Name = "restrictions", Order = 5, EmitDefaultValue = false)] //since restrictions are optional, don't serialize if this is null
         public GetAllRestrictionsModelView restrictions { get; set; }
     }
 }
