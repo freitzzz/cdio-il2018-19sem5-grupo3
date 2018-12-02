@@ -69,7 +69,10 @@ public class JPAUserRepositoryImpl extends BaseJPARepository<User, Long> impleme
                             + "AND US MEMBER OF U.sessions")
                 .setParameter("sessionAPIToken",sessionAPIToken)
                 .setMaxResults(1);
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Object userBySessionAPI=userBySessionAPITokenQuery.getSingleResult();
+        if(userBySessionAPI==null)
+            throw new IllegalStateException("No user found with the given session API token");
+        return (User)userBySessionAPI;
     }
 
 }
