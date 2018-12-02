@@ -1,16 +1,19 @@
 package cdiomyc.webservices.authentication;
 
+import cdiomyc.core.domain.User;
+import cdiomyc.core.domain.auth.credentials.CredentialsAuth;
 import cdiomyc.core.mv.authentication.AuthenticationMV;
 import cdiomyc.core.mv.authentication.AuthenticationMVService;
+import cdiomyc.core.mv.authentication.session.GetAuthenticationSessionDetailsMV;
+import cdiomyc.core.persistence.PersistenceContext;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import java.lang.reflect.Type;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 /**
  * Framework controller that processes authentication requests
@@ -28,8 +31,22 @@ public final class AuthenticationController {
      */
     @POST
     @Consumes(value = MediaType.APPLICATION_JSON)
+    @Produces(value = MediaType.APPLICATION_JSON)
     public Response authenticate(String authenticationDetails){
-        throw new UnsupportedOperationException();
+        try{
+            GetAuthenticationSessionDetailsMV authenticationSessionDetailsMV=
+                    cdiomyc.core.application.auth.AuthenticationController
+                            .authenticate(deserializeAuthenticationDetails(authenticationDetails));
+            return Response
+                    .ok()
+                    .entity(new Gson().toJson(authenticationSessionDetailsMV))
+                    .build();
+        }catch(IllegalArgumentException|IllegalStateException invalidOperation){
+            return Response
+                    .status(Status.BAD_REQUEST)
+                    .entity(new Gson().toJson(invalidOperation.getMessage()))
+                    .build();
+        }
     }
     
     /**
@@ -44,6 +61,17 @@ public final class AuthenticationController {
                                 .classFromType(new Gson()
                                         .fromJson(authenticationDetails,AuthenticationType.class)
                                             .type));
+    }
+    private void asdd(){
+        try{
+            System.out.println("!!!!!!!!!!!!1");
+            User user=new User(new CredentialsAuth("superusername","superusername"));
+            System.out.println(user);
+            PersistenceContext.repositories().createUserRepository().save(user);
+            System.out.println("!!!!1");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
     /**
      * Simple inner static class to deserialize the type of an authentication request body
