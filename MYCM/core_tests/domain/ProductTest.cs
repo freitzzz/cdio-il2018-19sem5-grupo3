@@ -12,8 +12,6 @@ namespace core_tests.domain
     /// </summary>
     public class ProductTest
     {
-        //TODO: implement restriction tests
-
         /// <summary>
         /// Creates an instance of Material.
         /// </summary>
@@ -489,53 +487,103 @@ namespace core_tests.domain
             Assert.True(product.containsComplementaryProduct(child));
         }
 
-        //TODO: implement mandatory component tests
+       [Fact]
+        public void ensureAddingNullMandatoryComplementaryProductToProductThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+            //Since we added a null complementary product then an ArgumentNullException
+            Action addNullComplementAction = () => product.addMandatoryComplementaryProduct(null);
+            Assert.Throws<ArgumentNullException>(addNullComplementAction);
+        }
 
-        /*         [Fact]
-                public void ensureProductCantAddNullMandatoryComplementaryProduct()
-                {
-                    Product product = new Product("#666", "Shelf", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
-                    Product complementaryProduct = null;
-                    //since the complementary product is null, an ArgumentNullException should be thrown
-                    Action addNullMandatoryProductAction = () => product.addMandatoryComplementaryProduct(complementaryProduct);
-                    Assert.Throws<ArgumentNullException>(addNullMandatoryProductAction);
-                }
+        [Fact]
+        public void ensureAddingNullMandatoryComplementaryProductToProductDoesNotAddComplementaryProduct()
+        {
+            Product product = buildValidSimpleProduct();
+            Product nullComplementaryProduct = null;
 
-                [Fact]
-                public void ensureProductCantAddEqualMandatoryComplementaryProduct()
-                {
-                    Product product = new Product("#666", "Shelf", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
-                    //since the complementary product is equal to the product itself, an ArgumentException should be thrown
-                    Action addEqualMandatoryProductAction = () => product.addMandatoryComplementaryProduct(product);
-                    Assert.Throws<ArgumentException>(addEqualMandatoryProductAction);
-                }
+            try
+            {
+                product.addMandatoryComplementaryProduct(nullComplementaryProduct);
+            }
+            catch (ArgumentNullException) { }
 
-                [Fact]
-                public void ensureProductCantAddDuplicatedMandatoryComplementaryProduct()
-                {
-                    Product product = new Product("#666", "Shelf", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
-                    Product complementaryProduct = new Product("#665", "Shelf", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
-                    Product mandatoryComplementaryProduct = new Product("#665", "Shelf", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Assert.False(product.containsComplementaryProduct(nullComplementaryProduct));
+            Assert.Empty(product.components);
+        }
 
-                    product.addComplementaryProduct(complementaryProduct);
+        [Fact]
+        public void ensureAddingMandatoryComplementaryProductEqualToProductThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+            Action addRecursiveProductAction = () => product.addMandatoryComplementaryProduct(product);
+            Assert.Throws<ArgumentException>(addRecursiveProductAction);
+        }
 
-                    //Whether it's mandatory or not, attempting to add a duplicate complementary product should throw an ArgumentException 
-                    Action addDuplicateProduct = () => product.addComplementaryProduct(mandatoryComplementaryProduct);
-                    Assert.Throws<ArgumentException>(addDuplicateProduct);
-                }
+        [Fact]
+        public void ensureAddingMandatoryComplementaryProductEqualToProductDoesNotAddProduct()
+        {
+            Product product = buildValidSimpleProduct();
+            try
+            {
+                product.addMandatoryComplementaryProduct(product);
+            }
+            catch (ArgumentException) { }
 
-                [Fact]
-                public void ensureProductCanAddMandatoryComplementaryProduct()
-                {
-                    Product product = new Product("#666", "Shelf", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
-                    Product complementaryProduct = new Product("#665", "Shelf", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
-                    Product mandatoryComplementaryProduct = new Product("#667", "Shelf", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
+            Assert.False(product.containsComplementaryProduct(product));
+            Assert.Empty(product.components);
+        }
 
-                    product.addComplementaryProduct(complementaryProduct);
-                    Action addValidComplementaryProduct = () => product.addMandatoryComplementaryProduct(mandatoryComplementaryProduct);
-                    Exception exception = Record.Exception(addValidComplementaryProduct);
-                    Assert.Null(exception);
-                } */
+        [Fact]
+        public void ensureAddingDuplicatedMandatoryComplementaryProductThrowsException()
+        {
+            Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+
+            Product product = new Product("#001", "Simple Product", "simpleproduct.glb", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, new List<Product>() { child });
+
+            Action addDuplicateProductAction = () => product.addMandatoryComplementaryProduct(child);
+            Assert.Throws<ArgumentException>(addDuplicateProductAction);
+        }
+
+        [Fact]
+        public void ensureAddingDuplicatedMandatoryComplementaryProductDoesNotAddProduct()
+        {
+            Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+
+            Product product = new Product("#001", "Simple Product", "simpleproduct.glb", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, new List<Product>() { child });
+
+            try
+            {
+                product.addMandatoryComplementaryProduct(child);
+            }
+            catch (ArgumentException) { }
+
+            Assert.Single(product.components);
+        }
+
+        [Fact]
+        public void ensureAddingValidMandatoryComplementaryProductDoesNotThrowException()
+        {
+            Product product = buildValidSimpleProduct();
+            Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+
+            Action addValidComplementaryProductAction = () => product.addMandatoryComplementaryProduct(child);
+            Exception exception = Record.Exception(addValidComplementaryProductAction);
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void ensureAddingValidMandatoryComplementaryProductAddsComplementaryProduct()
+        {
+            Product product = buildValidSimpleProduct();
+            Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+            product.addMandatoryComplementaryProduct(child);
+
+            Assert.Single(product.components);
+            Assert.True(product.containsComplementaryProduct(child));
+        }
 
         [Fact]
         public void ensureAddingNullMeasurementToProductThrowsException()
@@ -617,6 +665,178 @@ namespace core_tests.domain
             Assert.Equal(2, product.productMeasurements.Count);
             Assert.True(product.containsMeasurement(validMeasurement));
         }
+
+        [Fact]
+        public void ensureAddingRestrictionToNullComplementaryThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Product nullComplementaryProduct = null;
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action addRestrictionToNullProductAction = () => product.addComplementaryProductRestriction(nullComplementaryProduct, restriction);
+            Assert.Throws<ArgumentNullException>(addRestrictionToNullProductAction);
+        }
+
+        [Fact]
+        public void ensureAddingNullRestrictionToComplementaryProductThrowsException()
+        {
+
+            Product product = buildValidSimpleProduct();
+
+            Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+            Restriction restriction = null;
+
+            product.addComplementaryProduct(complementaryProduct);
+
+            Action addNullRestrictionToProductAction = () => product.addComplementaryProductRestriction(product, restriction);
+
+            Assert.Throws<ArgumentNullException>(addNullRestrictionToProductAction);
+        }
+
+        [Fact]
+        public void ensureAddingRestrictionToNotAddedComplementaryProductThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+            Restriction restriction = new Restriction("I'm restricting things, here!");
+
+            Action addNullRestrictionToProductAction = () => product.addComplementaryProductRestriction(product, restriction);
+
+            Assert.Throws<ArgumentException>(addNullRestrictionToProductAction);
+        }
+
+        [Fact]
+        public void ensureAddingRestrictionToValidComplementaryProductDoesNotThrowException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
+            Restriction restriction = new Restriction("I'm restricting things, here!");
+
+            product.addComplementaryProduct(complementaryProduct);
+
+            Action addNullRestrictionToProductAction = () => product.addComplementaryProductRestriction(complementaryProduct, restriction);
+
+            Exception exception = Record.Exception(addNullRestrictionToProductAction);
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void ensureAddingRestrictionToNullMeasurementThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Measurement measurement = null;
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action addRestrictionToNullMeasurement = () => product.addMeasurementRestriction(measurement, restriction);
+
+            Assert.Throws<ArgumentNullException>(addRestrictionToNullMeasurement);
+        }
+
+        [Fact]
+        public void ensureAddingNullRestrictionToMeasurementThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Measurement measurement = buildValidMeasurement();
+            Restriction restriction = null;
+
+            Action addNullRestrictionToMeasurementAction = () => product.addMeasurementRestriction(measurement, restriction);
+
+            Assert.Throws<ArgumentNullException>(addNullRestrictionToMeasurementAction);
+        }
+
+        [Fact]
+        public void ensureAddingRestrictionToNotAddedMeasurementThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Dimension heightDimension = new ContinuousDimensionInterval(50, 60, 2);
+            Dimension widthDimension = new SingleValueDimension(120);
+            Dimension depthDimension = new DiscreteDimensionInterval(new List<double>() { 20, 30, 35 });
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action addRestrictionToNotAddedMeasurementAction = () => product.addMeasurementRestriction(measurement, restriction);
+
+            Assert.Throws<ArgumentException>(addRestrictionToNotAddedMeasurementAction);
+        }
+
+        [Fact]
+        public void ensureAddingRestrictionToValidMeasurementDoesNotThrowException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Measurement measurement = buildValidMeasurement();
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action addRestrictionToMeasurementAction = () => product.addMeasurementRestriction(measurement, restriction);
+            Exception exception = Record.Exception(addRestrictionToMeasurementAction);
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void ensureAddingRestrictionToNullMaterialThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Material material = null;
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action addRestrictionToNullMaterialAction = () => product.addMaterialRestriction(material, restriction);
+
+            Assert.Throws<ArgumentNullException>(addRestrictionToNullMaterialAction);
+        }
+
+        [Fact]
+        public void ensureAddingNullRestrictionToMaterialThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Material material = buildValidMaterial();
+            Restriction restriction = null;
+
+            Action addNullRestrictionToMaterialAction = () => product.addMaterialRestriction(material, restriction);
+
+            Assert.Throws<ArgumentNullException>(addNullRestrictionToMaterialAction);
+        }
+
+        [Fact]
+        public void ensureAddingRestrictionToNotAddedMaterialThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Finish finish = Finish.valueOf("Clear Coating");
+            Color color = Color.valueOf("Really Really Red", 255, 0, 0, 0);
+            Material material = new Material("#154", "Stained Wood", "stainedwood.jpg", new List<Color>() { color }, new List<Finish>() { finish });
+
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action addRestrictionToNotAddedMaterial = () => product.addMaterialRestriction(material, restriction);
+            Assert.Throws<ArgumentException>(addRestrictionToNotAddedMaterial);
+        }
+
+        [Fact]
+        public void ensureAddingRestrictionToValidMaterialDoesNotThrowException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Material material = buildValidMaterial();
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action addRestrictionToMaterialAction = () => product.addMaterialRestriction(material, restriction);
+
+            Exception exception = Record.Exception(addRestrictionToMaterialAction);
+            Assert.Null(exception);
+        }
+
 
         [Fact]
         public void ensureChangingToNullReferenceThrowsException()
@@ -1042,7 +1262,7 @@ namespace core_tests.domain
         {
             Product product = buildValidSimpleProduct();
 
-            Action removeNullProductAction = () => product.removecomplementaryProduct(null);
+            Action removeNullProductAction = () => product.removeComplementaryProduct(null);
             Assert.Throws<ArgumentException>(removeNullProductAction);
         }
 
@@ -1054,7 +1274,7 @@ namespace core_tests.domain
             Product product = new Product("#003", "Super Stylish Product", "stylish003.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
-            Action removeForeignProductAction = () => product.removecomplementaryProduct(child);
+            Action removeForeignProductAction = () => product.removeComplementaryProduct(child);
             Assert.Throws<ArgumentException>(removeForeignProductAction);
         }
 
@@ -1065,7 +1285,7 @@ namespace core_tests.domain
             Product product = new Product("#003", "Super Stylish Product", "stylish003.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, new List<Product>() { child });
 
-            Action removeValidProductAction = () => product.removecomplementaryProduct(child);
+            Action removeValidProductAction = () => product.removeComplementaryProduct(child);
             Exception exception = Record.Exception(removeValidProductAction);
             Assert.Null(exception);
         }
@@ -1077,9 +1297,234 @@ namespace core_tests.domain
             Product product = new Product("#003", "Super Stylish Product", "stylish003.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, new List<Product>() { child });
 
-            product.removecomplementaryProduct(child);
+            product.removeComplementaryProduct(child);
             Assert.False(product.containsComplementaryProduct(child));
             Assert.Empty(product.components);
+        }
+
+        [Fact]
+        public void ensureRemovingRestrictionFromNullMeasurementThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Measurement measurement = null;
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action removeRestrictionFromNullMeasurementAction = () => product.removeMeasurementRestriction(measurement, restriction);
+
+            Assert.Throws<ArgumentNullException>(removeRestrictionFromNullMeasurementAction);
+        }
+
+        [Fact]
+        public void ensureRemovingNullRestrictionFromMeasurementThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Measurement measurement = buildValidMeasurement();
+            Restriction restriction = null;
+
+            Action removeNullRestrictionFromMeasurementAction = () => product.removeMeasurementRestriction(measurement, restriction);
+
+            Assert.Throws<ArgumentNullException>(removeNullRestrictionFromMeasurementAction);
+        }
+
+        [Fact]
+        public void ensureRemovingRestrictionFromNotAddedMeasurementThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Dimension heightDimension = new ContinuousDimensionInterval(50, 60, 2);
+            Dimension widthDimension = new SingleValueDimension(120);
+            Dimension depthDimension = new DiscreteDimensionInterval(new List<double>() { 20, 30, 35 });
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action removeRestrictionFromNotAddedMeasurementAction = () => product.removeMeasurementRestriction(measurement, restriction);
+
+            Assert.Throws<ArgumentException>(removeRestrictionFromNotAddedMeasurementAction);
+        }
+
+        [Fact]
+        public void ensureRemoveNotAddedMeasurementRestrictionThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Measurement measurement = buildValidMeasurement();
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action removeRestrictionFromValidMeasurementAction = () => product.removeMeasurementRestriction(measurement, restriction);
+
+            Assert.Throws<ArgumentException>(removeRestrictionFromValidMeasurementAction);
+        }
+
+        [Fact]
+        public void ensureRemoveMeasurementRestrictionDoesNotThrowException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Measurement measurement = buildValidMeasurement();
+            Restriction restriction = new Restriction("This is a restriction");
+
+            product.addMeasurementRestriction(measurement, restriction);
+
+            Action removeRestrictionFromValidMeasurementAction = () => product.removeMeasurementRestriction(measurement, restriction);
+
+            Exception exception = Record.Exception(removeRestrictionFromValidMeasurementAction);
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void ensureRemovingRestrictionFromNullMaterialThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Material material = null;
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action removeRestrictionFromNullMaterialAction = () => product.removeMaterialRestriction(material, restriction);
+
+            Assert.Throws<ArgumentNullException>(removeRestrictionFromNullMaterialAction);
+        }
+
+        [Fact]
+        public void ensureRemovingNullRestrictionFromMaterialRestriction()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Material material = buildValidMaterial();
+            Restriction restriction = null;
+
+            Action removeNullRestrictionFromMaterialAction = () => product.removeMaterialRestriction(material, restriction);
+
+            Assert.Throws<ArgumentNullException>(removeNullRestrictionFromMaterialAction);
+        }
+
+        [Fact]
+        public void ensureRemovingRestrictionFromNotAddedMaterialThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Finish finish = Finish.valueOf("Clear Coating");
+            Color color = Color.valueOf("Really Really Red", 255, 0, 0, 0);
+            Material material = new Material("#154", "Stained Wood", "stainedwood.jpg", new List<Color>() { color }, new List<Finish>() { finish });
+
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action removeRestrictionFromNotAddedMaterialAction = () => product.removeMaterialRestriction(material, restriction);
+
+            Assert.Throws<ArgumentException>(removeRestrictionFromNotAddedMaterialAction);
+        }
+
+        [Fact]
+        public void ensureRemovingNotAddedMaterialRestrictionThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Material material = buildValidMaterial();
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action removeNotAddedRestrictionAction = () => product.removeMaterialRestriction(material, restriction);
+
+            Assert.Throws<ArgumentException>(removeNotAddedRestrictionAction);
+        }
+
+        [Fact]
+        public void ensureRemoveMaterialRestrictionDoesNotThrowException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Material material = buildValidMaterial();
+            Restriction restriction = new Restriction("This is a restriction");
+
+            product.addMaterialRestriction(material, restriction);
+
+            Action removeMaterialRestrictionAction = () => product.removeMaterialRestriction(material, restriction);
+
+            Exception exception = Record.Exception(removeMaterialRestrictionAction);
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void ensureRemovingRestrictionFromNullComplementaryProductThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Product complementaryProduct = null;
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action removeRestrictionFromNullComplementaryProductAction = () => product.removeComplementaryProductRestriction(complementaryProduct, restriction);
+
+            Assert.Throws<ArgumentNullException>(removeRestrictionFromNullComplementaryProductAction);
+        }
+
+        [Fact]
+        public void ensureRemovingNullRestrictionFromComplementaryProductThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }); ;
+
+            product.addComplementaryProduct(complementaryProduct);
+
+            Restriction restriction = null;
+
+            Action removeNullRestrictionFromComplementaryProductAction = () => product.removeComplementaryProductRestriction(complementaryProduct, restriction);
+
+            Assert.Throws<ArgumentNullException>(removeNullRestrictionFromComplementaryProductAction);
+        }
+
+        [Fact]
+        public void ensureRemovingRestrictionFromNotAddedComplementaryProductThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }); ;
+
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action removeRestrictionFromNotAddedComplementaryProductAction = () => product.removeComplementaryProductRestriction(complementaryProduct, restriction);
+
+            Assert.Throws<ArgumentException>(removeRestrictionFromNotAddedComplementaryProductAction);
+        }
+
+        [Fact]
+        public void ensureRemovingNotAddedComplementaryProductRestrictionThrowsException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }); ;
+
+            product.addComplementaryProduct(complementaryProduct);
+
+            Restriction restriction = new Restriction("This is a restriction");
+
+            Action removeNotAddedRestrictionAction = () => product.removeComplementaryProductRestriction(complementaryProduct, restriction);
+
+            Assert.Throws<ArgumentException>(removeNotAddedRestrictionAction);
+        }
+
+        [Fact]
+        public void ensureRemovingComplementaryProductRestrictionDoesNotThrowException()
+        {
+            Product product = buildValidSimpleProduct();
+
+            Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }); ;
+
+            product.addComplementaryProduct(complementaryProduct);
+
+            Restriction restriction = new Restriction("This is a restriction");
+
+            product.addComplementaryProductRestriction(complementaryProduct, restriction);
+
+            Action removeComplementaryRestrictionAction = () => product.removeComplementaryProductRestriction(complementaryProduct, restriction);
+
+            Exception exception = Record.Exception(removeComplementaryRestrictionAction);
+            Assert.Null(exception);
         }
 
         [Fact]
