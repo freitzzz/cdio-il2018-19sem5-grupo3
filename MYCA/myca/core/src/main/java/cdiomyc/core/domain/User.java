@@ -6,7 +6,10 @@ import cdiomyc.support.domain.ddd.AggregateRoot;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -39,14 +42,19 @@ public class User implements AggregateRoot<Auth>,Serializable{
     /**
      * Auth with the user authentication
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Auth auth;
     
     /**
      * List with the user API sessions
      */
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     private List<Session> sessions;
+    
+    /**
+     * Set with the user roles
+     */
+    private Set<Role> roles;
     
     /**
      * Builds a new User
@@ -56,6 +64,8 @@ public class User implements AggregateRoot<Auth>,Serializable{
         checkAuth(auth);
         this.auth=auth;
         this.sessions=new ArrayList<>();
+        this.roles=new HashSet<>();
+        this.roles.add(Role.CLIENT);
     }
     
     /**
@@ -68,6 +78,38 @@ public class User implements AggregateRoot<Auth>,Serializable{
         Session createdSession=new Session(LocalDateTime.now().plusMinutes(DEFAULT_SESSION_TIME)); 
         this.sessions.add(createdSession);
         return createdSession;
+    }
+    
+    /**
+     * Adds a new role to the user
+     * @param role Role with the role being added to the user
+     */
+    public void addRole(Role role){
+        checkRole(role);
+        if(this.roles.contains(role))
+            throw new IllegalStateException(String.format("User already has the role %s !",role));
+        this.roles.add(role);
+    }
+    
+    /**
+     * Removes a role from the user
+     * @param role Role with the role being removed
+     */
+    public void removeRole(Role role){
+        checkRole(role);
+        if(!this.roles.contains(role))
+            throw new IllegalStateException(String.format("User does not have the role %s !",role));
+        this.roles.add(role);
+    }
+    
+    /**
+     * Checks if a user has a certain role
+     * @param role Role with the role being checked
+     * @return boolean true if the user has a certain role, false if not
+     */
+    public boolean hasRole(Role role){
+        checkRole(role);
+        return this.roles.contains(role);
     }
     
     /**
@@ -108,11 +150,20 @@ public class User implements AggregateRoot<Auth>,Serializable{
     
     /**
      * Checks if an user authentication is valid
-     * @param auth Auth with the user authentication
+     * @param auth Auth with the user authentication being checked
      */
     private void checkAuth(Auth auth){
         if(auth==null)
             throw new IllegalArgumentException("Invalid user authentication!");
+    }
+    
+    /**
+     * Checks if a user role is valid
+     * @param role Role with the role being checked
+     */
+    private void checkRole(Role role){
+        if(role==null)
+            throw new IllegalArgumentException("Role is invalid!");
     }
     
     /**
