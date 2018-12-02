@@ -122,7 +122,7 @@ namespace core.domain {
             foreach (Component component in originalProduct.components) {
                 components.Add(component.complementaryProduct);
             }
-            Product copyProduct = new Product(originalProduct.reference, originalProduct.designation, originalProduct.productCategory, materials, measurements, components, originalProduct.minSlotSize, originalProduct.maxSlotSize, originalProduct.recommendedSlotSize);
+            Product copyProduct = new Product(originalProduct.reference, originalProduct.designation, originalProduct.modelFilename, originalProduct.productCategory, materials, measurements, components, originalProduct.slotWidths);
             double width = customProduct.customizedDimensions.width;
             double minWidth = width * minPercentage;
             double maxWidth = width * maxPercentage;

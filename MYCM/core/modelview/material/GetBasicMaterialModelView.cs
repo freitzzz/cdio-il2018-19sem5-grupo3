@@ -5,7 +5,7 @@ namespace core.modelview.material{
     /// Model View representation for the fetch restriction basic information context
     /// </summary>
     [DataContract]
-    public sealed class GetBasicMaterialModelView{
+    public class GetBasicMaterialModelView{
         /// <summary>
         /// Long with the material ID
         /// </summary>

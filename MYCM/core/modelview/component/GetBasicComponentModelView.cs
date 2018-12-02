@@ -1,27 +1,27 @@
 using System.Runtime.Serialization;
+using core.modelview.product;
 
-namespace core.modelview.component{
+namespace core.modelview.component
+{
     /// <summary>
-    /// Model View representation for the fetch component basic information context
+    /// Class representing the ModelView used for retrieving basic information from a Product's Component.
     /// </summary>
     [DataContract]
-    public sealed class GetBasicComponentModelView{
+    public class GetBasicComponentModelView : GetBasicProductModelView
+    {
         /// <summary>
-        /// Long with the component ID
+        /// Father Product's persistence identifier.
         /// </summary>
-        [DataMember(Name="id")]
-        public long id{get;set;}
+        /// <value>Gets/sets the father Product's persistence identifier.</value>
+        [IgnoreDataMember]
+        //*This property should not be included in serialization, it's only used for data transportation */
+        public long fatherProductId { get; set; }
 
         /// <summary>
-        /// Long with the product ID which was complemented by the component
+        /// Boolean indicating whether or not a Component is mandatory.
         /// </summary>
-        [DataMember(Name="productID")]
-        public long fatherProductID{get;set;}
-
-        /// <summary>
-        /// Boolean with the component mandatory
-        /// </summary>
-        [DataMember(Name="mandatory")]
-        public bool mandatory{get;set;}
+        /// <value>Gets/sets the mandatory flag.</value>
+        [DataMember(Name = "mandatory", Order = 4)]
+        public bool mandatory { get; set; }
     }
 }

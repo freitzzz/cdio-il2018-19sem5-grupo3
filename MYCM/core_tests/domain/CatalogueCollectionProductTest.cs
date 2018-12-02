@@ -64,7 +64,7 @@ namespace core_tests.domain
 
             List<Measurement> measurements = new List<Measurement>() { measurement };
 
-            Product product = new Product("productid", "Awesome shelf", productCategory, new List<Material>() { material }, measurements);
+            Product product = new Product("productid", "Awesome shelf", "awesomeshelfyo.glb", productCategory, new List<Material>() { material }, measurements);
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21.0, 19, 15.6);

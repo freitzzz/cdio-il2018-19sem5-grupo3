@@ -6,7 +6,7 @@ using support.dto;
 
 namespace core.domain
 {
-    public class Measurement : DTOAble<MeasurementDTO>
+    public class Measurement : Restrictable, DTOAble<MeasurementDTO>
     {
         /// <summary>
         /// Constant representing the error message being presented when an instance is attempted to be created with a null height Dimension.
@@ -28,13 +28,6 @@ namespace core.domain
         /// </summary>
         /// <value>Gets/protected sets the value of the database identifier.</value>
         public long Id { get; protected set; }
-
-        /// <summary>
-        /// List containing instances of Restriction.
-        /// </summary>
-        /// <value>Gets/ protected sets the value of the list.</value>
-        private List<Restriction> _restrictions;    //!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); protected set => _restrictions = value; }
 
         /// <summary>
         /// Measurement's height Dimension.
@@ -59,19 +52,10 @@ namespace core.domain
 
 
         /// <summary>
-        /// Injected ILazyLoader instance.
-        /// </summary>
-        /// <value>Gets/sets the ILazyLoader.</value>
-        private ILazyLoader LazyLoader { get; set; }
-
-        /// <summary>
         /// Private constructor used by the framework in order to inject an instace of ILazyLoader.
         /// </summary>
         /// <param name="lazyLoader">LazyLoader being injected.</param>
-        private Measurement(ILazyLoader lazyLoader)
-        {
-            this.LazyLoader = lazyLoader;
-        }
+        private Measurement(ILazyLoader lazyLoader) : base(lazyLoader) { }
 
         /// <summary>
         /// Empty constructor used by ORM.
@@ -115,34 +99,6 @@ namespace core.domain
             {
                 throw new ArgumentException(ERROR_NULL_DEPTH_DIMENSION);
             }
-        }
-
-        /// <summary>
-        /// Adds an instance of Restriction to the Measurement's list of Restrictions.
-        /// </summary>
-        /// <param name="restriction">Instance of Restriction being added.</param>
-        /// <returns>Returns true if the Restriction was successfully added; false can also be returned if the Restriction is null</returns>
-        public bool addRestriction(Restriction restriction)
-        {
-            if (restriction == null)
-            {
-                return false;
-            }
-            int beforeCount = restrictions.Count;
-            restrictions.Add(restriction);
-            int afterCount = restrictions.Count;
-
-            return beforeCount + 1 == afterCount;
-        }
-
-        /// <summary>
-        /// Removes an instance of Restriction from the Dimension's list of Restrictions.
-        /// </summary>
-        /// <param name="restriction">Instance of Restriction being removed.</param>
-        /// <returns>Returns true if the Restriction was succesfully removed; otherwise false.</returns>
-        public bool removeRestriction(Restriction restriction)
-        {
-            return restrictions.Remove(restriction);
         }
 
         /// <summary>

@@ -59,7 +59,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddRestrictionReturnsFalseIfRestrictionIsNull()
+        public void ensureAddRestrictionThrowsExceptionIfRestrictionIsNull()
         {
             SingleValueDimension height = new SingleValueDimension(21.5);
             SingleValueDimension width = new SingleValueDimension(12.3);
@@ -69,7 +69,9 @@ namespace core_tests.domain
 
             Restriction restriction = null;
 
-            Assert.False(measurement.addRestriction(restriction));
+            Action addNullRestrictionAction = () => measurement.addRestriction(restriction);
+
+            Assert.Throws<ArgumentException>(addNullRestrictionAction);
         }
 
         [Fact]
@@ -83,13 +85,17 @@ namespace core_tests.domain
 
             Restriction restriction = null;
 
-            measurement.addRestriction(restriction);
+            try
+            {
+                measurement.addRestriction(restriction);
+            }
+            catch (Exception) { }
 
             Assert.Empty(measurement.restrictions);
         }
 
         [Fact]
-        public void ensureAddRestrictionReturnsIfRestrictionIsAddedSuccessfully()
+        public void ensureAddRestrictionDoesNotThrowExceptionIfRestrictionIsAddedSuccessfully()
         {
             SingleValueDimension height = new SingleValueDimension(21.5);
             SingleValueDimension width = new SingleValueDimension(12.3);
@@ -99,7 +105,11 @@ namespace core_tests.domain
 
             Restriction restriction = new Restriction("This is a restriction");
 
-            Assert.True(measurement.addRestriction(restriction));
+            Action addValidRestrictionAction = () => measurement.addRestriction(restriction);
+
+            Exception exception = Record.Exception(addValidRestrictionAction);
+
+            Assert.Null(exception);
         }
 
         [Fact]
@@ -119,7 +129,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemoveNullRestrictionReturnsFalse()
+        public void ensureRemoveNullRestrictionThrowsException()
         {
             SingleValueDimension height = new SingleValueDimension(21.5);
             SingleValueDimension width = new SingleValueDimension(12.3);
@@ -129,11 +139,13 @@ namespace core_tests.domain
 
             Restriction restriction = null;
 
-            Assert.False(measurement.removeRestriction(restriction));
+            Action nullRestrictionRemovalAction = () => measurement.removeRestriction(restriction);
+
+            Assert.Throws<ArgumentException>(nullRestrictionRemovalAction);
         }
 
         [Fact]
-        public void ensureRemoveRestrictionReturnsFalseIfRestrictionWasNotAddedBeforehand()
+        public void ensureRemoveRestrictionThrowsExceptionIfRestrictionWasNotAddedBeforehand()
         {
             SingleValueDimension height = new SingleValueDimension(21.5);
             SingleValueDimension width = new SingleValueDimension(12.3);
@@ -142,11 +154,13 @@ namespace core_tests.domain
             Measurement measurement = new Measurement(height, width, depth);
             Restriction restriction = new Restriction("This is a restriction");
 
-            Assert.False(measurement.removeRestriction(restriction));
+            Action notAddedRestrictionRemovalAction = () => measurement.removeRestriction(restriction);
+
+            Assert.Throws<ArgumentException>(notAddedRestrictionRemovalAction);
         }
 
         [Fact]
-        public void ensureRemoveRestrictionReturnsTrueIfRestrictionWasAddedBeforehand()
+        public void ensureRemoveRestrictionDoesNotThrowExceptionIfRestrictionWasAddedBeforehand()
         {
             SingleValueDimension height = new SingleValueDimension(21.5);
             SingleValueDimension width = new SingleValueDimension(12.3);
@@ -157,7 +171,11 @@ namespace core_tests.domain
 
             measurement.addRestriction(restriction);
 
-            Assert.True(measurement.removeRestriction(restriction));
+            Action removeValidRetrictionAction = () => measurement.removeRestriction(restriction);
+
+            Exception e = Record.Exception(removeValidRetrictionAction);
+
+            Assert.Null(e);
         }
 
         [Fact]
@@ -370,7 +388,8 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureMeasuremnetIsNotEqualIfComparingObjectIsNullAndNotAnInstanceOfMeasurement(){
+        public void ensureMeasuremnetIsNotEqualIfComparingObjectIsNullAndNotAnInstanceOfMeasurement()
+        {
             SingleValueDimension height = new SingleValueDimension(21.5);
             SingleValueDimension width = new SingleValueDimension(12.3);
             SingleValueDimension depth = new SingleValueDimension(8.0);

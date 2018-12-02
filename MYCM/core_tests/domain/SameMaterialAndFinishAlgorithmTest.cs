@@ -45,8 +45,8 @@ namespace core_tests.domain {
             DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 90.0, 100.0, 150.0 }));
             Measurement measurement = new Measurement(discrete, discrete, discrete);
             List<Measurement> measurements = new List<Measurement>(){measurement};
-            Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", cat, new List<Material>(new[] { material }), measurements);
-            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", cat, new List<Material>(new[] { material1 }), measurements);
+            Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", "product12.glb",cat, new List<Material>(new[] { material }), measurements);
+            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", "product13.gltf",cat, new List<Material>(new[] { material1 }), measurements);
             CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht")), CustomizedDimensions.valueOf(100, 100, 100), product);
             Algorithm algorithm = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
             Assert.Null(algorithm.apply(custom, component));
@@ -65,8 +65,8 @@ namespace core_tests.domain {
             DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 90.0, 100.0, 150.0 }));
             Measurement measurement = new Measurement(discrete, discrete, discrete);
             List<Measurement> measurements = new List<Measurement>(){measurement};
-            Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", cat, new List<Material>(new[] { material }), measurements);
-            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", cat, new List<Material>(new[] { otherMaterial }), measurements);
+            Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", "product12.glb", cat, new List<Material>(new[] { material }), measurements);
+            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", "product13.gltf", cat, new List<Material>(new[] { otherMaterial }), measurements);
             CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, color,finish), CustomizedDimensions.valueOf(100, 100, 100), product);
             Algorithm algorithm = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
             Assert.Null(algorithm.apply(custom, component));
@@ -83,8 +83,8 @@ namespace core_tests.domain {
             DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 90.0, 100.0, 150.0 }));
             Measurement measurement = new Measurement(discrete, discrete, discrete);
             List<Measurement> measurements = new List<Measurement>(){measurement};
-            Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", cat, new List<Material>(new[] { material }), measurements);
-            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", cat, new List<Material>(new[] { material1, material }), measurements);
+            Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", "product12.glb", cat, new List<Material>(new[] { material }), measurements);
+            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", "product13.gltf", cat, new List<Material>(new[] { material1, material }), measurements);
             CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht")), CustomizedDimensions.valueOf(100, 100, 100), product);
             Algorithm algorithm = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
             Assert.True(algorithm.apply(custom, component).productMaterials[0].material.Equals(material));
@@ -100,8 +100,8 @@ namespace core_tests.domain {
             DiscreteDimensionInterval discrete = new DiscreteDimensionInterval(new List<double>(new[] { 50.0, 90.0, 100.0, 150.0 }));
             Measurement measurement = new Measurement(discrete, discrete, discrete);
             List<Measurement> measurements = new List<Measurement>(){measurement};
-            Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", cat, new List<Material>(new[] { material }), measurements);
-            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", cat, new List<Material>(new[] { material }), measurements);
+            Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", "product12.glb", cat, new List<Material>(new[] { material }), measurements);
+            Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", "product13.gltf", cat, new List<Material>(new[] { material }), measurements);
             CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("schrödinger's box")), CustomizedDimensions.valueOf(100, 100, 100), product);
             Algorithm algorithm = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
             Assert.Equal("schrödinger's box", algorithm.apply(custom, component).productMaterials[0].material.Finishes[0].description);
