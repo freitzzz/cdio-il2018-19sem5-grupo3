@@ -90,6 +90,58 @@ namespace backend_tests.Controllers
             });
         }
 
+        [Fact, TestPriority(-6)]
+        public async void ensureDeletingProductMaterialReturnsNotFoundWhenNoProductsAreAvailable()
+        {
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/1/materials/1");
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            SimpleJSONMessageService deleteMessage = await deleteResponse.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            //!Check if this is correct
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, deleteMessage.message);
+        }
+
+        [Fact, TestPriority(-5)]
+        public async void ensureDeletingComponentReturnsNotFoundIfNoProductsAreAvailable()
+        {
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/1/components/1");
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            SimpleJSONMessageService deleteMessage = await deleteResponse.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            //!Check if this is correct
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, deleteMessage.message);
+        }
+
+        [Fact, TestPriority(-4)]
+        public async void ensureDeletingProductMeasurementReturnsNotFoundIfNoProductsAreAvailable()
+        {
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/1/dimensions/1");
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            SimpleJSONMessageService deleteMessage = await deleteResponse.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            //!Check if this is correct
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, deleteMessage.message);
+        }
+
+        [Fact, TestPriority(-3)]
+        public async void ensureDeletingProductReturnsNotFoundIfThereAreNoProductsAvailable()
+        {
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/1");
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await deleteResponse.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            //!Check if this is correct
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
         [Fact, TestPriority(-2)]
         public async void ensureUpdateProductReturnsNotFoundWhenThereAreNoProductsAvailable()
         {
@@ -2602,6 +2654,1025 @@ namespace backend_tests.Controllers
             Assert.Equal(updateProduct.reference, updateResponseContent.reference);
             Assert.Equal(updateProduct.modelFilename, updateResponseContent.modelFilename);
             Assert.Equal(updateProduct.categoryId, updateResponseContent.category.id);
+        }
+
+        [Fact, TestPriority(91)]
+        public async void ensureDeletingProductReturnsNotFoundIfIdIsInvalid()
+        {
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/-1");
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await deleteResponse.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            //!Check if this is correct
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(92)]
+        public async void ensureDeletingProductReturnsNotFoundIfIdDoesntExist()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("92");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("92");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "92");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + 1);
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            SimpleJSONMessageService deleteMessage = await deleteResponse.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            //!Check if this is correct
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, deleteMessage.message);
+        }
+
+        [Fact, TestPriority(93)]
+        public async void ensureDeletingProductReturnsNoContentAndDisablesIt()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("93");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("93");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "93");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id);
+
+            Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+
+            var isProductDisabled = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id);
+
+            Assert.Equal(HttpStatusCode.NotFound, isProductDisabled.StatusCode);
+
+            SimpleJSONMessageService disableMessage = await isProductDisabled.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            //!Check if this is correct
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, disableMessage.message);
+        }
+
+        [Fact, TestPriority(94)]
+        public async void ensureDeletingProductMeasurementReturnsNotFoundIfProductIdIsInvalid()
+        {
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/-1/dimensions/1");
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            SimpleJSONMessageService disableMessage = await deleteResponse.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            //!Check if this is correct
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, disableMessage.message);
+        }
+
+        [Fact, TestPriority(95)]
+        public async void ensureDeletingProductMeasurementReturnsNotFoundIfIdDoesntExist()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("95");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("95");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "95");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + 1 + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId);
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare message
+        }
+
+        [Fact, TestPriority(96)]
+        public async void ensureDeletingProductMeasurementReturnsNotFoundIfMeasurementIdIsInvalid()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("96");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("96");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "96");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/-1");
+
+            //!BadRequest or NotFound?
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare message
+        }
+
+        [Fact, TestPriority(97)]
+        public async void ensureDeletingProductMeasurementReturnsNotFoundIfMeasurementIdDoesntExist()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("97");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("97");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "97");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + 1);
+
+            //!BadRequest or NotFound?
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare message
+        }
+
+        [Fact, TestPriority(98)]
+        public async void ensureDeletingProductMeasurementReturnsNotFoundIfMeasurementBelongsToAnotherProduct()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("98");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("98");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "98");
+            var otherProductModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "98 other");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+            var otherPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, otherProductModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, otherPostResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+            GetProductModelView otherProductModelViewFromPost = await otherPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+            assertProductModelView(otherProductModelView, otherProductModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var otherGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherProductModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, otherGetResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+            GetProductModelView otherProductModelViewFromGet = await otherGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+            assertProductModelView(otherProductModelViewFromPost, otherProductModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + otherProductModelViewFromGet.measurements[0].measurementId);
+
+            //!BadRequest or NotFound?
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare message
+        }
+
+        [Fact, TestPriority(99)]
+        public async void ensureDeletingProductMeasurementFromProductReturnsNoContent()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("96");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("96");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "96");
+
+            productModelView.measurements.Add(createNewMeasurementModelView());
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[1].measurementId);
+
+            Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+        }
+
+        [Fact, TestPriority(100)]
+        public async void ensureDeletingComponentReturnsNotFoundIfProductIdIsInvalid()
+        {
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/-1/components/1");
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare Message
+        }
+
+        [Fact, TestPriority(101)]
+        public async void ensureDeletingComponentReturnsNotFoundIfProductIdDoesntExist()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("101");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("101");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var firstComponentModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "component 1 101");
+
+            var firstComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, firstComponentModelView);
+
+            Assert.Equal(HttpStatusCode.Created, firstComponentPostResponse.StatusCode);
+
+            GetProductModelView firstComponentModelViewFromPost = await firstComponentPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
+
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, firstComponentGetResponse.StatusCode);
+
+            GetProductModelView firstComponentModelViewFromGet = await firstComponentGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(firstComponentModelViewFromPost, firstComponentModelViewFromGet);
+
+            var secondComponentModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "component 2 101");
+
+            var secondComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, secondComponentModelView);
+
+            Assert.Equal(HttpStatusCode.Created, secondComponentPostResponse.StatusCode);
+
+            GetProductModelView secondComponentModelViewFromPost = await secondComponentPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(secondComponentModelView, secondComponentModelViewFromPost);
+
+            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, secondComponentGetResponse.StatusCode);
+
+            GetProductModelView secondComponentModelViewFromGet = await secondComponentGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(secondComponentModelViewFromPost, secondComponentModelViewFromGet);
+
+            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 101", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+
+            var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, productPostResponse.StatusCode);
+
+            var productModelViewFromPost = await productPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await productGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + 1 + "/components/" + productModelViewFromGet.components[0].id);
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare messages
+        }
+
+        [Fact, TestPriority(102)]
+        public async void ensureDeletingComponentReturnsNotFoundIfProductComponentIdIsInvalid()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("102");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("102");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var firstComponentModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "component 1 102");
+
+            var firstComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, firstComponentModelView);
+
+            Assert.Equal(HttpStatusCode.Created, firstComponentPostResponse.StatusCode);
+
+            GetProductModelView firstComponentModelViewFromPost = await firstComponentPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
+
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, firstComponentGetResponse.StatusCode);
+
+            GetProductModelView firstComponentModelViewFromGet = await firstComponentGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(firstComponentModelViewFromPost, firstComponentModelViewFromGet);
+
+            var secondComponentModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "component 2 102");
+
+            var secondComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, secondComponentModelView);
+
+            Assert.Equal(HttpStatusCode.Created, secondComponentPostResponse.StatusCode);
+
+            GetProductModelView secondComponentModelViewFromPost = await secondComponentPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(secondComponentModelView, secondComponentModelViewFromPost);
+
+            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, secondComponentGetResponse.StatusCode);
+
+            GetProductModelView secondComponentModelViewFromGet = await secondComponentGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(secondComponentModelViewFromPost, secondComponentModelViewFromGet);
+
+            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 102", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+
+            var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, productPostResponse.StatusCode);
+
+            var productModelViewFromPost = await productPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await productGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components/-1");
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare messages
+        }
+
+        [Fact, TestPriority(103)]
+        public async void ensureDeletingComponentReturnsNotFoundIfProductComponentIdDoesntExist()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("103");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("103");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var firstComponentModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "component 1 103");
+
+            var firstComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, firstComponentModelView);
+
+            Assert.Equal(HttpStatusCode.Created, firstComponentPostResponse.StatusCode);
+
+            GetProductModelView firstComponentModelViewFromPost = await firstComponentPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
+
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, firstComponentGetResponse.StatusCode);
+
+            GetProductModelView firstComponentModelViewFromGet = await firstComponentGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(firstComponentModelViewFromPost, firstComponentModelViewFromGet);
+
+            var secondComponentModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "component 2 103");
+
+            var secondComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, secondComponentModelView);
+
+            Assert.Equal(HttpStatusCode.Created, secondComponentPostResponse.StatusCode);
+
+            GetProductModelView secondComponentModelViewFromPost = await secondComponentPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(secondComponentModelView, secondComponentModelViewFromPost);
+
+            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, secondComponentGetResponse.StatusCode);
+
+            GetProductModelView secondComponentModelViewFromGet = await secondComponentGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(secondComponentModelViewFromPost, secondComponentModelViewFromGet);
+
+            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 103", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+
+            var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, productPostResponse.StatusCode);
+
+            var productModelViewFromPost = await productPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await productGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components/" + productModelViewFromGet.components[0].id + 1);
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare messages
+        }
+
+        [Fact, TestPriority(104)]
+        public async void ensureDeletingComponentFromProductWithNoComponentsReturnsNotFound()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("104");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("104");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "104");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components/1");
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare messages
+        }
+
+        [Fact, TestPriority(105)]
+        public async void ensureDeletingComponentFromAnotherProductReturnsNotFound()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("105");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("105");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var firstComponentModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "component 1 105");
+            var otherFirstComponentModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "other component 1 105");
+
+            var firstComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, firstComponentModelView);
+            var otherFirstComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, otherFirstComponentModelView);
+
+            Assert.Equal(HttpStatusCode.Created, firstComponentPostResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, otherFirstComponentPostResponse.StatusCode);
+
+            GetProductModelView firstComponentModelViewFromPost = await firstComponentPostResponse.Content.ReadAsAsync<GetProductModelView>();
+            GetProductModelView otherFirstComponentModelViewFromPost = await otherFirstComponentPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
+            assertProductModelView(otherFirstComponentModelView, otherFirstComponentModelViewFromPost);
+
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+            var otherFirstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherFirstComponentModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, firstComponentGetResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, otherFirstComponentGetResponse.StatusCode);
+
+            GetProductModelView firstComponentModelViewFromGet = await firstComponentGetResponse.Content.ReadAsAsync<GetProductModelView>();
+            GetProductModelView otherFirstComponentModelViewFromGet = await otherFirstComponentGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(firstComponentModelViewFromPost, firstComponentModelViewFromGet);
+            assertProductModelView(otherFirstComponentModelViewFromPost, otherFirstComponentModelViewFromGet);
+
+            var secondComponentModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "component 2 105");
+            var otherSecondComponentModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "other component 2 105");
+
+            var secondComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, secondComponentModelView);
+            var otherSecondComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, otherSecondComponentModelView);
+
+            Assert.Equal(HttpStatusCode.Created, secondComponentPostResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, otherSecondComponentPostResponse.StatusCode);
+
+            GetProductModelView secondComponentModelViewFromPost = await secondComponentPostResponse.Content.ReadAsAsync<GetProductModelView>();
+            GetProductModelView otherSecondComponentModelViewFromPost = await otherSecondComponentPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(secondComponentModelView, secondComponentModelViewFromPost);
+            assertProductModelView(otherSecondComponentModelView, otherSecondComponentModelViewFromPost);
+
+            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.id);
+            var otherSecondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherSecondComponentModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, secondComponentGetResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, otherSecondComponentGetResponse.StatusCode);
+
+            GetProductModelView secondComponentModelViewFromGet = await secondComponentGetResponse.Content.ReadAsAsync<GetProductModelView>();
+            GetProductModelView otherSecondComponentModelViewFromGet = await otherSecondComponentGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(secondComponentModelViewFromPost, secondComponentModelViewFromGet);
+            assertProductModelView(otherSecondComponentModelViewFromPost, otherSecondComponentModelViewFromGet);
+
+            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 105", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+            var otherProductModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "other father product 105", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+
+            var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+            var otherProductPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, otherProductModelView);
+
+            Assert.Equal(HttpStatusCode.Created, productPostResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, otherProductPostResponse.StatusCode);
+
+            var productModelViewFromPost = await productPostResponse.Content.ReadAsAsync<GetProductModelView>();
+            var otherProductModelViewFromPost = await otherProductPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+            assertProductModelView(otherProductModelView, otherProductModelViewFromPost);
+
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var otherProductGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherProductModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, otherProductGetResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await productGetResponse.Content.ReadAsAsync<GetProductModelView>();
+            GetProductModelView otherProductModelViewFromGet = await productGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+            assertProductModelView(otherProductModelViewFromPost, otherProductModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components/" + otherProductModelViewFromGet.components[0].id);
+
+            //!Bad Request or Not Found?
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare messages
+        }
+
+        [Fact, TestPriority(106)]
+        public async void ensureDeletingComponentFromProductReturnsNoContentAndThatTheComponentWasDisabled()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("103");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("103");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var firstComponentModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "component 1 103");
+
+            var firstComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, firstComponentModelView);
+
+            Assert.Equal(HttpStatusCode.Created, firstComponentPostResponse.StatusCode);
+
+            GetProductModelView firstComponentModelViewFromPost = await firstComponentPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
+
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, firstComponentGetResponse.StatusCode);
+
+            GetProductModelView firstComponentModelViewFromGet = await firstComponentGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(firstComponentModelViewFromPost, firstComponentModelViewFromGet);
+
+            var secondComponentModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "component 2 103");
+
+            var secondComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, secondComponentModelView);
+
+            Assert.Equal(HttpStatusCode.Created, secondComponentPostResponse.StatusCode);
+
+            GetProductModelView secondComponentModelViewFromPost = await secondComponentPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(secondComponentModelView, secondComponentModelViewFromPost);
+
+            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, secondComponentGetResponse.StatusCode);
+
+            GetProductModelView secondComponentModelViewFromGet = await secondComponentGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(secondComponentModelViewFromPost, secondComponentModelViewFromGet);
+
+            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 103", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+
+            var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, productPostResponse.StatusCode);
+
+            var productModelViewFromPost = await productPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await productGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components/" + productModelViewFromGet.components[0].id);
+
+            Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+
+            var getAfterDeleteResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id);
+
+            Assert.Equal(HttpStatusCode.OK, getAfterDeleteResponse.StatusCode);
+
+            GetProductModelView getAfterDeleteContent = await getAfterDeleteResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            Assert.NotEqual(productModelViewFromGet.components.Count, getAfterDeleteContent.components.Count);
+            Assert.Equal(productModelViewFromGet.components[1].id, getAfterDeleteContent.components[0].id);
+            Assert.Equal(productModelViewFromGet.components[1].fatherProductId, getAfterDeleteContent.components[0].fatherProductId);
+            Assert.Equal(productModelViewFromGet.components[1].reference, getAfterDeleteContent.components[0].reference);
+            Assert.Equal(productModelViewFromGet.components[1].designation, getAfterDeleteContent.components[0].designation);
+            Assert.Equal(productModelViewFromGet.components[1].modelFilename, getAfterDeleteContent.components[0].modelFilename);
+            Assert.Equal(productModelViewFromGet.components[1].mandatory, getAfterDeleteContent.components[0].mandatory);
+        }
+
+        [Fact, TestPriority(107)]
+        public async void ensureDeletingProductMaterialReturnsNotFoundWhenProductIdIsInvalid()
+        {
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/-1/materials/1");
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare Messages
+        }
+
+        [Fact, TestPriority(108)]
+        public async void ensureDeletingProductMaterialReturnsNotFoundIfProductIdDoesntExist()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("108");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("108");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "108");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + 1 + "/materials/" + productModelViewFromGet.materials[0].id);
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare Messages
+        }
+
+        [Fact, TestPriority(109)]
+        public async void ensureDeletingProductMaterialReturnsNotFoundIfMaterialIdIsInvalid()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("109");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("109");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "109");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/materials/-1");
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare Messages
+        }
+
+        [Fact, TestPriority(110)]
+        public async void ensureDeletingProductMaterialReturnsNotFoundIfMaterialIdDoesntExist()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("110");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("110");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "110");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/materials/" + productModelViewFromGet.materials[0].id + 1);
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare Messages
+        }
+
+        [Fact, TestPriority(111)]
+        public async void ensureDeletingProductMaterialReturnsNotFoundIfMaterialBelongsToAnotherProduct()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("111");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("111");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            MaterialDTO otherMaterialDTO = createMaterialDTO("other material 111");
+            var otherMaterialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", otherMaterialDTO);
+            AddProductMaterialModelView otherMaterialModelViewFromPost = await otherMaterialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "111");
+            var otherProductModelView = createProductWithSlots(categoryModelViewFromPost, otherMaterialModelViewFromPost, "other product 111");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+            var otherPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, otherProductModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, otherPostResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+            GetProductModelView otherProductModelViewFromPost = await otherPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+            assertProductModelView(otherProductModelView, otherProductModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var otherGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherProductModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, otherGetResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+            GetProductModelView otherProductModelViewFromGet = await otherGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+            assertProductModelView(otherProductModelViewFromPost, otherProductModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + otherProductModelViewFromGet.id + "/materials/" + productModelViewFromGet.materials[0].id);
+
+            Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
+
+            //TODO Compare Messages
+        }
+
+        [Fact, TestPriority(112)]
+        public async void ensureDeleteProductMaterialReturnsBadRequestIfItsDeletingTheOnlyMaterialOfTheProduct()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("112");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("112");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "112");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/materials/" + productModelViewFromGet.materials[0].id);
+
+            Assert.Equal(HttpStatusCode.BadRequest, deleteResponse.StatusCode);
+
+            //TODO Compare Messages
+        }
+
+        [Fact, TestPriority(113)]
+        public async void ensureDeleteProductMaterialReturnsNoContentAndMaterialIsntAssociatedWithProduct()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("113");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("113");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+            MaterialDTO otherMaterialDTO = createMaterialDTO("113");
+            var otherMaterialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", otherMaterialDTO);
+            AddProductMaterialModelView otherMaterialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "113");
+
+            productModelView.materials.Add(otherMaterialModelViewFromPost);
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/materials/" + productModelViewFromGet.materials[0].id);
+
+            Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+
+            var getAfterDeleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id);
+
+            Assert.Equal(HttpStatusCode.OK, getAfterDeleteResponse.StatusCode);
+
+            GetProductModelView getAfterDeleteContent = await getAfterDeleteResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            Assert.NotEqual(productModelViewFromGet.materials.Count, getAfterDeleteContent.materials.Count);
+            Assert.Equal(productModelViewFromGet.materials[1].id, getAfterDeleteContent.materials[0].id);
+            Assert.Equal(productModelViewFromGet.materials[1].designation, getAfterDeleteContent.materials[0].designation);
+            Assert.Equal(productModelViewFromGet.materials[1].reference, getAfterDeleteContent.materials[0].reference);
         }
 
         private void assertProductModelView(GetProductModelView modelViewFromPost, GetProductModelView modelViewFromGet)
