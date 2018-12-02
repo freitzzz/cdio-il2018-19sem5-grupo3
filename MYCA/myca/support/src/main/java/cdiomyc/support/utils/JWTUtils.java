@@ -2,6 +2,7 @@ package cdiomyc.support.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 
 /**
  * Simple utility class to encode and decode data in JWT
@@ -68,12 +69,16 @@ public final class JWTUtils {
      * @return String with the decoded data
      */
     public static String decode(String jwtData){
-        return JWT
+        try{
+            return JWT
                 .require(Algorithm.HMAC256(DEFAULT_SECRETE_SIGNATURE))
                 .withIssuer("auth0")
                 .build()
                 .verify(jwtData)
                 .getClaim("data")
                 .asString();
+        }catch(NullPointerException|JWTVerificationException | IllegalArgumentException invalidJWT){
+            throw new IllegalStateException("The JWT is invalid");
+        }
     }
 }
