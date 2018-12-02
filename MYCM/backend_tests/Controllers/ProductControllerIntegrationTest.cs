@@ -1,735 +1,1102 @@
-//TODO: Implement all these tests
-// using backend_tests.Setup;
-// using backend_tests.utils;
-// using core.dto;
-// using Newtonsoft.Json;
-// using System;
-// using System.Collections.Generic;
-// using System.Net;
-// using System.Net.Http;
-// using System.Threading.Tasks;
-// using Xunit;
-// using System.Diagnostics;
-// using Microsoft.AspNetCore.Mvc.Testing;
-// using core.modelview.productcategory;
-// using core.modelview.product;
-// using core.modelview.measurement;
-// using core.modelview.dimension;
-// using core.services;
-
-// namespace backend_tests.Controllers{
-    
-//     /// <summary>
-//     /// Integration Tests for Products Collection API
-//     /// </summary>
-//     [Collection("Integration Collection")]
-//     [TestCaseOrderer(TestPriorityOrderer.TYPE_NAME, TestPriorityOrderer.ASSEMBLY_NAME)]
-//     public sealed class ProductControllerIntegrationTest:IClassFixture<TestFixture<TestStartupSQLite>>{
-//         /// <summary>
-//         /// String with the URI where the API Requests will be performed
-//         /// </summary>
-//         private const string PRODUCTS_URI="mycm/api/products";
-//         /// <summary>
-//         /// Current HTTP Client being used to perform API requests
-//         /// </summary>
-//         private HttpClient httpClient;
-//         /// <summary>
-//         /// Injected Mock Server
-//         /// </summary>
-//         private TestFixture<TestStartupSQLite> fixture;
-//         /// <summary>
-//         /// Builds a new ProductControllerIntegrationTest with the mocked server injected by parameters
-//         /// </summary>
-//         /// <param name="fixture">Injected Mocked Server</param>
-//         public ProductControllerIntegrationTest(TestFixture<TestStartupSQLite> fixture)
-//         {
-//             this.fixture = fixture;
-//             this.httpClient = fixture.CreateClient(new WebApplicationFactoryClientOptions
-//             {
-//                 AllowAutoRedirect = false,
-//                 BaseAddress =  new Uri("http://localhost:5001")
-//                 });
-//             }
-
-//         /// <summary>
-//         /// Ensures that the product collection fetch is empty
-//         /// </summary>
-//         [Fact,TestPriority(0)]
-//         public async void ensureEmptyProductCollectionReturnsNotFound(){
-//             //If we haven't created any products yet, the product collection 
-//             //fetch should be empty
-//             var fetchProductCollection = await httpClient.GetAsync(PRODUCTS_URI);
-//             //We performed a GET of the products collection
-//             //Since there are no products available
-//             //The response status code should be a Not Found
-//             //Since there aren't any products available
-//             Assert.Equal(HttpStatusCode.NotFound, fetchProductCollection.StatusCode);
-//         }
-
-//         /// <summary>
-//         /// Ensures that a product is created succesfuly
-//         /// </summary>
-//         /// <returns>ProductDTO with the created product</returns>
-//         [Fact, TestPriority(1)]
-//         public async Task<GetProductModelView> ensureProductIsCreatedSuccesfuly(){
-//             //We are going to create a valid product
-//             //A valid product creation requires a valid reference, a valid desgination
-//             //A valid category, valid dimensions and valid materials
-//             //Components are not required
-//             //Materials must previously exist as they can be shared in various products
-//             AddProductModelView addProductMV = createAddProductModelView();
-//             GetProductCategoryModelView categoryModelView = await new ProductCategoryControllerIntegrationTest(fixture)
-//                 .ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-//             MaterialDTO materialDTO = await new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
-
-//             //NOTE: ModelView is being converted to DTO for now
-//             //TODO: update material controller and tests so that ModelViews are used
-
-//             AddMaterialToProductModelView addMaterialMV = new AddMaterialToProductModelView();
-//             addMaterialMV.materialID = materialDTO.id;
-
-//             addProductMV.materials = new List<AddMaterialToProductModelView>() {addMaterialMV};
-//             addProductMV.categoryId = categoryModelView.id;
-
-//             var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, addProductMV);
-//             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-
-//             GetProductModelView getProductMV = JsonConvert.DeserializeObject<GetProductModelView>(await response.Content.ReadAsStringAsync());
-
-
-//             Assert.Equal(addProductMV.designation, getProductMV.designation);
-//             Assert.Equal(addProductMV.reference, getProductMV.reference);
-//             //TODO Fix Slot Asserts
-//             /* Assert.Equal(addProductMV.slotSizes.maxSize.height, getProductMV.slotSizes.maxSize.height);
-//             Assert.Equal(addProductMV.slotSizes.maxSize.width, getProductMV.slotSizes.maxSize.width);
-//             Assert.Equal(addProductMV.slotSizes.maxSize.depth, getProductMV.slotSizes.maxSize.depth); */
-
-            
-//             return JsonConvert.DeserializeObject<GetProductModelView>(await response.Content.ReadAsStringAsync());
-//         }
-
-
-
-//         /// <summary>
-//         /// Ensures that the product collection fetch isnt empty when previously added a product
-//         /// </summary>
-//         [Fact,TestPriority(2)]
-//         public async void ensureProductCollectionFetchIsNotEmpty(){
-//             // Since we have created a product, the product collection fetch should not be empty
-//             var response = await httpClient.GetAsync(PRODUCTS_URI);
-            
-//             string responseContent = await response.Content.ReadAsStringAsync();
-
-//             GetAllProductsModelView products = JsonConvert.DeserializeObject<GetAllProductsModelView>(responseContent);
-
-//             Assert.True(response.StatusCode==HttpStatusCode.OK);
-//             Assert.NotEmpty(products);
-//         }
-
-//         // / <summary>
-//         // / Ensures that the fetch of a product resource is invalid
-//         // / </summary>
-//         [Fact,TestPriority(3)]
-//         public async void ensureProductResourceFetchIsInvalid(){
-//             // If we haven't created any products yet, the product collection 
-//             // fetch should be empty
-//             long invalidResourceID=0;
-//             var fetchProduct=await httpClient.GetAsync(PRODUCTS_URI+"/"+invalidResourceID);
-//             // We performed a GET of a certain product by its resource
-//             // Since the resource doesn't exist, the fetch should be invalid
-//             // And the response status code should be a Not Found
-//             Assert.True(fetchProduct.StatusCode==HttpStatusCode.BadRequest);
-//         }
-
-// //         / <summary>
-// //         / Ensures that the fetch of a product resource is valid
-// //         / </summary>
-// //         [Fact,TestPriority(3)]
-// //         public async void ensureProductResourceFetchIsValid(){
-// //             Task<ProductDTO> createdProductDTORequest=ensureProductIsCreatedSuccesfuly();
-// //             createdProductDTORequest.Wait();
-// //             ProductDTO createdProductDTO=createdProductDTORequest.Result;
-// //             We just performed a POST request to create a new product
-// //             We deserialized the response, and it has a resource ID
-// //             By performing a GET request on the resource, the product fetched
-// //             Should be the same one as the created one
-// //             var fetchProduct=await httpClient.GetAsync(PRODUCTS_URI+"/"+createdProductDTO.id);
-// //             ProductDTO fetchedProductDTO=JsonConvert.DeserializeObject<ProductDTO>(await fetchProduct.Content.ReadAsStringAsync());
-// //             Assert.True(fetchProduct.StatusCode==HttpStatusCode.OK);
-// //             Assert.Equal(createdProductDTO.id,fetchedProductDTO.id);
-// //             Assert.Equal(createdProductDTO.reference,fetchedProductDTO.reference);
-// //         }
-
-// //         / <summary>
-// //         / Ensures that a product reference cant be updated if the reference is invalid
-// //         / </summary>
-// //         [Fact,TestPriority(4)]
-// //         public async void ensureProductReferenceCantBeUpdatedIfInvalid(){
-// //              We're are going to created two different products, X & Y
-// //             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
-// //             If we try to update it to a reference that is invalid, then it should fail
-// //             createdProductDTOX.Wait();
-// //             UpdateProductModelView updatedProductX=new UpdateProductModelView();
-// //             var updateReference=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX.Result.id
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-// //             Assert.True(updateReference.StatusCode==HttpStatusCode.BadRequest);
-// //         }
-
-// //         / <summary>
-// //         / Ensures that a product reference cant be updated if the reference is duplicated
-// //         / </summary>
-// //         [Fact,TestPriority(5)]
-// //         public async void ensureProductReferenceCantBeUpdatedIfDuplicated(){
-// //             We're are going to created two different products, X & Y
-// //             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
-// //             createdProductDTOX.Wait();
-// //             Task<ProductDTO> createdProductDTOY=ensureProductIsCreatedSuccesfuly();
-// //             createdProductDTOY.Wait();
-// //             Product X has different reference to Y
-// //             Since the reference of a product is the identity of a product
-// //             If we try to update it to a reference that already exists, then it should fail
-// //             ProductDTO productDTOX=createdProductDTOX.Result;
-// //             ProductDTO productDTOY=createdProductDTOY.Result;
-// //             UpdateProductModelView updatedProductY=new UpdateProductModelView();
-// //             updatedProductY.reference=productDTOX.reference;
-// //             DONT UNCOMMENT UNTIL INTEGRATION DATABASE PROBLEMS IS SOLVED
-// //             PROBLEM HERE IS THAT SINCE WE ARE USING AN IN MEMORY DATABASE PROVIDER
-// //             IT LITERALLY IS IN MEMORY SO IF WE CHANGE AN OBJECT WIHTOUT UPDATING IT
-// //             WITH THE RESPECTIVE REPOSITORY, ITS STILL AN UPDATE SINCE OBJECTS HAVE THE SAME MEMORY REFERENCE
-// //             :(
-// //             /* var updateReference=await httpClient.PutAsync(PRODUCTS_URI+"/"+productDTOY.id
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductY));
-// //             Assert.True(updateReference.StatusCode==HttpStatusCode.BadRequest); */
-// //         }
-        
-// //         / <summary>
-// //         / Ensures that a product designation cant be updated if the designation is invalid
-// //         / </summary>
-// //         [Fact,TestPriority(6)]
-// //         public async void ensureProductDesignationCantBeUpdatedIfInvalid(){
-// //             We need to create a product for the test
-// //             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
-// //             If we try to update it to a designation that is invalid, then it should fail
-// //             createdProductDTOX.Wait();
-// //             UpdateProductModelView updatedProductX=new UpdateProductModelView();
-// //             var updateDesignation=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX.Result.id
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-// //             Assert.True(updateDesignation.StatusCode==HttpStatusCode.BadRequest);
-// //         }
-
-// // /*         /// <summary>
-// //         / Ensures that a product materials cant be updated if the materials are invalid
-// //         / </summary>
-// //         [Fact,TestPriority(7)]
-// //         public async void ensureProductMaterialsCantBeUpdatedIfInvalid(){
-// //             We need to create a product for the test
-// //             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
-// //             createdProductDTOX.Wait();
-// //             UpdateProductModelView updatedProductX=new UpdateProductModelView();
-// //             var updateProduct=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
-// //                                                                             .Result.id
-// //                                                                         +"/materials"
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-// //             Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
-// //         } */
-
-// // /*         /// <summary>
-// //         / Ensures that a product materials cant be added if the materials are duplicated
-// //         / </summary>
-// //         [Fact,TestPriority(8)]
-// //         public async void ensureProductMaterialsCantBeAddedIfDuplicated(){
-// //             We need to create a product for the test
-// //             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
-// //             createdProductDTOX.Wait();
-// //             UpdateProductModelView updatedProductX=new UpdateProductModelView();
-// //             updatedProductX.materialsToAdd=new List<MaterialDTO>(createdProductDTOX.Result.productMaterials);
-// //             var updateProduct=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
-// //                                                                             .Result.id
-// //                                                                         +"/materials"
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-// //             Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
-// //         } */
-
-// // /*         /// <summary>
-// //         / Ensures that a product materials cant be added if the materials don't exist/are not found
-// //         / </summary>
-// //         [Fact,TestPriority(9)]
-// //         public async void ensureProductMaterialsCantBeAddedIfNotFound(){
-// //             We need to create a product for the test
-// //             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
-// //             createdProductDTOX.Wait();
-// //             UpdateProductDTO updatedProductX=new UpdateProductDTO();
-// //             updatedProductX.materialsToAdd=new List<MaterialDTO>(new []{new MaterialDTO()});
-// //             var updateProduct=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
-// //                                                                             .Result.id
-// //                                                                         +"/materials"
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-// //             Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
-// //         } */
-
-// // /*         /// <summary>
-// //         / Ensures that a product materials cant be removed if the materials don't exist/are not found
-// //         / </summary>
-// //         [Fact,TestPriority(10)]
-// //         public async void ensureProductMaterialsCantBeRemovedIfNotFound(){
-// //             We need to create a product for the test
-// //             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
-// //             createdProductDTOX.Wait();
-// //             UpdateProductDTO updatedProductX=new UpdateProductDTO();
-// //             updatedProductX.materialsToRemove=new List<MaterialDTO>(new []{new MaterialDTO()});
-// //             var updateProduct=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
-// //                                                                             .Result.id
-// //                                                                         +"/materials"
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-// //             Assert.True(updateProduct.StatusCode==HttpStatusCode.BadRequest);
-// //         } */
-
-// //         TODO: TEST ADD/REMOVE MEASUREMENTS
-
-// // /*         /// <summary>
-// //         / Ensures that a product category can't be updated if invalid (null/empty category)
-// //         / </summary>
-// //         [Fact,TestPriority(15)]
-// //         public async void ensureCantUpdateTheCategoryOfAProductIfInvalid(){
-// //             We need to create a product for the test
-// //             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
-// //             createdProductDTOX.Wait();
-// //             UpdateProductDTO updatedProductX=new UpdateProductDTO();
-// //             Our category will be an "empty" category
-// //             updatedProductX.productCategoryToUpdate=new ProductCategoryDTO();
-// //             var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
-// //                                                                             .Result.id
-// //                                                                         +"/category"
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-
-// //             Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
-// //         } */
-
-// // /*         /// <summary>
-// //         / Ensures that a product category can't be updated if the category is nonexisting
-// //         / </summary>
-// //         [Fact,TestPriority(16)]
-// //         public async void ensureCantUpdateTheCategoryOfAProductIfNonExisting(){
-// //             We need to create a product for the test
-// //             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
-// //             createdProductDTOX.Wait();
-// //             UpdateProductDTO updatedProductX=new UpdateProductDTO();
-// //             Our category will be a non existing category (still not persisted)
-// //             ProductCategoryDTO productCategoryDTO=new ProductCategoryDTO();
-// //             productCategoryDTO.id=0;
-// //             updatedProductX.productCategoryToUpdate=productCategoryDTO;
-            
-// //             var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
-// //                                                                             .Result.id
-// //                                                                         +"/category"
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-
-// //             Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
-// //         } */
-
-// // /*         /// <summary>
-// //         / Ensures that its not possible to add an invalid component (null / empty) to a product
-// //         / </summary>
-// //         [Fact,TestPriority(17)]
-// //         public async void ensureCantAddInvalidComponentsToProduct(){
-// //             We need to create a product for the test
-// //             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
-// //             createdProductDTOX.Wait();
-// //             UpdateProductDTO updatedProductX=new UpdateProductDTO();
-// //             First lets test to add components to the product with no components (empty list)
-// //             updatedProductX.componentsToAdd=new List<ComponentDTO>();
-            
-// //             var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
-// //                                                                             .Result.id
-// //                                                                         +"/components"
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-
-// //             Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
-
-// //             Now lets add an empty component (empty body)
-// //             updatedProductX.componentsToAdd=new List<ComponentDTO>(new []{new ComponentDTO()});
-// //             updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
-// //                                                                             .Result.id
-// //                                                                         +"/components"
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-
-// //             Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
-// //         } */
-
-// // /*         /// <summary>
-// //         / Ensures that its not possible to add a duplicated component (null / empty) to a product
-// //         / </summary>
-// //         [Fact,TestPriority(18)]
-// //         public async void ensureCantAddDuplicatedComponentsToProduct(){
-// //             We need to create a product for the test
-// //             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
-// //             createdProductDTOX.Wait();
-// //             UpdateProductDTO updatedProductX=new UpdateProductDTO();
-// //             First lets add a valid component to the product
-// //             Task<ProductDTO> complementedProductDTOTask=ensureProductIsCreatedSuccesfuly();
-// //             complementedProductDTOTask.Wait();
-// //             ComponentDTO componentDTO=new ComponentDTO();
-// //             componentDTO.product=complementedProductDTOTask.Result;
-// //             updatedProductX.componentsToAdd=new List<ComponentDTO>(new []{componentDTO});
-            
-// //             var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
-// //                                                                             .Result.id
-// //                                                                         +"/components"
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-
-// //             Assert.Equal(HttpStatusCode.OK,updateProductX.StatusCode);
-
-// //             Now lets send the same request so we try to add the same component
-// //             updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
-// //                                                                             .Result.id
-// //                                                                         +"/components"
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-
-// //             Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
-// //         } */
-        
-// // /*         /// <summary>
-// //         / Ensures that its not possible to remove an invalid component (null / empty) to a product
-// //         / </summary>
-// //         [Fact,TestPriority(19)]
-// //         public async void ensureCantRemoveInvalidComponentsToProduct(){
-// //             We need to create a product for the test
-// //             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
-// //             createdProductDTOX.Wait();
-// //             UpdateProductDTO updatedProductX=new UpdateProductDTO();
-// //             First lets test to add components to the product with no components (empty list)
-// //             updatedProductX.componentsToRemove=new List<ComponentDTO>();
-            
-// //             var updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
-// //                                                                             .Result.id
-// //                                                                         +"/components"
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-
-// //             Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
-
-// //             Now lets add an empty component (empty body)
-// //             updatedProductX.componentsToRemove=new List<ComponentDTO>(new []{new ComponentDTO()});
-// //             updateProductX=await httpClient.PutAsync(PRODUCTS_URI+"/"+createdProductDTOX
-// //                                                                             .Result.id
-// //                                                                         +"/components"
-// //                                         ,HTTPContentCreator.contentAsJSON(updatedProductX));
-
-// //             Assert.Equal(HttpStatusCode.BadRequest,updateProductX.StatusCode);
-// //         } */
-
-// //         / <summary>
-// //         / Ensures that a product cant be disabled if it doesn't exist (resource doesn't exist)
-// //         / </summary>
-// //         [Fact,TestPriority(20)]
-// //         public async void ensureCantDisableAProductWhichDoesntExist(){
-// //             var disableProduct=await httpClient.DeleteAsync(PRODUCTS_URI+"/"+"0");
-// //             Assert.Equal(HttpStatusCode.BadRequest,disableProduct.StatusCode);
-// //         }
-
-// //         / <summary>
-// //         / Ensures that a product cant be disabled if its already disabled
-// //         / </summary>
-// //         [Fact,TestPriority(21)]
-// //         public async void ensureCantDisableAProductWhichIsAlreadyDisabled(){
-// //             We need to create a product for the test
-// //             Task<ProductDTO> createdProductDTOX=ensureProductIsCreatedSuccesfuly();
-// //             createdProductDTOX.Wait();
-// //             First lets disable the product we just created
-// //             var disableProduct=await httpClient.DeleteAsync(PRODUCTS_URI+"/"+createdProductDTOX.Result.id);
-// //             Assert.Equal(HttpStatusCode.NoContent,disableProduct.StatusCode);
-
-// //             Now lets try to disable the product we just disabled
-// //             disableProduct=await httpClient.DeleteAsync(PRODUCTS_URI+"/"+createdProductDTOX.Result.id);
-// //             Assert.Equal(HttpStatusCode.BadRequest,disableProduct.StatusCode);
-// //         }
-
-// //         / <summary>
-// //         / Ensures that a product can't be created if the request body is empty
-// //         / </summary>
-// //         [Fact, TestPriority(22)]
-// //         public async void ensureProductCantBeCreatedWithEmptyRequestBody(){
-// //             We are attempting to create an object with an empty request body
-// //             var createProductEmptyRequestBody=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON("{}"));
-// //             Since we performed a request to create a product with empty request body
-// //             Then the response should be a Bad Request
-// //             Assert.True(createProductEmptyRequestBody.StatusCode==HttpStatusCode.BadRequest);
-// //         }
-
-// //         / <summary>
-// //         / Ensures that a product can't be created if it has no reference
-// //         / </summary>
-// //         [Fact, TestPriority(23)]
-// //         public async void ensureProductCantBeCreatedWithNoReference(){
-// //             We are attempting to created a product with no referene
-// //             ProductDTO productDTO=new ProductDTO();
-// //             productDTO.designation="Valid Designation";
-// //             var createProductNoReference=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON(productDTO));
-// //             Since there was an attempt to create a product with no reference
-// //             Then the response should be a Bad Request
-// //             Assert.True(createProductNoReference.StatusCode==HttpStatusCode.BadRequest);
-// //         }
-
-// //         / <summary>
-// //         / Ensures that a product can't be created if it has no designation
-// //         / </summary>
-// //         [Fact, TestPriority(24)]
-// //         public async void ensureProductCantBeCreatedWithNoDesignation(){
-// //             We are attempting to created a product with no designation
-// //             ProductDTO productDTO=new ProductDTO();
-// //             productDTO.reference="Valid Reference";
-// //             var createProductNoDesignation=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON(productDTO));
-// //             Since there was an attempt to create a product with no designation
-// //             Then the response should be a Bad Request
-// //             Assert.True(createProductNoDesignation.StatusCode==HttpStatusCode.BadRequest);
-// //         }
-
-// //         / <summary>
-// //         / Ensures that a product can't be created if it has no category
-// //         / </summary>
-// //         [Fact, TestPriority(25)]
-// //         public async void ensureProductCantBeCreatedWithNoCategory(){
-// //             We are attempting to created a product with no category
-// //             ProductDTO productDTO=new ProductDTO();
-// //             productDTO.reference="Valid Reference";
-// //             productDTO.designation="Valid Designation";
-// //             var createProductNoCategory=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON(productDTO));
-// //             Since there was an attempt to create a product with no category
-// //             Then the response should be a Bad Request
-// //             Assert.True(createProductNoCategory.StatusCode==HttpStatusCode.BadRequest);
-// //         }
-
-// //         / <summary>
-// //         / Ensures that a product can't be created if it has no materials
-// //         / </summary>
-// //         [Fact, TestPriority(26)]
-// //         public async void ensureProductCantBeCreatedWithNoMaterials(){
-// //             We are attempting to created a product with no materials
-// //             ProductDTO productDTO=new ProductDTO();
-// //             productDTO.reference="Valid Reference";
-// //             productDTO.designation="Valid Designation";
-// //             Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-// //             categoryMVTask.Wait();
-            
-// //             NOTE: ModelView is being converted to DTO for now
-// //             GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
-// //             productDTO.productCategory=new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name}; 
-
-// //             var createProductNoMaterials=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON(productDTO));
-// //             Since there was an attempt to create a product with no materials
-// //             Then the response should be a Bad Request
-// //             Assert.True(createProductNoMaterials.StatusCode==HttpStatusCode.BadRequest);
-// //         }
-
-// //         / <summary>
-// //         / Ensures that a product can't be created if it has no dimensions
-// //         / </summary>
-// //         [Fact, TestPriority(27)]
-// //         public async void ensureProductCantBeCreatedWithNoDimensions(){
-// //             We are attempting to created a product with no dimensions
-// //             ProductDTO productDTO=new ProductDTO();
-// //             productDTO.reference="Valid Reference";
-// //             productDTO.designation="Valid Designation";
-// //             Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-// //             categoryMVTask.Wait();
-
-// //             NOTE: ModelView is being converted to DTO for now
-// //             GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
-
-// //             productDTO.productCategory=new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name}; 
-// //             Materials must previously exist as they can be shared in various products
-// //             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
-// //             materialDTO.Wait();
-// //             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-// //             var createProductNoDimensions=await httpClient.PostAsync(PRODUCTS_URI,HTTPContentCreator.contentAsJSON(productDTO));
-// //             Since there was an attempt to create a product with no dimensions
-// //             Then the response should be a Bad Request
-// //             Assert.True(createProductNoDimensions.StatusCode==HttpStatusCode.BadRequest);
-// //         }
-
-// //         / <summary>
-// //         / Ensures that a product cant be created with invalid components
-// //         / </summary>
-// //         [Fact,TestPriority(28)]
-// //         public async void ensureProductCantBeCreatedWithInvalidComponents(){
-// //             ProductDTO productDTO=createAddProductModelView();
-// //             Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-// //             categoryMVTask.Wait();
-// //             Materials must previously exist as they can be shared in various products
-// //             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
-// //             materialDTO.Wait();
-// //             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-            
-// //             NOTE: ModelView is being converted to DTO for now
-// //             GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
-// //             productDTO.productCategory=new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name}; 
-
-// //             Our invalid component is a "blank" component
-// //             ComponentDTO componentDTO=new ComponentDTO();
-// //             productDTO.complements=new List<ComponentDTO>();
-// //             var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
-// //             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-// //         }
-
-// //         / <summary>
-// //         / Ensures that a product cant be created with invalid slots (null)
-// //         / </summary>
-// //         [Fact,TestPriority(29)]
-// //         public async void ensureProductCantBeCreatedWithInvalidSlots(){
-// //             ProductDTO productDTO=createAddProductModelView();
-// //             Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-// //             categoryMVTask.Wait();
-// //             Materials must previously exist as they can be shared in various products
-// //             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
-// //             materialDTO.Wait();
-// //             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-
-// //             NOTE: ModelView is being converted to DTO for now
-// //             GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
-// //             productDTO.productCategory=new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name}; 
-            
-// //             Our invalid slots are "empty" slots
-// //             productDTO.slotDimensions=new SlotDimensionSetDTO();
-// //             var response = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productDTO);
-// //             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-// //         }
-
-// //         / <summary>
-// //         / Ensures that a product can be created with componets
-// //         / </summary>
-// //         [Fact,TestPriority(31)]
-// //         public async Task<ProductDTO> ensureProductWithComponentsIsCreatedSuccesfuly(){
-// //             To save time lets just create a new product which will serve as the aggregate
-// //             ProductDTO productDTO=createAddProductModelView();
-// //             Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-// //             categoryMVTask.Wait();
-// //             Materials must previously exist as they can be shared in various products
-// //             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
-// //             materialDTO.Wait();
-// //             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-            
-// //             NOTE: ModelView is being converted to DTO for now
-// //             GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
-// //             productDTO.productCategory=new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name}; 
-            
-// //             Lets now adds the components to the product
-// //             We are going to create a product which will serve as complemented product for a product (component)
-// //             Task<ProductDTO> complementedProductDTOTask=ensureProductIsCreatedSuccesfuly();
-// //             complementedProductDTOTask.Wait();
-// //             ComponentDTO componentDTO=new ComponentDTO();
-// //             componentDTO.product=complementedProductDTOTask.Result;
-// //             productDTO.complements=new List<ComponentDTO>(new []{componentDTO});
-// //             var response=await httpClient.PostAsJsonAsync(PRODUCTS_URI,productDTO);
-// //             Assert.Equal(HttpStatusCode.Created,response.StatusCode);
-// //             return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
-// //         }
-
-// //         / <summary>
-// //         / Ensures that a product can be created with slots
-// //         / </summary>
-// //         [Fact,TestPriority(32)]
-// //         public async Task<ProductDTO> ensureProductWithSlotsIsCreatedSuccesfuly(){
-// //             ProductDTO productDTO=createAddProductModelView();
-// //             Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-// //             categoryMVTask.Wait();
-// //             Materials must previously exist as they can be shared in various products
-// //             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
-// //             materialDTO.Wait();
-// //             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-
-// //             NOTE: ModelView is being converted to DTO for now
-// //             GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
-// //             productDTO.productCategory= new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name};
-            
-// //             Now lets create valid slot dimensions and add it to the product
-// //             SlotDimensionSetDTO slotDimensionSetDTO=new SlotDimensionSetDTO();
-// //             CustomizedDimensionsDTO customizedDimensionsDTO=new CustomizedDimensionsDTO();
-// //             customizedDimensionsDTO.width=10;
-// //             customizedDimensionsDTO.height=10;
-// //             customizedDimensionsDTO.depth=10;
-// //             slotDimensionSetDTO.recommendedSlotDimensions=customizedDimensionsDTO;
-// //             slotDimensionSetDTO.minimumSlotDimensions=customizedDimensionsDTO;
-// //             slotDimensionSetDTO.maximumSlotDimensions=customizedDimensionsDTO;
-// //             productDTO.slotDimensions=slotDimensionSetDTO;
-// //              var response=await httpClient.PostAsJsonAsync(PRODUCTS_URI,productDTO);
-// //             Assert.Equal(HttpStatusCode.Created,response.StatusCode);
-// //             return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
-// //         }
-
-// //         / <summary>
-// //         / Ensures that a product can be created with slots and components
-// //         / </summary>
-// //         [Fact,TestPriority(33)]
-// //         public async Task<ProductDTO> ensureProductWithSlotAndComponentsIsCreatedSuccesfuly(){
-// //             ProductDTO productDTO=createAddProductModelView();
-// //             Task<GetProductCategoryModelView> categoryMVTask=new ProductCategoryControllerIntegrationTest(fixture).ensureAddProductCategoryReturnsCreatedIfCategoryWasAddedSuccessfully();
-// //             categoryMVTask.Wait();
-// //             Materials must previously exist as they can be shared in various products
-// //             Task<MaterialDTO> materialDTO=new MaterialsControllerIntegrationTest(fixture).ensurePostMaterialWorks();
-// //             materialDTO.Wait();
-// //             productDTO.productMaterials=new List<MaterialDTO>(new[]{materialDTO.Result});
-
-// //             NOTE: ModelView is being converted to DTO for now
-// //             GetProductCategoryModelView categoryModelView = categoryMVTask.Result;
-// //             ProductCategoryDTO categoryDTO = new ProductCategoryDTO(){id = categoryModelView.id, name = categoryModelView.name};
-
-// //             productDTO.productCategory=categoryDTO;
-// //             Now lets create valid slot dimensions and add it to the product
-// //             SlotDimensionSetDTO slotDimensionSetDTO=new SlotDimensionSetDTO();
-// //             CustomizedDimensionsDTO customizedDimensionsDTO=new CustomizedDimensionsDTO();
-// //             customizedDimensionsDTO.width=10;
-// //             customizedDimensionsDTO.height=10;
-// //             customizedDimensionsDTO.depth=10;
-// //             slotDimensionSetDTO.recommendedSlotDimensions=customizedDimensionsDTO;
-// //             slotDimensionSetDTO.minimumSlotDimensions=customizedDimensionsDTO;
-// //             slotDimensionSetDTO.maximumSlotDimensions=customizedDimensionsDTO;
-// //             productDTO.slotDimensions=slotDimensionSetDTO;
-// //             Lets now adds the components to the product
-// //             We are going to create a product which will serve as complemented product for a product (component)
-// //             Task<ProductDTO> complementedProductDTOTask=ensureProductIsCreatedSuccesfuly();
-// //             complementedProductDTOTask.Wait();
-// //             ComponentDTO componentDTO=new ComponentDTO();
-// //             componentDTO.product=complementedProductDTOTask.Result;
-// //             productDTO.complements=new List<ComponentDTO>(new []{componentDTO});
-// //              var response=await httpClient.PostAsJsonAsync(PRODUCTS_URI,productDTO);
-// //             Assert.Equal(HttpStatusCode.Created,response.StatusCode);
-// //             return JsonConvert.DeserializeObject<ProductDTO>(await response.Content.ReadAsStringAsync());
-// //         }
-
-//         /// <summary>
-//         /// Creates a product with valid properties (reference, designation and dimensions)
-//         /// </summary>
-//         /// <returns>ProductDTO with the product with valid properties</returns>
-//         private AddProductModelView createAddProductModelView(){
-//             //To ensure atomicity, our reference will be generated with a timestamp (We have no bussiness rules so far as how they should be so its valid at this point)
-//             string reference="#666"+Guid.NewGuid().ToString("n");
-//             //Designation can be whatever we decide
-//             string designation="Time N Place";
-            
-//             AddDiscreteDimensionIntervalModelView addDiscreteMV = new AddDiscreteDimensionIntervalModelView();
-//             addDiscreteMV.values = new List<double>(){1.0,2.0,30.0};
-//             addDiscreteMV.unit = MeasurementUnitService.getMinimumUnit();
-
-//             AddContinuousDimensionIntervalModelView addContinuousMV = new AddContinuousDimensionIntervalModelView();
-//             addContinuousMV.minValue = 10;
-//             addContinuousMV.maxValue = 100;
-//             addContinuousMV.increment = 1;
-//             addContinuousMV.unit = MeasurementUnitService.getMinimumUnit();
-
-//             AddSingleValueDimensionModelView addSingleMV = new AddSingleValueDimensionModelView();
-//             addSingleMV.value = 50;
-//             addSingleMV.unit = MeasurementUnitService.getMinimumUnit();
-            
-//             AddMeasurementModelView addMeasurementMV = new AddMeasurementModelView();
-//             addMeasurementMV.heightDimension = addContinuousMV;
-//             addMeasurementMV.widthDimension = addSingleMV;
-//             addMeasurementMV.depthDimension = addDiscreteMV;
-
-//             AddProductModelView addProductMV=new AddProductModelView();
-//             addProductMV.reference=reference;
-//             addProductMV.designation=designation;
-//             addProductMV.measurements = new List<AddMeasurementModelView>(){addMeasurementMV};
-
-//             return addProductMV;
-//         }
-//     }
-// }
+using backend_tests.Setup;
+using backend_tests.utils;
+using core.dto;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Xunit;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Testing;
+using core.modelview.productcategory;
+using core.modelview.product;
+using core.modelview.measurement;
+using core.modelview.dimension;
+using core.services;
+using core.modelview;
+using backend.utils;
+using core.modelview.productmaterial;
+using core.domain;
+using core.modelview.component;
+using core.modelview.productslotwidths;
+
+namespace backend_tests.Controllers
+{
+
+    /// <summary>
+    /// Integration Tests for Products Collection API
+    /// </summary>
+    [TestCaseOrderer(TestPriorityOrderer.TYPE_NAME, TestPriorityOrderer.ASSEMBLY_NAME)]
+    public sealed class assertDimensionModelViewFromPost : IClassFixture<TestFixture<TestStartupSQLite>>
+    {
+        /// <summary>
+        /// String with the URI where the API Requests will be performed
+        /// </summary>
+        private const string PRODUCTS_URI = "mycm/api/products";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the product reference is invalid
+        /// </summary>
+        private const string INVALID_PRODUCT_REFERENCE = "The product reference is invalid";
+        /// <summary>
+        /// Constant that represents the message that occurs if the product designation is invalid
+        /// </summary>
+        private const string INVALID_PRODUCT_DESIGNATION = "The product designation is invalid";
+        /// <summary>
+        /// Constant that represents the message that occurs if the product's model file name is invalid.
+        /// </summary>
+        private const string INVALID_PRODUCT_MODEL_FILENAME = "The model's filename is invalid";
+
+        /// <summary>
+        /// Constant that represents the 400 Bad Request message for when no products
+        /// are found
+        /// </summary>
+        private const string NO_PRODUCTS_FOUND_REFERENCE = "No products found.";
+
+        /// <summary>
+        /// Current HTTP Client being used to perform API requests
+        /// </summary>
+        private HttpClient httpClient;
+
+        /// <summary>
+        /// Injected Mock Server
+        /// </summary>
+        private TestFixture<TestStartupSQLite> fixture;
+
+        /// <summary>
+        /// Builds a new ProductControllerIntegrationTest with the mocked server injected by parameters
+        /// </summary>
+        /// <param name="fixture">Injected Mocked Server</param>
+        public assertDimensionModelViewFromPost(TestFixture<TestStartupSQLite> fixture)
+        {
+            this.fixture = fixture;
+            this.httpClient = fixture.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false,
+                BaseAddress = new Uri("http://localhost:5001")
+            });
+        }
+
+        [Fact, TestPriority(0)]
+        public async void testCRUDOperations()
+        {
+
+        }
+
+        [Fact, TestPriority(1)]
+        public async void ensureGetAllProductsReturnsNotFoundWhenNoProductsAreAvailable()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI);
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(2)]
+        public async void ensureGetAllProductsReturnsAllAvailableProducts()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("2");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("2");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "2");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getAllResponse = await httpClient.GetAsync(PRODUCTS_URI);
+
+            Assert.Equal(HttpStatusCode.OK, getAllResponse.StatusCode);
+
+            GetAllProductsModelView getAllProductsModelView = await getAllResponse.Content.ReadAsAsync<GetAllProductsModelView>();
+
+            foreach (GetBasicProductModelView modelView in getAllProductsModelView)
+            {
+                Assert.Equal(productModelViewFromPost.id, modelView.id);
+                Assert.Equal(productModelViewFromPost.designation, modelView.designation);
+                Assert.Equal(productModelViewFromPost.reference, modelView.reference);
+                Assert.Equal(productModelViewFromPost.modelFilename, modelView.modelFilename);
+            }
+        }
+
+        [Fact, TestPriority(3)]
+        public async void ensureGetProductByIdReturnsNotFoundWhenNoProductsAreAvailable()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/1");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(4)]
+        public async void ensureGetAllBaseProductsReturnsNotFoundWhenNoBaseProductsAreAvailable()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/base");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(5)]
+        public async void ensureGetProductByIdReturnsNotFoundWhenIdIsInvalid()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/-1");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(6)]
+        public async void ensureGetProductByIdReturnsNotFoundIfTheIdDoesntExist()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("6");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("6");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "6");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getByIdResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + 1);
+
+            Assert.Equal(HttpStatusCode.NotFound, getByIdResponse.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await getByIdResponse.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(7)]
+        public async void ensureGetProductByIdReturnsOkIfTheIdIsValidAndExists()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("6");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("6");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "6");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getByIdResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.OK, getByIdResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getByIdResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+        }
+
+        [Fact, TestPriority(8)]
+        public async void ensureGetProductByReferenceReturnsNotFoundWhenNoProductsAreAvailable()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/?reference=#666");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(9)]
+        public async void ensureGetProductByReferenceReturnsNotFoundIfReferenceDoesntExist()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("9");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("9");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "9");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getByReferenceResponse = await httpClient.GetAsync(PRODUCTS_URI + "/?reference=" + productModelViewFromPost.reference + "doesntexist");
+
+            Assert.Equal(HttpStatusCode.NotFound, getByReferenceResponse.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await getByReferenceResponse.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(10)]
+        public async void ensureGetProductByReferencesReturnsOkIfReferenceExistsAndIsValid()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("10");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("10");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "10");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getByReferenceResponse = await httpClient.GetAsync(PRODUCTS_URI + "/?reference=" + productModelViewFromPost.reference);
+
+            Assert.Equal(HttpStatusCode.OK, getByReferenceResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getByReferenceResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+        }
+
+        [Fact, TestPriority(11)]
+        public async void ensureGetProductByReferenceReturnsNotFoundWhenReferenceIsntValid()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/?reference=");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(12)]
+        public async void ensureGetProductMeasurementsReturnsNotFoundWhenNoProductsAreAvailable()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/1/dimensions/");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(13)]
+        public async void ensureGetProductMeasurementsReturnsNotFoundWhenProductIdIsntValid()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/-1/dimensions/");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(14)]
+        public async void ensureGetProductMeasurementsReturnsNotFoundWhenProductIdDoesntExist()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("14");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("14");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "14");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getByIdResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + 1 + "/dimensions");
+
+            Assert.Equal(HttpStatusCode.NotFound, getByIdResponse.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await getByIdResponse.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(15)]
+        public async void ensureGetProductMeasurementsReturnsOkWhenProductIdExistsAndIsValid()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("15");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("15");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "15");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getByIdResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions");
+
+            Assert.Equal(HttpStatusCode.OK, getByIdResponse.StatusCode);
+
+            GetAllMeasurementsModelView modelViewFromGet = await getByIdResponse.Content.ReadAsAsync<GetAllMeasurementsModelView>();
+
+            for (int i = 0; i < modelViewFromGet.Count; i++)
+            {
+                assertDimensionModelView(productModelView.measurements[i].depthDimension, modelViewFromGet[i].depth);
+                assertDimensionModelView(productModelView.measurements[i].widthDimension, modelViewFromGet[i].width);
+                assertDimensionModelView(productModelView.measurements[i].heightDimension, modelViewFromGet[i].height);
+            }
+        }
+
+        [Fact, TestPriority(16)]
+        public async void ensureGetProductComponentsReturnsNotFoundWhenNoProductsAreAvailable()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/1/components/");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(17)]
+        public async void ensureGetProductComponentsReturnsNotFoundWhenProductIdIsntValid()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/-1/components/");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(18)]
+        public async void ensureGetProductMaterialsReturnsNotFoundWhenNoProductsAreAvailable()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/1/materials/");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(19)]
+        public async void ensureGetProductMaterialsReturnsNotFoundWhenProductIdIsntValid()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/-1/materials/");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(20)]
+        public async void ensureGetProductDimensionRestrictionsReturnsNotFoundWhenNoProductsAreAvailable()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/1/dimensions/1/restrictions");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(21)]
+        public async void ensureGetProductDimensionRestrictionsReturnsNotFoundWhenProductIdIsntValid()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/-1/dimensions/1/restrictions");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(22)]
+        public async void ensureGetProductDimensionRestrictionsReturnsNotFoundWhenProductDimensionIdIsntValid()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/1/dimensions/-1/restrictions");
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(23)]
+        public async void ensureGetProductComponentRestrictionsReturnsNotFoundWhenNoProductsAreAvailable()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/1/components/1/restrictions");
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(24)]
+        public async void ensureGetProductComponentRestrictionsReturnsNotFoundWhenProductIdIsntValid()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/-1/components/1/restrictions");
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(25)]
+        public async void ensureGetProductComponentRestrictionsReturnsNotFoundWhenProductComponentIdIsntValid()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/1/components/-1/restrictions");
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(26)]
+        public async void ensureGetProductMaterialRestrictionsReturnsNotFoundWhenNoProductsAreAvailable()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/1/materials/1/restrictions");
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(27)]
+        public async void ensureGetProductMaterialRestrictionsReturnsNotFoundWhenProductIdIsntValid()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/-1/materials/1/restrictions");
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(28)]
+        public async void ensureGetProductMaterialRestrictionsReturnsNotFoundWhenMaterialIdIsntValid()
+        {
+            var response = await httpClient.GetAsync(PRODUCTS_URI + "/1/materials/-1/restrictions");
+
+            SimpleJSONMessageService responseMessage = await response.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.Equal(NO_PRODUCTS_FOUND_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(29)]
+        public async void ensureCreationOfProductWithoutComponentsAndWithoutSlotsIsPossible()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("29");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("29");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "29");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+        }
+
+        [Fact, TestPriority(30)]
+        public async void ensureCreationOfProductWithSlotsAndNoComponentsIsPossible()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("30");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("30");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "30");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+        }
+
+        [Fact, TestPriority(31)]
+        public async void ensureCreationOfProductWithNoSlotsAndWithComponentsIsPossible()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("31");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("31");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var firstComponentModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "component 1 31");
+
+            var firstComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, firstComponentModelView);
+
+            Assert.Equal(HttpStatusCode.Created, firstComponentPostResponse.StatusCode);
+
+            GetProductModelView firstComponentModelViewFromPost = await firstComponentPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
+
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, firstComponentGetResponse.StatusCode);
+
+            GetProductModelView firstComponentModelViewFromGet = await firstComponentGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(firstComponentModelViewFromPost, firstComponentModelViewFromGet);
+
+            var secondComponentModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "component 2 31");
+
+            var secondComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, secondComponentModelView);
+
+            Assert.Equal(HttpStatusCode.Created, secondComponentPostResponse.StatusCode);
+
+            GetProductModelView secondComponentModelViewFromPost = await secondComponentPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(secondComponentModelView, secondComponentModelViewFromPost);
+
+            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.Created, secondComponentGetResponse.StatusCode);
+
+            GetProductModelView secondComponentModelViewFromGet = await secondComponentGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(secondComponentModelViewFromPost, secondComponentModelViewFromGet);
+
+            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 31", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+
+            var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, productPostResponse.StatusCode);
+
+            var productModelViewFromPost = await productPostResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+
+            Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
+
+            GetProductModelView productModelViewFromGet = await productGetResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+        }
+
+        [Fact, TestPriority(32)]
+        public async void ensureCreationOfProductWithInvalidReferenceReturnsBadRequest()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("32");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("32");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "32");
+
+            productModelView.reference = "";
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.BadRequest, postResponse.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await postResponse.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(INVALID_PRODUCT_REFERENCE, responseMessage.message);
+        }
+
+        [Fact, TestPriority(33)]
+        public async void ensureCreationOfProductWithInvalidDesignationReturnsBadRequest()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("33");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("33");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "33");
+
+            productModelView.designation = "";
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.BadRequest, postResponse.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await postResponse.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(INVALID_PRODUCT_DESIGNATION, responseMessage.message);
+        }
+
+        [Fact, TestPriority(34)]
+        public async void ensureCreationOfProductWithInvalidModelFilenameReturnsBadRequest()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("34");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("34");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "34");
+
+            productModelView.modelFilename = "reallycool.flac";
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.BadRequest, postResponse.StatusCode);
+
+            SimpleJSONMessageService responseMessage = await postResponse.Content.ReadAsAsync<SimpleJSONMessageService>();
+
+            Assert.Equal(INVALID_PRODUCT_MODEL_FILENAME, responseMessage.message);
+        }
+
+        [Fact, TestPriority(35)]
+        public async void ensureCreationOfProductWithInvalidCategoryIdReturnsBadRequest()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("35");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("35");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "35");
+
+            productModelView.categoryId = -1;
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.BadRequest, postResponse.StatusCode);
+
+            //TODO Should we compare any messages here?
+        }
+
+        [Fact, TestPriority(36)]
+        public async void ensureYouCantAddANewProductMeasurementIfTheProudctIdIsInvalid()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("36");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("36");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "36");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            AddMeasurementToProductModelView newMeasurementModelView = createNewMeasurementModelView();
+
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + -1 + "/dimensions", newMeasurementModelView);
+
+            //!Bad Request or Not Found here?
+            //TODO Add message comparison
+            Assert.Equal(HttpStatusCode.BadRequest, postNewMeasurementResponse.StatusCode);
+
+        }
+
+        private void assertProductModelView(GetProductModelView modelViewFromPost, GetProductModelView modelViewFromGet)
+        {
+
+            Assert.Equal(modelViewFromPost.designation, modelViewFromGet.designation);
+            Assert.Equal(modelViewFromPost.reference, modelViewFromGet.reference);
+            Assert.Equal(modelViewFromPost.modelFilename, modelViewFromGet.modelFilename);
+            Assert.Equal(modelViewFromPost.category.id, modelViewFromGet.category.id);
+            for (int i = 0; i < modelViewFromPost.materials.Count; i++)
+            {
+                Assert.Equal(modelViewFromPost.materials[i].id, modelViewFromGet.materials[i].id);
+            }
+            for (int j = 0; j < modelViewFromPost.measurements.Count; j++)
+            {
+                assertDimensionModelView(modelViewFromPost.measurements[j].depth, modelViewFromGet.measurements[j].depth);
+                assertDimensionModelView(modelViewFromPost.measurements[j].width, modelViewFromGet.measurements[j].width);
+                assertDimensionModelView(modelViewFromPost.measurements[j].height, modelViewFromGet.measurements[j].height);
+            }
+            if (modelViewFromPost.components != null)
+            {
+                for (int k = 0; k < modelViewFromPost.components.Count; k++)
+                {
+                    assertProductComponentModelView(modelViewFromPost.components[k], modelViewFromGet.components[k]);
+                }
+            }
+            if (modelViewFromPost.slotWidths != null)
+            {
+                assertProductSlotWidthsModelView(modelViewFromPost.slotWidths, modelViewFromGet.slotWidths);
+            }
+        }
+
+        private void assertProductModelView(AddProductModelView sentModelView, GetProductModelView modelViewFromPost)
+        {
+            Assert.Equal(sentModelView.designation, modelViewFromPost.designation);
+            Assert.Equal(sentModelView.reference, modelViewFromPost.reference);
+            Assert.Equal(sentModelView.modelFilename, modelViewFromPost.modelFilename);
+            Assert.Equal(sentModelView.categoryId, modelViewFromPost.category.id);
+            for (int i = 0; i < sentModelView.materials.Count; i++)
+            {
+                Assert.Equal(sentModelView.materials[i].materialId, modelViewFromPost.materials[i].id);
+            }
+            for (int j = 0; j < sentModelView.measurements.Count; j++)
+            {
+                assertDimensionModelView(sentModelView.measurements[j].depthDimension, modelViewFromPost.measurements[j].depth);
+                assertDimensionModelView(sentModelView.measurements[j].widthDimension, modelViewFromPost.measurements[j].width);
+                assertDimensionModelView(sentModelView.measurements[j].heightDimension, modelViewFromPost.measurements[j].height);
+            }
+            if (sentModelView.components != null)
+            {
+                for (int k = 0; k < sentModelView.components.Count; k++)
+                {
+                    assertProductComponentModelView(sentModelView.components[k], modelViewFromPost.components[k]);
+                }
+            }
+            if (sentModelView.slotWidths != null)
+            {
+                assertProductSlotWidthsModelView(sentModelView.slotWidths, modelViewFromPost.slotWidths);
+            }
+        }
+
+        private void assertProductComponentModelView(AddComponentModelView sentModelView, GetBasicComponentModelView modelViewFromPost)
+        {
+            Assert.Equal(sentModelView.mandatory, modelViewFromPost.mandatory);
+            Assert.Equal(sentModelView.childProductId, modelViewFromPost.id);
+        }
+
+        private void assertProductComponentModelView(GetBasicComponentModelView modelViewFromPost, GetBasicComponentModelView modelViewFromGet)
+        {
+            Assert.Equal(modelViewFromPost.mandatory, modelViewFromGet.mandatory);
+            Assert.Equal(modelViewFromPost.id, modelViewFromGet.id);
+        }
+
+        private void assertProductSlotWidthsModelView(AddProductSlotWidthsModelView sentModelView, GetProductSlotWidthsModelView modelViewFromPost)
+        {
+            sentModelView.maxWidth = convertUnit(sentModelView.maxWidth, sentModelView.unit);
+            sentModelView.minWidth = convertUnit(sentModelView.minWidth, sentModelView.unit);
+            sentModelView.recommendedWidth = convertUnit(sentModelView.recommendedWidth, sentModelView.unit);
+
+            Assert.Equal(sentModelView.maxWidth, modelViewFromPost.maxWidth);
+            Assert.Equal(sentModelView.minWidth, modelViewFromPost.minWidth);
+            Assert.Equal(sentModelView.recommendedWidth, modelViewFromPost.recommendedWidth);
+        }
+
+        private void assertProductSlotWidthsModelView(GetProductSlotWidthsModelView modelViewFromPost, GetProductSlotWidthsModelView modelViewFromGet)
+        {
+            Assert.Equal(modelViewFromPost.maxWidth, modelViewFromGet.maxWidth);
+            Assert.Equal(modelViewFromPost.minWidth, modelViewFromGet.minWidth);
+            Assert.Equal(modelViewFromPost.recommendedWidth, modelViewFromGet.recommendedWidth);
+        }
+
+        private void assertDimensionModelView(AddDimensionModelView sentModelView, GetDimensionModelView modelViewFromPost)
+        {
+            if (sentModelView.GetType().Equals(typeof(AddSingleValueDimensionModelView)))
+            {
+                var sentSingleDimensionModelView = (AddSingleValueDimensionModelView)sentModelView;
+                sentSingleDimensionModelView.value =
+                    convertUnit(sentSingleDimensionModelView.value,
+                                sentSingleDimensionModelView.unit);
+                var singleDimensionModelViewFromPost = (GetSingleValueDimensionModelView)modelViewFromPost;
+                Assert.Equal(sentSingleDimensionModelView.value, singleDimensionModelViewFromPost.value);
+            }
+            else if (sentModelView.GetType().Equals(typeof(AddContinuousDimensionIntervalModelView)))
+            {
+                var sentContinuousDimensionIntervalModelView = (AddContinuousDimensionIntervalModelView)sentModelView;
+                sentContinuousDimensionIntervalModelView.increment =
+                    convertUnit(sentContinuousDimensionIntervalModelView.increment,
+                                sentContinuousDimensionIntervalModelView.unit);
+                sentContinuousDimensionIntervalModelView.minValue =
+                    convertUnit(sentContinuousDimensionIntervalModelView.minValue,
+                                sentContinuousDimensionIntervalModelView.unit);
+                sentContinuousDimensionIntervalModelView.maxValue =
+                    convertUnit(sentContinuousDimensionIntervalModelView.maxValue,
+                                sentContinuousDimensionIntervalModelView.unit);
+                var continuousDimensionIntervalModelViewFromPost = (GetContinuousDimensionIntervalModelView)modelViewFromPost;
+                Assert.Equal(sentContinuousDimensionIntervalModelView.minValue, continuousDimensionIntervalModelViewFromPost.minValue, 1);
+                Assert.Equal(sentContinuousDimensionIntervalModelView.maxValue, continuousDimensionIntervalModelViewFromPost.maxValue);
+                Assert.Equal(sentContinuousDimensionIntervalModelView.increment, continuousDimensionIntervalModelViewFromPost.increment);
+            }
+            else if (sentModelView.GetType().Equals(typeof(AddDiscreteDimensionIntervalModelView)))
+            {
+                var sentDiscreteDimensionIntervalModelView = (AddDiscreteDimensionIntervalModelView)sentModelView;
+                var discreteDimensionIntervalModelViewFromPost = (GetDiscreteDimensionIntervalModelView)modelViewFromPost;
+                for (int i = 0; i < sentDiscreteDimensionIntervalModelView.values.Count; i++)
+                {
+                    Assert.Equal(sentDiscreteDimensionIntervalModelView.values[i], discreteDimensionIntervalModelViewFromPost.values[i]);
+                }
+            }
+        }
+
+        private void assertDimensionModelView(GetDimensionModelView modelViewFromPost, GetDimensionModelView modelViewFromGet)
+        {
+            if (modelViewFromPost.GetType().Equals(typeof(GetSingleValueDimensionModelView)))
+            {
+                var singleDimensionModelViewFromPost = (GetSingleValueDimensionModelView)modelViewFromPost;
+                var singleDimensionModelViewFromGet = (GetSingleValueDimensionModelView)modelViewFromGet;
+                Assert.Equal(singleDimensionModelViewFromPost.value, singleDimensionModelViewFromGet.value);
+                Assert.Equal(singleDimensionModelViewFromPost.id, singleDimensionModelViewFromGet.id);
+            }
+            else if (modelViewFromPost.GetType().Equals(typeof(GetContinuousDimensionIntervalModelView)))
+            {
+                var continuousDimensionIntervalModelViewFromPost = (GetContinuousDimensionIntervalModelView)modelViewFromPost;
+                var continuousDimensionIntervalModelViewFromGet = (GetContinuousDimensionIntervalModelView)modelViewFromGet;
+                Assert.Equal(continuousDimensionIntervalModelViewFromPost.increment, continuousDimensionIntervalModelViewFromGet.increment);
+                Assert.Equal(continuousDimensionIntervalModelViewFromPost.minValue, continuousDimensionIntervalModelViewFromGet.minValue);
+                Assert.Equal(continuousDimensionIntervalModelViewFromPost.maxValue, continuousDimensionIntervalModelViewFromGet.maxValue);
+            }
+            else if (modelViewFromPost.GetType().Equals(typeof(GetDiscreteDimensionIntervalModelView)))
+            {
+                var discreteDimensionIntervalModelViewFromPost = (GetDiscreteDimensionIntervalModelView)modelViewFromPost;
+                var discreteDimensionIntervalModelViewFromGet = (GetDiscreteDimensionIntervalModelView)modelViewFromGet;
+                for (int i = 0; i < discreteDimensionIntervalModelViewFromPost.values.Count; i++)
+                {
+                    Assert.Equal(discreteDimensionIntervalModelViewFromPost.values[i], discreteDimensionIntervalModelViewFromGet.values[i]);
+                }
+            }
+        }
+
+        /* Auxiliary methods */
+        private AddProductModelView createProductWithoutComponentsAndWithoutSlots(GetProductCategoryModelView categoryModelView, AddProductMaterialModelView materialModelView, string testNumber)
+        {
+            AddProductModelView productModelView = new AddProductModelView();
+            productModelView.categoryId = categoryModelView.id;
+            productModelView.materials = new List<AddProductMaterialModelView>();
+            productModelView.materials.Add(materialModelView);
+            productModelView.modelFilename = "ModelTest" + testNumber + ".glb";
+            productModelView.reference = "ReferenceTest" + testNumber;
+            productModelView.designation = "DesignationTest" + testNumber;
+            productModelView.measurements = new List<AddMeasurementModelView>();
+            productModelView.measurements.Add(createMeasurementModelView());
+
+            return productModelView;
+        }
+
+        private AddProductModelView createProductWithSlots(GetProductCategoryModelView categoryModelView, AddProductMaterialModelView materialModelView, string testNumber)
+        {
+            AddProductModelView productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelView, materialModelView, testNumber);
+
+            productModelView.slotWidths = new AddProductSlotWidthsModelView();
+            productModelView.slotWidths.maxWidth = 40;
+            productModelView.slotWidths.minWidth = 20;
+            productModelView.slotWidths.recommendedWidth = 30;
+            productModelView.slotWidths.unit = "cm";
+
+            return productModelView;
+        }
+
+        private AddProductModelView createProductWithComponents(GetProductCategoryModelView categoryModelView, AddProductMaterialModelView materialModelView, string testNumber, long firstComponentId, long secondComponentId)
+        {
+            AddProductModelView productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelView, materialModelView, testNumber);
+
+            AddComponentModelView componentModelView = new AddComponentModelView();
+            AddComponentModelView otherComponentModelView = new AddComponentModelView();
+            componentModelView.mandatory = true;
+            componentModelView.childProductId = firstComponentId;
+            otherComponentModelView.mandatory = false;
+            otherComponentModelView.childProductId = secondComponentId;
+
+            productModelView.components = new List<AddComponentModelView>() { componentModelView, otherComponentModelView };
+
+            return productModelView;
+        }
+
+        private AddProductCategoryModelView createCategoryModelView(string testNumber)
+        {
+            AddProductCategoryModelView modelView = new AddProductCategoryModelView();
+            modelView.name = "TestCategory" + testNumber;
+            return modelView;
+        }
+
+        //!Replace this with createMaterialModelView after refactor is made
+        private MaterialDTO createMaterialDTO(string testNumber)
+        {
+            MaterialDTO materialDTO = new MaterialDTO();
+            materialDTO.designation = "Material Designation Test" + testNumber;
+            materialDTO.reference = "Material Reference Test" + testNumber;
+            materialDTO.image = "Material Image Test" + testNumber + ".jpeg";
+            ColorDTO colorDTO = new ColorDTO();
+            ColorDTO otherColorDTO = new ColorDTO();
+            FinishDTO finishDTO = new FinishDTO();
+            FinishDTO otherFinishDTO = new FinishDTO();
+            colorDTO.red = 100;
+            colorDTO.blue = 100;
+            colorDTO.green = 100;
+            colorDTO.alpha = 10;
+            colorDTO.name = "Color Test" + testNumber;
+            otherColorDTO.red = 150;
+            otherColorDTO.blue = 150;
+            otherColorDTO.green = 150;
+            otherColorDTO.alpha = 100;
+            otherColorDTO.name = "Other Color Test" + testNumber;
+            finishDTO.description = "Finish Test" + testNumber;
+            otherFinishDTO.description = "Other Finish Test" + testNumber;
+            materialDTO.colors = new List<ColorDTO>() { colorDTO, otherColorDTO };
+            materialDTO.finishes = new List<FinishDTO>() { finishDTO, otherFinishDTO };
+            return materialDTO;
+        }
+
+        private AddMeasurementModelView createMeasurementModelView()
+        {
+            AddMeasurementModelView measurementModelView = new AddMeasurementModelView();
+            AddSingleValueDimensionModelView heightModelView = new AddSingleValueDimensionModelView();
+            AddContinuousDimensionIntervalModelView widthModelView = new AddContinuousDimensionIntervalModelView();
+            AddDiscreteDimensionIntervalModelView depthModelView = new AddDiscreteDimensionIntervalModelView();
+            heightModelView.unit = "dm";
+            heightModelView.value = 10;
+            widthModelView.unit = "cm";
+            widthModelView.minValue = 50;
+            widthModelView.maxValue = 100;
+            widthModelView.increment = 5;
+            depthModelView.unit = "mm";
+            depthModelView.values = new List<double>() { 100, 200, 300, 400, 500 };
+            measurementModelView.depthDimension = depthModelView;
+            measurementModelView.heightDimension = heightModelView;
+            measurementModelView.widthDimension = widthModelView;
+
+            return measurementModelView;
+        }
+
+        private AddMeasurementToProductModelView createNewMeasurementModelView()
+        {
+            AddMeasurementToProductModelView newMeasurementModelView = new AddMeasurementToProductModelView();
+            AddSingleValueDimensionModelView newDepth = new AddSingleValueDimensionModelView();
+            newDepth.unit = "cm";
+            newDepth.value = 10;
+            AddContinuousDimensionIntervalModelView newWidth = new AddContinuousDimensionIntervalModelView();
+            newWidth.unit = "mm";
+            newWidth.increment = 50;
+            newWidth.minValue = 1000;
+            newWidth.maxValue = 2000;
+            AddDiscreteDimensionIntervalModelView newHeight = new AddDiscreteDimensionIntervalModelView();
+            newHeight.unit = "cm";
+            newHeight.values = new List<double>() { 60, 70, 80, 90, 101, 55, 52 };
+            newMeasurementModelView.depthDimension = newDepth;
+            newMeasurementModelView.heightDimension = newHeight;
+            newMeasurementModelView.widthDimension = newWidth;
+            return newMeasurementModelView;
+        }
+
+        private static double convertUnit(double value, string unit)
+        {
+            return MeasurementUnitService.convertToUnit(value, unit);
+        }
+    }
+}
