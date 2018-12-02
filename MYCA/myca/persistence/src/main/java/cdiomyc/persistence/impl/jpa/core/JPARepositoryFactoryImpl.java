@@ -4,13 +4,13 @@ import cdiomyc.core.persistence.RepositoryFactory;
 import cdiomyc.core.persistence.UserRepository;
 
 /**
- * JPARepositoryFactory class, represents the JPA implementation of the
- * repository factory
+ * JPARepositoryFactoryImpl class, represents the JPA implementation of the
+ repository factory
  *
  * @author João
  */
-public class JPARepositoryFactory implements RepositoryFactory {
-
+public class JPARepositoryFactoryImpl implements RepositoryFactory {
+    
     /**
      * Creates an User repository
      *
