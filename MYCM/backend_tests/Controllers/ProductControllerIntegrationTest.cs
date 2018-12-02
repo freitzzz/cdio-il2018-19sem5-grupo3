@@ -1457,6 +1457,194 @@ namespace backend_tests.Controllers
             //TODO Compare messages
         }
 
+        [Fact, TestPriority(67)]
+        public async void ensureCreationOfProductWithInvalidMaterialsReturnsBadRequest()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("67");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("67");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "67");
+
+            productModelView.materials[0].materialId = -1;
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.BadRequest, postResponse.StatusCode);
+
+            //TODO Compare messages
+        }
+
+        [Fact, TestPriority(68)]
+        public async void ensureAddingProductMeasurementWithNullBodyReturnsBadRequest()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("68");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("68");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "68");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            AddMeasurementModelView newMeasurementModelView = null;
+
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+
+            Assert.Equal(HttpStatusCode.BadRequest, postNewMeasurementResponse.StatusCode);
+
+            //TODO Compare message
+        }
+
+        [Fact, TestPriority(69)]
+        public async void ensureAddingProductMeasurementWithNullHeightReturnsBadRequest()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("69");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("69");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "69");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            AddMeasurementModelView newMeasurementModelView = createNewMeasurementModelView();
+
+            newMeasurementModelView.heightDimension = null;
+
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+
+            Assert.Equal(HttpStatusCode.BadRequest, postNewMeasurementResponse.StatusCode);
+
+            //TODO Compare message
+        }
+
+        [Fact, TestPriority(70)]
+        public async void ensureAddingProductMeasurementWithNullDepthReturnsBadRequest()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("70");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("70");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "70");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            AddMeasurementModelView newMeasurementModelView = createNewMeasurementModelView();
+
+            newMeasurementModelView.depthDimension = null;
+
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+
+            Assert.Equal(HttpStatusCode.BadRequest, postNewMeasurementResponse.StatusCode);
+
+            //TODO Compare message
+        }
+
+        [Fact, TestPriority(71)]
+        public async void ensureAddingProductMeasurementWithNullWidthReturnsBadRequest()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("71");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("71");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "71");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            AddMeasurementModelView newMeasurementModelView = createNewMeasurementModelView();
+
+            newMeasurementModelView.widthDimension = null;
+
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+
+            Assert.Equal(HttpStatusCode.BadRequest, postNewMeasurementResponse.StatusCode);
+
+            //TODO Compare message
+        }
+
+        [Fact, TestPriority(72)]
+        public async void ensureAddingProductMeasurementWithNullDimensionUnitReturnsBadRequest()
+        {
+            AddProductCategoryModelView categoryModelView = createCategoryModelView("72");
+            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+
+            //!Update this when MaterialDTOs are replaced with Model Views
+            MaterialDTO materialDTO = createMaterialDTO("72");
+            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+
+            var productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "72");
+
+            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+
+            assertProductModelView(productModelView, productModelViewFromPost);
+
+            AddMeasurementModelView newMeasurementModelView = createNewMeasurementModelView();
+
+            newMeasurementModelView.widthDimension.unit = null;
+            newMeasurementModelView.depthDimension.unit = null;
+            newMeasurementModelView.heightDimension.unit = null;
+
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+
+            Assert.Equal(HttpStatusCode.BadRequest, postNewMeasurementResponse.StatusCode);
+
+            //TODO Compare message
+        }
+
         private void assertProductModelView(GetProductModelView modelViewFromPost, GetProductModelView modelViewFromGet)
         {
 
