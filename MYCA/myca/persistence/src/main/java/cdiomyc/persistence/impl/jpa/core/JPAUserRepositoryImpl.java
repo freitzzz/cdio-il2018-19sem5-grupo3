@@ -3,7 +3,6 @@ package cdiomyc.persistence.impl.jpa.core;
 import cdiomyc.core.domain.User;
 import cdiomyc.core.domain.auth.Auth;
 import cdiomyc.core.mv.authentication.AuthenticationMV;
-import cdiomyc.core.mv.authentication.AuthenticationMVService;
 import cdiomyc.core.mv.authentication.CredentialsAuthenticationMV;
 import cdiomyc.core.persistence.UserRepository;
 import cdiomyc.persistence.impl.jpa.BaseJPARepository;
@@ -55,6 +54,22 @@ public class JPAUserRepositoryImpl extends BaseJPARepository<User, Long> impleme
             return (User) query.getSingleResult();
         }
         throw new IllegalArgumentException("No User found with the given authentication details!");
+    }
+    
+    /**
+     * Finds an user by its session API token
+     * @param sessionAPIToken String with the user API token
+     * @return User with the user who has a certain session API token
+     */
+    @Override
+    public User findUserBySessionAPIToken(String sessionAPIToken) {
+        Query userBySessionAPITokenQuery=super.getEntityManager()
+                .createQuery("SELECT U from User U,Session US "
+                            + "WHERE US.sessionToken= :sessionAPIToken "
+                            + "AND US MEMBER OF U.sessions")
+                .setParameter("sessionAPIToken",sessionAPIToken)
+                .setMaxResults(1);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
