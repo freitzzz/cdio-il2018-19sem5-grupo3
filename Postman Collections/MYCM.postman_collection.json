@@ -1,0 +1,1467 @@
+{
+	"info": {
+		"_postman_id": "51e92e1a-1a4a-4c2c-8a6e-c26cd5d8c1e0",
+		"name": "MYCM",
+		"description": "HTTP Requests related to the MYCM REST API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Categories Collection",
+			"item": [
+				{
+					"name": "GET Requests",
+					"item": [
+						{
+							"name": "GET All Categories",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/categories",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"categories"
+									]
+								},
+								"description": "Displays all available categories."
+							},
+							"response": []
+						},
+						{
+							"name": "GET All Subcategories",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/categories/{parentId}/subcategories",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"categories",
+										"{parentId}",
+										"subcategories"
+									]
+								},
+								"description": "Displays all subcategories of a certain parent category"
+							},
+							"response": []
+						},
+						{
+							"name": "GET Category By Name",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/categories?name=*",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"categories"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "*"
+										}
+									]
+								},
+								"description": "Displays a category's information"
+							},
+							"response": []
+						},
+						{
+							"name": "GET Category By ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/categories/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"categories",
+										"{id}"
+									]
+								},
+								"description": "Displays a category's information"
+							},
+							"response": []
+						}
+					],
+					"description": "All GET Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "PUT Requests",
+					"item": [
+						{
+							"name": "PUT Category",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"New Name\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/categories/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"categories",
+										"{id}"
+									]
+								},
+								"description": "Updates category data"
+							},
+							"response": []
+						}
+					],
+					"description": "All PUT Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "POST Requests",
+					"item": [
+						{
+							"name": "POST Category",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Category Name\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/categories",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"categories"
+									]
+								},
+								"description": "Creates a new category"
+							},
+							"response": []
+						},
+						{
+							"name": "POST Subcategory",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Subcategory Name\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/categories/{parentId}/subcategories",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"categories",
+										"{parentId}",
+										"subcategories"
+									]
+								},
+								"description": "Creates a new subcategory"
+							},
+							"response": []
+						}
+					],
+					"description": "All POST Requests related to this collection should go here.",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "DELETE Requests",
+					"item": [
+						{
+							"name": "DELETE Category",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/categories/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"categories",
+										"{id}"
+									]
+								},
+								"description": "Disables a category"
+							},
+							"response": []
+						}
+					],
+					"description": "All DELETE Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "Requests related to categories"
+		},
+		{
+			"name": "Materials Collection",
+			"item": [
+				{
+					"name": "GET Requests",
+					"item": [
+						{
+							"name": "GET All Materials",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/materials",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"materials"
+									]
+								},
+								"description": "Returns all available materials"
+							},
+							"response": []
+						},
+						{
+							"name": "GET Material By Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/materials/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"materials",
+										"{id}"
+									]
+								},
+								"description": "Returns information about a material"
+							},
+							"response": []
+						}
+					],
+					"description": "All GET Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "PUT Requests",
+					"item": [
+						{
+							"name": "PUT Material",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"reference\":\"#777\",\n    \"designation\":\"MDF\",\n    \"image\":\"mdf.jpg\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/materials/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"materials",
+										"{id}"
+									]
+								},
+								"description": "Updates basic information of a material"
+							},
+							"response": []
+						}
+					],
+					"description": "All PUT Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "DELETE Requests",
+					"item": [
+						{
+							"name": "DELETE Material",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/materials/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"materials",
+										"{id}"
+									]
+								},
+								"description": "Disables a material"
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Material Color",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/materials/{id}/colors/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"materials",
+										"{id}",
+										"colors",
+										"{id}"
+									]
+								},
+								"description": "Removes a color from a material"
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Material Finish",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/materials/{id}/finishes/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"materials",
+										"{id}",
+										"finishes",
+										"{id}"
+									]
+								},
+								"description": "Removes a finish from a material"
+							},
+							"response": []
+						}
+					],
+					"description": "All DELETE Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "POST Requests",
+					"item": [
+						{
+							"name": "POST Material",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"reference\": \"#666\",\n  \"designation\": \"Cherry Wood\",\n  \"image\": \"cherry-wood.png\",\n  \"colors\": [\n    {\n      \"name\": \"White\",\n      \"red\": \"255\",\n      \"green\": \"255\",\n      \"blue\": \"255\",\n      \"alpha\": \"0\"\n    },\n    {\n      \"name\": \"Black\",\n      \"red\": \"0\",\n      \"green\": \"0\",\n      \"blue\": \"0\",\n      \"alpha\": \"0\"\n    }\n  ],\n  \"finishes\": [\n    {\n      \"description\": \"varnish\"\n    },\n    {\n      \"description\": \"matte\"\n    }\n  ]\n}"
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/materials",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"materials"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Material Color",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\":\"Blue\",\n    \"red\":\"240\",\n    \"green\":\"248\",\n    \"blue\":\"255\",\n    \"alpha\":\"0\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/materials/{id}/colors",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"materials",
+										"{id}",
+										"colors"
+									]
+								},
+								"description": "Adds a new color to a material"
+							},
+							"response": []
+						},
+						{
+							"name": "POST Material Finish",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"description\":\"varnish\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/materials/{id}/finish",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"materials",
+										"{id}",
+										"finish"
+									]
+								},
+								"description": "Adds a new finish to a material"
+							},
+							"response": []
+						}
+					],
+					"description": "All POST Requests related to this collection should go here.",
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "Requests related to materials",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c089fb83-0e15-44c3-a0fb-a2d952d29857",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "005ae458-b875-422b-9fe3-337285e1b56e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Customized Product Collections Collection",
+			"item": [
+				{
+					"name": "GET Requests",
+					"item": [],
+					"description": "All GET Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "PUT Requests",
+					"item": [],
+					"description": "All PUT Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "DELETE Requests",
+					"item": [],
+					"description": "All DELETE Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "POST Requests",
+					"item": [],
+					"description": "All POST Requests related to this collection should go here.",
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "Requests related to customized product collections collection",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c089fb83-0e15-44c3-a0fb-a2d952d29857",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "005ae458-b875-422b-9fe3-337285e1b56e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Products Collection",
+			"item": [
+				{
+					"name": "GET Requests",
+					"item": [],
+					"description": "All GET Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "PUT Requests",
+					"item": [],
+					"description": "All PUT Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "DELETE Requests",
+					"item": [],
+					"description": "All DELETE Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "POST Requests",
+					"item": [],
+					"description": "All POST Requests related to this collection should go here.",
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "Requests related to product collections",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c089fb83-0e15-44c3-a0fb-a2d952d29857",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "005ae458-b875-422b-9fe3-337285e1b56e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Algorithms Collection",
+			"item": [
+				{
+					"name": "GET Requests",
+					"item": [
+						{
+							"name": "GET All Algorithms",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": ""
+								},
+								"description": "Displays all available algorithms"
+							},
+							"response": []
+						},
+						{
+							"name": "GET Algorithm",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": ""
+								},
+								"description": "Displays the information of a specific algorithm"
+							},
+							"response": []
+						},
+						{
+							"name": "GET Algorithm Inputs",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": ""
+								},
+								"description": "Displays an algorithm's required inputs"
+							},
+							"response": []
+						}
+					],
+					"description": "All GET Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "PUT Requests",
+					"item": [],
+					"description": "All PUT Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "DELETE Requests",
+					"item": [],
+					"description": "All DELETE Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "POST Requests",
+					"item": [],
+					"description": "All POST Requests related to this collection should go here.",
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "Requests related to algorithms collections",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c089fb83-0e15-44c3-a0fb-a2d952d29857",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "005ae458-b875-422b-9fe3-337285e1b56e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Customized Products Collection",
+			"item": [
+				{
+					"name": "GET Requests",
+					"item": [
+						{
+							"name": "GET All Customized Products",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/customizedproducts",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"customizedproducts"
+									]
+								},
+								"description": "Displays all available customized products"
+							},
+							"response": []
+						},
+						{
+							"name": "GET Customized Product By Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/customizedproducts/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"customizedproducts",
+										"{id}"
+									]
+								},
+								"description": "Displays information about a customized product"
+							},
+							"response": []
+						}
+					],
+					"description": "All GET Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "PUT Requests",
+					"item": [
+						{
+							"name": "PUT Customized Product ",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"reference\":\"updated reference\",\n    \"designation\":\"updated designation\",\n    \"customizedDimensions\": {\n        \"depth\": \"100.0\",\n        \"width\": \"100.0\",\n        \"height\": \"100.0\",\n        \"unit\": \"cm\"\n    },\n    \"customizedMaterial\": {\n        \"material\": {\n            \"id\": \"1\"\n        },\n        \"color\": {\n            \"name\": \"color1\",\n            \"red\": \"40\",\n            \"green\": \"30\",\n            \"blue\": \"50\",\n            \"alpha\": \"0\"\n        },\n        \"finish\": {\n            \"description\": \"varnish\"\n        }\n    }\n}"
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/customizedproducts/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"customizedproducts",
+										"{id}"
+									]
+								},
+								"description": "Updates information of a customized product"
+							},
+							"response": []
+						}
+					],
+					"description": "All PUT Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "DELETE Requests",
+					"item": [
+						{
+							"name": "DELETE Customized Product Slot",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/customizedproducts/{id}/slots/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"customizedproducts",
+										"{id}",
+										"slots",
+										"{id}"
+									]
+								},
+								"description": "Removes a slot from a customized product"
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Customized Product from Slot",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/customizedproducts/{id}/slots/{id}/customizedproducts/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"customizedproducts",
+										"{id}",
+										"slots",
+										"{id}",
+										"customizedproducts",
+										"{id}"
+									]
+								},
+								"description": "Removes a customized product from a slot"
+							},
+							"response": []
+						}
+					],
+					"description": "All DELETE Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "POST Requests",
+					"item": [
+						{
+							"name": "POST Customized Product",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"designation\": \"Ultra-Wardrobe\",\n\t\"reference\": \"#50000\",\n\t\"product\": {\n\t\t\"id\": \"1\"\n\t},\n\t\"customizedMaterial\": {\n\t\t\"material\": {\n\t\t\t\"id\": \"1\"\n\t\t},\n\t\t\"color\": {\n\t\t\t\"name\": \"color1\",\n\t\t\t\"red\": \"40\",\n\t\t\t\"green\": \"30\",\n\t\t\t\"blue\": \"50\",\n\t\t\t\"alpha\": \"0\"\n\t\t},\n\t\t\"finish\": {\n\t\t\t\"description\": \"varnish\"\n\t\t}\n\t},\n\t\"slots\": [\n\t\t {\n\t\t\t\"depth\": \"100.0\",\n\t\t\t\"width\": \"50.0\",\n\t\t\t\"height\": \"100\",\n\t\t\t\"unit\": \"cm\"\n\t\t}\n\t],\n\t\"customizedDimensions\": {\n\t\t\"depth\": \"100.0\",\n\t\t\"width\": \"100.0\",\n\t\t\"height\": \"100.0\",\n\t\t\"unit\": \"cm\"\n\t}\n}"
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/customizedproducts",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"customizedproducts"
+									]
+								},
+								"description": "Creates a new customized product"
+							},
+							"response": []
+						},
+						{
+							"name": "POST Customized Product To Slot",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"customizedProducts\": [{\n        \"designation\": \"Ultra-Wardrobe\",\n        \"reference\": \"#50000\",\n        \"product\": {\n            \"id\": \"1\"\n        },\n        \"customizedMaterial\": {\n            \"material\": {\n                \"id\": \"1\"\n            },\n            \"color\": {\n                \"name\": \"color1\",\n                \"red\": \"40\",\n                \"green\": \"30\",\n                \"blue\": \"50\",\n                \"alpha\": \"0\"\n            },\n            \"finish\": {\n                \"description\": \"varnish\"\n            }\n        },\n        \"slots\": [{\n            \"customizedDimensions\": {\n                \"depth\": \"100.0\",\n                \"width\": \"50.0\",\n                \"height\": \"100\",\n                \"unit\": \"cm\"\n            }\n        }],\n        \"customizedDimensions\": {\n            \"depth\": \"100.0\",\n            \"width\": \"100.0\",\n            \"height\": \"100.0\",\n            \"unit\": \"cm\"\n        }\n    }]\n}"
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/customizedproducts/{id}/slots/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"customizedproducts",
+										"{id}",
+										"slots",
+										"{id}"
+									]
+								},
+								"description": "Adds a customized product to a slot"
+							},
+							"response": []
+						}
+					],
+					"description": "All POST Requests related to this collection should go here.",
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "Requests related to customized products collections",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c089fb83-0e15-44c3-a0fb-a2d952d29857",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "005ae458-b875-422b-9fe3-337285e1b56e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Commercial Catalogue Collection",
+			"item": [
+				{
+					"name": "GET Requests",
+					"item": [],
+					"description": "All GET Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "PUT Requests",
+					"item": [],
+					"description": "All PUT Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "DELETE Requests",
+					"item": [],
+					"description": "All DELETE Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "POST Requests",
+					"item": [],
+					"description": "All POST Requests related to this collection should go here.",
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "Requests related to commercial catalogue collections",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c089fb83-0e15-44c3-a0fb-a2d952d29857",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "005ae458-b875-422b-9fe3-337285e1b56e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Price Tables Collection",
+			"item": [
+				{
+					"name": "GET Requests",
+					"item": [
+						{
+							"name": "GET All Materials Price History",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/prices/materials",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"prices",
+										"materials"
+									]
+								},
+								"description": "Displays the price history of all materials"
+							},
+							"response": []
+						},
+						{
+							"name": "GET Material Price History",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/prices/materials/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"prices",
+										"materials",
+										"{id}"
+									]
+								},
+								"description": "Displays the price history of a material"
+							},
+							"response": []
+						},
+						{
+							"name": "GET All Material Finishes Price History",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/prices/materials/{id}/finishes",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"prices",
+										"materials",
+										"{id}",
+										"finishes"
+									]
+								},
+								"description": "Displays the price history of all the finishes of a material"
+							},
+							"response": []
+						},
+						{
+							"name": "GET Material Finish Price History",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/prices/materials/{id}/finishes/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"prices",
+										"materials",
+										"{id}",
+										"finishes",
+										"{id}"
+									]
+								},
+								"description": "Displays the price history of a material finish"
+							},
+							"response": []
+						}
+					],
+					"description": "All GET Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "PUT Requests",
+					"item": [
+						{
+							"name": "PUT Material Price Table Entry",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"tableEntry\": {\n        \"price\": {\n            \"value\": 8,\n            \"currency\": \"GBP\",\n            \"area\": \"INC2\"\n        },\n        \"startingDate\": \"2014-01-22T12:06:00\",\n        \"endingDate\": \"2014-01-22T12:07:00\"\n    }\n}"
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/prices/materials/{id}/entries/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"prices",
+										"materials",
+										"{id}",
+										"entries",
+										"{id}"
+									]
+								},
+								"description": "Updates a material price table entry"
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Material Finish Price Table Entry",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"tableEntry\": {\n        \"price\": {\n            \"value\": 8,\n            \"currency\": \"GBP\",\n            \"area\": \"INC2\"\n        },\n        \"startingDate\": \"2014-01-22T12:06:00\",\n        \"endingDate\": \"2014-01-22T12:07:00\"\n    }\n}"
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/prices/materials/{id}/finishes/{id}/entries/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"prices",
+										"materials",
+										"{id}",
+										"finishes",
+										"{id}",
+										"entries",
+										"{id}"
+									]
+								},
+								"description": "Updates a material finish price table entry"
+							},
+							"response": []
+						}
+					],
+					"description": "All PUT Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "DELETE Requests",
+					"item": [],
+					"description": "All DELETE Requests related to this collection should go here",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "POST Requests",
+					"item": [
+						{
+							"name": "POST Material Price Table Entry",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"tableEntry\": {\n        \"price\": {\n            \"value\": 10,\n            \"currency\": \"EUR\",\n            \"area\": \"M2\"\n        },\n        \"startingDate\": \"2014-01-22T12:04:00\",\n        \"endingDate\": \"2014-01-22T12:05:01\"\n    }\n}"
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/prices/materials/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"prices",
+										"materials",
+										"{id}"
+									]
+								},
+								"description": "Adds a new material price table entry"
+							},
+							"response": []
+						},
+						{
+							"name": "POST Material Finish Price Table Entry",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"tableEntry\": {\n        \"price\": {\n            \"value\": 10,\n            \"currency\": \"EUR\",\n            \"area\": \"M2\"\n        },\n        \"startingDate\": \"2014-01-22T12:04:00\",\n        \"endingDate\": \"2014-01-22T12:05:01\"\n    }\n}"
+								},
+								"url": {
+									"raw": "http://localhost:5000/mycm/api/prices/materials/{id}/finishes/{id}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"mycm",
+										"api",
+										"prices",
+										"materials",
+										"{id}",
+										"finishes",
+										"{id}"
+									]
+								},
+								"description": "Adds a new material finish price table entry"
+							},
+							"response": []
+						}
+					],
+					"description": "All POST Requests related to this collection should go here.",
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "Requests related to commercial catalogue collections",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c089fb83-0e15-44c3-a0fb-a2d952d29857",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "005ae458-b875-422b-9fe3-337285e1b56e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Customized Product Creation Example",
+			"item": [],
+			"description": "This folder contains a sequence of requests to create a customized product.\nRead the \"Customized Product Creation\" section of the README file for more information."
+		}
+	]
+}
