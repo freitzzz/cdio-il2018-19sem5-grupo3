@@ -1,32 +1,21 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using backend.Models;
-using core.application;
-using core.domain;
 using core.dto.options;
 using core.modelview.component;
-using core.modelview.dimension;
 using core.modelview.material;
 using core.modelview.product;
 using core.modelview.restriction;
-using support.dto;
-using System.Web;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using support.utils;
 using core.persistence;
 using core.dto;
 using backend.utils;
-using System.Runtime.Serialization;
 using Microsoft.Extensions.Logging;
 using core.modelview.measurement;
 using core.exceptions;
+using core.modelview.productmaterial;
 
-namespace backend.Controllers {
+namespace backend.Controllers
+{
 
     /// <summary>
     /// Backend ProductController class
@@ -38,17 +27,35 @@ namespace backend.Controllers {
         /// </summary>
         private const string UNEXPECTED_ERROR = "An unexpected error occurred, please try again later.";
         /// <summary>
-        /// Constant that represents the 400 Bad Request message for when no products
-        /// are found
+        /// Constant that represents error message presented when no instances of Product are found.
         /// </summary>
-        private const string NO_PRODUCTS_FOUND_REFERENCE = "No products found.";
-
+        private const string NO_PRODUCTS_FOUND = "No products found.";
+        /// <summary>
+        /// Constant that represents the error message when invalid product information is provided.
+        /// </summary>
+        private const string INVALID_PRODUCT_DATA = "Invalid product information. Please provide valid information.";
+        /// <summary>
+        /// Constant that represents the error message when invalid measurement information is provided.
+        /// </summary>
+        private const string INVALID_MEASUREMENT_DATA = "Invalid dimensions information. Please provide valid information.";
+        /// <summary>
+        /// Constant that represents the error message when invalid component information is provided.
+        /// </summary>
+        private const string INVALID_COMPONENT_DATA = "Invalid component information. Please provide valid information.";
+        /// <summary>
+        /// Constant that represents the error message when invalid material information is provided.
+        /// </summary>
+        private const string INVALID_MATERIAL_DATA = "Invalid material information. Please provide valid information.";
+        /// <summary>
+        /// Constant that represents the error message when invalid restriction information is provided.
+        /// </summary>
+        private const string INVALID_RESTRICTION_DATA = "Invalid restriction information. Please provide valid information.";
 
         //*LOG MESSAGES */
         /// <summary>
         /// Constant that represents the log message for when a GET All Request starts.
         /// </summary>
-        private const string LOG_GET_ALL_START = "GET All Request started.";
+        private const string LOG_GET_ALL_START = "GET All Products Request started.";
         /// <summary>
         /// Constant that represents the log message for when a GET All Request returns Not Found.
         /// </summary>
@@ -280,33 +287,165 @@ namespace backend.Controllers {
 
 
         /// <summary>
-        /// Constant that represents the log message for when a PUT Basic Info Request starts
+        /// Constant that represents the log message for when a POST Component Restriction Request starts.
         /// </summary>
-        private const string LOG_PUT_BASIC_INFO_START = "PUT Basic Info Request started";
+        private const string LOG_POST_COMPONENT_RESTRICTION_START = "POST Component Restriction Request started.";
         /// <summary>
-        /// Constant that represents the log message for when a PUT Product Category Request starts
+        /// Constant that represents the log message for when a POST Component Restriction Request returns NotFound.
         /// </summary>
-        private const string LOG_PUT_PRODUCT_CATEGORY_START = "PUT Product Category Request started";
+        private const string LOG_POST_COMPONENT_RESTRICTION_NOT_FOUND = "POST Product {id} Component {id} Restriction Request - Not Found.";
+        /// <summary>
+        /// Constant that represents the log message for when a POST Component Restriction Request returns BadRequest.
+        /// </summary>
+        private const string LOG_POST_COMPONENT_RESTRICTION_BAD_REQUEST = "POST Product {id} Component {id} Restriction {@restriction} - Bad Request.";
+        /// <summary>
+        /// Constant that represents the log message for when a POST Component Restriction Request is successful.
+        /// </summary>
+        private const string LOG_POST_COMPONENT_RESTRICTION_SUCCESS = "Component Restriction {@restriction} added.";
+
+
+        /// <summary>
+        /// Constant that represents the log message for when a POST Material Restriction Request starts.
+        /// </summary>
+        private const string LOG_POST_MATERIAL_RESTRICTION_START = "POST Material Restriction started.";
+        /// <summary>
+        /// Constant that represents the log message for when a POST Material Restriction Request returns NotFound.
+        /// </summary>
+        private const string LOG_POST_MATERIAL_RESTRICTION_NOT_FOUND = "POST Product {id} Material {id} Restriction Request - Not Found.";
+        /// <summary>
+        /// Constant that represents the log message for when a POST Material Restriction Request returns BadRequest.
+        /// </summary>
+        private const string LOG_POST_MATERIAL_RESTRICTION_BAD_REQUEST = "POST Product {id} Material {id} Restriction {@restriction} - Bad Request.";
+        /// <summary>
+        /// Constant that represents the log message for when a POST Material Restriction Request is successful.
+        /// </summary>
+        private const string LOG_POST_MATERIAL_RESTRICTION_SUCCESS = "Material Restriction {@restriction} added.";
+
+
+        /// <summary>
+        /// Constant that represents the log message for when a PUT Product Request starts.
+        /// </summary>
+        private const string LOG_PUT_START = "PUT Request started.";
+        /// <summary>
+        /// Constant that represents the log message for when a PUT Product Request returns NotFound.
+        /// </summary>
+        private const string LOG_PUT_NOT_FOUND = "Product with id {productID} PUT {@updateInfo} - Not Found.";
+        /// <summary>
+        /// Constant that represents the log message for when a PUT Request returns a BadRequest.
+        /// </summary>
+        private const string LOG_PUT_BAD_REQUEST = "Product with id {productID} PUT {@updateInfo} - Bad Request.";
+        /// <summary>
+        /// Constant that represents the log message for when a PUT Request is successful.
+        /// </summary>
+        private const string LOG_PUT_SUCCESS = "Product with id {productID} updated with info {@updateInfo}";
+
+
         /// <summary>
         /// Constant that represents the log message for when a DELETE Request starts
         /// </summary>
         private const string LOG_DELETE_START = "DELETE Request started";
         /// <summary>
-        /// Constant that represents the log message for when a PUT Request returns a BadRequest
-        /// </summary>
-        private const string LOG_PUT_BAD_REQUEST = "Product with id {productID} PUT {@updateInfo} Bad Request";
-        /// <summary>
         /// Constant that represents the log message for when a DELETE Request returns the NotFound HTTP code.
         /// </summary>
-        private const string LOG_DELETE_NOT_FOUND = "DELETE({id}) Bad Request";
-        /// <summary>
-        /// Constant that represents the log message for when a PUT Request is successful
-        /// </summary>
-        private const string LOG_PUT_SUCCESS = "Product with id {productID} updated with info {@updateInfo}";
+        private const string LOG_DELETE_NOT_FOUND = "DELETE({id}) - Not Found.";
         /// <summary>
         /// Constant that represents the log message for when a DELETE Request is successful
         /// </summary>
         private const string LOG_DELETE_SUCCESS = "Product with ID {id} soft deleted";
+
+
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Measurement Request starts.
+        /// </summary>
+        private const string LOG_DELETE_MEASUREMENT_START = "DELETE Product Measurement Request started.";
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Measurement Request returns NotFound.
+        /// </summary>
+        private const string LOG_DELETE_MEASUREMENT_NOT_FOUND = "DELETE Product {id} Measurement {id} - Not Found.";
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Measurement Request returns BadRequest.
+        /// </summary>
+        private const string LOG_DELETE_MEASUREMENT_BAD_REQUEST = "DELETE Product {id} Measurement {id} - Bad Request.";
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Measurement Request is successful.
+        /// </summary>
+        private const string LOG_DELETE_MEASUREMENT_SUCCESS = "DELETE Product {id} Measurement {id} - Success.";
+
+
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Component request starts.
+        /// </summary>
+        private const string LOG_DELETE_COMPONENT_START = "DELETE Product Component Request started.";
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Component request returns NotFound.
+        /// </summary>
+        private const string LOG_DELETE_COMPONENT_NOT_FOUND = "DELETE Product {id} Component {id} - Not Found.";
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Component Request is successful.
+        /// </summary>
+        private const string LOG_DELETE_COMPONENT_SUCCESS = "DELETE Product {id} Component {id} - Success.";
+
+
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Material request starts.
+        /// </summary>
+        private const string LOG_DELETE_MATERIAL_START = "DELETE Product Material Request started.";
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Material Request returns NotFound.
+        /// </summary>
+        private const string LOG_DELETE_MATERIAL_NOT_FOUND = "DELETE Product {id} Material {id} - Not Found.";
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Material Request returns BadRequest.
+        /// </summary>
+        private const string LOG_DELETE_MATERIAL_BAD_REQUEST = "DELETE Product {id} Material {id} - Bad Request.";
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Material Request is successful.
+        /// </summary>
+        private const string LOG_DELETE_MATERIAL_SUCCESS = "DELETE Product {id} Material {id} - Success.";
+
+
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Measurement Restriction request starts.
+        /// </summary>
+        private const string LOG_DELETE_MEASUREMENT_RESTRICTION_START = "DELETE Product Measurement Restriction Request started.";
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Measurement Restriction request returns NotFound.
+        /// </summary>
+        private const string LOG_DELETE_MEASUREMENT_RESTRICTION_NOT_FOUND = "DELETE Product {id} Measurement {id} Restriction {id} - Not Found.";
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Measurement Restriction Request is successful.
+        /// </summary>
+        private const string LOG_DELETE_MEASUREMENT_RESTRICTION_SUCCESS = "DELETE Product {id} Measurement {id} Restriction {id} - Success.";
+
+
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Component Restriction request starts.
+        /// </summary>
+        private const string LOG_DELETE_COMPONENT_RESTRICTION_START = "DELETE Product Component Restriction Request started.";
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Component Restriction request returns NotFound.
+        /// </summary>
+        private const string LOG_DELETE_COMPONENT_RESTRICTION_NOT_FOUND = "DELETE Product {id} Component {id} Restriction {id} - Not Found.";
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Component Restriction Request is successful.
+        /// </summary>
+        private const string LOG_DELETE_COMPONENT_RESTRICTION_SUCCESS = "DELETE Product {id} Component {id} Restriction {id} - Success.";
+
+
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Material Restriction request starts.
+        /// </summary>
+        private const string LOG_DELETE_MATERIAL_RESTRICTION_START = "DELETE Product Material Restriction Request started.";
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Material Restriction request returns NotFound.
+        /// </summary>
+        private const string LOG_DELETE_MATERIAL_RESTRICTION_NOT_FOUND = "DELETE Product {id} Material {id} Restriction {id} - Not Found.";
+        /// <summary>
+        /// Constant that represents the log message for when a DELETE Product Material Restriction Request is successful.
+        /// </summary>
+        private const string LOG_DELETE_MATERIAL_RESTRICTION_SUCCESS = "DELETE Product {id} Material {id} Restriction {id} - Success.";
+
+
 
         private readonly ProductRepository productRepository;
 
@@ -354,7 +493,7 @@ namespace backend.Controllers {
 
             if (Collections.isEnumerableNullOrEmpty(allProductsModelView)) {
                 logger.LogWarning(LOG_GET_ALL_NOT_FOUND);
-                return NotFound(new{error = NO_PRODUCTS_FOUND_REFERENCE});
+                return NotFound(new SimpleJSONMessageService(NO_PRODUCTS_FOUND));
             }
             logger.LogInformation(LOG_GET_ALL_SUCCESS, allProductsModelView);
             return Ok(allProductsModelView);
@@ -373,14 +512,14 @@ namespace backend.Controllers {
                 return Ok(getProductModelView);
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_GET_BY_REFERENCE_NOT_FOUND, fetchProductDTO.reference);
-                return NotFound(new {error = e.Message});
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(ArgumentException e){
                 //this exception may occur if the specified unit does not exist
                 logger.LogWarning(e, LOG_GET_BY_REFERENCE_BAD_REQUEST, fetchProductDTO.reference);
-                return BadRequest(new {error = e.Message});
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -395,7 +534,7 @@ namespace backend.Controllers {
 
             if (Collections.isEnumerableNullOrEmpty(allBaseProductsModelView)) {
                 logger.LogWarning(LOG_GET_ALL_BASE_NOT_FOUND);
-                return NotFound(new{error = NO_PRODUCTS_FOUND_REFERENCE});
+                return NotFound(new SimpleJSONMessageService(NO_PRODUCTS_FOUND));
             }
             logger.LogInformation(LOG_GET_ALL_BASE_SUCCESS, allBaseProductsModelView);
             return Ok(allBaseProductsModelView);
@@ -420,14 +559,14 @@ namespace backend.Controllers {
                 return Ok(getProductModelView);
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_GET_BY_ID_NOT_FOUND, id);
-                return NotFound(new {error = e.Message});
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(ArgumentException e){
                 //this exception may occur if the specified unit does not exist
                 logger.LogWarning(e, LOG_GET_BY_ID_BAD_REQUEST, id);
-                return BadRequest(new { error = e.Message });
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -442,13 +581,13 @@ namespace backend.Controllers {
                 logger.LogInformation(LOG_GET_PRODUCT_MEASUREMENTS_SUCCESS, productId, allMeasurementsModelView);
                 return Ok(allMeasurementsModelView);
             }catch(ArgumentException e){
-                return BadRequest(new {error = e.Message});
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_GET_PRODUCT_MEASUREMENTS_NOT_FOUND, productId);
-                return NotFound(new {error = e.Message});
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -463,10 +602,10 @@ namespace backend.Controllers {
                 return Ok(allComponentsModelView);
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_GET_PRODUCT_COMPONENTS_NOT_FOUND, productId);
-                return NotFound(new {error = e.Message});
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -482,10 +621,10 @@ namespace backend.Controllers {
             }
             catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_GET_PRODUCT_MATERIALS_NOT_FOUND, productId);
-                return NotFound(new {error = e.Message});
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -499,7 +638,7 @@ namespace backend.Controllers {
         [HttpGet("{productId}/dimensions/{measurementId}/restrictions")]
         public ActionResult findMeasurementRestrictions(long productId, long measurementId){
             logger.LogInformation(LOG_GET_MEASUREMENT_RESTRICTIONS_STARTED);
-            GetProductMeasurementModelView productMeasurementMV = new GetProductMeasurementModelView();
+            GetMeasurementModelView productMeasurementMV = new GetMeasurementModelView();
             productMeasurementMV.productId = productId;
             productMeasurementMV.measurementId = measurementId;
             try{
@@ -508,10 +647,10 @@ namespace backend.Controllers {
                 return Ok(restrictionModelViews);
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_GET_MEASUREMENT_RESTRICTIONS_NOT_FOUND, productId, measurementId);
-                return NotFound(new {error = e.Message});
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -527,7 +666,7 @@ namespace backend.Controllers {
             logger.LogInformation(LOG_GET_COMPONENT_RESTRICTIONS_STARTED);
             
             GetComponentModelView componentModelView = new GetComponentModelView();
-            componentModelView.fatherProductID = parentProductId;
+            componentModelView.fatherProductId = parentProductId;
             componentModelView.id = complementaryProductId;
 
             try{
@@ -536,10 +675,10 @@ namespace backend.Controllers {
                 return Ok(restrictionModelViews);
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_GET_COMPONENT_RESTRICTIONS_NOT_FOUND, parentProductId, complementaryProductId);
-                return NotFound(new {error = e.Message});
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -556,7 +695,7 @@ namespace backend.Controllers {
 
             GetProductMaterialModelView productMaterialModelView = new GetProductMaterialModelView();
             productMaterialModelView.productId = productId;
-            productMaterialModelView.materialId = materialId;
+            productMaterialModelView.id = materialId;
 
             try{
                 GetAllRestrictionsModelView restrictionModelViews = new core.application.ProductController().findMaterialRestrictions(productMaterialModelView);
@@ -564,10 +703,10 @@ namespace backend.Controllers {
                 return Ok(restrictionModelViews);
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(LOG_GET_MATERIAL_RESTRICTIONS_NOT_FOUND, productId, materialId);
-                return NotFound(new {error = e.Message});
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -582,16 +721,22 @@ namespace backend.Controllers {
         [HttpPost]
         public ActionResult addProduct([FromBody] AddProductModelView addProductMV) {
             logger.LogInformation(LOG_POST_PRODUCT_START);
+
+            if(addProductMV == null){
+                logger.LogWarning(LOG_POST_PRODUCT_BAD_REQUEST, addProductMV);
+                return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_DATA));
+            }
+
             try {
                 GetProductModelView createdProductMV = new core.application.ProductController().addProduct(addProductMV);
                 logger.LogInformation(LOG_POST_PRODUCT_SUCCESS, createdProductMV);
                 return CreatedAtRoute("GetProduct", new { id = createdProductMV.id }, createdProductMV);
             }catch(ArgumentException e){
                 logger.LogWarning(e, LOG_POST_PRODUCT_BAD_REQUEST, addProductMV);
-                return BadRequest(new{error=e.Message});
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -603,10 +748,15 @@ namespace backend.Controllers {
         /// <returns>ActionResult with the 200 HTTP Response Code and the list of Restriction 
         /// or the 400 HTTP Response Code if the Measurement was not able to be added.</returns>
         [HttpPost("{productId}/dimensions")]
-        public ActionResult addMeasurementToProduct(long productId, [FromBody] AddMeasurementToProductModelView measurementModelView){
+        public ActionResult addMeasurementToProduct(long productId, [FromBody] AddMeasurementModelView measurementModelView){
             logger.LogInformation(LOG_POST_MEASUREMENT_START);
 
-            measurementModelView.productID = productId;
+            if(measurementModelView == null){
+                logger.LogWarning(LOG_POST_MEASUREMENT_BAD_REQUEST, productId, measurementModelView);
+                return BadRequest(new SimpleJSONMessageService(INVALID_MEASUREMENT_DATA));    
+            }
+
+            measurementModelView.productId = productId;
 
             try{
                 GetProductModelView productModelView = new core.application.ProductController().addMeasurementToProduct(measurementModelView);
@@ -614,13 +764,13 @@ namespace backend.Controllers {
                 return Ok(productModelView);
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_POST_MEASUREMENT_NOT_FOUND, productId);
-                return NotFound(new {error = e.Message});
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(ArgumentException e){
                 logger.LogWarning(e, LOG_POST_MEASUREMENT_BAD_REQUEST, productId, measurementModelView);
-                return BadRequest(new {error = e.Message});
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -633,22 +783,28 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
         /// </returns>
         [HttpPost("{id}/components")]
-        public ActionResult addComponentToProduct(long id,[FromBody]AddComponentToProductModelView addComponentToProductMV){
+        public ActionResult addComponentToProduct(long id,[FromBody]AddComponentModelView addComponentToProductMV){
             logger.LogInformation(LOG_POST_COMPONENT_START);
-            addComponentToProductMV.productID=id;
+
+            if(addComponentToProductMV == null){
+                logger.LogWarning(LOG_POST_COMPONENT_BAD_REQUEST, id, addComponentToProductMV);
+                return BadRequest(new SimpleJSONMessageService(INVALID_COMPONENT_DATA));
+            }
+
+            addComponentToProductMV.fatherProductId = id;
             try{
                 GetProductModelView productModelView=new core.application.ProductController().addComponentToProduct(addComponentToProductMV);
                 logger.LogInformation(LOG_POST_COMPONENT_SUCCESS, productModelView);
                 return Created(Request.Path,productModelView);
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_POST_COMPONENT_NOT_FOUND, id);
-                return NotFound(new {error = e.Message});
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(ArgumentException e){
                 logger.LogWarning(e, LOG_POST_COMPONENT_BAD_REQUEST, id, addComponentToProductMV);
-                return BadRequest(new {error = e.Message});
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -661,29 +817,41 @@ namespace backend.Controllers {
         ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
         /// </returns>
         [HttpPost("{id}/materials")]
-        public ActionResult addMaterialToProduct(long id,[FromBody]AddMaterialToProductModelView addMaterialToProductMV){
+        public ActionResult addMaterialToProduct(long id,[FromBody]AddProductMaterialModelView addMaterialToProductMV){
             logger.LogInformation(LOG_POST_MATERIAL_START);
-            addMaterialToProductMV.productID=id;
+
+            if(addMaterialToProductMV == null){
+                logger.LogWarning(LOG_POST_MATERIAL_BAD_REQUEST, id, addMaterialToProductMV);
+                return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_DATA));
+            }
+
+            addMaterialToProductMV.productId=id;
             try{
                 GetProductModelView productModelView=new core.application.ProductController().addMaterialToProduct(addMaterialToProductMV);
                 logger.LogInformation(LOG_POST_MATERIAL_SUCCESS, productModelView);
                 return Created(Request.Path,productModelView);
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_POST_MATERIAL_NOT_FOUND, id);
-                return NotFound(new {error = e.Message});
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(ArgumentException e){
                 logger.LogWarning(e, LOG_POST_MATERIAL_BAD_REQUEST, id, addMaterialToProductMV);
-                return BadRequest(new {error = e.Message});
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpPost("{productId}/dimensions/{measurementId}/restrictions")]
         public ActionResult addRestrictionToProductMeasurement(long productId, long measurementId, [FromBody]RestrictionDTO restrictionDTO){
             logger.LogInformation(LOG_POST_MEASUREMENT_RESTRICTION_START);
-            AddRestrictionToProductMeasurementModelView addRestrictionToProductMeasurementMV = new AddRestrictionToProductMeasurementModelView();
+
+            if(restrictionDTO == null){
+                logger.LogWarning(LOG_POST_MEASUREMENT_BAD_REQUEST, productId, measurementId, restrictionDTO);
+                return BadRequest(new SimpleJSONMessageService(INVALID_RESTRICTION_DATA));
+            }
+
+            AddMeasurementRestrictionModelView addRestrictionToProductMeasurementMV = new AddMeasurementRestrictionModelView();
             addRestrictionToProductMeasurementMV.productId = productId;
             addRestrictionToProductMeasurementMV.measurementId = measurementId;
             addRestrictionToProductMeasurementMV.restriction = restrictionDTO;
@@ -694,13 +862,13 @@ namespace backend.Controllers {
                 return Ok(productModelView);
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(LOG_POST_MEASUREMENT_RESTRICTION_NOT_FOUND, productId, measurementId);
-                return NotFound(new {error = e.Message});
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(ArgumentException e){
                 logger.LogWarning(LOG_POST_MEASUREMENT_RESTRICTION_BAD_REQUEST, productId, measurementId, addRestrictionToProductMeasurementMV);
-                return BadRequest(new {error = e.Message});
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
 
         }
@@ -716,18 +884,30 @@ namespace backend.Controllers {
         /// </returns>
         [HttpPost("{productID}/components/{componentID}/restrictions")]
         public ActionResult addRestrictionToProductComponent(long productID,long componentID,[FromBody]RestrictionDTO restrictionDTO){
-            AddRestrictionToProductComponentModelView addRestrictionToProductComponentDTO=new AddRestrictionToProductComponentModelView();
-            addRestrictionToProductComponentDTO.productID=productID;
-            addRestrictionToProductComponentDTO.componentID=componentID;
+            logger.LogInformation(LOG_POST_COMPONENT_RESTRICTION_START);
+
+            if(restrictionDTO == null){
+                logger.LogWarning(LOG_POST_COMPONENT_RESTRICTION_BAD_REQUEST, productID, componentID, restrictionDTO);
+                return BadRequest(new SimpleJSONMessageService(INVALID_RESTRICTION_DATA));
+            }
+
+            AddComponentRestrictionModelView addRestrictionToProductComponentDTO=new AddComponentRestrictionModelView();
+            addRestrictionToProductComponentDTO.fatherProductId=productID;
+            addRestrictionToProductComponentDTO.childProductId=componentID;
             addRestrictionToProductComponentDTO.restriction=restrictionDTO;
             try{
                 GetProductModelView appliedRestrictionModelView=new core.application.ProductController().addRestrictionToProductComponent(addRestrictionToProductComponentDTO);
+                logger.LogInformation(LOG_POST_COMPONENT_RESTRICTION_SUCCESS, appliedRestrictionModelView);
                 return Created(Request.Path,appliedRestrictionModelView);
             }catch(ResourceNotFoundException e) {
-                return NotFound(new {error = e.Message});
+                logger.LogWarning(LOG_POST_COMPONENT_RESTRICTION_NOT_FOUND, productID, componentID);
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }catch(ArgumentException e){
+                logger.LogWarning(LOG_POST_COMPONENT_RESTRICTION_BAD_REQUEST, productID, componentID, addRestrictionToProductComponentDTO);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -740,9 +920,33 @@ namespace backend.Controllers {
         /// <returns>ActionResult with the 200 HTTP Response Code and the list of Restriction 
         /// or the 400 HTTP Response Code if the Restriction was not able to be added.</returns>
         [HttpPost("{productId}/materials/{materialId}/restrictions")]
-        public ActionResult addRestrictionToProductMaterial(long productId, long materialId){
+        public ActionResult addRestrictionToProductMaterial(long productId, long materialId, RestrictionDTO restrictionDTO){
+            logger.LogInformation(LOG_POST_MATERIAL_RESTRICTION_START);
 
-            throw new NotImplementedException();
+                if(restrictionDTO == null){
+                    logger.LogWarning(LOG_POST_MATERIAL_RESTRICTION_BAD_REQUEST, productId, materialId, restrictionDTO);
+                    return BadRequest(new SimpleJSONMessageService(INVALID_RESTRICTION_DATA));
+                }
+
+                AddProductMaterialRestrictionModelView addRestrictionToProductMaterialMV = new AddProductMaterialRestrictionModelView();
+                addRestrictionToProductMaterialMV.productId = productId;
+                addRestrictionToProductMaterialMV.materialId = materialId;
+                addRestrictionToProductMaterialMV.restriction = restrictionDTO;
+
+                try{
+                    GetProductModelView productModelView = new core.application.ProductController().addRestrictionToProductMaterial(addRestrictionToProductMaterialMV);
+                    logger.LogInformation(LOG_POST_MATERIAL_RESTRICTION_SUCCESS);
+                    return Created(Request.Path,productModelView);
+                }catch(ResourceNotFoundException e){
+                    logger.LogWarning(LOG_POST_MATERIAL_RESTRICTION_NOT_FOUND, productId, materialId);
+                    return NotFound(new SimpleJSONMessageService(e.Message));
+                }catch(ArgumentException e){
+                    logger.LogWarning(LOG_POST_MATERIAL_RESTRICTION_BAD_REQUEST, productId, materialId, restrictionDTO);
+                    return BadRequest(new SimpleJSONMessageService(e.Message));
+                }catch(Exception e){
+                    logger.LogWarning(e, UNEXPECTED_ERROR);
+                    return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+                }
         }
         
 
@@ -755,21 +959,26 @@ namespace backend.Controllers {
         /// </returns>
         [HttpPut("{id}")]
         public ActionResult updateProductProperties(long id, [FromBody] UpdateProductPropertiesModelView updateProductPropertiesModelView) {
-            logger.LogInformation(LOG_PUT_BASIC_INFO_START);
+            logger.LogInformation(LOG_PUT_START);
+
+            if(updateProductPropertiesModelView == null){
+                return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_DATA));
+            }
+
             updateProductPropertiesModelView.id = id;
             try{
                 GetProductModelView updatedProductMV=new core.application.ProductController().updateProductProperties(updateProductPropertiesModelView);
                 logger.LogInformation(LOG_PUT_SUCCESS, id, updateProductPropertiesModelView);
                 return Ok(updatedProductMV);
             }catch(ResourceNotFoundException e){
-                logger.LogWarning(e, "", id);
-                return NotFound(new{error=e.Message});
+                logger.LogWarning(e, LOG_PUT_NOT_FOUND, id, updateProductPropertiesModelView);
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(ArgumentException e){
-                logger.LogWarning(e, "");
-                return BadRequest(new{error=e.Message});
+                logger.LogWarning(e, LOG_PUT_BAD_REQUEST, id, updateProductPropertiesModelView);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -792,30 +1001,36 @@ namespace backend.Controllers {
                 return NoContent();
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_DELETE_NOT_FOUND, id);
-                return NotFound(new{error = e.Message});
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new{error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
     
         [HttpDelete("{productId}/dimensions/{measurementId}")]
         public ActionResult deleteMeasurementFromProduct(long productId, long measurementId){
-            DeleteMeasurementFromProductModelView deleteMeasurementFromProductMV = new DeleteMeasurementFromProductModelView();
+            logger.LogInformation(LOG_DELETE_MEASUREMENT_START);
+
+            DeleteMeasurementModelView deleteMeasurementFromProductMV = new DeleteMeasurementModelView();
             deleteMeasurementFromProductMV.productId = productId;
             deleteMeasurementFromProductMV.measurementId = measurementId;
 
             try{
                 new core.application.ProductController().deleteMeasurementFromProduct(deleteMeasurementFromProductMV);
+                logger.LogInformation(LOG_DELETE_MEASUREMENT_SUCCESS, productId, measurementId);
                 return NoContent();
             }catch(ResourceNotFoundException e){
-                return NotFound(new {error = e.Message});
+                logger.LogWarning(e, LOG_DELETE_MEASUREMENT_NOT_FOUND,productId, measurementId);
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(InvalidOperationException e){
-                return BadRequest(new {error = e.Message});
+                //*this exception will occur if the last measurement is attempted to be removed*/
+                logger.LogWarning(e, LOG_DELETE_MEASUREMENT_BAD_REQUEST, productId, measurementId);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
 
         }
@@ -830,17 +1045,21 @@ namespace backend.Controllers {
         /// </returns>
         [HttpDelete("{productID}/components/{componentID}")]
         public ActionResult deleteComponentFromProduct(long productID,long componentID){
-            DeleteComponentFromProductModelView deleteComponentFromProductMV=new DeleteComponentFromProductModelView();
-            deleteComponentFromProductMV.productID=productID;
-            deleteComponentFromProductMV.componentID=componentID;
+            logger.LogInformation(LOG_DELETE_COMPONENT_START);
+
+            DeleteComponentModelView deleteComponentFromProductMV=new DeleteComponentModelView();
+            deleteComponentFromProductMV.fatherProductId=productID;
+            deleteComponentFromProductMV.childProductId=componentID;
             try{
                 new core.application.ProductController().deleteComponentFromProduct(deleteComponentFromProductMV);
+                logger.LogInformation(LOG_DELETE_COMPONENT_SUCCESS, productID, componentID);
                 return NoContent();
             }catch(ResourceNotFoundException e){
-                return NotFound(new {error = e.Message});
+                logger.LogInformation(e, LOG_DELETE_COMPONENT_NOT_FOUND, productID, componentID);
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -854,36 +1073,46 @@ namespace backend.Controllers {
         /// </returns>
         [HttpDelete("{productID}/materials/{materialID}")]
         public ActionResult deleteMaterialFromProduct(long productID,long materialID){
-            DeleteMaterialFromProducModelView deleteMaterialFromProductMV=new DeleteMaterialFromProducModelView();
-            deleteMaterialFromProductMV.productID=productID;
-            deleteMaterialFromProductMV.materialID=materialID;
+            logger.LogInformation(LOG_DELETE_MATERIAL_START);
+
+            DeleteProductMaterialModelView deleteMaterialFromProductMV=new DeleteProductMaterialModelView();
+            deleteMaterialFromProductMV.productId=productID;
+            deleteMaterialFromProductMV.materialId=materialID;
             try{
                 new core.application.ProductController().deleteMaterialFromProduct(deleteMaterialFromProductMV);
+                logger.LogInformation(LOG_DELETE_MATERIAL_SUCCESS, productID, materialID);
                 return NoContent();
             }catch(InvalidOperationException e){
-                return BadRequest(new {error = e.Message});
+                //*this exception will occur if the last material is attempted to be removed*/
+                logger.LogWarning(e, LOG_DELETE_MATERIAL_BAD_REQUEST, productID, materialID);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }catch(ResourceNotFoundException e){
-                return NotFound(new{error=e.Message});
+                logger.LogWarning(e, LOG_DELETE_MATERIAL_NOT_FOUND, productID, materialID);
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpDelete("{productId}/dimensions/{measurementId}/restrictions/{restrictionId}")]
         public ActionResult deleteRestrictionFromProductMeasurement(long productId, long measurementId, long restrictionId){
-            DeleteRestrictionFromProductMeasurementModelView deleteRestrictionFromProductMeasurementMV = new DeleteRestrictionFromProductMeasurementModelView();
+            logger.LogInformation(LOG_DELETE_MEASUREMENT_RESTRICTION_START);
+
+            DeleteMeasurementRestrictionModelView deleteRestrictionFromProductMeasurementMV = new DeleteMeasurementRestrictionModelView();
             deleteRestrictionFromProductMeasurementMV.productId = productId;
             deleteRestrictionFromProductMeasurementMV.measurementId = measurementId;
             deleteRestrictionFromProductMeasurementMV.restrictionId = restrictionId;
             try{
                 new core.application.ProductController().deleteRestrictionFromProductMeasurement(deleteRestrictionFromProductMeasurementMV);
+                logger.LogInformation(LOG_DELETE_MEASUREMENT_RESTRICTION_SUCCESS, productId, measurementId, restrictionId);
                 return NoContent();
             }catch(ResourceNotFoundException e){
-                 return NotFound(new{error=e.Message});
+                logger.LogWarning(e, LOG_DELETE_MEASUREMENT_RESTRICTION_NOT_FOUND, productId, measurementId, restrictionId);
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -898,35 +1127,43 @@ namespace backend.Controllers {
         /// </returns>
         [HttpDelete("{productID}/components/{componentID}/restrictions/{restrictionID}")]
         public ActionResult deleteRestrictionFromProductComponent(long productID,long componentID,long restrictionID){
-            DeleteRestrictionFromProductComponentModelView deleteRestrictionFromProductComponentMV=new DeleteRestrictionFromProductComponentModelView();
-            deleteRestrictionFromProductComponentMV.productID=productID;
-            deleteRestrictionFromProductComponentMV.componentID=componentID;
-            deleteRestrictionFromProductComponentMV.restrictionID=restrictionID;
+            logger.LogInformation(LOG_DELETE_COMPONENT_RESTRICTION_START);
+
+            DeleteComponentRestrictionModelView deleteRestrictionFromProductComponentMV=new DeleteComponentRestrictionModelView();
+            deleteRestrictionFromProductComponentMV.fatherProductId=productID;
+            deleteRestrictionFromProductComponentMV.childProductId=componentID;
+            deleteRestrictionFromProductComponentMV.restrictionId=restrictionID;
             try{
                 new core.application.ProductController().deleteRestrictionFromProductComponent(deleteRestrictionFromProductComponentMV);
+                logger.LogInformation(LOG_DELETE_COMPONENT_RESTRICTION_SUCCESS, productID, componentID, restrictionID);
                 return NoContent();
             }catch(ResourceNotFoundException e){
-                return NotFound(new{error=e.Message});
+                logger.LogInformation(e, LOG_DELETE_COMPONENT_RESTRICTION_NOT_FOUND, productID, componentID, restrictionID);
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpDelete("{productID}/materials/{materialID}/restrictions/{restrictionId}")]
         public ActionResult deleteRestrictionFromProductMaterial(long productId, long materialId, long restrictionId){
-            DeleteRestrictionFromProductMaterialModelView deleteRestrictionFromProductMaterialMV = new DeleteRestrictionFromProductMaterialModelView();
+            logger.LogInformation(LOG_DELETE_MATERIAL_RESTRICTION_START);
+
+            DeleteProductMaterialRestrictionModelView deleteRestrictionFromProductMaterialMV = new DeleteProductMaterialRestrictionModelView();
             deleteRestrictionFromProductMaterialMV.productId = productId;
             deleteRestrictionFromProductMaterialMV.materialId = materialId;
             deleteRestrictionFromProductMaterialMV.restrictionId = restrictionId;
             try{
                 new core.application.ProductController().deleteRestrictionFromProductMaterial(deleteRestrictionFromProductMaterialMV);
+                logger.LogInformation(LOG_DELETE_MATERIAL_RESTRICTION_SUCCESS, productId, materialId, restrictionId);
                 return NoContent();
             }catch(ResourceNotFoundException e){
-                return NotFound(new{error=e.Message});
+                logger.LogInformation(e, LOG_DELETE_MATERIAL_RESTRICTION_NOT_FOUND, productId, materialId, restrictionId);
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
     }
