@@ -3,10 +3,6 @@ package cdiomyc.core.mv.users;
 import cdiomyc.core.domain.auth.Auth;
 import cdiomyc.core.domain.auth.credentials.CredentialsAuth;
 import cdiomyc.core.mv.authentication.CredentialsAuthenticationMV;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -15,25 +11,6 @@ import static org.junit.Assert.*;
  * @author João
  */
 public class UserMVServiceTest {
-
-    public UserMVServiceTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Ensures classFromType returns CreateCredentialsUserMV class
