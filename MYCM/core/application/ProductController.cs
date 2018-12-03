@@ -46,7 +46,7 @@ namespace core.application
         /// <summary>
         /// Constant representing the message presented when no Restriction is found with a given identifier.
         /// </summary>
-        private const string ERROR_UNABLE_FIND_RESTRICTION_BY_ID = "Unable to find restrictiong with an identifier of: {0}";
+        private const string ERROR_UNABLE_TO_FIND_RESTRICTION_BY_ID = "Unable to find restrictions with an identifier of: {0}";
         /// <summary>
         /// Constant representing the message presented when the new Product could not be saved.
         /// </summary>
@@ -580,7 +580,7 @@ namespace core.application
             Restriction restriction = measurement.restrictions.Where(r => r.Id == deleteRestrictionFromProductMeasurementMV.restrictionId).SingleOrDefault();
 
             if(restriction == null){
-                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_FIND_RESTRICTION_BY_ID, deleteRestrictionFromProductMeasurementMV.restrictionId));
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_RESTRICTION_BY_ID, deleteRestrictionFromProductMeasurementMV.restrictionId));
             }
 
             measurement.restrictions.Remove(restriction);
@@ -613,7 +613,7 @@ namespace core.application
                 .Where(r => r.Id == deleteRestrictionFromProductComponentMV.restrictionId).SingleOrDefault();
 
             if(restriction == null){
-                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_FIND_RESTRICTION_BY_ID, deleteRestrictionFromProductComponentMV.restrictionId));
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_RESTRICTION_BY_ID, deleteRestrictionFromProductComponentMV.restrictionId));
             }
 
             productComponentBeingDeletedRestriction.restrictions.Remove(restriction);
@@ -645,7 +645,7 @@ namespace core.application
             Restriction restriction = productMaterial.restrictions.Where(r => r.Id == deleteRestrictionFromProductMaterialMV.restrictionId).SingleOrDefault();
 
             if(restriction == null){
-                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_FIND_RESTRICTION_BY_ID, deleteRestrictionFromProductMaterialMV.restrictionId));
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_RESTRICTION_BY_ID, deleteRestrictionFromProductMaterialMV.restrictionId));
             }
 
             productMaterial.restrictions.Remove(restriction);
