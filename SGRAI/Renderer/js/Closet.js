@@ -23,7 +23,8 @@ class Closet {
         this._prepare_closet_init();
         this.poles = [];
         this.shelves = [];
-        this.doors = [];
+        this.slidingDoors = [];
+        this.hingedDoors = [];
         this.drawers = [];
     }
 
@@ -148,16 +149,32 @@ class Closet {
      * Adds a door to the closet
      * @param {SlidingDoor} door to add 
      */
-    addDoor(door) {
-        this.doors.push(door);
+    addSlidingDoor(door) {
+        this.slidingDoors.push(door);
     }
 
     /**
      * Removes a door from the closet
      *  @param {SlidingDoor} door to remove
      */
-    removeDoor() {
-        this.doors.pop();
+    removeSlidingDoor() {
+        this.slidingDoors.pop();
+    }
+
+     /**
+     * Adds a door to the closet
+     * @param {HingedDoor} door to add 
+     */
+    addHingedDoor(door) {
+        this.hingedDoors.push(door);
+    }
+
+    /**
+     * Removes a door from the closet
+     *  @param {HingedDoor} door to remove
+     */
+    removeHingedDoor() {
+        this.hingedDoors.pop();
     }
     /**
      * Adds a drawer to the closet
