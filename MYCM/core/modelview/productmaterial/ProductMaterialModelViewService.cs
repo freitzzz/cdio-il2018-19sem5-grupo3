@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using core.domain;
+using core.modelview.material;
 using core.modelview.restriction;
 
 namespace core.modelview.productmaterial
@@ -35,6 +36,7 @@ namespace core.modelview.productmaterial
             basicProductMaterialModelView.id = productMaterial.materialId;
             basicProductMaterialModelView.reference = productMaterial.material.reference;
             basicProductMaterialModelView.designation = productMaterial.material.designation;
+            basicProductMaterialModelView.imageFilename = productMaterial.material.image;
 
             return basicProductMaterialModelView;
         }
@@ -58,6 +60,7 @@ namespace core.modelview.productmaterial
             productMaterialModelView.id = productMaterial.materialId;
             productMaterialModelView.reference = productMaterial.material.reference;
             productMaterialModelView.designation = productMaterial.material.designation;
+            productMaterialModelView.imageFilename = productMaterial.material.image;
 
             /*Skip converting Restrictions if the ProductMaterial has none,
             since null GetAllRestrictionsModelView won't be serialized */
