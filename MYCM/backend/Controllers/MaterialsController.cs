@@ -289,7 +289,7 @@ namespace backend.Controllers
                 logger.LogInformation(LOG_DELETE_SUCCESS, id);
                 return NoContent();
             }catch(ResourceNotFoundException e){
-                logger.LogWarning(LOG_DELETE_BAD_REQUEST, id);
+                logger.LogWarning(e, LOG_DELETE_BAD_REQUEST, id);
                 return NotFound(new{error = MATERIAL_NOT_REMOVED_REFERENCE});
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);

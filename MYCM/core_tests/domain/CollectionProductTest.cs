@@ -22,7 +22,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Blue", 1, 2, 3, 0);
             List<Color> colors = new List<Color>() { color };
 
-            Finish finish = Finish.valueOf("Super shiny");
+            Finish finish = Finish.valueOf("Super shiny", 90);
             List<Finish> finishes = new List<Finish>() { finish };
 
             Material material = new Material("123", "456, how original", "ola.jpg", colors, finishes);
@@ -46,7 +46,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Blue", 1, 2, 3, 0);
             List<Color> colors = new List<Color>() { color };
 
-            Finish finish = Finish.valueOf("Super shiny");
+            Finish finish = Finish.valueOf("Super shiny", 90);
             List<Finish> finishes = new List<Finish>() { finish };
 
             Material material = new Material("123", "456, how original", "ola.jpg", colors, finishes);
