@@ -512,7 +512,7 @@ namespace core.application
             Product productToRemoveComponent=productRepository.find(deleteComponentFromProductMV.fatherProductId);
 
             if(productToRemoveComponent == null){
-                throw new ArgumentException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteComponentFromProductMV.fatherProductId));
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteComponentFromProductMV.fatherProductId));
             }
 
             //filter product's components rather than accessing the repository
@@ -521,7 +521,7 @@ namespace core.application
                 .Select(component => component.complementaryProduct).SingleOrDefault();
 
             if(productBeingDeleted == null){
-                throw new ArgumentException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteComponentFromProductMV.childProductId));
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteComponentFromProductMV.childProductId));
             }
             
             productToRemoveComponent.removeComplementaryProduct(productBeingDeleted);
