@@ -2,6 +2,7 @@ package cdiomyc.core.domain.auth.credentials;
 
 import cdiomyc.support.domain.ddd.ValueObject;
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
@@ -18,11 +19,11 @@ public class Password implements Serializable,ValueObject {
     /**
      * Constant that represents the regular expression used to validate a password
      */
-    private static final String PASSWORD_REGEX_VALIDATOR="[a-zA-z0-9]{5,12}";
+    private static final String PASSWORD_REGEX_VALIDATOR="[a-zA-z0-9]{5,24}";
     /**
      * String that represents the password value
      */
-    private String value;
+    private String password;
     
     /**
      * Creates a new Password
@@ -37,7 +38,7 @@ public class Password implements Serializable,ValueObject {
      */
     private Password(String password){
         checkPassword(password);
-        this.value=password;
+        this.password=password;
     }
     
     /**
@@ -45,7 +46,7 @@ public class Password implements Serializable,ValueObject {
      * @return Integer with the hash code of the value object
      */
     @Override
-    public int hashCode(){return value.hashCode();}
+    public int hashCode(){return password.hashCode();}
     
     /**
      * Checks if a value object is equal to the current one
@@ -53,14 +54,14 @@ public class Password implements Serializable,ValueObject {
      * @return boolean true if both value objects are equal, false if not
      */
     @Override
-    public boolean equals(Object otherValueObject){return otherValueObject instanceof Password && ((Password)otherValueObject).value.equals(value);}
+    public boolean equals(Object otherValueObject){return otherValueObject instanceof Password && ((Password)otherValueObject).password.equals(password);}
     
     /**
      * Returns the textual representation of the value object
      * @return String with the textual representation of the value object
      */
     @Override
-    public String toString(){return value;};
+    public String toString(){return password;};
     
     /**
      * Checks if a password is valid

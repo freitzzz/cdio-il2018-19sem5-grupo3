@@ -22,7 +22,7 @@ namespace core_tests.domain
 
             //Creates colors and finishes for the product's material list 
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny", 40) };
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
@@ -44,7 +44,7 @@ namespace core_tests.domain
 
             //Creates colors and finishes for the product's material list 
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny", 40) };
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
@@ -66,7 +66,7 @@ namespace core_tests.domain
 
             //Creates colors and finishes for the product's material list 
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny", 40) };
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
@@ -88,7 +88,7 @@ namespace core_tests.domain
 
             //Creates colors and finishes for the product's material list 
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny", 40) };
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
@@ -111,7 +111,7 @@ namespace core_tests.domain
 
             //Creates colors and finishes for the product's material list 
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny", 40) };
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
@@ -136,7 +136,7 @@ namespace core_tests.domain
 
             //Creates colors and finishes for the product's material list 
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny", 40) };
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
@@ -158,7 +158,7 @@ namespace core_tests.domain
 
             //Creates colors and finishes for the product's material list 
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny", 40) };
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
@@ -182,7 +182,7 @@ namespace core_tests.domain
 
             //Creates colors and finishes for the product's material list 
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny", 40) };
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
@@ -205,7 +205,7 @@ namespace core_tests.domain
 
             //Creates colors and finishes for the product's material list 
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny", 40) };
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
@@ -229,7 +229,7 @@ namespace core_tests.domain
 
             //Creates colors and finishes for the product's material list 
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny", 40) };
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
@@ -257,7 +257,7 @@ namespace core_tests.domain
 
             //Creates colors and finishes for the product's material list 
             List<Color> colors = new List<Color>() { Color.valueOf("Blue", 1, 2, 3, 0) };
-            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny") };
+            List<Finish> finishes = new List<Finish>() { Finish.valueOf("Super shiny", 40) };
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 

@@ -1,0 +1,1 @@
+persistence.context=cdiomyc.persistence.impl.jpa.core.JPARepositoryFactoryImpl

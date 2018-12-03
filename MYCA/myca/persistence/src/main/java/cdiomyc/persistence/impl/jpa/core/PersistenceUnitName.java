@@ -8,5 +8,5 @@ public interface PersistenceUnitName {
     /**
      * Constant that represents the value of the core persistence unit name
      */
-    public static final String VALUE="";
+    public static final String VALUE="cdiomyc_persistence_jar_1.0PU";
 }

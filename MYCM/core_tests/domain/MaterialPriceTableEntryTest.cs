@@ -279,7 +279,7 @@ namespace core_tests.domain
             String reference = "reference";
             String designation = "designation";
             Color color = Color.valueOf("color", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("finish");
+            Finish finish = Finish.valueOf("finish", 12);
             return new Material(reference, designation, "ola.jpg",
                                 new List<Color>(new[] { color }),
                                  new List<Finish>(new[] { finish }));
@@ -291,7 +291,7 @@ namespace core_tests.domain
             String reference = "other reference";
             String designation = "other designation";
             Color color = Color.valueOf("other color", 14, 14, 12, 12);
-            Finish finish = Finish.valueOf("other finish");
+            Finish finish = Finish.valueOf("other finish", 13);
             return new Material(reference, designation, "ola.jpg",
                                 new List<Color>(new[] { color }),
                                  new List<Finish>(new[] { finish }));

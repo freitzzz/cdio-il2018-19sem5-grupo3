@@ -21,7 +21,7 @@ public class WebservicesStarter {
     public static HttpServer startServer() {
         // create a resource config that scans for JAX-RS resources and providers
         // in cdiomyc.webservices package
-        final ResourceConfig rc = new ResourceConfig().packages("cdiomyc.webservices.authentication");
+        final ResourceConfig rc = new ResourceConfig().packages("cdiomyc.webservices");
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI

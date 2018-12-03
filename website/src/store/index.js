@@ -11,7 +11,7 @@ Vue.use(Vuex)
  */
 const state = {
     product: {},
-    
+
     customizedProduct: {
         designation: "",
         reference: "",
@@ -35,10 +35,10 @@ const state = {
         },
         slots: [
             {
-                depth: "",
+                id: "",
                 width: "",
-                height: "",
-                unit: ""
+                unit: "",
+                components: []
             }
         ],
         customizedDimensions: {
@@ -56,7 +56,7 @@ const getters = {
     },
     productDimensions: state => {
         return state.product.dimensions;
-    }, 
+    },
     productSlotSizes: state => {
         return state.product.slotSizes;
     },

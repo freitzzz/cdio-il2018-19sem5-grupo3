@@ -38,11 +38,11 @@ export const mutations = {
         state.customizedProduct.customizedDimensions.depth = payload.depth;
     },
 
-     /**
-     * Changes the states's customized product's unit
-     * @param {*} state The store's state
-     * @param {*} payload Payload with the new unit 
-     */
+    /**
+    * Changes the states's customized product's unit
+    * @param {*} state The store's state
+    * @param {*} payload Payload with the new unit 
+    */
     [types.SET_CUSTOMIZED_PRODUCT_UNIT](state, payload) {
         state.customizedProduct.customizedDimensions.unit = payload.unit;
     },

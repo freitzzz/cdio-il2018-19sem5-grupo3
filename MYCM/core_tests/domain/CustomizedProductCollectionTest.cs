@@ -13,27 +13,19 @@ namespace core_tests.domain
     /// </summary>
     public class CustomizedProductCollectionTest
     {
-        /// <summary>
-        /// Test to ensure that a CustomizedProductCollection can't be created with a null list of CustomizedProducts.
-        /// </summary>
+
         [Fact]
         public void ensureNullCustomizedProductListIsNotValid()
         {
             Assert.Throws<ArgumentException>(() => new CustomizedProductCollection("It's-a-me, Mario", null));
         }
 
-        /// <summary>
-        /// Test to ensure that a CustomizedProductCollection can't be created with an empty list of CustomizedProducts.
-        /// </summary>
         [Fact]
         public void ensureEmptyCustomizedProductListIsNotValid()
         {
             Assert.Throws<ArgumentException>(() => new CustomizedProductCollection("It's-a-me, Mario", new List<CustomizedProduct>()));
         }
 
-        /// <summary>
-        /// Test to ensure that a CustomizedProductCollection can't be created with duplicated elements in the list of CustomizedProducts.
-        /// </summary>
         [Fact]
         public void ensureCustomizedProductsListWithDuplicatesIsNotValid()
         {
@@ -45,65 +37,42 @@ namespace core_tests.domain
             Assert.Throws<ArgumentException>(() => new CustomizedProductCollection("Mario", products));
         }
 
-
-        /// <summary>
-        /// Test to ensure that a CustomizedProductCollection can't be created with a null name.
-        /// </summary>
         [Fact]
         public void ensureNullNameIsNotValid()
         {
             Assert.Throws<ArgumentException>(() => new CustomizedProductCollection(null));
         }
 
-        /// <summary>
-        /// Test to ensure that a CustomizedProductCollection can't be created with an empty name.
-        /// </summary>
         [Fact]
         public void ensureEmptyNameIsNotValid()
         {
             Assert.Throws<ArgumentException>(() => new CustomizedProductCollection(""));
         }
 
-        /// <summary>
-        /// Test to ensure that a CustomizedProductCollection's name can be changed if the string is valid.
-        /// </summary>
         [Fact]
         public void ensureValidNameCanBeChanged()
         {
             Assert.True(new CustomizedProductCollection("Luigi").changeName("Mario"));
         }
 
-        /// <summary>
-        /// Test to ensure that a CustomizedProductCollection's name can't be changed if the string is empty.
-        /// </summary>
         [Fact]
         public void ensureEmptyNameCantBeChanged()
         {
             Assert.False(new CustomizedProductCollection("'Shroom").changeName(""));
         }
 
-        /// <summary>
-        /// Test to ensure that a CustomizedProductCollection's name can't be changed if the string is null.
-        /// </summary>
         [Fact]
         public void ensureNullNameCantBeChanged()
         {
             Assert.False(new CustomizedProductCollection("Peach").changeName(null));
         }
 
-        /// <summary>
-        /// Test to ensure that a CustomizedProductCollection is the same as another entity's identity if it is the same.
-        /// </summary>
         [Fact]
         public void ensureSameAsWorksForEqualCustomizedProductCollections()
         {
             Assert.True(new CustomizedProductCollection("Luigi").sameAs("Luigi"));
         }
 
-
-        /// <summary>
-        /// Test to ensure that the DTO is the expected.
-        /// </summary>
         [Fact]
         public void ensureToDtoIsTheExpected()
         {
@@ -117,29 +86,19 @@ namespace core_tests.domain
             Assert.Equal(collectionDTO.customizedProducts, collection.toDTO().customizedProducts);
         }
 
-        /// <summary>
-        /// Test to ensure that a CustomizedProductCollection is not the same as another entity's identity if it is different.
-        /// </summary>
         [Fact]
         public void ensureSameAsFailsForDifferentCustomizedProductCollections()
         {
             Assert.False(new CustomizedProductCollection("Luigi").sameAs("Mario"));
         }
 
-        /// <summary>
-        /// Test to ensure that a valid CustomizedProduct can be added to the list.
-        /// </summary>
         [Fact]
         public void ensureAddCustomizedProductWorksForValidProduct()
         {
             CustomizedProduct customizedProduct = buildCustomizedProductInstance();
-
             Assert.True(new CustomizedProductCollection("Mario").addCustomizedProduct(customizedProduct));
         }
 
-        /// <summary>
-        /// Test to ensure that a CustomizedProduct can't be added to the list if it already exists.
-        /// </summary>
         [Fact]
         public void ensureAddCustomizedProductFailsIfItAlreadyExists()
         {
@@ -150,19 +109,12 @@ namespace core_tests.domain
             Assert.False(new CustomizedProductCollection("Mario", list).addCustomizedProduct(customizedProduct));
         }
 
-        /// <summary>
-        /// Test to ensure that a null CustomizedProduct can't be added to the list.
-        /// </summary>
         [Fact]
         public void ensureAddCustomizedProductFailsIfItIsNull()
         {
             Assert.False(new CustomizedProductCollection("Mario").addCustomizedProduct(null));
         }
 
-
-        /// <summary>
-        /// Test to ensure that a CustomizedProduct can be removed from the list.
-        /// </summary>
         [Fact]
         public void ensureRemovedCustomizedProductWorksForAlreadyExistentProduct()
         {
@@ -173,18 +125,12 @@ namespace core_tests.domain
             Assert.True(new CustomizedProductCollection("Mario", list).removeCustomizedProduct(cp));
         }
 
-        /// <summary>
-        /// Test to ensure that the id of the CustomizedProductCollection is the expected.
-        /// </summary>
         [Fact]
         public void ensureIdMethodWorks()
         {
             Assert.Equal("Mario", new CustomizedProductCollection("Mario").id());
         }
 
-        /// <summary>
-        /// Test to ensure that an already disabled CustomizedProductCollection can't be disabled.
-        /// </summary>
         [Fact]
         public void ensureDisabledCustomizedProductCollectionCantBeDisabled()
         {
@@ -193,18 +139,13 @@ namespace core_tests.domain
 
             Assert.False(collection.deactivate());
         }
-        /// <summary>
-        /// Test to ensure that an enabled CustomizedProductCollection can be disabled.
-        /// </summary>
+
         [Fact]
         public void ensureEnabledCustomizedProductCollectionCanBeDisabled()
         {
             Assert.True(new CustomizedProductCollection("Mario").deactivate());
         }
 
-        /// <summary>
-        /// Test to ensure that different CustomizedProductCollections are not equal.
-        /// </summary>
         [Fact]
         public void ensureNotEqualCustomizedProductCollectionsAreNotEqual()
         {
@@ -216,7 +157,7 @@ namespace core_tests.domain
             Dimension depthDimension = new SingleValueDimension(17);
 
             Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "Just referencing";
@@ -229,8 +170,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Prayin'");
-            Finish finish2 = Finish.valueOf("Estragado");
+            Finish finish = Finish.valueOf("Prayin'", 3);
+            Finish finish2 = Finish.valueOf("Estragado", 9);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -244,7 +185,7 @@ namespace core_tests.domain
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             //Customized Material
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
+            CustomizedMaterial mat = CustomizedMaterial.valueOf(material, color1, finish2);
 
 
             CustomizedProduct cp = new CustomizedProduct("Mushrooms", "Are deadly", mat, customizedDimensions, product);
@@ -254,10 +195,6 @@ namespace core_tests.domain
             Assert.NotEqual(new CustomizedProductCollection("Mario", products), new CustomizedProductCollection("Luigi", products));
         }
 
-
-        /// <summary>
-        /// Test to ensure that two equal CustomizedProductCollections are equal.
-        /// </summary>
         [Fact]
         public void ensureEqualCustomizedProductCollectionsAreEqual()
         {
@@ -268,9 +205,6 @@ namespace core_tests.domain
             Assert.Equal(new CustomizedProductCollection("Mario", products), new CustomizedProductCollection("Mario", products));
         }
 
-        /// <summary>
-        /// Test to ensure that a different type object is not the same as a CustomizedProductCollection.
-        /// </summary>
         [Fact]
         public void ensureDifferentTypeObjectIsNotEqualToCustomizedProductCollection()
         {
@@ -281,9 +215,6 @@ namespace core_tests.domain
             Assert.False(new CustomizedProductCollection("Mario", products).Equals("Something"));
         }
 
-        /// <summary>
-        /// Test to ensure that a null object is not the same as a CustomizedProductCollection.
-        /// </summary>
         [Fact]
         public void ensureNullObjectIsNotEqualToCustomizedProductCollection()
         {
@@ -294,9 +225,6 @@ namespace core_tests.domain
             Assert.False(new CustomizedProductCollection("Mario", products).Equals(null));
         }
 
-        /// <summary>
-        /// Test to ensure that the generated hash code is the same for equal CustomizedProductCollections.
-        /// </summary>
         [Fact]
         public void ensureHashCodeWorks()
         {
@@ -308,9 +236,6 @@ namespace core_tests.domain
             new CustomizedProductCollection("Mario", products).GetHashCode());
         }
 
-        /// <summary>
-        /// Test to ensure that the string that describes the CustomizedProductCollection is the same for equal CustomizedProductCollections.
-        /// </summary>
         [Fact]
         public void ensureToStringWorks()
         {
@@ -363,7 +288,7 @@ namespace core_tests.domain
             Dimension depthDimension = new SingleValueDimension(17);
 
             Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "Just referencing";
@@ -376,8 +301,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Prayin'");
-            Finish finish2 = Finish.valueOf("Estragado");
+            Finish finish = Finish.valueOf("Prayin'", 12);
+            Finish finish2 = Finish.valueOf("Estragado", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -391,7 +316,7 @@ namespace core_tests.domain
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             //Customized Material
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(material,color1, finish2);
+            CustomizedMaterial mat = CustomizedMaterial.valueOf(material, color1, finish2);
 
 
 
