@@ -1,6 +1,9 @@
 package cdiomyc.core.domain.auth.credentials;
 
+import cdiomyc.core.application.Application;
 import cdiomyc.support.domain.ddd.ValueObject;
+import cdiomyc.support.encryptions.DigestUtils;
+import cdiomyc.support.encryptions.OperatorsEncryption;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -23,7 +26,7 @@ public class Username implements Serializable,ValueObject {
     /**
      * String that represents the username value
      */
-    private String username;
+    protected String username;
     
     /**
      * Creates a new Username
@@ -38,7 +41,7 @@ public class Username implements Serializable,ValueObject {
      */
     private Username(String username){
         checkUsername(username);
-        this.username=username;
+        this.username=encryptUsername(username);
     }
     
     /**
@@ -62,6 +65,25 @@ public class Username implements Serializable,ValueObject {
      */
     @Override
     public String toString(){return username;};
+    
+    /**
+     * Encrypts a username
+     * @param username String with the username being encrypted
+     * @return String with the encrypted username
+     */
+    private String encryptUsername(String username){
+        String hashedUsername
+                =DigestUtils
+                        .hashify(username,
+                                Application.settings().getUsernameAlgorithm(),
+                                Application.settings().getUsernameSalt().getBytes());
+        String encryptedHashedUsername
+                =OperatorsEncryption
+                        .encrypt(hashedUsername,
+                                Application.settings().getUsernameOperatorsEncryptionAlgorithm(),
+                                Application.settings().getUsernameOperatorsEncryptionValue());
+        return encryptedHashedUsername;
+    }
     
     /**
      * Checks if an username is valid
