@@ -5,7 +5,7 @@
       <i class="material-icons md-12 md-blue btn">help</i>
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
-    <select class="dropdown" v-model="dimensionOp" @change="updateUnit">
+    <select class="dropdown" v-model="dimensionOp" @change="populateAvailableOptions">
       <option
         v-for="option in availableOptionsDimensions"
         :key="option.id"
@@ -58,6 +58,7 @@ export default {
       dimensionOp: "",
       availableOptionsDimensions:[],
       availableOptionsUnits:[],
+      availableDimensionsHLD:[],
       DISCRETE_INTERVAL:0,
       CONTINUOUS_INTERVAL:1,
       DISCRETE_VALUE:2
@@ -76,12 +77,12 @@ export default {
     Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions`
     )
       .then(response => this.availableOptionsDimensions.push(...response.data))
-      .catch(console.log(error));
+      .catch(console.log(error.response));
 
    /*Get all available units of measurement*/
     Axios.get(`${MYCM_API_URL}/units`)
     .then(response => this.availableOptionsUnits.push(...response.data))
-    .catch(console.log(error));
+    .catch(console.log(error.response));
   },
   methods: {
     updateHeight(e) {
@@ -98,32 +99,37 @@ export default {
     },
     
     identifyTypeDimensions(dimensionObj){
-       
+ 
       if( dimensionObj.values !=null){ //Discrete interval
-        return DISCRETE_INTERVAL;
+        return this.DISCRETE_INTERVAL;
       }else if(dimensionObj.value !=null){ //DIscrete value
-        return DISCRETE_VALUE;
+        return this.DISCRETE_VALUE;
       }else if(dimensionObj.minValue !=null && dimensionObj.maxValue!=null && dimensionObj.increment !=null){
-        return CONTINUOUS_INTERVAL;
+        return this.CONTINUOUS_INTERVAL;
       }//Not yet implemented dimension
       return -1;
       
     },
     //Get all available options
     populateAvailableOptions() {
+
       //Get information of the chosed option
       var op = this.dimensionOp;
-
+      var heightType,widthType,depthType;
       //Create array of different dimensions h,l,d
       //Create for to identify each type of dimension
       //Set slider of different dimension
       //Stop if the dimension is invalid
+
       //Populate Height:
-
-      //Populate Length
-
+      heightType = this.identifyTypeDimensions(op.height);
+      alert(heightType);
+      //Populate Width
+      widthType = this.identifyTypeDimensions(op.width);
+      alert(widthType);
       //Populate Depth:
-
+      depthType = this.identifyTypeDimensions(op.depth);
+      alert(depthType);
       
     } 
   }
