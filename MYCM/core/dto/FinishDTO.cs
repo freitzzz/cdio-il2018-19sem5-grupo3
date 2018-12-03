@@ -3,12 +3,14 @@ using System.Runtime.Serialization;
 using core.domain;
 using support.dto;
 
-namespace core.dto {
+namespace core.dto
+{
     /// <summary>
     /// Represents a Finish's Data Transfer Object.
     /// </summary>
     [DataContract]
-    public class FinishDTO : DTO, DTOParseable<Finish, FinishDTO> {
+    public class FinishDTO : DTO, DTOParseable<Finish, FinishDTO>
+    {
         /// <summary>
         /// Finish's database identifier.
         /// </summary>
@@ -24,11 +26,19 @@ namespace core.dto {
         public string description { get; set; }
 
         /// <summary>
+        /// Finish's shininess.
+        /// </summary>
+        /// <value>Gets/sets the value of the shininess field.</value>
+        [DataMember]
+        public float shininess { get; set; }
+
+        /// <summary>
         /// Returns the Entity equivalent of the DTO
         /// </summary>
         /// <returns>Entity equivalent of the DTO</returns>
-        public Finish toEntity() {
-            Finish finish = Finish.valueOf(description);
+        public Finish toEntity()
+        {
+            Finish finish = Finish.valueOf(description, shininess);
             finish.Id = this.id;
             return finish;
         }

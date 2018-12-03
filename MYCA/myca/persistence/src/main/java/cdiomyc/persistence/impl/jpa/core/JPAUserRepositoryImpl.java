@@ -69,10 +69,30 @@ public class JPAUserRepositoryImpl extends BaseJPARepository<User, Long> impleme
                             + "AND US MEMBER OF U.sessions")
                 .setParameter("sessionAPIToken",sessionAPIToken)
                 .setMaxResults(1);
-        Object userBySessionAPI=userBySessionAPITokenQuery.getSingleResult();
+        Object userBySessionAPI=!userBySessionAPITokenQuery.getResultList().isEmpty() ? userBySessionAPITokenQuery.getSingleResult() : null;
         if(userBySessionAPI==null)
             throw new IllegalStateException("No user found with the given session API token");
         return (User)userBySessionAPI;
     }
-
+    
+    /**
+     * Finds an user by its auth token
+     * @param authToken String with the auth token
+     * @return User with the user who is identified by the auth token
+     */
+    @Override
+    public User findUserByAuthToken(String authToken) {
+        System.out.println(authToken);
+        Query userByAuthTokenQuery=super
+                .getEntityManager()
+                .createQuery("SELECT U FROM User U,Auth UA "
+                            + "WHERE UA.token= :authToken "
+                            + "AND U.auth=UA")
+                .setParameter("authToken",authToken)
+                .setMaxResults(1);
+        Object userByAuthToken=!userByAuthTokenQuery.getResultList().isEmpty() ? userByAuthTokenQuery.getSingleResult() : null;
+        if(userByAuthToken==null)
+            throw new IllegalStateException("No user found with the given auth token");
+        return (User)userByAuthToken;
+    }
 }

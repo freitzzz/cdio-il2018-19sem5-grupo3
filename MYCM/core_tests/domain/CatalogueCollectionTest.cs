@@ -6,6 +6,9 @@ using core.dto;
 using Xunit;
 namespace core_tests.domain
 {
+    /// <summary>
+    /// Tests of the class CatalogueCollection
+    /// </summary>
     public class CatalogueCollectionTest
     {
         [Fact]
@@ -31,7 +34,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("Amém", 12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -76,8 +79,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 34);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -131,8 +134,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido",34);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -189,8 +192,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém",12);
+            Finish finish2 = Finish.valueOf("Acabamento polido",34);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -247,7 +250,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("Amém",12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -291,7 +294,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("Amém",12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -336,7 +339,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("Amém",12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -380,7 +383,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -424,7 +427,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -468,7 +471,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -514,7 +517,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -561,7 +564,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -609,7 +612,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -653,7 +656,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -698,7 +701,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -744,7 +747,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -788,7 +791,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);

@@ -35,6 +35,6 @@ namespace core.modelview.product{
         /// Long with the ID of the category which will be updated on the product
         /// </summary>
         [DataMember(Name="categoryId")]
-        public long categoryId{get;set;}
+        public long? categoryId{get;set;} //since updating the category is optional, this id should be nullable
     }
 }

@@ -1,6 +1,8 @@
 package cdiomyc.core.application.auth;
 
+import cdiomyc.core.application.grants.CRUDGrants;
 import cdiomyc.core.domain.User;
+import cdiomyc.core.domain.auth.AuthFactory;
 import cdiomyc.core.domain.auth.Session;
 import cdiomyc.core.mv.authentication.AuthenticationMV;
 import cdiomyc.core.mv.authentication.session.AuthenticationSessionMVService;
@@ -19,8 +21,13 @@ public final class AuthenticationController {
      */
     public static GetAuthenticationSessionDetailsMV authenticate(AuthenticationMV authenticationModelView){
         User userToAuthenticate
-                =PersistenceContext.repositories().createUserRepository().findUserByAuthenticationDetails(authenticationModelView);
+                =PersistenceContext.repositories().createUserRepository()
+                        .findUserByAuthToken(AuthFactory.validateAuth(authenticationModelView).id());
+        CRUDGrants.grantFindWasSuccessful(userToAuthenticate);
         Session createdUserSession=userToAuthenticate.createNewSession();
+        User authenticatedUser
+                =PersistenceContext.repositories().createUserRepository().update(userToAuthenticate);
+        CRUDGrants.grantUpdateWasSuccessful(authenticatedUser);
         return AuthenticationSessionMVService.fromEntity(createdUserSession);
     }
 }

@@ -2,7 +2,6 @@ package cdiomyc.core.domain.auth.credentials;
 
 import cdiomyc.support.domain.ddd.ValueObject;
 import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**

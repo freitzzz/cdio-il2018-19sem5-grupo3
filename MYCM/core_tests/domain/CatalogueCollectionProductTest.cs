@@ -5,6 +5,9 @@ using Xunit;
 
 namespace core_tests.domain
 {
+    /// <summary>
+    /// Tests of the class CatalogueCollectionProduct
+    /// </summary>
     public class CatalogueCollectionProductTest
     {
         [Fact]
@@ -49,7 +52,7 @@ namespace core_tests.domain
 
         private CustomizedProduct buildCustomizedProduct()
         {
-            Finish finish = Finish.valueOf("Glossy");
+            Finish finish = Finish.valueOf("Glossy", 90);
             Color color = Color.valueOf("Deep Purple", 153, 50, 204, 0);
 
             Material material = new Material("materialid", "Metal", "ola.jpg", new List<Color>() { color }, new List<Finish>() { finish });

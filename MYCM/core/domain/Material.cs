@@ -75,11 +75,6 @@ namespace core.domain
         public List<Finish> Finishes { get => LazyLoader.Load(this, ref _finishes); protected set => _finishes = value; }
 
         /// <summary>
-        /// Enum that contains the valid image file name extensions
-        /// </summary>
-        private enum extensions { jpeg, jpg, png, gif, dds }
-
-        /// <summary>
         /// Empty constructor used by ORM.
         /// </summary>
         protected Material() { }
@@ -156,7 +151,7 @@ namespace core.domain
         /// <returns>bool true if the change was successful, false if not</returns>
         public bool changeImage(string image)
         {
-            if (Strings.isNullOrEmpty(image) || !checkIfImageExtensionIsValid(image)) return false;
+            if (Strings.isNullOrEmpty(image) || !Regex.Match(image, @"^[\w\-. ]+(.png|.jpg|.jpeg|.dds|.gif)$").Success) return false;
             this.image = image;
             return true;
         }
@@ -262,30 +257,9 @@ namespace core.domain
         /// <param name="image">String with the Material's image file name</param>
         private void checkIfImageIsValid(string image)
         {
-            if (Strings.isNullOrEmpty(image) || !checkIfImageExtensionIsValid(image)) throw new ArgumentException(INVALID_MATERIAL_IMAGE_FILE_NAME);
+            if (Strings.isNullOrEmpty(image) || !Regex.Match(image, @"^[\w\-. ]+(.png|.jpg|.jpeg|.dds|.gif)$").Success) throw new ArgumentException(INVALID_MATERIAL_IMAGE_FILE_NAME);
         }
-
-        /// <summary>
-        /// Checks if the image's file name has a supported extension
-        /// </summary>
-        /// <param name="image">String with the Material's image file name</param>
-        /// <returns>bool true if it is valid, false if not</returns>
-        private bool checkIfImageExtensionIsValid(string image)
-        {
-            string[] splitted = image.Split(".");
-            if (splitted.Length == 2)
-            {
-                if (Regex.Match(splitted[0], @"^[\w\-. ]+$").Success)
-                {
-                    var extension = splitted[splitted.Length - 1].ToLower();
-                    if (extension == extensions.jpg.ToString() || extension == extensions.jpeg.ToString() ||
-                    extension == extensions.png.ToString() || extension == extensions.gif.ToString() ||
-                    extension == extensions.dds.ToString()) return true;
-                }
-            }
-            return false;
-        }
-
+        
         /// <summary>
         /// Checks if the Material's colors are valid.
         /// </summary>

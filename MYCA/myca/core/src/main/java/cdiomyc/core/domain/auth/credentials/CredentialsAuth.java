@@ -1,6 +1,7 @@
 package cdiomyc.core.domain.auth.credentials;
 
 import cdiomyc.core.domain.auth.Auth;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
@@ -39,7 +40,8 @@ public class CredentialsAuth extends Auth{
      * @return String with the generated authentication token
      */
     private static String generateToken(String username,String password){
-        throw new UnsupportedOperationException("#TODO");
+        return username.concat(password);
+        //throw new UnsupportedOperationException("#TODO");
     }
     
     /**
