@@ -554,3 +554,4 @@ ASALocalRun/
 
 
 # End of https://www.gitignore.io/api/rider,aspnetcore,visualstudio,visualstudiocode
+/MYCA/myca/core/nbproject/
