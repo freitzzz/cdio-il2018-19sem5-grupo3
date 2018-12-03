@@ -155,7 +155,7 @@ namespace core.application
 
             foreach (FinishDTO finishDTO in materialDTO.finishes)
             {
-                material.addFinish(Finish.valueOf(finishDTO.description));
+                material.addFinish(Finish.valueOf(finishDTO.description, finishDTO.shininess));
             }
             Material mat = repository.update(material);
             return mat == null ? null : mat.toDTO();

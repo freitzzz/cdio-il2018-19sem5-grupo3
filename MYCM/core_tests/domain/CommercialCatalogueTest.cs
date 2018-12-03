@@ -6,11 +6,10 @@ using core.dto;
 using support.dto;
 namespace core_tests.domain
 {
-    /**
-    <summary>
-        Tests of the class CommercialCatalogue.
-    </summary>
-    */
+
+    /// <summary>
+    /// Tests of the class CommercialCatalogue
+    /// </summary>
     public class CommercialCatalogueTest
     {
 
@@ -25,7 +24,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
@@ -78,7 +77,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
@@ -131,7 +130,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -185,7 +184,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -237,7 +236,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -288,7 +287,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -341,7 +340,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -393,7 +392,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
@@ -448,7 +447,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
@@ -499,7 +498,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
@@ -547,7 +546,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
@@ -595,7 +594,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
@@ -644,7 +643,7 @@ namespace core_tests.domain
             List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
 
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -709,7 +708,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
@@ -760,7 +759,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
@@ -810,7 +809,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -860,7 +859,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
@@ -912,7 +911,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
@@ -962,7 +961,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
@@ -1012,7 +1011,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
@@ -1057,7 +1056,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
@@ -1106,7 +1105,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
@@ -1158,7 +1157,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
@@ -1211,7 +1210,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
@@ -1265,7 +1264,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
@@ -1316,7 +1315,7 @@ namespace core_tests.domain
         {
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
@@ -1370,7 +1369,7 @@ namespace core_tests.domain
 
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
 
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
@@ -1424,7 +1423,7 @@ namespace core_tests.domain
             string reference = "123456789.";
             string designation = "Commercial Catalogue 2019";
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 50);
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             ProductCategory prodCat = new ProductCategory("Category 1");
             Dimension heightDimension = new SingleValueDimension(21);

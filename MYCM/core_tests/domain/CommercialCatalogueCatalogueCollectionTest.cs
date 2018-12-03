@@ -18,7 +18,7 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>();
             colors.Add(color);
 
-            Finish finish = Finish.valueOf("once");
+            Finish finish = Finish.valueOf("once", 1);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
@@ -69,7 +69,7 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>();
             colors.Add(color);
 
-            Finish finish = Finish.valueOf("once");
+            Finish finish = Finish.valueOf("once",1);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
@@ -125,7 +125,7 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>();
             colors.Add(color);
 
-            Finish finish = Finish.valueOf("once");
+            Finish finish = Finish.valueOf("once",1);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 

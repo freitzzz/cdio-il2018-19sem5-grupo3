@@ -25,12 +25,12 @@ namespace core_tests.domain
 
         private Finish buildGlossyFinish()
         {
-            return Finish.valueOf("Glossy");
+            return Finish.valueOf("Glossy", 90);
         }
 
         private Finish buildMatteFinish()
         {
-            return Finish.valueOf("Matte");
+            return Finish.valueOf("Matte", 2);
         }
 
         private Color buildRedColor()
@@ -119,8 +119,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -166,8 +166,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -210,8 +210,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -254,8 +254,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -299,7 +299,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("Amém", 12);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -358,8 +358,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -398,7 +398,7 @@ namespace core_tests.domain
         {
             //Customized Material
             Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             List<Color> colors = new List<Color>();
             colors.Add(color1);
 
@@ -453,8 +453,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -505,8 +505,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -559,8 +559,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -612,8 +612,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -663,8 +663,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -715,8 +715,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -768,8 +768,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -821,8 +821,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -874,8 +874,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -925,8 +925,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -972,8 +972,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1025,8 +1025,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1076,8 +1076,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1123,8 +1123,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1175,8 +1175,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1226,8 +1226,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1275,8 +1275,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1328,8 +1328,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1382,8 +1382,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1444,8 +1444,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1493,8 +1493,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1539,8 +1539,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1594,8 +1594,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1638,8 +1638,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1691,8 +1691,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1749,8 +1749,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1811,8 +1811,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1865,8 +1865,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1927,8 +1927,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -1980,8 +1980,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -2033,8 +2033,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -2088,8 +2088,8 @@ namespace core_tests.domain
 
             List<Finish> finishes = new List<Finish>();
             List<Finish> otherFinishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             otherFinishes.Add(finish2);
 
@@ -2144,8 +2144,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -2197,8 +2197,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -2250,8 +2250,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
@@ -2302,8 +2302,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -2353,8 +2353,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -2405,8 +2405,8 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 
@@ -2458,8 +2458,8 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 13);
             finishes.Add(finish);
             finishes.Add(finish2);
 

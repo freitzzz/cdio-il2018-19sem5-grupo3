@@ -5,12 +5,14 @@ using System.Text;
 using core.domain;
 using core.dto;
 
-namespace core_tests.domain {
-    public class ProductMaterialTest {
-        private static readonly Material PREDEFINED_MATERIAL = new Material("#444", "Tinta Branca", "ola.jpg", new List<Color>(new[] { Color.valueOf("White", 0, 0, 0, 0) }), new List<Finish>(new[] { Finish.valueOf("Matte") }));
-        private static readonly Material PREDEFINED_MATERIAL2 = new Material("#445", "Tinta Preta", "ola.jpg", new List<Color>(new[] { Color.valueOf("Black", 255, 255, 255, 255) }), new List<Finish>(new[] { Finish.valueOf("Matte") }));
+namespace core_tests.domain
+{
+    public class ProductMaterialTest
+    {
+        private static readonly Material PREDEFINED_MATERIAL = new Material("#444", "Tinta Branca", "ola.jpg", new List<Color>(new[] { Color.valueOf("White", 0, 0, 0, 0) }), new List<Finish>(new[] { Finish.valueOf("Matte", 0) }));
+        private static readonly Material PREDEFINED_MATERIAL2 = new Material("#445", "Tinta Preta", "ola.jpg", new List<Color>(new[] { Color.valueOf("Black", 255, 255, 255, 255) }), new List<Finish>(new[] { Finish.valueOf("Matte", 0) }));
         private static readonly List<Material> PREDEFINED_MATERIALS = new List<Material>(new[] { PREDEFINED_MATERIAL });
-         private readonly List<Measurement> PREDEFINED_MEASUREMENTS = new List<Measurement>(){new Measurement(   height: new SingleValueDimension(21),
+        private readonly List<Measurement> PREDEFINED_MEASUREMENTS = new List<Measurement>(){new Measurement(   height: new SingleValueDimension(21),
                                                                                                                 width: new SingleValueDimension(50),
                                                                                                                 depth: new SingleValueDimension(15)
                                                                                                             )
@@ -20,7 +22,8 @@ namespace core_tests.domain {
         /// Ensures addRestriction returns false when argument is null
         /// </summary>
         [Fact]
-        public void ensureAddedRestrictionIsNotNull() {
+        public void ensureAddedRestrictionIsNotNull()
+        {
             Console.WriteLine("ensureAddedRestrictionIsNotNull");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
@@ -30,7 +33,8 @@ namespace core_tests.domain {
         /// Ensures addRestriction returns true when argument is valid
         /// </summary>
         [Fact]
-        public void ensureAddRestrictionSucceeds() {
+        public void ensureAddRestrictionSucceeds()
+        {
             Console.WriteLine("ensureAddRestrictionSucceeds");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
@@ -42,7 +46,8 @@ namespace core_tests.domain {
         /// Ensures addRestriction returns false when restriction already exists
         /// </summary>
         [Fact]
-        public void ensureAddedRestrictionIsUnique() {
+        public void ensureAddedRestrictionIsUnique()
+        {
             Console.WriteLine("ensureAddedRestrictionIsUnique");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
@@ -54,7 +59,8 @@ namespace core_tests.domain {
         /// Ensures restrictionExists returns true when restriction was previously added
         /// </summary>
         [Fact]
-        public void ensureRestrictionExistsSucceeds() {
+        public void ensureRestrictionExistsSucceeds()
+        {
             Console.WriteLine("ensureRestrictionExistsSucceeds");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
@@ -66,7 +72,8 @@ namespace core_tests.domain {
         /// Ensures restrictionExists returns false when argument is null
         /// </summary>
         [Fact]
-        public void ensureRestrictionExistsFailsWithNullArgument() {
+        public void ensureRestrictionExistsFailsWithNullArgument()
+        {
             Console.WriteLine("ensureRestrictionExistsFailsWithNullArgument");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
@@ -76,7 +83,8 @@ namespace core_tests.domain {
         /// Ensures restrictionExists returns false when restriction wasn't previously added
         /// </summary>
         [Fact]
-        public void ensureRestrictionExistsFails() {
+        public void ensureRestrictionExistsFails()
+        {
             Console.WriteLine("ensureRestrictionExistsSucceeds");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
@@ -87,7 +95,8 @@ namespace core_tests.domain {
         /// Ensures removeRestriction returns false when argument is null
         /// </summary>
         [Fact]
-        public void ensureRemoveRestrictionArgumentIsNotNull() {
+        public void ensureRemoveRestrictionArgumentIsNotNull()
+        {
             Console.WriteLine("ensureRemoveRestrictionArgumentIsNotNull");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
@@ -97,7 +106,8 @@ namespace core_tests.domain {
         /// Ensures removeRestriction returns false when restriction wasn't previously added
         /// </summary>
         [Fact]
-        public void ensureRemoveRestrictionArgumentExists() {
+        public void ensureRemoveRestrictionArgumentExists()
+        {
             Console.WriteLine("ensureRemoveRestrictionArgumentExists");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
@@ -108,7 +118,8 @@ namespace core_tests.domain {
         /// Ensures removeRestriction returns true when restriction was previously added
         /// </summary>
         [Fact]
-        public void ensureRemoveRestrictionSucceeds() {
+        public void ensureRemoveRestrictionSucceeds()
+        {
             Console.WriteLine("ensureRemoveRestrictionSucceeds");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
@@ -120,7 +131,8 @@ namespace core_tests.domain {
         /// Ensures hasMaterial returns false with null argument
         /// </summary>
         [Fact]
-        public void ensureHasMaterialFailsWithNullArgument() {
+        public void ensureHasMaterialFailsWithNullArgument()
+        {
             Console.WriteLine("ensureHasMaterialFailsWithNullArgument");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
@@ -130,7 +142,8 @@ namespace core_tests.domain {
         /// Ensures hasMaterial returns false if productmaterial does not contain material
         /// </summary>
         [Fact]
-        public void ensureHasMaterialFails() {
+        public void ensureHasMaterialFails()
+        {
             Console.WriteLine("ensureHasMaterialFails");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
@@ -140,7 +153,8 @@ namespace core_tests.domain {
         /// Ensures hasMaterial returns true if productmaterial contains material
         /// </summary>
         [Fact]
-        public void ensureHasMaterialSucceeds() {
+        public void ensureHasMaterialSucceeds()
+        {
             Console.WriteLine("ensureHasMaterialSucceeds");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2, new List<Restriction>());
@@ -150,7 +164,8 @@ namespace core_tests.domain {
         /// Ensures default get method for product attribute works
         /// </summary>
         [Fact]
-        public void ensureGetProductWorks() {
+        public void ensureGetProductWorks()
+        {
             Console.WriteLine("ensureGetProductWorks");
             Product p = new Product("#666", "der alte würfelt nicht", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2, new List<Restriction>());
