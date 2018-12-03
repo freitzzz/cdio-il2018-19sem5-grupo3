@@ -16,14 +16,14 @@ public class AuthFactory {
     /**
      * Creates an Auth from certain authentication details
      *
-     * @param authDetails AuthenticationMV with the authentication detials
+     * @param authDetails AuthenticationMV with the authentication details
      * @return Auth with the creating Auth
      * @throws IllegalStateException If authentication details are invalid
      */
     public static Auth createAuth(AuthenticationMV authDetails) {
         if (authDetails instanceof CredentialsAuthenticationMV) {
             CredentialsAuthenticationMV credentialDetails = (CredentialsAuthenticationMV) authDetails;
-            return new CredentialsAuth(credentialDetails.username, credentialDetails.password);
+            return (Auth) new CredentialsAuth(credentialDetails.username, credentialDetails.password);
         }
         throw new IllegalStateException("Invalid authentication details!");
     }

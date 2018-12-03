@@ -28,11 +28,11 @@ public class UserController {
         UserRepository userRepo = PersistenceContext.repositories().createUserRepository();
         try {
             userRepo.findEID(auth);
-            throw new IllegalArgumentException("User already exists!");
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalStateException ex) {
             User user = new User(auth);
             userRepo.save(user);
             return UserMVService.createdUserMVFromAuth(auth);
         }
+        throw new IllegalStateException("User already exists!");
     }
 }
