@@ -1,6 +1,8 @@
 package cdiomyc.core.domain.auth.credentials;
 
+import cdiomyc.support.domain.ddd.ValueObject;
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
@@ -9,7 +11,7 @@ import javax.persistence.Embeddable;
  * @author <a href="https://github.com/freitzzz">freitzzz</a>
  */
 @Embeddable
-public class Username implements Serializable {
+public class Username implements Serializable,ValueObject {
     /**
      * Constant that represents the message that occurs if an username is invalid
      */
@@ -17,11 +19,11 @@ public class Username implements Serializable {
     /**
      * Constant that represents the regular expression used to validate an username
      */
-    private static final String USERNAME_REGEX_VALIDATOR="[a-zA-z0-9]{5,12}";
+    private static final String USERNAME_REGEX_VALIDATOR="[a-zA-z0-9]{5,24}";
     /**
      * String that represents the username value
      */
-    private String value;
+    private String username;
     
     /**
      * Creates a new Username
@@ -36,8 +38,30 @@ public class Username implements Serializable {
      */
     private Username(String username){
         checkUsername(username);
-        this.value=username;
+        this.username=username;
     }
+    
+    /**
+     * Returns the hashcode of the value object
+     * @return Integer with the hash code of the value object
+     */
+    @Override
+    public int hashCode(){return username.hashCode();}
+    
+    /**
+     * Checks if a value object is equal to the current one
+     * @param otherValueObject ValueObject with the comparing value object
+     * @return boolean true if both value objects are equal, false if not
+     */
+    @Override
+    public boolean equals(Object otherValueObject){return otherValueObject instanceof Username && ((Username)otherValueObject).username.equals(username);}
+    
+    /**
+     * Returns the textual representation of the value object
+     * @return String with the textual representation of the value object
+     */
+    @Override
+    public String toString(){return username;};
     
     /**
      * Checks if an username is valid

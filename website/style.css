@@ -523,10 +523,15 @@
   align-content: left;
 }
 
-.right {
-  width: 10%;
-  align-content: right;
-}
+  .right {
+    width: 10%;
+    align-content: right;
+  }
+
+  /*Base container to allow paddings between items*/
+  .baseContainer{
+    margin-bottom: 15%;
+  }
   
 .text-entry {
   margin: 6%;

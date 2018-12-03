@@ -1,49 +1,100 @@
-using core.domain;
-using core.modelview.restriction;
 using System;
 using System.Collections.Generic;
+using core.domain;
+using core.modelview.restriction;
 
-namespace core.modelview.component{
-    /// <summary>
-    /// Service for creating model views based on certain component contexts
-    /// </summary>
-    public sealed class ComponentModelViewService{
+namespace core.modelview.component
+{
+    public static class ComponentModelViewService
+    {
+        /// <summary>
+        /// Constant representing the message presented when the provided Component is null.
+        /// </summary>
+        private const string ERROR_NULL_COMPONENT = "The provided component is invalid.";
+        /// <summary>
+        /// Constant representing the message presented when the provided Collection of Component is null.
+        /// </summary>
+        private const string ERROR_NULL_COMPONENT_COLLECTION = "The provided component collection is invalid.";
+
 
         /// <summary>
-        /// Creates a model view with a component basic information
+        /// Converts an instance of Component into an instance of GetBasicComponentModelView.
         /// </summary>
-        /// <param name="component">Component with the component being created the model view</param>
-        /// <returns>GetBasicComponentModelView with the component basic information model view</returns>
-        public static GetBasicComponentModelView fromEntityAsBasic(Component component){
-            GetBasicComponentModelView basicComponentModelView=new GetBasicComponentModelView();
-            basicComponentModelView.id=component.complementaryProductId;
-            basicComponentModelView.fatherProductID=component.fatherProductId;
-            basicComponentModelView.mandatory=component.mandatory;
+        /// <param name="component">Instance of Component.</param>
+        /// <returns>An instance of GetBasicComponentModelView.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when the provided instance of Component is null.
+        /// </exception>
+        public static GetBasicComponentModelView fromEntityAsBasic(Component component)
+        {
+            if (component == null)
+            {
+                throw new ArgumentNullException(ERROR_NULL_COMPONENT);
+            }
+
+            GetBasicComponentModelView basicComponentModelView = new GetBasicComponentModelView();
+            basicComponentModelView.fatherProductId = component.fatherProductId;
+            basicComponentModelView.id = component.complementaryProductId;
+            basicComponentModelView.reference = component.complementaryProduct.reference;
+            basicComponentModelView.designation = component.complementaryProduct.designation;
+            basicComponentModelView.modelFilename = component.complementaryProduct.modelFilename;
+            basicComponentModelView.mandatory = component.mandatory;
+
             return basicComponentModelView;
         }
 
         /// <summary>
-        /// Creates a model view with a component information
+        /// Converts an instance of Component into an instance of GetComponentModelView.
         /// </summary>
-        /// <param name="component">Component with the component being created the model view</param>
-        /// <returns>GetComponentModelView with the component information model view</returns>
-        public static GetComponentModelView fromEntity(Component component){
-            GetComponentModelView componentModelView=new GetComponentModelView();
-            componentModelView.id=component.complementaryProductId;
-            componentModelView.fatherProductID=component.fatherProductId;
-            componentModelView.mandatory=component.mandatory;
-            componentModelView.restrictions=RestrictionModelViewService.fromCollection(component.restrictions);
+        /// <param name="component">Instance of Component.</param>
+        /// <returns>An instance of GetComponentModelView.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when the provided instance of Component is null.
+        /// </exception>
+        public static GetComponentModelView fromEntity(Component component)
+        {
+            if (component == null)
+            {
+                throw new ArgumentNullException(ERROR_NULL_COMPONENT);
+            }
+
+            GetComponentModelView componentModelView = new GetComponentModelView();
+            componentModelView.fatherProductId = component.fatherProductId;
+            componentModelView.id = component.complementaryProductId;
+            componentModelView.reference = component.complementaryProduct.reference;
+            componentModelView.designation = component.complementaryProduct.designation;
+            componentModelView.modelFilename = component.complementaryProduct.modelFilename;
+            componentModelView.mandatory = component.mandatory;
+            /*Skip converting Restrictions if the Component has none,
+            since null GetAllRestrictionsModelView won't be serialized */
+            if (component.restrictions.Count > 0)
+            {
+                componentModelView.restrictions = RestrictionModelViewService.fromCollection(component.restrictions);
+            }
             return componentModelView;
         }
 
         /// <summary>
-        /// Creates a model view with the information about a collection of components
+        /// Converts an IEnumerable of Component into an instance of GetAllComponentsModelView.
         /// </summary>
-        /// <param name="components">IEnumerable with the collection of components</param>
-        /// <returns>GetAllComponentsModelView with the collection of components model view</returns>
-        public static GetAllComponentsModelView fromCollection(IEnumerable<Component> components){
-            GetAllComponentsModelView allComponentsModelView=new GetAllComponentsModelView();
-            foreach(Component component in components)allComponentsModelView.Add(fromEntityAsBasic(component));
+        /// <param name="components">IEnumerable of Component.</param>
+        /// <returns>An instance of GetAllComponentsModelView.</returns>        
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when the provided IEnumerable of Component is null.
+        /// </exception>
+        public static GetAllComponentsModelView fromCollection(IEnumerable<Component> components)
+        {
+            if (components == null)
+            {
+                throw new ArgumentNullException(ERROR_NULL_COMPONENT_COLLECTION);
+            }
+
+            GetAllComponentsModelView allComponentsModelView = new GetAllComponentsModelView();
+            foreach (Component component in components)
+            {
+                allComponentsModelView.Add(fromEntityAsBasic(component));
+            }
+
             return allComponentsModelView;
         }
     }

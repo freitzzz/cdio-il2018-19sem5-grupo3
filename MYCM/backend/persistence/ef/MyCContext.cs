@@ -108,9 +108,7 @@ namespace backend.persistence.ef
             builder.Entity<ProductMeasurement>().HasOne(pm => pm.measurement);
 
             builder.Entity<Product>().HasOne(p => p.productCategory);           //many-to-one relationship
-            builder.Entity<Product>().OwnsOne(p => p.minSlotSize);              //embedded Dimensions
-            builder.Entity<Product>().OwnsOne(p => p.maxSlotSize);              //embedded Dimensions
-            builder.Entity<Product>().OwnsOne(p => p.recommendedSlotSize);      //embedded Dimensions
+            builder.Entity<Product>().OwnsOne(p => p.slotWidths);               //embedded ProductSlotWidths
 
             builder.Entity<Component>().HasKey(c => new { c.fatherProductId, c.complementaryProductId });
             builder.Entity<Component>().HasOne(c => c.fatherProduct).WithMany(p => p.components).HasForeignKey(cp => cp.fatherProductId);

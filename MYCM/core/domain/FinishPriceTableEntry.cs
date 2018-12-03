@@ -7,6 +7,9 @@ namespace core.domain
 {
     public class FinishPriceTableEntry : PriceTableEntry<Finish>, AggregateRoot<string>
     {
+        /// <summary>
+        /// Error message for then the material EID is null or empty
+        /// </summary>
         private const string EMPTY_MATERIAL_EID = "Material EID can't be null or empty";
 
         /// <summary>

@@ -298,12 +298,8 @@ namespace core.domain
         {
             if (slot == null) throw new ArgumentException(NULL_SLOT);
             if (!product.supportsSlots) throw new ArgumentException(PRODUCT_DOES_NOT_SUPPORT_SLOTS);
-            if (slot.slotDimensions.width >= product.minSlotSize.width
-            && slot.slotDimensions.depth >= product.minSlotSize.depth
-            && slot.slotDimensions.height >= product.minSlotSize.height
-            && slot.slotDimensions.width <= product.maxSlotSize.width
-            && slot.slotDimensions.depth <= product.maxSlotSize.depth
-            && slot.slotDimensions.height <= product.maxSlotSize.height)
+            if (slot.slotDimensions.width >= product.slotWidths.minWidth
+            && slot.slotDimensions.width <= product.slotWidths.maxWidth)
             {
                 slots.Add(slot);
                 return true;

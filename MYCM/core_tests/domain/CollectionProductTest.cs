@@ -28,8 +28,7 @@ namespace core_tests.domain
             Material material = new Material("123", "456, how original", "ola.jpg", colors, finishes);
 
             //Creates a product for the customized product collection's customized product
-            Product product = new Product("0L4", "H4H4", new ProductCategory("Drawers"), new List<Material>() { material }, measurements,
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
+            Product product = new Product("0L4", "H4H4", "goodmeme.glb", new ProductCategory("Drawers"), new List<Material>() { material }, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
             Assert.NotNull(new CollectionProduct(new CustomizedProductCollection("Hang in there"),
             new CustomizedProduct("Or dont", "You choose", CustomizedMaterial.valueOf(material, color, finish),
@@ -53,8 +52,7 @@ namespace core_tests.domain
             Material material = new Material("123", "456, how original", "ola.jpg", colors, finishes);
 
             //Creates a product for the customized product collection's customized product
-            Product product = new Product("0L4", "H4H4", new ProductCategory("Drawers"), new List<Material>() { material }, measurements,
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
+            Product product = new Product("0L4", "H4H4", "goodmeme.glb", new ProductCategory("Drawers"), new List<Material>() { material },measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
             Assert.Throws<ArgumentException>(() => new CollectionProduct(null, new CustomizedProduct("Or dont", "You choose",
             CustomizedMaterial.valueOf(material, color, finish), CustomizedDimensions.valueOf(1.2, 1.5, 20.3), product)));
