@@ -36,6 +36,16 @@ namespace core.services
         private const string ERROR_NO_MATERIALS_DEFINED = "No materials were provided, please provide a material.";
 
         /// <summary>
+        /// Constant representing the error message presented when a null AddProductMaterialModelView is in the list of provided AddProductMaterialModelView.
+        /// </summary>
+        private const string ERROR_NULL_MATERIAL = "An invalid material was provided, please make sure all materials are valid.";
+
+        /// <summary>
+        /// Constant representing the error message presented when a null AddComponentModelView is in the list of provided AddComponentModelView.
+        /// </summary>
+        private const string ERROR_NULL_COMPONENT = "An invalid component was provided, please make sure all components are valid.";
+
+        /// <summary>
         /// Constant representing the error message presented when no Material was found.
         /// </summary>
         private const string ERROR_MATERIAL_NOT_FOUND = "No material was found with the identifier of {0}.";
@@ -96,12 +106,17 @@ namespace core.services
                 throw new ArgumentException(ERROR_CATEGORY_NOT_LEAF);
             }
 
-            List<long> materialIds = addProductMV.materials.Select(m => m.materialId).ToList();
             List<Material> materials = new List<Material>();
             MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
 
-            foreach (long materialId in materialIds)
+            foreach (AddProductMaterialModelView materialModelView in materialViews)
             {
+                if(materialModelView == null){
+                    throw new ArgumentException(ERROR_NULL_MATERIAL);
+                }
+
+                long materialId = materialModelView.materialId;
+
                 Material material = materialRepository.find(materialId);
                 if (material == null)
                 {
@@ -160,6 +175,10 @@ namespace core.services
 
             foreach (AddComponentModelView addComponentToProductModelView in componentModelViews)
             {
+                if(addComponentToProductModelView == null){
+                    throw new ArgumentException(ERROR_NULL_COMPONENT);
+                }
+
                 Product complementaryProduct = productRepository.find(addComponentToProductModelView.childProductId);
 
                 if (complementaryProduct == null)
