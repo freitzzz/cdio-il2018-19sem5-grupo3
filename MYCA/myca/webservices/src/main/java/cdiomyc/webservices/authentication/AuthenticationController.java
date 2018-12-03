@@ -6,6 +6,7 @@ import cdiomyc.core.mv.authentication.AuthenticationMV;
 import cdiomyc.core.mv.authentication.AuthenticationMVService;
 import cdiomyc.core.mv.authentication.session.GetAuthenticationSessionDetailsMV;
 import cdiomyc.core.persistence.PersistenceContext;
+import cdiomyc.webservices.dataservices.json.SimpleJSONMessageService;
 import com.google.gson.Gson;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -43,8 +44,18 @@ public final class AuthenticationController {
                     .build();
         }catch(IllegalArgumentException|IllegalStateException invalidOperation){
             return Response
-                    .status(Status.BAD_REQUEST)
-                    .entity(new Gson().toJson(invalidOperation.getMessage()))
+                    .status(Status.UNAUTHORIZED)
+                    .entity(new Gson().toJson(new SimpleJSONMessageService(invalidOperation.getMessage())))
+                    .build();
+        }catch(InternalError internalError){
+            return Response
+                    .status(Status.INTERNAL_SERVER_ERROR)
+                    .entity(new Gson().toJson(new SimpleJSONMessageService(internalError.getMessage())))
+                    .build();
+        }catch(Exception _internalError){
+            return Response
+                    .status(Status.INTERNAL_SERVER_ERROR)
+                    .entity(new Gson().toJson(new SimpleJSONMessageService("An internal error has occurd :(")))
                     .build();
         }
     }
