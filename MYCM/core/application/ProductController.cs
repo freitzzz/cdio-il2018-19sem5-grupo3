@@ -35,6 +35,10 @@ namespace core.application
         /// </summary>
         private const string ERROR_UNABLE_TO_FIND_PRODUCT_BY_REFERENCE = "Unable to find a product with a reference of: {0}";
         /// <summary>
+        /// Constant representing the message presented when no ProductCategory is found with a given identifier.
+        /// </summary>
+        private const string ERROR_UNABLE_TO_FIND_CATEGORY_BY_ID = "Unable to find a category with an identifier of: {0}";
+        /// <summary>
         /// Constant representing the message presented when no Material is found with a given identifier.
         /// </summary>
         private const string ERROR_UNABLE_TO_FIND_MATERIAL_BY_ID = "Unable to find a material with an identifier of: {0}";
@@ -46,7 +50,15 @@ namespace core.application
         /// <summary>
         /// Constant representing the message presented when no Restriction is found with a given identifier.
         /// </summary>
-        private const string ERROR_UNABLE_FIND_RESTRICTION_BY_ID = "Unable to find restrictiong with an identifier of: {0}";
+        private const string ERROR_UNABLE_TO_FIND_RESTRICTION_BY_ID = "Unable to find restrictions with an identifier of: {0}";
+        /// <summary>
+        /// Constant representing the message presented when no Components are found.
+        /// </summary>
+        private const string ERROR_UNABLE_TO_FIND_COMPONENTS = "Unable to find components.";
+        /// <summary>
+        /// Cosntant representing the message presented when no Restrictions are found.
+        /// </summary>
+        private const string ERROR_UNABLE_TO_FIND_RESTRICTIONS = "Unable to find restrictions";
         /// <summary>
         /// Constant representing the message presented when the new Product could not be saved.
         /// </summary>
@@ -55,6 +67,10 @@ namespace core.application
         /// Constant representing the message presented when an instance of Product could not be updated. 
         /// </summary>
         private const string ERROR_UNABLE_TO_UPDATE_PRODUCT = "Unable to update the product, make sure the reference is unique.";
+        /// <summary>
+        /// Constant representing the message presented when none of the Product's properties are updated.
+        /// </summary>
+        private const string ERROR_NO_UPDATE_PERFORMED = "The request did not perform any update.";
 
         /// <summary>
         /// Builds a new ProductController
@@ -143,6 +159,11 @@ namespace core.application
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, fetchProductDTO.id));
             }
 
+            //if no components are found, throw an exception so that a 404 code is sent
+            if(!product.components.Any()){
+                throw new ResourceNotFoundException(ERROR_UNABLE_TO_FIND_COMPONENTS);
+            }
+
             return ComponentModelViewService.fromCollection(product.components);
         }
 
@@ -186,6 +207,11 @@ namespace core.application
                     );
             }
 
+            //if no restrictions are found, throw an exception so that a 404 code is sent
+            if(!measurement.restrictions.Any()){
+                throw new ResourceNotFoundException(ERROR_UNABLE_TO_FIND_RESTRICTIONS);
+            }
+
             return RestrictionModelViewService.fromCollection(measurement.restrictions);
         }
 
@@ -206,6 +232,11 @@ namespace core.application
 
             if(component == null){
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, componentModelView.id));
+            }
+
+            //if no restrictions are found, throw an exception so that a 404 code is sent
+            if(!component.restrictions.Any()){
+                throw new ResourceNotFoundException(ERROR_UNABLE_TO_FIND_RESTRICTIONS);
             }
 
             return RestrictionModelViewService.fromCollection(component.restrictions);
@@ -229,6 +260,11 @@ namespace core.application
 
             if(productMaterial == null){
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MATERIAL_BY_ID, productMaterialModelView.id));
+            }
+
+            //if no restrictions are found, throw an exception so that a 404 code is sent
+            if(!productMaterial.restrictions.Any()){
+                throw new ResourceNotFoundException(ERROR_UNABLE_TO_FIND_RESTRICTIONS);
             }
 
             return RestrictionModelViewService.fromCollection(productMaterial.restrictions);
@@ -356,6 +392,11 @@ namespace core.application
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MEASUREMENT_BY_ID, addRestrictionToProductMeasurementMV.measurementId));
             }
 
+            //TODO: remove this check from here
+            if(Collections.isEnumerableNullOrEmpty(addRestrictionToProductMeasurementMV.restriction.inputs)){
+                throw new ArgumentException();
+            }
+
             Restriction restriction = addRestrictionToProductMeasurementMV.restriction.toEntity();
 
             product.addMeasurementRestriction(measurement, restriction);
@@ -387,6 +428,11 @@ namespace core.application
             if(childProduct == null){
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, addRestrictionToProductComponentMV.childProductId));
             }
+
+            //TODO: remove this check from here
+            if(Collections.isEnumerableNullOrEmpty(addRestrictionToProductComponentMV.restriction.inputs)){
+                throw new ArgumentException();
+            }
             Restriction restriction = addRestrictionToProductComponentMV.restriction.toEntity();
             parentProduct.addComplementaryProductRestriction(childProduct, restriction);
             parentProduct = productRepository.update(parentProduct);
@@ -416,6 +462,11 @@ namespace core.application
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MATERIAL_BY_ID, addRestrictionModelView.materialId));
             }
 
+            //TODO: remove this check from here
+            if(Collections.isEnumerableNullOrEmpty(addRestrictionModelView.restriction.inputs)){
+                throw new ArgumentException();
+            }
+
             Restriction restriction = addRestrictionModelView.restriction.toEntity();
 
             product.addMaterialRestriction(material, restriction);
@@ -431,7 +482,12 @@ namespace core.application
         public GetProductModelView updateProductProperties(UpdateProductPropertiesModelView updateProductPropertiesModelView){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productBeingUpdated=productRepository.find(updateProductPropertiesModelView.id);
-            FetchEnsurance.ensureProductFetchWasSuccessful(productBeingUpdated);
+
+            if(productBeingUpdated == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, updateProductPropertiesModelView.id));
+            }
+
+            //FetchEnsurance.ensureProductFetchWasSuccessful(productBeingUpdated);
             bool perfomedAtLeastOneUpdate=false;
             
             if(updateProductPropertiesModelView.reference!=null){
@@ -443,15 +499,29 @@ namespace core.application
                 productBeingUpdated.changeProductDesignation(updateProductPropertiesModelView.designation);
                 perfomedAtLeastOneUpdate=true;
             }
+
+            if(updateProductPropertiesModelView.modelFilename!=null){
+                productBeingUpdated.changeModelFilename(updateProductPropertiesModelView.modelFilename);
+                perfomedAtLeastOneUpdate=true;
+            }
             
-            if(updateProductPropertiesModelView.categoryId!=0){
-                ProductCategory categoryToUpdate=PersistenceContext.repositories().createProductCategoryRepository().find(updateProductPropertiesModelView.categoryId);
-                FetchEnsurance.ensureProductCategoryFetchWasSuccessful(categoryToUpdate);
+            if(updateProductPropertiesModelView.categoryId.HasValue){
+                ProductCategory categoryToUpdate=PersistenceContext.repositories().createProductCategoryRepository().find(updateProductPropertiesModelView.categoryId.Value);
+                
+                if(categoryToUpdate == null){
+                    throw new ArgumentException(string.Format(ERROR_UNABLE_TO_FIND_CATEGORY_BY_ID, updateProductPropertiesModelView.categoryId.Value));
+                }
+
                 productBeingUpdated.changeProductCategory(categoryToUpdate);
                 perfomedAtLeastOneUpdate=true;
             }
 
-            UpdateEnsurance.ensureAtLeastOneUpdateWasPerformed(perfomedAtLeastOneUpdate);
+
+            //?Should an error be thrown if no update was performed or should it just carry on?
+            //UpdateEnsurance.ensureAtLeastOneUpdateWasPerformed(perfomedAtLeastOneUpdate);
+            if(!perfomedAtLeastOneUpdate){
+                throw new ArgumentException(ERROR_NO_UPDATE_PERFORMED);
+            }
 
             productBeingUpdated=productRepository.update(productBeingUpdated);
 
@@ -460,7 +530,7 @@ namespace core.application
                 throw new ArgumentException(ERROR_UNABLE_TO_UPDATE_PRODUCT);
             }
 
-            UpdateEnsurance.ensureProductUpdateWasSuccessful(productBeingUpdated);
+            //UpdateEnsurance.ensureProductUpdateWasSuccessful(productBeingUpdated);
             return ProductModelViewService.fromEntity(productBeingUpdated);
         }
 
@@ -512,7 +582,7 @@ namespace core.application
             Product productToRemoveComponent=productRepository.find(deleteComponentFromProductMV.fatherProductId);
 
             if(productToRemoveComponent == null){
-                throw new ArgumentException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteComponentFromProductMV.fatherProductId));
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteComponentFromProductMV.fatherProductId));
             }
 
             //filter product's components rather than accessing the repository
@@ -521,7 +591,7 @@ namespace core.application
                 .Select(component => component.complementaryProduct).SingleOrDefault();
 
             if(productBeingDeleted == null){
-                throw new ArgumentException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteComponentFromProductMV.childProductId));
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteComponentFromProductMV.childProductId));
             }
             
             productToRemoveComponent.removeComplementaryProduct(productBeingDeleted);
@@ -580,7 +650,7 @@ namespace core.application
             Restriction restriction = measurement.restrictions.Where(r => r.Id == deleteRestrictionFromProductMeasurementMV.restrictionId).SingleOrDefault();
 
             if(restriction == null){
-                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_FIND_RESTRICTION_BY_ID, deleteRestrictionFromProductMeasurementMV.restrictionId));
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_RESTRICTION_BY_ID, deleteRestrictionFromProductMeasurementMV.restrictionId));
             }
 
             measurement.restrictions.Remove(restriction);
@@ -613,7 +683,7 @@ namespace core.application
                 .Where(r => r.Id == deleteRestrictionFromProductComponentMV.restrictionId).SingleOrDefault();
 
             if(restriction == null){
-                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_FIND_RESTRICTION_BY_ID, deleteRestrictionFromProductComponentMV.restrictionId));
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_RESTRICTION_BY_ID, deleteRestrictionFromProductComponentMV.restrictionId));
             }
 
             productComponentBeingDeletedRestriction.restrictions.Remove(restriction);
@@ -645,7 +715,7 @@ namespace core.application
             Restriction restriction = productMaterial.restrictions.Where(r => r.Id == deleteRestrictionFromProductMaterialMV.restrictionId).SingleOrDefault();
 
             if(restriction == null){
-                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_FIND_RESTRICTION_BY_ID, deleteRestrictionFromProductMaterialMV.restrictionId));
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_RESTRICTION_BY_ID, deleteRestrictionFromProductMaterialMV.restrictionId));
             }
 
             productMaterial.restrictions.Remove(restriction);

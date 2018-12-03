@@ -1,6 +1,8 @@
 package cdiomyc.core.domain.auth.credentials;
 
+import cdiomyc.core.application.Application;
 import cdiomyc.core.domain.auth.Auth;
+import cdiomyc.support.encryptions.OperatorsEncryption;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
@@ -27,7 +29,7 @@ public class CredentialsAuth extends Auth{
      * @param password String with the credentials password
      */
     public CredentialsAuth(String username,String password){
-        super(generateToken(username,password));
+        super(generateToken(Username.valueOf(username).username,Password.valueOf(password).password));
         this.username=Username.valueOf(username);
         this.password=Password.valueOf(password);
     }
@@ -39,7 +41,10 @@ public class CredentialsAuth extends Auth{
      * @return String with the generated authentication token
      */
     private static String generateToken(String username,String password){
-        throw new UnsupportedOperationException("#TODO");
+        return OperatorsEncryption
+                .encrypt(username.concat(password),
+                        Application.settings().getUsernameOperatorsEncryptionAlgorithm(),
+                        Application.settings().getPasswordOperatorsEncryptionValue());
     }
     
     /**

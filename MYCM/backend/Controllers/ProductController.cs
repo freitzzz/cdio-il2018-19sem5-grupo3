@@ -761,7 +761,7 @@ namespace backend.Controllers
             try{
                 GetProductModelView productModelView = new core.application.ProductController().addMeasurementToProduct(measurementModelView);
                 logger.LogInformation(LOG_POST_MEASUREMENT_SUCCESS, measurementModelView);
-                return Ok(productModelView);
+                return Created(Request.Path, productModelView);
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_POST_MEASUREMENT_NOT_FOUND, productId);
                 return NotFound(new SimpleJSONMessageService(e.Message));
@@ -859,7 +859,7 @@ namespace backend.Controllers
             try{
                 GetProductModelView productModelView = new core.application.ProductController().addRestrictionToProductMeasurement(addRestrictionToProductMeasurementMV);
                 logger.LogInformation(LOG_POST_MEASUREMENT_RESTRICTION_SUCCESS, productModelView);
-                return Ok(productModelView);
+                return Created(Request.Path, productModelView);
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(LOG_POST_MEASUREMENT_RESTRICTION_NOT_FOUND, productId, measurementId);
                 return NotFound(new SimpleJSONMessageService(e.Message));

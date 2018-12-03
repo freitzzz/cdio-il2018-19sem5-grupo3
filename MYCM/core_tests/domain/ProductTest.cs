@@ -23,8 +23,8 @@ namespace core_tests.domain
             Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
             List<Color> colors = new List<Color>() { black, white };
 
-            Finish glossy = Finish.valueOf("Glossy");
-            Finish matte = Finish.valueOf("Matte");
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
             List<Finish> finishes = new List<Finish>() { glossy, matte };
 
             return new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
@@ -364,7 +364,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
-            Finish matte = Finish.valueOf("Matte");
+            Finish matte = Finish.valueOf("Matte", 0);
             Material productMaterial = new Material("#002", "Different Material", "ola.jpg", new List<Color>() { red }, new List<Finish>() { matte });
 
             Action validMaterialAddAction = () => product.addMaterial(productMaterial);
@@ -379,7 +379,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
-            Finish matte = Finish.valueOf("Matte");
+            Finish matte = Finish.valueOf("Matte", 0);
             Material productMaterial = new Material("#002", "Different Material", "ola.jpg", new List<Color>() { red }, new List<Finish>() { matte });
 
             product.addMaterial(productMaterial);
@@ -813,7 +813,7 @@ namespace core_tests.domain
         {
             Product product = buildValidSimpleProduct();
 
-            Finish finish = Finish.valueOf("Clear Coating");
+            Finish finish = Finish.valueOf("Clear Coating",4);
             Color color = Color.valueOf("Really Really Red", 255, 0, 0, 0);
             Material material = new Material("#154", "Stained Wood", "stainedwood.jpg", new List<Color>() { color }, new List<Finish>() { finish });
 
@@ -1204,7 +1204,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
-            Finish matte = Finish.valueOf("Matte");
+            Finish matte = Finish.valueOf("Matte", 0);
             Material foreignMaterial = new Material("#002", "Different Material", "ola.jpg", new List<Color>() { red }, new List<Finish>() { matte });
 
             Action removeForeignMaterialAction = () => product.removeMaterial(foreignMaterial);
@@ -1215,14 +1215,14 @@ namespace core_tests.domain
         public void ensureRemovingValidMaterialDoesNotThrowException()
         {
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
-            Finish varnish = Finish.valueOf("Varnish");
+            Finish varnish = Finish.valueOf("Varnish", 50);
             Material material1 = new Material("#002", "Different Material", "ola.jpg", new List<Color>() { red }, new List<Finish>() { varnish });
 
             Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
             Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
             List<Color> colors = new List<Color>() { black, white };
-            Finish glossy = Finish.valueOf("Glossy");
-            Finish matte = Finish.valueOf("Matte");
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
             List<Finish> finishes = new List<Finish>() { glossy, matte };
             Material material2 = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
 
@@ -1238,14 +1238,14 @@ namespace core_tests.domain
         public void ensureRemovingValidMaterialRemovesMaterial()
         {
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
-            Finish varnish = Finish.valueOf("Varnish");
+            Finish varnish = Finish.valueOf("Varnish", 50);
             Material material1 = new Material("#002", "Different Material", "ola.jpg", new List<Color>() { red }, new List<Finish>() { varnish });
 
             Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
             Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
             List<Color> colors = new List<Color>() { black, white };
-            Finish glossy = Finish.valueOf("Glossy");
-            Finish matte = Finish.valueOf("Matte");
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
             List<Finish> finishes = new List<Finish>() { glossy, matte };
             Material material2 = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
 
@@ -1405,7 +1405,7 @@ namespace core_tests.domain
         {
             Product product = buildValidSimpleProduct();
 
-            Finish finish = Finish.valueOf("Clear Coating");
+            Finish finish = Finish.valueOf("Clear Coating",5);
             Color color = Color.valueOf("Really Really Red", 255, 0, 0, 0);
             Material material = new Material("#154", "Stained Wood", "stainedwood.jpg", new List<Color>() { color }, new List<Finish>() { finish });
 
@@ -1540,7 +1540,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
-            Finish varnish = Finish.valueOf("Varnish");
+            Finish varnish = Finish.valueOf("Varnish", 50);
             Material material1 = new Material("#002", "Different Material", "ola.jpg", new List<Color>() { red }, new List<Finish>() { varnish });
 
             Assert.False(product.containsMaterial(material1));

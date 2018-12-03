@@ -22,7 +22,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("Amém", 12);
             finishes.Add(finish);
 
             Material material = new Material(reference, "FR E SH A VOCA DO", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -40,7 +40,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Sim");
+            Finish finish = Finish.valueOf("Sim", 14);
             finishes.Add(finish);
 
             Material material = new Material(reference, "FR E SH A VOCA DO", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -58,7 +58,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Não");
+            Finish finish = Finish.valueOf("Não", 15);
             finishes.Add(finish);
 
             Material material = new Material(reference, "FR E SH A VOCA DO", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -74,7 +74,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Bonito");
+            Finish finish = Finish.valueOf("Bonito", 16);
             finishes.Add(finish);
 
             Material material = new Material("Avocado", "Lady", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -91,7 +91,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Feio");
+            Finish finish = Finish.valueOf("Feio", 17);
             finishes.Add(finish);
 
             Material material = new Material("Avocado", "Lady", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -108,7 +108,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Seco");
+            Finish finish = Finish.valueOf("Seco", 0);
             finishes.Add(finish);
 
             Material material = new Material("Avocado", "Lady", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -125,7 +125,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Húmido");
+            Finish finish = Finish.valueOf("Húmido", 100);
             finishes.Add(finish);
 
             Material material = new Material("Avocado", "Lady", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -142,7 +142,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Húmido");
+            Finish finish = Finish.valueOf("Húmido", 0);
             finishes.Add(finish);
 
             Material material = new Material("Avocado", "Lady", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -159,30 +159,13 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Húmido");
+            Finish finish = Finish.valueOf("Húmido", 50);
             finishes.Add(finish);
 
             Material material = new Material("Avocado", "Lady", "HelloGIMPTransparentBackground.jpg", colors, finishes);
 
             Assert.Throws<ArgumentException>(() => new Material("Still not working", "Have you tried turning it off and then on again?", "", colors, finishes));
             Assert.False(material.changeImage(""));
-        }
-
-        public void ensureImageFileNameWithSpecialCharactersIsNotValid()
-        {
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("NÃO ROUBARIAS UMA CARTEIRA", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Húmido");
-            finishes.Add(finish);
-
-            Material material = new Material("Avocado", "Lady", "HelloGIMPTransparentBackground.jpg", colors, finishes);
-
-            Assert.Throws<ArgumentException>(() => new Material("Still not working", "Have you tried turning it off and then on again?", "HelloGIMPTransparentBackground.xd.jpg", colors, finishes));
-            Assert.False(material.changeImage("HelloGIMPTransparentBackground.xd.jpg"));
-            Assert.False(material.changeImage("HelloGIMPTransparentBackground---xd.jpg"));
         }
 
         [Fact]
@@ -193,7 +176,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Húmido");
+            Finish finish = Finish.valueOf("Húmido", 50);
             finishes.Add(finish);
 
             Material material = new Material("Avocado", "Lady", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -206,7 +189,7 @@ namespace core_tests.domain
         public void ensureNullColorListIsNotValid()
         {
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Húmido");
+            Finish finish = Finish.valueOf("Húmido", 50);
             finishes.Add(finish);
 
             Assert.Throws<ArgumentException>(() => new Material("Hello", "It's me, Mario", "HelloGIMPTransparentBackground.jpg", null, finishes));
@@ -218,7 +201,7 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>();
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Seco");
+            Finish finish = Finish.valueOf("Seco", 50);
             finishes.Add(finish);
 
             Assert.Throws<ArgumentException>(() => new Material("Goodbye", "See you later", "HelloGIMPTransparentBackground.jpg", colors, finishes));
@@ -254,7 +237,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Húmido");
+            Finish finish = Finish.valueOf("Húmido", 50);
             finishes.Add(finish);
 
             Assert.NotNull(new Material("Avocado", "Lady", "HelloGIMPTransparentBackground.jpg", colors, finishes));
@@ -272,7 +255,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Zindeiro");
+            Finish finish = Finish.valueOf("Zindeiro", 5);
             finishes.Add(finish);
 
             Material material = new Material("Another", "One", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -288,7 +271,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Ezy");
+            Finish finish = Finish.valueOf("Ezy", 7);
             finishes.Add(finish);
 
             Material material = new Material("Still", "Here", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -304,7 +287,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Ezy");
+            Finish finish = Finish.valueOf("Ezy", 7);
             finishes.Add(finish);
 
             Material material = new Material("Still", "Here", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -320,7 +303,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Loja das Gomas");
+            Finish finish = Finish.valueOf("Loja das Gomas", 4);
             finishes.Add(finish);
 
             Material material = new Material("I'm", "Gone", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -336,7 +319,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("da Estação");
+            Finish finish = Finish.valueOf("da Estação", 5);
             finishes.Add(finish);
 
             Material material = new Material("Fake", "News", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -352,7 +335,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Ezy");
+            Finish finish = Finish.valueOf("Ezy", 6);
             finishes.Add(finish);
 
             Material material = new Material("Still", "Here", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -368,7 +351,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Zindeiro");
+            Finish finish = Finish.valueOf("Zindeiro", 7);
             finishes.Add(finish);
 
             Material material = new Material("This", "One", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -384,7 +367,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Tem poder");
+            Finish finish = Finish.valueOf("Tem poder", 7);
             finishes.Add(finish);
 
             Material material = new Material("Me", "Again", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -400,12 +383,12 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Acuda");
+            Finish finish = Finish.valueOf("Acuda", 13);
             finishes.Add(finish);
 
             Material material = new Material("Still", "Here", "HelloGIMPTransparentBackground.jpg", colors, finishes);
 
-            Assert.True(material.addFinish(Finish.valueOf("Acabou")));
+            Assert.True(material.addFinish(Finish.valueOf("Acabou", 13)));
         }
 
         [Fact]
@@ -416,12 +399,12 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Existo");
+            Finish finish = Finish.valueOf("Existo", 13);
             finishes.Add(finish);
 
             Material material = new Material("I'm", "back", "HelloGIMPTransparentBackground.jpg", colors, finishes);
 
-            Assert.False(material.removeFinish(Finish.valueOf("Não existo")));
+            Assert.False(material.removeFinish(Finish.valueOf("Não existo", 13)));
         }
 
         [Fact]
@@ -432,7 +415,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("da Estação");
+            Finish finish = Finish.valueOf("da Estação", 13);
             finishes.Add(finish);
 
             Material material = new Material("Fake", "News", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -448,7 +431,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("I'm finally valid");
+            Finish finish = Finish.valueOf("I'm finally valid", 13);
             finishes.Add(finish);
 
             Material material = new Material("Still", "Here", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -464,7 +447,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Those chickens");
+            Finish finish = Finish.valueOf("Those chickens", 13);
             finishes.Add(finish);
 
             Material material = new Material("1160912", "Wii Music", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -480,7 +463,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Those chickens");
+            Finish finish = Finish.valueOf("Those chickens", 13);
             finishes.Add(finish);
 
             Material material = new Material("1160912", "Wii Music", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -496,7 +479,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Isto é");
+            Finish finish = Finish.valueOf("Isto é", 70);
             finishes.Add(finish);
 
             Material material = new Material("Bombado70", "You have been Guru'ed", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -512,7 +495,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Those chickens");
+            Finish finish = Finish.valueOf("Those chickens", 13);
             finishes.Add(finish);
 
             Material material = new Material("1160912", "Wii Music", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -528,8 +511,8 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Those chickens");
-            Finish finish1 = Finish.valueOf("Outro");
+            Finish finish = Finish.valueOf("Those chickens", 13);
+            Finish finish1 = Finish.valueOf("Outro", 13);
             finishes.Add(finish);
 
             Material material = new Material("1160912", "Wii Music", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -545,7 +528,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Comprar viagens para Gatwick");
+            Finish finish = Finish.valueOf("Comprar viagens para Gatwick", 13);
             finishes.Add(finish);
 
             Material material = new Material("Água Fresca", "Pão seco", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -561,7 +544,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("VAI DAR IGUAL OU NÃO");
+            Finish finish = Finish.valueOf("VAI DAR IGUAL OU NÃO", 13);
             finishes.Add(finish);
 
             Material balsamic = new Material("1160912", "Cowboy Boots", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -578,7 +561,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Não gosto");
+            Finish finish = Finish.valueOf("Não gosto", 13);
             finishes.Add(finish);
 
             Material salt = new Material("1160912", "Guru", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -595,7 +578,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Péssimo");
+            Finish finish = Finish.valueOf("Péssimo", 13);
             finishes.Add(finish);
 
             Material ping = new Material("1160912", "Ping", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -612,7 +595,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Horrendo");
+            Finish finish = Finish.valueOf("Horrendo", 13);
             finishes.Add(finish);
 
             Material loner = new Material("1160912", "John Snow", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -628,7 +611,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Piroso");
+            Finish finish = Finish.valueOf("Piroso", 13);
             finishes.Add(finish);
 
             Material moon = new Material("1160912", "No", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -647,7 +630,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Foleiro");
+            Finish finish = Finish.valueOf("Foleiro", 13);
             finishes.Add(finish);
 
             Material balsamic = new Material("1160912", "Cowboy Boots", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -664,7 +647,7 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Foleiro");
+            Finish finish = Finish.valueOf("Foleiro", 13);
             finishes.Add(finish);
 
             Material balsamic = new Material("1160912", "Cowboy Boots", "HelloGIMPTransparentBackground.jpg", colors, finishes);
@@ -686,7 +669,7 @@ namespace core_tests.domain
 
             List<Finish> finishes = new List<Finish>();
 
-            Finish finish = Finish.valueOf("Glossy");
+            Finish finish = Finish.valueOf("Glossy", 13);
             finishes.Add(finish);
 
             Material material = new Material(reference, designation, "HelloGIMPTransparentBackground.jpg", colors, finishes);
