@@ -48,6 +48,14 @@ namespace core.application
         /// </summary>
         private const string ERROR_UNABLE_TO_FIND_RESTRICTION_BY_ID = "Unable to find restrictions with an identifier of: {0}";
         /// <summary>
+        /// Constant representing the message presented when no Components are found.
+        /// </summary>
+        private const string ERROR_UNABLE_TO_FIND_COMPONENTS = "Unable to find components.";
+        /// <summary>
+        /// Cosntant representing the message presented when no Restrictions are found.
+        /// </summary>
+        private const string ERROR_UNABLE_TO_FIND_RESTRICTIONS = "Unable to find restrictions";
+        /// <summary>
         /// Constant representing the message presented when the new Product could not be saved.
         /// </summary>
         private const string ERROR_UNABLE_TO_SAVE_PRODUCT = "Unable to save the product, make sure the reference is unique.";
@@ -143,6 +151,11 @@ namespace core.application
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, fetchProductDTO.id));
             }
 
+            //if no components are found, throw an exception so that a 404 code is sent
+            if(!product.components.Any()){
+                throw new ResourceNotFoundException(ERROR_UNABLE_TO_FIND_COMPONENTS);
+            }
+
             return ComponentModelViewService.fromCollection(product.components);
         }
 
@@ -186,6 +199,11 @@ namespace core.application
                     );
             }
 
+            //if no restrictions are found, throw an exception so that a 404 code is sent
+            if(!measurement.restrictions.Any()){
+                throw new ResourceNotFoundException(ERROR_UNABLE_TO_FIND_RESTRICTIONS);
+            }
+
             return RestrictionModelViewService.fromCollection(measurement.restrictions);
         }
 
@@ -206,6 +224,11 @@ namespace core.application
 
             if(component == null){
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, componentModelView.id));
+            }
+
+            //if no restrictions are found, throw an exception so that a 404 code is sent
+            if(!component.restrictions.Any()){
+                throw new ResourceNotFoundException(ERROR_UNABLE_TO_FIND_RESTRICTIONS);
             }
 
             return RestrictionModelViewService.fromCollection(component.restrictions);
@@ -229,6 +252,11 @@ namespace core.application
 
             if(productMaterial == null){
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MATERIAL_BY_ID, productMaterialModelView.id));
+            }
+
+            //if no restrictions are found, throw an exception so that a 404 code is sent
+            if(!productMaterial.restrictions.Any()){
+                throw new ResourceNotFoundException(ERROR_UNABLE_TO_FIND_RESTRICTIONS);
             }
 
             return RestrictionModelViewService.fromCollection(productMaterial.restrictions);
