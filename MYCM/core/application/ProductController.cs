@@ -384,6 +384,11 @@ namespace core.application
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MEASUREMENT_BY_ID, addRestrictionToProductMeasurementMV.measurementId));
             }
 
+            //TODO: remove this check from here
+            if(Collections.isEnumerableNullOrEmpty(addRestrictionToProductMeasurementMV.restriction.inputs)){
+                throw new ArgumentException();
+            }
+
             Restriction restriction = addRestrictionToProductMeasurementMV.restriction.toEntity();
 
             product.addMeasurementRestriction(measurement, restriction);
@@ -415,6 +420,11 @@ namespace core.application
             if(childProduct == null){
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, addRestrictionToProductComponentMV.childProductId));
             }
+
+            //TODO: remove this check from here
+            if(Collections.isEnumerableNullOrEmpty(addRestrictionToProductComponentMV.restriction.inputs)){
+                throw new ArgumentException();
+            }
             Restriction restriction = addRestrictionToProductComponentMV.restriction.toEntity();
             parentProduct.addComplementaryProductRestriction(childProduct, restriction);
             parentProduct = productRepository.update(parentProduct);
@@ -442,6 +452,11 @@ namespace core.application
 
             if(material == null){
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MATERIAL_BY_ID, addRestrictionModelView.materialId));
+            }
+
+            //TODO: remove this check from here
+            if(Collections.isEnumerableNullOrEmpty(addRestrictionModelView.restriction.inputs)){
+                throw new ArgumentException();
             }
 
             Restriction restriction = addRestrictionModelView.restriction.toEntity();
