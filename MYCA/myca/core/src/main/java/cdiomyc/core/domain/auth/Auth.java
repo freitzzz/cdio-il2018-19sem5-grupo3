@@ -2,6 +2,7 @@ package cdiomyc.core.domain.auth;
 
 import cdiomyc.support.domain.ddd.DomainEntity;
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,8 +16,9 @@ import javax.persistence.SequenceGenerator;
  * @author <a href="https://github.com/freitzzz">freitzzz</a>
  */
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @SequenceGenerator(name = "authSeq",initialValue = 1, allocationSize = 1)
+
 public abstract class Auth implements DomainEntity<String>,Serializable {
     /**
      * Long with the authentication persistence identifier
@@ -27,6 +29,7 @@ public abstract class Auth implements DomainEntity<String>,Serializable {
     /**
      * String with the authentication token
      */
+    @Column(unique = true)
     private String token;
     
     /**

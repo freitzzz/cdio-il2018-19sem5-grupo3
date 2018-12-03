@@ -43,9 +43,9 @@ var closet_shelves_ids = [];
 var closet_sliding_doors_ids = [];
 
 /**
- * Global variable with the current closet doors ids (Mesh IDs from Three.js)
+ * Global variable with the current closet hinged doors ids (Mesh IDs from Three.js)
  */
-var closet_doors_ids = [];
+var closet_hinged_doors_ids = [];
 
 /**
  * Global variable with the current closet drawers ids (Mesh IDs from Three.js)
@@ -204,7 +204,7 @@ function initCloset(textureSource) {
     //A MeshPhongMaterial allows for shiny surfaces
     //A soft white light is being as specular light
     //The shininess value is the same as the matte finishing's value
-    material = new THREE.MeshPhongMaterial( /*{ map: texture, specular: 0x404040, shininess: 20 }*/ );
+    material = new THREE.MeshPhongMaterial( /*{ map: texture, specular: 0x404040, shininess: 20 }*/);
     for (var i = 0; i < faces.length; i++) {
         closet_faces_ids.push(generateParellepiped(faces[i][0], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], material, group));
     }
@@ -322,8 +322,39 @@ function addComponent(component, slot) {
     if (component == "Pole") generateCylinder(slot);
     if (component == "Drawer") generateDrawer(slot);
     if (component == "Shelf") generateShelf(slot);
-    if (component == "Sliding Door") generateSlidingDoor();
-    if (component == "Door") generateDoor(slot);
+    if (component == "Sliding Door") {
+        if (doesClosetHaveHingedDoors()) {
+            alert("There are closet slots that have hinged doors!");
+        }else{
+            generateSlidingDoor();
+        }
+    }
+    if (component == "Door") {
+        if (doesSlotHaveHingedDoor(slot)) {
+            alert("This slot already has a door!");
+        } else if (doesClosetHaveSlidingDoor()) {
+            alert("The closet already has sliding doors!");
+        } else {
+            generateHingedDoor(slot);
+        }
+    }
+}
+
+function doesSlotHaveHingedDoor(slot) {
+    for (let i = 0; i < closet_hinged_doors_ids.length; i++) {
+        if (closet.hingedDoors[i].slotId == slot) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function doesClosetHaveHingedDoors() {
+    return closet.hingedDoors.length != 0;
+}
+
+function doesClosetHaveSlidingDoor() {
+    return closet.slidingDoors.length != 0;
 }
 
 /**
@@ -572,12 +603,12 @@ function generateDrawer(slot) {
 
     closet.addDrawer(module);
     closet.addDrawer(drawer);
-   /// closet_drawers_ids.push(module_mesh_id);
-   /// closet_drawers_ids.push(drawer_mesh_id);
+    /// closet_drawers_ids.push(module_mesh_id);
+    /// closet_drawers_ids.push(drawer_mesh_id);
 
 }
 
-function generateDoor(slot) {
+function generateHingedDoor(slot) {
     var leftFace = group.getObjectById(closet_faces_ids[2]);
     var rightFace = group.getObjectById(closet_faces_ids[3]);
     var depth = 3;
@@ -613,10 +644,10 @@ function generateDoor(slot) {
         z = calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
     }
 
-    var door = new SlidingDoor([width, height, depth, x, y, z + (depth_closet / 2)]);
+    var door = new HingedDoor([width, height, depth, x, y, z + (depth_closet / 2)], slot);
     var meshID = generateParellepiped(width, height, depth, x, y, z + (depth_closet / 2), material, group);
-    closet.addDoor(door);
-    closet_doors_ids.push(meshID);
+    closet.addHingedDoor(door);
+    closet_hinged_doors_ids.push(meshID);
 }
 
 function generateSlidingDoor() {
@@ -670,8 +701,8 @@ function generateSlidingDoor() {
         back_door.sliding_door_axes[5],
         material, group);
 
-    closet.addDoor(front_door);
-    closet.addDoor(back_door);
+    closet.addSlidingDoor(front_door);
+    closet.addSlidingDoor(back_door);
 
     closet_sliding_doors_ids.push(front_door_mesh_id);
     closet_sliding_doors_ids.push(back_door_mesh_id);
@@ -950,12 +981,12 @@ function onDocumentMouseDown(event) {
             j = 0;
             flagOpen = false;
             flagClose = false;
-            while (!flagOpen && !flagClose && j < closet_doors_ids.length) {
-                door = group.getObjectById(closet_doors_ids[j]);
+            while (!flagOpen && !flagClose && j < closet_hinged_doors_ids.length) {
+                door = group.getObjectById(closet_hinged_doors_ids[j]);
                 var closet_face = group.getObjectById(closet_faces_ids[0]);
                 if (door == face) {
                     controls.enabled = false;
-                    if (door.rotation.y  < 0 ) {
+                    if (door.rotation.y < 0) {
                         flagClose = true;
                     } else {
                         flagOpen = true;

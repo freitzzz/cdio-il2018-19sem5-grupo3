@@ -23,4 +23,11 @@ public interface UserRepository extends Repository<User,Long,Auth>{
      * @return User with the user who has a certain session API token
      */
     User findUserBySessionAPIToken(String sessionAPIToken);
+    
+    /**
+     * Finds an user by its auth token
+     * @param authToken String with the auth token
+     * @return User with the user who is identified by the auth token
+     */
+    User findUserByAuthToken(String authToken);
 }
