@@ -19,6 +19,9 @@ public class UserMVService {
      * authentication type is invalid
      */
     public static Class<?> classFromType(String type) {
+        if (type == null || type.isEmpty()) {
+            throw new IllegalArgumentException("Invalid authentication type!");
+        }
         switch (type) {
             case CredentialsAuthenticationMV.TYPE:
                 return CreateCredentialsUserMV.class;
