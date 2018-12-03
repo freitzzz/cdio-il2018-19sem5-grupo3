@@ -35,6 +35,10 @@ namespace core.application
         /// </summary>
         private const string ERROR_UNABLE_TO_FIND_PRODUCT_BY_REFERENCE = "Unable to find a product with a reference of: {0}";
         /// <summary>
+        /// Constant representing the message presented when no ProductCategory is found with a given identifier.
+        /// </summary>
+        private const string ERROR_UNABLE_TO_FIND_CATEGORY_BY_ID = "Unable to find a category with an identifier of: {0}";
+        /// <summary>
         /// Constant representing the message presented when no Material is found with a given identifier.
         /// </summary>
         private const string ERROR_UNABLE_TO_FIND_MATERIAL_BY_ID = "Unable to find a material with an identifier of: {0}";
@@ -63,6 +67,10 @@ namespace core.application
         /// Constant representing the message presented when an instance of Product could not be updated. 
         /// </summary>
         private const string ERROR_UNABLE_TO_UPDATE_PRODUCT = "Unable to update the product, make sure the reference is unique.";
+        /// <summary>
+        /// Constant representing the message presented when none of the Product's properties are updated.
+        /// </summary>
+        private const string ERROR_NO_UPDATE_PERFORMED = "The request did not perform any update.";
 
         /// <summary>
         /// Builds a new ProductController
@@ -474,7 +482,12 @@ namespace core.application
         public GetProductModelView updateProductProperties(UpdateProductPropertiesModelView updateProductPropertiesModelView){
             ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
             Product productBeingUpdated=productRepository.find(updateProductPropertiesModelView.id);
-            FetchEnsurance.ensureProductFetchWasSuccessful(productBeingUpdated);
+
+            if(productBeingUpdated == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, updateProductPropertiesModelView.id));
+            }
+
+            //FetchEnsurance.ensureProductFetchWasSuccessful(productBeingUpdated);
             bool perfomedAtLeastOneUpdate=false;
             
             if(updateProductPropertiesModelView.reference!=null){
@@ -486,15 +499,29 @@ namespace core.application
                 productBeingUpdated.changeProductDesignation(updateProductPropertiesModelView.designation);
                 perfomedAtLeastOneUpdate=true;
             }
+
+            if(updateProductPropertiesModelView.modelFilename!=null){
+                productBeingUpdated.changeModelFilename(updateProductPropertiesModelView.modelFilename);
+                perfomedAtLeastOneUpdate=true;
+            }
             
-            if(updateProductPropertiesModelView.categoryId!=0){
-                ProductCategory categoryToUpdate=PersistenceContext.repositories().createProductCategoryRepository().find(updateProductPropertiesModelView.categoryId);
-                FetchEnsurance.ensureProductCategoryFetchWasSuccessful(categoryToUpdate);
+            if(updateProductPropertiesModelView.categoryId.HasValue){
+                ProductCategory categoryToUpdate=PersistenceContext.repositories().createProductCategoryRepository().find(updateProductPropertiesModelView.categoryId.Value);
+                
+                if(categoryToUpdate == null){
+                    throw new ArgumentException(string.Format(ERROR_UNABLE_TO_FIND_CATEGORY_BY_ID, updateProductPropertiesModelView.categoryId.Value));
+                }
+
                 productBeingUpdated.changeProductCategory(categoryToUpdate);
                 perfomedAtLeastOneUpdate=true;
             }
 
-            UpdateEnsurance.ensureAtLeastOneUpdateWasPerformed(perfomedAtLeastOneUpdate);
+
+            //?Should an error be thrown if no update was performed or should it just carry on?
+            //UpdateEnsurance.ensureAtLeastOneUpdateWasPerformed(perfomedAtLeastOneUpdate);
+            if(!perfomedAtLeastOneUpdate){
+                throw new ArgumentException(ERROR_NO_UPDATE_PERFORMED);
+            }
 
             productBeingUpdated=productRepository.update(productBeingUpdated);
 
@@ -503,7 +530,7 @@ namespace core.application
                 throw new ArgumentException(ERROR_UNABLE_TO_UPDATE_PRODUCT);
             }
 
-            UpdateEnsurance.ensureProductUpdateWasSuccessful(productBeingUpdated);
+            //UpdateEnsurance.ensureProductUpdateWasSuccessful(productBeingUpdated);
             return ProductModelViewService.fromEntity(productBeingUpdated);
         }
 
