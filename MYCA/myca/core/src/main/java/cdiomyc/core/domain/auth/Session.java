@@ -4,6 +4,8 @@ import cdiomyc.support.domain.ddd.DomainEntity;
 import cdiomyc.support.utils.JWTUtils;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -46,13 +48,15 @@ public class Session implements DomainEntity<String>,Serializable{
     
     /**
      * Builds a new session
-     * @param sessionEndDateTime LocalDateTime with the session end date time 
+     * @param sessionEndDateTime LocalDateTime with the session end date time
+     * @param authToken String with the use auth token
      */
-    public Session(LocalDateTime sessionEndDateTime){
+    public Session(LocalDateTime sessionEndDateTime,String authToken){
         LocalDateTime sessionStart=LocalDateTime.now();
         checkSessionEndDateTime(sessionStart,sessionEndDateTime);
         this.sessionStartDateTime=sessionStart;
         this.sessionEndDateTime=sessionEndDateTime;
+        this.sessionToken=generateSessionToken(authToken);
     }
     
     /**
@@ -65,7 +69,7 @@ public class Session implements DomainEntity<String>,Serializable{
      * Returns the session token as a JWT
      * @return String with the current session token as a JWT
      */
-    public String tokenAsJWT(){return JWTUtils.encode(sessionToken);}
+    public String tokenAsJWT(){return JWTUtils.encode(this.sessionToken);}
     
     /**
      * Returns the session end date time
@@ -94,6 +98,18 @@ public class Session implements DomainEntity<String>,Serializable{
      */
     @Override
     public boolean equals(Object otherDomainEntity){return otherDomainEntity instanceof Session && ((Session)otherDomainEntity).id().equals(id());}
+    
+    /**
+     * Generates a user session API token
+     * @param token String with the user auth token
+     * @return String with the generated session API token
+     */
+    private String generateSessionToken(String token){
+        return UUID.randomUUID()
+                .toString()
+                .concat(token)
+                .concat(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE));
+        }
     
     /**
      * Checks if the session end date time is valid
