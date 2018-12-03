@@ -1,6 +1,9 @@
 package cdiomyc.core.domain.auth.credentials;
 
+import cdiomyc.core.application.Application;
 import cdiomyc.support.domain.ddd.ValueObject;
+import cdiomyc.support.encryptions.DigestUtils;
+import cdiomyc.support.encryptions.OperatorsEncryption;
 import java.io.Serializable;
 import javax.persistence.Embeddable;
 
@@ -22,7 +25,7 @@ public class Password implements Serializable,ValueObject {
     /**
      * String that represents the password value
      */
-    private String password;
+    protected String password;
     
     /**
      * Creates a new Password
@@ -37,7 +40,7 @@ public class Password implements Serializable,ValueObject {
      */
     private Password(String password){
         checkPassword(password);
-        this.password=password;
+        this.password=encryptPassword(password);
     }
     
     /**
@@ -69,6 +72,25 @@ public class Password implements Serializable,ValueObject {
     private void checkPassword(String password){
         if(password==null||!password.matches(PASSWORD_REGEX_VALIDATOR))
             throw new IllegalArgumentException(INVALID_PASSWORD);
+    }
+    
+    /**
+     * Encrypts a password
+     * @param password String with the password being encrypted
+     * @return String with the encrypted password
+     */
+    private String encryptPassword(String password){
+        String hashedPassword
+                =DigestUtils
+                        .hashify(password,
+                                Application.settings().getPasswordAlgorithm(),
+                                Application.settings().getPasswordSalt().getBytes());
+        String encryptedHashedPassword
+                =OperatorsEncryption
+                        .encrypt(hashedPassword,
+                                Application.settings().getPasswordOperatorsEncryptionAlgorithm(),
+                                Application.settings().getPasswordOperatorsEncryptionValue());
+        return encryptedHashedPassword;
     }
     
     /**
