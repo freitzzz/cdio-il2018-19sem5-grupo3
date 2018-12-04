@@ -27,6 +27,10 @@ namespace core.application
         /// </summary>
         private const string LIST_OF_INPUTS_MISSING = "The selected algorithm requires inputs!";
         /// <summary>
+        /// Constant that represents error message presented when no instances of Product are found.
+        /// </summary>
+        private const string ERROR_NO_PRODUCTS_FOUND = "No products found.";
+        /// <summary>
         /// Constant representing the message presented when no Product is found with a given identifier.
         /// </summary>
         private const string ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID = "Unable to find a product with an identifier of: {0}";
@@ -81,10 +85,16 @@ namespace core.application
         /// Retrieves a Collection of all the Products in the Product Repository.
         /// </summary>
         /// <returns>An instance of GetAllProductsModelView with all the Products.</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when no instance of Product exists in the repository.</exception>
         public GetAllProductsModelView findAllProducts(){
-            return ProductModelViewService.fromCollection(
-                PersistenceContext.repositories().createProductRepository().findAll()
-            );
+
+            IEnumerable<Product> products = PersistenceContext.repositories().createProductRepository().findAll();
+
+            if(!products.Any()){
+                throw new ResourceNotFoundException(ERROR_NO_PRODUCTS_FOUND);
+            }
+
+            return ProductModelViewService.fromCollection(products);
         }
 
         /// <summary>
@@ -92,10 +102,15 @@ namespace core.application
         /// A base Product is a Product that is not owned by any other Product.
         /// </summary>
         /// <returns>An instance of GetAllProductsModelView with all the base Products.</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when no instance of Product exists in the repository.</exception>
         public GetAllProductsModelView findBaseProducts(){
-            return ProductModelViewService.fromCollection(
-                PersistenceContext.repositories().createProductRepository().findBaseProducts()
-            );
+            IEnumerable<Product> baseProducts = PersistenceContext.repositories().createProductRepository().findBaseProducts();
+
+            if(!baseProducts.Any()){
+                throw new ResourceNotFoundException(ERROR_NO_PRODUCTS_FOUND);
+            }
+
+            return ProductModelViewService.fromCollection(baseProducts);
         }
 
         /// <summary>

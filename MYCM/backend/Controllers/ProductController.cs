@@ -489,14 +489,17 @@ namespace backend.Controllers
         /// HTTP Response 200 Ok with the info of all products in JSON format </returns>
         private ActionResult findAll(){
             logger.LogInformation(LOG_GET_ALL_START);
-            GetAllProductsModelView allProductsModelView = new core.application.ProductController().findAllProducts();
-
-            if (Collections.isEnumerableNullOrEmpty(allProductsModelView)) {
-                logger.LogWarning(LOG_GET_ALL_NOT_FOUND);
-                return NotFound(new SimpleJSONMessageService(NO_PRODUCTS_FOUND));
+            try{
+                GetAllProductsModelView allProductsModelView = new core.application.ProductController().findAllProducts();
+                logger.LogInformation(LOG_GET_ALL_SUCCESS, allProductsModelView);
+                return Ok(allProductsModelView);
+            }catch(ResourceNotFoundException e){
+                logger.LogWarning(e, LOG_GET_ALL_NOT_FOUND);
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }catch(Exception e){
+                logger.LogWarning(e, UNEXPECTED_ERROR);
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
-            logger.LogInformation(LOG_GET_ALL_SUCCESS, allProductsModelView);
-            return Ok(allProductsModelView);
         }
 
         /// <summary>
@@ -530,14 +533,17 @@ namespace backend.Controllers
         [HttpGet("base")]
         public ActionResult findBaseProducts(){
             logger.LogInformation(LOG_GET_ALL_BASE_START);
-            GetAllProductsModelView allBaseProductsModelView = new core.application.ProductController().findBaseProducts();
-
-            if (Collections.isEnumerableNullOrEmpty(allBaseProductsModelView)) {
-                logger.LogWarning(LOG_GET_ALL_BASE_NOT_FOUND);
-                return NotFound(new SimpleJSONMessageService(NO_PRODUCTS_FOUND));
+            try{
+                GetAllProductsModelView allBaseProductsModelView = new core.application.ProductController().findBaseProducts();
+                logger.LogInformation(LOG_GET_ALL_BASE_SUCCESS, allBaseProductsModelView);
+                return Ok(allBaseProductsModelView);
+            }catch(ResourceNotFoundException e){
+                logger.LogWarning(e, LOG_GET_ALL_BASE_NOT_FOUND);
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }catch(Exception e){
+                logger.LogWarning(e, UNEXPECTED_ERROR);
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
-            logger.LogInformation(LOG_GET_ALL_BASE_SUCCESS, allBaseProductsModelView);
-            return Ok(allBaseProductsModelView);
         }
 
         /// <summary>
