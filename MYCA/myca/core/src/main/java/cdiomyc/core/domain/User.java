@@ -29,7 +29,7 @@ import javax.persistence.Table;
 @Table(name = "MYCA_USER")
 public class User implements AggregateRoot<Auth>,Serializable{
     /**
-     * Constant that represents the default session time (in minuntes)
+     * Constant that represents the default session time (in minutes)
      */
     private static final int DEFAULT_SESSION_TIME=60;
     /**

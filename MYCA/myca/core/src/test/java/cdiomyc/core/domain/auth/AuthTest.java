@@ -2,38 +2,14 @@ package cdiomyc.core.domain.auth;
 
 import cdiomyc.core.domain.User;
 import cdiomyc.core.domain.auth.credentials.CredentialsAuth;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * Test class of Auth
  * @author João
  */
 public class AuthTest {
-
-    public AuthTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     /**
      * Ensure id method works
      */

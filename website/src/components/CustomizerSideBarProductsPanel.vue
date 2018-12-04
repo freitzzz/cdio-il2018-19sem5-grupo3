@@ -8,6 +8,13 @@
         </div>
       <a class="product-entry" v-for="product in products" :key="product.id" @click="selectProduct(product.id)">{{product.designation}}</a>
     </div>
+    <div v-else-if="getProductsNotFound">
+      <div class="text-entry"><b>No base products</b></div>
+      <div class="text-entry">There are no available base products at the moment. Try again later.</div>
+      <div class="icon-div-center">
+        <i class="material-icons md-36 md-blue btn" @click="getBaseProducts">refresh</i>
+      </div>
+    </div>
     <div v-else>
       <div class="text-entry"><b>Error: {{httpCode}}</b></div>
       <div class="text-entry">Yikes! Looks like we ran into a problem here...</div>
@@ -35,6 +42,9 @@ export default {
   computed: {
     getProductsOk() {
       return this.httpCode === 200;
+    },
+    getProductsNotFound(){
+      return this.httpCode === 404;
     }
   },
   methods: {
