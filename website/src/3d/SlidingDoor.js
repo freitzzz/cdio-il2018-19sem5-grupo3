@@ -1,3 +1,4 @@
+//@ts-check
 /**
  * Represents a sliding door using box geometry
  */

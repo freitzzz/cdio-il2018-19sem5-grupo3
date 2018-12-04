@@ -1,24 +1,31 @@
 <template>
   <div>
     <div v-if="getComponentsOk">
-      <div class="icon-div-top"><i class="material-icons md-12 md-blue btn">help</i>
+      <div class="icon-div-top">
+        <i class="material-icons md-12 md-blue btn">help</i>
         <span class="tooltiptext">In this step, you can add components to the structure.</span>
       </div>
-      <div class="text-entry">
-        Choose components to add:
-      </div>
+      <div class="text-entry">Choose components to add:</div>
       <div class="padding-div">
-        <div class="scrollable-div">
-          <li v-for="component in components" :key = "component.id">
-            <div class="image-btn">
-            {{component.productID}}
-            </div>
-          </li>
+        <div class="scrollable-div" style="height: 300px; width: 100%;">
+          <ul class="image-list" v-for="component in components" :key="component.id">
+            <li>
+              <div class="image-btn" @click="createComponent(component)">
+                <img :src="findComponentImage(component.model)" width="100%">
+                <p>{{component.designation}}</p>
+              </div>
+            </li>
+          </ul>
         </div>
-    </div>
+        <div class="scrollable-div" style="height: 100px; width: 100%;">
+        <div v-for="span in spans" :key="span.id"></div>
+        </div>
+      </div>
     </div>
     <div v-else>
-      <div class="text-entry"><b>Error: {{httpCode}}</b></div>
+      <div class="text-entry">
+        <b>Error: {{httpCode}}</b>
+      </div>
       <div class="text-entry">Yikes! Looks like we ran into a problem here...</div>
       <div class="icon-div-center">
         <i class="material-icons md-36 md-blue btn" @click="getProductComponents">refresh</i>
@@ -26,7 +33,6 @@
     </div>
   </div>
 </template>
-
 
 <script>
 import Axios from "axios";
@@ -42,9 +48,10 @@ export default {
     //   components: this.components
     // });
   },
-   data() {
+  data() {
     return {
       components: [],
+      spans: [],
       httpCode: null
     };
   },
@@ -57,7 +64,8 @@ export default {
     getProductComponents() {
       Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/components`)
         .then(response => {
-          this.components = response.data;
+          this.components = [];
+          this.components.push(...response.data);
           this.httpCode = response.status;
         })
         .catch(error => {
@@ -68,18 +76,11 @@ export default {
           }
         });
     },
-    getComponentsInformation(){
-      Axios.get(`${MYCM_API_URL}/products/${id}`)
-        .then(response => {
-          return responde.data;
-        })
-        .catch(error => {
-          if (error.response === undefined) {
-            this.httpCode = 500;
-          } else {
-            this.httpCode = error.response.status;
-          }
-        });
+    findComponentImage(filename) {
+      return "./src/assets/products/" + filename.split(".")[0] + ".png";
+    },
+    createComponent(component) {
+      this.spans.push({value:''});
     }
   },
   created() {

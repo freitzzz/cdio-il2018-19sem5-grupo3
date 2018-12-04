@@ -1,3 +1,4 @@
+//@ts-check
 /**
  * Represents the internal core of a Closet
  */
@@ -92,7 +93,7 @@ export default class Closet {
         this.closet_slots++;
         this.closet_slots_faces.push(this.closet_right_face_dimensions_axes.slice());
         this.initial_closet_slots_faces.push(this.closet_right_face_dimensions_axes.slice());
-        this._updateClosetSlots(this);
+        this._updateClosetSlots();
         return this.closet_slots_faces[this.closet_slots_faces.length - 1];
     }
 
@@ -104,7 +105,7 @@ export default class Closet {
             this.closet_slots--;
             this.closet_slots_faces.pop();
             this.initial_closet_slots_faces.pop();
-            this._updateClosetSlots(this);
+            this._updateClosetSlots();
         }
     }
 
@@ -151,7 +152,7 @@ export default class Closet {
      * Updates the closet slots size
      */
     _updateClosetSlots() {
-        var distance_per_slot = (this.closet_right_face_dimensions_axes[3] - this.closet_left_face_dimensions_axes[3]) / closet.closet_slots;
+        var distance_per_slot = (this.closet_right_face_dimensions_axes[3] - this.closet_left_face_dimensions_axes[3]) / this.closet_slots;
         var left_closet_face_x_value = this.closet_left_face_dimensions_axes[3];
         for (var i = 0; i < this.closet_slots_faces.length; i++) {
             if (i == 0) {

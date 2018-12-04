@@ -416,19 +416,19 @@
   }
   
   
-  ul.material_list>li{
+  ul.image-list>li{
     text-align:center;
   }
   
-  ul.material_list>li:nth-child(odd){
+  ul.image-list>li:nth-child(odd){
     float: left;
     width: 50%
   }
-  ul.material_list>li:nth-child(even){
+  ul.image-list>li:nth-child(even){
     float: right;
     width: 50%
   }
-  ul.material_list>li>img{
+  ul.image-list>li>img{
     padding-bottom:0.5em;
   }
   
