@@ -1,6 +1,6 @@
 const express = require('express');
 const ordersRoute = express.Router();
-const Order = require('../models/order');
+const Order = require('../models/Order');
 const Factory = require('../models/Factory');
 const http = require('http');
 const City = require('../models/City');
@@ -114,7 +114,7 @@ ordersRoute.route('/orders').post(function (req, res, next) {
                                     res.status(201).json(_createdOrder);
                                 }).catch((_error) => {
                                     //TODO: REWORK : )
-                                    res.status(400).json({ message: 'An error occured while processing the order' });
+                                    res.status(401).json({ message: _error });
                                 });
                         })
                         .catch(() => {
@@ -125,7 +125,7 @@ ordersRoute.route('/orders').post(function (req, res, next) {
                                             res.status(201).json(_createdOrder);
                                         }).catch((_error) => {
                                             //TODO: REWORK : )
-                                            res.status(400).json({ message: 'An error occured while processing the order' });
+                                            res.status(403).json({ message: 'An error occured while processing the order' });
                                         });
                                 }).catch((_error) => {
                                     //TODO: REWORK :) (Happens when there is an error while processing the shortest factory computation in MYCL)
@@ -150,19 +150,23 @@ ordersRoute.route('/orders/:id/state').put((request,response)=>{
             changeOrderState(order,request.body.state)
             .then((changedOrderState)=>{
                 Order
-                    .update(changedOrderState)
+                    .findByIdAndUpdate(orderID,changedOrderState)
                     .then((updatedOrder)=>{
+                        console.log(updatedOrder);
                         response.status(200).json(updatedOrder);
                     })
                     .catch((_error_updating_error)=>{
+                        response.status(500).json({message:_error_updating_error});
                         //ERROR UPDATING ORDER ON MONGO DB :)))
                     })
             })
             .catch((_errorOrderStateChange)=>{
+                response.status(400).json({message:_errorOrderStateChange});
                 //BUSINESS ORDER STATE CHANGE ERROR :))
             });
         })
         .catch((_error)=>{
+            response.status(404).json({message:'Order not found!'});
             //ORDER NOT FOUND :)
         });
 });
@@ -180,7 +184,7 @@ function isCityInFactories(city, factories) {
             if (factory.isLocated(city)) { resolve(factory); }
             //TODO: REWORK : )
         })
-        return _factories ? resolve(_factories) : reject(null);
+        return (_factories!=null && _factories.length!=0) ? resolve(_factories) : reject(null);
     });
 }
 
@@ -194,9 +198,26 @@ function isCityInFactories(city, factories) {
 function createOrder(orderContents, cityToDeliver, factoryOfProduction) {
     return Order.create({
         orderContents: orderContents,
-        packages: [],
         cityToDeliver: cityToDeliver,
         factoryOfProduction: factoryOfProduction
+    });
+}
+
+/**
+ * Changes the state of an order
+ * @param {Order.Schema} order Order with the order being changed the state 
+ * @param {State} orderState State with the state to update
+ */
+function changeOrderState(order,orderState){
+    return new Promise((updatedOrderState,errorUpdatingOrderState)=>{
+        try{
+            console.log("!!!!")
+            order.changeState(orderState);
+            console.log("????")
+            updatedOrderState(order);
+        }catch(_error){
+            errorUpdatingOrderState(_error);
+        }
     });
 }
 
