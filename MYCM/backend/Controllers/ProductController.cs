@@ -27,10 +27,6 @@ namespace backend.Controllers
         /// </summary>
         private const string UNEXPECTED_ERROR = "An unexpected error occurred, please try again later.";
         /// <summary>
-        /// Constant that represents error message presented when no instances of Product are found.
-        /// </summary>
-        private const string NO_PRODUCTS_FOUND = "No products found.";
-        /// <summary>
         /// Constant that represents the error message when invalid product information is provided.
         /// </summary>
         private const string INVALID_PRODUCT_DATA = "Invalid product information. Please provide valid information.";
@@ -157,6 +153,23 @@ namespace backend.Controllers
         /// </summary>
         private const string LOG_GET_PRODUCT_COMPONENTS_SUCCESS = "Product's {id} Components {@components} retrieved.";
 
+
+        /// <summary>
+        /// Constant that represents the log message for when a GET Product Slot Widths Request starts.
+        /// </summary>
+        private const string LOG_GET_SLOT_WIDTHS_START = "GET Product Slot Widths Request Started.";
+        /// <summary>
+        /// Constant that represents the log message for when a GET Product Slot Widths Request returns NotFound.
+        /// </summary>
+        private const string LOG_GET_SLOT_WIDTHS_NOT_FOUND = "GET Product's {id} Slot Widths - Not Found.";
+        /// <summary>
+        /// Constant that represents the log message for when a GET Product Slot Widths Request returns BadRequest.
+        /// </summary>
+        private const string LOG_GET_SLOT_WIDTHS_BAD_REQUEST = "GET Product's {id} Slot Widths - Bad Request.";
+        /// <summary>
+        /// Constant that represents the log message for when a GET Product Slot Widths Request is successful.
+        /// </summary>
+        private const string LOG_GET_SLOT_WIDTHS_SUCCESS = "Product's {id} Slot Widths {@slotWidths} retrieved.";
 
         /// <summary>
         /// Constant representing the log message for when a GET Product Measurement Restrictions Request starts. 
@@ -629,6 +642,47 @@ namespace backend.Controllers
                 logger.LogWarning(e, LOG_GET_PRODUCT_MATERIALS_NOT_FOUND, productId);
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
+                logger.LogWarning(e, UNEXPECTED_ERROR);
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+        //TODO: add integration tests
+        /// <summary>
+        /// Retrieves a Product's Slot Widths.
+        /// </summary>
+        /// <param name="productId">Product's persistence identifier.</param>
+        /// <param name="unit">Unit in which the values will be presented.</param>
+        /// <returns>
+        /// ActionResult with the 200 HTTP code and body containing the Product's Slot Widths.
+        /// or
+        /// ActionResult with the 404 HTTP code and body with an error message, if no Product matches the given identifier.
+        /// or
+        /// ActionResult with th 400 HTTP code and body with an error message, if the Product does not support slots.
+        /// </returns>
+        [HttpGet("{productId}/slotwidths")]
+        public ActionResult findProductSlotWidths(long productId, [FromQuery] string unit){
+            //*logger here */
+            logger.LogInformation(LOG_GET_SLOT_WIDTHS_START);
+
+            FetchProductDTO fetchProductDTO = new FetchProductDTO();
+            fetchProductDTO.id = productId;
+            fetchProductDTO.productDTOOptions.requiredUnit = unit;
+            try{
+                GetProductSlotWidthsModelView productSlotWidthsMV = new core.application.ProductController().findProductSlotWidths(fetchProductDTO);
+                //*logger here */
+                logger.LogInformation(LOG_GET_SLOT_WIDTHS_SUCCESS);
+                return Ok(productSlotWidthsMV);
+            }catch(ResourceNotFoundException e){
+                //*logger here */
+                logger.LogWarning(e, LOG_GET_SLOT_WIDTHS_NOT_FOUND, productId);
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }catch(InvalidOperationException e){
+                //*logger here */
+                logger.LogWarning(e, LOG_GET_SLOT_WIDTHS_BAD_REQUEST, productId);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }catch(Exception e){
+                //*logger here */
                 logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }

@@ -56,6 +56,10 @@ namespace core.application
         /// </summary>
         private const string ERROR_UNABLE_TO_FIND_RESTRICTION_BY_ID = "Unable to find restrictions with an identifier of: {0}";
         /// <summary>
+        /// Constant representing the message presented when the Product does not support slots.
+        /// </summary>
+        private const string ERROR_SLOTS_NOT_SUPPORTED = "The product with the identifier of {0} does not support slots.";
+        /// <summary>
         /// Constant representing the message presented when no Components are found.
         /// </summary>
         private const string ERROR_UNABLE_TO_FIND_COMPONENTS = "Unable to find components.";
@@ -198,12 +202,33 @@ namespace core.application
         }
 
         /// <summary>
+        /// Finds a Product's ProductSlotWidths.
+        /// </summary>
+        /// <param name="fetchProductDTO">DTO containing information used for querying.</param>
+        /// <returns>GetProductSlotWidthsModelView representing the Product's ProductSlotWidths.</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when the Product could not be found.</exception>
+        public GetProductSlotWidthsModelView findProductSlotWidths(FetchProductDTO fetchProductDTO){
+            Product product = PersistenceContext.repositories().createProductRepository().find(fetchProductDTO.id);
+
+            if(product == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, fetchProductDTO.id));
+            }
+
+            //?Should this be a BadRequest or a NotFound?
+            if(!product.supportsSlots){
+                throw new InvalidOperationException(string.Format(ERROR_SLOTS_NOT_SUPPORTED, fetchProductDTO.id));
+            }
+
+            return ProductSlotWidthsModelViewService.fromEntity(product.slotWidths, fetchProductDTO.productDTOOptions.requiredUnit);
+        }
+
+        /// <summary>
         /// Finds a Product's Measurement's Collection of Restriction.
         /// </summary>
         /// <param name="productMeasurementModelView">GetProductMeasurementModelView with the Product's and the Measurement's persistence identifier.</param>
         /// <returns>An instance of GetAllRestrictionsModelView containing the information of all the Measurement's restrictions.</returns>
         /// <exception cref="ResourceNotFoundException">Thrown when either the Product or the Measurement could not be found.</exception>
-        public GetAllRestrictionsModelView findMeasurementRestrictions(GetMeasurementModelView productMeasurementModelView){
+        public GetAllRestrictionsModelView findMeasurementRestrictions(FindMeasurementModelView productMeasurementModelView){
             
             Product product = PersistenceContext.repositories().createProductRepository().find(productMeasurementModelView.productId);
 
