@@ -57,17 +57,17 @@ const getters = {
     productDimensions: state => {
         return state.product.dimensions;
     },
-    productSlotSizes: state => {
-        return state.product.slotSizes;
+    productSlotWidths: state => {
+        return state.product.slotWidths;
     },
-    recommendedSlotSize: state => {
-        return state.product.slotSizes.recommendedSize;
+    recommendedSlotWidth: state => {
+        return state.product.slotSizes.recommendedWidth;
     },
-    maxSlotSize: state => {
-        return state.product.slotSizes.maxSize;
+    maxSlotWidth: state => {
+        return state.product.slotSizes.maxWidth;
     },
-    minSlotSize: state => {
-        return state.product.slotSizes.minSize;
+    minSlotWidth: state => {
+        return state.product.slotSizes.minWidth;
     },
     productMaterials: state => {
         return state.product.materials;
