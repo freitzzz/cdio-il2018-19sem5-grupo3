@@ -69,7 +69,7 @@ var canvasWebGL;
 var selected_slot = null,
     selected_face = null,
     selected_component = null,
-    selected_door = null;;
+    selected_door = null;
 
 /**
  * Global variable that represents the object being hovered (null if none)
@@ -118,9 +118,14 @@ var drawer_back_face = null,
     drawer_left_face = null,
     drawer_right_face = null;
 /**
- * Global variables to know when to animate a hinged door 
+ * Global variable to know when to animate a hinged door 
  */
 var hingedDoor = null;
+
+/**
+ * Global variable to know when to animate a sliding door
+ */
+var slidingDoor = null;
 
 /**
  * Waiting list for doors that are waiting to be rendered (e.g. drawer animation has to end)
@@ -337,40 +342,63 @@ function applyTexture(texture) {
 function addComponent(component, slot) {
     if (component == "Pole") generateCylinder(slot);
     if (component == "Drawer") {
-        generateDrawer(slot);
-        if (doesSlotHaveHingedDoor(slot)) {
-            if (!isHingedDoorClosed) {
-                hingedDoor = group.getObjectById(closet_hinged_doors_ids[slot - 1]);
-                requestAnimationFrame(openHingedDoor);
-            }
-        }
+        checkAddDrawerTriggers(slot);
     }
     if (component == "Shelf") generateShelf(slot);
     if (component == "Sliding Door") {
-        if (doesClosetHaveHingedDoors()) {
-            alert("There are closet slots that have hinged doors!");
+        checkAddSlidingDoorTriggers();
+    }
+    if (component == "Door") {
+        checkAddHingedDoorTriggers(slot);
+    }
+}
+
+function checkAddDrawerTriggers(slot) {
+    generateDrawer(slot);
+    if (doesSlotHaveHingedDoor(slot)) {
+        if (!isHingedDoorClosed) {
+            hingedDoor = group.getObjectById(closet_hinged_doors_ids[slot - 1]);
+            requestAnimationFrame(openHingedDoor);
+        }
+    }
+}
+
+function checkAddSlidingDoorTriggers() {
+    if (doesClosetHaveHingedDoors()) {
+        alert("There are closet slots that have hinged doors!");
+    } else {
+        if (doesClosetHaveOpenDrawers()) {
+            if (!isDrawerClosed) {
+                waitingDoors.push(function () {
+                    generateSlidingDoor();
+                });
+                closeAllOpenDrawers();
+            } else {
+                generateSlidingDoor();
+            }
         } else {
             generateSlidingDoor();
         }
     }
-    if (component == "Door") {
-        if (doesSlotHaveHingedDoor(slot)) {
-            alert("This slot already has a door!");
-        } else if (doesClosetHaveSlidingDoor()) {
-            alert("The closet already has sliding doors!");
-        } else {
-            if (doesSlotHaveOpenDrawers(slot)) {
-                if (!isDrawerClosed) {
-                    waitingDoors.push(function () {
-                        addHingedDoor(slot);
-                    })
-                    closeOpenDrawers(slot);
-                } else {
+}
+
+function checkAddHingedDoorTriggers(slot) {
+    if (doesSlotHaveHingedDoor(slot)) {
+        alert("This slot already has a door!");
+    } else if (doesClosetHaveSlidingDoor()) {
+        alert("The closet already has sliding doors!");
+    } else {
+        if (doesSlotHaveOpenDrawers(slot)) {
+            if (!isDrawerClosed) {
+                waitingDoors.push(function () {
                     addHingedDoor(slot);
-                }
+                });
+                closeSlotOpenDrawers(slot);
             } else {
                 addHingedDoor(slot);
             }
+        } else {
+            addHingedDoor(slot);
         }
     }
 }
@@ -383,19 +411,39 @@ function addHingedDoor(slot) {
     }
 }
 
-function closeOpenDrawers(slot) {
+function closeSlotOpenDrawers(slot) {
     var i = 0;
+    var index = 0;
+    var closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
     while (i < closet_drawers_ids.length) {
-        if (closet.drawers[i].slotId == slot) {
-            drawer_front_face = group.getObjectById(closet_drawers_ids[5 * i + 1]);
-            let closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
+        if (i > 0) index = i - 5;
+        if (closet.drawers[index].slotId == slot) {
+            drawer_front_face = group.getObjectById(closet_drawers_ids[5 * index + 1]);
             if (drawer_front_face.position.z > closet_front) {
-                drawer_base_face = group.getObjectById(closet_drawers_ids[5 * i]);
-                drawer_left_face = group.getObjectById(closet_drawers_ids[5 * i + 2]);
-                drawer_right_face = group.getObjectById(closet_drawers_ids[5 * i + 3]);
-                drawer_back_face = group.getObjectById(closet_drawers_ids[5 * i + 4]);
+                drawer_base_face = group.getObjectById(closet_drawers_ids[5 * index]);
+                drawer_left_face = group.getObjectById(closet_drawers_ids[5 * index + 2]);
+                drawer_right_face = group.getObjectById(closet_drawers_ids[5 * index + 3]);
+                drawer_back_face = group.getObjectById(closet_drawers_ids[5 * index + 4]);
                 requestAnimationFrame(closeDrawer);
             }
+        }
+        i += 6;
+    }
+}
+
+function closeAllOpenDrawers() {
+    var i = 0;
+    var index = 0;
+    var closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
+    while (i < closet_drawers_ids.length) {
+        if (i > 0) index = i - 5;
+        drawer_front_face = group.getObjectById(closet_drawers_ids[5 * index + 1]);
+        if (drawer_front_face.position.z > closet_front) {
+            drawer_base_face = group.getObjectById(closet_drawers_ids[5 * index]);
+            drawer_left_face = group.getObjectById(closet_drawers_ids[5 * index + 2]);
+            drawer_right_face = group.getObjectById(closet_drawers_ids[5 * index + 3]);
+            drawer_back_face = group.getObjectById(closet_drawers_ids[5 * index + 4]);
+            requestAnimationFrame(closeDrawer);
         }
         i += 6;
     }
@@ -420,6 +468,17 @@ function doesSlotHaveOpenDrawers(slot) {
             return group.getObjectById(closet_drawers_ids[5 * i + 1]).position.z
                 >= closet_front;
         }
+    }
+    return false;
+}
+
+function doesClosetHaveOpenDrawers() {
+    var closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
+    var index = 0;
+    for (let i = 0; i < closet_drawers_ids.length; i += 6) {
+        if (i > 0) index = i - 5;
+        return group.getObjectById(closet_drawers_ids[5 * index + 1]).position.z
+            >= closet_front;
     }
     return false;
 }
@@ -1013,22 +1072,37 @@ function onDocumentMouseDown(event) {
                 }
             }
 
-            //Checks if the selected object is a door
-            for (let j = 0; j < closet_sliding_doors_ids.length; j++) {
-                let door = group.getObjectById(closet_sliding_doors_ids[j]);
-                if (door == face) {
-                    controls.enabled = false;
-                    selected_door = face;
-                    if (raycaster.ray.intersectPlane(plane, intersection)) {
-                        offset = intersection.x - selected_door.position.x;
-                    }
-                }
-            }
-
             var flagOpen = false;
             var flagClose = false;
-
             var j = 0;
+
+            //Checks if the selected object is a door
+
+            while (!flagOpen && !flagClose && j < closet_sliding_doors_ids.length) {
+                slidingDoor = group.getObjectById(closet_sliding_doors_ids[j]);
+                if (slidingDoor == face) {
+                    controls.enabled = false;
+                    let closet_left = group.getObjectById(closet_faces_ids[2]);
+                    let closet_right = group.getObjectById(closet_faces_ids[3]);
+                    if (slidingDoor.position.x < 0) {
+                        flagClose = true; //"Closing" ==> slide door to the right
+                    } else {
+                        flagOpen = true; //"Opening" ==> slide door to the left
+                    }
+                }
+                j++;
+            }
+
+            if (flagOpen) {
+                requestAnimationFrame(slideDoorToLeft);
+            } else if (flagClose) {
+                requestAnimationFrame(slideDoorToRight);
+            }
+
+            flagOpen = false;
+            flagClose = false;
+            j = 0;
+
             while (!flagOpen && !flagClose && j < closet_drawers_ids.length) {
                 //Always get the front face of any drawer at index 5*j+1
                 drawer_front_face = group.getObjectById(closet_drawers_ids[5 * j + 1]);
@@ -1079,6 +1153,48 @@ function onDocumentMouseDown(event) {
     }
 }
 
+var slideDoorToLeft = function () {
+    if (doesClosetHaveOpenDrawers()) {
+        waitingDoors.push(slideDoorToLeftAnimation);
+        closeAllOpenDrawers();
+    } else {
+        slideDoorToLeftAnimation();
+    }
+}
+
+function slideDoorToLeftAnimation() {
+    let closet_left = group.getObjectById(closet_faces_ids[2]);
+    let distanceFromDoorToLeftFace = Math.abs(slidingDoor.position.x - closet_left.position.x);
+    let position = (Math.abs(closet_left.position.x - closet_left.geometry.parameters.width) / 2) - 2;
+    if (position < distanceFromDoorToLeftFace) {
+        slidingDoor.translateX(-1);
+        requestAnimationFrame(slideDoorToLeft);
+        render();
+        controls.update();
+    }
+}
+
+var slideDoorToRight = function () {
+    if (doesClosetHaveOpenDrawers()) {
+        waitingDoors.push(slideDoorToRightAnimation);
+        closeAllOpenDrawers();
+    } else {
+        slideDoorToRightAnimation();
+    }
+}
+
+function slideDoorToRightAnimation() {
+    let closet_right = group.getObjectById(closet_faces_ids[3]);
+    let distanceFromDoorToRightFace = Math.abs(slidingDoor.position.x - closet_right.position.x);
+    let position = (Math.abs(closet_right.position.x + closet_right.geometry.parameters.width) / 2) - 2;
+    if (position < distanceFromDoorToRightFace) {
+        slidingDoor.translateX(1);
+        requestAnimationFrame(slideDoorToRight);
+        render();
+        controls.update();
+    }
+}
+
 var incrementHingedDoor = 100;
 
 var openHingedDoor = function () {
@@ -1096,7 +1212,7 @@ var closeHingedDoor = function () {
     var hingedDoorSlot = getHingedDoorSlot(hingedDoor);
     if (doesSlotHaveOpenDrawers(hingedDoorSlot)) {
         waitingDoors.push(closeHingedDoorAnimation);
-        closeOpenDrawers(hingedDoorSlot);
+        closeSlotOpenDrawers(hingedDoorSlot);
     } else {
         closeHingedDoorAnimation();
     }
@@ -1155,7 +1271,7 @@ var closeDrawer = function () {
         controls.update();
     } else {
         isDrawerClosed = true;
-        while(waitingDoors.length != 0){
+        while (waitingDoors.length != 0) {
             waitingDoors.pop()();
         }
     }
