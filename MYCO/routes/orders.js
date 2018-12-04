@@ -140,6 +140,34 @@ ordersRoute.route('/orders').post(function (req, res, next) {
 });
 
 /**
+ * Routes the update state of an order request
+ */
+ordersRoute.route('/orders/:id/state').put((request,response)=>{
+    let orderID=request.params.id;
+    Order
+        .findById(orderID)
+        .then((order)=>{
+            changeOrderState(order,request.body.state)
+            .then((changedOrderState)=>{
+                Order
+                    .update(changedOrderState)
+                    .then((updatedOrder)=>{
+                        response.status(200).json(updatedOrder);
+                    })
+                    .catch((_error_updating_error)=>{
+                        //ERROR UPDATING ORDER ON MONGO DB :)))
+                    })
+            })
+            .catch((_errorOrderStateChange)=>{
+                //BUSINESS ORDER STATE CHANGE ERROR :))
+            });
+        })
+        .catch((_error)=>{
+            //ORDER NOT FOUND :)
+        });
+});
+
+/**
  * Verifies if a city is located in a collection of factories
  * @param {City.Schema} city City with the city being verified
  * @param {List} factories Collection with the factories being checked
@@ -166,7 +194,7 @@ function isCityInFactories(city, factories) {
 function createOrder(orderContents, cityToDeliver, factoryOfProduction) {
     return Order.create({
         orderContents: orderContents,
-        packages: createPackages(orderContents),
+        packages: [],
         cityToDeliver: cityToDeliver,
         factoryOfProduction: factoryOfProduction
     });
