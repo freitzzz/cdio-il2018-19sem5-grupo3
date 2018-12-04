@@ -7,10 +7,12 @@ class HingedDoor {
      * Builds a new HingedDoor with the dimensions and axes values for the door
      * @param {Array} hinged_door_axes Array with the dimensions and axes values of the door
      * @param {Number} slot Id of the slot that the hinged door belongs to
+     * @param {Number} mesh Id of the hinged door mesh
      */
-    constructor(hinged_door_axes, slotId) {
+    constructor(hinged_door_axes, slotId, meshId) {
         this.hinged_door_axes = hinged_door_axes.slice();
         this.slotId = slotId;
+        this.meshId = meshId;
     }
 
     /**
