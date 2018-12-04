@@ -26,6 +26,7 @@ class Closet {
         this.slidingDoors = [];
         this.hingedDoors = [];
         this.drawers = [];
+        this.modules = [];
     }
 
     //Closet Logic
@@ -190,6 +191,22 @@ class Closet {
      */
     removeDrawer() {
         this.drawers.pop();
+    }
+
+    /**
+     * Adds a module to the closet
+     * @param {Module} module to add 
+     */
+    addModule(module) {
+        this.modules.push(module);
+    }
+
+    /**
+     * Removes a module from the closet
+     *  @param {Module} module to remove
+     */
+    removeModule() {
+        this.modules.pop();
     }
 
     //Accessors
