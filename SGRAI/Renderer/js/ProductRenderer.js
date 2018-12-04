@@ -118,9 +118,25 @@ var drawer_back_face = null,
     drawer_left_face = null,
     drawer_right_face = null;
 /**
- * Global variables to know when to animate a door's 
+ * Global variables to know when to animate a hinged door 
  */
-var door = null;
+var hingedDoor = null;
+
+/**
+ * Waiting list for doors that are waiting to be rendered (e.g. drawer animation has to end)
+ */
+var waitingDoors = [];
+
+/**
+ * Flag to know whether a drawer is closed or not
+ */
+var isDrawerClosed = false;
+
+/**
+ * Flag to know whether a hinged door is closed or not
+ */
+var isHingedDoorClosed = false;
+
 /**
  * Initial Product Draw function
  */
@@ -320,12 +336,20 @@ function applyTexture(texture) {
 
 function addComponent(component, slot) {
     if (component == "Pole") generateCylinder(slot);
-    if (component == "Drawer") generateDrawer(slot);
+    if (component == "Drawer") {
+        generateDrawer(slot);
+        if (doesSlotHaveHingedDoor(slot)) {
+            if (!isHingedDoorClosed) {
+                hingedDoor = group.getObjectById(closet_hinged_doors_ids[slot - 1]);
+                requestAnimationFrame(openHingedDoor);
+            }
+        }
+    }
     if (component == "Shelf") generateShelf(slot);
     if (component == "Sliding Door") {
         if (doesClosetHaveHingedDoors()) {
             alert("There are closet slots that have hinged doors!");
-        }else{
+        } else {
             generateSlidingDoor();
         }
     }
@@ -335,15 +359,66 @@ function addComponent(component, slot) {
         } else if (doesClosetHaveSlidingDoor()) {
             alert("The closet already has sliding doors!");
         } else {
-            generateHingedDoor(slot);
+            if (doesSlotHaveOpenDrawers(slot)) {
+                if (!isDrawerClosed) {
+                    waitingDoors.push(function () {
+                        addHingedDoor(slot);
+                    })
+                    closeOpenDrawers(slot);
+                } else {
+                    addHingedDoor(slot);
+                }
+            } else {
+                addHingedDoor(slot);
+            }
         }
     }
 }
+
+function addHingedDoor(slot) {
+    if (isDrawerClosed) {
+        generateHingedDoor(slot);
+    } else {
+        generateHingedDoor(slot);
+    }
+}
+
+function closeOpenDrawers(slot) {
+    var i = 0;
+    while (i < closet_drawers_ids.length) {
+        if (closet.drawers[i].slotId == slot) {
+            drawer_front_face = group.getObjectById(closet_drawers_ids[5 * i + 1]);
+            let closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
+            if (drawer_front_face.position.z > closet_front) {
+                drawer_base_face = group.getObjectById(closet_drawers_ids[5 * i]);
+                drawer_left_face = group.getObjectById(closet_drawers_ids[5 * i + 2]);
+                drawer_right_face = group.getObjectById(closet_drawers_ids[5 * i + 3]);
+                drawer_back_face = group.getObjectById(closet_drawers_ids[5 * i + 4]);
+                requestAnimationFrame(closeDrawer);
+            }
+        }
+        i += 6;
+    }
+}
+
 
 function doesSlotHaveHingedDoor(slot) {
     for (let i = 0; i < closet_hinged_doors_ids.length; i++) {
         if (closet.hingedDoors[i].slotId == slot) {
             return true;
+        }
+    }
+    return false;
+}
+
+function doesSlotHaveOpenDrawers(slot) {
+    var closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
+    var index = 0;
+    for (let i = 0; i < closet_drawers_ids.length; i += 6) {
+        if (i > 0) index = i - 5;
+        if (closet.drawers[index].slotId == slot) {
+            return group.getObjectById(closet_drawers_ids[5 * i + 1]).position.z
+                >= closet_front;
         }
     }
     return false;
@@ -592,7 +667,8 @@ function generateDrawer(slot) {
         [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z + (depthCloset / 2) - (depthDrawer / 2)], ///Frent
         [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x - (width / 2) + (spaceDrawerModule / 2), y + (heightDrawer / 2), z], ///Left
         [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x + (width / 2) - (spaceDrawerModule / 2), y + (heightDrawer / 2), z], ///Right
-        [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z - (depthCloset / 2) + (depthDrawer / 2)]); ///Back
+        [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z - (depthCloset / 2) + (depthDrawer / 2)],
+        slot); ///Back
     var borders_drawer = drawer.drawer_faces;
 
     for (var i = 0; i < borders_drawer.length; i++) {
@@ -601,7 +677,7 @@ function generateDrawer(slot) {
             borders_drawer[i][4], borders_drawer[i][5], material, group));
     }
 
-    closet.addDrawer(module);
+    closet.addModule(module);
     closet.addDrawer(drawer);
     /// closet_drawers_ids.push(module_mesh_id);
     /// closet_drawers_ids.push(drawer_mesh_id);
@@ -644,9 +720,9 @@ function generateHingedDoor(slot) {
         z = calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
     }
 
-    var door = new HingedDoor([width, height, depth, x, y, z + (depth_closet / 2)], slot);
     var meshID = generateParellepiped(width, height, depth, x, y, z + (depth_closet / 2), material, group);
-    closet.addHingedDoor(door);
+    var hingedDoor = new HingedDoor([width, height, depth, x, y, z + (depth_closet / 2)], slot, meshID);
+    closet.addHingedDoor(hingedDoor);
     closet_hinged_doors_ids.push(meshID);
 }
 
@@ -982,11 +1058,11 @@ function onDocumentMouseDown(event) {
             flagOpen = false;
             flagClose = false;
             while (!flagOpen && !flagClose && j < closet_hinged_doors_ids.length) {
-                door = group.getObjectById(closet_hinged_doors_ids[j]);
+                hingedDoor = group.getObjectById(closet_hinged_doors_ids[j]);
                 var closet_face = group.getObjectById(closet_faces_ids[0]);
-                if (door == face) {
+                if (hingedDoor == face) {
                     controls.enabled = false;
-                    if (door.rotation.y < 0) {
+                    if (hingedDoor.rotation.y < 0) {
                         flagClose = true;
                     } else {
                         flagOpen = true;
@@ -995,37 +1071,58 @@ function onDocumentMouseDown(event) {
                 j++;
             }
             if (flagOpen) {
-                requestAnimationFrame(openDoor);
+                requestAnimationFrame(openHingedDoor);
             } else if (flagClose) {
-                requestAnimationFrame(closeDoor);
+                requestAnimationFrame(closeHingedDoor);
             }
         }
     }
 }
 
-var incrementDoor = 100;
+var incrementHingedDoor = 100;
 
-var openDoor = function () {
-    if (door.rotation.y > (-Math.PI / 2)) {
-        var rotationX = (door.geometry.parameters.width / 2);
-        door.translateX(-rotationX);
-        door.rotation.y -= Math.PI / incrementDoor;
-        door.translateX(rotationX);
-        requestAnimationFrame(openDoor);
+var openHingedDoor = function () {
+    if (hingedDoor.rotation.y > (-Math.PI / 2)) {
+        var rotationX = (hingedDoor.geometry.parameters.width / 2);
+        hingedDoor.translateX(-rotationX);
+        hingedDoor.rotation.y -= Math.PI / incrementHingedDoor;
+        hingedDoor.translateX(rotationX);
+        requestAnimationFrame(openHingedDoor);
         render();
         controls.update();
     }
 }
-var closeDoor = function () {
-    if (door.rotation.y < 0) {
-        var rotationX = door.geometry.parameters.width / 2;
-        door.translateX(-rotationX);
-        door.rotation.y += Math.PI / incrementDoor;
-        door.translateX(rotationX);
-        requestAnimationFrame(closeDoor);
+var closeHingedDoor = function () {
+    var hingedDoorSlot = getHingedDoorSlot(hingedDoor);
+    if (doesSlotHaveOpenDrawers(hingedDoorSlot)) {
+        waitingDoors.push(closeHingedDoorAnimation);
+        closeOpenDrawers(hingedDoorSlot);
+    } else {
+        closeHingedDoorAnimation();
+    }
+}
+
+function closeHingedDoorAnimation() {
+    if (hingedDoor.rotation.y < 0) {
+        var rotationX = hingedDoor.geometry.parameters.width / 2;
+        hingedDoor.translateX(-rotationX);
+        hingedDoor.rotation.y += Math.PI / incrementHingedDoor;
+        hingedDoor.translateX(rotationX);
+        requestAnimationFrame(closeHingedDoor);
         render();
         controls.update();
+    } else {
+        isHingedDoorClosed = true;
     }
+}
+
+function getHingedDoorSlot(hingedDoorMesh) {
+    for (let i = 0; i < closet.hingedDoors.length; i++) {
+        if (hingedDoorMesh.id == closet.hingedDoors[i].meshId) {
+            return closet.hingedDoors[i].slotId;
+        }
+    }
+    return;
 }
 
 var incrementDrawer = 1;
@@ -1056,6 +1153,11 @@ var closeDrawer = function () {
         requestAnimationFrame(closeDrawer);
         render();
         controls.update();
+    } else {
+        isDrawerClosed = true;
+        while(waitingDoors.length != 0){
+            waitingDoors.pop()();
+        }
     }
 }
 
