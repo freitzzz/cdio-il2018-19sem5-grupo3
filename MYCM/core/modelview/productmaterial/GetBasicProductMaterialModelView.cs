@@ -9,7 +9,6 @@ namespace core.modelview.productmaterial
     [DataContract]
     public class GetBasicProductMaterialModelView : GetBasicMaterialModelView
     {
-        [IgnoreDataMember]
-        public long productId { get; set; }
+
     }
 }

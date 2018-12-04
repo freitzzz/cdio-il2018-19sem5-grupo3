@@ -20,6 +20,7 @@ namespace core.modelview.material{
             basicMaterialModelView.id=material.Id;
             basicMaterialModelView.reference=material.reference;
             basicMaterialModelView.designation=material.designation;
+            basicMaterialModelView.imageFilename=material.image;
             return basicMaterialModelView;
         }
 
@@ -33,6 +34,7 @@ namespace core.modelview.material{
             materialModelView.id=material.Id;
             materialModelView.reference=material.reference;
             materialModelView.designation=material.designation;
+            materialModelView.imageFilename=material.image;
             materialModelView.colors=DTOUtils.parseToDTOS(material.Colors).ToList();
             materialModelView.finishes=DTOUtils.parseToDTOS(material.Finishes).ToList();
             return materialModelView;

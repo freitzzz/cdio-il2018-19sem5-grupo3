@@ -363,7 +363,7 @@ namespace backend_tests.Controllers
 
             foreach (GetBasicProductModelView modelView in getAllProductsModelView)
             {
-                Assert.Equal(productModelViewFromPost.id, modelView.id);
+                Assert.Equal(productModelViewFromPost.productId, modelView.productId);
                 Assert.Equal(productModelViewFromPost.designation, modelView.designation);
                 Assert.Equal(productModelViewFromPost.reference, modelView.reference);
                 Assert.Equal(productModelViewFromPost.modelFilename, modelView.modelFilename);
@@ -635,7 +635,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //since a GET request is being performed, the response should be OK
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -667,7 +667,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //since a GET request is being performed, the response should be OK
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -699,7 +699,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
 
-            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.productId);
 
             //since a GET request is being performed, the response should be OK
             Assert.Equal(HttpStatusCode.OK, firstComponentGetResponse.StatusCode);
@@ -718,7 +718,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(secondComponentModelView, secondComponentModelViewFromPost);
 
-            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.id);
+            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.productId);
 
             //since a GET request is being performed, the response should be OK
             Assert.Equal(HttpStatusCode.OK, secondComponentGetResponse.StatusCode);
@@ -727,7 +727,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(secondComponentModelViewFromPost, secondComponentModelViewFromGet);
 
-            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 31", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 31", firstComponentModelViewFromGet.productId, secondComponentModelViewFromGet.productId);
 
             var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
@@ -737,7 +737,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //since a GET request is being performed, the response should be OK
             Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
@@ -867,7 +867,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getByIdResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + 1);
+            var getByIdResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId + 1);
 
             Assert.Equal(HttpStatusCode.NotFound, getByIdResponse.StatusCode);
 
@@ -903,7 +903,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getByIdResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getByIdResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, getByIdResponse.StatusCode);
 
@@ -998,7 +998,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getByIdResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + 1 + "/dimensions");
+            var getByIdResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId + 1 + "/dimensions");
 
             Assert.Equal(HttpStatusCode.NotFound, getByIdResponse.StatusCode);
 
@@ -1031,7 +1031,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getByIdResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions");
+            var getByIdResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId + "/dimensions");
 
             Assert.Equal(HttpStatusCode.OK, getByIdResponse.StatusCode);
 
@@ -1069,7 +1069,7 @@ namespace backend_tests.Controllers
 
             AddMeasurementModelView newMeasurementModelView = createNewMeasurementModelView();
 
-            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + 1 + "/dimensions", newMeasurementModelView);
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId + 1 + "/dimensions", newMeasurementModelView);
 
             Assert.Equal(HttpStatusCode.NotFound, postNewMeasurementResponse.StatusCode);
             //TODO Compare message
@@ -1099,7 +1099,7 @@ namespace backend_tests.Controllers
 
             AddMeasurementModelView newMeasurementModelView = createNewMeasurementModelViewWithInvalidHeight();
 
-            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId + "/dimensions", newMeasurementModelView);
 
             Assert.Equal(HttpStatusCode.BadRequest, postNewMeasurementResponse.StatusCode);
 
@@ -1130,7 +1130,7 @@ namespace backend_tests.Controllers
 
             AddMeasurementModelView newMeasurementModelView = createNewMeasurementModelViewWithInvalidWidth();
 
-            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId + "/dimensions", newMeasurementModelView);
 
             Assert.Equal(HttpStatusCode.BadRequest, postNewMeasurementResponse.StatusCode);
 
@@ -1161,7 +1161,7 @@ namespace backend_tests.Controllers
 
             AddMeasurementModelView newMeasurementModelView = createNewMeasurementModelViewWithInvalidDepth();
 
-            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId + "/dimensions", newMeasurementModelView);
 
             Assert.Equal(HttpStatusCode.BadRequest, postNewMeasurementResponse.StatusCode);
 
@@ -1194,7 +1194,7 @@ namespace backend_tests.Controllers
 
             newMeasurementModelView.depthDimension.unit = "bajoras";
 
-            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId + "/dimensions", newMeasurementModelView);
 
             Assert.Equal(HttpStatusCode.BadRequest, postNewMeasurementResponse.StatusCode);
 
@@ -1225,7 +1225,7 @@ namespace backend_tests.Controllers
 
             AddMeasurementModelView newMeasurementModelView = createNewMeasurementModelView();
 
-            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId + "/dimensions", newMeasurementModelView);
 
             //Since a POST was performed, the status code should be Created
             Assert.Equal(HttpStatusCode.Created, postNewMeasurementResponse.StatusCode);
@@ -1714,7 +1714,7 @@ namespace backend_tests.Controllers
 
             AddMeasurementModelView newMeasurementModelView = null;
 
-            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId + "/dimensions", newMeasurementModelView);
 
             Assert.Equal(HttpStatusCode.BadRequest, postNewMeasurementResponse.StatusCode);
 
@@ -1747,7 +1747,7 @@ namespace backend_tests.Controllers
 
             newMeasurementModelView.heightDimension = null;
 
-            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId + "/dimensions", newMeasurementModelView);
 
             Assert.Equal(HttpStatusCode.BadRequest, postNewMeasurementResponse.StatusCode);
 
@@ -1780,7 +1780,7 @@ namespace backend_tests.Controllers
 
             newMeasurementModelView.depthDimension = null;
 
-            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId + "/dimensions", newMeasurementModelView);
 
             Assert.Equal(HttpStatusCode.BadRequest, postNewMeasurementResponse.StatusCode);
 
@@ -1813,7 +1813,7 @@ namespace backend_tests.Controllers
 
             newMeasurementModelView.widthDimension = null;
 
-            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId + "/dimensions", newMeasurementModelView);
 
             Assert.Equal(HttpStatusCode.BadRequest, postNewMeasurementResponse.StatusCode);
 
@@ -1848,7 +1848,7 @@ namespace backend_tests.Controllers
             newMeasurementModelView.depthDimension.unit = null;
             newMeasurementModelView.heightDimension.unit = null;
 
-            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id + "/dimensions", newMeasurementModelView);
+            var postNewMeasurementResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId + "/dimensions", newMeasurementModelView);
 
             //Since no unit was provided, the default unit is used
             Assert.Equal(HttpStatusCode.Created, postNewMeasurementResponse.StatusCode);
@@ -1878,7 +1878,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
 
-            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, firstComponentGetResponse.StatusCode);
@@ -1897,7 +1897,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(secondComponentModelView, secondComponentModelViewFromPost);
 
-            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.id);
+            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, secondComponentGetResponse.StatusCode);
@@ -1906,7 +1906,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(secondComponentModelViewFromPost, secondComponentModelViewFromGet);
 
-            var productModelView = createProductWithComponentsAndWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "father product 73", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+            var productModelView = createProductWithComponentsAndWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "father product 73", firstComponentModelViewFromGet.productId, secondComponentModelViewFromGet.productId);
 
             var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
@@ -1916,7 +1916,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
 
@@ -1947,7 +1947,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
 
-            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, firstComponentGetResponse.StatusCode);
@@ -1966,7 +1966,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(secondComponentModelView, secondComponentModelViewFromPost);
 
-            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.id);
+            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, secondComponentGetResponse.StatusCode);
@@ -1975,7 +1975,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(secondComponentModelViewFromPost, secondComponentModelViewFromGet);
 
-            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 74", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 74", firstComponentModelViewFromGet.productId, secondComponentModelViewFromGet.productId);
 
             var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
@@ -1985,7 +1985,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
 
@@ -1993,7 +1993,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var getComponentsResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + 1 + "/components");
+            var getComponentsResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + 1 + "/components");
 
             Assert.Equal(HttpStatusCode.NotFound, getComponentsResponse.StatusCode);
 
@@ -2022,7 +2022,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2031,7 +2031,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var getComponentsResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components");
+            var getComponentsResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/components");
 
             //!BadRequest or NotFound?
             Assert.Equal(HttpStatusCode.NotFound, getComponentsResponse.StatusCode);
@@ -2061,7 +2061,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
 
-            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, firstComponentGetResponse.StatusCode);
@@ -2080,7 +2080,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(secondComponentModelView, secondComponentModelViewFromPost);
 
-            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.id);
+            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, secondComponentGetResponse.StatusCode);
@@ -2089,7 +2089,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(secondComponentModelViewFromPost, secondComponentModelViewFromGet);
 
-            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 76", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 76", firstComponentModelViewFromGet.productId, secondComponentModelViewFromGet.productId);
 
             var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
@@ -2099,7 +2099,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
 
@@ -2107,7 +2107,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var getComponentsResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components");
+            var getComponentsResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/components");
 
             Assert.Equal(HttpStatusCode.OK, getComponentsResponse.StatusCode);
 
@@ -2119,7 +2119,6 @@ namespace backend_tests.Controllers
                 Assert.Equal(productModelViewFromGet.components[i].reference, getAllComponentsModelView[i].reference);
                 Assert.Equal(productModelViewFromGet.components[i].designation, getAllComponentsModelView[i].designation);
                 Assert.Equal(productModelViewFromGet.components[i].modelFilename, getAllComponentsModelView[i].modelFilename);
-                Assert.Equal(productModelViewFromGet.components[i].fatherProductId, getAllComponentsModelView[i].fatherProductId);
             }
         }
 
@@ -2145,7 +2144,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2154,7 +2153,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var getMaterialsResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + 1 + "/materials");
+            var getMaterialsResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + 1 + "/materials");
 
             Assert.Equal(HttpStatusCode.NotFound, getMaterialsResponse.StatusCode);
 
@@ -2183,7 +2182,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2192,7 +2191,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var getMaterialsResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/materials");
+            var getMaterialsResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/materials");
 
             Assert.Equal(HttpStatusCode.OK, getMaterialsResponse.StatusCode);
 
@@ -2229,7 +2228,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2241,7 +2240,7 @@ namespace backend_tests.Controllers
             UpdateProductPropertiesModelView updateProduct = new UpdateProductPropertiesModelView();
             updateProduct.designation = "new designation 80";
 
-            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + 1, updateProduct);
+            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + 1, updateProduct);
 
             Assert.Equal(HttpStatusCode.NotFound, updateResponse.StatusCode);
 
@@ -2274,7 +2273,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2286,7 +2285,7 @@ namespace backend_tests.Controllers
             UpdateProductPropertiesModelView updateProduct = new UpdateProductPropertiesModelView();
             updateProduct.reference = "";
 
-            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id, updateProduct);
+            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId, updateProduct);
 
             Assert.Equal(HttpStatusCode.BadRequest, updateResponse.StatusCode);
 
@@ -2318,7 +2317,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2329,7 +2328,7 @@ namespace backend_tests.Controllers
 
             UpdateProductPropertiesModelView updateProduct = null;
 
-            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id, updateProduct);
+            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId, updateProduct);
 
             Assert.Equal(HttpStatusCode.BadRequest, updateResponse.StatusCode);
 
@@ -2360,7 +2359,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2372,7 +2371,7 @@ namespace backend_tests.Controllers
             UpdateProductPropertiesModelView updateProduct = new UpdateProductPropertiesModelView();
             updateProduct.reference = null;
 
-            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id, updateProduct);
+            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId, updateProduct);
 
             Assert.Equal(HttpStatusCode.BadRequest, updateResponse.StatusCode);
 
@@ -2405,7 +2404,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2417,7 +2416,7 @@ namespace backend_tests.Controllers
             UpdateProductPropertiesModelView updateProduct = new UpdateProductPropertiesModelView();
             updateProduct.designation = null;
 
-            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id, updateProduct);
+            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId, updateProduct);
 
             Assert.Equal(HttpStatusCode.BadRequest, updateResponse.StatusCode);
 
@@ -2449,7 +2448,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2461,7 +2460,7 @@ namespace backend_tests.Controllers
             UpdateProductPropertiesModelView updateProduct = new UpdateProductPropertiesModelView();
             updateProduct.designation = "";
 
-            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id, updateProduct);
+            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId, updateProduct);
 
             Assert.Equal(HttpStatusCode.BadRequest, updateResponse.StatusCode);
 
@@ -2493,7 +2492,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2505,7 +2504,7 @@ namespace backend_tests.Controllers
             UpdateProductPropertiesModelView updateProduct = new UpdateProductPropertiesModelView();
             updateProduct.modelFilename = null;
 
-            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id, updateProduct);
+            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId, updateProduct);
 
             Assert.Equal(HttpStatusCode.BadRequest, updateResponse.StatusCode);
 
@@ -2537,7 +2536,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2549,7 +2548,7 @@ namespace backend_tests.Controllers
             UpdateProductPropertiesModelView updateProduct = new UpdateProductPropertiesModelView();
             updateProduct.modelFilename = "";
 
-            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id, updateProduct);
+            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId, updateProduct);
 
             Assert.Equal(HttpStatusCode.BadRequest, updateResponse.StatusCode);
 
@@ -2581,7 +2580,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2593,7 +2592,7 @@ namespace backend_tests.Controllers
             UpdateProductPropertiesModelView updateProduct = new UpdateProductPropertiesModelView();
             updateProduct.categoryId = categoryModelViewFromPost.id + 1;
 
-            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id, updateProduct);
+            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId, updateProduct);
 
             Assert.Equal(HttpStatusCode.BadRequest, updateResponse.StatusCode);
 
@@ -2629,7 +2628,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2644,7 +2643,7 @@ namespace backend_tests.Controllers
             updateProduct.modelFilename = "newFile90.obj";
             updateProduct.categoryId = otherCategoryModelViewFromPost.id;
 
-            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id, updateProduct);
+            var updateResponse = await httpClient.PutAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId, updateProduct);
 
             Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
 
@@ -2678,7 +2677,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2687,7 +2686,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + 1);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + 1);
 
             Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
 
@@ -2721,7 +2720,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2730,11 +2729,11 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId);
 
             Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
 
-            var isProductDisabled = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id);
+            var isProductDisabled = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId);
 
             Assert.Equal(HttpStatusCode.NotFound, isProductDisabled.StatusCode);
 
@@ -2767,7 +2766,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2776,7 +2775,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + 1 + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + 1 + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId);
 
             Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
 
@@ -2805,7 +2804,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2814,7 +2813,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + 1);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + 1);
 
             //!BadRequest or NotFound?
             Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
@@ -2849,8 +2848,8 @@ namespace backend_tests.Controllers
             assertProductModelView(productModelView, productModelViewFromPost);
             assertProductModelView(otherProductModelView, otherProductModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
-            var otherGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherProductModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
+            var otherGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherProductModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2862,7 +2861,7 @@ namespace backend_tests.Controllers
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
             assertProductModelView(otherProductModelViewFromPost, otherProductModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + otherProductModelViewFromGet.measurements[0].measurementId);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + otherProductModelViewFromGet.measurements[0].measurementId);
 
             //!BadRequest or NotFound?
             Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
@@ -2894,7 +2893,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -2903,7 +2902,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[1].measurementId);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[1].measurementId);
 
             Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
         }
@@ -2930,7 +2929,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
 
-            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, firstComponentGetResponse.StatusCode);
@@ -2949,7 +2948,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(secondComponentModelView, secondComponentModelViewFromPost);
 
-            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.id);
+            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, secondComponentGetResponse.StatusCode);
@@ -2958,7 +2957,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(secondComponentModelViewFromPost, secondComponentModelViewFromGet);
 
-            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 101", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 101", firstComponentModelViewFromGet.productId, secondComponentModelViewFromGet.productId);
 
             var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
@@ -2968,7 +2967,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
 
@@ -2976,7 +2975,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + 1 + "/components/" + productModelViewFromGet.components[0].id);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + 1 + "/components/" + productModelViewFromGet.components[0].productId);
 
             Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
 
@@ -3006,7 +3005,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
 
-            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, firstComponentGetResponse.StatusCode);
@@ -3025,7 +3024,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(secondComponentModelView, secondComponentModelViewFromPost);
 
-            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.id);
+            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, secondComponentGetResponse.StatusCode);
@@ -3034,7 +3033,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(secondComponentModelViewFromPost, secondComponentModelViewFromGet);
 
-            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 103", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 103", firstComponentModelViewFromGet.productId, secondComponentModelViewFromGet.productId);
 
             var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
@@ -3044,7 +3043,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
 
@@ -3052,7 +3051,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components/" + productModelViewFromGet.components[0].id + 1);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/components/" + productModelViewFromGet.components[0].productId + 1);
 
             Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
 
@@ -3081,7 +3080,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -3090,7 +3089,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components/1");
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/components/1");
 
             Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
 
@@ -3124,8 +3123,8 @@ namespace backend_tests.Controllers
             assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
             assertProductModelView(otherFirstComponentModelView, otherFirstComponentModelViewFromPost);
 
-            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
-            var otherFirstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherFirstComponentModelViewFromPost.id);
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.productId);
+            var otherFirstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherFirstComponentModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, firstComponentGetResponse.StatusCode);
@@ -3152,8 +3151,8 @@ namespace backend_tests.Controllers
             assertProductModelView(secondComponentModelView, secondComponentModelViewFromPost);
             assertProductModelView(otherSecondComponentModelView, otherSecondComponentModelViewFromPost);
 
-            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.id);
-            var otherSecondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherSecondComponentModelViewFromPost.id);
+            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.productId);
+            var otherSecondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherSecondComponentModelViewFromPost.productId);
             
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, secondComponentGetResponse.StatusCode);
@@ -3165,8 +3164,8 @@ namespace backend_tests.Controllers
             assertProductModelView(secondComponentModelViewFromPost, secondComponentModelViewFromGet);
             assertProductModelView(otherSecondComponentModelViewFromPost, otherSecondComponentModelViewFromGet);
 
-            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 105", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
-            var otherProductModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "other father product 105", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 105", firstComponentModelViewFromGet.productId, secondComponentModelViewFromGet.productId);
+            var otherProductModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "other father product 105", firstComponentModelViewFromGet.productId, secondComponentModelViewFromGet.productId);
 
             var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
             var otherProductPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, otherProductModelView);
@@ -3180,8 +3179,8 @@ namespace backend_tests.Controllers
             assertProductModelView(productModelView, productModelViewFromPost);
             assertProductModelView(otherProductModelView, otherProductModelViewFromPost);
 
-            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
-            var otherProductGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherProductModelViewFromPost.id);
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
+            var otherProductGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherProductModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
             Assert.Equal(HttpStatusCode.OK, otherProductGetResponse.StatusCode);
@@ -3192,7 +3191,7 @@ namespace backend_tests.Controllers
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
             assertProductModelView(otherProductModelViewFromPost, otherProductModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components/" + otherProductModelViewFromGet.components[0].id);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/components/" + otherProductModelViewFromGet.components[0].productId);
 
             Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
 
@@ -3221,7 +3220,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
 
-            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, firstComponentGetResponse.StatusCode);
@@ -3240,7 +3239,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(secondComponentModelView, secondComponentModelViewFromPost);
 
-            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.id);
+            var secondComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + secondComponentModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, secondComponentGetResponse.StatusCode);
 
@@ -3248,7 +3247,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(secondComponentModelViewFromPost, secondComponentModelViewFromGet);
 
-            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 106", firstComponentModelViewFromGet.id, secondComponentModelViewFromGet.id);
+            var productModelView = createProductWithComponents(categoryModelViewFromPost, materialModelViewFromPost, "father product 106", firstComponentModelViewFromGet.productId, secondComponentModelViewFromGet.productId);
 
             var productPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
@@ -3258,7 +3257,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
 
@@ -3266,19 +3265,18 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components/" + productModelViewFromGet.components[0].id);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/components/" + productModelViewFromGet.components[0].productId);
 
             Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
 
-            var getAfterDeleteResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id);
+            var getAfterDeleteResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId);
 
             Assert.Equal(HttpStatusCode.OK, getAfterDeleteResponse.StatusCode);
 
             GetProductModelView getAfterDeleteContent = await getAfterDeleteResponse.Content.ReadAsAsync<GetProductModelView>();
 
             Assert.NotEqual(productModelViewFromGet.components.Count, getAfterDeleteContent.components.Count);
-            Assert.Equal(productModelViewFromGet.components[1].id, getAfterDeleteContent.components[0].id);
-            Assert.Equal(productModelViewFromGet.components[1].fatherProductId, getAfterDeleteContent.components[0].fatherProductId);
+            Assert.Equal(productModelViewFromGet.components[1].productId, getAfterDeleteContent.components[0].productId);
             Assert.Equal(productModelViewFromGet.components[1].reference, getAfterDeleteContent.components[0].reference);
             Assert.Equal(productModelViewFromGet.components[1].designation, getAfterDeleteContent.components[0].designation);
             Assert.Equal(productModelViewFromGet.components[1].modelFilename, getAfterDeleteContent.components[0].modelFilename);
@@ -3307,7 +3305,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -3316,7 +3314,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + 1 + "/materials/" + productModelViewFromGet.materials[0].id);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + 1 + "/materials/" + productModelViewFromGet.materials[0].id);
 
             Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
 
@@ -3345,7 +3343,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -3354,7 +3352,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/materials/" + productModelViewFromGet.materials[0].id + 1);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/materials/" + productModelViewFromGet.materials[0].id + 1);
 
             Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
 
@@ -3392,8 +3390,8 @@ namespace backend_tests.Controllers
             assertProductModelView(productModelView, productModelViewFromPost);
             assertProductModelView(otherProductModelView, otherProductModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
-            var otherGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherProductModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
+            var otherGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + otherProductModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -3405,7 +3403,7 @@ namespace backend_tests.Controllers
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
             assertProductModelView(otherProductModelViewFromPost, otherProductModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + otherProductModelViewFromGet.id + "/materials/" + productModelViewFromGet.materials[0].id);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + otherProductModelViewFromGet.productId + "/materials/" + productModelViewFromGet.materials[0].id);
 
             Assert.Equal(HttpStatusCode.NotFound, deleteResponse.StatusCode);
 
@@ -3434,7 +3432,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             //The status code should be OK, since a GET was performed
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -3443,7 +3441,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/materials/" + productModelViewFromGet.materials[0].id);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/materials/" + productModelViewFromGet.materials[0].id);
 
             Assert.Equal(HttpStatusCode.BadRequest, deleteResponse.StatusCode);
 
@@ -3478,7 +3476,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -3486,11 +3484,11 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/materials/" + productModelViewFromGet.materials[0].id);
+            var deleteResponse = await httpClient.DeleteAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/materials/" + productModelViewFromGet.materials[0].id);
 
             Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
 
-            var getAfterDeleteResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id);
+            var getAfterDeleteResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId);
 
             Assert.Equal(HttpStatusCode.OK, getAfterDeleteResponse.StatusCode);
 
@@ -3525,7 +3523,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -3535,7 +3533,7 @@ namespace backend_tests.Controllers
 
             AddComponentModelView componentModelView = null;
 
-            var postComponentResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components", componentModelView);
+            var postComponentResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/components", componentModelView);
 
             Assert.Equal(HttpStatusCode.BadRequest, postComponentResponse.StatusCode);
 
@@ -3564,7 +3562,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
 
@@ -3576,7 +3574,7 @@ namespace backend_tests.Controllers
             componentModelView.childProductId = 3;
             componentModelView.mandatory = true;
 
-            var postComponentResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + 1 + "/components", componentModelView);
+            var postComponentResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + 1 + "/components", componentModelView);
 
             Assert.Equal(HttpStatusCode.NotFound, postComponentResponse.StatusCode);
 
@@ -3606,7 +3604,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
 
-            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, firstComponentGetResponse.StatusCode);
 
@@ -3624,7 +3622,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
 
@@ -3634,9 +3632,9 @@ namespace backend_tests.Controllers
 
             AddComponentModelView componentModelView = new AddComponentModelView();
             componentModelView.mandatory = false;
-            componentModelView.childProductId = firstComponentModelViewFromGet.id + 1;
+            componentModelView.childProductId = firstComponentModelViewFromGet.productId + 1;
 
-            var postComponentResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components", componentModelView);
+            var postComponentResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/components", componentModelView);
 
             //Since the component id is part of the request body, the code will be Bad Request instead of NotFound
             Assert.Equal(HttpStatusCode.BadRequest, postComponentResponse.StatusCode);
@@ -3666,7 +3664,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(firstComponentModelView, firstComponentModelViewFromPost);
 
-            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.id);
+            var firstComponentGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + firstComponentModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, firstComponentGetResponse.StatusCode);
 
@@ -3684,7 +3682,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var productGetResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, productGetResponse.StatusCode);
 
@@ -3694,13 +3692,13 @@ namespace backend_tests.Controllers
 
             AddComponentModelView componentModelView = new AddComponentModelView();
             componentModelView.mandatory = false;
-            componentModelView.childProductId = firstComponentModelViewFromGet.id;
+            componentModelView.childProductId = firstComponentModelViewFromGet.productId;
 
-            var postComponentResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/components", componentModelView);
+            var postComponentResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/components", componentModelView);
 
             Assert.Equal(HttpStatusCode.Created, postComponentResponse.StatusCode);
 
-            var getAfterPostResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id);
+            var getAfterPostResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId);
 
             Assert.Equal(HttpStatusCode.OK, getAfterPostResponse.StatusCode);
 
@@ -3709,7 +3707,7 @@ namespace backend_tests.Controllers
 
             Assert.NotNull(getAfterPostContent.components);
             Assert.Equal(componentModelView.mandatory, getAfterPostContent.components[0].mandatory);
-            Assert.Equal(componentModelView.childProductId, getAfterPostContent.components[0].id);
+            Assert.Equal(componentModelView.childProductId, getAfterPostContent.components[0].productId);
 
             //TODO Compare message
         }
@@ -3750,7 +3748,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -3761,7 +3759,7 @@ namespace backend_tests.Controllers
             AddProductMaterialModelView materialModelView = new AddProductMaterialModelView();
             materialModelView.materialId = productModelViewFromGet.materials[0].id;
 
-            postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/materials", materialModelView);
+            postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/materials", materialModelView);
 
             Assert.Equal(HttpStatusCode.BadRequest, postResponse.StatusCode);
 
@@ -3792,7 +3790,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -3808,7 +3806,7 @@ namespace backend_tests.Controllers
 
             materialModelView.materialId = otherMaterialModelViewFromPost.materialId;
 
-            postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + 1 + "/materials", materialModelView);
+            postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + 1 + "/materials", materialModelView);
 
             Assert.Equal(HttpStatusCode.NotFound, postResponse.StatusCode);
 
@@ -3839,7 +3837,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -3855,7 +3853,7 @@ namespace backend_tests.Controllers
 
             materialModelView.materialId = otherMaterialModelViewFromPost.materialId + 1;
 
-            postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/materials", materialModelView);
+            postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/materials", materialModelView);
 
             Assert.Equal(HttpStatusCode.NotFound, postResponse.StatusCode);
 
@@ -3886,7 +3884,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -3902,7 +3900,7 @@ namespace backend_tests.Controllers
 
             materialModelView.materialId = otherMaterialModelViewFromPost.materialId;
 
-            postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/materials", materialModelView);
+            postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/materials", materialModelView);
 
             Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
 
@@ -3911,7 +3909,7 @@ namespace backend_tests.Controllers
             Assert.NotEqual(productModelViewFromGet.materials.Count, postResponseContent.materials.Count);
             Assert.Equal(materialModelView.materialId, postResponseContent.materials[1].id);
 
-            var getAfterPostResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + postResponseContent.id);
+            var getAfterPostResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + postResponseContent.productId);
 
             Assert.Equal(HttpStatusCode.OK, getAfterPostResponse.StatusCode);
 
@@ -3949,7 +3947,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -3959,7 +3957,7 @@ namespace backend_tests.Controllers
 
             RestrictionDTO restrictionDTO = null;
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
             Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
 
@@ -3990,7 +3988,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -4000,7 +3998,7 @@ namespace backend_tests.Controllers
 
             RestrictionDTO restrictionDTO = createRestrictionWithNullDescription("131");
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
             Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
 
@@ -4031,7 +4029,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -4041,7 +4039,7 @@ namespace backend_tests.Controllers
 
             RestrictionDTO restrictionDTO = createRestrictionWithNullInputs("132");
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
             Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
 
@@ -4072,7 +4070,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -4082,7 +4080,7 @@ namespace backend_tests.Controllers
 
             RestrictionDTO restrictionDTO = createRestrictionWithInvalidDescription("134");
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
             Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
 
@@ -4113,7 +4111,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -4123,7 +4121,7 @@ namespace backend_tests.Controllers
 
             RestrictionDTO restrictionDTO = createRestrictionWithInvalidInputNames("135");
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
             Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
 
@@ -4154,7 +4152,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -4164,7 +4162,7 @@ namespace backend_tests.Controllers
 
             RestrictionDTO restrictionDTO = createRestrictionWithInvalidInputValues("136");
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
             Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
 
@@ -4279,7 +4277,7 @@ namespace backend_tests.Controllers
 
             assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -4289,11 +4287,11 @@ namespace backend_tests.Controllers
 
             RestrictionDTO restrictionDTO = createValidRestriction("141");
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
             Assert.Equal(HttpStatusCode.Created, postRestrictionResponse.StatusCode);
 
-            var getAfterPostResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions");
+            var getAfterPostResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions");
 
             Assert.Equal(HttpStatusCode.OK, getAfterPostResponse.StatusCode);
 
@@ -4496,13 +4494,13 @@ namespace backend_tests.Controllers
         private void assertProductComponentModelView(AddComponentModelView sentModelView, GetBasicComponentModelView modelViewFromPost)
         {
             Assert.Equal(sentModelView.mandatory, modelViewFromPost.mandatory);
-            Assert.Equal(sentModelView.childProductId, modelViewFromPost.id);
+            Assert.Equal(sentModelView.childProductId, modelViewFromPost.productId);
         }
 
         private void assertProductComponentModelView(GetBasicComponentModelView modelViewFromPost, GetBasicComponentModelView modelViewFromGet)
         {
             Assert.Equal(modelViewFromPost.mandatory, modelViewFromGet.mandatory);
-            Assert.Equal(modelViewFromPost.id, modelViewFromGet.id);
+            Assert.Equal(modelViewFromPost.productId, modelViewFromGet.productId);
         }
 
         private void assertProductSlotWidthsModelView(AddProductSlotWidthsModelView sentModelView, GetProductSlotWidthsModelView modelViewFromPost)

@@ -10,18 +10,10 @@ namespace core.modelview.component
     public class GetBasicComponentModelView : GetBasicProductModelView
     {
         /// <summary>
-        /// Father Product's persistence identifier.
-        /// </summary>
-        /// <value>Gets/sets the father Product's persistence identifier.</value>
-        [IgnoreDataMember]
-        //*This property should not be included in serialization, it's only used for data transportation */
-        public long fatherProductId { get; set; }
-
-        /// <summary>
         /// Boolean indicating whether or not a Component is mandatory.
         /// </summary>
         /// <value>Gets/sets the mandatory flag.</value>
-        [DataMember(Name = "mandatory", Order = 4)]
+        [DataMember(Order = 6)]
         public bool mandatory { get; set; }
     }
 }
