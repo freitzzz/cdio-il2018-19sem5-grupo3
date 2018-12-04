@@ -159,6 +159,18 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureToDTOWithUnitWorks()
+        {
+            CustomizedDimensions instance = CustomizedDimensions.valueOf(100, 200, 300);
+            CustomizedDimensionsDTO instanceDTO = instance.toDTO("cm");
+
+            Assert.Equal(instanceDTO.height, 10);
+            Assert.Equal(instanceDTO.width, 20);
+            Assert.Equal(instanceDTO.depth, 30);
+            Assert.Equal(instanceDTO.Id, instance.Id);
+        }
+
+        [Fact]
         public void ensureCustomizedDimensionsWithZeroHeightCantBeCreated()
         {
             Action act = () => CustomizedDimensions.valueOf(0, 100, 200);
