@@ -5,7 +5,7 @@
       <i class="material-icons md-12 md-blue btn">help</i>
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
-    <select class="dropdown" v-model="dimensionOp" @click="populateAvailableOptions">
+    <select class="dropdown" v-model="dimensionOp" @click="populateDimensions">
       <option
         v-for="option in availableOptionsDimensions"
         :key="option.id"
@@ -14,11 +14,32 @@
     </select>
     <!--Fetch minimums from server-->
     <div class="text-entry">Height:</div>
-    <vue-slider class="slider" v-model="height" @change="updateHeight" ></vue-slider>
+    <vue-slider
+      class="slider"
+      :min="this.heightMin"
+      :max="this.heightMax"
+      :interval="this.heightIncrement"
+      v-model="height"
+      @change="updateHeight"
+    ></vue-slider>
     <div class="text-entry">Width:</div>
-    <vue-slider class="slider" v-model="width" @change="updateWidth"></vue-slider>
-    <div class="text-entthisry">Depth:</div>
-    <vue-slider class="slider" v-model="depth" @change="updateDepth"></vue-slider>
+    <vue-slider
+      class="slider"
+      :min="this.widthMin"
+      :max="this.widthMax"
+      :interval="this.widthIncrement"
+      v-model="width"
+      @change="updateWidth"
+    ></vue-slider>
+    <div class="text-entry">Depth:</div>
+    <vue-slider
+      class="slider"
+      :min="this.depthMin"
+      :max="this.depthMax"
+      :increment="this.depthIncrement"
+      v-model="depth"
+      @change="updateDepth"
+    ></vue-slider>
 
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="updateUnit">
@@ -45,25 +66,44 @@ import {
 } from "./../store/mutation-types.js";
 
 import { error } from "three";
+const MIN_DEFAULT=1;
+const MAX_DEFAULT=2;
+const INCREMENT_DEFAULT=1;
+const DISCRETE_INTERVAL= 0;
+const CONTINUOUS_INTERVAL= 1;
+const DISCRETE_VALUE = 2;
+const ERROR_DIMENSION_TYPE = "No available dimension please try the other option.";
+const NO_OPTION = -1;
 
 export default {
   name: "CustomizerSideBarDimensionsPanel",
   data() {
     return {
-      // //TODO: replace hardcoded values ASAP
-      height: 100,
-      width: 100,
-      depth: 100,
+      heightMin: MIN_DEFAULT,
+      heightMax: MAX_DEFAULT,
+      heightIncrement: INCREMENT_DEFAULT,
+
+      widthMin: MIN_DEFAULT,
+      widthMax: MAX_DEFAULT,
+      widthIncrement: INCREMENT_DEFAULT,
+
+      depthMin:  MIN_DEFAULT,
+      depthMax:  MAX_DEFAULT,
+      depthIncrement: INCREMENT_DEFAULT,
+
+      height: this.heightMin,
+      width: this.widthMin,
+      depth: this.depthMin,
+
       unit: "cm",
-      dimensionOp: "",
+      dimensionOp: 0,
       availableOptionsDimensions: [],
       availableOptionsUnits: [],
       availableDimensionsHLD: [],
-      DISCRETE_INTERVAL: 0,
-      CONTINUOUS_INTERVAL: 1,
-      DISCRETE_VALUE: 2,
-      ERROR_DIMENSION_TYPE:
-        "No available dimension please try the other option.",
+
+      heightType:NO_OPTION, ////No type of dimension until it's choosen an option
+      widthType: NO_OPTION, ///No type of dimension until it's choosen an option
+      depthType: NO_OPTION, //No type of dimension until it's choosen an option
       
     };
   },
@@ -91,6 +131,7 @@ export default {
       });
   },
   methods: {
+    /*  */
     updateHeight(e) {
       store.dispatch(SET_CUSTOMIZED_PRODUCT_HEIGHT, { height: e.target.value });
     },
@@ -104,7 +145,9 @@ export default {
       store.dispatch(SET_CUSTOMIZED_PRODUCT_UNIT, { unit: e.target.value });
     },
 
-    identifyTypeDimensions(dimensionObj) {
+    //Method that identifies different types of dimensios
+    //There are three types of dimensions: Discrete Interval, Discrete Value, Continuous Interval
+    identifyTypeDimensions: function(dimensionObj) {
       if (dimensionObj.values != null) {
         //Discrete interval
         return this.DISCRETE_INTERVAL;
@@ -118,96 +161,91 @@ export default {
       ) {
         return this.CONTINUOUS_INTERVAL;
       } //Not yet implemented dimension
-      return ERROR_DIMENSION_TYPE;
+      return this.ERROR_DIMENSION_TYPE;
     },
-    //Get all available options
-    populateAvailableOptions() {
+    //Populate
+    populateDimensions: function() {
       //Get information of the chosed option
       var op = this.dimensionOp;
-      var heightType, widthType, depthType;
-
-      //Create array of different dimensions h,l,d
-      //Create for to identify each type of dimension
-      //Set slider of different dimension
-      //Stop if the dimension is invalid
 
       //Populate Height:
-      heightType = this.identifyTypeDimensions(op.height);
- 
-      if(heightType == this.DISCRETE_INTERVAL){
+      this.heightType = this.identifyTypeDimensions(op.height);
+
+      if (this.heightType == this.DISCRETE_INTERVAL) {
         this.organizeCrescentOrder(op.height.values);
       }
 
       //Populate Width
-      widthType = this.identifyTypeDimensions(op.width);
-      if(widthType == this.DISCRETE_INTERVAL){
+      this.widthType = this.identifyTypeDimensions(op.width);
+      if (this.widthType == this.DISCRETE_INTERVAL) {
         this.organizeCrescentOrder(op.width.values);
       }
       /* alert(widthType); */
       //Populate Depth:
-      depthType = this.identifyTypeDimensions(op.depth);
+      this.depthType = this.identifyTypeDimensions(op.depth);
       /* alert(depthType); */
-      if(depthType == this.DISCRETE_INTERVAL){
+      if (this.depthType == this.DISCRETE_INTERVAL) {
         this.organizeCrescentOrder(op.depth.values);
       }
     },
     //The following methods determine the min,max and increment to populate the height,width and depth slider
-    determineMinOfInterval(typeOfInterval,dimensionJson){
+    determineMinOfInterval: function(typeOfInterval, dimensionJson) {
       var min;
-      if(typeOfInterval == this.DISCRETE_INTERVAL){
-         return 0; //index of 
-      }else if(typeOfInterval==this.CONTINUOUS_INTERVAL){
+      if (typeOfInterval == this.DISCRETE_INTERVAL) {
+        return 0; //index of
+      } else if (typeOfInterval == this.CONTINUOUS_INTERVAL) {
         min = dimensionJson.minValue;
-      }else{//DISCRETE VALUE
+      } else {
+        //DISCRETE VALUE
         min = dimensionJson.value;
       }
       return min;
     },
-    determineMaxOfInterval(typeOfInterval,dimensionJson){
-      var max=-1;
-      if(typeOfInterval == this.DISCRETE_INTERVAL){
+    determineMaxOfInterval: function(typeOfInterval, dimensionJson) {
+      var max = -1;
+      if (typeOfInterval == this.DISCRETE_INTERVAL) {
         /* for(var i=0; i< dimensionJson.values.length;i++){
           if(max < dimensionJson.values[i]){
             max = dimensionJson.values[i];
           }
         } */
-        return dimensionJson.length-1;
-      }else if (typeOfInterval==this.CONTINUOUS_INTERVAL){
+        return dimensionJson.length - 1;
+      } else if (typeOfInterval == this.CONTINUOUS_INTERVAL) {
         min = dimensionJson.maxValue;
-      }else{
-        max= dimensionJson.value;
+      } else {
+        max = dimensionJson.value;
       }
       return max;
     },
-    determineIncrementOfInterval(typeOfInterval,dimensionJson){
+    determineIncrementOfInterval: function(typeOfInterval, dimensionJson) {
       var increment;
-      if(typeOfInterval == this.DISCRETE_INTERVAL){
+      if (typeOfInterval == this.DISCRETE_INTERVAL) {
         increment = 1;
-      }else if(typeOfInterval==this.CONTINUOUS_INTERVAL){
+      } else if (typeOfInterval == this.CONTINUOUS_INTERVAL) {
         increment = dimensionJson.increment;
-      }else{//DISCRETE VALUE
+      } else {
+        //DISCRETE VALUE
         increment = 0;
       }
     },
     //Organizes vector to crescent order.
-    organizeCrescentOrder(vec){
-      var tmp,minTmp;
+    organizeCrescentOrder: function(vec) {
+      var tmp, minTmp;
 
-      for(var i = 0; i< vec.length; i++){
+      for (var i = 0; i < vec.length; i++) {
         tmp = vec[i];
-        for(var j = i+1; j< vec.length; j++){
-          if(tmp > vec[j]){
+        for (var j = i + 1; j < vec.length; j++) {
+          if (tmp > vec[j]) {
             tmp = vec[j];
           }
         }
-        if(tmp!=vec[i]){
+        if (tmp != vec[i]) {
           minTmp = vec[i];
           vec[i] = tmp;
           vec[j] = minTmp;
         }
       }
     }
-
   }
 };
 </script>
