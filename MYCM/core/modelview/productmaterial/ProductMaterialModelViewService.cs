@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using core.domain;
 using core.modelview.material;
 using core.modelview.restriction;
@@ -31,8 +32,6 @@ namespace core.modelview.productmaterial
             }
 
             GetBasicProductMaterialModelView basicProductMaterialModelView = new GetBasicProductMaterialModelView();
-
-            basicProductMaterialModelView.productId = productMaterial.productId;
             basicProductMaterialModelView.id = productMaterial.materialId;
             basicProductMaterialModelView.reference = productMaterial.material.reference;
             basicProductMaterialModelView.designation = productMaterial.material.designation;
@@ -56,7 +55,6 @@ namespace core.modelview.productmaterial
 
             GetProductMaterialModelView productMaterialModelView = new GetProductMaterialModelView();
 
-            productMaterialModelView.productId = productMaterial.productId;
             productMaterialModelView.id = productMaterial.materialId;
             productMaterialModelView.reference = productMaterial.material.reference;
             productMaterialModelView.designation = productMaterial.material.designation;
@@ -64,7 +62,7 @@ namespace core.modelview.productmaterial
 
             /*Skip converting Restrictions if the ProductMaterial has none,
             since null GetAllRestrictionsModelView won't be serialized */
-            if (productMaterial.restrictions.Count > 0)
+            if (productMaterial.restrictions.Any())
             {
                 productMaterialModelView.restrictions = RestrictionModelViewService.fromCollection(productMaterial.restrictions);
             }
