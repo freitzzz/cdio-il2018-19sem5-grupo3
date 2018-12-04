@@ -114,7 +114,7 @@ ordersRoute.route('/orders').post(function (req, res, next) {
                                     res.status(201).json(_createdOrder);
                                 }).catch((_error) => {
                                     //TODO: REWORK : )
-                                    res.status(401).json({ message: _error });
+                                    res.status(500).json({ message: 'An internal error occurd while creating the order' });
                                 });
                         })
                         .catch(() => {
@@ -125,11 +125,11 @@ ordersRoute.route('/orders').post(function (req, res, next) {
                                             res.status(201).json(_createdOrder);
                                         }).catch((_error) => {
                                             //TODO: REWORK : )
-                                            res.status(403).json({ message: 'An error occured while processing the order' });
+                                            res.status(500).json({ message: 'An internal error occurd while creating the order' });
                                         });
                                 }).catch((_error) => {
                                     //TODO: REWORK :) (Happens when there is an error while processing the shortest factory computation in MYCL)
-                                    res.status(402).json({ message: 'An error occurd while processing the order' });
+                                    res.status(500).json({ message: 'There are no cities available' });
                                 });
                         });
                 });
