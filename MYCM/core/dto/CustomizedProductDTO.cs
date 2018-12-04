@@ -58,11 +58,6 @@ namespace core.dto
         public List<SlotDTO> slotListDTO { get; set; }
 
         /// <summary>
-        /// SlotListDTO with the CustomizedProduct's list of SlotDTOs with the Slots
-        /// </summary>
-        /* public SlotListDTO slotsDTO { get; set; } */
-
-        /// <summary>
         /// Returns CustomizedProductDTO's equivalent CustomizedProduct
         /// </summary>
         /// <returns>CustomizedProductDTO's equivalent CustomizedProduct</returns>

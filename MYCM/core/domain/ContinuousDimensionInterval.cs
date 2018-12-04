@@ -253,6 +253,11 @@ namespace core.domain
             return dto;
         }
 
+        /// <summary>
+        /// Builds a DimensionDTO out of a ContinuousDimensionInterval instance
+        /// </summary>
+        /// <param name="unit">Desired unit</param>
+        /// <returns>DimensionDTO instance</returns>
         public override DimensionDTO toDTO(string unit)
         {
 
