@@ -15,6 +15,7 @@ using core.modelview.measurement;
 using System.Linq;
 using core.exceptions;
 using core.modelview.productmaterial;
+using core.modelview.productslotwidths;
 
 namespace core.application
 {
@@ -261,17 +262,17 @@ namespace core.application
         /// <param name="componentModelView">GetComponentModelView with the parent and child Products' persistence identifiers.</param>
         /// <returns>An instance of GetAllRestrictionsModelView containing the information of all the Component's restrictions.</returns>
         /// <exception cref="ResourceNotFoundException">Thrown when either of the Products could not be found.</exception>
-        public GetAllRestrictionsModelView findComponentRestrictions(GetComponentModelView componentModelView){
+        public GetAllRestrictionsModelView findComponentRestrictions(FindComponentModelView componentModelView){
             Product parentProduct = PersistenceContext.repositories().createProductRepository().find(componentModelView.fatherProductId);
 
             if(parentProduct == null){
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, componentModelView.fatherProductId));
             }
 
-            Component component = parentProduct.components.Where(c => c.complementaryProductId == componentModelView.id).SingleOrDefault();
+            Component component = parentProduct.components.Where(c => c.complementaryProductId == componentModelView.childProductId).SingleOrDefault();
 
             if(component == null){
-                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, componentModelView.id));
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, componentModelView.childProductId));
             }
 
             //if no restrictions are found, throw an exception so that a 404 code is sent
@@ -288,7 +289,7 @@ namespace core.application
         /// <param name="productMaterialModelView">GetProductMaterialModelView with the Product and Material persistence identifiers.</param>
         /// <returns>An instance of GetAllRestrictionsModelView containing the information of all the Materials's restrictions.</returns>
         /// <exception cref="ResourceNotFoundException">Thrown when either the Product or the Material could not be found.</exception>
-        public GetAllRestrictionsModelView findMaterialRestrictions(GetProductMaterialModelView productMaterialModelView){
+        public GetAllRestrictionsModelView findMaterialRestrictions(FindProductMaterialModelView productMaterialModelView){
             Product product = PersistenceContext.repositories().createProductRepository().find(productMaterialModelView.productId);
 
             if(product == null){
@@ -296,10 +297,10 @@ namespace core.application
             }
 
             ProductMaterial productMaterial = product.productMaterials
-                .Where(pm => pm.materialId == productMaterialModelView.id).SingleOrDefault();
+                .Where(pm => pm.materialId == productMaterialModelView.materialId).SingleOrDefault();
 
             if(productMaterial == null){
-                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MATERIAL_BY_ID, productMaterialModelView.id));
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_MATERIAL_BY_ID, productMaterialModelView.materialId));
             }
 
             //if no restrictions are found, throw an exception so that a 404 code is sent

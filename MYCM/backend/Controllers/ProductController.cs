@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using core.modelview.measurement;
 using core.exceptions;
 using core.modelview.productmaterial;
+using core.modelview.productslotwidths;
 
 namespace backend.Controllers
 {
@@ -698,7 +699,7 @@ namespace backend.Controllers
         [HttpGet("{productId}/dimensions/{measurementId}/restrictions")]
         public ActionResult findMeasurementRestrictions(long productId, long measurementId){
             logger.LogInformation(LOG_GET_MEASUREMENT_RESTRICTIONS_STARTED);
-            GetMeasurementModelView productMeasurementMV = new GetMeasurementModelView();
+            FindMeasurementModelView productMeasurementMV = new FindMeasurementModelView();
             productMeasurementMV.productId = productId;
             productMeasurementMV.measurementId = measurementId;
             try{
@@ -725,9 +726,9 @@ namespace backend.Controllers
         public ActionResult findComponentRestrictions(long parentProductId, long complementaryProductId){
             logger.LogInformation(LOG_GET_COMPONENT_RESTRICTIONS_STARTED);
             
-            GetComponentModelView componentModelView = new GetComponentModelView();
+            FindComponentModelView componentModelView = new FindComponentModelView();
             componentModelView.fatherProductId = parentProductId;
-            componentModelView.id = complementaryProductId;
+            componentModelView.childProductId = complementaryProductId;
 
             try{
                 GetAllRestrictionsModelView restrictionModelViews = new core.application.ProductController().findComponentRestrictions(componentModelView);
@@ -753,9 +754,9 @@ namespace backend.Controllers
         public ActionResult findMaterialRestrictions(long productId, long materialId){
             logger.LogInformation(LOG_GET_MATERIAL_RESTRICTIONS_STARTED);
 
-            GetProductMaterialModelView productMaterialModelView = new GetProductMaterialModelView();
+            FindProductMaterialModelView productMaterialModelView = new FindProductMaterialModelView();
             productMaterialModelView.productId = productId;
-            productMaterialModelView.id = materialId;
+            productMaterialModelView.materialId = materialId;
 
             try{
                 GetAllRestrictionsModelView restrictionModelViews = new core.application.ProductController().findMaterialRestrictions(productMaterialModelView);
@@ -790,7 +791,7 @@ namespace backend.Controllers
             try {
                 GetProductModelView createdProductMV = new core.application.ProductController().addProduct(addProductMV);
                 logger.LogInformation(LOG_POST_PRODUCT_SUCCESS, createdProductMV);
-                return CreatedAtRoute("GetProduct", new { id = createdProductMV.id }, createdProductMV);
+                return CreatedAtRoute("GetProduct", new { id = createdProductMV.productId }, createdProductMV);
             }catch(ArgumentException e){
                 logger.LogWarning(e, LOG_POST_PRODUCT_BAD_REQUEST, addProductMV);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
