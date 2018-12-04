@@ -118,12 +118,6 @@ public class Session implements DomainEntity<String>, Serializable {
      */
     @Override
     public boolean equals(Object otherDomainEntity) {
-        if (otherDomainEntity == this) {
-            return true;
-        }
-        if (otherDomainEntity == null) {
-            return false;
-        }
         return otherDomainEntity instanceof Session && ((Session) otherDomainEntity).id().equals(id());
     }
 
