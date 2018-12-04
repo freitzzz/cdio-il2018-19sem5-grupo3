@@ -105,7 +105,13 @@ namespace core.domain {
         /// <returns>true if product fits, false if not</returns>
         private bool productFits(CustomizedProduct component) {
             CustomizedDimensions componentDimensions = component.customizedDimensions;
-            if (componentDimensions.height <= slotDimensions.height && componentDimensions.width <= slotDimensions.width && componentDimensions.depth <= slotDimensions.depth) {
+            double remainingVolume = slotDimensions.height * slotDimensions.width * slotDimensions.depth;
+            foreach (CustomizedProduct custom in customizedProducts) {
+                CustomizedDimensions customDimensions = custom.customizedDimensions;
+                remainingVolume -= (customDimensions.height * customDimensions.width * customDimensions.depth);
+            }
+            double componentVolume = componentDimensions.height * componentDimensions.width * componentDimensions.depth;
+            if (componentVolume <= remainingVolume) {
                 return true;
             }
             return false;

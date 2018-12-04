@@ -72,12 +72,6 @@ public abstract class Auth implements DomainEntity<String>, Serializable {
      */
     @Override
     public boolean equals(Object otherDomainEntity) {
-        if (this == otherDomainEntity) {
-            return true;
-        }
-        if (otherDomainEntity == null) {
-            return false;
-        }
         return otherDomainEntity instanceof Auth && ((Auth) otherDomainEntity).id().equals(id());
     }
 

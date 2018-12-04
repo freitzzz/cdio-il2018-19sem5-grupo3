@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using core.domain;
+using core.modelview.product;
 using core.modelview.restriction;
 
 namespace core.modelview.component
@@ -33,11 +35,12 @@ namespace core.modelview.component
             }
 
             GetBasicComponentModelView basicComponentModelView = new GetBasicComponentModelView();
-            basicComponentModelView.fatherProductId = component.fatherProductId;
-            basicComponentModelView.id = component.complementaryProductId;
+            basicComponentModelView.productId = component.complementaryProductId;
             basicComponentModelView.reference = component.complementaryProduct.reference;
             basicComponentModelView.designation = component.complementaryProduct.designation;
             basicComponentModelView.modelFilename = component.complementaryProduct.modelFilename;
+            basicComponentModelView.supportsSlots = component.complementaryProduct.supportsSlots;
+            basicComponentModelView.hasComponents = component.complementaryProduct.components.Any();
             basicComponentModelView.mandatory = component.mandatory;
 
             return basicComponentModelView;
@@ -59,15 +62,14 @@ namespace core.modelview.component
             }
 
             GetComponentModelView componentModelView = new GetComponentModelView();
-            componentModelView.fatherProductId = component.fatherProductId;
-            componentModelView.id = component.complementaryProductId;
+            componentModelView.productId = component.complementaryProductId;
             componentModelView.reference = component.complementaryProduct.reference;
             componentModelView.designation = component.complementaryProduct.designation;
             componentModelView.modelFilename = component.complementaryProduct.modelFilename;
             componentModelView.mandatory = component.mandatory;
             /*Skip converting Restrictions if the Component has none,
             since null GetAllRestrictionsModelView won't be serialized */
-            if (component.restrictions.Count > 0)
+            if (component.restrictions.Any())
             {
                 componentModelView.restrictions = RestrictionModelViewService.fromCollection(component.restrictions);
             }
