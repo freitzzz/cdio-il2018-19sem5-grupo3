@@ -21,10 +21,8 @@ var nameValidator={
  * Represents a City Schema
  */
 var citySchema = new Schema({
-
     name:{type: String, validate: nameValidator, required:true},
     location:{type: location.schema, required:true},
-
 });
 
 /**
@@ -48,6 +46,26 @@ citySchema.statics.createCity=function (name,locationLatitude,locationLongitude)
         location:location.createLocation(locationLatitude,locationLongitude)
     }
 }
+
+/**
+ * Grants that a city model is valid
+ * @param {Object} cityModel Object with the city model being validated
+ */
+citySchema.statics.validateCityModel=function(cityModel){
+    if(!cityModel)throw 'Invalid city details';
+    grantCityNameIsValid(cityModel.name);
+    location.validateCityModel();
+};
+
+/**
+ * Grants that a city name is valid
+ * @param {String} name String with the city name
+ */
+function grantCityNameIsValid(name){
+    if(!name || !checkNameBusinessRule(name))
+        throw name+' is not a valid name';
+}
+
 /**
  * Checks if a name is valid according to business rules
  * @param {String} name String with the name being checked
