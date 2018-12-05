@@ -56,6 +56,7 @@
     <select class="dropdown" v-model="unit" @change="updateUnit">
       <option
         v-for="optionUnit in availableOptionsUnits"
+        selected
         :key="optionUnit.id"
         :value="optionUnit"
       >{{optionUnit.unit}}</option>
@@ -114,12 +115,12 @@
         width: this.widthMin,
         depth: this.depthMin,
   
-        unit: "cm",
-  
-        dimensionOp: 0,
-  
+        unit: 0,
+
         availableOptionsDimensions: [],
         availableOptionsUnits: [],
+
+        dimensionOp: 0,
   
         heightType: NO_OPTION, ////No type of dimension until it's choosen an option
         widthType: NO_OPTION, ///No type of dimension until it's choosen an option
@@ -163,6 +164,8 @@
         .catch(error => {
           this.$toast.open(error.response.status + "An error occurred");
         });
+
+        
   
       /*Get all available units of measurement*/
       Axios.get(`${MYCM_API_URL}/units`)
@@ -171,6 +174,7 @@
           this.$toast.open(error.response.status + "An error occurred");
         });
 
+      
         
     },
     methods: {
