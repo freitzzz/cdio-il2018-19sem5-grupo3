@@ -123,6 +123,32 @@ factorySchema.statics.createFactory=function (reference,designation,locationLati
 }
 
 /**
+ * Validates a factory model as a callback function
+ * @param {Object} factoryModel Object with the factory model being validated 
+ */
+factorySchema.statics.validateFactoryModelAsCallback=function(factoryModel){
+    return new Promise((accept,reject)=>{
+        try{
+            factorySchema.statics.validateFactoryModel(factoryModel);
+            accept();
+        }catch(_error_message){
+            reject(_error_message);
+        }
+    });
+}
+
+/**
+ * Grants that a factory model is valid
+ * @param {Object} factoryModel Object with the factory model being validated
+ */
+factorySchema.statics.validateFactoryModel=function(factoryModel){
+    if(!factoryModel)throw 'Invalid factory details';
+    if(!checkReferenceBusinessRule(factoryModel.reference))throw `${reference} is not a valid reference`;
+    if(!checkDesignationBusinessRule(factoryModel.designation))throw `${designation} is not a valid designation`;
+    location.validateLocationModel({latitude:factoryModel.latitude,longitude:factoryModel.longitude});
+};
+
+/**
  * Grants that a reference is valid for update
  * @param {string} reference String with the reference to be updated
  */
