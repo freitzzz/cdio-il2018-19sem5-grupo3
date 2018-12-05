@@ -122,7 +122,7 @@ export default {
      */
     selectProduct(){
       //enable the slots panel if the product has slots
-      if(Store.getters.productSlotSizes != undefined){
+      if(Store.getters.productSlotWidths != undefined){
         this.panels[2].enabled = true;
       }else{
         this.panels[2].enabled = false;

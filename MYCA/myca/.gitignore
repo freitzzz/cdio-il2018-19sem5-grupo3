@@ -1,6 +1,6 @@
 
-# Created by https://www.gitignore.io/api/java,code,maven,java-web,netbeans,intellij
-# Edit at https://www.gitignore.io/?templates=java,code,maven,java-web,netbeans,intellij
+# Created by https://www.gitignore.io/api/java,code,maven,java-web,netbeans,intellij,code-java
+# Edit at https://www.gitignore.io/?templates=java,code,maven,java-web,netbeans,intellij,code-java
 
 ### Code ###
 # Visual Studio Code - https://code.visualstudio.com/
@@ -8,6 +8,14 @@
 .vscode/
 tsconfig.json
 jsconfig.json
+
+### Code-Java ###
+# Language Support for Java(TM) by Red Hat extension for Visual Studio Code - https://marketplace.visualstudio.com/items?itemName=redhat.java
+
+.project
+.classpath
+.factorypath
+factoryConfiguration.json
 
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
@@ -136,4 +144,4 @@ dist/
 nbdist/
 .nb-gradle/
 
-# End of https://www.gitignore.io/api/java,code,maven,java-web,netbeans,intellij
+# End of https://www.gitignore.io/api/java,code,maven,java-web,netbeans,intellij,code-java

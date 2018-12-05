@@ -72,7 +72,7 @@ public final class JWTUtils {
         try{
             return JWT
                 .require(Algorithm.HMAC256(DEFAULT_SECRETE_SIGNATURE))
-                .withIssuer("auth0")
+                //.withIssuer("auth0")
                 .build()
                 .verify(jwtData)
                 .getClaim("data")

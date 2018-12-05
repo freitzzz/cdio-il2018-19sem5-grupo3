@@ -41,10 +41,12 @@ namespace core.modelview.product
             }
 
             GetBasicProductModelView basicProductModelView = new GetBasicProductModelView();
-            basicProductModelView.id = product.Id;
+            basicProductModelView.productId = product.Id;
             basicProductModelView.reference = product.reference;
             basicProductModelView.designation = product.designation;
             basicProductModelView.modelFilename = product.modelFilename;
+            basicProductModelView.supportsSlots = product.supportsSlots;
+            basicProductModelView.hasComponents = product.components.Any();
             return basicProductModelView;
         }
 
@@ -61,7 +63,7 @@ namespace core.modelview.product
             }
 
             GetProductModelView productModelView = new GetProductModelView();
-            productModelView.id = product.Id;
+            productModelView.productId = product.Id;
             productModelView.reference = product.reference;
             productModelView.designation = product.designation;
             productModelView.modelFilename = product.modelFilename;
@@ -95,7 +97,7 @@ namespace core.modelview.product
             }
 
             GetProductModelView productModelView = new GetProductModelView();
-            productModelView.id = product.Id;
+            productModelView.productId = product.Id;
             productModelView.reference = product.reference;
             productModelView.designation = product.designation;
             productModelView.modelFilename = product.modelFilename;

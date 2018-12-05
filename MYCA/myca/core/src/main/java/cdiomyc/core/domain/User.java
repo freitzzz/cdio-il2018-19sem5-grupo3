@@ -29,7 +29,7 @@ import javax.persistence.Table;
 @Table(name = "MYCA_USER")
 public class User implements AggregateRoot<Auth>,Serializable{
     /**
-     * Constant that represents the default session time (in minuntes)
+     * Constant that represents the default session time (in minutes)
      */
     private static final int DEFAULT_SESSION_TIME=60;
     /**
@@ -75,7 +75,7 @@ public class User implements AggregateRoot<Auth>,Serializable{
     public Session createNewSession(){
         if(hasActiveSession())
             throw new IllegalArgumentException("User already has an active session!");
-        Session createdSession=new Session(LocalDateTime.now().plusMinutes(DEFAULT_SESSION_TIME)); 
+        Session createdSession=new Session(LocalDateTime.now().plusMinutes(DEFAULT_SESSION_TIME),auth.id()); 
         this.sessions.add(createdSession);
         return createdSession;
     }
@@ -107,7 +107,7 @@ public class User implements AggregateRoot<Auth>,Serializable{
         checkRole(role);
         if(!this.roles.contains(role))
             throw new IllegalStateException(String.format("User does not have the role %s !",role));
-        this.roles.add(role);
+        this.roles.remove(role);
     }
     
     /**
@@ -152,7 +152,7 @@ public class User implements AggregateRoot<Auth>,Serializable{
         return this.sessions.isEmpty()
                 ? false
                 : this.sessions
-                        .get(this.sessions.size())
+                        .get(this.sessions.size()-1)
                         .isActive();
     }
     

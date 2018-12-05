@@ -28,6 +28,7 @@ namespace core.modelview.customizedmaterial
         /// CustomizedMaterials finish
         /// </summary>
         /// <value>Gets/Sets the finish</value>
+        [DataMember(Name = "finish")]
         public FinishDTO finish { get; set; }
 
         /// <summary>
