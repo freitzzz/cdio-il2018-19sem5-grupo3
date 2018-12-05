@@ -62,6 +62,16 @@ locationSchema.statics.createLocation= function(latitude,longitude){
 }
 
 /**
+ * Grants that a location model is valid
+ * @param {Object} locationModel Object with the location model being validated
+ */
+locationSchema.statics.validateLocationModel=function(locationModel){
+    if(!locationModel)throw 'Invalid location details';
+    if(!checkLatitudeBusinessRule(locationModel.latitude))throw 'Invalid location latitude';
+    if(!checkLongitudeBusinessRule(locationModel.longitude))throw 'Invalid location longitude';
+};
+
+/**
  * Grants that a latitude is valid for update
  * @param {Number} latitude Number with the latitude to be updated
  */
