@@ -22,7 +22,7 @@ const city=require('../models/City');
  */
 factoriesRoute.route('/factories').get(function(request,response){
     factory
-        .find()
+        .find({available:true})
         .then(function(factories){
             if(factories.length>0){
                 response.status(200).json(schemasToBasicFactories(factories));
@@ -37,7 +37,7 @@ factoriesRoute.route('/factories').get(function(request,response){
  */
 factoriesRoute.route('/factories/:id').get(function(request,response){
     factory
-        .findById(request.params.id)
+        .findById(request.params.id,{available:true})
         .then(function(_factory){
             response.status(200).json(deserializeFactory(_factory));
         }).catch(function(_error){
@@ -112,22 +112,34 @@ factoriesRoute.route('/factories/:id').put(function(request,response){
     .catch((_error_message)=>{
         response.status(400).json({message:_error_message});
     });
-})
+});
 
 /**
  * Routes the DELETE of the factory disable
  */
 factoriesRoute.route('/factories/:id').delete(function(request,response){
-    factory
-        .findById(request.params.id)
-            .then(function(_factory){
-                disableFactorySchema(_factory);
-                factory.update(_factory);
-                response.status(204).json();
-            }).catch(function(_error){
-                response.status(400).json(_error);
-            })
-})
+    let factoryId=request.params.id;
+    factoryExists(factoryId)
+    .then((foundFactory)=>{
+        disableFactorySchema(foundFactory)
+        .then((updatedFactory)=>{
+            factory
+                .findByIdAndUpdate(factoryId,updatedFactory)
+                .then(()=>{
+                    response.status(204).json();
+                })
+                .catch(()=>{
+                    response.status(500).json({message:"An internal error occurd while accesing our database :("});
+                });
+        })
+        .catch((_error_message)=>{
+            response.status(400).json({message:_error_message});
+        });
+    })
+    .catch((_error_message)=>{
+        response.status(400).json({message:_error_message});
+    });
+});
 
 /**
  * Grants that a factory doesnt already exist
@@ -181,7 +193,7 @@ function cityExists(cityId){
 function factoryExists(factoryId){
     return new Promise((accept,reject)=>{
         factory
-            .findById(factoryId)
+            .findById(factoryId,{available:true})
             .then((foundFactory)=>{
                 foundFactory!=null ? accept(foundFactory) : reject("No factory found with the given id");
             })
@@ -291,7 +303,14 @@ function enableFactorySchema(factorySchema){
  * @param {Factory.Schema} factorySchema Factory.Schema with the factory schema being disabled
  */
 function disableFactorySchema(factorySchema){
-    factorySchema.disable();
+    return new Promise((accept,reject)=>{
+        try{
+            factorySchema.disable();
+            accept(factorySchema);
+        }catch(_error_message){
+            reject(_error_message);
+        }
+    });
 }
 
 /**
