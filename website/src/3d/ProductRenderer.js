@@ -2,7 +2,7 @@
 import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
 import Closet from './Closet'
-import store from '../store';
+import store from "./../store";
 
 export default class ProductRenderer {
     /**
@@ -133,6 +133,7 @@ export default class ProductRenderer {
         this.initControls();
         this.scene = new THREE.Scene();
         this.group = new THREE.Group();
+        this.initCloset();
         this.initLighting();
 
         var geometry = new THREE.SphereBufferGeometry(500, 60, 40);
@@ -175,6 +176,7 @@ export default class ProductRenderer {
         //this.registerEvents();
         this.animate();
     }
+
     /**
      * Initiates the closet
      */
@@ -200,8 +202,14 @@ export default class ProductRenderer {
                 , faces[i][3], faces[i][4], faces[i][5]));
         }
         this.scene.add(this.group);
+        this.group.visible = false;
         this.renderer.setClearColor(0xFFFFFF, 1);
     }
+
+    /**
+     * Shows the closet
+     */
+    showCloset() { this.group.visible = true; }
 
     /**
      * Initializes the scene's lighting.
@@ -244,11 +252,10 @@ export default class ProductRenderer {
     /**
      * Adds a slot to the current closet
      */
-    addSlot(sizeRecommendedSlot) {
-        var widthCloset = this.closet.getClosetWidth();
-        var numberSlots = sizeRecommendedSlot / widthCloset;
-        this.addSlotNumbered(numberSlots);
+    addSlot() {
+        this.addSlotNumbered(1);
     }
+
     /**
      * Adds a specified number of slots to the current closet
      * @param{number} slotsToAdd - number of slots being added
@@ -261,6 +268,7 @@ export default class ProductRenderer {
         }
         this.updateClosetGV();
     }
+
     /**
      * Removes a slot from the current closet
      */

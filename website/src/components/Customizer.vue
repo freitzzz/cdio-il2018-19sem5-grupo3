@@ -30,6 +30,9 @@ export default {
     },
     slots(){
       return Store.getters.customizedProductSlotWidth;
+    },
+    loadProduct(){
+      return Store.getters.productId;
     }
   },
   components: {
@@ -39,6 +42,9 @@ export default {
   watch: {
     slots: function(newValue, oldValue){
       this.productRenderer.addSlot(newValue);
+    },
+    loadProduct: function(){
+      this.productRenderer.showCloset();
     }
   },
   //*Change the functions so that they don't access the DOM
