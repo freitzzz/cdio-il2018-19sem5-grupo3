@@ -56,7 +56,6 @@ factoriesRoute.route('/factories').post(function(request,response){
         .then(()=>{
             cityExists(factoryModel.cityId)
             .then((foundCity)=>{
-                console.log("!!!")
                 factoryModel.city=foundCity;
                 factory
                     .create(serializeFactory(factoryModel))
@@ -92,15 +91,27 @@ factoriesRoute.route('/factories').post(function(request,response){
  * Routes the PUT of the factory properties update
  */
 factoriesRoute.route('/factories/:id').put(function(request,response){
-    factory
-        .findById(request.params.id)
-            .then(function(_factory){
-                updateFactorySchema(request.body,_factory);
-                factory.update(_factory);
-                response.status(200).json(deserializeFactory(_factory));
-            }).catch(function(_error){
-                response.status(400).json(_error);
-            })
+    let factoryId=request.params.id;
+    factoryExists(factoryId)
+    .then((foundFactory)=>{
+        updateFactorySchema(request.body,foundFactory)
+        .then((updatedFactory)=>{
+            factory
+                .findByIdAndUpdate(factoryId,updatedFactory,{new:true})
+                .then((savedUpdatedFactory)=>{
+                    response.status(200).json(savedUpdatedFactory);
+                })
+                .catch(()=>{
+                    response.status(500).json({message:"An internal error occurd while accesing our database :("});
+                });
+        })
+        .catch((_error_message)=>{
+            response.status(400).json({message:_error_message});
+        });
+    })
+    .catch((_error_message)=>{
+        response.status(400).json({message:_error_message});
+    });
 })
 
 /**
@@ -164,6 +175,23 @@ function cityExists(cityId){
 }
 
 /**
+ * Checks if a factory exists and if exists, returns it as a callback function
+ * @param {String} factoryId String with the factory id
+ */
+function factoryExists(factoryId){
+    return new Promise((accept,reject)=>{
+        factory
+            .findById(factoryId)
+            .then((foundFactory)=>{
+                foundFactory!=null ? accept(foundFactory) : reject("No factory found with the given id");
+            })
+            .catch(()=>{
+                reject('An internal error occurd while processing our database :(');
+            });
+    });
+}
+
+/**
  * Serializes the request body into a Factory Object
  * @param {Object} requestBody Object with the request body
  */
@@ -220,21 +248,34 @@ function schemaToBasicFactory(factorySchema){
  * @param {Factory.Schema} factorySchema Factory.Schema with the factory schema being updated
  */
 function updateFactorySchema(factoryUpdate,factorySchema){
-    if(factoryUpdate.reference){
-        factorySchema.changeReference(factoryUpdate.reference);
-    }
-    
-    if(factoryUpdate.designation){
-        factorySchema.changeDesignation(factoryUpdate.designation);
-    }
-
-    if(factoryUpdate.latitude){
-        factorySchema.changeLatitude(factoryUpdate.latitude);
-    }
-
-    if(factoryUpdate.longitude){
-        factorySchema.changeLongitude(factoryUpdate.longitude);
-    }
+    return new Promise((accept,reject)=>{
+        try{
+            let atLeastOneUpdate=false;
+            if(factoryUpdate.reference!=null){
+                factorySchema.changeReference(factoryUpdate.reference);
+                atLeastOneUpdate=true;
+            }
+            
+            if(factoryUpdate.designation!=null){
+                factorySchema.changeDesignation(factoryUpdate.designation);
+                atLeastOneUpdate=true;
+            }
+        
+            if(factoryUpdate.latitude!=null){
+                factorySchema.changeLatitude(factoryUpdate.latitude);
+                atLeastOneUpdate=true;
+            }
+        
+            if(factoryUpdate.longitude!=null){
+                factorySchema.changeLongitude(factoryUpdate.longitude);
+                atLeastOneUpdate=true;
+            }
+            if(!atLeastOneUpdate)reject('No updates were made');
+            accept(factoryUpdate);
+        }catch(_error_message){
+            reject(_error_message);
+        }
+    });
 }
 
 /**
