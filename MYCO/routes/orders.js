@@ -150,7 +150,7 @@ ordersRoute.route('/orders/:id/state').put((request,response)=>{
             changeOrderState(order,request.body.state)
             .then((changedOrderState)=>{
                 Order
-                    .findByIdAndUpdate(orderID,changedOrderState)
+                    .findByIdAndUpdate(orderID,changedOrderState,{new:true})
                     .then((updatedOrder)=>{
                         console.log(updatedOrder);
                         response.status(200).json(updatedOrder);
@@ -182,7 +182,7 @@ ordersRoute.route('/orders/:id/packages').patch((request,response)=>{
             registerOrderPackages(order,request.body)
             .then((registeredOrderPackages)=>{
                 Order
-                    .findByIdAndUpdate(orderID,registeredOrderPackages)
+                    .findByIdAndUpdate(orderID,registeredOrderPackages,{new:true})
                     .then((updatedOrder)=>{
                         response.status(200).json(updatedOrder);
                     })
