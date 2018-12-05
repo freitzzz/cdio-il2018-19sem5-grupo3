@@ -14,9 +14,19 @@ const VALIDATED='Validated';
 const IN_PRODUCTION='In Production';
 
 /**
+ * Constant that represents the Producted Order State
+ */
+const PRODUCTED='Producted';
+
+/**
  * Constant that represents the Ready to Ship Order State
  */
 const READY_TO_SHIP='Ready to Ship';
+
+/**
+ * Constant that represents the Shipped Order Start
+ */
+const SHIPPED='Shipped';
 
 /**
  * Constant that represents the Delivered Order State
@@ -30,9 +40,11 @@ const OrderStateEnum={
     IN_VALIDATION:IN_VALIDATION,
     VALIDATED:VALIDATED,
     IN_PRODUCTION:IN_PRODUCTION,
+    PRODUCTED:PRODUCTED,
     READY_TO_SHIP:READY_TO_SHIP,
+    SHIPPED:SHIPPED,
     DELIVERED:DELIVERED,
-    values:[IN_VALIDATION,VALIDATED,IN_PRODUCTION,READY_TO_SHIP,DELIVERED]
+    values:[IN_VALIDATION,VALIDATED,IN_PRODUCTION,PRODUCTED,READY_TO_SHIP,SHIPPED,DELIVERED]
 };
 
 /**
