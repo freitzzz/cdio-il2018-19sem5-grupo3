@@ -39,7 +39,7 @@ namespace core.application
         /// </summary>
         /// <param name="customizedProductModelView">CustomizedProductDTO with the customized product id information</param>
         /// <returns>CustomizedProductDTO with the fetched customized product information</returns>
-        public GetCustomizedProductByIdModelView findCustomizedProductByID(GetCustomizedProductByIdModelView customizedProductModelView)
+        public GetCustomizedProductModelView findCustomizedProductByID(GetCustomizedProductModelView customizedProductModelView)
         {
             return GetCustomizedProductByIdModelViewService.transform(customizedProductModelView);
         }
@@ -49,7 +49,7 @@ namespace core.application
         /// </summary>
         /// <param name="customizedProductModelView">CustomizedProductDTO with the customized product information</param>
         /// <returns>CustomizedProductDTO with the created customized product information</returns>
-        public GetCustomizedProductByIdModelView addCustomizedProduct(PostCustomizedProductModelView customizedProductModelView)
+        public GetCustomizedProductModelView addCustomizedProduct(PostCustomizedProductModelView customizedProductModelView)
         {
             CustomizedProduct customizedProduct = PostCustomizedProductModelViewService.transform(customizedProductModelView);
             CustomizedProduct savedCustomizedProduct = PersistenceContext.repositories().createCustomizedProductRepository().save(customizedProduct);
