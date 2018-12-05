@@ -1,6 +1,6 @@
 const express = require('express');
 const ordersRoute = express.Router();
-const Order = require('../models/order');
+const Order = require('../models/Order');
 const Factory = require('../models/Factory');
 const http = require('http');
 const City = require('../models/City');
@@ -114,7 +114,7 @@ ordersRoute.route('/orders').post(function (req, res, next) {
                                     res.status(201).json(_createdOrder);
                                 }).catch((_error) => {
                                     //TODO: REWORK : )
-                                    res.status(400).json({ message: 'An error occured while processing the order' });
+                                    res.status(500).json({ message: 'An internal error occurd while creating the order' });
                                 });
                         })
                         .catch(() => {
@@ -125,17 +125,80 @@ ordersRoute.route('/orders').post(function (req, res, next) {
                                             res.status(201).json(_createdOrder);
                                         }).catch((_error) => {
                                             //TODO: REWORK : )
-                                            res.status(400).json({ message: 'An error occured while processing the order' });
+                                            res.status(500).json({ message: 'An internal error occurd while creating the order' });
                                         });
                                 }).catch((_error) => {
                                     //TODO: REWORK :) (Happens when there is an error while processing the shortest factory computation in MYCL)
-                                    res.status(402).json({ message: 'An error occurd while processing the order' });
+                                    res.status(500).json({ message: 'There are no cities available' });
                                 });
                         });
                 });
         })
         .catch((_error) => {
             res.status(400).json({ message: 'There is no city with the given id' });
+        });
+});
+
+/**
+ * Routes the update state of an order request
+ */
+ordersRoute.route('/orders/:id/state').put((request,response)=>{
+    let orderID=request.params.id;
+    Order
+        .findById(orderID)
+        .then((order)=>{
+            changeOrderState(order,request.body.state)
+            .then((changedOrderState)=>{
+                Order
+                    .findByIdAndUpdate(orderID,changedOrderState,{new:true})
+                    .then((updatedOrder)=>{
+                        console.log(updatedOrder);
+                        response.status(200).json(updatedOrder);
+                    })
+                    .catch((_error_updating_error)=>{
+                        response.status(500).json({message:_error_updating_error});
+                        //ERROR UPDATING ORDER ON MONGO DB :)))
+                    })
+            })
+            .catch((_errorOrderStateChange)=>{
+                response.status(400).json({message:_errorOrderStateChange});
+                //BUSINESS ORDER STATE CHANGE ERROR :))
+            });
+        })
+        .catch((_error)=>{
+            response.status(404).json({message:'Order not found!'});
+            //ORDER NOT FOUND :)
+        });
+});
+
+/**
+ * Routes the register the packages of an order request
+ */
+ordersRoute.route('/orders/:id/packages').patch((request,response)=>{
+    let orderID=request.params.id;
+    Order
+        .findById(orderID)
+        .then((order)=>{
+            registerOrderPackages(order,request.body)
+            .then((registeredOrderPackages)=>{
+                Order
+                    .findByIdAndUpdate(orderID,registeredOrderPackages,{new:true})
+                    .then((updatedOrder)=>{
+                        response.status(200).json(updatedOrder);
+                    })
+                    .catch((_error_updating_error)=>{
+                        response.status(500).json({message:_error_updating_error});
+                        //ERROR UPDATING ORDER ON MONGO DB :)))
+                    })
+            })
+            .catch((_errorRegisterOrderPackages)=>{
+                response.status(400).json({message:_errorRegisterOrderPackages});
+                //BUSINESS ORDER STATE CHANGE ERROR :))
+            });
+        })
+        .catch((_error)=>{
+            response.status(404).json({message:'Order not found!'});
+            //ORDER NOT FOUND :)
         });
 });
 
@@ -152,7 +215,7 @@ function isCityInFactories(city, factories) {
             if (factory.isLocated(city)) { resolve(factory); }
             //TODO: REWORK : )
         })
-        return _factories ? resolve(_factories) : reject(null);
+        return (_factories!=null && _factories.length!=0) ? resolve(_factories) : reject(null);
     });
 }
 
@@ -166,9 +229,40 @@ function isCityInFactories(city, factories) {
 function createOrder(orderContents, cityToDeliver, factoryOfProduction) {
     return Order.create({
         orderContents: orderContents,
-        packages: createPackages(orderContents),
         cityToDeliver: cityToDeliver,
         factoryOfProduction: factoryOfProduction
+    });
+}
+
+/**
+ * Changes the state of an order
+ * @param {Order.Schema} order Order with the order being changed the state 
+ * @param {State} orderState State with the state to update
+ */
+function changeOrderState(order,orderState){
+    return new Promise((updatedOrderState,errorUpdatingOrderState)=>{
+        try{
+            order.changeState(orderState);
+            updatedOrderState(order);
+        }catch(_error){
+            errorUpdatingOrderState(_error);
+        }
+    });
+}
+
+/**
+ * Registers the packages of an order
+ * @param {Order.Schema} order Order with the order being registered the packages
+ * @param {Array} packages Array with the packages information
+ */
+function registerOrderPackages(order,packages){
+    return new Promise((registeredOrderPackages,errorRegisteringOrderPackages)=>{
+        try{
+            order.registerPackages(packages);
+            registeredOrderPackages(order);
+        }catch(_error){
+            errorRegisteringOrderPackages(_error);
+        }
     });
 }
 

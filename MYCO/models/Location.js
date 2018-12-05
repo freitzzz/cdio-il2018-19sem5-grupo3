@@ -40,6 +40,7 @@ var locationSchema=new Schema({
  */
 locationSchema.methods.changeLatitude=function(latitude){
     grantLatitudeIsValidForUpdate(latitude);
+    if(this.latitude==latitude)throw 'Location latitude is the same as the updating one';
     this.latitude=latitude;
 }
 
@@ -49,6 +50,7 @@ locationSchema.methods.changeLatitude=function(latitude){
  */
 locationSchema.methods.changeLongitude=function(longitude){
     grantLongitudeIsValidForUpdate(longitude);
+    if(this.longitude==longitude)throw 'Location longitude is the same as the updating one';
     this.longitude=longitude;
 }
 
@@ -60,6 +62,16 @@ locationSchema.methods.changeLongitude=function(longitude){
 locationSchema.statics.createLocation= function(latitude,longitude){
     return {latitude,longitude};
 }
+
+/**
+ * Grants that a location model is valid
+ * @param {Object} locationModel Object with the location model being validated
+ */
+locationSchema.statics.validateLocationModel=function(locationModel){
+    if(!locationModel)throw 'Invalid location details';
+    if(!checkLatitudeBusinessRule(locationModel.latitude))throw 'Invalid location latitude';
+    if(!checkLongitudeBusinessRule(locationModel.longitude))throw 'Invalid location longitude';
+};
 
 /**
  * Grants that a latitude is valid for update
