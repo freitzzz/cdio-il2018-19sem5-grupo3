@@ -22,3 +22,8 @@ const PackageSizeEnum={
     LARGE:LARGE,
     values:[SMALL,MEDIUM,LARGE]
 }
+
+/**
+ * Exports PackageSize as an enum
+ */
+module.exports=PackageSizeEnum;
