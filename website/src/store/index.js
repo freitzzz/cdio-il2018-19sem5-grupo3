@@ -33,14 +33,7 @@ const state = {
                 description: ""
             }
         },
-        slots: [
-            {
-                id: "",
-                width: "",
-                unit: "",
-                components: []
-            }
-        ],
+        slots: [],
         customizedDimensions: {
             width: "",
             height: "",
