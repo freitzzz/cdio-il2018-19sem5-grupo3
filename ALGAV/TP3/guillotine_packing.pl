@@ -18,29 +18,25 @@ startup([CP|RP], Container, MC, PO, NPP) :-
                          MC,
                          [],
                          NPP),
-    (D, W, H)=Container,
+    (D, W, H, _)=Container,
     CVol is D*W*H,
     percentage_occupied([CP|RP], NPP, CVol, PO), !.
 
 %Non recursive guillotine_packaging predicate. Used to insert the last package
 guillotine_packaging([CP], Container, RC, MC, NPP, RNPP) :-
-    (CD, CW, _)=Container,
-    (   (_, X, Y, Z)=CP,
-        (   (   guil((X, Y, Z),
-                     Container,
-                     RC,
-                     MC)   %Try to insert package vertically (along the z axis)
-            ;   addPackage((X, Y, Z),
+    (CD, CW, _, CWeight)=Container,
+    (   (   (   guil(CP, Container, RC, MC)   %Try to insert package vertically (along the z axis)
+            ;   addPackage(CP,
                            Container,              %Add package along the container's width (y axis)
-                           (CD, CW, 0, CW, CD),
+                           (_, CD, CW, 0, CW, CD, CWeight, 0),
                            RC,
                            MC)
             )
-        ;   addFront((X, Y, Z),
+        ;   addFront(CP,
                      Container,
-                     (CD, CW, 0, CW, CD),
+                     (_, CD, CW, 0, CW, CD, CWeight, 0),
                      RC,
-                     (CD, CW, 0, CW, CD),
+                     (_, CD, CW, 0, CW, CD, CWeight, 0),
                      MC)
         ), !,
         RNPP=NPP
@@ -51,32 +47,31 @@ guillotine_packaging([CP], Container, RC, MC, NPP, RNPP) :-
 %Recursive guillotine_packaging predicate
 %RNPP - List of packages that weren't inserted in the container
 guillotine_packaging([CP|RP], Container, RC, MC, NPP, RNPP) :-
-    (CD, CW, _)=Container,
-    (_, X, Y, Z)=CP,
-    (   (   (   guil((X, Y, Z),
-                     Container,
-                     RC,
-                     LC)   %Try to insert package vertically (along the z axis)
-            ;   addPackage((X, Y, Z),
+    (CD, CW, CH, CWeight)=Container,
+    CP=(_, _, _, _, Weight, _),
+    (   (   (   guil(CP, Container, RC, LC)   %Try to insert package vertically (along the z axis)
+            ;   addPackage(CP,
                            Container,              %Add package along the container's width (y axis)
-                           (CD, CW, 0, CW, CD),
+                           (_, CD, CW, 0, CW, CD, CWeight, 0),
                            RC,
                            LC)
             )
-        ;   addFront((X, Y, Z),
+        ;   addFront(CP,
                      Container,
-                     (CD, CW, 0, CW, CD),
+                     (_, CD, CW, 0, CW, CD, CWeight, 0),
                      RC,
-                     (CD, CW, 0, CW, CD),
+                     (_, CD, CW, 0, CW, CD, CWeight, 0),
                      LC)
         ), !,
-        SNPP=NPP    %If the package is inserted, the not placed list doesn't suffer changes
+        SNPP=NPP,    %If the package is inserted, the not placed list doesn't suffer changes
+        NewWeight is CWeight-Weight
     ;   LC=RC,      %If the package is inserted, update the list with inserted products
         append(NPP, [CP], SNPP), %Updates not placed products list
+        NewWeight=CWeight,
         true
     ),
     guillotine_packaging(RP,            %Recursively call the predicate
-                         Container,
+                         (CD, CW, CH, NewWeight),
                          LC,
                          MC,
                          SNPP,
@@ -91,7 +86,7 @@ percentage_occupied(LP, NPP, CVol, PO) :-
 
 %Non recursive spacial_occupation predicate. Used to calculate the last package's volume
 spacial_occupation([CP], NPP, PVol, RVol) :-
-    (_, D, W, H)=CP,
+    (_, D, W, H, _, _)=CP,
     (   not(member(CP, NPP)),
         Vol is D*W*H,
         RVol is Vol+PVol
@@ -101,7 +96,7 @@ spacial_occupation([CP], NPP, PVol, RVol) :-
 
 %Recursive spacial_occupation predicate. Used to calculate all package's volumes except for the last
 spacial_occupation([CP|RP], NPP, PVol, RVol) :-
-    (_, D, W, H)=CP,
+    (_, D, W, H, _, _)=CP,
     (   not(member(CP, NPP)),
         Vol is D*W*H,
         SVol is Vol+PVol
@@ -111,17 +106,21 @@ spacial_occupation([CP|RP], NPP, PVol, RVol) :-
     spacial_occupation(RP, NPP, SVol, RVol).
 
 %Creates First Cut
-guil(P, C, [], [(((D, W, H, W, D), []), [])]) :-
-    !,(D, W, H)=P,
-    (CD, CW, CH)=C,
+guil(P, C, [], [(((ID, D, W, H, W, D, Weight, Prior), []), [])]) :- !,
+    (ID, D, W, H, Weight, Prior)=P,
+    (CD, CW, CH, _)=C,
     D=<CD,
     W=<CW,
     H=<CH.  
 
 %Tries to place a package along the z axis
-guil(P, C, [(((CutD, CutW, CutH, RW, RD), []), T)|CT], [(((CutD, CutW, CutH, RW, RD), [(((ND, NW, TH, W, D), []), [])]), T)|CT]) :-
-    !,(D, W, H)=P,
-    (_, _, CH)=C, !,
+guil(P, C, [(((CID, CutD, CutW, CutH, RW, RD, RemainingWeight, TotalPrior), []), T)|CT], [(((CID, CutD, CutW, CutH, RW, RD, TWeight, FinalPrior), [(((ID, ND, NW, TH, W, D, Weight, Prior), []), [])]), T)|CT]) :- !,
+    (ID, D, W, H, Weight, Prior)=P,
+    (_, _, CH, _)=C, !,
+    TWeight is RemainingWeight-Weight,
+    TWeight>=0,
+    Prior>=TotalPrior,
+    FinalPrior=Prior,
     D=<RD,
     W=<RW,
     TH is CutH+H,
@@ -138,90 +137,111 @@ guil(P, C, [(((CutD, CutW, CutH, RW, RD), []), T)|CT], [(((CutD, CutW, CutH, RW,
     ).
     
 %Predicate used to know whether a package is going to be inserted along the x,y or z axes
-guil(P, C, [(((CutD, CutW, CutH, RW, RD), [Child|T]), E)|CT], [(((CutD, CutW, CutH, RW, RD), TL), E)|CT]) :-
-    !,(D, _, _)=P,
+guil(P, C, [(((CID, CutD, CutW, CutH, RW, RD, RemainingWeight, TotalPrior), [Child|T]), E)|CT], [(((CID, CutD, CutW, CutH, RW, RD, TWeight, FinalPrior), TL), E)|CT]) :- !,
+    (_, D, _, _, Weight, Prior)=P,
+    RemainingWeight>0,
+    Prior>=TotalPrior,
     D=<RD,
     (   (   guil(P, C, [Child|T], TL) % Tries to insert a package along the z axis
         ;   addPackage(P,
                        C,
-                       (CutD, CutW, CutH, RW, RD), % Tries to insert a package along the y axis
+                       (CID, CutD, CutW, CutH, RW, RD, RemainingWeight, TotalPrior), % Tries to insert a package along the y axis
                        [Child|T],
                        TL)
         )
     ;   addFront(P,
                  C,
-                 (CutD, CutW, CutH, RW, RD), % Tries to insert a package along the x axis
+                 (CID, CutD, CutW, CutH, RW, RD, RemainingWeight, TotalPrior), % Tries to insert a package along the x axis
                  [Child|T],
-                 (CutD, CutW, CutH, RW, RD),
+                 (CID, CutD, CutW, CutH, RW, RD, RemainingWeight, TotalPrior),
                  TL)
-    ).
+    ),
+    TWeight is RemainingWeight-Weight,
+    FinalPrior=Prior.
 
 %Non recursive addFront predicate. Adds a package to the container along the x axis
-addFront(P, C,  (_, _, CutH, RW, RD), [(((X, Y, Z, NRW, RX), TP), SP)], Previous, NL) :-
-    !,(D, W, H)=P,
-    (_, _, _, _, PD)=Previous,
-    (_, _, CH)=C,
-    TW is Y-NRW + W,
+addFront(P, C,  (_, _, CutW, CutH, _, RD, RemainingWeight, TotalPrior), [(((CID, X, Y, Z, NRW, RX, BWeight, BPrior), TP), SP)], Previous, NL) :- !,
+    (ID, D, W, H, Weight, Prior)=P,
+    (_, _, _, _, _, PD, _, _)=Previous,
+    (_, CW, CH, _)=C,
+    TWeight is RemainingWeight-Weight,
+    TWeight>=0,
+    Prior>=TotalPrior,
+    Prior>=BPrior,
+    TW is Y-NRW+W,
+    TW=<CW,
     TD is D+X,
     TD=<PD,
     TD=<RD,
-    W=<RW,
+    TW=<CutW,
     TH is H+CutH,
     TH=<CH,
-    NL=[(((X, Y, Z, NRW, RX), TP), SP),  (((TD, TW, TH, W, D), []), [])].
+    NL=[(((CID, X, Y, Z, NRW, RX, BWeight, Prior), TP), SP),  (((ID, TD, TW, TH, W, D, Weight, Prior), []), [])].
 
 %Recursive addFront predicate. Tries to add a package to the container along the x axis
-addFront(P, C,  (CutD, CutW, CutH, RW, RD), [(((X, Y, Z, RY, RX), TP), SP)|RC], _, [(((X, Y, Z, RY, RX), TP), SP)|NL]) :-
-    !,RC\==[],
-    (D, _, _)=P,
+addFront(P, C,  (CID, CutD, CutW, CutH, RW, RD, RemainingWeight, TotalPrior), [(((RID, X, Y, Z, RY, RX, BWeight, BPrior), TP), SP)|RC], Prev, [(((RID, X, Y, Z, RY, RX, BWeight, Prior), TP), SP)|NL]) :- !,
+    RC\==[],
+    (_, D, _, _, Weight, Prior)=P,
+    Prior>=TotalPrior,
+    Prior>=BPrior,
+    TWeight is RemainingWeight-Weight,
+    TWeight>=0,
     (   D=<X,
         (   RC\==[],
             guil(P, C, RC, NL)
         ;   RC\==[],
             addPackage(P,
                        C,
-                       (CutD, CutW, CutH, RW, RD),
+                       (CID, CutD, CutW, CutH, RW, RD, RemainingWeight, TotalPrior),
                        RC,
                        NL)
         )
     ;   RC\==[],
         addFront(P,
                  C,
-                 (_, _, CutH, RW, RD),
+                 (CID, CutD, CutW, CutH, RW, RD, RemainingWeight, TotalPrior),
                  RC,
-                 (_, _, CutH, RW, RD),
+                 Prev,
                  NL)
     ).
 %Non recursive addPackage predicate. Adds a package to the container along the y axis
-addPackage(P, C,  (_, _, CutH, RW, _), [(((X, Y, Z, NRW, RX), T), [])|FP], NL) :-
-    !,(D, W, H)=P,
-    (_, _, CH)=C,
+addPackage(P, C,  (_, _, _, CutH, RW, _, RemainingWeight, TotalPrior), [(((RID, X, Y, Z, NRW, RX, SWeight, SPrior), T), [])|FP], NL) :- !,
+    (ID, D, W, H, Weight, Prior)=P,
+    (_, _, CH, _)=C,
+    TWeight is RemainingWeight-Weight,
+    TWeight>=0,
+    Prior>=TotalPrior,
+    Prior>=SPrior,
     D=<RX,
     TW is W+Y,
     TW=<RW,
     TH is H+CutH,
     TH=<CH,
     TD is X-RX+D,
-    [(((X, Y, Z, NRW, RX), T), [(((TD, TW, TH, W, D), []), [])])|FP]=NL.
+    [(((RID, X, Y, Z, NRW, RX, SWeight, Prior), T), [(((ID, TD, TW, TH, W, D, Weight, Prior), []), [])])|FP]=NL.
 
 %Recursive addPackage predicate. Tries to add a package to the container along the y axis
-addPackage(P, C,  (CutD, CutW, CutH, RW, RD), [(((X, Y, Z, NRW, RX), TC), SC)|RC], [(((X, Y, Z, NRW, RX), TC), NL)|RC]) :-
-    !,(D, _, _)=P,
+addPackage(P, C,  (CID, CutD, CutW, CutH, RW, RD, RemainingWeight, TotalPrior), [(((RID, X, Y, Z, NRW, RX, SWeight, SPrior), TC), SC)|RC], [(((RID, X, Y, Z, NRW, RX, SWeight, Prior), TC), NL)|RC]) :- !,
+    (_, D, _, _, Weight, Prior)=P,
     D=<RX,
+    TWeight is RemainingWeight-Weight,
+    TWeight>=0,
+    Prior>=TotalPrior,
+    Prior>=SPrior,
     (   (   SC\==[],
             guil(P, C, SC, NL)
         ;   SC\==[],
             addPackage(P,
                        C,
-                       (CutD, CutW, CutH, RW, RD),
+                       (CID, CutD, CutW, CutH, RW, RD, RemainingWeight, TotalPrior),
                        SC,
                        NL)
         )
     ;   SC\==[],
         addFront(P,
                  C,
-                 (CutD, CutW, CutH, RW, RD),
+                 (CID, CutD, CutW, CutH, RW, RD, RemainingWeight, TotalPrior),
                  SC,
-                 (X, Y, Z, NRW, RX),
+                 (RID, X, Y, Z, NRW, RX, SWeight, SPrior),
                  NL)
     ).
