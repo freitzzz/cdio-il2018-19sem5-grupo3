@@ -40,6 +40,7 @@ var locationSchema=new Schema({
  */
 locationSchema.methods.changeLatitude=function(latitude){
     grantLatitudeIsValidForUpdate(latitude);
+    if(this.latitude==latitude)throw 'Location latitude is the same as the updating one';
     this.latitude=latitude;
 }
 
@@ -49,6 +50,7 @@ locationSchema.methods.changeLatitude=function(latitude){
  */
 locationSchema.methods.changeLongitude=function(longitude){
     grantLongitudeIsValidForUpdate(longitude);
+    if(this.longitude==longitude)throw 'Location longitude is the same as the updating one';
     this.longitude=longitude;
 }
 
