@@ -2,7 +2,7 @@
 import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
 import Closet from './Closet'
-import store from "./../store";
+import store from '../store';
 
 export default class ProductRenderer {
     /**
@@ -244,10 +244,11 @@ export default class ProductRenderer {
     /**
      * Adds a slot to the current closet
      */
-    addSlot() {
-        this.addSlotNumbered(1);
+    addSlot(sizeRecommendedSlot) {
+        var widthCloset = this.closet.getClosetWidth();
+        var numberSlots = sizeRecommendedSlot / widthCloset;
+        this.addSlotNumbered(numberSlots);
     }
-
     /**
      * Adds a specified number of slots to the current closet
      * @param{number} slotsToAdd - number of slots being added
@@ -260,7 +261,6 @@ export default class ProductRenderer {
         }
         this.updateClosetGV();
     }
-
     /**
      * Removes a slot from the current closet
      */

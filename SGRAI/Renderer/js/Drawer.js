@@ -14,13 +14,14 @@ class Drawer {
         , drawer_frent_face_dimensions_axes
         , drawer_left_face_dimensions_axes
         , drawer_right_face_dimensions_axes
-        , drawer_back_face_dimensions_axes) {
+        , drawer_back_face_dimensions_axes
+        , slotId) {
         this.drawer_base_face_dimensions_axes = drawer_base_face_dimensions_axes.slice();
         this.drawer_frent_face_dimensions_axes = drawer_frent_face_dimensions_axes.slice();
         this.drawer_left_face_dimensions_axes = drawer_left_face_dimensions_axes.slice();
         this.drawer_right_face_dimensions_axes = drawer_right_face_dimensions_axes.slice();
         this.drawer_back_face_dimensions_axes = drawer_back_face_dimensions_axes.slice();
-
+        this.slotId = slotId;
         this._prepare_drawer_init();
     }
 

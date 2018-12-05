@@ -107,7 +107,7 @@ public class User implements AggregateRoot<Auth>,Serializable{
         checkRole(role);
         if(!this.roles.contains(role))
             throw new IllegalStateException(String.format("User does not have the role %s !",role));
-        this.roles.add(role);
+        this.roles.remove(role);
     }
     
     /**
