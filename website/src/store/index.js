@@ -33,14 +33,7 @@ const state = {
                 description: ""
             }
         },
-        slots: [
-            {
-                id: "",
-                width: "",
-                unit: "",
-                components: []
-            }
-        ],
+        slots: [],
         customizedDimensions: {
             width: "",
             height: "",
@@ -61,13 +54,13 @@ const getters = {
         return state.product.slotWidths;
     },
     recommendedSlotWidth: state => {
-        return state.product.slotSizes.recommendedWidth;
-    },
+        return state.product.slotWidths.recommendedWidth;
+    }, 
     maxSlotWidth: state => {
-        return state.product.slotSizes.maxWidth;
+        return state.product.slotWidths.maxWidth;
     },
     minSlotWidth: state => {
-        return state.product.slotSizes.minWidth;
+        return state.product.slotWidths.minWidth;
     },
     productMaterials: state => {
         return state.product.materials;
@@ -75,17 +68,20 @@ const getters = {
     productComponents: state => {
         return state.product.components;
     },
-    width: state => {
-        return state.customizedProduct.customizedDimensions.width;
+     width: state => {
+        return state.customizedProduct.dimensions.width;
     },
     height: state => {
-        return state.customizedProduct.customizedDimensions.height;
+        return state.customizedProduct.dimensions.height;
     },
     depth: state => {
-        return state.customizedProduct.customizedDimensions.depth;
+        return state.customizedProduct.dimensions.depth;
     },
     unit: state => {
-        return state.customizedPrdocut.customizedDimensions.unit;
+        return state.customizedProduct.dimensions.unit;
+    },
+    customizedProductSlotWidth: state => {
+        return state.customizedProduct.slots.width;
     }
 }
 

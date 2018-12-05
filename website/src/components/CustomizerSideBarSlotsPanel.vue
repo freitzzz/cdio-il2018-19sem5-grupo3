@@ -11,17 +11,15 @@
       <i class="btn btn-primary material-icons" @click="removeLine(index)">-</i>
       <i class="btn btn-primary material-icons"  @click="addLine">+</i>
       <div class="slidersSection">
-      <!--<div class="slidersSection">-->
         <span v-for="n in minNumberSlots" :key="n">
           <vue-slider class="slidersSection"
             :min="minSizeSlot"
             :max="maxSizeSlot"
             :value="recommendedSizeSlot"
-            v-model="this.sliderValue[n-1]"
+            v-model="sliderValue[n-1]"
             @onChange="upadteFreeSpace"
           ></vue-slider>
         </span>
-      </div>
       <div v-for="(line, index) in lines.slice(0,maxNumberSlots)" v-bind:key="index">
         <vue-slider class="slidersSection"
           :min="minSizeSlot"
@@ -30,7 +28,7 @@
           v-model="sliderValues[index]"
         ></vue-slider>
       </div>
-      <!--</div>-->
+      </div>
     </div>
   </div>
 </template>
@@ -38,6 +36,11 @@
 import vueSlider from "vue-slider-component";
 import store from "./../store";
 import Axios from "axios";
+import { SET_SLOT_DEPTH } from "./../store/mutation-types.js";
+import { SET_SLOT_WIDTH } from "./../store/mutation-types.js";
+import { SET_SLOT_HEIGHT } from "./../store/mutation-types.js";
+import { SET_SLOT_UNIT } from "./../store/mutation-types.js";
+
 export default {
   name: "CustomizerSideBarSlotsPanel",
   data() {
@@ -46,10 +49,10 @@ export default {
       numberSlots: 0,
       sliderValue: [],
       sliderValues: [],
+      lines: [],
       freeSpace: "",
       createNewSlider: false,
-      valueConverted: 4,
-      lines: [],
+      valueConverted: "",
       blockRemoval: true
     };
   },
@@ -58,9 +61,10 @@ export default {
   },
   computed: {
     freeSpaceValue() {
-      for (n in this.sliderValue) {
-        return parseInt(store.getters.width - this.sliderValue[n]);
-      }
+      ///for (n in this.sliderValue) {
+       /// return parseInt(store.getters.width - this.sliderValue[n]);
+      ///}
+      return 200;
     },
     recommendedNumberSlots() {
       ///if (store.getters.recommendedSlotSize.unit == store.getters.unit) {
@@ -71,8 +75,8 @@ export default {
       return 3;
     },
     minNumberSlots() {
-      return parseInt(store.getters.width / store.getters.maxSlotSize);
-      /// return 3;
+      ///return parseInt(store.getters.width / store.getters.maxSlotSize);
+       return 50;
     },
     maxNumberSlots() {
       ///return store.getters.width / minSizeSlot;
@@ -85,7 +89,8 @@ export default {
       return store.getters.maxSlotSize;
     },
     recommendedSizeSlot() {
-      return store.getters.recommendedSlotSize;
+      ///return store.getters.recommendedSlotSize;
+      return 21;
     },
     displaySliders() {
       return this.picked === "customizedSlots";
@@ -99,7 +104,6 @@ export default {
       this.ceateNewSlider = true;
       this.recommendedNumberSlots++;
     },
-    removeSliders() {},
     deactivateSliderCreation() {
       this.createNewSlider = false;
     },
@@ -117,13 +121,6 @@ export default {
         slider: null
       });
     },
-    addLine() {
-      let checkEmptyLines = this.lines.filter(line => line.number === null);
-      if (checkEmptyLines.length >= 1 && this.lines.length > 0) return;
-      this.lines.push({
-        slider: null
-      });
-    },
     removeLine(lineId) {
       if (!this.blockRemoval) this.lines.splice(lineId, 1);
     }
@@ -133,8 +130,14 @@ export default {
       this.blockRemoval = this.lines.length <= 1;
     }
   },
-  mounted() {
+   mounted() {
     this.addLine();
+  },
+  created() {
+    store.dispatch(SET_SLOT_DEPTH, { depth: 100 });
+    store.dispatch(SET_SLOT_WIDTH, { width: 55 });
+    store.dispatch(SET_SLOT_HEIGHT, { height: 100 });
+    store.dispatch(SET_SLOT_UNIT, { unit: "cm" });
   }
 };
 </script>
