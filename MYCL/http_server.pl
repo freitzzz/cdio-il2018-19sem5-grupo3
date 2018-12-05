@@ -18,10 +18,12 @@ carregar:-['intersept.pl'],['cdio-tsp.pl'],['parameters.pl'],load_computations,l
 load_json_objects:-['json_algorithms.pl'].
 
 % Loads required algorithms
-load_algorithms:- ['algorithms/branch_and_bound.pl'],['algorithms/greedy.pl'],['algorithms/2opt.pl'],['algorithms/genetics.pl'].
+load_algorithms:- ['algorithms/branch_and_bound.pl'],['algorithms/greedy.pl'],['algorithms/2opt.pl'],['algorithms/genetics.pl'],load_bin_packing_algorithms.
 
 % Loads computation predicates
 load_computations:- ['algorithm_computation.pl'],['location_computation.pl'].
+
+load_bin_packing_algorithms:- ['algorithms/binpacking/guillotine_packing.pl'],['algorithms/binpacking/simulated_annealing.pl'].
 
 % Starts the server
 server(Port) :-						% (2)
@@ -95,6 +97,10 @@ bin_packing(Request):-
         BPR=bin_packing_request(_,ContainerObject,PackageObjectsList),
         ContainerObject=container_object(CWidth,CHeight,CDepth),
         json_packages_packages_tuples(PackageObjectsList,Packages),
+        compute_algorithm(5,(CWidth,CHeight,CDepth),Packages,Packed,OccupationPercentage),
+        package_tuples_to_json_packages(Packed,PackedJO),
+        prolog_to_json(bin_packing_response(OccupationPercentage,ContainerObject,PackedJO),BPRS),
+        reply_json(BPRS),
         !.
 
 
@@ -128,10 +134,17 @@ cities_to_json_cities([H|T],JSONCities):-
 city_to_city_json_object(city(Name,LT,LO),city_object(Name,LT,LO)).
 
 
-% Parses a list of package objects into a list of package tuples
+% Parses a list of package json objects into a list of package tuples
 json_packages_packages_tuples([],[]):-!.
 
 json_packages_packages_tuples([H|T],LPT):-
-        H=package_object(_,PW,PH,PD),
+        H=package_object(PID,PW,PH,PD),
         json_packages_packages_tuples(T,LPT1),
-        append([(PW,PH,PD)],LPT1,LPT).
+        append([(PID,PW,PH,PD)],LPT1,LPT).
+
+% Parses a list of package tuples into a list of package json objects
+package_tuples_to_json_packages([],[]):-!.
+
+package_tuples_to_json_packages([(ID,PW,PH,PD)|T],LPJ):-
+        package_tuples_to_json_packages(T,LPJ1),
+        append([package_object(ID,PW,PH,PD)],LPJ1,LPJ).
