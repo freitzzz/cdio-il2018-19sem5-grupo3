@@ -10,7 +10,7 @@
         <div class="scrollable-div" style="height: 300px; width: 100%;">
           <ul class="image-list" v-for="component in components" :key="component.id">
             <li>
-              <div class="image-btn" @click="createComponent(component)">
+              <div class="image-btn" @click="createDivElements(component)">
                 <img :src="findComponentImage(component.model)" width="100%">
                 <p>{{component.designation}}</p>
               </div>
@@ -18,7 +18,35 @@
           </ul>
         </div>
         <div class="scrollable-div" style="height: 100px; width: 100%;">
-        <div v-for="span in spans" :key="span.id"></div>
+          <div class="small-padding-div border" v-for="(divElement, index) in div_elements" :key="index">
+            <div v-if="hasSlots()">
+              <div v-if="canAddComponentToSlot(divElement.model)">
+                <div class="small-padding-div" align="center">
+                  <b>{{divElement.designation}}</b>
+                </div>
+                <div class="small-padding-div" align="center">
+                  Slot:
+                  <input type="number" value="1" min="1" style="width:50px" v-model="div_inputs[index]">
+                  <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="addDivElement(divElement, index)">check_circle_outline</i>
+                  <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="removeDivElement(divElement, index)">highlight_off</i>
+                </div>
+              </div>
+              <div v-else class="small-padding-div" align="center">
+                  <b>{{divElement.designation}}</b>
+                  <div class="small-padding-div" align="center">
+                    <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="addDivElement(divElement)">check_circle_outline</i>
+                    <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="removeDivElement(divElement)">highlight_off</i>
+                  </div>
+              </div>
+            </div>
+            <div v-else class="small-padding-div" align="center">
+                <b>{{divElement.designation}}</b>
+                <div class="small-padding-div" align="center">
+                  <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="addDivElement(divElement)">check_circle_outline</i>
+                  <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="removeDivElement(divElement)">highlight_off</i>
+                </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -40,6 +68,10 @@ import { error } from "three";
 import store from "./../store";
 import { MYCM_API_URL } from "./../config.js";
 import { SET_CUSTOMIZED_PRODUCT_COMPONENTS } from "./../store/mutation-types.js";
+import Toasted from "vue-toasted";
+import Vue from "vue";
+
+Vue.use(Toasted);
 
 export default {
   name: "CustomizerSideBarComponentsPanel",
@@ -51,7 +83,8 @@ export default {
   data() {
     return {
       components: [],
-      spans: [],
+      div_elements: [],
+      div_inputs: [],
       httpCode: null
     };
   },
@@ -76,11 +109,51 @@ export default {
           }
         });
     },
+    hasSlots(){
+     return store.state.customizedProduct.slots.length > 0;
+    },
     findComponentImage(filename) {
       return "./src/assets/products/" + filename.split(".")[0] + ".png";
     },
-    createComponent(component) {
-      this.spans.push({value:''});
+    createDivElements(component) {
+      this.div_elements.push(component);
+    },
+    canAddComponentToSlot(model){
+      return model.split(".")[0] != "sliding-door";
+    },
+    addDivElement(component, index) {
+      //If the product has slots and the chosen component can be added to a slot, checks if the 
+      if (this.hasSlots() && this.canAddComponentToSlot(component.model)){
+        if(this.div_inputs[index] == undefined) {
+          this.$toasted.show("You must choose a slot to apply the component!", {
+            position: "top-center",
+            duration: 2000
+          });
+      } else if(this.div_inputs[index] < 1 || this.div_inputs[index] > store.state.customizedProduct.slots.length){
+          this.$toasted.show("You must choose a valid slot to apply the component!", {
+            position: "top-center",
+            duration: 2000
+          });
+        }
+      }
+      //!TODO communicate with Three.js
+      //this.div_inputs[index] gets value of slot
+    },
+    removeDivElement(component, index) {
+      var aux;
+      for (let i = index + 1; i < this.div_inputs.length; i++) {
+        aux = this.div_inputs[i];
+        this.div_inputs[i - 1] = aux;
+      }
+
+      this.div_elements.splice(component, 1);
+      this.div_inputs.splice(this.div_inputs.length);
+
+      this.$toasted.show("The component was sucessfully removed!", {
+        position: "top-center",
+        duration: 2000
+      });
+      //!TODO communicate with Three.js
     }
   },
   created() {

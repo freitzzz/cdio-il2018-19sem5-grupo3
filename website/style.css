@@ -545,3 +545,21 @@
 .padding-div {
   margin: 6%;
 }
+
+.small-padding-div {
+  margin: 4%;
+}
+
+.small-padding-div:border {
+  border-color: rgba(231, 231, 231, 0);
+  position:relative;
+}
+
+.image-btn {
+	color:black;
+	transition: all 0.3s;
+}
+.image-btn:hover, .image-btn:focus, .image-btn.focus, .image-btn:active, .btn-custom.active {
+	color: #0ba2db;
+	cursor: pointer;
+}
