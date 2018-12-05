@@ -50,6 +50,7 @@ var factorySchema=new Schema({
  */
 factorySchema.methods.changeReference=function(reference){
     grantReferenceIsValidForUpdate(reference);
+    if(this.reference==reference)throw 'Factory reference is the same as the updating one';
     this.reference=reference;
 }
 
@@ -59,6 +60,7 @@ factorySchema.methods.changeReference=function(reference){
  */
 factorySchema.methods.changeDesignation=function(designation){
     grantDesignationIsValidForUpdate(designation);
+    if(this.designation==designation)throw 'Factory designation is the same as the updating one';
     this.designation=designation;
 }
 
@@ -185,7 +187,8 @@ function grantFactoryIsDisabled(_available){
  * @param {String} reference String with the reference being checked
  */
 function checkReferenceBusinessRule(reference){
-    return reference.trim().length>0;
+    console.log(reference)
+    return reference && reference.trim().length>0;
 }
 
 /**
@@ -193,7 +196,7 @@ function checkReferenceBusinessRule(reference){
  * @param {String} designation String with the designation being checked
  */
 function checkDesignationBusinessRule(designation){
-    return designation.trim().length>0;
+    return designation && designation.trim().length>0;
 }
 
 /**
