@@ -41,7 +41,7 @@ var factorySchema=new Schema({
     designation:{type: String, validate: designationValidator, required:true},
     location:{type: location.schema, required:true},
     city:{type: city.schema, required:false},
-    _available:{type: Boolean,required:true}
+    available:{type: Boolean,required:true}
 });
 
 /**
@@ -84,16 +84,16 @@ factorySchema.methods.changeLongitude=function(longitude){
  * Enables the current factory
  */
 factorySchema.methods.enable=function(){
-    grantFactoryIsDisabled(this._available);
-    this._available=false;
+    grantFactoryIsDisabled(this.available);
+    this.available=true;
 }
 
 /**
  * Disables the current factory
  */
 factorySchema.methods.disable=function(){
-    grantFactoryIsEnabled(this._available);
-    this._available=true;
+    grantFactoryIsEnabled(this.available);
+    this.available=false;
 }
 
 /**
@@ -118,7 +118,7 @@ factorySchema.statics.createFactory=function (reference,designation,locationLati
         reference:reference,
         designation:designation,
         location:location.createLocation(locationLatitude,locationLongitude),
-        _available:true
+        available:true
     }
     if(city)factory.city=city;
     return factory; 
@@ -168,18 +168,18 @@ function grantDesignationIsValidForUpdate(designation){
 
 /**
  * Grants that a factory is enabled
- * @param {Boolean} _available Boolean with the factory availability
+ * @param {Boolean} available Boolean with the factory availability
  */
-function grantFactoryIsEnabled(_available){
-    if(!_available)throw `Factory is disabled`;
+function grantFactoryIsEnabled(available){
+    if(!available)throw `Factory is disabled`;
 }
 
 /**
  * Grants that a factory is disabled
- * @param {Boolean} _available Boolean with the factory availability
+ * @param {Boolean} available Boolean with the factory availability
  */
-function grantFactoryIsDisabled(_available){
-    if(_available)throw `Factory is enabled`;
+function grantFactoryIsDisabled(available){
+    if(available)throw `Factory is enabled`;
 }
 
 /**
@@ -187,7 +187,6 @@ function grantFactoryIsDisabled(_available){
  * @param {String} reference String with the reference being checked
  */
 function checkReferenceBusinessRule(reference){
-    console.log(reference)
     return reference && reference.trim().length>0;
 }
 
