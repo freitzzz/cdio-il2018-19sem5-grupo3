@@ -3,7 +3,6 @@
     <customizer-progress-bar></customizer-progress-bar>
     <customizer-side-bar></customizer-side-bar>
       <canvas ref="threeCanvas" @mouseup="onMouseUp" @mousedown="onMouseDown" @mousemove="onMouseMove" :width="initialWidth" :height="initialHeight">
-          Could not load the canvas :(
       </canvas>
       
   </div>
@@ -13,6 +12,7 @@
 import ProductRenderer from "./../3d/ProductRenderer.js";
 import CustomizerSideBar from "./CustomizerSideBar";
 import CustomizerProgressBar from "./CustomizerProgressBar.vue";
+import Store from "./../store/index.js";
 
 export default {
   name: "Customizer",
@@ -27,11 +27,19 @@ export default {
     },
     initialHeight() {
       return document.documentElement.clientHeight * 0.70;
+    },
+    slots(){
+      return Store.getters.customizedProductSlotWidth;
     }
   },
   components: {
     CustomizerSideBar,
     CustomizerProgressBar
+  },
+  watch: {
+    slots: function(newValue, oldValue){
+      this.productRenderer.addSlot(newValue);
+    }
   },
   //*Change the functions so that they don't access the DOM
   methods: {
@@ -45,6 +53,7 @@ export default {
      * Mouse click release event handler propagated to the instance of ProductRenderer.
      */
     onMouseUp: function(event) {
+      
       this.productRenderer.onMouseUp(event);
     },
     /**
@@ -52,8 +61,21 @@ export default {
      */
     onMouseDown: function(event) {
       this.productRenderer.onMouseDown(event);
-    }
-    /* reloadCube() {
+    },
+    /* addRecommendedSlots: function(){
+      this.productRenderer.addSlot();
+    } */
+
+/* const unwatch = this.$store.watch(() => this.$store.getters.authenticatedAndOnline, res => {
+  console.log(unwatch) // => undefined
+  unwatch()
+}, {
+  immediate: true
+}) */
+
+
+
+     /*reloadCube() {
       var event = new CustomEvent("changeDimensions", {
         detail: {
           height: height,
@@ -62,8 +84,8 @@ export default {
         }
       });
       document.dispatchEvent(event);
-    },
-    reloadClosetSlots() {
+    },*/
+ /* reloadClosetSlots() {
       var slotDiv = document.getElementById("slotDiv");
       var length = slotDiv.childNodes.length - 1;
       var list = [];
@@ -108,6 +130,6 @@ export default {
   mounted() {
     var canvas = this.$refs.threeCanvas;
     this.productRenderer = new ProductRenderer(canvas);
-  }
+  },
 };
 </script>
