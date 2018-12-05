@@ -1,29 +1,33 @@
 <template>
-  <div>
+  <div class="component">
     <label class="slotsSelections">
       <input type="radio" id="recommendedSlots" value="recommendedSlots" v-model="picked"> Recommended Number Slots
     </label>
     <label class="slotsSelections">
       <input type="radio" id="customizedSlots" value="customizedSlots" v-model="picked"> Customized Number Slots
     </label>
-    <div v-if="displaySliders">
-      <!--<input type="text" id="freeSpace" value="freeSpace" v-model="freeSpace">
-      <div>
-        <i class="btn btn-primary material-icons" @click="createMoreSliders()" >+</i>
-        <i class="btn btn-primary material-icons">-</i>
-        <span v-for="n in recommendedNumberSlots" :key="n">
-          <vue-slider :min="minSizeSlot" :max="maxSizeSlot" v-model="sliderValue[n-1]"></vue-slider>
+    <div v-if="displaySliders" class="slidersSection">
+      <input type="text" :placeholder="freeSpaceValue" id="freeSpace" v-model="freeSpace" disabled>
+      <i class="btn btn-primary material-icons" @click="removeLine(index)">-</i>
+      <i class="btn btn-primary material-icons"  @click="addLine">+</i>
+      <div class="slidersSection">
+        <span v-for="n in minNumberSlots" :key="n">
+          <vue-slider class="slidersSection"
+            :min="minSizeSlot"
+            :max="maxSizeSlot"
+            :value="recommendedSizeSlot"
+            v-model="sliderValue[n-1]"
+            @onChange="upadteFreeSpace"
+          ></vue-slider>
         </span>
-        <span v-if="createNewSlider">
-          <vue-slider :min="minSizeSlot" :max="maxSizeSlot" v-model="slideV"></vue-slider>
-        </span>
-
-        <div v-for="(line, index) in lines" v-bind:key="index">
-      </div>-->
-      <div v-for="(line, index) in lines" v-bind:key="index">
-        <input v-model="line.countryCode">
-        <i class="btn btn-primary material-icons" @click="removeLine(index)"></i>
-        <i v-if="index + 1 === lines.length" @click="addLine" ></i>
+      <div v-for="(line, index) in lines.slice(0,maxNumberSlots)" v-bind:key="index">
+        <vue-slider class="slidersSection"
+          :min="minSizeSlot"
+          :max="maxSizeSlot"
+          :value="recommendedSizeSlot"
+          v-model="sliderValues[index]"
+        ></vue-slider>
+      </div>
       </div>
     </div>
   </div>
@@ -32,6 +36,11 @@
 import vueSlider from "vue-slider-component";
 import store from "./../store";
 import Axios from "axios";
+import { SET_SLOT_DEPTH } from "./../store/mutation-types.js";
+import { SET_SLOT_WIDTH } from "./../store/mutation-types.js";
+import { SET_SLOT_HEIGHT } from "./../store/mutation-types.js";
+import { SET_SLOT_UNIT } from "./../store/mutation-types.js";
+
 export default {
   name: "CustomizerSideBarSlotsPanel",
   data() {
@@ -39,45 +48,24 @@ export default {
       picked: "recommendedSlots",
       numberSlots: 0,
       sliderValue: [],
+      sliderValues: [],
+      lines: [],
       freeSpace: "",
       createNewSlider: false,
-      valueConverted: 4,
-      lines: [],
-      blockRemoval: true,
-      phoneUsageTypes: [
-        {
-          label: "Home",
-          value: "home"
-        },
-        {
-          label: "Work",
-          value: "work"
-        },
-        {
-          label: "Mobile",
-          value: "mobile"
-        },
-        {
-          label: "Fax",
-          value: "fax"
-        }
-      ],
-      countryPhoneCodes: [
-        {
-          label: "+90",
-          value: "+90"
-        },
-        {
-          label: "+1",
-          value: "+1"
-        }
-      ]
+      valueConverted: "",
+      blockRemoval: true
     };
   },
   components: {
     vueSlider
   },
   computed: {
+    freeSpaceValue() {
+      ///for (n in this.sliderValue) {
+       /// return parseInt(store.getters.width - this.sliderValue[n]);
+      ///}
+      return 200;
+    },
     recommendedNumberSlots() {
       ///if (store.getters.recommendedSlotSize.unit == store.getters.unit) {
       ///  return ( parseInt( store.getters.width / store.getters.recommendedSlotSize.width ) + 3);
@@ -87,22 +75,28 @@ export default {
       return 3;
     },
     minNumberSlots() {
-      return parseInt(store.getters.width / store.getters.maxSlotSize.width);
+      ///return parseInt(store.getters.width / store.getters.maxSlotSize);
+       return 50;
     },
     maxNumberSlots() {
-      return store.getters.width / store.getters.minSlotSize.width;
+      ///return store.getters.width / minSizeSlot;
+      return 5;
     },
     minSizeSlot() {
-      return store.getters.minSlotSize.width;
+      return store.getters.minSlotSize;
     },
     maxSizeSlot() {
-      return store.getters.maxSlotSize.width;
+      return store.getters.maxSlotSize;
     },
     recommendedSizeSlot() {
-      return store.getters.recommendedSlotSize.width;
+      ///return store.getters.recommendedSlotSize;
+      return 21;
     },
     displaySliders() {
       return this.picked === "customizedSlots";
+    },
+    unitSlot() {
+      return store.getters.unit;
     }
   },
   methods: {
@@ -110,7 +104,6 @@ export default {
       this.ceateNewSlider = true;
       this.recommendedNumberSlots++;
     },
-    removeSliders() {},
     deactivateSliderCreation() {
       this.createNewSlider = false;
     },
@@ -125,18 +118,7 @@ export default {
       let checkEmptyLines = this.lines.filter(line => line.number === null);
       if (checkEmptyLines.length >= 1 && this.lines.length > 0) return;
       this.lines.push({
-        countryCode: null,
-        number: null,
-        phoneUsageType: null
-      });
-    },
-    addLine() {
-      let checkEmptyLines = this.lines.filter(line => line.number === null);
-      if (checkEmptyLines.length >= 1 && this.lines.length > 0) return;
-      this.lines.push({
-        countryCode: null,
-        number: null,
-        phoneUsageType: null
+        slider: null
       });
     },
     removeLine(lineId) {
@@ -148,8 +130,14 @@ export default {
       this.blockRemoval = this.lines.length <= 1;
     }
   },
-  mounted() {
+   mounted() {
     this.addLine();
+  },
+  created() {
+    store.dispatch(SET_SLOT_DEPTH, { depth: 100 });
+    store.dispatch(SET_SLOT_WIDTH, { width: 55 });
+    store.dispatch(SET_SLOT_HEIGHT, { height: 100 });
+    store.dispatch(SET_SLOT_UNIT, { unit: "cm" });
   }
 };
 </script>
@@ -158,5 +146,13 @@ export default {
   float: left;
   padding: 7px 20px;
 }
+.slidersSection {
+  margin-bottom: 13%;
+  width: 7px 30px;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+.component {
+  margin-bottom: 31%;
+}
 </style>
-

@@ -1,12 +1,12 @@
 using System;
-using System.Collections.Generic;
 using core.dto;
-using support.domain.ddd;
 using support.dto;
+using core.services;
+using support.domain.ddd;
+using System.Collections.Generic;
 
 namespace core.domain
 {
-
     ///<summary>
     ///Class that represents a Customized Dimensions.
     ///<br> Customized Dimensions is value object;
@@ -54,7 +54,6 @@ namespace core.domain
         ///Empty constructor for ORM.
         ///</summary>
         protected CustomizedDimensions() { }
-
 
         ///<summary>
         /// Builds a new instance of CustomizedDimensions, receiving its height, width and depth.
@@ -141,14 +140,36 @@ namespace core.domain
             }
         }
 
+        /// <summary>
+        /// Builds a CustomizedDimensionsDTO out of a CustomizedDimensions instance
+        /// </summary>
+        /// <returns>CustomizedDimensionsDTO instance</returns>
         public CustomizedDimensionsDTO toDTO()
         {
             CustomizedDimensionsDTO customizedDimensionsDTO = new CustomizedDimensionsDTO();
-            
+            customizedDimensionsDTO.Id = this.Id;
             customizedDimensionsDTO.width = width;
             customizedDimensionsDTO.depth = depth;
             customizedDimensionsDTO.height = height;
+            customizedDimensionsDTO.unit = MeasurementUnitService.getMinimumUnit();
+            return customizedDimensionsDTO;
+        }
+
+        /// <summary>
+        /// Builds a CustomizedDimensionsDTO out of a CustomizedDimensions instance
+        /// </summary>
+        /// <param name="unit">Desired unit</param>
+        /// <returns>DimensionDTO instance</returns>
+        public CustomizedDimensionsDTO toDTO(string unit)
+        {
+            if (unit == null) return this.toDTO();
+
+            CustomizedDimensionsDTO customizedDimensionsDTO = new CustomizedDimensionsDTO();
             customizedDimensionsDTO.Id = this.Id;
+            customizedDimensionsDTO.width = MeasurementUnitService.convertToUnit(width, unit);
+            customizedDimensionsDTO.depth = MeasurementUnitService.convertToUnit(depth, unit);
+            customizedDimensionsDTO.height = MeasurementUnitService.convertToUnit(height, unit);
+            customizedDimensionsDTO.unit = unit;
             return customizedDimensionsDTO;
         }
     }

@@ -29,6 +29,10 @@ namespace core.domain
         /// Constant that represents the message that occurs if the CustomizedProduct's product reference is not valid
         /// </summary>
         private const string INVALID_PRODUCT_REFERENCE = "The inserted product reference is not valid";
+        /// <summary>
+        /// Constant that represents the message that occurs if the CustomizedProduct's product is not valid
+        /// </summary>
+        private const string INVALID_PRODUCT = "The inserted product is not valid.";
 
         /// <summary>
         /// Constant that represents the message that occurs if the CustomizedProduct's designation is not valid
@@ -355,7 +359,7 @@ namespace core.domain
         /// <param name="product">Product to check</param>
         private void checkProduct(Product product)
         {
-            if (product == null) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_MATERIAL);
+            if (product == null) throw new ArgumentException(INVALID_PRODUCT);
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
 import Closet from './Closet'
+import store from "./../store";
 
 export default class ProductRenderer {
     /**
@@ -130,8 +131,20 @@ export default class ProductRenderer {
         this.renderer = new THREE.WebGLRenderer({ canvas: this.canvasWebGL, antialias: true });
         this.initCamera();
         this.initControls();
+        this.scene = new THREE.Scene();
+        this.group = new THREE.Group();
         this.initCloset();
         this.initLighting();
+
+        var geometry = new THREE.SphereBufferGeometry(500, 60, 40);
+        geometry.scale(-1, 1, 1);
+
+        var material = new THREE.MeshBasicMaterial({
+            map: new THREE.TextureLoader().load("./../../src/assets/background.jpg")
+        });
+
+        var mesh = new THREE.Mesh(geometry, material);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
 
         //Creates the intersection plane
         this.plane = new THREE.Plane();
@@ -158,21 +171,24 @@ export default class ProductRenderer {
 
         this.scene.add(dispPlane);
         this.scene.add(this.camera);
+        this.scene.add(mesh);
 
         //this.registerEvents();
         this.animate();
     }
+
     /**
      * Initiates the closet
      */
     initCloset() {
-        this.scene = new THREE.Scene();
-        this.group = new THREE.Group();
-        this.closet = new Closet([204.5, 4.20, 100, 0, 0, 0]
-            , [204.5, 4.20, 100, 0, 100, 0]
-            , [4.20, 100, 100, -100, 50, 0]
-            , [4.20, 100, 100, 100, 50, 0]
-            , [200, 100, 0, 0, 50, -50]);
+        var thickness = 4.20;
+
+        this.closet = new Closet([404.5, thickness, 100, 0, -210, -295], //Bottom
+            [404.5, thickness, 100, 0, 90, -295], //Top
+            [thickness, 300, 100, -200, -60, -295], //Left
+            [thickness, 300, 100, 200, -60, -295], //Right
+            [400, 300, 0, 0, -60, -300]); //Back
+
         var faces = this.closet.closet_faces;
 
         this.textureLoader = new THREE.TextureLoader();
@@ -186,8 +202,14 @@ export default class ProductRenderer {
                 , faces[i][3], faces[i][4], faces[i][5]));
         }
         this.scene.add(this.group);
+        this.group.visible = false;
         this.renderer.setClearColor(0xFFFFFF, 1);
     }
+
+    /**
+     * Shows the closet
+     */
+    showCloset() { this.group.visible = true; }
 
     /**
      * Initializes the scene's lighting.
@@ -205,7 +227,6 @@ export default class ProductRenderer {
      * Updates current closet graphical view
      */
     updateClosetGV() {
-
         for (var i = 0; i < this.closet_faces_ids.length; i++) {
             var closet_face = this.group.getObjectById(this.closet_faces_ids[i]);
             closet_face.scale.x = this.getNewScaleValue(this.closet.getInitialClosetFaces()[i][0], this.closet.getClosetFaces()[i][0], closet_face.scale.x);
@@ -551,35 +572,40 @@ export default class ProductRenderer {
      */
     moveFace() {
         if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+            // alert(store.state.product.id);
             if (this.selected_face == this.group.getObjectById(this.closet_faces_ids[3])) { //If the selected face is the right one
-                
+
                 var rightFacePosition = this.intersection.x - this.offset + this.selected_face.position.x; //Position of the right closet face
 
                 if (this.closet_slots_faces_ids.length == 0) { //If there are no slots
                     this.selected_face.position.x = rightFacePosition;
-                    this.changeClosetDimensions(rightFacePosition, this.closet.getClosetHeight(), this.closet.getClosetDepth());
-               
+                    this.closet.changeClosetWidth(rightFacePosition);
+                    this.updateClosetGV();
+
                 } else {
                     var rightSlotPosition = this.group.getObjectById(this.closet_slots_faces_ids[this.closet_slots_faces_ids.length - 1]).position.x; //Position of the last (more to the right) slot 
 
                     if (rightFacePosition - rightSlotPosition > rightSlotPosition) { //Checks if right face doesn't intersect the slot
                         this.selected_face.position.x = rightFacePosition;
-                        this.changeClosetDimensions(rightFacePosition, this.closet.getClosetHeight(), this.closet.getClosetDepth());
+                        this.closet.changeClosetWidth(rightFacePosition);
+                        this.updateClosetGV();
                     }
                 }
             } else if (this.selected_face == this.group.getObjectById(this.closet_faces_ids[2])) { //If the selected face is the left one
 
                 var leftFacePosition = - this.intersection.x - this.offset - this.selected_face.position.x; //Position of the left closet face
-                
+
                 if (this.closet_slots_faces_ids.length == 0) { //If there are no slots
                     this.selected_face.position.x = leftFacePosition;
-                    this.changeClosetDimensions(leftFacePosition, this.closet.getClosetHeight(), this.closet.getClosetDepth());
+                    this.closet.changeClosetWidth(leftFacePosition);
+                    this.updateClosetGV();
                 } else {
                     var leftSlotPosition = - this.group.getObjectById(this.closet_slots_faces_ids[0]).position.x; //Position of the first (more to the left) slot
 
                     if (leftFacePosition - leftSlotPosition > leftSlotPosition) { //Checks if left face doesn't intersect the slot
                         this.selected_face.position.x = leftFacePosition;
-                        this.changeClosetDimensions(leftFacePosition, this.closet.getClosetHeight(), this.closet.getClosetDepth());
+                        this.closet.changeClosetWidth(leftFacePosition);
+                        this.updateClosetGV();
                     }
                 }
             }

@@ -1,3 +1,4 @@
+//@ts-check
 /**
  * Represents the internal core of a Module
  */

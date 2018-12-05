@@ -33,14 +33,7 @@ const state = {
                 description: ""
             }
         },
-        slots: [
-            {
-                id: "",
-                width: "",
-                unit: "",
-                components: []
-            }
-        ],
+        slots: [],
         customizedDimensions: {
             width: "",
             height: "",
@@ -57,17 +50,17 @@ const getters = {
     productDimensions: state => {
         return state.product.dimensions;
     },
-    productSlotSizes: state => {
-        return state.product.slotSizes;
+    productSlotWidths: state => {
+        return state.product.slotWidths;
     },
-    recommendedSlotSize: state => {
-        return state.product.slotSizes.recommendedSize;
+    recommendedSlotWidth: state => {
+        return state.product.slotWidths.recommendedWidth;
+    }, 
+    maxSlotWidth: state => {
+        return state.product.slotWidths.maxWidth;
     },
-    maxSlotSize: state => {
-        return state.product.slotSizes.maxSize;
-    },
-    minSlotSize: state => {
-        return state.product.slotSizes.minSize;
+    minSlotWidth: state => {
+        return state.product.slotWidths.minWidth;
     },
     productMaterials: state => {
         return state.product.materials;
@@ -75,17 +68,20 @@ const getters = {
     productComponents: state => {
         return state.product.components;
     },
-    width: state => {
-        return state.customizedProduct.customizedDimensions.width;
+     width: state => {
+        return state.customizedProduct.dimensions.width;
     },
     height: state => {
-        return state.customizedProduct.customizedDimensions.height;
+        return state.customizedProduct.dimensions.height;
     },
     depth: state => {
-        return state.customizedProduct.customizedDimensions.depth;
+        return state.customizedProduct.dimensions.depth;
     },
     unit: state => {
-        return state.customizedPrdocut.customizedDimensions.unit;
+        return state.customizedProduct.dimensions.unit;
+    },
+    customizedProductSlotWidth: state => {
+        return state.customizedProduct.slots.width;
     }
 }
 

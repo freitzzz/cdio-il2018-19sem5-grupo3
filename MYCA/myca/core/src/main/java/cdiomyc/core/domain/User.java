@@ -29,7 +29,7 @@ import javax.persistence.Table;
 @Table(name = "MYCA_USER")
 public class User implements AggregateRoot<Auth>,Serializable{
     /**
-     * Constant that represents the default session time (in minuntes)
+     * Constant that represents the default session time (in minutes)
      */
     private static final int DEFAULT_SESSION_TIME=60;
     /**
@@ -107,7 +107,7 @@ public class User implements AggregateRoot<Auth>,Serializable{
         checkRole(role);
         if(!this.roles.contains(role))
             throw new IllegalStateException(String.format("User does not have the role %s !",role));
-        this.roles.add(role);
+        this.roles.remove(role);
     }
     
     /**

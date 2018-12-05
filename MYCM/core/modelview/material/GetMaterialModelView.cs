@@ -27,6 +27,13 @@ namespace core.modelview.material{
         public string designation{get;set;}
 
         /// <summary>
+        /// String with material image's file name.
+        /// </summary>
+        /// <value>Gets/sets the image's file name.</value>
+        [DataMember(Name="image")]
+        public string imageFilename { get; set; }
+
+        /// <summary>
         /// Material's list of available colors.
         /// </summary>
         /// <value>Gets/sets the value of the colors field.</value>
