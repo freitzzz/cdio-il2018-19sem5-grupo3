@@ -5,7 +5,7 @@
       <i class="material-icons md-12 md-blue btn">help</i>
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
-    <select class="dropdown" v-model="dimensionOp" @click="populateDimensions">
+    <select class="dropdown" v-model="dimensionOp" @change="populateDimensions">
       <option
         v-for="option in availableOptionsDimensions"
         :key="option.id"
@@ -66,13 +66,15 @@ import {
 } from "./../store/mutation-types.js";
 
 import { error } from "three";
-const MIN_DEFAULT=1;
-const MAX_DEFAULT=2;
-const INCREMENT_DEFAULT=1;
-const DISCRETE_INTERVAL= 0;
-const CONTINUOUS_INTERVAL= 1;
+const MIN_DEFAULT = 1;
+const MAX_DEFAULT = 2;
+const INCREMENT_DEFAULT = 1;
+
+const DISCRETE_INTERVAL = 0;
+const CONTINUOUS_INTERVAL = 1;
 const DISCRETE_VALUE = 2;
-const ERROR_DIMENSION_TYPE = "No available dimension please try the other option.";
+const ERROR_DIMENSION_TYPE =
+  "No available dimension please try the other option.";
 const NO_OPTION = -1;
 
 export default {
@@ -87,8 +89,8 @@ export default {
       widthMax: MAX_DEFAULT,
       widthIncrement: INCREMENT_DEFAULT,
 
-      depthMin:  MIN_DEFAULT,
-      depthMax:  MAX_DEFAULT,
+      depthMin: MIN_DEFAULT,
+      depthMax: MAX_DEFAULT,
       depthIncrement: INCREMENT_DEFAULT,
 
       height: this.heightMin,
@@ -96,15 +98,16 @@ export default {
       depth: this.depthMin,
 
       unit: "cm",
+
       dimensionOp: 0,
+
       availableOptionsDimensions: [],
       availableOptionsUnits: [],
       availableDimensionsHLD: [],
 
-      heightType:NO_OPTION, ////No type of dimension until it's choosen an option
+      heightType: NO_OPTION, ////No type of dimension until it's choosen an option
       widthType: NO_OPTION, ///No type of dimension until it's choosen an option
-      depthType: NO_OPTION, //No type of dimension until it's choosen an option
-      
+      depthType: NO_OPTION //No type of dimension until it's choosen an option
     };
   },
   components: {
@@ -150,18 +153,19 @@ export default {
     identifyTypeDimensions: function(dimensionObj) {
       if (dimensionObj.values != null) {
         //Discrete interval
-        return this.DISCRETE_INTERVAL;
+        return DISCRETE_INTERVAL;
       } else if (dimensionObj.value != null) {
         //DIscrete value
-        return this.DISCRETE_VALUE;
+        return DISCRETE_VALUE;
       } else if (
         dimensionObj.minValue != null &&
         dimensionObj.maxValue != null &&
         dimensionObj.increment != null
       ) {
-        return this.CONTINUOUS_INTERVAL;
-      } //Not yet implemented dimension
-      return this.ERROR_DIMENSION_TYPE;
+        return CONTINUOUS_INTERVAL;
+      }else{ //Not yet implemented dimension
+      return ERROR_DIMENSION_TYPE;
+      }
     },
     //Populate
     populateDimensions: function() {
@@ -170,38 +174,52 @@ export default {
 
       //Populate Height:
       this.heightType = this.identifyTypeDimensions(op.height);
-
-      if (this.heightType == this.DISCRETE_INTERVAL) {
+      alert(this.heightType);
+      /*   if (this.heightType == this.DISCRETE_INTERVAL) {
         this.organizeCrescentOrder(op.height.values);
       }
-
+ */
       //Populate Width
-      this.widthType = this.identifyTypeDimensions(op.width);
-      if (this.widthType == this.DISCRETE_INTERVAL) {
+      this.widthType= this.identifyTypeDimensions(op.width);
+      /*  if (this.widthType == this.DISCRETE_INTERVAL) {
         this.organizeCrescentOrder(op.width.values);
-      }
+      } */
+      alert(this.widthType);
+      this.determineMinOfInterval(this.widthType, op.width, this.widthMin);
+      this.determineMaxOfInterval(this.widthType, op.width, this.widthMax);
+      this.determineIncrementOfInterval(
+        this.widthType,
+        op.width,
+        this.widthIncrement
+      );
       /* alert(widthType); */
       //Populate Depth:
-      this.depthType = this.identifyTypeDimensions(op.depth);
+       this.depthType=this.identifyTypeDimensions(op.depth);
       /* alert(depthType); */
-      if (this.depthType == this.DISCRETE_INTERVAL) {
+      /*  if (this.depthType == this.DISCRETE_INTERVAL) {
         this.organizeCrescentOrder(op.depth.values);
-      }
+      } */
     },
     //The following methods determine the min,max and increment to populate the height,width and depth slider
-    determineMinOfInterval: function(typeOfInterval, dimensionJson) {
-      var min;
+    determineMinOfInterval: function(
+      typeOfInterval,
+      dimensionJson,
+      minDimension
+    ) {
       if (typeOfInterval == this.DISCRETE_INTERVAL) {
-        return 0; //index of
+        minDimension = 0; //index of
       } else if (typeOfInterval == this.CONTINUOUS_INTERVAL) {
-        min = dimensionJson.minValue;
+        minDimension = dimensionJson.minValue;
       } else {
         //DISCRETE VALUE
-        min = dimensionJson.value;
+        minDimension = dimensionJson.value;
       }
-      return min;
     },
-    determineMaxOfInterval: function(typeOfInterval, dimensionJson) {
+    determineMaxOfInterval: function(
+      typeOfInterval,
+      dimensionJson,
+      maxDimension
+    ) {
       var max = -1;
       if (typeOfInterval == this.DISCRETE_INTERVAL) {
         /* for(var i=0; i< dimensionJson.values.length;i++){
@@ -209,43 +227,45 @@ export default {
             max = dimensionJson.values[i];
           }
         } */
-        return dimensionJson.length - 1;
+        maxDimension = dimensionJson.length - 1;
       } else if (typeOfInterval == this.CONTINUOUS_INTERVAL) {
-        min = dimensionJson.maxValue;
+        maxDimension = dimensionJson.maxValue;
       } else {
-        max = dimensionJson.value;
+        maxDimension = dimensionJson.value;
       }
-      return max;
     },
-    determineIncrementOfInterval: function(typeOfInterval, dimensionJson) {
-      var increment;
+    determineIncrementOfInterval: function(
+      typeOfInterval,
+      dimensionJson,
+      incrementDimension
+    ) {
       if (typeOfInterval == this.DISCRETE_INTERVAL) {
-        increment = 1;
+        incrementDimension = 1;
       } else if (typeOfInterval == this.CONTINUOUS_INTERVAL) {
-        increment = dimensionJson.increment;
+        incrementDimension = dimensionJson.increment;
       } else {
         //DISCRETE VALUE
-        increment = 0;
+        incrementDimension = 0;
       }
-    },
-    //Organizes vector to crescent order.
+    }
+    /*  //Organizes vector to crescent order.
     organizeCrescentOrder: function(vec) {
       var tmp, minTmp;
 
       for (var i = 0; i < vec.length; i++) {
-        tmp = vec[i];
-        for (var j = i + 1; j < vec.length; j++) {
-          if (tmp > vec[j]) {
-            tmp = vec[j];
+        tmp = this.vec[i];
+        for (var j = i + 1; j < this.vec.length; j++) {
+          if (tmp > this.vec[j]) {
+            tmp = this.vec[j];
           }
         }
-        if (tmp != vec[i]) {
-          minTmp = vec[i];
-          vec[i] = tmp;
-          vec[j] = minTmp;
+        if (tmp != this.vec[i]) {
+          minTmp = this.vec[i];
+          this.vec[i] = tmp;
+          this.vec[j] = minTmp;
         }
       }
-    }
+    } */
   }
 };
 </script>
