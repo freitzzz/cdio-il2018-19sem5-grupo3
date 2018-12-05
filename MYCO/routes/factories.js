@@ -49,22 +49,43 @@ factoriesRoute.route('/factories/:id').get(function(request,response){
  * Routes the POST of a new factory
  */
 factoriesRoute.route('/factories').post(function(request,response){
-    city
-        .findById(request.body.cityId)
-            .then(function(_city){
-                request.body.city=_city;
+    let factoryModel=Object.assign({},request.body);
+    factory.validateFactoryModelAsCallback(factoryModel)
+    .then(()=>{
+        grantFactoryDoesntAlreadyExist(factoryModel)
+        .then(()=>{
+            cityExists(factoryModel.cityId)
+            .then((foundCity)=>{
+                console.log("!!!")
+                factoryModel.city=foundCity;
                 factory
-                    .create(serializeFactory(request.body))
-                    .then(function(createdFactorySchema){
-                        response.status(201).json(deserializeFactory(createdFactorySchema));
+                    .create(serializeFactory(factoryModel))
+                    .then((createdFactory)=>{
+                        response.status(201).json(deserializeFactory(createdFactory));
                     })
-                    .catch(function(error){
-                        let exceptionName=Object.keys(error.errors)[0];
-                        response.status(400).json({error: error.errors[exceptionName].message});
-                    })
-            }).catch(function(){
-                response.status(400).json({error:'There is no city with the given id'});
+                    .catch((_error_message)=>{
+                        response.status(500).json({message:"An expected error has occurd! Please contact the developers and send them this message",cause:_error_message})
+                    });
             })
+            .catch((possible_error)=>{
+                if(possible_error!=null)response.status(400).json({message:possible_error});
+                factory
+                    .create(serializeFactory(factoryModel))
+                    .then((createdFactory)=>{
+                        response.status(201).json(deserializeFactory(createdFactory));
+                    })
+                    .catch((_error_message)=>{
+                        response.status(500).json({message:"An expected error has occurd! Please contact the developers and send them this message",cause:_error_message})
+                    });
+            });
+        })
+        .catch((_error_message)=>{
+            response.status(400).json({error:_error_message});
+        });
+    })
+    .catch((_error_message)=>{
+        response.status(400).json({error:_error_message});
+    });
 })
 
 /**
@@ -98,6 +119,51 @@ factoriesRoute.route('/factories/:id').delete(function(request,response){
 })
 
 /**
+ * Grants that a factory doesnt already exist
+ * @param {Object} factoryDetails Object with the factory details
+ */
+function grantFactoryDoesntAlreadyExist(factoryDetails){
+    return new Promise((accept,reject)=>{
+        factory.findOne({'reference':factoryDetails.reference},'reference ')
+        .then((foundFactoryByReference)=>{
+            if(foundFactoryByReference)reject('There is already a factory with the reference '+factoryDetails.reference);
+            factory.findOne({
+                'location':{
+                    latitude:factoryDetails.latitude,longitude:factoryDetails.longitude
+                }})
+                .then((foundFactoryByLocation)=>{
+                    if(foundFactoryByLocation)reject('There is already a factory based on the given location');
+                    accept();
+                })
+                .catch(()=>{
+                    reject('An internal error occurd while accesing our database :(')
+                });
+        })
+        .catch(()=>{
+            reject('An internal error occurd while accesing our database :(')
+        });
+    });
+}
+
+/**
+ * Checks if a city exists, and if exists returns it as a callback function
+ * @param {String} cityId String with the city persistence identifier
+ */
+function cityExists(cityId){
+    return new Promise((accept,reject)=>{
+        if(cityId==null)reject();
+        city
+        .findById(cityId)
+        .then((foundCity)=>{
+            foundCity!=null ? accept(foundCity) : reject('There is no city with the given id');
+        })
+        .catch(()=>{
+            reject('An internal error occurd while processing our database :(');
+        });
+    });
+}
+
+/**
  * Serializes the request body into a Factory Object
  * @param {Object} requestBody Object with the request body
  */
@@ -122,7 +188,7 @@ function deserializeFactory(factorySchema){
         latitude:factorySchema.location.latitude,
         longitude:factorySchema.location.longitude
     };
-    if(factorySchema.city)deserializedFactory.cityId=factorySchema.city.id;
+    if(factorySchema.city!=null)deserializedFactory.cityId=factorySchema.city.id;
     return deserializedFactory
 }
 
