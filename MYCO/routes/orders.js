@@ -172,6 +172,37 @@ ordersRoute.route('/orders/:id/state').put((request,response)=>{
 });
 
 /**
+ * Routes the register the packages of an order request
+ */
+ordersRoute.route('/orders/:id/packages').patch((request,response)=>{
+    let orderID=request.params.id;
+    Order
+        .findById(orderID)
+        .then((order)=>{
+            registerOrderPackages(order,request.body)
+            .then((registeredOrderPackages)=>{
+                Order
+                    .findByIdAndUpdate(orderID,registeredOrderPackages)
+                    .then((updatedOrder)=>{
+                        response.status(200).json(updatedOrder);
+                    })
+                    .catch((_error_updating_error)=>{
+                        response.status(500).json({message:_error_updating_error});
+                        //ERROR UPDATING ORDER ON MONGO DB :)))
+                    })
+            })
+            .catch((_errorRegisterOrderPackages)=>{
+                response.status(400).json({message:_errorRegisterOrderPackages});
+                //BUSINESS ORDER STATE CHANGE ERROR :))
+            });
+        })
+        .catch((_error)=>{
+            response.status(404).json({message:'Order not found!'});
+            //ORDER NOT FOUND :)
+        });
+});
+
+/**
  * Verifies if a city is located in a collection of factories
  * @param {City.Schema} city City with the city being verified
  * @param {List} factories Collection with the factories being checked
@@ -211,12 +242,26 @@ function createOrder(orderContents, cityToDeliver, factoryOfProduction) {
 function changeOrderState(order,orderState){
     return new Promise((updatedOrderState,errorUpdatingOrderState)=>{
         try{
-            console.log("!!!!")
             order.changeState(orderState);
-            console.log("????")
             updatedOrderState(order);
         }catch(_error){
             errorUpdatingOrderState(_error);
+        }
+    });
+}
+
+/**
+ * Registers the packages of an order
+ * @param {Order.Schema} order Order with the order being registered the packages
+ * @param {Array} packages Array with the packages information
+ */
+function registerOrderPackages(order,packages){
+    return new Promise((registeredOrderPackages,errorRegisteringOrderPackages)=>{
+        try{
+            order.registerPackages(packages);
+            registeredOrderPackages(order);
+        }catch(_error){
+            errorRegisteringOrderPackages(_error);
         }
     });
 }
