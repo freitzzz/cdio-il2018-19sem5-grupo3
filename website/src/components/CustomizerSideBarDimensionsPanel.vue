@@ -14,40 +14,43 @@
     </select>
     <!--Fetch minimums from server-->
     <div class="text-entry">Height:</div>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.HEIGHT]" :interval="this.heightIncrement" :data="this.discreteIntervalHeight"></vue-slider>
     <vue-slider
       class="slider"
-      v-if="!this.discreteValueFlags[this.HEIGHT]"
+      v-if="this.continousIntervalFlags[this.HEIGHT]"
       :min="this.heightMin"
       :max="this.heightMax"
       :interval="this.heightIncrement"
       v-model="height"
       @change="updateHeight"
     ></vue-slider>
-    <input class="slider" v-else type="text" :readonly="true" v-model="this.heightMin">
+    <input class="slider" v-if="this.discreteValueFlags[this.HEIGHT]" type="text" :readonly="true" v-model="this.heightMin">
 
     <div class="text-entry">Width:</div>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.WIDTH]" :interval="this.widthIncrement" :data="this.discreteIntervalWidth"></vue-slider>
     <vue-slider
       class="slider"
-      v-if="!this.discreteValueFlags[this.WIDTH]"
+      v-if="this.continousIntervalFlags[this.WIDTH]"
       :min="this.widthMin"
       :max="this.widthMax"
       :interval="this.widthIncrement"
       v-model="width"
       @change="updateWidth"
     ></vue-slider>
-    <input class="slider" v-else type="text" :readonly="true" v-model="this.widthMin">
+    <input class="slider" v-if="this.discreteValueFlags[this.WIDTH]" type="text" :readonly="true" v-model="this.widthMin">
 
     <div class="text-entry">Depth:</div>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.DEPTH]" :interval="this.depthIncrement" :data="this.discreteIntervalDepth"></vue-slider>
     <vue-slider
       class="slider"
-      v-if="!this.discreteValueFlags[this.DEPTH]"
+      v-if="this.continousIntervalFlags[this.DEPTH]"
       :min="this.depthMin"
       :max="this.depthMax"
       :interval="this.depthIncrement"
       v-model="depth"
       @change="updateDepth"
     ></vue-slider>
-    <input class="slider" v-else type="text" :readonly="true" v-model="this.depthMin">
+    <input class="slider" v-if="this.discreteValueFlags[this.DEPTH]" type="text" :readonly="true" v-model="this.depthMin">
 
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="updateUnit">
@@ -117,7 +120,6 @@
   
         availableOptionsDimensions: [],
         availableOptionsUnits: [],
-        availableDimensionsHLD: [],
   
         heightType: NO_OPTION, ////No type of dimension until it's choosen an option
         widthType: NO_OPTION, ///No type of dimension until it's choosen an option
@@ -125,11 +127,17 @@
   
         /*Flags: */
         discreteValueFlags:[false,false,false],
+        discreteIntervalFlags:[false,false,false],
+        continousIntervalFlags:[true,true,true],
 
         HEIGHT: 0,
         WIDTH :1,       
         DEPTH :2,
 
+        /*If exists discrete interval, there's  a vector associated to it*/
+        discreteIntervalHeight:[],
+        discreteIntervalWidth:[],
+        discreteIntervalDepth:[]
       };
     },
     components: {
@@ -167,9 +175,11 @@
     },
     methods: {
      
-      setFalseDiscreteFlags:function(){
+      resetFlags: function(){
         for(var i = 0; i < N_DIMENSIONS -1; i++){
           this.discreteValueFlags[i] = false;
+          this.discreteIntervalFlags[i] = false;
+          this.continousIntervalFlags[i]=true;
         }
       },
       /*  */
@@ -216,42 +226,90 @@
       //Populate
       populateDimensions: function() {
 
-        this.setFalseDiscreteFlags();
+        this.resetFlags();
 
         //Get information of the chosed option
         var op = this.dimensionOp;
   
         //Populate Height:
         this.heightType = this.identifyTypeDimensions(op.height);
-        if(this.heightType == DISCRETE_VALUE){
+        if(this.heightType == DISCRETE_INTERVAL){
+          this.discreteIntervalHeight = op.height.values;
+
+          this.discreteIntervalFlags[this.HEIGHT] = true;
+          this.continousIntervalFlags[this.HEIGHT] = false;
+          this.discreteValueFlags[this.HEIGHT] = false;
+
+          this.heightIncrement = 1;
+        }else if(this.heightType == DISCRETE_VALUE){
           this.heightMin = this.determineMinOfInterval(this.heightType,op.height);
+
           this.discreteValueFlags[this.HEIGHT] = true;
+          this.continousIntervalFlags[this.HEIGHT] = false;
+          this.discreteIntervalFlags[this.HEIGHT] = false;
         }else{
           this.heightMin = this.determineMinOfInterval(this.heightType, op.height);
           this.heightMax = this.determineMaxOfInterval(this.heightType, op.height);
           this.heightIncrement = this.determineIncrementOfInterval(this.heightType, op.height);
+
+          this.continousIntervalFlags[this.HEIGHT] = true;
+          this.discreteIntervalFlags[this.HEIGHT] = false;
+          this.discreteValueFlags[this.HEIGHT] = false;
         }
 
         //Populate Width
         this.widthType = this.identifyTypeDimensions(op.width);
-        if (this.widthType == DISCRETE_VALUE) {
+        if(this.widthType == DISCRETE_INTERVAL){
+          this.discreteIntervalWidth = op.width.values;
+
+          this.discreteIntervalFlags[this.WIDTH] = true;
+          this.continousIntervalFlags[this.WIDTH] = false;
+          this.discreteValueFlags[this.WIDTH]=false;
+
+          this.widthIncrement = 1;
+        }else if (this.widthType == DISCRETE_VALUE) {
           this.widthMin = this.determineMinOfInterval(this.widthType, op.width);
+
           this.discreteValueFlags[this.WIDTH] = true;
+          this.continousIntervalFlags[this.WIDTH] = false;
+          this.discreteIntervalFlags[this.WIDTH]=false;
         } else {
           this.widthMin = this.determineMinOfInterval(this.widthType, op.width);
           this.widthMax = this.determineMaxOfInterval(this.widthType, op.width);
           this.widthIncrement = this.determineIncrementOfInterval(this.widthType, op.width);
+
+          this.continousIntervalFlags[this.WIDTH] = true;
+          this.discreteValueFlags[this.WIDTH] = false;
+          this.discreteIntervalFlags[this.WIDTH]=false;
         }
 
         //Populate Depth:
         this.depthType = this.identifyTypeDimensions(op.depth);
-        if (this.depthType == DISCRETE_VALUE) {
+        if(this.depthType == DISCRETE_INTERVAL){
+          this.discreteIntervalDepth = op.depth.values;
+
+          this.discreteIntervalFlags[this.DEPTH] = true;
+          this.continousIntervalFlags[this.DEPTH] = false;
+          this.discreteValueFlags[this.DEPTH]=false;
+
+          this.depthIncrement = 1;
+
+        }else if (this.depthType == DISCRETE_VALUE) {
           this.depthMin = this.determineMinOfInterval(this.depthType, op.depth);
+
           this.discreteValueFlags[this.DEPTH] = true;
+          this.continousIntervalFlags[this.DEPTH] = false;
+          this.discreteIntervalFlags[this.DEPTH]=false;
+
         } else {
-          this.depthMin = this.determineMinOfInterval(this.depthType, op.depth);
           this.depthMax = this.determineMaxOfInterval(this.depthType, op.depth);
+          this.depthMin = this.determineMinOfInterval(this.depthType, op.depth);
           this.depthIncrement = this.determineIncrementOfInterval(this.depthType, op.depth);
+
+          this.continousIntervalFlags[this.DEPTH] = true;
+          this.discreteValueFlags[this.DEPTH] = false;
+          this.discreteIntervalFlags[this.DEPTH]=false;
+          
         }
        
       },
@@ -260,45 +318,23 @@
         typeOfInterval,
         dimensionJson
       ) {
-        if (typeOfInterval == DISCRETE_INTERVAL) {
-          return 0; //index of
-        } else if (typeOfInterval == CONTINUOUS_INTERVAL) {
+        if (typeOfInterval == CONTINUOUS_INTERVAL) {
           return dimensionJson.minValue;
         } else {
           //DISCRETE VALUE
           return dimensionJson.value;
         }
       },
-      determineMaxOfInterval: function(
-        typeOfInterval,
-        dimensionJson
-      ) {
+      determineMaxOfInterval: function(typeOfInterval,dimensionJson) {
         var max = -1;
-        if (typeOfInterval == DISCRETE_INTERVAL) {
-          /* for(var i=0; i< dimensionJson.values.length;i++){
-            if(max < dimensionJson.values[i]){
-              max = dimensionJson.values[i];
-            }
-          } */
-          return dimensionJson.length - 1;
-        } else if (typeOfInterval == CONTINUOUS_INTERVAL) {
+        if (typeOfInterval == CONTINUOUS_INTERVAL) {
           return dimensionJson.maxValue;
         } else {
           return dimensionJson.value;
         }
       },
-      determineIncrementOfInterval: function(
-        typeOfInterval,
-        dimensionJson
-      ) {
-        if (typeOfInterval == DISCRETE_INTERVAL) {
-          return 1;
-        } else if (typeOfInterval == CONTINUOUS_INTERVAL) {
-          return dimensionJson.increment;
-        } else {
-          //DISCRETE VALUE
-          return 1;
-        }
+      determineIncrementOfInterval: function(dimensionJson) {
+          return dimensionJson.increment; 
       }
       /*  //Organizes vector to crescent order.
         organizeCrescentOrder: function(vec) {
