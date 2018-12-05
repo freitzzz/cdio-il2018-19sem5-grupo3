@@ -48,13 +48,28 @@ citySchema.statics.createCity=function (name,locationLatitude,locationLongitude)
 }
 
 /**
+ * Validates a city model as a callback function
+ * @param {Object} cityModel Object with the city model being validated 
+ */
+citySchema.statics.validateCityModelAsCallback=function(cityModel){
+    return new Promise((accept,reject)=>{
+        try{
+            citySchema.statics.validateCityModel(cityModel);
+            accept();
+        }catch(_error_message){
+            reject(_error_message);
+        }
+    });
+}
+
+/**
  * Grants that a city model is valid
  * @param {Object} cityModel Object with the city model being validated
  */
 citySchema.statics.validateCityModel=function(cityModel){
     if(!cityModel)throw 'Invalid city details';
     grantCityNameIsValid(cityModel.name);
-    location.validateCityModel();
+    location.validateLocationModel({latitude:cityModel.latitude,longitude:cityModel.longitude});
 };
 
 /**
