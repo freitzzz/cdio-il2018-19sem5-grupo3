@@ -342,7 +342,6 @@ export default class ProductRenderer {
                     //if (components[i][j].designation == "Shelf") this.generateShelf(components[i][j].slot);
                     //if (components[i][j].designation == "Pole") this.generatePole(components[i][j].slot);
                     //if (components[i][j].designation == "Drawer") this.generateDrawer(components[i][j].slot);
-                    alert(components[i][j].slot)
                     if (components[i][j].designation == "Produto Componente") this.generateHingedDoor(components[i][j].slot);
                 }
             }
@@ -1043,7 +1042,6 @@ export default class ProductRenderer {
     }
 
     generateHingedDoor(slot) {
-        alert(slot);
         var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
         var rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
         var depth = 3;

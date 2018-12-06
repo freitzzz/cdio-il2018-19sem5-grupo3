@@ -87,8 +87,8 @@ export const getters = {
     width: state => {
         return state.customizedProduct.dimensions.width;
     },
-    height: state => {
-        return state.customizedProduct.dimensions.height;
+    customizedProductDimensions: state=>{
+        return state.customizedProduct.customizedDimensions;
     },
     depth: state => {
         return state.customizedProduct.dimensions.depth;
