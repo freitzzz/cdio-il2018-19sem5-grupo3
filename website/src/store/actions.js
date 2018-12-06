@@ -60,4 +60,7 @@ export const actions = {
     [types.SET_SLOT_UNIT]: ({ commit }, payload) => {
         commit(types.SET_SLOT_UNIT, payload);
     },
+    [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS]: ({commit},payload)=>{
+        commit(types.SET_CUSTOMIZED_PRODUCT_COMPONENTS, payload);
+    }
 }
