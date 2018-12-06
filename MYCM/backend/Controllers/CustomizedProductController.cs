@@ -179,9 +179,9 @@ namespace backend.Controllers{
         public ActionResult findByID(long id){
             logger.LogInformation(LOG_GET_BY_ID_START);
             try{
-                GetCustomizedProductByIdModelView customizedProductModelView=new GetCustomizedProductByIdModelView();
+                GetCustomizedProductModelView customizedProductModelView=new GetCustomizedProductModelView();
                 customizedProductModelView.id=id;
-                GetCustomizedProductByIdModelView fetchedCustomizedProduct=new core.application.CustomizedProductController().findCustomizedProductByID(customizedProductModelView);
+                GetCustomizedProductModelView fetchedCustomizedProduct=new core.application.CustomizedProductController().findCustomizedProductByID(customizedProductModelView);
                 if(fetchedCustomizedProduct!=null)
                 {
                     logger.LogInformation(LOG_GET_BY_ID_SUCCESS);
@@ -204,7 +204,7 @@ namespace backend.Controllers{
         public ActionResult addCustomizedProduct([FromBody]PostCustomizedProductModelView customizedProductModelView){
             logger.LogInformation(LOG_POST_START);
             try{
-                GetCustomizedProductByIdModelView createdCustomizedProductModelView=new core.application.CustomizedProductController().addCustomizedProduct(customizedProductModelView);
+                GetCustomizedProductModelView createdCustomizedProductModelView=new core.application.CustomizedProductController().addCustomizedProduct(customizedProductModelView);
                 logger.LogInformation(LOG_POST_SUCCESS,createdCustomizedProductModelView);
                 return Created(Request.Path,createdCustomizedProductModelView);
             }catch(NullReferenceException nullReferenceException){

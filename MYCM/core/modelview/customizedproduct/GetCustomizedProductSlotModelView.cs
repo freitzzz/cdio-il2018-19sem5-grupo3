@@ -9,7 +9,7 @@ namespace core.modelview.customizedproduct
     /// Model View that represents a slot for GET By Id request
     /// </summary>
     [DataContract]
-    public class GetCustomizedProductByIdSlotModelView
+    public class GetCustomizedProductSlotModelView
     {
         /// <summary>
         /// Slots PID

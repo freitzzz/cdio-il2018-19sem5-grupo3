@@ -63,6 +63,13 @@ compute_algorithm(4,InitialCity,Cities,_,_):-
     retract_cities([InitialCity]),
     !.
 
+
+
+% Computes Simulatted Annealing with Guillotine Heuristic to pack packages on a container
+compute_algorithm(5,Container,Packages,Packed,OccupationPercentage):-
+    simulated_annealing(Container,Packages,OccupationPercentage,Packed).
+
+
 % Asserts a list of cities into the current knowledge base
 assert_cities([]).
 assert_cities([H|T]):-
