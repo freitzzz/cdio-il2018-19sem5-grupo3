@@ -39,6 +39,24 @@ export default {
     loadProduct(){
       return Store.getters.productId;
     },
+/*     loadHeight(){
+      return Store.getters.height;
+    },
+    loadWidth(){
+      return Store.getters.width;
+    },
+    loadDepth(){
+      return Store.getters.depth;
+    },
+    loadUnit(){
+      return Store.getters.unit;
+    }, */
+    updateDimensions(){
+      alert("teste 1");
+      return Store.getters.customizedProductDimensions;
+    }
+    
+    },
     /* addComponent(){
       var array= [];
       for(let i = 0; i < Store.state.customizedProduct.slots.length; i++){
@@ -58,9 +76,14 @@ export default {
     loadProduct: function(){
       this.productRenderer.showCloset();
     },
+    updateDimensions: function(){
+      alert("ohhh :(");
+      this.productRenderer.changeClosetDimensions(Store.getters.customizedProductDimensions.width, Store.getters.customizedProductDimensions.height ,Store.getters.customizedProductDimensions.depth);
+    },
     addComponent: function(component){
         this.productRenderer.addComponent(component);
     }
+
   },
   methods: {
     /**
@@ -101,9 +124,6 @@ export default {
 }, {
   immediate: true
 }) */
-
-
-
      /*reloadCube() {
       var event = new CustomEvent("changeDimensions", {
         detail: {

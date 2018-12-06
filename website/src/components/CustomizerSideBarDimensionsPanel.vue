@@ -78,7 +78,8 @@
     SET_CUSTOMIZED_PRODUCT_WIDTH,
     SET_CUSTOMIZED_PRODUCT_HEIGHT,
     SET_CUSTOMIZED_PRODUCT_DEPTH,
-    SET_CUSTOMIZED_PRODUCT_UNIT
+    SET_CUSTOMIZED_PRODUCT_UNIT,
+    SET_CUSTOMIZED_PRODUCT_DIMENSIONS
   } from "./../store/mutation-types.js";
   
   import {
@@ -147,7 +148,7 @@
       vueSlider
     },
     created() {
-      store.dispatch(SET_CUSTOMIZED_PRODUCT_WIDTH, {  
+      /* store.dispatch(SET_CUSTOMIZED_PRODUCT_WIDTH, {  
         width: this.width
       });
       store.dispatch(SET_CUSTOMIZED_PRODUCT_HEIGHT, {
@@ -159,7 +160,13 @@
       store.dispatch(SET_CUSTOMIZED_PRODUCT_UNIT, {
         unit: this.unit
       });
-  
+   */
+      store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS,{
+          width: this.width,
+          height: this.height,
+          depth: this.depth,
+          unit: this.unit
+      });
 
       /*Get all available dimensions of the given product of the array*/
       Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions`)
@@ -208,13 +215,8 @@
           depth: this.depth,
           unit: this.unit
         })
+        
       },
-      updateUnit(e) {
-        store.dispatch(SET_CUSTOMIZED_PRODUCT_UNIT, {
-          unit: e.target.value
-        });
-      },
-  
       //Method that identifies different types of dimensios
       //There are three types of dimensions: Discrete Interval, Discrete Value, Continuous Interval
       identifyTypeDimensions: function(dimensionObj) {
