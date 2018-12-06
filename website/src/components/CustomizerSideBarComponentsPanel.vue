@@ -134,10 +134,13 @@ export default {
             position: "top-center",
             duration: 2000
           });
+        } else {
+          component.slot = this.div_inputs[index];
+          store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
         }
+      } else if(!this.hasSlots() || !this.canAddComponentToSlot(component.model)){
+        component.slot = 0;
       }
-      //!TODO communicate with Three.js
-      //this.div_inputs[index] gets value of slot
     },
     removeDivElement(component, index) {
       var aux;
@@ -153,7 +156,7 @@ export default {
         position: "top-center",
         duration: 2000
       });
-      //!TODO communicate with Three.js
+      //!TODO communicate with Three.js & Remove from store
     }
   },
   created() {
