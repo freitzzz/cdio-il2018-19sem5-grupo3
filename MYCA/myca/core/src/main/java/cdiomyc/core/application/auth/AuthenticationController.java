@@ -24,7 +24,7 @@ public final class AuthenticationController {
                 =PersistenceContext.repositories().createUserRepository()
                         .findUserByAuthToken(AuthFactory.validateAuth(authenticationModelView).id());
         CRUDGrants.grantFindWasSuccessful(userToAuthenticate);
-        Session createdUserSession=userToAuthenticate.createNewSession();
+        Session createdUserSession=userToAuthenticate.createNewSession(AuthenticationSessionMVService.createSecreteIdentifier(authenticationModelView));
         User authenticatedUser
                 =PersistenceContext.repositories().createUserRepository().update(userToAuthenticate);
         CRUDGrants.grantUpdateWasSuccessful(authenticatedUser);
