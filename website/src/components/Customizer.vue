@@ -2,7 +2,7 @@
   <div>
     <customizer-progress-bar></customizer-progress-bar>
     <customizer-side-bar></customizer-side-bar>
-      <canvas ref="threeCanvas" @mouseup="onMouseUp" @mousedown="onMouseDown" @mousemove="onMouseMove" :width="initialWidth" :height="initialHeight">
+      <canvas ref="threeCanvas" @mouseup="onMouseUp" @mousedown="onMouseDown" @mousemove="onMouseMove" @keydown="onKeyDown" :width="initialWidth" :height="initialHeight">
       </canvas>
       
   </div>
@@ -29,10 +29,23 @@ export default {
       return document.documentElement.clientHeight * 0.70;
     },
     slots(){
-      return Store.getters.customizedProductSlotWidth;
+       var array = [];
+      for(let i = 0; i < 2; i++){
+        array.push(Store.getters.customizedProductSlotWidth(i));
+      }
+      return array; 
+     
     },
     loadProduct(){
       return Store.getters.productId;
+    },
+    addComponent(){
+
+      var array= [];
+      for(let i = 0; i < Store.state.customizedProduct.slots.length; i++){
+        array.push(Store.getters.customizedProductComponents(i));
+      }
+      return array;
     }
   },
   components: {
@@ -40,14 +53,16 @@ export default {
     CustomizerProgressBar
   },
   watch: {
-    slots: function(newValue, oldValue){
-      this.productRenderer.addSlot(newValue);
+    slots: function(newValue){
+      this.productRenderer.addSlotNumbered(newValue);
     },
     loadProduct: function(){
       this.productRenderer.showCloset();
+    },
+    addComponent: function(component){
+        this.productRenderer.addComponent(component);
     }
   },
-  //*Change the functions so that they don't access the DOM
   methods: {
     /**
      * Mouse move event handler propagated to the instance of ProductRenderer.
@@ -68,6 +83,15 @@ export default {
     onMouseDown: function(event) {
       this.productRenderer.onMouseDown(event);
     },
+    /**
+     * Keyboard click event handler propagated to the instance of ProductRenderer.
+     */
+    onKeyDown: function(event){
+      alert("keydown");
+      this.productRenderer.onKeyDown(event);
+              event.preventDefault()
+
+    }
     /* addRecommendedSlots: function(){
       this.productRenderer.addSlot();
     } */

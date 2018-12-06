@@ -2,7 +2,6 @@
 import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
 import Closet from './Closet'
-import store from "./../store";
 
 export default class ProductRenderer {
     /**
@@ -59,6 +58,12 @@ export default class ProductRenderer {
     closet_slots_faces_ids;
 
     /**
+    * Global variable with the current closet shelves ids (Mesh IDs from Three.js)
+    * @type {number[]}
+    */
+    closet_shelves_ids = [];
+
+    /**
      * Instance variable with the WebGL canvas
      * @type {HTMLCanvasElement}
      */
@@ -74,6 +79,8 @@ export default class ProductRenderer {
      * 
      */
     selected_face;
+
+    selected_component;
 
     /**
      * Instance variable that represents the object being hovered (null if none)
@@ -122,6 +129,7 @@ export default class ProductRenderer {
         this.closet_slots_faces_ids = [];
         this.selected_slot = null;
         this.selected_face = null;
+        this.selected_component = null;
         this.hovered_object = null;
         this.plane = null;
         this.mouse = new THREE.Vector2();
@@ -187,7 +195,7 @@ export default class ProductRenderer {
             [404.5, thickness, 100, 0, 90, -295], //Top
             [thickness, 300, 100, -200, -60, -295], //Left
             [thickness, 300, 100, 200, -60, -295], //Right
-            [400, 300, 0, 0, -60, -300]); //Back
+            [400, 300, 0, 0, -60, -345.8]); //Back
 
         var faces = this.closet.closet_faces;
 
@@ -199,7 +207,7 @@ export default class ProductRenderer {
 
         for (var i = 0; i < faces.length; i++) {
             this.closet_faces_ids.push(this.generateParellepiped(faces[i][0], faces[i][1], faces[i][2]
-                , faces[i][3], faces[i][4], faces[i][5]));
+                , faces[i][3], faces[i][4], faces[i][5], this.material, this.group));
         }
         this.scene.add(this.group);
         this.group.visible = false;
@@ -247,24 +255,155 @@ export default class ProductRenderer {
             closet_face.position.z = this.closet.getClosetSlotFaces()[i][5];
         }
     }
-
+<<<<<<< HEAD
+/**
+=======
 
     /**
+>>>>>>> 3508bde2c8d8d03c6179a63d42b0517ed48c6be3
      * Adds a slot to the current closet
      */
     addSlot() {
-        this.addSlotNumbered(1);
+        ///this.addSlotNumbered([]);
+    }
+
+    /**
+     * Adds components to the current closet
+     */
+    addComponent(components) {
+        if (components == null || components == undefined) return;
+        for (let i = 0; i < components.length; i++) {
+            if (components[i].slot == 0) { //add to closet structure
+            } else if (components[i].slot > 0) { //add to closet slot
+                if (components[i].designation == "wardrobe") this.generateShelf(components[i].slot);
+            }
+        }
+    }
+
+    generateShelf(slot) {
+        var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
+        var rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
+        var width, x, y, z;
+
+        if (this.closet_slots_faces_ids.length == 0) { //If there are no slots, the width of the shelf is the same as the closet's structure
+            width = this.getCurrentClosetWidth();
+            x = this.calculateComponentPosition(rightFace.position.x, leftFace.position.x);
+            y = this.calculateComponentPosition(rightFace.position.y, leftFace.position.y);
+            z = this.calculateComponentPosition(rightFace.position.z, leftFace.position.z);
+        } else if (slot == 1) { //If the slot is the first one, the shelf is added between the left wall of the closet and the slot
+            let firstSlot = this.group.getObjectById(this.closet_slots_faces_ids[0]);
+            width = this.calculateDistance(leftFace.position.x, firstSlot.position.x);
+            x = this.calculateComponentPosition(leftFace.position.x, firstSlot.position.x);
+            y = this.calculateComponentPosition(leftFace.position.y, firstSlot.position.y);
+            z = this.calculateComponentPosition(leftFace.position.z, firstSlot.position.z);
+        } else if (slot > 1 && slot <= this.closet_slots_faces_ids.length) { //If the chosen slot is not the first nor the last, the shelf is added between two slots
+            let slotToTheLeft = this.group.getObjectById(this.closet_slots_faces_ids[slot - 2]);
+            let slotToTheRight = this.group.getObjectById(this.closet_slots_faces_ids[slot - 1]);
+            width = this.calculateDistance(slotToTheLeft.position.x, slotToTheRight.position.x);
+            x = this.calculateComponentPosition(slotToTheLeft.position.x, slotToTheRight.position.x);
+            y = this.calculateComponentPosition(slotToTheLeft.position.y, slotToTheRight.position.y);
+            z = this.calculateComponentPosition(slotToTheLeft.position.z, slotToTheRight.position.z);
+        } else { //If the slot is the last one, the shelf is added between the slot and the right wall of the closet
+            let lastSlot = this.group.getObjectById(this.closet_slots_faces_ids[slot - 2]);
+            width = this.calculateDistance(lastSlot.position.x, rightFace.position.x);
+            x = this.calculateComponentPosition(lastSlot.position.x, rightFace.position.x);
+            y = this.calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
+            z = this.calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
+        }
+
+        //new Shelf([width, height, depth, x, y, z]);
+        var meshID = this.generateParellepiped(width, 3, this.closet.getClosetDepth(), x, y, z, this.material, this.group);
+        // this.closet.addShelf(shelf);
+        this.closet_shelves_ids.push(meshID);
+    }
+
+    /**
+ * Calculates a pole's xyz position
+ * @param {Number} leftMostCoordinate xyz coordinate of a closet's wall or a slot that is more to the left
+ * @param {Number} rightMostCoordinate xyz coordinate of a closet's wall or a slot that is more to the right
+ */
+    calculateComponentPosition(leftMostCoordinate, rightMostCoordinate) {
+        return (leftMostCoordinate + rightMostCoordinate) / 2;
+    }
+
+    calculateDistance(topPosition, bottomPosition) {
+        return Math.abs(topPosition - bottomPosition);
+    }
+
+    /**
+     * Adds components to the current closet
+     */
+    addComponent(components) {
+        if (components == null || components == undefined) return;
+        for (let i = 0; i < components.length; i++) {
+            if (components[i].slot == 0) { //add to closet structure
+            } else if (components[i].slot > 0) { //add to closet slot
+                if (components[i].designation == "Produto Componente") this.generateShelf(components[i].slot);
+            }
+        }
+    }
+
+    generateShelf(slot) {
+        var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
+        var rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
+        var width, x, y, z;
+
+        if (this.closet_slots_faces_ids.length == 0) { //If there are no slots, the width of the shelf is the same as the closet's structure
+            width = this.getCurrentClosetWidth();
+            x = this.calculateComponentPosition(rightFace.position.x, leftFace.position.x);
+            y = this.calculateComponentPosition(rightFace.position.y, leftFace.position.y);
+            z = this.calculateComponentPosition(rightFace.position.z, leftFace.position.z);
+        } else if (slot == 1) { //If the slot is the first one, the shelf is added between the left wall of the closet and the slot
+            let firstSlot = this.group.getObjectById(this.closet_slots_faces_ids[0]);
+            width = this.calculateDistance(leftFace.position.x, firstSlot.position.x);
+            x = this.calculateComponentPosition(leftFace.position.x, firstSlot.position.x);
+            y = this.calculateComponentPosition(leftFace.position.y, firstSlot.position.y);
+            z = this.calculateComponentPosition(leftFace.position.z, firstSlot.position.z);
+        } else if (slot > 1 && slot <= this.closet_slots_faces_ids.length) { //If the chosen slot is not the first nor the last, the shelf is added between two slots
+            let slotToTheLeft = this.group.getObjectById(this.closet_slots_faces_ids[slot - 2]);
+            let slotToTheRight = this.group.getObjectById(this.closet_slots_faces_ids[slot - 1]);
+            width = this.calculateDistance(slotToTheLeft.position.x, slotToTheRight.position.x);
+            x = this.calculateComponentPosition(slotToTheLeft.position.x, slotToTheRight.position.x);
+            y = this.calculateComponentPosition(slotToTheLeft.position.y, slotToTheRight.position.y);
+            z = this.calculateComponentPosition(slotToTheLeft.position.z, slotToTheRight.position.z);
+        } else { //If the slot is the last one, the shelf is added between the slot and the right wall of the closet
+            let lastSlot = this.group.getObjectById(this.closet_slots_faces_ids[slot - 2]);
+            width = this.calculateDistance(lastSlot.position.x, rightFace.position.x);
+            x = this.calculateComponentPosition(lastSlot.position.x, rightFace.position.x);
+            y = this.calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
+            z = this.calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
+        }
+
+        //new Shelf([width, height, depth, x, y, z]);
+        var meshID = this.generateParellepiped(width, 3, this.closet.getClosetDepth(), x, y, z, this.material, this.group);
+        // this.closet.addShelf(shelf);
+        this.closet_shelves_ids.push(meshID);
+    }
+
+    /**
+ * Calculates a pole's xyz position
+ * @param {Number} leftMostCoordinate xyz coordinate of a closet's wall or a slot that is more to the left
+ * @param {Number} rightMostCoordinate xyz coordinate of a closet's wall or a slot that is more to the right
+ */
+    calculateComponentPosition(leftMostCoordinate, rightMostCoordinate) {
+        return (leftMostCoordinate + rightMostCoordinate) / 2;
+    }
+
+    calculateDistance(topPosition, bottomPosition) {
+        return Math.abs(topPosition - bottomPosition);
     }
 
     /**
      * Adds a specified number of slots to the current closet
-     * @param{number} slotsToAdd - number of slots being added
+     * @param{array} slotsToAdd - number of slots being added
      */
     addSlotNumbered(slotsToAdd) {
-        for (var i = 0; i < slotsToAdd; i++) {
-            var slotFace = this.closet.addSlot();
+         for (var i = 0; i < slotsToAdd.length; i++) {
+             alert(slotsToAdd.length);
+             alert(slotsToAdd[i].width);
+            var slotFace = this.closet.addSlot(slotsToAdd[i]);
             this.closet_slots_faces_ids.push(this.generateParellepiped(slotFace[0], slotFace[1], slotFace[2]
-                , slotFace[3], slotFace[4], slotFace[5]));
+                , slotFace[3], slotFace[4], slotFace[5], this.material, this.group));
         }
         this.updateClosetGV();
     }
@@ -361,10 +500,12 @@ export default class ProductRenderer {
      * @param {number} x Number with the parellepiped position relatively to the X axe
      * @param {number} y Number with the parellepiped position relatively to the Y axe
      * @param {number} z Number with the parellepiped position relatively to the Z axe
-     */
-    generateParellepiped(width, height, depth, x, y, z) {
+    * @param {THREE.Material} material THREE.Material with the parellepiped material
+    * @param {THREE.Group} group THREE.Group with the group where the parellepied will be putted
+    */
+    generateParellepiped(width, height, depth, x, y, z, material, group) {
         var parellepipedGeometry = new THREE.CubeGeometry(width, height, depth);
-        var parellepiped = new THREE.Mesh(parellepipedGeometry, this.material);
+        var parellepiped = new THREE.Mesh(parellepipedGeometry, material);
         parellepiped.position.x = x;
         parellepiped.position.y = y;
         parellepiped.position.z = z;
@@ -433,27 +574,28 @@ export default class ProductRenderer {
     }
 
     /**
-     * Register the events that can be communicated through the document
+     * Represents the action that occurs when any keyboard key is pressed (key down),
+     * which is blocking its action (disabling it).
+     * @param {*} event 
      */
-    /*     registerEvents() {
-    
-            document.addEventListener("changeDimensions", (changeDimensionsEvent) => {
-                this.changeClosetDimensions(changeDimensionsEvent.detail.width, changeDimensionsEvent.detail.height, changeDimensionsEvent.detail.depth);
-            });
-    
-            document.addEventListener("changeSlots", (changeSlotsEvent) => {
-                this.changeClosetSlots(changeSlotsEvent.detail.slots, changeSlotsEvent.detail.slotWidths);
-            });
-            document.addEventListener("changeMaterial", (changeMaterialEvent) => {
-                this.applyTexture(changeMaterialEvent.detail.material);
-            });
-            document.addEventListener("changeShininess", (changeShininessEvent) => {
-                this.changeShininess(changeShininessEvent.detail.shininess);
-            });
-            document.addEventListener("changeColor", (changeColorEvent) => {
-                this.changeColor(changeColorEvent.detail.color);
-            });
-        } */
+    onKeyDown(event) {
+        event.preventDefault();
+        alert("entro no three");
+        // switch (event.keyCode) {
+        //     case 37:
+        //         alert('left');
+        //         break;
+        //     case 38:
+        //         alert('up');
+        //         break;
+        //     case 39:
+        //         alert('right');
+        //         break;
+        //     case 40:
+        //         alert('down');
+        //         break;
+        // }
+    }
 
     /**
      * Represents the action that occurs when the mouse's left button is pressed (mouse down),
@@ -469,13 +611,13 @@ export default class ProductRenderer {
 
         //Checks if any closet face was intersected
         if (intersects.length > 0) {
+
             //Gets the closest (clicked) object
             var face = intersects[0].object;
 
             //Checks if the selected closet face is a slot 
             for (var i = 0; i < this.closet_slots_faces_ids.length; i++) {
                 var closet_face = this.group.getObjectById(this.closet_slots_faces_ids[i]);
-
                 if (closet_face == face) {
                     //Disables rotation while moving the slot
                     this.controls.enabled = false;
@@ -487,7 +629,19 @@ export default class ProductRenderer {
                 }
             }
 
-            //Checks if the selected closet face isn't a slot
+            //Checks if the selected object is a shelf
+            for (let j = 0; j < this.closet_shelves_ids.length; j++) {
+                let shelf = this.group.getObjectById(this.closet_shelves_ids[j]);
+                if (shelf == face) {
+                    this.controls.enabled = false;
+                    this.selected_component = face;
+                    if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+                        this.offset = this.intersection.y - this.selected_component.position.y;
+                    }
+                }
+            }
+
+            //Checks if the selected closet face is a face
             if (this.group.getObjectById(this.closet_faces_ids[3]) == face ||
                 this.group.getObjectById(this.closet_faces_ids[2]) == face) {
                 //Disables rotation while moving the face
@@ -513,6 +667,8 @@ export default class ProductRenderer {
         this.selected_slot = null;
         //Sets the selected face to null (the face stops being selected)
         this.selected_face = null;
+        //Sets the selected closet component to null (the component stops being selected)
+        this.selected_component = null;
     }
 
     /**
@@ -539,6 +695,12 @@ export default class ProductRenderer {
         //If the selected object is a closet face
         if (this.selected_face) {
             this.moveFace();
+            return;
+        }
+
+        //If the selected object is a closet pole or shelf
+        if (this.selected_component) {
+            this.moveComponent();
             return;
         }
 
@@ -572,7 +734,6 @@ export default class ProductRenderer {
      */
     moveFace() {
         if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
-            // alert(store.state.product.id);
             if (this.selected_face == this.group.getObjectById(this.closet_faces_ids[3])) { //If the selected face is the right one
 
                 var rightFacePosition = this.intersection.x - this.offset + this.selected_face.position.x; //Position of the right closet face
@@ -610,6 +771,29 @@ export default class ProductRenderer {
                 }
             }
         }
+    }
+
+    /**
+    * Moves a component across the y axis without overlapping the slots planes or the closets planes
+    */
+    moveComponent() {
+        if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+            var computedPosition = this.intersection.y - this.offset; //The component's new computed position on the yy axis
+
+            if (computedPosition < this.group.getObjectById(this.closet_faces_ids[1]).position.y
+                && computedPosition >= this.group.getObjectById(this.closet_faces_ids[0]).position.y) {
+                this.selected_component.position.y = computedPosition; //Sets the new position as long as the component stays within the closet boundaries
+            }
+        }
+
+        var intersects = this.raycaster.intersectObjects(this.scene.children[0].children);
+        if (intersects.length > 0) {
+            //Updates plane position to look at the camera
+            var object = intersects[0].object;
+            this.plane.setFromNormalAndCoplanarPoint(this.camera.position, object.position);
+
+            if (this.hovered_object !== object) this.hovered_object = object;
+        } else if (this.hovered_object !== null) this.hovered_object = null;
     }
 
     /**

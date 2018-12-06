@@ -41,6 +41,15 @@
                         </b-field>
                         <button class="button is-primary" @click="createFinish()">+</button>
                         <button class="button is-primary" @click="deleteFinish()">-</button>
+                         <b-field class="modal-card-body">
+                        <button class="button is-primary" >Select Image</button>
+                            <b-input
+                                v-model="pathImage"
+                                type="String"
+                                disabled
+                                required>
+                            </b-input>
+                        </b-field>
                     </section>
                     <footer class="modal-card-foot">
                         <button class="button is-primary" @click="postMaterial()">Create</button>
@@ -94,7 +103,6 @@
 import Swatches from "vue-swatches";
 import Axios from "axios";
 import "vue-swatches/dist/vue-swatches.min.css";
-
 export default {
   name: "CreateMaterial",
   data() {
@@ -102,6 +110,7 @@ export default {
       referenceMaterial: "",
       referenceFinish: "",
       designationMaterial: "",
+      pathImage:"",
       panelCreateMaterial: true,
       createColorPanelEnabled: false,
       createFinishPanelEnabled: false,
@@ -119,8 +128,12 @@ export default {
     Swatches
   }, // window.VueSwatches.default - from CDN
 
-  /*  */
   methods: {
+    /* popup() {
+      let route = this.$router.resolve({path: 'https://stackoverflow.com/questions/40015037/can-vue-router-open-a-link-in-a-new-tab'});
+      // let route = this.$router.resolve('/link/to/page'); // This also works.
+      window.open(route.href, '_blank');
+    }, */
     postMaterial() {
       let finishesToAdd = [];
       this.availableFinishes.forEach(element => {
