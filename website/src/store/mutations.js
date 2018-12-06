@@ -67,6 +67,8 @@ export const mutations = {
       unit: payload.unit,
   })  */
 },
+
+
   /**
    * Adds a component to a slot from the state's customized product's
    * @param {*} state The store's state

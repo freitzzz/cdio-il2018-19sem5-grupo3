@@ -40,12 +40,12 @@ export default {
       return Store.getters.productId;
     },
     addComponent(){
-     /*  var array= [];
+
+      var array= [];
       for(let i = 0; i < Store.state.customizedProduct.slots.length; i++){
         array.push(Store.getters.customizedProductComponents(i));
       }
-      return array; */
-      return Store.getters.customizedProductComponents;
+      return array;
     }
   },
   components: {
