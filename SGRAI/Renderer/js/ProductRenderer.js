@@ -765,9 +765,6 @@ function generateDrawer(slot) {
 
     closet.addModule(module);
     closet.addDrawer(drawer);
-    /// closet_drawers_ids.push(module_mesh_id);
-    /// closet_drawers_ids.push(drawer_mesh_id);
-
 }
 
 function generateHingedDoor(slot) {
@@ -1086,18 +1083,6 @@ function onDocumentMouseDown(event) {
                     }
                 }
             }
-            for (let j = 0; j < closet_modules_ids.length; j++) {
-                let drawer = group.getObjectById(closet_modules_ids[j]);
-                if (drawer == face) {
-                    controls.enabled = false;
-                    for (let i = 0; i < closet_modules_ids.length; i++) {
-                        selected_component = closet_modules_ids[i];
-                        if (raycaster.ray.intersectPlane(plane, intersection)) {
-                            offset = intersection.x - selected_component.position.x;
-                        }
-                    }
-                }
-            }
 
             var flagOpen = false;
             var flagClose = false;
@@ -1109,8 +1094,6 @@ function onDocumentMouseDown(event) {
                 slidingDoor = group.getObjectById(closet_sliding_doors_ids[j]);
                 if (slidingDoor == face) {
                     controls.enabled = false;
-                    let closet_left = group.getObjectById(closet_faces_ids[2]);
-                    let closet_right = group.getObjectById(closet_faces_ids[3]);
                     if (slidingDoor.position.x < 0) {
                         flagClose = true; //"Closing" ==> slide door to the right
                     } else {
@@ -1311,7 +1294,6 @@ var closeDrawer = function (drawer_front_face, drawer_back_face, drawer_base_fac
         console.log(openDrawers);
         openDrawers.pop();
         if (openDrawers.length == 0) {
-            console.log('hey bro entrei no if');
             while (waitingDoors.length != 0) {
                 waitingDoors.pop()();
                 //isDrawerClosed = false;

@@ -10,7 +10,7 @@ namespace core.modelview.customizedproduct
     /// Model View representing the information to send when a GET By Id request is performed
     /// </summary>
     [DataContract]
-    public class GetCustomizedProductByIdModelView : BasicCustomizedProductModelView
+    public class GetCustomizedProductModelView : BasicCustomizedProductModelView
     {
         /// <summary>
         /// CustomizedProducts customized dimensions
@@ -31,6 +31,6 @@ namespace core.modelview.customizedproduct
         /// </summary>
         /// <value></value>
         [DataMember(Name = "slots", EmitDefaultValue = false)]
-        public List<GetCustomizedProductByIdSlotModelView> slots {get; set;}
+        public List<GetCustomizedProductSlotModelView> slots {get; set;}
     }
 }

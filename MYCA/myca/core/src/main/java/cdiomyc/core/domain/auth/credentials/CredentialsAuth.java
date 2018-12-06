@@ -42,7 +42,7 @@ public class CredentialsAuth extends Auth{
      */
     private static String generateToken(String username,String password){
         return OperatorsEncryption
-                .encrypt(username.concat(password),
+                .encrypt(username,
                         Application.settings().getUsernameOperatorsEncryptionAlgorithm(),
                         Application.settings().getPasswordOperatorsEncryptionValue());
     }

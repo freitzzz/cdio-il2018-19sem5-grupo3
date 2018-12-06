@@ -14,6 +14,7 @@ namespace core.modelview.customizedproduct
         /// PID of the customized product
         /// </summary>
         /// <value>Gets/Sets the identifier</value>
+        [IgnoreDataMember]
         public long Id {get; set;}
 
         /// <summary>

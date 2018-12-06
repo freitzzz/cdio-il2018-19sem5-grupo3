@@ -15,6 +15,7 @@ const state = {
     customizedProduct: {
         designation: "",
         reference: "",
+        components: [],
         product: {
             id: ""
         },
@@ -33,7 +34,16 @@ const state = {
                 description: ""
             }
         },
-        slots: [],
+        slots: [
+            {
+                idSlot: "",
+                width: "",
+                height: "",
+                depth: "",
+                unit: "",
+                components: []
+            }
+        ],
         customizedDimensions: {
             width: "",
             height: "",
@@ -43,7 +53,7 @@ const state = {
     }
 }
 
-const getters = {
+export const getters = {
     productId: state => {
         return state.product.id;
     },
@@ -80,9 +90,13 @@ const getters = {
     unit: state => {
         return state.customizedProduct.dimensions.unit;
     },
-    customizedProductSlotWidth: state => {
-        return state.customizedProduct.slots.width;
-    }
+
+    customizedProductSlotWidth: state => index => {
+        return state.customizedProduct.slots[index];
+    },
+    customizedProductComponents: state => index => {
+        return state.customizedProduct.slots[index].components;
+    },
 }
 
 export default new Vuex.Store({

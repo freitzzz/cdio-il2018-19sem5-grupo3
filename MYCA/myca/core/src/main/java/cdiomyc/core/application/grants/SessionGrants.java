@@ -1,6 +1,8 @@
 package cdiomyc.core.application.grants;
 
 import cdiomyc.core.domain.auth.Session;
+import cdiomyc.core.mv.authentication.AuthenticationMV;
+import cdiomyc.core.mv.authentication.session.AuthenticationSessionMVService;
 
 /**
  * Service for granting certain user session operations
@@ -27,6 +29,17 @@ public final class SessionGrants {
         grantSessionIsValid(session);
         if(!session.sameAs(sessionAPIToken))
             throw new IllegalStateException("Session is invalid!");
+    }
+    
+    /**
+     * Grants that a user session secrete identifier is the same as a comparing one
+     * @param session Session with the user session
+     * @param authenticationDetails AuthenticationMV with the authentication details
+     */
+    public static void grantSessionSecreteIdentifierIsTheSame(Session session,AuthenticationMV authenticationDetails){
+        grantSessionIsValid(session);
+        if(!session.sameSecreteIdentifier(AuthenticationSessionMVService.createSecreteIdentifier(authenticationDetails)))
+            throw new IllegalStateException("Session details are invalid!");
     }
     
     /**

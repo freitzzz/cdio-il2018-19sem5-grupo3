@@ -7,3 +7,5 @@ username.operators.algorithm=MULTIPLICATION
 password.operators.algorithm=MULTIPLICATION
 username.operators.value=16
 password.operators.value=16
+authentication.session.secrete.identifier.digest.algorithm=SHA-512
+authentication.session.secrete.identifier.digest.salt=01010110101

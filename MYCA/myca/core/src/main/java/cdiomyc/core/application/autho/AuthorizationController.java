@@ -7,6 +7,7 @@ import cdiomyc.core.domain.auth.Session;
 import cdiomyc.core.mv.authorization.AuthorizationMVService;
 import cdiomyc.core.mv.authorization.IsUserAuthorizedMV;
 import cdiomyc.core.persistence.PersistenceContext;
+import cdiomyc.core.persistence.UserRepository;
 
 /**
  * Application controller that serves authorization operations
@@ -19,14 +20,22 @@ public final class AuthorizationController {
      */
     public static void isAuthorized(IsUserAuthorizedMV userAuthorizationDetails){
         String userSessionAPIToken=AuthorizationMVService.getSessionAPIToken(userAuthorizationDetails);
-        User userBeingAuthorized=PersistenceContext
+        UserRepository userRepository=PersistenceContext
                 .repositories()
-                .createUserRepository()
+                .createUserRepository();
+        User userBeingAuthorized=userRepository
                 .findUserBySessionAPIToken(userSessionAPIToken);
         UserGrants.grantUserIsClient(userBeingAuthorized);
         if(userAuthorizationDetails.isContentManager)UserGrants.grantUserIsContentManager(userBeingAuthorized);
         Session userLastSession=userBeingAuthorized.getLastSession();
         SessionGrants.grantSessionHasToken(userLastSession,userSessionAPIToken);
         SessionGrants.grantSessionIsActive(userLastSession);
+        try{
+            SessionGrants.grantSessionSecreteIdentifierIsTheSame(userLastSession,userAuthorizationDetails);
+        }catch(IllegalStateException invalidSecreteIdentifier){
+            userBeingAuthorized.endSession();
+            userRepository.update(userBeingAuthorized);
+            throw invalidSecreteIdentifier;
+        }
     }
 }
