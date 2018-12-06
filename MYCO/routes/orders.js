@@ -170,30 +170,26 @@ ordersRoute.route('/orders/:id/state').put((request,response)=>{
  */
 ordersRoute.route('/orders/:id/packages').patch((request,response)=>{
     let orderID=request.params.id;
-    Order
-        .findById(orderID)
-        .then((order)=>{
-            registerOrderPackages(order,request.body)
-            .then((registeredOrderPackages)=>{
-                Order
-                    .findByIdAndUpdate(orderID,registeredOrderPackages,{new:true})
-                    .then((updatedOrder)=>{
-                        response.status(200).json(updatedOrder);
-                    })
-                    .catch((_error_updating_error)=>{
-                        response.status(500).json({message:_error_updating_error});
-                        //ERROR UPDATING ORDER ON MONGO DB :)))
-                    })
-            })
-            .catch((_errorRegisterOrderPackages)=>{
-                response.status(400).json({message:_errorRegisterOrderPackages});
-                //BUSINESS ORDER STATE CHANGE ERROR :))
-            });
+    orderExists(orderID)
+    .then((foundOrder)=>{
+        registerOrderPackages(foundOrder,request.body)
+        .then((registeredOrderPackages)=>{
+            Order
+                .findByIdAndUpdate(orderID,registeredOrderPackages,{new:true})
+                .then((updatedOrder)=>{
+                    response.status(200).json(updatedOrder);
+                })
+                .catch(()=>{
+                    response.status(500).json({message:"An error occurd while processing our database :("});
+                })
         })
-        .catch((_error)=>{
-            response.status(404).json({message:'Order not found!'});
-            //ORDER NOT FOUND :)
-        });
+        .catch((_error_message)=>{
+            response.status(400).json({message:_error_message});
+        })
+    })
+    .catch((_error_message)=>{
+        response.status(500).json({message:_error_message});
+    });
 });
 
 /**
