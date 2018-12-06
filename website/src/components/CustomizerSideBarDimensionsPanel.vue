@@ -12,9 +12,10 @@
         :value="option"
       >{{"Option: "+option.id}}</option>
     </select>
-    <!--Fetch minimums from server-->
+
+    <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.HEIGHT]" :interval="this.heightIncrement" :data="this.discreteIntervalHeight"></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.HEIGHT]" v-model="height" :interval="this.heightIncrement" :data="this.discreteIntervalHeight" @click="updateHeight"></vue-slider>
     <vue-slider
       class="slider"
       v-if="this.continousIntervalFlags[this.HEIGHT]"
@@ -22,12 +23,13 @@
       :max="this.heightMax"
       :interval="this.heightIncrement"
       v-model="height"
-      @change="updateHeight"
+      @click="updateHeight"
     ></vue-slider>
-    <input class="slider" v-if="this.discreteValueFlags[this.HEIGHT]" type="text" :readonly="true" v-model="this.heightMin">
-
+    <input class="slider" v-if="this.discreteValueFlags[this.HEIGHT]" type="text" :readonly="true" v-model="height" @click="updateHeight">
+    
+    <!-- WIDTH: -->
     <div class="text-entry">Width:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.WIDTH]" :interval="this.widthIncrement" :data="this.discreteIntervalWidth"></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.WIDTH]" :interval="this.widthIncrement" :data="this.discreteIntervalWidth" v-model="width" @click="updateWidth"></vue-slider>
     <vue-slider
       class="slider"
       v-if="this.continousIntervalFlags[this.WIDTH]"
@@ -35,12 +37,13 @@
       :max="this.widthMax"
       :interval="this.widthIncrement"
       v-model="width"
-      @change="updateWidth"
+      @click="updateWidth"
     ></vue-slider>
-    <input class="slider" v-if="this.discreteValueFlags[this.WIDTH]" type="text" :readonly="true" v-model="this.widthMin">
-
+    <input class="slider" v-if="this.discreteValueFlags[this.WIDTH]" type="text" :readonly="true" v-model="width" @click="updateWidth">
+    
+    <!-- DEPTH: -->
     <div class="text-entry">Depth:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.DEPTH]" :interval="this.depthIncrement" :data="this.discreteIntervalDepth"></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.DEPTH]" :interval="this.depthIncrement" :data="this.discreteIntervalDepth" v-model="depth" @click="updateDepth"></vue-slider>
     <vue-slider
       class="slider"
       v-if="this.continousIntervalFlags[this.DEPTH]"
@@ -48,9 +51,9 @@
       :max="this.depthMax"
       :interval="this.depthIncrement"
       v-model="depth"
-      @change="updateDepth"
+      @click="updateDepth"
     ></vue-slider>
-    <input class="slider" v-if="this.discreteValueFlags[this.DEPTH]" type="text" :readonly="true" v-model="this.depthMin">
+    <input class="slider" v-if="this.discreteValueFlags[this.DEPTH]" type="text" :readonly="true" v-model="depth" @click="updateDepth">
 
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="updateUnit">
@@ -129,7 +132,7 @@
         /*Flags: */
         discreteValueFlags:[false,false,false],
         discreteIntervalFlags:[false,false,false],
-        continousIntervalFlags:[true,true,true],
+        continousIntervalFlags:[false,false,false],
 
         HEIGHT: 0,
         WIDTH :1,       
@@ -145,7 +148,7 @@
       vueSlider
     },
     created() {
-      store.dispatch(SET_CUSTOMIZED_PRODUCT_WIDTH, {
+      store.dispatch(SET_CUSTOMIZED_PRODUCT_WIDTH, {  
         width: this.width
       });
       store.dispatch(SET_CUSTOMIZED_PRODUCT_HEIGHT, {
@@ -158,6 +161,7 @@
         unit: this.unit
       });
   
+
       /*Get all available dimensions of the given product of the array*/
       Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions`)
         .then(response => this.availableOptionsDimensions.push(...response.data))
@@ -183,11 +187,12 @@
         for(var i = 0; i < N_DIMENSIONS -1; i++){
           this.discreteValueFlags[i] = false;
           this.discreteIntervalFlags[i] = false;
-          this.continousIntervalFlags[i]=true;
+          this.continousIntervalFlags[i]=false;
         }
       },
-      /*  */
+      
       updateHeight(e) {
+        alert("WEED");
         store.dispatch(SET_CUSTOMIZED_PRODUCT_HEIGHT, {
           height: e.target.value
         });
@@ -315,6 +320,8 @@
           this.discreteIntervalFlags[this.DEPTH]=false;
           
         }
+
+        
        
       },
       //The following methods determine the min,max and increment to populate the height,width and depth slider
@@ -367,7 +374,7 @@
   margin: 3%;
   margin-left: 22.5%;
   margin-right: 22.5%;
-  margin-bottom: 3%;
+  margin-bottom: 1%;
   font-family: "Roboto", sans-serif;
 }
 
@@ -399,7 +406,7 @@
 
 .dropdown {
   margin-left: 15%;
-  width: 60%;
+  width: 70%;
   margin-bottom: 3%;
   margin-right: 15%;
 }
