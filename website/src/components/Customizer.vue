@@ -29,12 +29,18 @@ export default {
       return document.documentElement.clientHeight * 0.70;
     },
     slots(){
-      return Store.getters.customizedProductSlotWidth;
+       var array = [];
+      for(let i = 0; i < 2; i++){
+        array.push(Store.getters.customizedProductSlotWidth(i));
+      }
+      return array; 
+     
     },
     loadProduct(){
       return Store.getters.productId;
     },
     addComponent(){
+
       var array= [];
       for(let i = 0; i < Store.state.customizedProduct.slots.length; i++){
         array.push(Store.getters.customizedProductComponents(i));
@@ -47,8 +53,8 @@ export default {
     CustomizerProgressBar
   },
   watch: {
-    slots: function(newValue, oldValue){
-      this.productRenderer.addSlot(newValue);
+    slots: function(newValue){
+      this.productRenderer.addSlotNumbered(newValue);
     },
     loadProduct: function(){
       this.productRenderer.showCloset();

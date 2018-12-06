@@ -89,11 +89,15 @@ export default class Closet {
     /**
      * Adds a slot to the closet
      */
-    addSlot() {
+    addSlot(valuesSlot) {
         this.closet_slots++;
+        var slotWidth = valuesSlot.width;
+        var slotHeight = valuesSlot.width;
+        var slotDepth = valuesSlot.width;
+        var face_slot_dimensions = {slotWidth,slotHeight, slotDepth}
         this.closet_slots_faces.push(this.closet_right_face_dimensions_axes.slice());
         this.initial_closet_slots_faces.push(this.closet_right_face_dimensions_axes.slice());
-        this._updateClosetSlots();
+        this._updateClosetSlots(slotWidth);
         return this.closet_slots_faces[this.closet_slots_faces.length - 1];
     }
 
@@ -151,14 +155,14 @@ export default class Closet {
     /**
      * Updates the closet slots size
      */
-    _updateClosetSlots() {
-        var distance_per_slot = (this.closet_right_face_dimensions_axes[3] - this.closet_left_face_dimensions_axes[3]) / this.closet_slots;
+    _updateClosetSlots(widthSlot) {
+        ///var distance_per_slot = (this.closet_right_face_dimensions_axes[3] - this.closet_left_face_dimensions_axes[3]) / this.closet_slots;
         var left_closet_face_x_value = this.closet_left_face_dimensions_axes[3];
         for (var i = 0; i < this.closet_slots_faces.length; i++) {
             if (i == 0) {
-                this.closet_slots_faces[i][3] = left_closet_face_x_value + (distance_per_slot);
+                this.closet_slots_faces[i][3] = left_closet_face_x_value + (widthSlot);
             } else {
-                this.closet_slots_faces[i][3] = this.closet_slots_faces[i - 1][3] + (distance_per_slot);
+                this.closet_slots_faces[i][3] = this.closet_slots_faces[i - 1][3] + (widthSlot);
             }
         }
     }

@@ -1,6 +1,9 @@
 package cdiomyc.core.mv.authentication.session;
 
+import cdiomyc.core.application.Application;
 import cdiomyc.core.domain.auth.Session;
+import cdiomyc.core.mv.authentication.AuthenticationMV;
+import cdiomyc.support.encryptions.DigestUtils;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -19,4 +22,20 @@ public final class AuthenticationSessionMVService {
         authenticationSessionDetailsMV.sessionEnd=authenticationSession.getSessionEndDateTime().format(DateTimeFormatter.ISO_DATE_TIME);
         return authenticationSessionDetailsMV;
     }
+    
+    /**
+     * Creates an authentication session secrete identifier
+     * @param authenticationDetails AuthenticationMV with the authentication details
+     * @return String with the authentication session secrete identifier
+     */
+    public static String createSecreteIdentifier(AuthenticationMV authenticationDetails){
+        if(authenticationDetails.userAgent==null||authenticationDetails.secreteKey==null)
+            throw new IllegalArgumentException("Invalid authentication secrete details");
+        return DigestUtils.hashify(
+                authenticationDetails.userAgent.concat(authenticationDetails.secreteKey),
+                Application.settings().getAuthenticationSessionSecreteIdentifierDigestAlgorithm(),
+                Application.settings().getAuthenticationSessionSecreteIdentifierDigestSalt().getBytes()
+        );
+    }
+    
 }

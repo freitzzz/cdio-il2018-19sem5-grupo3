@@ -260,12 +260,11 @@ export default class ProductRenderer {
             closet_face.position.z = this.closet.getClosetSlotFaces()[i][5];
         }
     }
-
-    /**
+/**
      * Adds a slot to the current closet
      */
     addSlot() {
-        this.addSlotNumbered(1);
+        ///this.addSlotNumbered([]);
     }
 
     /**
@@ -404,11 +403,13 @@ export default class ProductRenderer {
 
     /**
      * Adds a specified number of slots to the current closet
-     * @param{number} slotsToAdd - number of slots being added
+     * @param{array} slotsToAdd - number of slots being added
      */
     addSlotNumbered(slotsToAdd) {
-        for (var i = 0; i < slotsToAdd; i++) {
-            var slotFace = this.closet.addSlot();
+         for (var i = 0; i < slotsToAdd.length; i++) {
+             alert(slotsToAdd.length);
+             alert(slotsToAdd[i].width);
+            var slotFace = this.closet.addSlot(slotsToAdd[i]);
             this.closet_slots_faces_ids.push(this.generateParellepiped(slotFace[0], slotFace[1], slotFace[2]
                 , slotFace[3], slotFace[4], slotFace[5], this.material, this.group));
         }

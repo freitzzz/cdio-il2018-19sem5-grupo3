@@ -39,26 +39,8 @@ export const actions = {
     /**
      * Action used to commit the mutation SET_SLOT_WIDTH
      */
-    [types.SET_SLOT_WIDTH]: ({ commit }, payload) => {
-        commit(types.SET_SLOT_WIDTH, payload);
-    },
-    /**
-     * Action used to commit the mutation SET_SLOT_DEPTH
-     */
-    [types.SET_SLOT_DEPTH]: ({ commit }, payload) => {
-        commit(types.SET_SLOT_DEPTH, payload);
-    },
-    /**
-     * Action used to commit the mutation SET_SLOT_HEIGHT
-     */
-    [types.SET_SLOT_HEIGHT]: ({ commit }, payload) => {
-        commit(types.SET_SLOT_HEIGHT, payload);
-    },
-    /**
-     * Action used to commit the mutation SET_SLOT_UNIT
-     */
-    [types.SET_SLOT_UNIT]: ({ commit }, payload) => {
-        commit(types.SET_SLOT_UNIT, payload);
+    [types.SET_SLOT_DIMENSIONS]: ({ commit }, payload) => {
+        commit(types.SET_SLOT_DIMENSIONS, payload);
     },
     [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS]: ({commit},payload)=>{
         commit(types.SET_CUSTOMIZED_PRODUCT_COMPONENTS, payload);

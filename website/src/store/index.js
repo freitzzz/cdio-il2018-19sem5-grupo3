@@ -85,6 +85,7 @@ export const getters = {
     unit: state => {
         return state.customizedProduct.dimensions.unit;
     },
+
     customizedProductSlotWidth: state => {
         return state.customizedProduct.slots.width;
     },
