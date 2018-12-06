@@ -15,7 +15,7 @@
 
     <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.HEIGHT]" v-model="height" @callback="updateHeight" :interval="this.heightIncrement" :data="this.discreteIntervalHeight" ></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.HEIGHT]" v-model="height" @callback="updateDimensions" :interval="this.heightIncrement" :data="this.discreteIntervalHeight" ></vue-slider>
     <vue-slider
       class="slider"
       v-if="this.continousIntervalFlags[this.HEIGHT]"
@@ -23,13 +23,13 @@
       :max="this.heightMax"
       :interval="this.heightIncrement"
       v-model="height"
-      @callback="updateHeight"
+      @callback="updateDimensions"
     ></vue-slider>
     <input class="slider" v-if="this.discreteValueFlags[this.HEIGHT]" type="text" :readonly="true" v-model="height">
     
     <!-- WIDTH: -->
     <div class="text-entry">Width:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.WIDTH]" :interval="this.widthIncrement" :data="this.discreteIntervalWidth" v-model="width" @callback="this.updateWidth"></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.WIDTH]" :interval="this.widthIncrement" :data="this.discreteIntervalWidth" v-model="width" @callback="this.updateDimensions"></vue-slider>
     <vue-slider
       class="slider"
       v-if="this.continousIntervalFlags[this.WIDTH]"
@@ -37,13 +37,13 @@
       :max="this.widthMax"
       :interval="this.widthIncrement"
       v-model="width"
-      @callback="this.updateWidth"
+      @callback="this.updateDimensions"
     ></vue-slider>
     <input class="slider" v-if="this.discreteValueFlags[this.WIDTH]" type="text" :readonly="true" v-model="this.width">
     
     <!-- DEPTH: -->
     <div class="text-entry">Depth:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.DEPTH]" :interval="this.depthIncrement" :data="this.discreteIntervalDepth" v-model="depth" @callback="this.updateDepth"></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.DEPTH]" :interval="this.depthIncrement" :data="this.discreteIntervalDepth" v-model="depth" @callback="this.updateDimensions"></vue-slider>
     <vue-slider
       class="slider"
       v-if="this.continousIntervalFlags[this.DEPTH]"
@@ -51,17 +51,16 @@
       :max="this.depthMax"
       :interval="this.depthIncrement"
       v-model="depth"
-      @callback="this.updateDepth"
+      @callback="updateDimensions"
     ></vue-slider>
     <input class="slider" v-if="this.discreteValueFlags[this.DEPTH]" type="text" :readonly="true" v-model="depth" >
 
     <div class="text-entry">Choose the available unit:</div>
-    <select class="dropdown" v-model="unit" @change="updateUnit">
+    <select class="dropdown" v-model="unit" @change="this.updateDimensions">
       <option
         v-for="optionUnit in availableOptionsUnits"
-        selected
         :key="optionUnit.id"
-        :value="optionUnit"
+        :value="optionUnit.unit"
       >{{optionUnit.unit}}</option>
     </select>
   </div>
@@ -118,7 +117,7 @@
         width: this.widthMin,
         depth: this.depthMin,
   
-        unit: 0,
+        unit: "mm",
 
         availableOptionsDimensions: [],
         availableOptionsUnits: [],
@@ -175,8 +174,6 @@
         .catch(error => {
           this.$toast.open(error.response.status + "An error occurred");
         });
-
-      
         
     },
     methods: {   
@@ -187,13 +184,14 @@
           this.continousIntervalFlags[i]=false;
         }
       }, 
-      updateHeight: function(){
+      /* updateHeight: function(){
         alert(this.height);
         store.dispatch(SET_CUSTOMIZED_PRODUCT_HEIGHT, {
           height: this.height
         });
       },
       updateWidth: function(){
+        alert(this.width);
         store.dispatch(SET_CUSTOMIZED_PRODUCT_WIDTH, {
           width: this.width
         });
@@ -202,6 +200,14 @@
         store.dispatch(SET_CUSTOMIZED_PRODUCT_DEPTH, {
           depth: this.depth
         });
+      }, */
+      updateDimensions(){
+        store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS,{       
+          width: this.width,
+          height: this.height,
+          depth: this.depth,
+          unit: this.unit
+        })
       },
       updateUnit(e) {
         store.dispatch(SET_CUSTOMIZED_PRODUCT_UNIT, {
@@ -254,7 +260,7 @@
         }else{
           this.heightMin = this.determineMinOfInterval(this.heightType, op.height);
           this.heightMax = this.determineMaxOfInterval(this.heightType, op.height);
-          this.heightIncrement = this.determineIncrementOfInterval(this.heightType, op.height);
+          this.heightIncrement = this.determineIncrementOfInterval(op.height);
 
           this.continousIntervalFlags[this.HEIGHT] = true;
           this.discreteIntervalFlags[this.HEIGHT] = false;
@@ -280,7 +286,7 @@
         } else {
           this.widthMin = this.determineMinOfInterval(this.widthType, op.width);
           this.widthMax = this.determineMaxOfInterval(this.widthType, op.width);
-          this.widthIncrement = this.determineIncrementOfInterval(this.widthType, op.width);
+          this.widthIncrement = this.determineIncrementOfInterval(op.width);
 
           this.continousIntervalFlags[this.WIDTH] = true;
           this.discreteValueFlags[this.WIDTH] = false;
@@ -305,9 +311,10 @@
           this.discreteIntervalFlags[this.DEPTH]=false;
 
         } else {
+
           this.depthMax = this.determineMaxOfInterval(this.depthType, op.depth);
           this.depthMin = this.determineMinOfInterval(this.depthType, op.depth);
-          this.depthIncrement = this.determineIncrementOfInterval(this.depthType, op.depth);
+          this.depthIncrement = this.determineIncrementOfInterval(op.depth);
 
           this.continousIntervalFlags[this.DEPTH] = true;
           this.discreteValueFlags[this.DEPTH] = false;
