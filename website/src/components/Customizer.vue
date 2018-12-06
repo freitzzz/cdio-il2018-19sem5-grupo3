@@ -29,31 +29,30 @@ export default {
       return document.documentElement.clientHeight * 0.70;
     },
     slots(){
-       var array = [];
-      for(let i = 0; i < 2; i++){
+      var array= [];
+      for(let i = 0; i < Store.state.customizedProduct.slots.length; i++){
         array.push(Store.getters.customizedProductSlotWidth(i));
       }
-      return array; 
-     
+      return array;
+      //return Store.getters.customizedProductSlotWidth;
     },
     loadProduct(){
       return Store.getters.productId;
     },
-    addComponent(){
-
+    /* addComponent(){
       var array= [];
       for(let i = 0; i < Store.state.customizedProduct.slots.length; i++){
         array.push(Store.getters.customizedProductComponents(i));
       }
       return array;
-    }
+    } */
   },
   components: {
     CustomizerSideBar,
     CustomizerProgressBar
   },
   watch: {
-    slots: function(newValue){
+    slots: function(newValue, oldValue){
       this.productRenderer.addSlotNumbered(newValue);
     },
     loadProduct: function(){

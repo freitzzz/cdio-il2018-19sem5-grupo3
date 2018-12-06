@@ -92,9 +92,6 @@ export default class Closet {
     addSlot(valuesSlot) {
         this.closet_slots++;
         var slotWidth = valuesSlot.width;
-        var slotHeight = valuesSlot.width;
-        var slotDepth = valuesSlot.width;
-        var face_slot_dimensions = {slotWidth,slotHeight, slotDepth}
         this.closet_slots_faces.push(this.closet_right_face_dimensions_axes.slice());
         this.initial_closet_slots_faces.push(this.closet_right_face_dimensions_axes.slice());
         this._updateClosetSlots(slotWidth);

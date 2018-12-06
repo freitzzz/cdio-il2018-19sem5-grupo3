@@ -407,8 +407,6 @@ export default class ProductRenderer {
      */
     addSlotNumbered(slotsToAdd) {
          for (var i = 0; i < slotsToAdd.length; i++) {
-             alert(slotsToAdd.length);
-             alert(slotsToAdd[i].width);
             var slotFace = this.closet.addSlot(slotsToAdd[i]);
             this.closet_slots_faces_ids.push(this.generateParellepiped(slotFace[0], slotFace[1], slotFace[2]
                 , slotFace[3], slotFace[4], slotFace[5], this.material, this.group));
