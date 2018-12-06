@@ -43,7 +43,7 @@ const state = {
     }
 }
 
-const getters = {
+export const getters = {
     productId: state => {
         return state.product.id;
     },
