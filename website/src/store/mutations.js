@@ -18,10 +18,12 @@ export const mutations = {
    * @param {*} payload Payload with the new width
    */
   [types.SET_CUSTOMIZED_PRODUCT_DIMENSIONS](state, payload) {
-    state.customizedProduct.customizedDimensions.width = payload.width;
-    state.customizedProduct.customizedDimensions.height = payload.height;
-    state.customizedProduct.customizedDimensions.depth = payload.depth;
-    state.customizedProduct.customizedDimensions.unit = payload.unit;
+    state.customizedProduct.customizedDimensions = {
+      width: payload.width,
+      heigh: payload.height,
+      depth: payload.depth,
+      unit: payload.unit,
+    }
   },
 
   // /* *
@@ -59,14 +61,14 @@ export const mutations = {
   // [types.SET_CUSTOMIZED_PRODUCT_UNIT](state, payload) {
   //   state.customizedProduct.customizedDimensions.unit = payload.unit;
   // },
-  /**
-   * Changes the states's customized product's unit
-   * @param {*} state The store's state
-   * @param {*} payload Payload with the new unit 
-   */
-  [types.SET_CUSTOMIZED_PRODUCT_UNIT](state, payload) {
-    state.customizedProduct.customizedDimensions.unit = payload.unit;
-  },
+  // /**
+  //  * Changes the states's customized product's unit
+  //  * @param {*} state The store's state
+  //  * @param {*} payload Payload with the new unit 
+  //  */
+  // [types.SET_CUSTOMIZED_PRODUCT_UNIT](state, payload) {
+  //   state.customizedProduct.customizedDimensions.unit = payload.unit;
+  // },
 
   /**
    * Changes the states's customized product's slot width

@@ -44,7 +44,7 @@ export const actions = {
     },
     [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS]: ({commit},payload)=>{
         commit(types.SET_CUSTOMIZED_PRODUCT_COMPONENTS, payload);
-    }
+    },
     /**
      * Action used to commit the mutation SET_SLOT_DEPTH
      */
@@ -65,7 +65,7 @@ export const actions = {
     },
 
     /**
-     * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT
+     * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_DIMENSIONS
      */
     [types.SET_CUSTOMIZED_PRODUCT_DIMENSIONS]: ({ commit }, payload) => {
         commit(types.SET_CUSTOMIZED_PRODUCT_DIMENSIONS, payload);

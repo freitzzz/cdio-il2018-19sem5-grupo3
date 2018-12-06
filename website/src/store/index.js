@@ -78,37 +78,12 @@ export const getters = {
     productComponents: state => {
         return state.product.components;
     },
-    // width: state => {
-    //     return state.customizedProduct.dimensions.width;
-    // },
-    // height: state => {
-    //     return state.customizedProduct.dimensions.height;
-    // },
-    // depth: state => {
-    //     return state.customizedProduct.dimensions.depth;
-    // },
-    // unit: state => {
-    //     return state.customizedProduct.dimensions.unit;
-    // },
     customizedProductSlotWidth: state => {
         return state.customizedProduct.slots.width;
     },
     customizedProductDimensions: state=>{
         return state.customizedProduct.customizedDimensions;
-    }
-     width: state => {
-        return state.customizedProduct.dimensions.width;
     },
-    height: state => {
-        return state.customizedProduct.dimensions.height;
-    },
-    depth: state => {
-        return state.customizedProduct.dimensions.depth;
-    },
-    unit: state => {
-        return state.customizedProduct.dimensions.unit;
-    },
-
     customizedProductSlotWidth: state => index => {
         return state.customizedProduct.slots[index];
     },
