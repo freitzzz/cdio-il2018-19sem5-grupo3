@@ -2,7 +2,7 @@
 /**
  * Represents the internal core of a Drawer
  */
-class Drawer{
+export default class Drawer{
     
     /**
      * Builds a new Drawer with the dimensions and axes values for all faces
