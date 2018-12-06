@@ -1,14 +1,13 @@
 package cdiomyc.webservices.authentication;
 
-import cdiomyc.core.domain.User;
-import cdiomyc.core.domain.auth.credentials.CredentialsAuth;
 import cdiomyc.core.mv.authentication.AuthenticationMV;
 import cdiomyc.core.mv.authentication.AuthenticationMVService;
 import cdiomyc.core.mv.authentication.session.GetAuthenticationSessionDetailsMV;
-import cdiomyc.core.persistence.PersistenceContext;
+import cdiomyc.webservices.cookieservices.SessionCookieService;
 import cdiomyc.webservices.dataservices.json.SimpleJSONMessageService;
 import com.google.gson.Gson;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -25,6 +24,8 @@ public final class AuthenticationController {
     
     /**
      * Processes the authenticate into MYC API's request
+     * @param userAgent String with the user User-Agent
+     * @param secrete String with hte user secrete key
      * @param authenticationDetails String with the authentication 
      * details
      * @return HTTP Response 200; OK with the API token
@@ -33,13 +34,20 @@ public final class AuthenticationController {
     @POST
     @Consumes(value = MediaType.APPLICATION_JSON)
     @Produces(value = MediaType.APPLICATION_JSON)
-    public Response authenticate(String authenticationDetails){
+    public Response authenticate(@HeaderParam(value="User-Agent") String userAgent,
+                @HeaderParam(value = "Secrete")String secrete,
+                String authenticationDetails){
         try{
+            AuthenticationMV authenticationDetailsMV=deserializeAuthenticationDetails(authenticationDetails);
+            authenticationDetailsMV.userAgent=userAgent;
+            authenticationDetailsMV.secreteKey=secrete;
             GetAuthenticationSessionDetailsMV authenticationSessionDetailsMV=
                     cdiomyc.core.application.auth.AuthenticationController
-                            .authenticate(deserializeAuthenticationDetails(authenticationDetails));
+                            .authenticate(authenticationDetailsMV);
             return Response
                     .ok()
+                    .cookie(SessionCookieService
+                            .createSessionCookie(authenticationSessionDetailsMV.token))
                     .entity(new Gson().toJson(authenticationSessionDetailsMV))
                     .build();
         }catch(IllegalArgumentException|IllegalStateException invalidOperation){
@@ -73,17 +81,7 @@ public final class AuthenticationController {
                                         .fromJson(authenticationDetails,AuthenticationType.class)
                                             .type));
     }
-    private void asdd(){
-        try{
-            System.out.println("!!!!!!!!!!!!1");
-            User user=new User(new CredentialsAuth("superusername","superusername"));
-            System.out.println(user);
-            PersistenceContext.repositories().createUserRepository().save(user);
-            System.out.println("!!!!1");
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
+    
     /**
      * Simple inner static class to deserialize the type of an authentication request body
      */
