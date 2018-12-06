@@ -36,7 +36,7 @@ const state = {
         },
         slots: [
             {
-                components: ""
+                components: []
             }
         ],
         customizedDimensions: {

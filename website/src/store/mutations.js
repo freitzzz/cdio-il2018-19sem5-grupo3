@@ -91,6 +91,6 @@ export const mutations = {
    */
   [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS](state, payload) {
     if(state.customizedProduct.slots.length >= payload.component.slot)
-    state.customizedProduct.slots[payload.component.slot - 1].components=payload.component;
+    state.customizedProduct.slots[payload.component.slot - 1].components.push(payload.component);
   }
 }
