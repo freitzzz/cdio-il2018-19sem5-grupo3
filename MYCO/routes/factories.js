@@ -27,7 +27,7 @@ factoriesRoute.route('/factories').get(function(request,response){
             if(factories.length>0){
                 response.status(200).json(schemasToBasicFactories(factories));
             }else{
-                response.status(400).json(noAvailableFactories());
+                response.status(404).json(noAvailableFactories());
             }
         })
 })
