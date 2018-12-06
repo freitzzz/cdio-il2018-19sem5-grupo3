@@ -39,7 +39,7 @@
       v-model="width"
       @click="updateWidth"
     ></vue-slider>
-    <input class="slider" v-if="this.discreteValueFlags[this.WIDTH]" type="text" :readonly="true" v-model="width" @click="updateWidth">
+    <input class="slider" v-if="this.discreteValueFlags[this.WIDTH]" type="text" :readonly="true" v-model="this.width" @click="updateWidth">
     
     <!-- DEPTH: -->
     <div class="text-entry">Depth:</div>
@@ -169,8 +169,6 @@
           this.$toast.open(error.response.status + "An error occurred");
         });
 
-        
-  
       /*Get all available units of measurement*/
       Axios.get(`${MYCM_API_URL}/units`)
         .then(response => this.availableOptionsUnits.push(...response.data))
@@ -181,8 +179,7 @@
       
         
     },
-    methods: {
-     
+    methods: {   
       resetFlags: function(){
         for(var i = 0; i < N_DIMENSIONS -1; i++){
           this.discreteValueFlags[i] = false;
@@ -251,7 +248,7 @@
 
           this.heightIncrement = 1;
         }else if(this.heightType == DISCRETE_VALUE){
-          this.heightMin = this.determineMinOfInterval(this.heightType,op.height);
+          this.height = this.determineMinOfInterval(this.heightType,op.height);
 
           this.discreteValueFlags[this.HEIGHT] = true;
           this.continousIntervalFlags[this.HEIGHT] = false;
@@ -277,7 +274,8 @@
 
           this.widthIncrement = 1;
         }else if (this.widthType == DISCRETE_VALUE) {
-          this.widthMin = this.determineMinOfInterval(this.widthType, op.width);
+          this.width = this.determineMinOfInterval(this.widthType, op.width);
+
 
           this.discreteValueFlags[this.WIDTH] = true;
           this.continousIntervalFlags[this.WIDTH] = false;
@@ -304,7 +302,7 @@
           this.depthIncrement = 1;
 
         }else if (this.depthType == DISCRETE_VALUE) {
-          this.depthMin = this.determineMinOfInterval(this.depthType, op.depth);
+          this.depth = this.determineMinOfInterval(this.depthType, op.depth);
 
           this.discreteValueFlags[this.DEPTH] = true;
           this.continousIntervalFlags[this.DEPTH] = false;
