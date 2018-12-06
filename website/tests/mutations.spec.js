@@ -1,5 +1,7 @@
 import { mutations } from '../src/store/mutations'
 
+//TODO Refactor these tests after Store structure changes are made
+
 describe('product mutations', () => {
     describe('product-id', () => {
         test('INIT_PRODUCT-updates-state-with-correct-product-id',
