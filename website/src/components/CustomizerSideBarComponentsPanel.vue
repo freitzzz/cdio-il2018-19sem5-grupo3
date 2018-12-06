@@ -129,7 +129,7 @@ export default {
             position: "top-center",
             duration: 2000
           });
-      } else if(this.div_inputs[index] < 1 || this.div_inputs[index] > store.state.customizedProduct.slots.length){
+      } else if(this.div_inputs[index] < 1 || this.div_inputs[index] > store.state.customizedProduct.slots.length + 1){
           this.$toasted.show("You must choose a valid slot to apply the component!", {
             position: "top-center",
             duration: 2000

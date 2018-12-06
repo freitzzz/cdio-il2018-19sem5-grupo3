@@ -1,7 +1,6 @@
 import * as types from './mutation-types'
 
 export const actions = {
-
     /**
      * Action used to commit the mutation INIT_PRODUCT
      */
@@ -42,27 +41,6 @@ export const actions = {
     [types.SET_SLOT_DIMENSIONS]: ({ commit }, payload) => {
         commit(types.SET_SLOT_DIMENSIONS, payload);
     },
-    [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS]: ({commit},payload)=>{
-        commit(types.SET_CUSTOMIZED_PRODUCT_COMPONENTS, payload);
-    },
-    /**
-     * Action used to commit the mutation SET_SLOT_DEPTH
-     */
-    [types.SET_SLOT_DEPTH]: ({ commit }, payload) => {
-        commit(types.SET_SLOT_DEPTH, payload);
-    },
-    /**
-     * Action used to commit the mutation SET_SLOT_HEIGHT
-     */
-    [types.SET_SLOT_HEIGHT]: ({ commit }, payload) => {
-        commit(types.SET_SLOT_HEIGHT, payload);
-    },
-    /**
-     * Action used to commit the mutation SET_SLOT_UNIT
-     */
-    [types.SET_SLOT_UNIT]: ({ commit }, payload) => {
-        commit(types.SET_SLOT_UNIT, payload);
-    },
 
     /**
      * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_DIMENSIONS
@@ -70,4 +48,53 @@ export const actions = {
     [types.SET_CUSTOMIZED_PRODUCT_DIMENSIONS]: ({ commit }, payload) => {
         commit(types.SET_CUSTOMIZED_PRODUCT_DIMENSIONS, payload);
     },
+
+    /**
+     * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_COMPONENTS
+     */
+    [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS]: ({ commit }, payload) => {
+        commit(types.SET_CUSTOMIZED_PRODUCT_COMPONENTS, payload);
+    },
+
+    /**
+    * Action used to commit the mutation ACTIVATE_CAN_MOVE_CLOSET
+    */
+    [types.ACTIVATE_CAN_MOVE_CLOSET]: ({ commit }) => {
+        commit(types.ACTIVATE_CAN_MOVE_CLOSET);
+    },
+
+    /**
+    * Action used to commit the mutation ACTIVATE_CAN_MOVE_SLOTS
+    */
+    [types.ACTIVATE_CAN_MOVE_SLOTS]: ({ commit }) => {
+        commit(types.ACTIVATE_CAN_MOVE_SLOTS);
+    },
+
+    /**
+      * Action used to commit the mutation ACTIVATE_CAN_MOVE_COMPONENTS
+      */
+    [types.ACTIVATE_CAN_MOVE_COMPONENTS]: ({ commit }) => {
+        commit(types.ACTIVATE_CAN_MOVE_COMPONENTS);
+    },
+
+    /**
+      * Action used to commit the mutation DEACTIVATE_CAN_MOVE_CLOSET
+      */
+    [types.DEACTIVATE_CAN_MOVE_CLOSET]: ({ commit }) => {
+        commit(types.DEACTIVATE_CAN_MOVE_CLOSET);
+    },
+
+    /**
+      * Action used to commit the mutation DEACTIVATE_CAN_MOVE_SLOTS
+      */
+    [types.DEACTIVATE_CAN_MOVE_SLOTS]: ({ commit }) => {
+        commit(types.DEACTIVATE_CAN_MOVE_SLOTS);
+    },
+
+    /**
+      * Action used to commit the mutation DEACTIVATE_CAN_MOVE_COMPONENTS
+      */
+    [types.DEACTIVATE_CAN_MOVE_COMPONENTS]: ({ commit }) => {
+        commit(types.DEACTIVATE_CAN_MOVE_COMPONENTS);
+    }
 }

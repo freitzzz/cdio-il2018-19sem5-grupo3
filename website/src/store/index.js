@@ -10,6 +10,12 @@ Vue.use(Vuex)
  * State that contains the retrieved product from MYCM and the builded customized product
  */
 const state = {
+    canvasControls: {
+        canMoveCloset: "false",
+        canMoveSlots: "false",
+        canMoveComponents: "false"
+    },
+
     product: {},
 
     customizedProduct: {
@@ -42,7 +48,7 @@ const state = {
                 depth: "",
                 unit: "",
                 components: []
-            }
+            }, 
         ],
         customizedDimensions: {
             width: "",
@@ -65,7 +71,7 @@ export const getters = {
     },
     recommendedSlotWidth: state => {
         return state.product.slotWidths.recommendedWidth;
-    }, 
+    },
     maxSlotWidth: state => {
         return state.product.slotWidths.maxWidth;
     },
@@ -78,11 +84,17 @@ export const getters = {
     productComponents: state => {
         return state.product.components;
     },
-    customizedProductSlotWidth: state => {
-        return state.customizedProduct.slots.width;
+    width: state => {
+        return state.customizedProduct.dimensions.width;
     },
     customizedProductDimensions: state=>{
         return state.customizedProduct.customizedDimensions;
+    },
+    depth: state => {
+        return state.customizedProduct.dimensions.depth;
+    },
+    unit: state => {
+        return state.customizedProduct.dimensions.unit;
     },
     customizedProductSlotWidth: state => index => {
         return state.customizedProduct.slots[index];
@@ -90,6 +102,15 @@ export const getters = {
     customizedProductComponents: state => index => {
         return state.customizedProduct.slots[index].components;
     },
+    canMoveCloset: state => { 
+        return state.canvasControls.canMoveCloset;
+    },
+    canMoveSlots: state => {
+        return state.canvasControls.canMoveSlots;
+    },
+    canMoveComponents: state => {
+        return state.canvasControls.canMoveComponents;
+     }
 }
 
 export default new Vuex.Store({
