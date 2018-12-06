@@ -39,24 +39,11 @@ export default {
     loadProduct(){
       return Store.getters.productId;
     },
-/*     loadHeight(){
-      return Store.getters.height;
-    },
-    loadWidth(){
-      return Store.getters.width;
-    },
-    loadDepth(){
-      return Store.getters.depth;
-    },
-    loadUnit(){
-      return Store.getters.unit;
-    }, */
+
     updateDimensions(){
-      alert("teste 1");
       return Store.getters.customizedProductDimensions;
     }
-    
-    },
+
     /* addComponent(){
       var array= [];
       for(let i = 0; i < Store.state.customizedProduct.slots.length; i++){
