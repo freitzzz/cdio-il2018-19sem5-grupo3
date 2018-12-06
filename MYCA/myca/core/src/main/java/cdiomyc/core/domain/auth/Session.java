@@ -15,7 +15,6 @@ import javax.persistence.Table;
 
 /**
  * Represents an authentication session
- *
  * @author <a href="https://github.com/freitzzz">freitzzz</a>
  */
 @Entity
@@ -28,7 +27,16 @@ public class Session implements DomainEntity<String>, Serializable {
      * created has an invalid end date time
      */
     private static final String INVALID_SESSION_END_DATE_TIME = "Invalid session end date time!";
+    
+    /**
+     * Constant that represents the message that occurs if the session token is invalid
+     */
     private static final String INVALID_TOKEN = "Invalid token!";
+    
+    /**
+     * Constant that represents the message that occurs if the session secrete identifier is invalid
+     */
+    private static final String INVALID_SECRETE_IDENTIFIER = "Invalid secrete identifier!";
     /**
      * Long with the session persistence identifier
      */
@@ -47,34 +55,61 @@ public class Session implements DomainEntity<String>, Serializable {
      * String with the session token
      */
     private String sessionToken;
+    /**
+     * String with the session secrete identifier
+     */
+    private String sessionSecreteIdentifier;
+    /**
+     * Boolean with the session active
+     */
+    private boolean active;
 
     /**
      * Builds a new session
-     *
      * @param sessionEndDateTime LocalDateTime with the session end date time
-     * @param authToken String with the use auth token
+     * @param authToken String with the user auth token
+     * @param sessionSecreteIdentifier String with the session secrete identifier
      */
-    public Session(LocalDateTime sessionEndDateTime, String authToken) {
+    public Session(LocalDateTime sessionEndDateTime, String authToken,String sessionSecreteIdentifier) {
         checkToken(authToken);
+        checkSecreteIdentifier(authToken);
         LocalDateTime sessionStart = LocalDateTime.now();
         checkSessionEndDateTime(sessionStart, sessionEndDateTime);
         this.sessionStartDateTime = sessionStart;
         this.sessionEndDateTime = sessionEndDateTime;
         this.sessionToken = generateSessionToken(authToken);
+        this.sessionSecreteIdentifier=sessionSecreteIdentifier;
+        this.active=true;
     }
-
+    
+    /**
+     * Checks if a secrete identifier is the same as the current session
+     * @param secreteIdentifier String with the comparing secrete identifier
+     * @return boolean true if both secrete identifiers are the same, false if not
+     */
+    public boolean sameSecreteIdentifier(String secreteIdentifier){
+        return this.sessionSecreteIdentifier.equals(secreteIdentifier);
+    }
+    
     /**
      * Checks if the current session is active
-     *
      * @return boolean true if the session is active, false if not
      */
     public boolean isActive() {
-        return this.sessionEndDateTime.isAfter(this.sessionStartDateTime);
+        return this.active && this.sessionEndDateTime.isAfter(this.sessionStartDateTime);
     }
-
+    
+    /**
+     * Deactivates the current session
+     */
+    public void deactivate(){
+        if(!isActive())
+            throw new IllegalStateException("Session is not active!");
+        this.active=false;
+    }
+    
     /**
      * Returns the session token as a JWT
-     *
      * @return String with the current session token as a JWT
      */
     public String tokenAsJWT() {
@@ -83,7 +118,6 @@ public class Session implements DomainEntity<String>, Serializable {
 
     /**
      * Returns the session end date time
-     *
      * @return LocalDateTime with the current session end date time
      */
     public LocalDateTime getSessionEndDateTime() {
@@ -92,7 +126,6 @@ public class Session implements DomainEntity<String>, Serializable {
 
     /**
      * Returns the current session identifier
-     *
      * @return String with the session identifier
      */
     @Override
@@ -102,7 +135,6 @@ public class Session implements DomainEntity<String>, Serializable {
 
     /**
      * Returns the hashcode of the domain entity
-     *
      * @return Integer with the hash code of the domain entity
      */
     @Override
@@ -112,7 +144,6 @@ public class Session implements DomainEntity<String>, Serializable {
 
     /**
      * Checks if a domain entity is equal to the current one
-     *
      * @param otherDomainEntity DomainEntity with the comparing domain entity
      * @return boolean true if both domain entities are equal, false if not
      */
@@ -123,7 +154,6 @@ public class Session implements DomainEntity<String>, Serializable {
 
     /**
      * Generates a user session API token
-     *
      * @param token String with the user auth token
      * @return String with the generated session API token
      */
@@ -136,7 +166,6 @@ public class Session implements DomainEntity<String>, Serializable {
 
     /**
      * Checks if the session end date time is valid
-     *
      * @param sessionStartDateTime LocalDateTime with the session start date
      * time
      * @param sessionEndDateTime LocalDateTime with the session end date time
@@ -149,18 +178,26 @@ public class Session implements DomainEntity<String>, Serializable {
 
     /**
      * Checks if token is valid
-     *
-     * @param token token to check
+     * @param token String with the token
      */
     private void checkToken(String token) {
         if (token == null || token.trim().isEmpty()) {
             throw new IllegalArgumentException(INVALID_TOKEN);
         }
     }
+    
+    /**
+     * Checks if a secrete ident
+     * @param secreteIdentifier String with the token
+     */
+    private void checkSecreteIdentifier(String secreteIdentifier) {
+        if (secreteIdentifier == null || secreteIdentifier.trim().isEmpty()) {
+            throw new IllegalArgumentException(INVALID_SECRETE_IDENTIFIER);
+        }
+    }
 
     /**
      * Protected constructor in order to allow JPA persistence
      */
-    protected Session() {
-    }
+    protected Session() {}
 }
