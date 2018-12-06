@@ -119,7 +119,7 @@
         availableOptionsUnits: [],
         availableDimensionsHLD: [],
   
-        heightType: NO_OPTION, ////No type of dimension until it's choosen an option
+        heightType: NO_OPTION, //NNo type of dimension until it's choosen an option
         widthType: NO_OPTION, ///No type of dimension until it's choosen an option
         depthType: NO_OPTION, //No type of dimension until it's choosen an option
   

@@ -2,7 +2,7 @@
 /**
  * Represents a hinged door using box geometry
  */
-class HingedDoor {
+export default class HingedDoor {
 
     /**
      * Builds a new HingedDoor with the dimensions and axes values for the door

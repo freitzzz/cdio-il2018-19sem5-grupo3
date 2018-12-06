@@ -30,22 +30,21 @@ export default {
     },
     slots(){
       var array= [];
-      for(let i = 0; i < Store.state.customizedProduct.slots.length; i++){
+      for(let i = 0; i < Store.state.customizedProduct.slots.length - 1; i++){
         array.push(Store.getters.customizedProductSlotWidth(i));
       }
       return array;
-      //return Store.getters.customizedProductSlotWidth;
     },
     loadProduct(){
       return Store.getters.productId;
     },
-    /* addComponent(){
+     addComponent(){
       var array= [];
       for(let i = 0; i < Store.state.customizedProduct.slots.length; i++){
         array.push(Store.getters.customizedProductComponents(i));
       }
       return array;
-    } */
+    }
   },
   components: {
     CustomizerSideBar,
@@ -91,70 +90,6 @@ export default {
               event.preventDefault()
 
     }
-    /* addRecommendedSlots: function(){
-      this.productRenderer.addSlot();
-    } */
-
-/* const unwatch = this.$store.watch(() => this.$store.getters.authenticatedAndOnline, res => {
-  console.log(unwatch) // => undefined
-  unwatch()
-}, {
-  immediate: true
-}) */
-
-
-
-     /*reloadCube() {
-      var event = new CustomEvent("changeDimensions", {
-        detail: {
-          height: height,
-          width: width,
-          depth: depth
-        }
-      });
-      document.dispatchEvent(event);
-    },*/
- /* reloadClosetSlots() {
-      var slotDiv = document.getElementById("slotDiv");
-      var length = slotDiv.childNodes.length - 1;
-      var list = [];
-      while (length >= 1) {
-        list.push(slotDiv.childNodes[length].childNodes[1].nodeValue);
-        length--;
-      }
-      var eventX = new CustomEvent("changeSlots", {
-        detail: {
-          slots: document.getElementById("slotsInput").value,
-          slotWidths: list
-        }
-      });
-      document.dispatchEvent(eventX);
-      manageSlotSliders();
-    },
-    reloadMaterial(elementId) {
-      var event = new CustomEvent("changeMaterial", {
-        detail: {
-          //this should the be image's link
-          material: document.getElementById(elementId).getAttribute("src")
-        }
-      });
-      document.dispatchEvent(event);
-    },
-    changeShininess(shininess) {
-      var event = new CustomEvent("changeShininess", {
-        detail: {
-          shininess: shininess
-        }
-      });
-      document.dispatchEvent(event);
-    },
-    changeColor(color) {
-      var event = new CustomEvent("changeColor", {
-        detail: {
-          color: color
-        }
-      });
-    } */
   },
   mounted() {
     var canvas = this.$refs.threeCanvas;
