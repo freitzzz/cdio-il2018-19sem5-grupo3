@@ -123,6 +123,7 @@ export default {
     var unitCloset = store.getters.unit; */
 
     var widthCloset = 404.5;
+
     var depthCloset = 100;
     var heightCloset = 300;
     var unitCloset = "cm";
@@ -152,7 +153,7 @@ export default {
         unit: unitCloset }); 
       } */
     }
-    for(let i=0; i<recommendedNumberSlots; i++){
+    for(let i=0; i<recommendedNumberSlots-1; i++){
       store.dispatch(SET_SLOT_DIMENSIONS, { 
         idSlot: i,
         width: recommendedSlotWidth,
@@ -160,7 +161,7 @@ export default {
         depth: depthCloset,
         unit: unitCloset }); 
     }
-  } 
+  }
 };
 </script>
 <style>

@@ -90,6 +90,13 @@ public class User implements AggregateRoot<Auth>,Serializable{
     }
     
     /**
+     * Ends the current user session
+     */
+    public void endSession(){
+        getLastSession().deactivate();
+    }
+    
+    /**
      * Returns the user last session
      * @return Session with the user last session
      */

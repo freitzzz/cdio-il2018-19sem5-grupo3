@@ -323,7 +323,7 @@ export default class ProductRenderer {
                     //if (components[i][j].designation == "Shelf") this.generateShelf(components[i][j].slot);
                     //if (components[i][j].designation == "Pole") this.generatePole(components[i][j].slot);
                     //if (components[i][j].designation == "Drawer") this.generateDrawer(components[i][j].slot);
-                    if (components[i][j].designation == "Produto Componente") this.generateDrawer(components[i][j].slot);
+                    if (components[i][j].designation == "Produto Componente") this.generateShelf(components[i][j].slot);
                 }
             }
         }

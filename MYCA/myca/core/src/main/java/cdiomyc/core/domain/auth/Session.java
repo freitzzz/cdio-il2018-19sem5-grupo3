@@ -59,6 +59,10 @@ public class Session implements DomainEntity<String>, Serializable {
      * String with the session secrete identifier
      */
     private String sessionSecreteIdentifier;
+    /**
+     * Boolean with the session active
+     */
+    private boolean active;
 
     /**
      * Builds a new session
@@ -75,6 +79,16 @@ public class Session implements DomainEntity<String>, Serializable {
         this.sessionEndDateTime = sessionEndDateTime;
         this.sessionToken = generateSessionToken(authToken);
         this.sessionSecreteIdentifier=sessionSecreteIdentifier;
+        this.active=true;
+    }
+    
+    /**
+     * Checks if a secrete identifier is the same as the current session
+     * @param secreteIdentifier String with the comparing secrete identifier
+     * @return boolean true if both secrete identifiers are the same, false if not
+     */
+    public boolean sameSecreteIdentifier(String secreteIdentifier){
+        return this.sessionSecreteIdentifier.equals(secreteIdentifier);
     }
     
     /**
@@ -82,9 +96,18 @@ public class Session implements DomainEntity<String>, Serializable {
      * @return boolean true if the session is active, false if not
      */
     public boolean isActive() {
-        return this.sessionEndDateTime.isAfter(this.sessionStartDateTime);
+        return this.active && this.sessionEndDateTime.isAfter(this.sessionStartDateTime);
     }
-
+    
+    /**
+     * Deactivates the current session
+     */
+    public void deactivate(){
+        if(!isActive())
+            throw new IllegalStateException("Session is not active!");
+        this.active=false;
+    }
+    
     /**
      * Returns the session token as a JWT
      * @return String with the current session token as a JWT

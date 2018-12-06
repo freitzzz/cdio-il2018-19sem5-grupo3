@@ -36,6 +36,11 @@ const state = {
         },
         slots: [
             {
+                idSlot: "",
+                width: "",
+                height: "",
+                depth: "",
+                unit: "",
                 components: []
             }
         ],
@@ -86,8 +91,8 @@ export const getters = {
         return state.customizedProduct.dimensions.unit;
     },
 
-    customizedProductSlotWidth: state => {
-        return state.customizedProduct.slots.width;
+    customizedProductSlotWidth: state => index => {
+        return state.customizedProduct.slots[index];
     },
     customizedProductComponents: state => index => {
         return state.customizedProduct.slots[index].components;
