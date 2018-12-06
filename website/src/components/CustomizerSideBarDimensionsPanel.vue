@@ -215,7 +215,6 @@
           depth: this.depth,
           unit: this.unit
         })
-        
       },
       //Method that identifies different types of dimensios
       //There are three types of dimensions: Discrete Interval, Discrete Value, Continuous Interval
