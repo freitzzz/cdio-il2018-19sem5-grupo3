@@ -64,7 +64,6 @@ export default {
       this.productRenderer.showCloset();
     },
     updateDimensions: function(){
-      alert("ohhh :(");
       this.productRenderer.changeClosetDimensions(Store.getters.customizedProductDimensions.width, Store.getters.customizedProductDimensions.height ,Store.getters.customizedProductDimensions.depth);
     },
     addComponent: function(component){
