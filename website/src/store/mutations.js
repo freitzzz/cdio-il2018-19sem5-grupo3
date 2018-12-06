@@ -1,4 +1,5 @@
 import * as types from './mutation-types'
+import store from '.';
 
 export const mutations = {
 
@@ -46,22 +47,33 @@ export const mutations = {
   [types.SET_CUSTOMIZED_PRODUCT_UNIT](state, payload) {
     state.customizedProduct.customizedDimensions.unit = payload.unit;
   },
+
   /**
    * Changes the states's customized product's slot width
    * @param {*} state The store's state
    * @param {*} payload Payload with the new slot width 
    */
   [types.SET_SLOT_DIMENSIONS](state, payload) {
-    state.customizedProduct.slots.width = payload.width;
-    state.customizedProduct.slots.height = payload.height;
-    state.customizedProduct.slots.depth = payload.depth;
-    state.customizedProduct.slots.unit = payload.unit;
     
-    state.customizedProduct.slots.push({
+    state.customizedProduct.slots[payload.idSlot].width = payload.width;
+    state.customizedProduct.slots[payload.idSlot].height = payload.height;
+    state.customizedProduct.slots[payload.idSlot].depth = payload.depth;
+    state.customizedProduct.slots[payload.idSlot].unit = payload.unit;
+    /* 
+      state.customizedProduct.slots[payload.idSlot].push({
       depth: payload.depth,
       width: payload.width,
       height: payload.height,
       unit: payload.unit,
-  })
-}
+  })  */
+},
+  /**
+   * Adds a component to a slot from the state's customized product's
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the component to add
+   */
+  [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS](state, payload) {
+    if(state.customizedProduct.slots.length >= payload.component.slot)
+    state.customizedProduct.slots[payload.component.slot - 1].components=payload.component;
+  }
 }

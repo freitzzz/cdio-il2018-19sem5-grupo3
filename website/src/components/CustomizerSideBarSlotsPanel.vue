@@ -153,8 +153,8 @@ export default {
       } */
     }
     for(let i=0; i<recommendedNumberSlots; i++){
-
       store.dispatch(SET_SLOT_DIMENSIONS, { 
+        idSlot: i,
         width: recommendedSlotWidth,
         height: heightCloset,
         depth: depthCloset,

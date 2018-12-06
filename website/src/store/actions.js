@@ -42,4 +42,7 @@ export const actions = {
     [types.SET_SLOT_DIMENSIONS]: ({ commit }, payload) => {
         commit(types.SET_SLOT_DIMENSIONS, payload);
     },
+    [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS]: ({commit},payload)=>{
+        commit(types.SET_CUSTOMIZED_PRODUCT_COMPONENTS, payload);
+    }
 }
