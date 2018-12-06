@@ -144,33 +144,27 @@ ordersRoute.route('/orders').post(function (req, res, next) {
  */
 ordersRoute.route('/orders/:id/state').put((request,response)=>{
     let orderID=request.params.id;
-    Order
-        .findById(orderID)
-        .then((order)=>{
-            changeOrderState(order,request.body.state)
-            .then((changedOrderState)=>{
-                Order
-                    .findByIdAndUpdate(orderID,changedOrderState,{new:true})
-                    .then((updatedOrder)=>{
-                        console.log(updatedOrder);
-                        response.status(200).json(updatedOrder);
-                    })
-                    .catch((_error_updating_error)=>{
-                        response.status(500).json({message:_error_updating_error});
-                        //ERROR UPDATING ORDER ON MONGO DB :)))
-                    })
-            })
-            .catch((_errorOrderStateChange)=>{
-                response.status(400).json({message:_errorOrderStateChange});
-                //BUSINESS ORDER STATE CHANGE ERROR :))
-            });
+    orderExists(orderID)
+    .then((foundOrder)=>{
+        changeOrderState(foundOrder,request.body.state)
+        .then((changedOrderState)=>{
+            Order
+                .findByIdAndUpdate(orderID,changedOrderState,{new:true})
+                .then((updatedOrder)=>{
+                    response.status(200).json(updatedOrder);
+                })
+                .catch(()=>{
+                    response.status(500).json({message:"An error occurd while processing our database :("});
+                });
         })
-        .catch((_error)=>{
-            response.status(404).json({message:'Order not found!'});
-            //ORDER NOT FOUND :)
-        });
+        .catch((_error_message)=>{
+            response.status(400).json({message:_error_message});
+        })
+    })
+    .catch((_error_message)=>{
+        response.status(500).json({message:_error_message});
+    });
 });
-
 /**
  * Routes the register the packages of an order request
  */
@@ -201,6 +195,23 @@ ordersRoute.route('/orders/:id/packages').patch((request,response)=>{
             //ORDER NOT FOUND :)
         });
 });
+
+/**
+ * Checks if an order exists, and if so returns it as a callback function
+ * @param {String} orderId String with the order persistence id
+ */
+function orderExists(orderId){
+    return new Promise((resolve,reject)=>{
+        Order
+            .findById(orderId)
+            .then((foundOrder)=>{
+                foundOrder!=null ? resolve(foundOrder) : reject("No Order found with the given id")
+            })
+            .catch(()=>{
+                reject("An error occurd while processing our data base :(");
+            });
+    });
+}
 
 /**
  * Verifies if a city is located in a collection of factories
