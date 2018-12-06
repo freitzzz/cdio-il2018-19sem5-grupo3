@@ -40,6 +40,8 @@ public class AuthorizationController {
         Cookie userSessionCookie=SessionCookieService.toSessionCookie(sessionCookie);
         userAuthorizationDetails.sessionAPIToken=userSessionCookie.getValue();
         userAuthorizationDetails.isContentManager=asContentManager;
+        userAuthorizationDetails.userAgent=userAgent;
+        userAuthorizationDetails.secreteKey=secrete;
         try{
             cdiomyc.core.application.autho.AuthorizationController.isAuthorized(userAuthorizationDetails);
             return Response.noContent().build();
