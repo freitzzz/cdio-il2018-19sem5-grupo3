@@ -17,7 +17,6 @@
             :max="maxSizeSlot"
             :value="recommendedSizeSlot"
             v-model="sliderValue[n-1]"
-            @onChange="upadteFreeSpace"
           ></vue-slider>
         </span>
       <div v-for="(line, index) in lines.slice(0,maxNumberSlots)" v-bind:key="index">
@@ -36,10 +35,7 @@
 import vueSlider from "vue-slider-component";
 import store from "./../store";
 import Axios from "axios";
-import { SET_SLOT_DEPTH } from "./../store/mutation-types.js";
-import { SET_SLOT_WIDTH } from "./../store/mutation-types.js";
-import { SET_SLOT_HEIGHT } from "./../store/mutation-types.js";
-import { SET_SLOT_UNIT } from "./../store/mutation-types.js";
+import { SET_SLOT_DIMENSIONS } from "./../store/mutation-types.js";
 
 export default {
   name: "CustomizerSideBarSlotsPanel",
@@ -62,41 +58,28 @@ export default {
   computed: {
     freeSpaceValue() {
       ///for (n in this.sliderValue) {
-       /// return parseInt(store.getters.width - this.sliderValue[n]);
+      /// return parseInt(store.getters.width - this.sliderValue[n]);
       ///}
       return 200;
     },
-    recommendedNumberSlots() {
+    /*  recommendedNumberSlots() {
       ///if (store.getters.recommendedSlotSize.unit == store.getters.unit) {
       ///  return ( parseInt( store.getters.width / store.getters.recommendedSlotSize.width ) + 3);
       ///} else {
       ///convert(store.getters.unit,store.getters.recommendedSlotSize.unit,store.getters.recommendedSlotSize.width );
       /// return parseInt(store.getters.width / this.valueConverted) + 3;
       return 3;
-    },
+    }, */
     minNumberSlots() {
       ///return parseInt(store.getters.width / store.getters.maxSlotSize);
-       return 50;
+      return 1;
     },
     maxNumberSlots() {
       ///return store.getters.width / minSizeSlot;
-      return 5;
-    },
-    minSizeSlot() {
-      return store.getters.minSlotSize;
-    },
-    maxSizeSlot() {
-      return store.getters.maxSlotSize;
-    },
-    recommendedSizeSlot() {
-      ///return store.getters.recommendedSlotSize;
-      return 21;
+      return 7;
     },
     displaySliders() {
       return this.picked === "customizedSlots";
-    },
-    unitSlot() {
-      return store.getters.unit;
     }
   },
   methods: {
@@ -130,15 +113,54 @@ export default {
       this.blockRemoval = this.lines.length <= 1;
     }
   },
-   mounted() {
+  mounted() {
     this.addLine();
   },
   created() {
-    store.dispatch(SET_SLOT_DEPTH, { depth: 100 });
-    store.dispatch(SET_SLOT_WIDTH, { width: 55 });
-    store.dispatch(SET_SLOT_HEIGHT, { height: 100 });
-    store.dispatch(SET_SLOT_UNIT, { unit: "cm" });
-  }
+    /* var widthCloset = store.getters.width;
+    var depthCloset = store.getters.depth;
+    var heightCloset = store.getters.height;
+    var unitCloset = store.getters.unit; */
+
+    var widthCloset = 404.5;
+    var depthCloset = 100;
+    var heightCloset = 300;
+    var unitCloset = "cm";
+
+    var recommendedSlotWidth = store.getters.recommendedSlotWidth;
+
+    var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
+    var remainder = widthCloset % recommendedSlotWidth;
+
+    var remainderWidth = widthCloset - (recommendedNumberSlots * recommendedSlotWidth);
+
+    if (remainder>0 && remainderWidth<=store.getters.minSlotWidth){
+      /* var addToMin = store.getters.minSlotWidth - remainder;
+      recommendedNumberSlots--;
+      var slotAn = re - addToMin
+      if(slotAn>=store.getters.minSlotWidth){
+        store.dispatch(SET_SLOT_DIMENSIONS, { 
+        width: slotAn,
+        height: heightCloset,
+        depth: depthCloset,
+        unit: unitCloset }); 
+
+        store.dispatch(SET_SLOT_DIMENSIONS, { 
+        width: store.getters.minSlotWidth,
+        height: heightCloset,
+        depth: depthCloset,
+        unit: unitCloset }); 
+      } */
+    }
+    for(let i=0; i<recommendedNumberSlots; i++){
+
+      store.dispatch(SET_SLOT_DIMENSIONS, { 
+        width: recommendedSlotWidth,
+        height: heightCloset,
+        depth: depthCloset,
+        unit: unitCloset }); 
+    }
+  } 
 };
 </script>
 <style>

@@ -41,7 +41,7 @@ export default {
   },
   watch: {
     slots: function(newValue, oldValue){
-      this.productRenderer.addSlot(newValue);
+      this.productRenderer.addSlotNumbered(newValue);
     },
     loadProduct: function(){
       this.productRenderer.showCloset();

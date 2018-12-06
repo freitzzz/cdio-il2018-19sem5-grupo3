@@ -249,23 +249,36 @@ export default class ProductRenderer {
     }
 
 
-    /**
+     /**
      * Adds a slot to the current closet
      */
     addSlot() {
-        this.addSlotNumbered(1);
+        ///this.addSlotNumbered([]);
     }
 
     /**
      * Adds a specified number of slots to the current closet
-     * @param{number} slotsToAdd - number of slots being added
+     * @param{array} slotsToAdd - number of slots being added
      */
     addSlotNumbered(slotsToAdd) {
-        for (var i = 0; i < slotsToAdd; i++) {
-            var slotFace = this.closet.addSlot();
+         for (var i = 0; i < slotsToAdd.length; i++) {
+            var slotFace = this.closet.addSlot(slotsToAdd[i]);
+            /* alert(slotFace[0]);
+            alert(slotFace[1]);
+            alert(slotFace[2]);
+            alert(slotFace[3]);
+            alert(slotFace[4]);
+            alert(slotFace[5]); */
             this.closet_slots_faces_ids.push(this.generateParellepiped(slotFace[0], slotFace[1], slotFace[2]
                 , slotFace[3], slotFace[4], slotFace[5]));
-        }
+               
+            /*this.closet_slots_faces_ids.push(slotsToAdd[i][0],
+                slotsToAdd[i][1],
+                slotsToAdd[i][2],
+                slotsToAdd[i][3],
+                slotsToAdd[i][4],
+                slotsToAdd[i][5]);*/
+        } 
         this.updateClosetGV();
     }
 

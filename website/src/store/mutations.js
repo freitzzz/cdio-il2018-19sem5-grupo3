@@ -51,32 +51,17 @@ export const mutations = {
    * @param {*} state The store's state
    * @param {*} payload Payload with the new slot width 
    */
-  [types.SET_SLOT_WIDTH](state, payload) {
+  [types.SET_SLOT_DIMENSIONS](state, payload) {
     state.customizedProduct.slots.width = payload.width;
-  },
-  /**
-   * Changes the states's customized product's slot height
-   * @param {*} state The store's state
-   * @param {*} payload Payload with the new slot height 
-   */
-  [types.SET_SLOT_HEIGHT](state, payload) {
     state.customizedProduct.slots.height = payload.height;
-  },
-  /**
-   * Changes the states's customized product's slot depth
-   * @param {*} state The store's state
-   * @param {*} payload Payload with the new slot depth 
-   */
-  [types.SET_SLOT_DEPTH](state, payload) {
     state.customizedProduct.slots.depth = payload.depth;
-  },
-  /**
-   * Changes the states's customized product's slot unit
-   * @param {*} state The store's state
-   * @param {*} payload Payload with the new slot unit 
-   */
-  [types.SET_SLOT_UNIT](state, payload) {
     state.customizedProduct.slots.unit = payload.unit;
-  },
-
+    
+    state.customizedProduct.slots.push({
+      depth: payload.depth,
+      width: payload.width,
+      height: payload.height,
+      unit: payload.unit,
+  })
+}
 }
