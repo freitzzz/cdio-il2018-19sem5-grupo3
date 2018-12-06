@@ -9,24 +9,26 @@
     <div v-if="displaySliders" class="slidersSection">
       <input type="text" :placeholder="freeSpaceValue" id="freeSpace" v-model="freeSpace" disabled>
       <i class="btn btn-primary material-icons" @click="removeLine(index)">-</i>
-      <i class="btn btn-primary material-icons"  @click="addLine">+</i>
+      <i class="btn btn-primary material-icons" @click="addLine">+</i>
       <div class="slidersSection">
         <span v-for="n in minNumberSlots" :key="n">
-          <vue-slider class="slidersSection"
+          <vue-slider
+            class="slidersSection"
             :min="minSizeSlot"
             :max="maxSizeSlot"
             :value="recommendedSizeSlot"
             v-model="sliderValue[n-1]"
           ></vue-slider>
         </span>
-      <div v-for="(line, index) in lines.slice(0,maxNumberSlots)" v-bind:key="index">
-        <vue-slider class="slidersSection"
-          :min="minSizeSlot"
-          :max="maxSizeSlot"
-          :value="recommendedSizeSlot"
-          v-model="sliderValues[index]"
-        ></vue-slider>
-      </div>
+        <div v-for="(line, index) in lines.slice(0,maxNumberSlots)" v-bind:key="index">
+          <vue-slider
+            class="slidersSection"
+            :min="minSizeSlot"
+            :max="maxSizeSlot"
+            :value="recommendedSizeSlot"
+            v-model="sliderValues[index]"
+          ></vue-slider>
+        </div>
       </div>
     </div>
   </div>
@@ -123,6 +125,7 @@ export default {
     var unitCloset = store.getters.unit; */
 
     var widthCloset = 404.5;
+
     var depthCloset = 100;
     var heightCloset = 300;
     var unitCloset = "cm";
@@ -132,9 +135,10 @@ export default {
     var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
     var remainder = widthCloset % recommendedSlotWidth;
 
-    var remainderWidth = widthCloset - (recommendedNumberSlots * recommendedSlotWidth);
+    var remainderWidth =
+      widthCloset - recommendedNumberSlots * recommendedSlotWidth;
 
-    if (remainder>0 && remainderWidth<=store.getters.minSlotWidth){
+    if (remainder > 0 && remainderWidth >= store.getters.minSlotWidth) {
       /* var addToMin = store.getters.minSlotWidth - remainder;
       recommendedNumberSlots--;
       var slotAn = re - addToMin
@@ -152,15 +156,16 @@ export default {
         unit: unitCloset }); 
       } */
     }
-    for(let i=0; i<recommendedNumberSlots; i++){
-      store.dispatch(SET_SLOT_DIMENSIONS, { 
+    for (let i = 0; i < recommendedNumberSlots; i++) {
+      store.dispatch(SET_SLOT_DIMENSIONS, {
         idSlot: i,
         width: recommendedSlotWidth,
         height: heightCloset,
         depth: depthCloset,
-        unit: unitCloset }); 
+        unit: unitCloset
+      });
     }
-  } 
+  }
 };
 </script>
 <style>

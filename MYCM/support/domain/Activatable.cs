@@ -14,7 +14,7 @@ namespace support.domain
         /// <summary>
         /// Activates the instance.
         /// </summary>
-        public bool activate()
+        public virtual bool activate()
         {
             if (activated)
             {
@@ -29,7 +29,7 @@ namespace support.domain
         /// <summary>
         /// Deactivates the instance.
         /// </summary>
-        public bool deactivate()
+        public virtual bool deactivate()
         {
             if (!activated)
             {
