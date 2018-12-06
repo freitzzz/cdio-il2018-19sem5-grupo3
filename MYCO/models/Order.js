@@ -90,7 +90,7 @@ orderSchema.methods.registerPackages=function(packages){
     for(let i=0;i<packages.length;i++){
         let nextPackage=packages[i];
         grantOrderPackageCountIsValid(nextPackage.count);
-        for(let j=0;j<nextPackage.count;j++)newPackages.push(package.createPackage(nextPackage.size,[]));
+        for(let j=0;j<nextPackage.count;j++)newPackages.push(package.createPackage(nextPackage.size,[],nextPackage.weight,nextPackage.dimensions));
     }
     this.packages=newPackages;
 }
