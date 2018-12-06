@@ -8,6 +8,7 @@ using System.Security;
 using Microsoft.EntityFrameworkCore;
 using backend.persistence.ef;
 using System;
+using System.Collections.Generic;
 
 namespace backend
 {
@@ -39,6 +40,12 @@ namespace backend
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
                 client.DefaultRequestHeaders.Add("User-Agent", "CurrencyConversionAgent");
             });
+
+            services.AddHttpClient("MYCA",httpClient=>{
+                httpClient.BaseAddress=new Uri(Program.configuration.GetValue<string>("MYCA_ENTRYPOINT"));
+                httpClient.DefaultRequestHeaders.Add("Accept",new List<string>(new []{"application/json","text/html"}));
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
