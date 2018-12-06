@@ -2,6 +2,7 @@
 import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
 import Closet from './Closet'
+import Pole from './Pole'
 
 export default class ProductRenderer {
     /**
@@ -61,7 +62,9 @@ export default class ProductRenderer {
     * Global variable with the current closet shelves ids (Mesh IDs from Three.js)
     * @type {number[]}
     */
-    closet_shelves_ids = [];
+    closet_shelves_ids;
+
+    closet_poles_ids;
 
     /**
      * Instance variable with the WebGL canvas
@@ -127,6 +130,8 @@ export default class ProductRenderer {
 
         this.closet_faces_ids = [];
         this.closet_slots_faces_ids = [];
+        this.closet_poles_ids = [];
+        this.closet_shelves_ids = [];
         this.selected_slot = null;
         this.selected_face = null;
         this.selected_component = null;
@@ -269,11 +274,82 @@ export default class ProductRenderer {
     addComponent(components) {
         if (components == null || components == undefined) return;
         for (let i = 0; i < components.length; i++) {
-            if (components[i].slot == 0) { //add to closet structure
-            } else if (components[i].slot > 0) { //add to closet slot
-                if (components[i].designation == "Produto Componente") this.generateShelf(components[i].slot);
+            for (let j = 0; components[i].length; j++) {
+                alert(components[i][j].designation);
+
+                if (components[i][j].slot == 0) { //add to closet structure
+                } else if (components[i][j].slot > 0) { //add to closet slot
+                    //if (components[i][j].designation == "Shelf") this.generateShelf(components[i][j].slot);
+                    //if (components[i][j].designation == "Pole") this.generatePole(components[i][j].slot);
+                    if (components[i][j].designation == "Produto Componente") this.generatePole(components[i][j].slot);
+                }
             }
         }
+    }
+
+
+    /**
+     * Generates a cylinder with given properties on a certain position relative to axis x,y and z
+     */
+    generatePole(slot) {
+        var leftFace = this.group.getObjectById(this.closet_faces_ids[2]),
+            rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
+        var radiusTop = 3,
+            radiusBottom = 3,
+            radialSegments = 20,
+            heightSegments = 20,
+            thetaStart = 0,
+            thetaLength = Math.PI * 2;
+        var openEnded = false;
+        var height, x, y, z;
+
+        var pole = new Pole(radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength);
+
+        //If the closet has no slots, the pole's height needs to be the width of the closet
+        //Otherwise the pole needs to go from the closet's left wall to a slot, 
+        //from a slot to another slot or from a slot to the closet's right wall
+        if (this.closet_slots_faces_ids.length == 0) {
+            height = this.getCurrentClosetWidth();
+            pole.changePoleHeight(height);
+            x = this.calculateComponentPosition(rightFace.position.x, leftFace.position.x);
+            y = this.calculateComponentPosition(rightFace.position.y, leftFace.position.y);
+            z = this.calculateComponentPosition(rightFace.position.z, leftFace.position.z);
+
+        } else if (slot == 1) { //Pole is added in between the closet's left face and first slot
+            let firstSlot = this.group.getObjectById(this.closet_slots_faces_ids[0]);
+            height = this.calculateDistance(leftFace.position.x, firstSlot.position.x);
+            pole.changePoleHeight(height);
+            x = this.calculateComponentPosition(leftFace.position.x, firstSlot.position.x);
+            y = this.calculateComponentPosition(leftFace.position.y, firstSlot.position.y);
+            z = this.calculateComponentPosition(leftFace.position.z, firstSlot.position.z);
+
+        } else if (slot > 1 && slot <= this.closet_slots_faces_ids.length) { //Pole is added between slots w/ indexes [slot - 1] and [slot]
+            let slotToTheLeft = this.group.getObjectById(this.closet_slots_faces_ids[slot - 2]);
+            let slotToTheRight = this.group.getObjectById(this.closet_slots_faces_ids[slot - 1]);
+            height = this.calculateDistance(slotToTheLeft.position.x, slotToTheRight.position.x);
+            pole.changePoleHeight(height);
+            x = this.calculateComponentPosition(slotToTheLeft.position.x, slotToTheRight.position.x);
+            y = this.calculateComponentPosition(slotToTheLeft.position.y, slotToTheRight.position.y);
+            z = this.calculateComponentPosition(slotToTheLeft.position.z, slotToTheRight.position.z);
+
+        } else { //Pole is added between the last slot and the closet's right face
+            let lastSlot = this.group.getObjectById(this.closet_slots_faces_ids[slot - 2]);
+            height = this.calculateDistance(lastSlot.position.x, rightFace.position.x);
+            pole.changePoleHeight(height);
+            x = this.calculateComponentPosition(lastSlot.position.x, rightFace.position.x);
+            y = this.calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
+            z = this.calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
+        }
+        var cylinderGeometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, pole.getPoleHeight(),
+            radialSegments, heightSegments, openEnded, thetaStart, thetaLength);
+        var poleMesh = new THREE.Mesh(cylinderGeometry, this.material);
+        poleMesh.position.x = x;
+        poleMesh.position.y = y;
+        poleMesh.position.z = z;
+        poleMesh.rotation.z = Math.PI / 2;
+        //this.closet.addPole(pole);
+        this.group.add(poleMesh);
+        this.closet_poles_ids.push(poleMesh.id);
     }
 
     generateShelf(slot) {
@@ -564,6 +640,18 @@ export default class ProductRenderer {
             for (let j = 0; j < this.closet_shelves_ids.length; j++) {
                 let shelf = this.group.getObjectById(this.closet_shelves_ids[j]);
                 if (shelf == face) {
+                    this.controls.enabled = false;
+                    this.selected_component = face;
+                    if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+                        this.offset = this.intersection.y - this.selected_component.position.y;
+                    }
+                }
+            }
+
+            //Checks if the selected object is a pole
+            for (let j = 0; j < this.closet_poles_ids.length; j++) {
+                let pole = this.group.getObjectById(this.closet_poles_ids[j]);
+                if (pole == face) {
                     this.controls.enabled = false;
                     this.selected_component = face;
                     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
