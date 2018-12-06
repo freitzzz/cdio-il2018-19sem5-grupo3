@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -72,10 +73,18 @@ public class User implements AggregateRoot<Auth>,Serializable{
      * Creates a new session
      * @return Session with the new user session
      */
-    public Session createNewSession(){
+    public Session createNewSession(){return createNewSession(UUID.randomUUID().toString());}
+    
+    /**
+     * Creates a new session using a secrete identifier
+     * @param secreteIdentifier String with the user session secrete identifier
+     * @return Session with the new user session
+     */
+    public Session createNewSession(String secreteIdentifier){
         if(hasActiveSession())
             throw new IllegalArgumentException("User already has an active session!");
-        Session createdSession=new Session(LocalDateTime.now().plusMinutes(DEFAULT_SESSION_TIME),auth.id()); 
+        Session createdSession=new Session(LocalDateTime.now().plusMinutes(DEFAULT_SESSION_TIME),auth.id()
+                ,secreteIdentifier); 
         this.sessions.add(createdSession);
         return createdSession;
     }

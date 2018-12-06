@@ -60,6 +60,16 @@ public final class ApplicationSettings {
      */
     private static final String PASSWORD_OPERATORS_VALUE_KEY="password.operators.value";
     /**
+     * Constant that represents the name of the key which holds the value for 
+     * the current authentication session secrete identifier digest algorithm
+     */
+    private static final String AUTHENTICATION_SESSION_SECRETE_IDENTIFIER_DIGEST_ALGORITHM_KEY="authentication.session.secrete.identifier.digest.algorithm";
+    /**
+     * Constant that represents the name of the key which holds the value for 
+     * the current authentication session secrete identifier digest salt
+     */
+    private static final String AUTHENTICATION_SESSION_SECRETE_IDENTIFIER_DIGEST_SALT_KEY="authentication.session.secrete.identifier.digest.salt";
+    /**
      * Properties with the holder of the current application settings
      */
     private final Properties applicationSettings;
@@ -122,6 +132,18 @@ public final class ApplicationSettings {
      * @return Integer with the current password operators encryption value being used
      */
     public int getPasswordOperatorsEncryptionValue(){return Integer.parseInt(applicationSettings.getProperty(PASSWORD_OPERATORS_VALUE_KEY));}
+    
+    /**
+     * Method that gets the current authentication session secrete identifier digest algorithm
+     * @return String with the current authentication session secrete identifier digest algorithm
+     */
+    public String getAuthenticationSessionSecreteIdentifierDigestAlgorithm(){return applicationSettings.getProperty(AUTHENTICATION_SESSION_SECRETE_IDENTIFIER_DIGEST_ALGORITHM_KEY);}
+    
+    /**
+     * Method that gets the current authentication session secrete identifier digest salt
+     * @return String with the current authentication session secrete identifier digest salt
+     */
+    public String getAuthenticationSessionSecreteIdentifierDigestSalt(){return applicationSettings.getProperty(AUTHENTICATION_SESSION_SECRETE_IDENTIFIER_DIGEST_SALT_KEY);}
     
     /**
      * Method that injects the current application settings
