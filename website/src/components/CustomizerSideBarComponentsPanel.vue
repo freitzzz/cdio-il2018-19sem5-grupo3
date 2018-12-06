@@ -63,13 +63,13 @@
 </template>
 
 <script>
+import Vue from "vue";
 import Axios from "axios";
 import { error } from "three";
 import store from "./../store";
+import Toasted from "vue-toasted";
 import { MYCM_API_URL } from "./../config.js";
 import { SET_CUSTOMIZED_PRODUCT_COMPONENTS } from "./../store/mutation-types.js";
-import Toasted from "vue-toasted";
-import Vue from "vue";
 
 Vue.use(Toasted);
 
