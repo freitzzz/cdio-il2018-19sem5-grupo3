@@ -1,14 +1,15 @@
 using backend.config;
 using core.persistence;
 
-namespace backend.persistence.ef{
+namespace backend.persistence.ef
+{
     public sealed class EFRepositoryFactoryImpl : RepositoryFactory
     {/*
         public ComponentRepository createComponentRepository() {
             throw new System.NotImplementedException();
         }*/
 
-                /// <summary>
+        /// <summary>
         /// Creates a CommercialCatalogueRepository
         /// </summary>
         /// <returns>CommercialCatalogueRepository with the repository for CommercialCatalogue entities</returns>
@@ -33,6 +34,11 @@ namespace backend.persistence.ef{
         public CustomizedProductRepository createCustomizedProductRepository()
         {
             return new EFCustomizedProductRepository(BackendConfiguration.entityFrameworkContext);
+        }
+
+        public CustomizedProductSerialNumberRepository createCustomizedProductSerialNumberRepository()
+        {
+            return new EFCustomizedProductSerialNumberRepository(BackendConfiguration.entityFrameworkContext);
         }
 
         public FinishPriceTableRepository createFinishPriceTableRepository()

@@ -16,7 +16,7 @@ namespace backend.persistence.ef
         /// Constructs a new instance of EFCustomizedProductSerialNumberRepository with a given database context.
         /// </summary>
         /// <param name="dbContext"></param>
-        protected EFCustomizedProductSerialNumberRepository(MyCContext dbContext)
+        public EFCustomizedProductSerialNumberRepository(MyCContext dbContext)
         {
             this.dbContext = dbContext;
         }

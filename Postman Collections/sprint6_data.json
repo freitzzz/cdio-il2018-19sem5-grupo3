@@ -1,0 +1,585 @@
+{
+	"info": {
+		"_postman_id": "41b46ac1-e8fc-4b86-9e6b-216e7db63c8b",
+		"name": "Quadro",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create category",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"blabla\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create material (white/black)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reference\": \"#666\",\n  \"designation\": \"Cherry Wood\",\n  \"image\": \"cherry-wood.png\",\n  \"colors\": [\n    {\n      \"name\": \"White\",\n      \"red\": \"255\",\n      \"green\": \"255\",\n      \"blue\": \"255\",\n      \"alpha\": \"0\"\n    },\n    {\n      \"name\": \"Black\",\n      \"red\": \"0\",\n      \"green\": \"0\",\n      \"blue\": \"0\",\n      \"alpha\": \"0\"\n    }\n  ],\n  \"finishes\": [\n    {\n      \"description\": \"varnish\"\n    },\n    {\n      \"description\": \"matte\"\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/materials",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"materials"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create material (blue/red)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reference\": \"#676\",\n  \"designation\": \"MDF Wood\",\n  \"image\": \"mdf-wood.png\",\n  \"colors\": [\n    {\n      \"name\": \"Blue\",\n      \"red\": \"0\",\n      \"green\": \"0\",\n      \"blue\": \"255\",\n      \"alpha\": \"0\"\n    },\n    {\n      \"name\": \"Red\",\n      \"red\": \"255\",\n      \"green\": \"0\",\n      \"blue\": \"0\",\n      \"alpha\": \"0\"\n    }\n  ],\n  \"finishes\": [\n    {\n      \"description\": \"varnish\"\n    },\n    {\n      \"description\": \"matte\"\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/materials",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"materials"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto D00 - Porta Correr",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"D00\",\n    \"designation\": \"Sliding Door\",\n    \"model\": \"d00.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"dimensions\": [\n        {\n            \"height\": {\n                \"minValue\": \"500.0\",\n                \"maxValue\": \"3000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"value\": \"50.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto D01 - Porta AL",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"D01\",\n    \"designation\": \"AL Door\",\n    \"model\": \"d01.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"dimensions\": [\n        {\n            \"height\": {\n                \"minValue\": \"500.0\",\n                \"maxValue\": \"3000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"900.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"value\": \"25.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto GVS -Small Drawer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"GVS\",\n    \"designation\": \"Small Drawer\",\n    \"model\": \"gvs.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"dimensions\": [\n        {\n            \"height\": {\n                \"value\":120,\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1200.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"200.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto GVM - Medium Drawer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"GVM\",\n    \"designation\": \"Medium Drawer\",\n    \"model\": \"gvm.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"dimensions\": [\n        {\n            \"height\": {\n                \"value\":180,\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1200.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"200.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto G01 - Configurable Drawer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"G01\",\n    \"designation\": \"Configurable Drawer\",\n    \"model\": \"g01.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"components\": [\n        {\n        \t\"id\": 3,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":4,\n        \t\"mandatory\": false\n        }\n    ],\n    \"dimensions\": [\n        {\n            \"height\": {\n                \"minValue\": \"500.0\",\n                \"maxValue\": \"3000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1200.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"200.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto MG2 - 2 Drawer Module",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"MG2\",\n    \"designation\": \"2 Drawer Module\",\n    \"model\": \"mg2.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"dimensions\": [\n        {\n        \t\"height\": {\n                \"values\": [\n                    \"250.0\",\n                    \"350.0\"\n                ],\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1200.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"200.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto MG3 - 3 Drawer Module",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"MG3\",\n    \"designation\": \"3 Drawer Module\",\n    \"model\": \"mg3.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"dimensions\": [\n        {\n        \t\"height\": {\n                \"values\": [\n                    \"350.0\",\n                    \"500.0\"\n                ],\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1200.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"200.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto MG4 - 4 Drawer Module",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"MG4\",\n    \"designation\": \"4 Drawer Module\",\n    \"model\": \"mg4.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"dimensions\": [\n        {\n        \t\"height\": {\n                \"values\": [\n                    \"450.0\",\n                    \"650.0\"\n                ],\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1200.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"200.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto V01 - Rod",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"V01\",\n    \"designation\": \"Rod\",\n    \"model\": \"v01.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"dimensions\": [\n        {\n        \t\"height\": {\n                \"values\": [\n                    \"15.0\",\n                    \"20.0\"\n                ],\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1200.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"values\": [\n                    \"15.0\",\n                    \"20.0\"\n                ],\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto V02 - Modern Rod",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"V02\",\n    \"designation\": \"Modern Rod\",\n    \"model\": \"v02.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"dimensions\": [\n        {\n        \t\"height\": {\n                \"value\":17.5,\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1200.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"value\":17.5,\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto P01 - Shelf with lateral support",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"P01\",\n    \"designation\": \"Shelf with lateral support\",\n    \"model\": \"p01.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"dimensions\": [\n        {\n        \t\"height\": {\n                \"values\": [\n                    \"10.0\",\n                    \"15.0\",\n                    \"20.0\"\n                ],\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1200.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"200.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto P02 - Shelf with back support",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"P02\",\n    \"designation\": \"Shelf with back support\",\n    \"model\": \"p02.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"dimensions\": [\n        {\n        \t\"height\": {\n                \"values\": [\n                    \"10.0\",\n                    \"15.0\",\n                    \"20.0\"\n                ],\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1200.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"200.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto E01 - Closet Structure without doors",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"E01\",\n    \"designation\": \"Closet Structure without doors\",\n    \"model\": \"e01.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"components\": [\n        {\n        \t\"id\": 5,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":6,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":7,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":8,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":9,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":10,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":11,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":12,\n        \t\"mandatory\": false\n        }\n    ],\n    \"dimensions\": [\n        {\n            \"height\": {\n                \"minValue\": \"500.0\",\n                \"maxValue\": \"3000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"4000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"200.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ],\"slotWidths\": {\n    \t\"minWidth\": \"400\",\n    \t\"maxWidth\": \"1200\",\n    \t\"recommendedWidth\": \"900\",\n    \t\"unit\": \"cm\"\n    }\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto E02 - Closet Structure with AL Door",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"E02\",\n    \"designation\": \"Closet Structure with AL door\",\n    \"model\": \"e02.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"components\": [\n    \t{\n        \t\"id\": 2,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\": 5,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":6,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":7,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":8,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":9,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":10,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":11,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":12,\n        \t\"mandatory\": false\n        }\n    ],\n    \"dimensions\": [\n        {\n            \"height\": {\n                \"minValue\": \"500.0\",\n                \"maxValue\": \"3000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"600.0\",\n                \"maxValue\": \"4000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"250.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ],\"slotWidths\": {\n    \t\"minWidth\": \"600\",\n    \t\"maxWidth\": \"1200\",\n    \t\"recommendedWidth\": \"900\",\n    \t\"unit\": \"cm\"\n    }\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar produto E03 - Closet Structure with Sliding Door",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reference\": \"E03\",\n    \"designation\": \"Closet Structure with Sliding door\",\n    \"model\": \"e03.glb\",\n    \"categoryId\": 1,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        }\n    ],\n    \"components\": [\n    \t{\n        \t\"id\": 1,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\": 5,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":6,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":7,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":8,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":9,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":10,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":11,\n        \t\"mandatory\": false\n        },\n        {\n        \t\"id\":12,\n        \t\"mandatory\": false\n        }\n    ],\n    \"dimensions\": [\n        {\n            \"height\": {\n                \"minValue\": \"500.0\",\n                \"maxValue\": \"3000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"800.0\",\n                \"maxValue\": \"4000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"275.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ],\"slotWidths\": {\n    \t\"minWidth\": \"800\",\n    \t\"maxWidth\": \"1200\",\n    \t\"recommendedWidth\": \"1000\",\n    \t\"unit\": \"cm\"\n    }\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/mycm/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"mycm",
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
