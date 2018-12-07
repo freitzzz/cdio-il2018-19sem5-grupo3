@@ -32,6 +32,7 @@ public class UserController {
     @Produces(value = MediaType.APPLICATION_JSON)
     public Response createUser(String userCreationDetails) {
         try {
+            System.out.println(userCreationDetails);
             CreateUserMV createUserMV;
             createUserMV = (CreateUserMV) new Gson().fromJson(userCreationDetails, UserMVService.classFromType(new Gson().fromJson(userCreationDetails, CreateUserType.class).type));
             CreatedUserMV created = new cdiomyc.core.application.users.UserController().createUser(createUserMV);
