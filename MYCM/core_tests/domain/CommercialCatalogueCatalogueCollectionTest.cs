@@ -2,6 +2,7 @@ using System;
 using Xunit;
 using core.domain;
 using System.Collections.Generic;
+using static core.domain.CustomizedProduct;
 
 namespace core_tests.domain
 {
@@ -44,8 +45,9 @@ namespace core_tests.domain
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-            CustomizedProduct customizedProduct = new CustomizedProduct("gonna", "roll", customizedMaterial,
-            customizedDimensions, product);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions)
+                .withMaterial(customizedMaterial).build();
 
             List<CustomizedProduct> customizedProductList = new List<CustomizedProduct>();
             customizedProductList.Add(customizedProduct);
@@ -96,8 +98,9 @@ namespace core_tests.domain
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-            CustomizedProduct customizedProduct = new CustomizedProduct("gonna", "roll", customizedMaterial,
-            customizedDimensions, product);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions)
+                .withMaterial(customizedMaterial).build();
 
             List<CustomizedProduct> customizedProductList = new List<CustomizedProduct>();
             customizedProductList.Add(customizedProduct);
@@ -151,8 +154,9 @@ namespace core_tests.domain
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-            CustomizedProduct customizedProduct = new CustomizedProduct("gonna", "roll", customizedMaterial,
-            customizedDimensions, product);
+            CustomizedProduct customizedProduct =CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions)
+                .withMaterial(customizedMaterial).build();
 
             List<CustomizedProduct> customizedProductList = new List<CustomizedProduct>();
             customizedProductList.Add(customizedProduct);
