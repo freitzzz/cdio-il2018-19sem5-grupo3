@@ -7,7 +7,7 @@
       </div>
       <div class="text-entry">Choose components to add:</div>
       <div class="padding-div">
-        <div class="scrollable-div" style="height: 300px; width: 100%;">
+        <div class="scrollable-div" style="height: 200px; width: 100%;">
           <ul class="image-list" v-for="component in components" :key="component.id">
             <li>
               <div class="image-btn" @click="createDivElements(component)">
