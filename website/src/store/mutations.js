@@ -92,8 +92,14 @@ export const mutations = {
    * @param {*} payload Payload with the component to add
    */
   [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS](state, payload) {
-    if (state.customizedProduct.slots.length >= payload.component.slot){
-      state.customizedProduct.slots[payload.component.slot - 1].components.push(payload.component);
+    if (state.customizedProduct.slots.length >= payload.component.slot) {
+      if (payload.component.slot > 0) {
+        state.customizedProduct.slots[payload.component.slot - 1].components = [];
+        state.customizedProduct.slots[payload.component.slot - 1].components.push(payload.component);
+      } else {
+        state.customizedProduct.slots[payload.component.slot].components = [];
+        state.customizedProduct.slots[payload.component.slot].components.push(payload.component);
+      }
     }
   },
 
@@ -120,7 +126,7 @@ export const mutations = {
   [types.ACTIVATE_CAN_MOVE_COMPONENTS](state) {
     state.canvasControls.canMoveComponents = true;
   },
-  
+
   /**
  * Deactivates the flag that allows the user to move the closet faces
  * @param {*} state The store's state

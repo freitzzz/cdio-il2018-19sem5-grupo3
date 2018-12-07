@@ -1,5 +1,9 @@
 <template>
   <div class="component">
+    <div class="icon-div-top">
+      <i class="material-icons md-12 md-blue btn">help</i>
+      <span class="tooltiptext">In this step, you can add divisions to the closet's structure and customize their sizes.</span>
+    </div>
     <label class="slotsSelections">
       <input type="radio" id="recommendedSlots" value="recommendedSlots" v-model="picked"> Recommended Number Slots
     </label>
@@ -181,5 +185,30 @@ export default {
 }
 .component {
   margin-bottom: 31%;
+}
+
+.icon-div-top .tooltiptext {
+  visibility: hidden;
+  width: 100px;
+  background-color: #797979;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 10%;
+  position: absolute;
+  top: 25px;
+  left: 0px;
+  right: 0px;
+}
+
+.icon-div-top:hover .tooltiptext {
+  visibility: visible;
+}
+
+.icon-div-top {
+  top: 15px;
+  left: 15px;
+  margin-left: 90px;
+  position: absolute;
 }
 </style>
