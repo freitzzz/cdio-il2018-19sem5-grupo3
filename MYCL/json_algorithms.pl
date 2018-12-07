@@ -51,11 +51,14 @@
 
 % JSON Object with the container object information
 :- json_object
-        container_object(width:integer,height:integer,depth:integer).
+        container_object(width:integer,height:integer,depth:integer,weight:integer).
 
 % JSON Object with the package object information
 :- json_object
-        package_object(id:integer,width:integer,height:integer,depth:integer).
+        package_object(id:integer,width:integer,height:integer,depth:integer,priorityId:integer,weight:integer).
+
+:- json_object
+        package_response_object(id:integer,x:integer,y:integer,z:integer,priorityId:integer,weight:integer).
 
 % JSON Object with the package object information which is inserted on a certain container position
 :- json_object
@@ -67,11 +70,11 @@
 
 % JSON Object with the bin packing algorithm computation request body
 :- json_object
-        bin_packing_request(algorithmID:integer,container:container_object/3,packages:list).
+        bin_packing_request(algorithmID:integer,container:container_object/4,packages:list).
 
 % JSON Object with the bin packing algorithm computation request response
 :- json_object
-        bin_packing_response(maxoccupation:number,container:container_object/3,packages:list).
+        bin_packing_response(maxoccupation:number,container:container_object/4,packages:list).
 
 % JSON Object with the bin packign algoritm computation request response (Pretty Printing Version)
 :- json_object

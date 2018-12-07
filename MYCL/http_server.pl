@@ -95,9 +95,9 @@ bin_packing(Request):-
         http_read_json(Request,JSONIn,[json_object(bin_packing_request)]),
         json_to_prolog(JSONIn,BPR),
         BPR=bin_packing_request(_,ContainerObject,PackageObjectsList),
-        ContainerObject=container_object(CWidth,CHeight,CDepth),
+        ContainerObject=container_object(CWidth,CHeight,CDepth,CWeight),
         json_packages_packages_tuples(PackageObjectsList,Packages),
-        compute_algorithm(5,(CWidth,CHeight,CDepth),Packages,Packed,OccupationPercentage),
+        compute_algorithm(5,(CWidth,CHeight,CDepth,CWeight),Packages,Packed,OccupationPercentage),
         package_tuples_to_json_packages(Packed,PackedJO),
         prolog_to_json(bin_packing_response(OccupationPercentage,ContainerObject,PackedJO),BPRS),
         reply_json(BPRS),
@@ -138,13 +138,13 @@ city_to_city_json_object(city(Name,LT,LO),city_object(Name,LT,LO)).
 json_packages_packages_tuples([],[]):-!.
 
 json_packages_packages_tuples([H|T],LPT):-
-        H=package_object(PID,PW,PH,PD),
+        H=package_object(PID,PW,PH,PD,PPID,PWE),
         json_packages_packages_tuples(T,LPT1),
-        append([(PID,PW,PH,PD)],LPT1,LPT).
+        append([(PID,PW,PH,PD,PWE,PPID)],LPT1,LPT).
 
 % Parses a list of package tuples into a list of package json objects
 package_tuples_to_json_packages([],[]):-!.
 
-package_tuples_to_json_packages([(ID,PW,PH,PD)|T],LPJ):-
+package_tuples_to_json_packages([(ID,PW,PH,PD,PPD,PPI)|T],LPJ):-
         package_tuples_to_json_packages(T,LPJ1),
-        append([package_object(ID,PW,PH,PD)],LPJ1,LPJ).
+        append([package_response_object(ID,PW,PH,PD,PPI,PPD)],LPJ1,LPJ).
