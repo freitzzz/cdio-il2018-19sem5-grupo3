@@ -2,7 +2,7 @@
 /**
  * Represents the internal core of a shelf
  */
-class Shelf {
+export default class Shelf {
     /**
      * Builds a new shelf with the dimensions and axes values for all faces
      * @param {Array} shelf_base_face_dimensions_axes Array with the base face dimensions and axes values

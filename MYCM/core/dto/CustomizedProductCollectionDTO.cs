@@ -10,8 +10,7 @@ namespace core.dto
     /// DTO that represents a instance of a Collection
     /// </summary>
     [DataContract]
-    public class CustomizedProductCollectionDTO : DTO, DTOParseable<CustomizedProductCollection, CustomizedProductCollectionDTO>
-    {
+    public class CustomizedProductCollectionDTO : DTO{
         /**
         <summary>
             long with the id of the Collection in the DB.
@@ -36,7 +35,7 @@ namespace core.dto
         public List<CustomizedProductDTO> customizedProducts{get;set;}
 
         
-        public CustomizedProductCollection toEntity()
+      /*   public CustomizedProductCollection toEntity()
         {
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             foreach(CustomizedProductDTO dto in this.customizedProducts){
@@ -45,6 +44,6 @@ namespace core.dto
             CustomizedProductCollection instance = new CustomizedProductCollection(this.name,list);
             instance.Id = this.id;
             return instance;
-        }
+        } */
     }
 }

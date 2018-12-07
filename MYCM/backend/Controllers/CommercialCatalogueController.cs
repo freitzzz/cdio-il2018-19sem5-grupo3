@@ -146,7 +146,7 @@ namespace backend.Controllers
         /// HTTP Response 400 Bad Request if no Commercial Catalogues are found;
         /// <br>HTTP Response 200 Ok with the info of all Commercial Catalogues in JSON format.
         /// </returns>
-        [HttpGet]
+       /*  [HttpGet]
         public ActionResult<List<CommercialCatalogueDTO>> findAll()
         {
             logger.LogInformation(LOG_GET_ALL_START);
@@ -264,6 +264,6 @@ namespace backend.Controllers
                 logger.LogWarning(argumentException,LOG_PUT_BAD_REQUEST,id,catalogueCollectionDTOToAdd);
                 return BadRequest(new {error = argumentException.Message});
             }
-        }
+        } */
     }
 }
