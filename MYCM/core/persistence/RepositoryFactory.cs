@@ -39,6 +39,12 @@ namespace core.persistence{
         CustomizedProductRepository createCustomizedProductRepository();
 
         /// <summary>
+        /// Creates an instance of CustomizedProductSerialNumberRepository.
+        /// </summary>
+        /// <returns>Created instance of CustomizedProductSerialNumberRepository.</returns>
+        CustomizedProductSerialNumberRepository createCustomizedProductSerialNumberRepository();
+
+        /// <summary>
         /// Creates a MaterialPriceTableRepository
         /// </summary>
         /// <returns>MaterialPriceTableRepository with the repository for material price table entries repository</returns>
