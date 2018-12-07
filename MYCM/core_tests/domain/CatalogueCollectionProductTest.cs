@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using core.domain;
 using Xunit;
+using static core.domain.CustomizedProduct;
 
 namespace core_tests.domain
 {
@@ -72,7 +73,7 @@ namespace core_tests.domain
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21.0, 19, 15.6);
 
-            return new CustomizedProduct("customizedproductid", "Customized Awesome Shelf", customizedMaterial, customizedDimensions, product);
+            return CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(customizedMaterial).build();
         }
     }
 }
