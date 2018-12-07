@@ -258,7 +258,7 @@ export default {
       this.resetFlags();
       //Get information of the chosed option
       var op = this.dimensionOp;
-      if (op != this.ERROR_DIMENSION_TYPE) {
+
         //Populate Height:
         this.heightType = this.identifyTypeDimensions(op.height);
         if (this.heightType == DISCRETE_INTERVAL) {
@@ -341,12 +341,7 @@ export default {
           this.discreteValueFlags[this.DEPTH] = false;
           this.discreteIntervalFlags[this.DEPTH] = false;
         }
-      }else{
-        this.$toasted.show("You must select an option", {
-            position: "top-center",
-            duration: 2000
-          });
-      }
+      
     },
     //The following methods determine the min,max and increment to populate the height,width and depth slider
     determineMinOfInterval: function(typeOfInterval, dimensionJson) {
