@@ -72,7 +72,6 @@ namespace core_tests.domain
             return new Product("#429", "Fabulous Closet", "fabcloset.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { firstMeasurement, secondMeasurement }, slotWidths);
         }
 
-
         private CustomizedDimensions buildCustomizedDimensions()
         {
             return CustomizedDimensions.valueOf(76, 80, 25);
@@ -148,7 +147,7 @@ namespace core_tests.domain
                 .createAnonymousUserCustomizedProduct("serial number", component, customizedProductDimensions).build();
 
             CustomizedProduct otherCustomizedComponent = CustomizedProductBuilder
-                .createAnonymousUserCustomizedProduct("serial number", otherComponent, CustomizedDimensions.valueOf(50, 190, 50)).build();
+                .createAnonymousUserCustomizedProduct("serial number", otherComponent, customizedProductDimensions).build();
 
             customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
 
@@ -190,6 +189,7 @@ namespace core_tests.domain
                 .createAnonymousUserCustomizedProduct("serial number", component, customizedProductDimensions).build();
 
             customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
+            customizedComponent.changeCustomizedMaterial(buildCustomizedMaterial());
 
             customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
 
@@ -1497,13 +1497,9 @@ namespace core_tests.domain
 
             CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
 
-            customizedProduct.addCustomizedProduct(buildValidInstance(serialNumber),
-                                                    customizedProduct.slots[0]);
-
             customizedProduct.activate();
 
             Assert.False(customizedProduct.activate());
-            Assert.False(customizedProduct.activated);
         }
 
         [Fact]
@@ -1511,18 +1507,15 @@ namespace core_tests.domain
         {
             string serialNumber = "serial number";
 
-            CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
-
-            customizedProduct.addCustomizedProduct(buildValidInstance(serialNumber),
-                                                    customizedProduct.slots[0]);
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
 
             customizedProduct.activate();
 
             Assert.False(customizedProduct.activate());
-            Assert.False(customizedProduct.activated);
+            Assert.True(customizedProduct.activated);
             foreach (CustomizedProduct child in customizedProduct.slots[0].customizedProducts)
             {
-                Assert.False(child.activated);
+                Assert.True(child.activated);
             }
         }
 
@@ -1532,6 +1525,7 @@ namespace core_tests.domain
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
+            customizedProduct.deactivate();
 
             Assert.True(customizedProduct.activate());
             Assert.True(customizedProduct.activated);
@@ -1542,11 +1536,8 @@ namespace core_tests.domain
         {
             string serialNumber = "serial number";
 
-            CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
-
-            customizedProduct.addCustomizedProduct(buildValidInstance(serialNumber),
-                                                    customizedProduct.slots[0]);
-
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
+            customizedProduct.deactivate();
             Assert.True(customizedProduct.activate());
             Assert.True(customizedProduct.activated);
             foreach (CustomizedProduct child in customizedProduct.slots[0].customizedProducts)
@@ -1561,7 +1552,7 @@ namespace core_tests.domain
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
-
+            customizedProduct.deactivate();
             Assert.False(customizedProduct.deactivate());
             Assert.False(customizedProduct.activated);
         }
@@ -1584,10 +1575,7 @@ namespace core_tests.domain
         {
             string serialNumber = "serial number";
 
-            CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
-
-            customizedProduct.addCustomizedProduct(buildValidInstance(serialNumber),
-                                                    customizedProduct.slots[0]);
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
 
             customizedProduct.activate();
 
@@ -1600,14 +1588,12 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureDeactivatingADeactivatedDoesntDeactivateItAndItsChildren()
+        public void ensureDeactivatingADeactivatedCustomizedProductDoesntDeactivateItAndItsChildren()
         {
             string serialNumber = "serial number";
 
-            CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
-
-            customizedProduct.addCustomizedProduct(buildValidInstance(serialNumber),
-                                                    customizedProduct.slots[0]);
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
+            customizedProduct.deactivate();
 
             Assert.False(customizedProduct.deactivate());
             Assert.False(customizedProduct.activated);
@@ -1624,7 +1610,7 @@ namespace core_tests.domain
 
             CustomizedProduct customizedProduct = buildValidFinishedInstance(serialNumber);
 
-            Action act = () => customizedProduct.addCustomizedProduct(buildValidInstance(serialNumber),);
+            Action act = () => customizedProduct.addCustomizedProduct(buildValidInstance(serialNumber), customizedProduct.slots[0]);
 
             Assert.Throws<InvalidOperationException>(act);
         }
@@ -1782,11 +1768,40 @@ namespace core_tests.domain
         [Fact]
         public void ensureRemovingCustomizedProductFromSlotThatDoesntHaveItThrowsException()
         {
-            string serialNumber = "serial number";
+            Dimension heightDimension = new SingleValueDimension(30);
+            Dimension widthDimension = new SingleValueDimension(30);
+            Dimension depthDimension = new SingleValueDimension(30);
 
-            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
 
-            customizedProduct.addSlot(CustomizedDimensions.valueOf(50, 50, 50));
+            ProductSlotWidths productSlotWidths = ProductSlotWidths.valueOf(10, 30, 20);
+
+            Dimension componentHeightDimension = new SingleValueDimension(5);
+            Dimension componentWidthDimension = new SingleValueDimension(5);
+            Dimension componentDepthDimension = new SingleValueDimension(5);
+
+            Measurement componentMeasurement = new Measurement(componentHeightDimension, componentWidthDimension, componentDepthDimension);
+
+            Product component = new Product("This is another reference", "This is another Designation", "component.gltf", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { componentMeasurement });
+
+            Product product = new Product("This is A Reference", "This is A Designation", "model.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { measurement }, complementaryProducts: new List<Product> { component }, slotWidths: productSlotWidths);
+
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(30, 30, 30);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, customizedProductDimensions).build();
+
+            CustomizedProduct customizedComponent = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", component, CustomizedDimensions.valueOf(5, 5, 5)).build();
+
+            customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(10, 10, 10));
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(10, 10, 10));
+
+            customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
 
             Action act = () => customizedProduct.removeCustomizedProduct(customizedProduct.slots[0].customizedProducts[0], customizedProduct.slots[1]);
 
@@ -1798,7 +1813,7 @@ namespace core_tests.domain
         {
             string serialNumber = "serial number";
 
-            CustomizedProduct customizedProduct = buildValidFinishedInstanceWithSubCustomizedProducts(serialNumber);
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
 
             customizedProduct.removeCustomizedProduct(customizedProduct.slots[0].customizedProducts[0], customizedProduct.slots[0]);
 
@@ -1810,7 +1825,7 @@ namespace core_tests.domain
         {
             string serialNumber = "serial number";
 
-            CustomizedProduct customizedProduct = buildValidFinishedInstanceWithSubCustomizedProducts(serialNumber);
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
 
             Action act = () => customizedProduct.slots[0].customizedProducts[0].finalizeCustomization();
 
