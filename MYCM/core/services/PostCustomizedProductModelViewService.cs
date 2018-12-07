@@ -19,7 +19,7 @@ namespace core.services
         /// </summary>
         /// <param name="customizedProductModelView">model view with the customized products info</param>
         /// <returns>CustomizedProduct instance</returns>
-        public static CustomizedProduct transform(PostCustomizedProductModelView customizedProductModelView)
+        /* public static CustomizedProduct transform(PostCustomizedProductModelView customizedProductModelView)
         {
 
             string reference = customizedProductModelView.reference;
@@ -97,6 +97,6 @@ namespace core.services
                 customizedProductModelView.slots = new List<CustomizedDimensionsDTO>();
                 return customizedProductModelView;
             }
-        }
+        } */
     }
 }

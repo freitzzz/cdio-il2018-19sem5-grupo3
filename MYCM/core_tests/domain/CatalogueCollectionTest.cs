@@ -4,6 +4,8 @@ using support.dto;
 using core.domain;
 using core.dto;
 using Xunit;
+using static core.domain.CustomizedProduct;
+
 namespace core_tests.domain
 {
     /// <summary>
@@ -49,7 +51,7 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             Assert.NotNull(new CatalogueCollection(customCollection));
@@ -98,7 +100,7 @@ namespace core_tests.domain
 
 
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(cp);
 
@@ -153,7 +155,7 @@ namespace core_tests.domain
 
 
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(cp);
 
@@ -211,7 +213,7 @@ namespace core_tests.domain
 
 
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(cp);
 
@@ -265,7 +267,7 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             Assert.Equal("List of Customized Products: System.Collections.Generic.List`1[core.domain.CatalogueCollectionProduct], Customized Product Collection Name Lab Coats", new CatalogueCollection(customCollection).ToString());
@@ -309,7 +311,7 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CatalogueCollection collection = new CatalogueCollection(customCollection);
@@ -354,7 +356,7 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CatalogueCollection collection = new CatalogueCollection(customCollection);
@@ -398,7 +400,7 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CatalogueCollection collection = new CatalogueCollection(customCollection);
@@ -442,7 +444,7 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CatalogueCollection collection = new CatalogueCollection(customCollection);
@@ -486,7 +488,7 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CustomizedProductCollection customCollection2 = new CustomizedProductCollection("Phone Microwave (Temporary Name)");
@@ -532,8 +534,8 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
-            CustomizedProduct cp2 = new CustomizedProduct("#619", "Sherfu", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
+            CustomizedProduct cp2 = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 2", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             customCollection.addCustomizedProduct(cp2);
@@ -579,8 +581,8 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
-            CustomizedProduct cp2 = new CustomizedProduct("#619", "Sherfu", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
+            CustomizedProduct cp2 = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 2", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CustomizedProductCollection customCollection2 = new CustomizedProductCollection("Phone Microwave (Temporary Name)");
@@ -627,7 +629,7 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CatalogueCollection collection = new CatalogueCollection(customCollection);
@@ -671,11 +673,11 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CatalogueCollection collection = new CatalogueCollection(customCollection);
-            CustomizedProduct cp2 = new CustomizedProduct("#619", "Sherfu", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp2 = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 2", product, customizedDimensions).withMaterial(custMaterial1).build();
             Assert.False(collection.hasCustomizedProduct(cp2));
         }
         [Fact]
@@ -716,7 +718,7 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CatalogueCollection collection = new CatalogueCollection(customCollection);
@@ -762,8 +764,8 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
-            CustomizedProduct cp2 = new CustomizedProduct("#619", "Sherfu", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
+            CustomizedProduct cp2 = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 2", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             Assert.Throws<ArgumentException>(() => new CatalogueCollection(customCollection, new List<CustomizedProduct>(new[] { cp2 })));
@@ -806,7 +808,7 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             Assert.Throws<ArgumentException>(() => new CatalogueCollection(customCollection, null));

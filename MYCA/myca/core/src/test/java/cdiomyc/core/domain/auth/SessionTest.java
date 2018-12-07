@@ -18,7 +18,7 @@ public class SessionTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void ensureSessionCantBeCreatedWithInvalidDate() {
-        new Session(LocalDateTime.now().minusDays(1), "token");
+        new Session(LocalDateTime.now().minusDays(1), "token","secretetoken");
     }
 
     /**
@@ -26,7 +26,7 @@ public class SessionTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void ensureSessionCantBeCreatedWithNullDate() {
-        new Session(null, "token");
+        new Session(null, "token","secretetoken");
     }
 
     /**
@@ -34,7 +34,7 @@ public class SessionTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void ensureSessionCantBeCreatedWithNullToken() {
-        new Session(LocalDateTime.now().plusMinutes(60), null);
+        new Session(LocalDateTime.now().plusMinutes(60), null,"secretetoken");
     }
 
     /**
@@ -42,7 +42,7 @@ public class SessionTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void ensureSessionCantBeCreatedWithInvalidToken() {
-        new Session(LocalDateTime.now().plusMinutes(60), "");
+        new Session(LocalDateTime.now().plusMinutes(60), "","secretetoken");
     }
 
     /**
@@ -50,7 +50,7 @@ public class SessionTest {
      */
     @Test
     public void ensureIsActiveSucceeds() {
-        Session instance = new Session(LocalDateTime.now().plusMinutes(60), "token");
+        Session instance = new Session(LocalDateTime.now().plusMinutes(60), "token","secretetoken");
         assertTrue(instance.isActive());
     }
 
@@ -60,7 +60,7 @@ public class SessionTest {
     @Test
     public void ensureTokenAsJWTSucceeds() {
         String token = "Sarastro";
-        Session instance = new Session(LocalDateTime.now().plusMinutes(60), token);
+        Session instance = new Session(LocalDateTime.now().plusMinutes(60), token,"secretetoken");
         assertEquals(instance.id(), JWTUtils.decode(instance.tokenAsJWT()));
     }
 
@@ -71,7 +71,7 @@ public class SessionTest {
     public void ensureGetSessionEndDateTimeSucceeds() {
         String token = "Sarastro";
         LocalDateTime time = LocalDateTime.now().plusMinutes(60);
-        Session instance = new Session(time, token);
+        Session instance = new Session(time, token,"secretetoken");
         assertEquals(time, instance.getSessionEndDateTime());
     }
 
@@ -81,7 +81,7 @@ public class SessionTest {
     @Test
     public void ensureHashCodeWorks() {
         String token = "Sarastro";
-        Session instance = new Session(LocalDateTime.now().plusMinutes(60), token);
+        Session instance = new Session(LocalDateTime.now().plusMinutes(60), token,"secretetoken");
         assertEquals(instance.id().hashCode(), instance.hashCode());
     }
 
@@ -91,7 +91,7 @@ public class SessionTest {
     @Test
     public void ensureEqualsFailsIfNullArgument() {
         String token = "Sarastro";
-        Session instance = new Session(LocalDateTime.now().plusMinutes(60), token);
+        Session instance = new Session(LocalDateTime.now().plusMinutes(60), token,"secretetoken");
         assertFalse(instance.equals(null));
     }
 
@@ -101,7 +101,7 @@ public class SessionTest {
     @Test
     public void ensureEqualsSucceedsIfSameInstance() {
         String token = "Sarastro";
-        Session instance = new Session(LocalDateTime.now().plusMinutes(60), token);
+        Session instance = new Session(LocalDateTime.now().plusMinutes(60), token,"secretetoken");
         assertTrue(instance.equals(instance));
     }
 
@@ -111,7 +111,7 @@ public class SessionTest {
     @Test
     public void ensureEqualsFailsIfDifferentClass() {
         String token = "Sarastro";
-        Session instance = new Session(LocalDateTime.now().plusMinutes(60), token);
+        Session instance = new Session(LocalDateTime.now().plusMinutes(60), token,"secretetoken");
         assertFalse(instance.equals(new CredentialsAuth("username", "password")));
     }
 
@@ -122,8 +122,8 @@ public class SessionTest {
     public void ensureEqualsFailsIfInstancesNotEqual() {
         String token = "Sarastro";
         String token2 = "Magic Flute";
-        Session instance = new Session(LocalDateTime.now().plusMinutes(60), token);
-        Session instance2 = new Session(LocalDateTime.now().plusMinutes(60), token2);
+        Session instance = new Session(LocalDateTime.now().plusMinutes(60), token,"secretetoken");
+        Session instance2 = new Session(LocalDateTime.now().plusMinutes(60), token2,"secretetoken");
         assertFalse(instance.equals(instance2));
     }
 }

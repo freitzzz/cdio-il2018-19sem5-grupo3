@@ -5,6 +5,7 @@ using core.domain;
 using core.dto;
 using Xunit;
 using System.Linq;
+using static core.domain.CustomizedProduct;
 
 namespace core_tests.domain
 {
@@ -181,14 +182,16 @@ namespace core_tests.domain
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("Kinda dead", "So tired", "riperino.gltf",category, matsList, measurements);
+            Product product = new Product("Kinda dead", "So tired", "riperino.gltf", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
 
             //Customized Material
             CustomizedMaterial mat = CustomizedMaterial.valueOf(material, color1, finish2);
 
 
-            CustomizedProduct cp = new CustomizedProduct("Mushrooms", "Are deadly", mat, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions)
+                .withMaterial(mat).build();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -318,9 +321,7 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial mat = CustomizedMaterial.valueOf(material, color1, finish2);
 
-
-
-            return new CustomizedProduct("Peach", "Luigi", mat, customizedDimensions, product);
+            return CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 123", product, customizedDimensions).withMaterial(mat).build();
         }
     }
 }

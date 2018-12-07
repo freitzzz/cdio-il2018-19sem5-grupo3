@@ -11,7 +11,7 @@ namespace core.dto
     /// DTO that represents a ConfiguredProduct instance
     /// </summary>
     [DataContract]
-    public class CustomizedProductDTO : DTO, DTOParseable<CustomizedProduct, CustomizedProductDTO>
+    public class CustomizedProductDTO : DTO
     {
         // <summary>
         /// CustomizedProducts's database identifier
@@ -61,7 +61,7 @@ namespace core.dto
         /// Returns CustomizedProductDTO's equivalent CustomizedProduct
         /// </summary>
         /// <returns>CustomizedProductDTO's equivalent CustomizedProduct</returns>
-        public CustomizedProduct toEntity()
+        /* public CustomizedProduct toEntity()
         {
 
             CustomizedProduct instanceFromDTO;
@@ -77,6 +77,6 @@ namespace core.dto
             }
             instanceFromDTO.Id = this.id;
             return instanceFromDTO;
-        }
+        } */
     }
 }
