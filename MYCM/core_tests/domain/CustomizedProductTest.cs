@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -73,7 +72,6 @@ namespace core_tests.domain
             return new Product("#429", "Fabulous Closet", "fabcloset.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { firstMeasurement, secondMeasurement }, slotWidths);
         }
 
-
         private CustomizedDimensions buildCustomizedDimensions()
         {
             return CustomizedDimensions.valueOf(76, 80, 25);
@@ -89,11 +87,115 @@ namespace core_tests.domain
 
         private CustomizedProduct buildValidInstance(string serialNumber)
         {
+            CustomizedDimensions selectedDimensions = buildCustomizedDimensions();
+
+            return CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, buildValidProduct(), selectedDimensions).build();
+        }
+
+        private CustomizedProduct buildValidFinishedInstance(string serialNumber)
+        {
             CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
 
             CustomizedDimensions selectedDimensions = buildCustomizedDimensions();
 
-            return CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, buildValidProduct(), selectedDimensions).build();
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, buildValidProduct(), selectedDimensions).build();
+
+            customizedProduct.changeCustomizedMaterial(customizedMaterial);
+
+            customizedProduct.finalizeCustomization();
+
+            return customizedProduct;
+        }
+
+        private CustomizedProduct buildValidInstanceWithSubCustomizedProducts(string serialNumber)
+        {
+            Dimension heightDimension = new ContinuousDimensionInterval(60, 80, 2);
+            Dimension widthDimension = new SingleValueDimension(200);
+            Dimension depthDimension = new SingleValueDimension(60);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            ProductSlotWidths productSlotWidths = ProductSlotWidths.valueOf(40, 140, 60);
+
+            Dimension componentHeightDimension = new SingleValueDimension(60);
+            Dimension componentWidthDimension = new SingleValueDimension(200);
+            Dimension componentDepthDimension = new SingleValueDimension(60);
+
+            Measurement componentMeasurement = new Measurement(componentHeightDimension, componentWidthDimension, componentDepthDimension);
+
+            Dimension otherComponentHeightDimension = new SingleValueDimension(50);
+            Dimension otherComponentWidthDimension = new SingleValueDimension(190);
+            Dimension otherComponentDepthDimension = new SingleValueDimension(50);
+
+            Measurement otherComponentMeasurement = new Measurement(otherComponentHeightDimension, otherComponentWidthDimension, otherComponentDepthDimension);
+
+            Product otherComponent = new Product("This is another reference", "This is another Designation", "component.gltf", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { componentMeasurement });
+
+            Product component = new Product("This is another reference", "This is another Designation", "component.gltf", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { componentMeasurement }, complementaryProducts: new List<Product> { otherComponent });
+
+            Product product = new Product("This is A Reference", "This is A Designation", "model.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { measurement }, complementaryProducts: new List<Product> { component }, slotWidths: productSlotWidths);
+
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 200, 60);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, customizedProductDimensions).build();
+
+            CustomizedProduct customizedComponent = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", component, customizedProductDimensions).build();
+
+            CustomizedProduct otherCustomizedComponent = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", otherComponent, customizedProductDimensions).build();
+
+            customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
+
+            customizedComponent.addCustomizedProduct(otherCustomizedComponent, customizedComponent.slots[0]);
+
+            customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
+
+            return customizedProduct;
+        }
+
+        private CustomizedProduct buildValidFinishedInstanceWithSubCustomizedProducts(string serialNumber)
+        {
+            Dimension heightDimension = new ContinuousDimensionInterval(60, 80, 2);
+            Dimension widthDimension = new SingleValueDimension(200);
+            Dimension depthDimension = new SingleValueDimension(60);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            ProductSlotWidths productSlotWidths = ProductSlotWidths.valueOf(40, 140, 60);
+
+            Dimension componentHeightDimension = new SingleValueDimension(60);
+            Dimension componentWidthDimension = new SingleValueDimension(200);
+            Dimension componentDepthDimension = new SingleValueDimension(60);
+
+            Measurement componentMeasurement = new Measurement(componentHeightDimension, componentWidthDimension, componentDepthDimension);
+
+            Product component = new Product("This is another reference", "This is another Designation", "component.gltf", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { componentMeasurement });
+
+            Product product = new Product("This is A Reference", "This is A Designation", "model.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { measurement }, complementaryProducts: new List<Product> { component }, slotWidths: productSlotWidths);
+
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 200, 60);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, customizedProductDimensions).build();
+
+            CustomizedProduct customizedComponent = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", component, customizedProductDimensions).build();
+
+            customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
+            customizedComponent.changeCustomizedMaterial(buildCustomizedMaterial());
+
+            customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
+
+            customizedProduct.finalizeCustomization();
+
+            return customizedProduct;
         }
 
         [Fact]
@@ -1388,5 +1490,373 @@ namespace core_tests.domain
             Assert.True(customizedProduct.sameAs(serialNumber));
         }
 
+        [Fact]
+        public void ensureActivatingAnActivatedCustomizedProductReturnsFalse()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
+
+            customizedProduct.activate();
+
+            Assert.False(customizedProduct.activate());
+        }
+
+        [Fact]
+        public void ensureActivatingAnActivatedCustomizedProductDoesntActivateItAndItsChildren()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
+
+            customizedProduct.activate();
+
+            Assert.False(customizedProduct.activate());
+            Assert.True(customizedProduct.activated);
+            foreach (CustomizedProduct child in customizedProduct.slots[0].customizedProducts)
+            {
+                Assert.True(child.activated);
+            }
+        }
+
+        [Fact]
+        public void ensureActivatingADeactivatedCustomizedProductReturnsTrue()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
+            customizedProduct.deactivate();
+
+            Assert.True(customizedProduct.activate());
+            Assert.True(customizedProduct.activated);
+        }
+
+        [Fact]
+        public void ensureActivatingADeactivatedCustomizedProductActivatesItAndItsChildren()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
+            customizedProduct.deactivate();
+            Assert.True(customizedProduct.activate());
+            Assert.True(customizedProduct.activated);
+            foreach (CustomizedProduct child in customizedProduct.slots[0].customizedProducts)
+            {
+                Assert.True(child.activated);
+            }
+        }
+
+        [Fact]
+        public void ensureDeactivatingADeactivatedCustomizedProductReturnsFalse()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
+            customizedProduct.deactivate();
+            Assert.False(customizedProduct.deactivate());
+            Assert.False(customizedProduct.activated);
+        }
+
+        [Fact]
+        public void ensureDeactivatingAnActivatedCustomizedProductReturnsTrue()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
+
+            customizedProduct.activate();
+
+            Assert.True(customizedProduct.deactivate());
+            Assert.False(customizedProduct.activated);
+        }
+
+        [Fact]
+        public void ensureDeactivatingAnActivatedCustomizedProductDeactivatesItAndItsChildren()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
+
+            customizedProduct.activate();
+
+            Assert.True(customizedProduct.deactivate());
+            Assert.False(customizedProduct.activated);
+            foreach (CustomizedProduct child in customizedProduct.slots[0].customizedProducts)
+            {
+                Assert.False(child.activated);
+            }
+        }
+
+        [Fact]
+        public void ensureDeactivatingADeactivatedCustomizedProductDoesntDeactivateItAndItsChildren()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
+            customizedProduct.deactivate();
+
+            Assert.False(customizedProduct.deactivate());
+            Assert.False(customizedProduct.activated);
+            foreach (CustomizedProduct child in customizedProduct.slots[0].customizedProducts)
+            {
+                Assert.False(child.activated);
+            }
+        }
+
+        [Fact]
+        public void ensureAddingCustomizedProductToFinishedCustomizedProductThrowsException()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidFinishedInstance(serialNumber);
+
+            Action act = () => customizedProduct.addCustomizedProduct(buildValidInstance(serialNumber), customizedProduct.slots[0]);
+
+            Assert.Throws<InvalidOperationException>(act);
+        }
+
+        [Fact]
+        public void ensureAddingNullCustomizedProductThrowsException()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
+
+            Action act = () => customizedProduct.addCustomizedProduct(null, customizedProduct.slots[0]);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureAddingCustomizedProductToNullSlotThrowsException()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
+
+            Action act = () => customizedProduct.addCustomizedProduct(buildValidInstance(serialNumber), null);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureAddingCustomizedProductToNonMatchingSlotThrowsException()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
+
+            Action act = () => customizedProduct.addCustomizedProduct(buildValidInstance(serialNumber),
+                                 new Slot("hey i'm a slot identifier", CustomizedDimensions.valueOf(100, 100, 100)));
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureAddingCustomizedProductThatIsntAPossibleComponentThrowsException()
+        {
+            Dimension heightDimension = new ContinuousDimensionInterval(60, 80, 2);
+            Dimension widthDimension = new SingleValueDimension(200);
+            Dimension depthDimension = new SingleValueDimension(60);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            ProductSlotWidths productSlotWidths = ProductSlotWidths.valueOf(40, 140, 60);
+
+            Dimension componentHeightDimension = new SingleValueDimension(60);
+            Dimension componentWidthDimension = new SingleValueDimension(200);
+            Dimension componentDepthDimension = new SingleValueDimension(60);
+
+            Measurement componentMeasurement = new Measurement(componentHeightDimension, componentWidthDimension, componentDepthDimension);
+
+            Product component = new Product("This is another reference", "This is another Designation", "component.gltf", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { componentMeasurement });
+
+            Product product = new Product("This is A Reference", "This is A Designation", "model.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { measurement }, productSlotWidths);
+
+
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 200, 60);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, customizedProductDimensions).build();
+
+            CustomizedProduct customizedComponent = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", component, customizedProductDimensions).build();
+
+            customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
+
+            Action act = () => customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureAddingValidCustomizedProductAddsCustomizedProductToASlot()
+        {
+            Dimension heightDimension = new ContinuousDimensionInterval(60, 80, 2);
+            Dimension widthDimension = new SingleValueDimension(200);
+            Dimension depthDimension = new SingleValueDimension(60);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            ProductSlotWidths productSlotWidths = ProductSlotWidths.valueOf(40, 140, 60);
+
+            Dimension componentHeightDimension = new SingleValueDimension(60);
+            Dimension componentWidthDimension = new SingleValueDimension(200);
+            Dimension componentDepthDimension = new SingleValueDimension(60);
+
+            Measurement componentMeasurement = new Measurement(componentHeightDimension, componentWidthDimension, componentDepthDimension);
+
+            Product component = new Product("This is another reference", "This is another Designation", "component.gltf", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { componentMeasurement });
+
+            Product product = new Product("This is A Reference", "This is A Designation", "model.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { measurement }, complementaryProducts: new List<Product> { component }, slotWidths: productSlotWidths);
+
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 200, 60);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, customizedProductDimensions).build();
+
+            CustomizedProduct customizedComponent = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", component, customizedProductDimensions).build();
+
+            customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
+
+            customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
+
+            Assert.Equal(customizedProduct.slots[0].customizedProducts[0], customizedComponent);
+        }
+
+        [Fact]
+        public void ensureRemovingCustomizedProductFromFinishedCustomizedProductThrowsException()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidFinishedInstanceWithSubCustomizedProducts(serialNumber);
+
+            Action act = () => customizedProduct.removeCustomizedProduct(customizedProduct.slots[0].customizedProducts[0], customizedProduct.slots[0]);
+
+            Assert.Throws<InvalidOperationException>(act);
+        }
+
+        [Fact]
+        public void ensureRemovingNullCustomizedProductThrowsException()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
+
+            Action act = () => customizedProduct.removeCustomizedProduct(null, customizedProduct.slots[0]);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureRemovingCustomizedProductFromNullSlotThrowsException()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
+
+            Action act = () => customizedProduct.removeCustomizedProduct(customizedProduct.slots[0].customizedProducts[0], null);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureRemovingCustomizedProductFromSlotThatDoesntHaveItThrowsException()
+        {
+            Dimension heightDimension = new SingleValueDimension(30);
+            Dimension widthDimension = new SingleValueDimension(30);
+            Dimension depthDimension = new SingleValueDimension(30);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            ProductSlotWidths productSlotWidths = ProductSlotWidths.valueOf(10, 30, 20);
+
+            Dimension componentHeightDimension = new SingleValueDimension(5);
+            Dimension componentWidthDimension = new SingleValueDimension(5);
+            Dimension componentDepthDimension = new SingleValueDimension(5);
+
+            Measurement componentMeasurement = new Measurement(componentHeightDimension, componentWidthDimension, componentDepthDimension);
+
+            Product component = new Product("This is another reference", "This is another Designation", "component.gltf", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { componentMeasurement });
+
+            Product product = new Product("This is A Reference", "This is A Designation", "model.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { measurement }, complementaryProducts: new List<Product> { component }, slotWidths: productSlotWidths);
+
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(30, 30, 30);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, customizedProductDimensions).build();
+
+            CustomizedProduct customizedComponent = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", component, CustomizedDimensions.valueOf(5, 5, 5)).build();
+
+            customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(10, 10, 10));
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(10, 10, 10));
+
+            customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
+
+            Action act = () => customizedProduct.removeCustomizedProduct(customizedProduct.slots[0].customizedProducts[0], customizedProduct.slots[1]);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureRemovingCustomizedProductFromSlotRemovesIt()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
+
+            customizedProduct.removeCustomizedProduct(customizedProduct.slots[0].customizedProducts[0], customizedProduct.slots[0]);
+
+            Assert.Empty(customizedProduct.slots[0].customizedProducts);
+        }
+
+        [Fact]
+        public void ensureSubCustomizedProductsFinalizingTheCustomizationProcessThrowsException()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
+
+            Action act = () => customizedProduct.slots[0].customizedProducts[0].finalizeCustomization();
+
+            Assert.Throws<InvalidOperationException>(act);
+        }
+
+        [Fact]
+        public void ensureFinalizingCustomizationOfCustomizedProductWithoutCustomizedMaterialThrowsException()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
+
+            Action act = () => customizedProduct.finalizeCustomization();
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureFinalizingCustomizationOfAValidCustomizedProductSetsStatusToFinished()
+        {
+            string serialNumber = "serial number";
+
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
+            customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
+            customizedProduct.slots[0].customizedProducts[0].changeCustomizedMaterial(buildCustomizedMaterial());
+            customizedProduct.slots[0].customizedProducts[0].slots[0].customizedProducts[0].changeCustomizedMaterial(buildCustomizedMaterial());
+
+            customizedProduct.finalizeCustomization();
+
+            Assert.Equal(CustomizationStatus.FINISHED, customizedProduct.status);
+        }
     }
 }
