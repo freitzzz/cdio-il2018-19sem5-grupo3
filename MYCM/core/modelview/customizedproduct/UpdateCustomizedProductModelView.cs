@@ -1,15 +1,16 @@
-using System.Runtime.Serialization;
+ using System.Runtime.Serialization;
 using System;
 using core.dto;
 
 namespace core.modelview.customizedproduct
 {
+    
     /// <summary>
     /// ModelView representing the update information of a customized product
     /// </summary>
     [DataContract]
     public class UpdateCustomizedProductModelView
-    {
+    {/*
         /// <summary>
         /// PID of the customized product
         /// </summary>
@@ -43,6 +44,6 @@ namespace core.modelview.customizedproduct
         /// </summary>
         /// <value>Gets/Sets the customized material</value>
         [DataMember(Name = "customizedMaterial")]
-        public CustomizedMaterialDTO customizedMaterial {get; set;}
+        public CustomizedMaterialDTO customizedMaterial {get; set;}*/
     }
-}
+} 

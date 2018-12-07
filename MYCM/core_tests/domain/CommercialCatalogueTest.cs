@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using core.domain;
 using core.dto;
 using support.dto;
+using static core.domain.CustomizedProduct;
+
 namespace core_tests.domain
 {
 
@@ -48,7 +50,9 @@ namespace core_tests.domain
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
 
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, custDimensions)
+                .withMaterial(custMaterial).build();
             custProducts.Add(custProduct);
 
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -100,7 +104,9 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, custDimensions)
+                .withMaterial(custMaterial).build();
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
@@ -153,7 +159,9 @@ namespace core_tests.domain
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, custDimensions)
+                .withMaterial(custMaterial).build();
             custProducts.Add(custProduct);
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
 
@@ -206,7 +214,9 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, custDimensions)
+                .withMaterial(custMaterial).build();
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
@@ -258,7 +268,9 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, custDimensions)
+                .withMaterial(custMaterial).build();
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
@@ -309,7 +321,9 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, custDimensions)
+                .withMaterial(custMaterial).build();
             custProducts.Add(custProduct);
 
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -362,7 +376,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
@@ -415,7 +429,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
@@ -468,9 +482,9 @@ namespace core_tests.domain
             List<Material> listMaterial = new List<Material>();
             listMaterial.Add(material);
             IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1",  "product123.glb", prodCat, materials, measurements);
+            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
@@ -521,7 +535,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
             custProducts.Add(custProduct);
 
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -569,7 +583,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
@@ -617,7 +631,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
             custProducts.Add(custProduct);
 
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -665,7 +679,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
             custProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
@@ -733,7 +747,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
@@ -784,7 +798,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
@@ -834,7 +848,7 @@ namespace core_tests.domain
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
 
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
@@ -885,7 +899,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
 
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -937,7 +951,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
 
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -987,7 +1001,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
 
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -1036,7 +1050,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
 
             custoProducts.Add(custProduct);
             CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
@@ -1081,7 +1095,7 @@ namespace core_tests.domain
             IEnumerable<Material> materials = listMaterial;
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
 
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -1130,7 +1144,7 @@ namespace core_tests.domain
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
 
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
 
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -1182,7 +1196,7 @@ namespace core_tests.domain
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
 
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
 
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -1236,7 +1250,7 @@ namespace core_tests.domain
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
 
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
 
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -1290,7 +1304,7 @@ namespace core_tests.domain
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
 
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
 
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -1341,7 +1355,7 @@ namespace core_tests.domain
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
 
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
 
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -1395,7 +1409,7 @@ namespace core_tests.domain
             Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
 
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
 
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
@@ -1444,7 +1458,7 @@ namespace core_tests.domain
 
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
             List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            CustomizedProduct custProduct = new CustomizedProduct("123", "CustomizedProduct1", custMaterial, custDimensions, product);
+            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
 
             custoProducts.Add(custProduct);
             List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();

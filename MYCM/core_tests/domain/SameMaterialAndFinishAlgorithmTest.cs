@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
+using static core.domain.CustomizedProduct;
 
 namespace core_tests.domain {
     public class SameMaterialAndFinishAlgorithmTest {
@@ -47,7 +48,8 @@ namespace core_tests.domain {
             List<Measurement> measurements = new List<Measurement>(){measurement};
             Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", "product12.glb",cat, new List<Material>(new[] { material }), measurements);
             Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", "product13.gltf",cat, new List<Material>(new[] { material1 }), measurements);
-            CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht",12)), CustomizedDimensions.valueOf(100, 100, 100), product);
+            CustomizedProduct custom = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("#8", product, CustomizedDimensions.valueOf(100, 100, 100)).withMaterial(CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht",12))).build();
+
             Algorithm algorithm = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
             Assert.Null(algorithm.apply(custom, component));
         }
@@ -67,7 +69,7 @@ namespace core_tests.domain {
             List<Measurement> measurements = new List<Measurement>(){measurement};
             Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", "product12.glb", cat, new List<Material>(new[] { material }), measurements);
             Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", "product13.gltf", cat, new List<Material>(new[] { otherMaterial }), measurements);
-            CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, color,finish), CustomizedDimensions.valueOf(100, 100, 100), product);
+            CustomizedProduct custom = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("#8", product, CustomizedDimensions.valueOf(100, 100, 100)).withMaterial(CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht",12))).build();
             Algorithm algorithm = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
             Assert.Null(algorithm.apply(custom, component));
         }
@@ -85,7 +87,7 @@ namespace core_tests.domain {
             List<Measurement> measurements = new List<Measurement>(){measurement};
             Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", "product12.glb", cat, new List<Material>(new[] { material }), measurements);
             Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", "product13.gltf", cat, new List<Material>(new[] { material1, material }), measurements);
-            CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht",12)), CustomizedDimensions.valueOf(100, 100, 100), product);
+            CustomizedProduct custom = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("#8", product, CustomizedDimensions.valueOf(100, 100, 100)).withMaterial(CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht",12))).build();
             Algorithm algorithm = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
             Assert.True(algorithm.apply(custom, component).productMaterials[0].material.Equals(material));
         }
@@ -102,7 +104,7 @@ namespace core_tests.domain {
             List<Measurement> measurements = new List<Measurement>(){measurement};
             Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", "product12.glb", cat, new List<Material>(new[] { material }), measurements);
             Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", "product13.gltf", cat, new List<Material>(new[] { material }), measurements);
-            CustomizedProduct custom = new CustomizedProduct("#8", "Dual of Antinomy: Antinomic Dual", CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("schrödinger's box",13)), CustomizedDimensions.valueOf(100, 100, 100), product);
+            CustomizedProduct custom = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("#8", product, CustomizedDimensions.valueOf(100, 100, 100)).withMaterial(CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht",12))).build();
             Algorithm algorithm = new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM);
             Assert.Equal("schrödinger's box", algorithm.apply(custom, component).productMaterials[0].material.Finishes[0].description);
         }

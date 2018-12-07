@@ -16,7 +16,7 @@ namespace core.services
         /// </summary>
         /// <param name="updateCustomizedProductModelView">ModelView containing the update info of the customized product</param>
         /// <returns>true if the customized product was updated successfully, false if otherwise</returns>
-        public static bool update(UpdateCustomizedProductModelView updateCustomizedProductModelView)
+        /* public static bool update(UpdateCustomizedProductModelView updateCustomizedProductModelView)
         {
             CustomizedProductRepository customizedProductRepository =
                 PersistenceContext.repositories().
@@ -115,6 +115,6 @@ namespace core.services
             }
             updatedWithSuccess &= customizedProductRepository.update(customizedProductBeingUpdated) != null;
             return updatedWithSuccess;
-        }
+        } */
     }
 }

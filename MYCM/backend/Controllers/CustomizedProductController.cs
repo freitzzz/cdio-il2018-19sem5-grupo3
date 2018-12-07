@@ -157,7 +157,7 @@ namespace backend.Controllers{
         /// Fetches all available customized products
         /// </summary>
         /// <returns>ActionResult with all available customized products</returns>
-        [HttpGet]
+       /*  [HttpGet]
         public ActionResult findAll(){
             logger.LogInformation(LOG_GET_ALL_START);
             GetAllCustomizedProductsModelView getAllModelView=new core.application.CustomizedProductController().findAllCustomizedProducts();
@@ -168,14 +168,14 @@ namespace backend.Controllers{
             }
             logger.LogWarning(LOG_GET_ALL_NOT_FOUND);
             return NotFound(new {error = NO_CUSTOMIZED_PRODUCTS_AVAILABLE });
-        }
+        } */
 
         /// <summary>
         /// Fetches the information of a customized product by its resource id
         /// </summary>
         /// <param name="id">Long with the customized products resource id</param>
         /// <returns>ActionResult with the customized product information</returns>
-        [HttpGet("{id}")]
+        /* [HttpGet("{id}")]
         public ActionResult findByID(long id){
             logger.LogInformation(LOG_GET_BY_ID_START);
             try{
@@ -193,14 +193,14 @@ namespace backend.Controllers{
                 logger.LogWarning(nullReferenceException,LOG_GET_BY_ID_NOT_FOUND,id);
                 return NotFound(new {error = RESOURCE_NOT_FOUND_MESSAGE});
             }
-        }
+        } */
 
         /// <summary>
         /// Creates a new customized product
         /// </summary>
         /// <param name="customizedProductModelView">CustomizedProductDTO with the customized product being added</param>
         /// <returns>ActionResult with the created customized product</returns>
-        [HttpPost]
+        /* [HttpPost]
         public ActionResult addCustomizedProduct([FromBody]PostCustomizedProductModelView customizedProductModelView){
             logger.LogInformation(LOG_POST_START);
             try{
@@ -217,7 +217,7 @@ namespace backend.Controllers{
                 logger.LogWarning(argumentException,LOG_POST_BAD_REQUEST,customizedProductModelView);
                 return BadRequest(new {error = argumentException.Message});
             }
-        }
+        } */
 
         /// <summary>
         /// Adds a new customized product to a slot of another customized product
@@ -227,7 +227,7 @@ namespace backend.Controllers{
         /// <param name="addCustomizedProductToSlotModelView">ModelView representing the customized product to be added to the slot</param>
         /// <returns>Action Result with HTTP Code 201 and the newly created Customized Product
         ///         Or Action Result with HTTP Code 401 and the error that happened during the creation of the customized product</returns>
-        [HttpPost("{id}/slots/{slotid}")]
+        /* [HttpPost("{id}/slots/{slotid}")]
         public ActionResult addCustomizedProductToSlot(long id, long slotid, [FromBody]PostCustomizedProductToSlotModelView addCustomizedProductToSlotModelView){
             logger.LogInformation(LOG_POST_START);
             try{
@@ -246,7 +246,7 @@ namespace backend.Controllers{
                 logger.LogWarning(invalidArgumentsException,LOG_POST_BAD_REQUEST,addCustomizedProductToSlotModelView);
                 return BadRequest(new {error = invalidArgumentsException.Message});
             }
-        }
+        } */
 
         /// <summary>
         /// Updates a customized product
@@ -255,7 +255,7 @@ namespace backend.Controllers{
         /// <param name="updateCustomizedProductModelView">ModelView containing the update information</param>
         /// <returns>Action Result with HTTP Code 200 indicating update success
         ///         Or Action Result with HTTP Code 404 indicating an error occurred</returns>
-        [HttpPut("{id}")]
+        /* [HttpPut("{id}")]
         public ActionResult updateCustomizedProduct(long id, [FromBody]UpdateCustomizedProductModelView updateCustomizedProductModelView){
             logger.LogInformation(LOG_PUT_START);
             try{
@@ -276,7 +276,7 @@ namespace backend.Controllers{
             }
             logger.LogWarning(LOG_PUT_BAD_REQUEST,id,updateCustomizedProductModelView);
             return BadRequest(new {error = INVALID_UPDATE_MESSAGE});
-        }
+        } */
 
         /// <summary>
         /// Deletes a slot from a customized product
@@ -285,7 +285,7 @@ namespace backend.Controllers{
         /// <param name="slotid">PID of the slot being removed</param>
         /// <returns>Action Result with HTTP Code 204 if the slot is removed successfully
         ///         Or Action Result with HTTP Code 401 if the slot isn't removed successfully</returns>
-        [HttpDelete("{id}/slots/{slotid}")]
+        /* [HttpDelete("{id}/slots/{slotid}")]
         public ActionResult deleteSlotFromCustomizedProduct(long id, long slotid){
             logger.LogInformation(LOG_DELETE_START);
             DeleteSlotFromCustomizedProductModelView deleteSlotFromCustomizedProductModelView = new DeleteSlotFromCustomizedProductModelView();
@@ -303,7 +303,7 @@ namespace backend.Controllers{
                 logger.LogWarning(nullReferenceException,LOG_DELETE_CHILD_CUSTOMIZED_PRODUCT_BAD_REQUEST,slotid,id);
                 return BadRequest(new{error = SLOT_NOT_DELETED});
             }
-        }
+        } */
 
         /// <summary>
         /// Deletes a Customized Product that's inside of a slot of another Customized Product
@@ -313,7 +313,7 @@ namespace backend.Controllers{
         /// <param name="childid">PID of the child customized product</param>
         /// <returns>Action Result with HTTP Code 204 if the child customized product is removed successfully
         ///         Or Action Result with HTTP Code 401 if the child customized product isn't removed successfully</returns>
-        [HttpDelete("{parentid}/slots/{slotid}/customizedproducts/{childid}")]
+        /* [HttpDelete("{parentid}/slots/{slotid}/customizedproducts/{childid}")]
         public ActionResult deleteChildCustomizedProduct(long parentid, long slotid, long childid){
             logger.LogInformation(LOG_DELETE_START);
             DeleteChildCustomizedProductModelView deleteChildCustomizedProductModelView = new DeleteChildCustomizedProductModelView();
@@ -327,6 +327,6 @@ namespace backend.Controllers{
                 logger.LogWarning(LOG_DELETE_CHILD_CUSTOMIZED_PRODUCT_BAD_REQUEST,childid,slotid,parentid);
                 return BadRequest(new{error = CUSTOMIZED_PRODUCT_NOT_DELETED_FROM_SLOT});
             }
-        }
+        } */
     }
 }

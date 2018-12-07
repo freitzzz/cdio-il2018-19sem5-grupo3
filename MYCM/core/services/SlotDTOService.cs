@@ -16,7 +16,7 @@ namespace core.services
         /// </summary>
         /// <param name="slotDTO">slotDTO object to be transformed</param>
         /// <returns></returns>
-        public Slot transform(SlotDTO slotDTO)
+        /* public Slot transform(SlotDTO slotDTO)
         {
             CustomizedDimensions customizedDimensions = DTOUtils.
             reverseDTO(slotDTO.customizedDimensions);
@@ -55,6 +55,6 @@ namespace core.services
                 slots.Add(transform(slotDTO));
             }
             return slots;
-        }
+        } */
     }
 }

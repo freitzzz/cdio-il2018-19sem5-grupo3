@@ -15,7 +15,7 @@ namespace core.application
         /// </summary>
         /// <param name="comCatalogueAsDTO">DTO with the commercialCatalogue information</param>
         /// <returns>DTO with the created commercialCatalogue DTO, null if the commercialCatalogue was not created</returns>
-        public CommercialCatalogueDTO addCommercialCatalogue(CommercialCatalogueDTO comCatalogueAsDTO)
+       /*  public CommercialCatalogueDTO addCommercialCatalogue(CommercialCatalogueDTO comCatalogueAsDTO)
         {
             CommercialCatalogue commercialCatalogue = CommercialCatalogueDTOService.transform(comCatalogueAsDTO);
             CommercialCatalogue createdComCatalogue = PersistenceContext.repositories().createCommercialCatalogueRepository().save(commercialCatalogue);
@@ -77,20 +77,20 @@ namespace core.application
                     updatedWithSuccess &= newComCatalogue.addCollection(collection.toEntity());
                     perfomedAtLeastOneUpdate = true;
                 }
-            }
-          /*   if (customizedCatalogueDTO.catalogueCollectionDTOToRemove != null)
+            } 
+             if (customizedCatalogueDTO.catalogueCollectionDTOToRemove != null)
             {
                 foreach (CatalogueCollectionDTO collection in customizedCatalogueDTO.catalogueCollectionDTOToRemove)
                 {
                     updatedWithSuccess &= newComCatalogue.removeCollection(collection.toEntity());
                     perfomedAtLeastOneUpdate = true;
                 }
-            } */
+            } 
             if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
 
             updatedWithSuccess &= comCatalogueRepo.update(newComCatalogue) != null;
             return updatedWithSuccess;
 
-        }
+        } */
     }
 }

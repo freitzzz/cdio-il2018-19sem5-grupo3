@@ -38,6 +38,12 @@ namespace backend.persistence.ef
         public DbSet<ProductCategory> ProductCategory { get; set; }
 
         /// <summary>
+        /// Database set containing the single saved instance of CustomizedProductSerialNumber.
+        /// </summary>
+        /// <value>Gets/sets the database set.</value>
+        public DbSet<CustomizedProductSerialNumber> CustomizedProductSerialNumber { get; set; }
+
+        /// <summary>
         /// Database set containing all of the saved instances of CustomizedProduct.
         /// </summary>
         /// <value>Gets/sets the database set containing all the saved instances of CustomizedProduct.</value>
