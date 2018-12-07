@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using core.domain;
@@ -12,6 +13,7 @@ namespace core.services
     /// <summary>
     /// Service that helps transforming GetCustomizedProductByIdModelViews into entities and vice versa
     /// </summary>
+    [Obsolete]
     public static class GetCustomizedProductByIdModelViewService
     {
         /// <summary>
@@ -20,7 +22,7 @@ namespace core.services
         /// <param name="customizedProductModelView">model view to transform</param>
         public static GetCustomizedProductModelView transform(GetCustomizedProductModelView customizedProductModelView)
         {
-            CustomizedProduct fetchedCustomizedProduct =
+           /*  CustomizedProduct fetchedCustomizedProduct =
                              PersistenceContext.repositories().
                                 createCustomizedProductRepository().
                                     find(customizedProductModelView.id);
@@ -65,7 +67,9 @@ namespace core.services
                     fetchedCustomizedProductModelView.slots.Add(slotModelView);
                 }
             }
-            return fetchedCustomizedProductModelView;
+            return fetchedCustomizedProductModelView; */
+
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -74,7 +78,7 @@ namespace core.services
         /// <param name="customizedProduct">customized product to transform</param>
         public static GetCustomizedProductModelView transform(CustomizedProduct customizedProduct)
         {
-            GetCustomizedProductModelView fetchedCustomizedProductModelView = new GetCustomizedProductModelView();
+            /* GetCustomizedProductModelView fetchedCustomizedProductModelView = new GetCustomizedProductModelView();
             fetchedCustomizedProductModelView.customizedMaterial = new GetCustomizedMaterialModelView();
 
             fetchedCustomizedProductModelView.id = customizedProduct.Id;
@@ -113,7 +117,8 @@ namespace core.services
                     fetchedCustomizedProductModelView.slots.Add(slotModelView);
                 }
             }
-            return fetchedCustomizedProductModelView;
+            return fetchedCustomizedProductModelView; */
+            throw new NotImplementedException();
         }
     }
 }

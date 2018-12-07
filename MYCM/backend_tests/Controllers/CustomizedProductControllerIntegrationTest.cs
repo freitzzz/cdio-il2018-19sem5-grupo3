@@ -70,7 +70,7 @@ namespace backend_tests.Controllers
         [Fact, TestPriority(4)]
         public async Task ensurePostWithNullRequestBodyReturnsBadRequest()
         {
-            PostCustomizedProductModelView customizedProductModelView = null;
+            AddCustomizedProductModelView customizedProductModelView = null;
 
             var createCustomizedProduct = await httpClient.PostAsJsonAsync(baseUri, customizedProductModelView);
 
@@ -80,7 +80,7 @@ namespace backend_tests.Controllers
         [Fact, TestPriority(5)]
         public async Task ensurePostWithEmptyRequestBodyReturnsBadRequest()
         {
-            PostCustomizedProductModelView customizedProductModelView = new PostCustomizedProductModelView();
+            AddCustomizedProductModelView customizedProductModelView = new AddCustomizedProductModelView();
 
             var createCustomizedProduct = await httpClient.PostAsJsonAsync(baseUri, customizedProductModelView);
 

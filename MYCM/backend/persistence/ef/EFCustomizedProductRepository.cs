@@ -10,15 +10,16 @@ namespace backend.persistence.ef
 {
     public class EFCustomizedProductRepository : EFBaseRepository<CustomizedProduct, long, string>, CustomizedProductRepository
     {
-        public EFCustomizedProductRepository(MyCContext dbContext) : base(dbContext){}
+        public EFCustomizedProductRepository(MyCContext dbContext) : base(dbContext) { }
 
-        /// <summary>
-        /// Fetches all available customized products
-        /// </summary>
-        /// <returns>IEnumerable with all available customized products</returns>
-        public IEnumerable<CustomizedProduct> findAllCustomizedProducts()
+        public IEnumerable<CustomizedProduct> findBaseCustomizedProducts()
         {
-            return findAll();
+            return dbContext.CustomizedProduct.Where(cp => !cp.insertedInSlotId.HasValue).Where(cp => cp.activated).ToList();
+        }
+
+        public CustomizedProduct findCustomizedProductBySlot(Slot slot)
+        {
+            return dbContext.CustomizedProduct.Where(cp => cp.slots.Contains(slot)).SingleOrDefault();
         }
 
         /// <summary>
@@ -27,8 +28,8 @@ namespace backend.persistence.ef
         /// <returns>IEnumerable with all customized products by their PIDS</returns>
         public IEnumerable<CustomizedProduct> findCustomizedProductsByTheirPIDS(IEnumerable<CustomizedProductDTO> customizedProductDTOS)
         {
-            List<long> customizedProductsPIDS=new List<long>();
-            foreach(CustomizedProductDTO customizedProductDTO in customizedProductDTOS)
+            List<long> customizedProductsPIDS = new List<long>();
+            foreach (CustomizedProductDTO customizedProductDTO in customizedProductDTOS)
                 customizedProductsPIDS.Add(customizedProductDTO.id);
             return (from customizedProduct in base.dbContext.Set<CustomizedProduct>()
                     where customizedProductsPIDS.Contains(customizedProduct.Id)
@@ -51,9 +52,9 @@ namespace backend.persistence.ef
                                 where slot.Id == slotId
                                     select slot
             ).SingleOrDefault(); */
-            Task<CustomizedProduct> fetchedCustomizedProductTask = 
+            Task<CustomizedProduct> fetchedCustomizedProductTask =
                     dbContext.CustomizedProduct.FindAsync(customizedProductId);
-                    
+
             fetchedCustomizedProductTask.Wait();
             CustomizedProduct fetchedCustomizedProduct = fetchedCustomizedProductTask.Result;
 

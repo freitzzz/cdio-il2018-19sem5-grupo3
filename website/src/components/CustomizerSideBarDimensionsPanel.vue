@@ -1,6 +1,6 @@
 <template>
-  <div class="containerDimensions" style="margin-left:auto;margin-right:auto;">
-    <div class="text-entry" style="font-family: 'Roboto', sans-serif;">Select a option:</div>
+  <div class="containerDimensions" style="margin-left:auto;margin-right:auto;" >
+    <div class="text-entry" >Select a option:</div>
     <div class="icon-div-top">
       <i class="material-icons md-12 md-blue btn">help</i>
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
@@ -15,7 +15,14 @@
 
     <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.HEIGHT]" v-model="height" @callback="updateDimensions" :interval="this.heightIncrement" :data="this.discreteIntervalHeight" ></vue-slider>
+    <vue-slider
+      class="slider"
+      v-if="this.discreteIntervalFlags[this.HEIGHT]"
+      v-model="height"
+      @callback="updateDimensions"
+      :interval="this.heightIncrement"
+      :data="this.discreteIntervalHeight"
+    ></vue-slider>
     <vue-slider
       class="slider"
       v-if="this.continousIntervalFlags[this.HEIGHT]"
@@ -25,11 +32,24 @@
       v-model="height"
       @callback="updateDimensions"
     ></vue-slider>
-    <input class="slider" v-if="this.discreteValueFlags[this.HEIGHT]" type="text" :readonly="true" v-model="height">
-    
+    <input
+      class="slider"
+      v-if="this.discreteValueFlags[this.HEIGHT]"
+      type="text"
+      :readonly="true"
+      v-model="height"
+    >
+
     <!-- WIDTH: -->
     <div class="text-entry">Width:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.WIDTH]" :interval="this.widthIncrement" :data="this.discreteIntervalWidth" v-model="width" @callback="this.updateDimensions"></vue-slider>
+    <vue-slider
+      class="slider"
+      v-if="this.discreteIntervalFlags[this.WIDTH]"
+      :interval="this.widthIncrement"
+      :data="this.discreteIntervalWidth"
+      v-model="width"
+      @callback="this.updateDimensions"
+    ></vue-slider>
     <vue-slider
       class="slider"
       v-if="this.continousIntervalFlags[this.WIDTH]"
@@ -39,11 +59,24 @@
       v-model="width"
       @callback="this.updateDimensions"
     ></vue-slider>
-    <input class="slider" v-if="this.discreteValueFlags[this.WIDTH]" type="text" :readonly="true" v-model="this.width">
-    
+    <input
+      class="slider"
+      v-if="this.discreteValueFlags[this.WIDTH]"
+      type="text"
+      :readonly="true"
+      v-model="this.width"
+    >
+
     <!-- DEPTH: -->
     <div class="text-entry">Depth:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.DEPTH]" :interval="this.depthIncrement" :data="this.discreteIntervalDepth" v-model="depth" @callback="this.updateDimensions"></vue-slider>
+    <vue-slider
+      class="slider"
+      v-if="this.discreteIntervalFlags[this.DEPTH]"
+      :interval="this.depthIncrement"
+      :data="this.discreteIntervalDepth"
+      v-model="depth"
+      @callback="this.updateDimensions"
+    ></vue-slider>
     <vue-slider
       class="slider"
       v-if="this.continousIntervalFlags[this.DEPTH]"
@@ -53,7 +86,13 @@
       v-model="depth"
       @callback="updateDimensions"
     ></vue-slider>
-    <input class="slider" v-if="this.discreteValueFlags[this.DEPTH]" type="text" :readonly="true" v-model="depth" >
+    <input
+      class="slider"
+      v-if="this.discreteValueFlags[this.DEPTH]"
+      type="text"
+      :readonly="true"
+      v-model="depth"
+    >
 
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="this.updateDimensions">
@@ -68,183 +107,161 @@
 
 
 <script>
-  import store from "./../store";
-  import Axios from "axios";
-  import {
-    MYCM_API_URL
-  } from "./../config.js";
-  import vueSlider from "vue-slider-component";
-  import {
-    SET_CUSTOMIZED_PRODUCT_WIDTH,
-    SET_CUSTOMIZED_PRODUCT_HEIGHT,
-    SET_CUSTOMIZED_PRODUCT_DEPTH,
-    SET_CUSTOMIZED_PRODUCT_UNIT,
-    SET_CUSTOMIZED_PRODUCT_DIMENSIONS
-  } from "./../store/mutation-types.js";
-  
-  import {
-    error
-  } from "three";
-  const MIN_DEFAULT = 1;
-  const MAX_DEFAULT = 2;
-  const INCREMENT_DEFAULT = 1;
-  
-  const DISCRETE_INTERVAL = 0;
-  const CONTINUOUS_INTERVAL = 1;
-  const DISCRETE_VALUE = 2;
-  const ERROR_DIMENSION_TYPE =
-    "No available dimension please try the other option.";
-  const NO_OPTION = -1;
-  const N_DIMENSIONS = 3;
+import Vue from "vue";
+import Toasted from "vue-toasted";
+Vue.use(Toasted);
+import store from "./../store";
+import Axios from "axios";
+import { MYCM_API_URL } from "./../config.js";
+import vueSlider from "vue-slider-component";
+import {
+  SET_CUSTOMIZED_PRODUCT_WIDTH,
+  SET_CUSTOMIZED_PRODUCT_HEIGHT,
+  SET_CUSTOMIZED_PRODUCT_DEPTH,
+  SET_CUSTOMIZED_PRODUCT_UNIT,
+  SET_CUSTOMIZED_PRODUCT_DIMENSIONS
+} from "./../store/mutation-types.js";
 
-  
-  export default {
-    name: "CustomizerSideBarDimensionsPanel",
-    data() {
-      return {
-        heightMin: MIN_DEFAULT,
-        heightMax: MAX_DEFAULT,
-        heightIncrement: INCREMENT_DEFAULT,
-  
-        widthMin: MIN_DEFAULT,
-        widthMax: MAX_DEFAULT,
-        widthIncrement: INCREMENT_DEFAULT,
-  
-        depthMin: MIN_DEFAULT,
-        depthMax: MAX_DEFAULT,
-        depthIncrement: INCREMENT_DEFAULT,
-  
-        height: this.heightMin,
-        width: this.widthMin,
-        depth: this.depthMin,
-  
-        unit: "mm",
+import { error } from "three";
+const MIN_DEFAULT = 1;
+const MAX_DEFAULT = 2;
+const INCREMENT_DEFAULT = 1;
 
-        availableOptionsDimensions: [],
-        availableOptionsUnits: [],
+const DISCRETE_INTERVAL = 0;
+const CONTINUOUS_INTERVAL = 1;
+const DISCRETE_VALUE = 2;
+const ERROR_DIMENSION_TYPE =
+  "No available dimension please try the other option.";
+const NO_OPTION = -1;
+const N_DIMENSIONS = 3;
 
-        dimensionOp: 0,
-  
-        heightType: NO_OPTION, //NNo type of dimension until it's choosen an option
-        widthType: NO_OPTION, ///No type of dimension until it's choosen an option
-        depthType: NO_OPTION, //No type of dimension until it's choosen an option
-  
-        /*Flags: */
-        discreteValueFlags:[false,false,false],
-        discreteIntervalFlags:[false,false,false],
-        continousIntervalFlags:[false,false,false],
+export default {
+  name: "CustomizerSideBarDimensionsPanel",
+  data() {
+    return {
+      i: 0,
 
-        HEIGHT: 0,
-        WIDTH :1,       
-        DEPTH :2,
+      heightMin: MIN_DEFAULT,
+      heightMax: MAX_DEFAULT,
+      heightIncrement: INCREMENT_DEFAULT,
 
-        /*If exists discrete interval, there's  a vector associated to it*/
-        discreteIntervalHeight:[],
-        discreteIntervalWidth:[],
-        discreteIntervalDepth:[]
-      };
+      widthMin: MIN_DEFAULT,
+      widthMax: MAX_DEFAULT,
+      widthIncrement: INCREMENT_DEFAULT,
+
+      depthMin: MIN_DEFAULT,
+      depthMax: MAX_DEFAULT,
+      depthIncrement: INCREMENT_DEFAULT,
+
+      height: this.heightMin,
+      width: this.widthMin,
+      depth: this.depthMin,
+
+      unit: "mm",
+
+      availableOptionsDimensions: [],
+      availableOptionsUnits: [],
+
+      dimensionOp: 0,
+
+      heightType: NO_OPTION, //NNo type of dimension until it's choosen an option
+      widthType: NO_OPTION, ///No type of dimension until it's choosen an option
+      depthType: NO_OPTION, //No type of dimension until it's choosen an option
+
+      /*Flags: */
+      discreteValueFlags: [false, false, false],
+      discreteIntervalFlags: [false, false, false],
+      continousIntervalFlags: [false, false, false],
+
+      HEIGHT: 0,
+      WIDTH: 1,
+      DEPTH: 2,
+
+      /*If exists discrete interval, there's  a vector associated to it*/
+      discreteIntervalHeight: [],
+      discreteIntervalWidth: [],
+      discreteIntervalDepth: []
+    };
+  },
+  components: {
+    vueSlider
+  },
+  created() {
+    store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS, {
+      width: this.width,
+      height: this.height,
+      depth: this.depth,
+      unit: this.unit
+    });
+
+    /*Get all available dimensions of the given product of the array*/
+    Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions`)
+      .then(response => this.availableOptionsDimensions.push(...response.data))
+      .catch(error => {
+        this.$toast.open(error.response.status + "An error occurred");
+      });
+
+    /*Get all available units of measurement*/
+    Axios.get(`${MYCM_API_URL}/units`)
+      .then(response => this.availableOptionsUnits.push(...response.data))
+      .catch(error => {
+        this.$toast.open(error.response.status + "An error occurred");
+      });
+
+    this.initialPopulate();
+      
+  },
+ 
+  methods: {
+    resetFlags: function() {
+      for (var i = 0; i < N_DIMENSIONS - 1; i++) {
+        this.discreteValueFlags[i] = false;
+        this.discreteIntervalFlags[i] = false;
+        this.continousIntervalFlags[i] = false;
+      }
     },
-    components: {
-      vueSlider
-    },
-    created() {
-      /* store.dispatch(SET_CUSTOMIZED_PRODUCT_WIDTH, {  
-        width: this.width
-      });
-      store.dispatch(SET_CUSTOMIZED_PRODUCT_HEIGHT, {
-        height: this.height
-      });
-      store.dispatch(SET_CUSTOMIZED_PRODUCT_DEPTH, {
-        depth: this.depth
-      });
-      store.dispatch(SET_CUSTOMIZED_PRODUCT_UNIT, {
+   
+    updateDimensions() {
+      store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS, {
+        width: this.width,
+        height: this.height,
+        depth: this.depth,
         unit: this.unit
       });
-   */
-      store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS,{
-          width: this.width,
-          height: this.height,
-          depth: this.depth,
-          unit: this.unit
-      });
-
-      /*Get all available dimensions of the given product of the array*/
-      Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions`)
-        .then(response => this.availableOptionsDimensions.push(...response.data))
-        .catch(error => {
-          this.$toast.open(error.response.status + "An error occurred");
-        });
-
-      /*Get all available units of measurement*/
-      Axios.get(`${MYCM_API_URL}/units`)
-        .then(response => this.availableOptionsUnits.push(...response.data))
-        .catch(error => {
-          this.$toast.open(error.response.status + "An error occurred");
-        });
-        
     },
-    methods: {   
-      resetFlags: function(){
-        for(var i = 0; i < N_DIMENSIONS -1; i++){
-          this.discreteValueFlags[i] = false;
-          this.discreteIntervalFlags[i] = false;
-          this.continousIntervalFlags[i]=false;
-        }
-      }, 
-      /* updateHeight: function(){
-        alert(this.height);
-        store.dispatch(SET_CUSTOMIZED_PRODUCT_HEIGHT, {
-          height: this.height
-        });
-      },
-      updateWidth: function(){
-        alert(this.width);
-        store.dispatch(SET_CUSTOMIZED_PRODUCT_WIDTH, {
-          width: this.width
-        });
-      },
-      updateDepth: function() {
-        store.dispatch(SET_CUSTOMIZED_PRODUCT_DEPTH, {
-          depth: this.depth
-        });
-      }, */
-      updateDimensions(){
-        store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS,{       
-          width: this.width,
-          height: this.height,
-          depth: this.depth,
-          unit: this.unit
-        })
-      },
-      //Method that identifies different types of dimensios
-      //There are three types of dimensions: Discrete Interval, Discrete Value, Continuous Interval
-      identifyTypeDimensions: function(dimensionObj) {
-        if (dimensionObj.values != null) {
-          //Discrete interval
-          return DISCRETE_INTERVAL;
-        } else if (dimensionObj.value != null) {
-          //DIscrete value
-          return DISCRETE_VALUE;
-        } else if (
-          dimensionObj.minValue != null &&
-          dimensionObj.maxValue != null &&
-          dimensionObj.increment != null
-        ) {
-          return CONTINUOUS_INTERVAL;
-        } else { //Not yet implemented dimension
-          return ERROR_DIMENSION_TYPE;
-        }
-      },
-      //Populate
-      populateDimensions: function() {
-
-        this.resetFlags();
-        //Get information of the chosed option
-        var op = this.dimensionOp;
-  
+    //Method that identifies different types of dimensios
+    //There are three types of dimensions: Discrete Interval, Discrete Value, Continuous Interval
+    identifyTypeDimensions: function(dimensionObj) {
+      if (dimensionObj.values != null) {
+        //Discrete interval
+        return DISCRETE_INTERVAL;
+      } else if (dimensionObj.value != null) {
+        //DIscrete value
+        return DISCRETE_VALUE;
+      } else if (
+        dimensionObj.minValue != null &&
+        dimensionObj.maxValue != null &&
+        dimensionObj.increment != null
+      ) {
+        return CONTINUOUS_INTERVAL;
+      } else {
+        //Not yet implemented dimension
+        return ERROR_DIMENSION_TYPE;
+      }
+    },
+    initialPopulate(){
+      this.dimensionOp = this.availableOptionsDimensions[0];
+      this.populateDimensions();
+    },
+    //Populate
+    populateDimensions: function() {
+      this.resetFlags();
+      //Get information of the chosed option
+      var op = this.dimensionOp;
+      if (op != this.ERROR_DIMENSION_TYPE) {
         //Populate Height:
         this.heightType = this.identifyTypeDimensions(op.height);
-        if(this.heightType == DISCRETE_INTERVAL){
+        if (this.heightType == DISCRETE_INTERVAL) {
           this.discreteIntervalHeight = op.height.values;
 
           this.discreteIntervalFlags[this.HEIGHT] = true;
@@ -252,15 +269,21 @@
           this.discreteValueFlags[this.HEIGHT] = false;
 
           this.heightIncrement = 1;
-        }else if(this.heightType == DISCRETE_VALUE){
-          this.height = this.determineMinOfInterval(this.heightType,op.height);
+        } else if (this.heightType == DISCRETE_VALUE) {
+          this.height = this.determineMinOfInterval(this.heightType, op.height);
 
           this.discreteValueFlags[this.HEIGHT] = true;
           this.continousIntervalFlags[this.HEIGHT] = false;
           this.discreteIntervalFlags[this.HEIGHT] = false;
-        }else{
-          this.heightMin = this.determineMinOfInterval(this.heightType, op.height);
-          this.heightMax = this.determineMaxOfInterval(this.heightType, op.height);
+        } else {
+          this.heightMin = this.determineMinOfInterval(
+            this.heightType,
+            op.height
+          );
+          this.heightMax = this.determineMaxOfInterval(
+            this.heightType,
+            op.height
+          );
           this.heightIncrement = this.determineIncrementOfInterval(op.height);
 
           this.continousIntervalFlags[this.HEIGHT] = true;
@@ -270,20 +293,20 @@
 
         //Populate Width
         this.widthType = this.identifyTypeDimensions(op.width);
-        if(this.widthType == DISCRETE_INTERVAL){
+        if (this.widthType == DISCRETE_INTERVAL) {
           this.discreteIntervalWidth = op.width.values;
 
           this.discreteIntervalFlags[this.WIDTH] = true;
           this.continousIntervalFlags[this.WIDTH] = false;
-          this.discreteValueFlags[this.WIDTH]=false;
+          this.discreteValueFlags[this.WIDTH] = false;
 
           this.widthIncrement = 1;
-        }else if (this.widthType == DISCRETE_VALUE) {
+        } else if (this.widthType == DISCRETE_VALUE) {
           this.width = this.determineMinOfInterval(this.widthType, op.width);
 
           this.discreteValueFlags[this.WIDTH] = true;
           this.continousIntervalFlags[this.WIDTH] = false;
-          this.discreteIntervalFlags[this.WIDTH]=false;
+          this.discreteIntervalFlags[this.WIDTH] = false;
         } else {
           this.widthMin = this.determineMinOfInterval(this.widthType, op.width);
           this.widthMax = this.determineMaxOfInterval(this.widthType, op.width);
@@ -291,62 +314,61 @@
 
           this.continousIntervalFlags[this.WIDTH] = true;
           this.discreteValueFlags[this.WIDTH] = false;
-          this.discreteIntervalFlags[this.WIDTH]=false;
+          this.discreteIntervalFlags[this.WIDTH] = false;
         }
         //Populate Depth:
         this.depthType = this.identifyTypeDimensions(op.depth);
-        if(this.depthType == DISCRETE_INTERVAL){
+        if (this.depthType == DISCRETE_INTERVAL) {
           this.discreteIntervalDepth = op.depth.values;
 
           this.discreteIntervalFlags[this.DEPTH] = true;
           this.continousIntervalFlags[this.DEPTH] = false;
-          this.discreteValueFlags[this.DEPTH]=false;
+          this.discreteValueFlags[this.DEPTH] = false;
 
           this.depthIncrement = 1;
-
-        }else if (this.depthType == DISCRETE_VALUE) {
+        } else if (this.depthType == DISCRETE_VALUE) {
           this.depth = this.determineMinOfInterval(this.depthType, op.depth);
 
           this.discreteValueFlags[this.DEPTH] = true;
           this.continousIntervalFlags[this.DEPTH] = false;
-          this.discreteIntervalFlags[this.DEPTH]=false;
-
+          this.discreteIntervalFlags[this.DEPTH] = false;
         } else {
-
           this.depthMax = this.determineMaxOfInterval(this.depthType, op.depth);
           this.depthMin = this.determineMinOfInterval(this.depthType, op.depth);
           this.depthIncrement = this.determineIncrementOfInterval(op.depth);
 
           this.continousIntervalFlags[this.DEPTH] = true;
           this.discreteValueFlags[this.DEPTH] = false;
-          this.discreteIntervalFlags[this.DEPTH]=false;
-          
+          this.discreteIntervalFlags[this.DEPTH] = false;
         }
-      },
-      //The following methods determine the min,max and increment to populate the height,width and depth slider
-      determineMinOfInterval: function(
-        typeOfInterval,
-        dimensionJson
-      ) {
-        if (typeOfInterval == CONTINUOUS_INTERVAL) {
-          return dimensionJson.minValue;
-        } else {
-          //DISCRETE VALUE
-          return dimensionJson.value;
-        }
-      },
-      determineMaxOfInterval: function(typeOfInterval,dimensionJson) {
-        var max = -1;
-        if (typeOfInterval == CONTINUOUS_INTERVAL) {
-          return dimensionJson.maxValue;
-        } else {
-          return dimensionJson.value;
-        }
-      },
-      determineIncrementOfInterval: function(dimensionJson) {
-          return dimensionJson.increment; 
+      }else{
+        this.$toasted.show("You must select an option", {
+            position: "top-center",
+            duration: 2000
+          });
       }
-      /*  //Organizes vector to crescent order.
+    },
+    //The following methods determine the min,max and increment to populate the height,width and depth slider
+    determineMinOfInterval: function(typeOfInterval, dimensionJson) {
+      if (typeOfInterval == CONTINUOUS_INTERVAL) {
+        return dimensionJson.minValue;
+      } else {
+        //DISCRETE VALUE
+        return dimensionJson.value;
+      }
+    },
+    determineMaxOfInterval: function(typeOfInterval, dimensionJson) {
+      var max = -1;
+      if (typeOfInterval == CONTINUOUS_INTERVAL) {
+        return dimensionJson.maxValue;
+      } else {
+        return dimensionJson.value;
+      }
+    },
+    determineIncrementOfInterval: function(dimensionJson) {
+      return dimensionJson.increment;
+    }
+    /*  //Organizes vector to crescent order.
         organizeCrescentOrder: function(vec) {
           var tmp, minTmp;
     
@@ -364,8 +386,8 @@
             }
           }
         } */
-    }
-  };
+  }
+};
 </script>
 
 <style>

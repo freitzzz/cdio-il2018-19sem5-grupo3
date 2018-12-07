@@ -140,6 +140,7 @@ export default {
         }
       } else if(!this.hasSlots() || !this.canAddComponentToSlot(component.model)){
         component.slot = 0;
+        store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
       }
     },
     removeDivElement(component, index) {
