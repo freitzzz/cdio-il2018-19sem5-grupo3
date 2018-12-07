@@ -20,7 +20,7 @@ export const mutations = {
   [types.SET_CUSTOMIZED_PRODUCT_DIMENSIONS](state, payload) {
     state.customizedProduct.customizedDimensions = {
       width: payload.width,
-      heigh: payload.height,
+      height: payload.height,
       depth: payload.depth,
       unit: payload.unit,
     }

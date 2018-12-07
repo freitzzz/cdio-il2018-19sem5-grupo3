@@ -87,7 +87,7 @@
           </execution>
         </executions>
         <configuration>
-          <mainClass>cdiomyc.webservices.Main</mainClass>
+          <mainClass>cdiomyc.webservices.WebservicesStarter</mainClass>
         </configuration>
       </plugin>
     </plugins>

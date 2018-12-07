@@ -20,7 +20,7 @@ public class AuthenticationSessionMVServiceTest {
     public void ensureFromEntityWorks() {
         LocalDateTime time = LocalDateTime.now().plusMinutes(60);
         String token = "Aria of the Starlight";
-        Session authenticationSession = new Session(time, token);
+        Session authenticationSession = new Session(time, token,"secretetoken");
         GetAuthenticationSessionDetailsMV result = AuthenticationSessionMVService.fromEntity(authenticationSession);
         assertEquals(authenticationSession.tokenAsJWT(), result.token);
         assertEquals(time.format(DateTimeFormatter.ISO_DATE_TIME), result.sessionEnd);
