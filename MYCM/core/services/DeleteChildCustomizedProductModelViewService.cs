@@ -15,7 +15,7 @@ namespace core.services
         /// </summary>
         /// <param name="deleteChildCustomizedProductModelView">ModelView with the necessary information to hard delete a child customized product</param>
         /// <returns>true if the child customized product is deleted successfully, false if otherwise</returns>
-        public static bool delete(DeleteChildCustomizedProductModelView deleteChildCustomizedProductModelView)
+        /* public static bool delete(DeleteChildCustomizedProductModelView deleteChildCustomizedProductModelView)
         {
             bool deletedWithSuccess = false;
 
@@ -50,6 +50,6 @@ namespace core.services
 
             deletedWithSuccess = customizedProductRepository.remove(childCustomizedProduct) != null;
             return deletedWithSuccess;
-        }
+        } */
     }
 }

@@ -7,8 +7,7 @@ using System.Linq;
 
 namespace core.dto
 {
-    public class CatalogueCollectionDTO : DTO, DTOParseable<CatalogueCollection, CatalogueCollectionDTO>
-    {
+    public class CatalogueCollectionDTO : DTO{
         /// <summary>
         /// CatalogueCollection's list of customized products.
         /// </summary>
@@ -28,13 +27,13 @@ namespace core.dto
         /// Returns this DTO's equivalent Entity
         /// </summary>
         /// <returns>DTO's equivalent Entity</returns>
-        public CatalogueCollection toEntity()
+        /* public CatalogueCollection toEntity()
         {
             List<CustomizedProduct> custProducts = DTOUtils.reverseDTOS(customizedProductDTOs).ToList();
 
             CatalogueCollection catalogueCollection = new CatalogueCollection(this.customizedProductCollectionDTO.toEntity(), custProducts);
 
             return catalogueCollection;
-        }
+        } */
     }
 }
