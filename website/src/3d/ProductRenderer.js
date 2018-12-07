@@ -498,7 +498,6 @@ export default class ProductRenderer {
 
 
   generateDrawer(slot) {
-
     var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
     var rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
     var depthDrawer = 3;
@@ -557,8 +556,8 @@ export default class ProductRenderer {
         borders_drawer[i][4], borders_drawer[i][5], this.material, this.group));
     }
 
-    // this.closet.addModule(module);
-    // this.closet.addDrawer(drawer);
+     this.closet.addModule(module);
+     this.closet.addDrawer(drawer);
   }
 
   /**
