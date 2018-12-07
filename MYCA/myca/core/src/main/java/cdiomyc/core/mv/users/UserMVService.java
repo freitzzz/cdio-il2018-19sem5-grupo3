@@ -2,6 +2,7 @@ package cdiomyc.core.mv.users;
 
 import cdiomyc.core.domain.auth.Auth;
 import cdiomyc.core.mv.authentication.CredentialsAuthenticationMV;
+import cdiomyc.support.utils.JWTUtils;
 
 /**
  * Service for creating and manipulating User Model Views
@@ -38,7 +39,7 @@ public class UserMVService {
      */
     public static CreatedUserMV createdUserMVFromAuth(Auth auth) {
         CreatedUserMV createdUserMV = new CreatedUserMV();
-        createdUserMV.token = auth.id();
+        createdUserMV.token = JWTUtils.encode(auth.id());
         return createdUserMV;
     }
 }
