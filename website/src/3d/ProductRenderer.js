@@ -208,9 +208,9 @@ export default class ProductRenderer {
 
     this.websiteDimensions = [500, 100, 15000];
 
-    this.canMoveCloset=true;
-    this.canMoveSlots=true;
-    this.canMoveComponents=true;
+    this.canMoveCloset = true;
+    this.canMoveSlots = true;
+    this.canMoveComponents = true;
 
     this.hingedDoor = null;
     this.slidingDoor = null;
@@ -381,19 +381,15 @@ export default class ProductRenderer {
   addComponent(components) {
     if (components == null || components == undefined) return;
     for (let i = 0; i < components.length; i++) {
-      for (let j = 0; components[i].length; j++) {
-        if (components[i][j].slot == 0) { //add to closet structure
-        } else if (components[i][j].slot > 0) { //add to closet slot
-          if (components[i][j].designation == "Shelf") this.generateShelf(components[i][j].slot);
-          if (components[i][j].designation == "Pole") this.generatePole(components[i][j].slot);
-          if (components[i][j].designation == "Drawer") this.generateDrawer(components[i][j].slot);
-          if (components[i][j].designation == "Hinged Door") this.generateHingedDoor(components[i][j].slot);
-          if (components[i][j].designation == "Sliding Door") this.generateSlidingDoor();
-        }
+      for (let j = 0; j < components[i].length; j++) {
+        if (components[i][0].designation == "Shelf") this.generateShelf(components[i][0].slot);
+        if (components[i][0].designation == "Pole") this.generatePole(components[i][0].slot);
+        if (components[i][0].designation == "Drawer") this.generateDrawer(components[i][0].slot);
+        if (components[i][0].designation == "Hinged Door") this.generateHingedDoor(components[i][0].slot);
+        if (components[i][0].designation == "Sliding Door") this.generateSlidingDoor();
       }
     }
   }
-
 
   /**
    * Generates a cylinder with given properties on a certain position relative to axis x,y and z
@@ -464,7 +460,7 @@ export default class ProductRenderer {
     var rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
     var width, x, y, z;
 
-    if (this.closet_slots_faces_ids.length == 0) { //If there are no slots, the width of the shelf is the same as the closet's structure
+    if (slot == 0) { //If there are no slots, the width of the shelf is the same as the closet's structure
       width = this.getCurrentClosetWidth();
       x = this.calculateComponentPosition(rightFace.position.x, leftFace.position.x);
       y = this.calculateComponentPosition(rightFace.position.y, leftFace.position.y);
@@ -556,8 +552,8 @@ export default class ProductRenderer {
         borders_drawer[i][4], borders_drawer[i][5], this.material, this.group));
     }
 
-     this.closet.addModule(module);
-     this.closet.addDrawer(drawer);
+    this.closet.addModule(module);
+    this.closet.addDrawer(drawer);
   }
 
   /**

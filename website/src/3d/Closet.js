@@ -148,7 +148,6 @@ export default class Closet {
 
     /**
      * Adds a door to the closet
-     * @param {} door to add 
      */
     addSlidingDoor(door) {
         this.slidingDoors.push(door);
