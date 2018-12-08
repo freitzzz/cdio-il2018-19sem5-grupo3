@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using core.modelview.customizedproduct;
+using core.modelview.customizedproductcollection;
 
 namespace core.modelview.commercialcatalogue
 {
