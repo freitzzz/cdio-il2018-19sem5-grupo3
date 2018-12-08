@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+using core.modelview.customizedproduct;
 
 namespace core.modelview.customizedproductcollection
 {
@@ -8,16 +10,22 @@ namespace core.modelview.customizedproductcollection
     [DataContract]
     public class GetCustomizedProductCollectionModelView
     {
-         /// <summary>
+        /// <summary>
         /// Persistence identifier of the current CustomizedProductCollection
         /// </summary>
         [DataMember]
-        public long id { get; internal set; }
+        public long id { get; set; }
 
         /// <summary>
         /// String with the collection name
         /// </summary>
         [DataMember]
-        public string name { get; protected set; }
+        public string name { get; set; }
+
+        /// <summary>
+        /// List with basic model views of the collection's products
+        /// </summary>
+        [DataMember]
+        public List<GetBasicCustomizedProductModelView> customizedProducts;
     }
 }
