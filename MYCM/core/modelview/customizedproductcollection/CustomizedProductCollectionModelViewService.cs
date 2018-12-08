@@ -56,6 +56,7 @@ namespace core.modelview.customizedproductcollection
                     basicCustomizedProductModelView.designation = collectionProduct.customizedProduct.designation;
                     basicCustomizedProductModelView.reference = collectionProduct.customizedProduct.reference;
                     basicCustomizedProductModelView.serialNumber = collectionProduct.customizedProduct.serialNumber;
+                    basicCustomizedProductModelView.productId = collectionProduct.customizedProduct.product.Id;
 
                     customizedProductCollectionModelView.customizedProducts.Add(basicCustomizedProductModelView);
                 }
