@@ -16,6 +16,11 @@ namespace core.services
     public static class CreateCustomizedProductService
     {
         /// <summary>
+        /// Constant representing th error message presented when the CustomizedProduct is attempted to be created a reference but without a auth token.
+        /// </summary>
+        private const string ERROR_MISSING_AUTH_TOKEN = "Unable to create a customized product with a reference without providing an authentication token.";
+
+        /// <summary>
         /// Constant representing the error message presented when the Product is not found.
         /// </summary>
         private const string ERROR_UNABLE_TO_FIND_PRODUCT = "Unable to find a product with an identifier of: {0}";
@@ -130,11 +135,18 @@ namespace core.services
 
                 serialNumberRepository.increment();
             }
-            else if (addCustomizedProductModelView.reference != null && addCustomizedProductModelView.userAuthToken != null)
+            else if (addCustomizedProductModelView.reference != null)
             {
-                customizedProductBuilder = CustomizedProductBuilder
+                if (addCustomizedProductModelView.userAuthToken != null)
+                {
+                    customizedProductBuilder = CustomizedProductBuilder
                     .createManagerCustomizedProduct(addCustomizedProductModelView.reference, addCustomizedProductModelView.userAuthToken,
                         product, customizedProductDimensions);
+                }
+                else
+                {
+                    throw new ArgumentException(ERROR_MISSING_AUTH_TOKEN);
+                }
             }
 
             //build customized product with optional properties if they're defined
