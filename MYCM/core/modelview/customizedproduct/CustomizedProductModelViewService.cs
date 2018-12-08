@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using core.domain;
 using core.modelview.customizeddimensions;
 using core.modelview.customizedmaterial;
+using core.modelview.product;
+using core.modelview.slot;
 
 namespace core.modelview.customizedproduct
 {
@@ -64,7 +66,9 @@ namespace core.modelview.customizedproduct
                 customizedProductModelView.customizedMaterial = CustomizedMaterialModelViewService.fromEntity(customizedProduct.customizedMaterial);
             }
 
-            //customizedProductModelView.slots = 
+            customizedProductModelView.product = ProductModelViewService.fromEntityAsBasic(customizedProduct.product);
+            customizedProductModelView.slots = SlotModelViewService.fromCollection(customizedProduct.slots);
+
 
             return customizedProductModelView;
         }
