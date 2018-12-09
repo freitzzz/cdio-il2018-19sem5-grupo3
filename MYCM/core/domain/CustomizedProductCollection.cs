@@ -34,9 +34,9 @@ namespace core.domain
         private const string INVALID_CUSTOMIZED_PRODUCT = "The Customized Product is invalid!";
 
         /// <summary>
-        /// Constant that represents the message that occurs if the customized product isn't removed from the collection
+        /// Constant that represents the message that occurs if the customized product isn't from the collection
         /// </summary>
-        private const string CUSTOMIZED_PRODUCT_WASNT_REMOVED = "Customized Product wasn't removed";
+        private const string CUSTOMIZED_PRODUCT_NOT_FROM_COLLECTION = "The customized product trying to be removed doesn't exist in this collection";
 
         /// <summary>
         /// Constant that represents the message that occurs if the customized product trying to be added is in PENDING State
@@ -171,7 +171,7 @@ namespace core.domain
         public void removeCustomizedProduct(CustomizedProduct customizedProduct)
         {
             bool removed = collectionProducts.Remove(collectionProducts.Where(cc => cc.customizedProduct.Equals(customizedProduct)).FirstOrDefault());
-            if (!removed) throw new ArgumentException(CUSTOMIZED_PRODUCT_WASNT_REMOVED);
+            if (!removed) throw new ArgumentException(CUSTOMIZED_PRODUCT_NOT_FROM_COLLECTION);
         }
 
         /// <summary>
