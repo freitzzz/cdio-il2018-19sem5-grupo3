@@ -1,97 +1,97 @@
 <template>
-    <b-modal :active.sync="active" has-modal-card scroll="keep">
-                <div class="modal-card" style="width: auto">
-                    <header class="modal-card-head">
-                        <p class="modal-card-title">Edit Product</p>
-                    </header>
-                    <section class="modal-card-body">
-                        <b-field label="Reference">
-                            <b-input
-                                type="String"
-                                v-model="product.reference"
-                                :placeholder="placeholders.reference"
-                                icon="pound"
-                                required>
-                            </b-input>
-                        </b-field>
-                        <b-field label="Designation">
-                            <b-input
-                                type="String"
-                                v-model="product.designation"
-                                :placeholder="placeholders.designation"
-                                icon="pencil"
-                                required>
-                            </b-input>
-                        </b-field>
-                        <b-field label="Category">
-                            <b-select 
-                                v-model="product.category"
-                                :placeholder="placeholders.category"
-                                expanded="true" 
-                                icon="tag"
-                                @input="changeCurrentCategory">
-                                <option 
-                                    v-for="(category,index) in availableCategories" 
-                                    :key="index"
-                                    :value="category.id"
-                                >
-                                    {{category.name}}
-                                </option>
-                            </b-select>
-                        </b-field>
-                        <customized-selected-items
-                            :available-items="availableMaterials"
-                            :pre-added-items="product.materials"
-                            :customized-label="materials.customizedLabel"
-                            :icon="materials.icon"
-                            :place-holder="materials.placeholder"
-                            @getAddedItems="changeCurrentMaterials"
-                        />
-                        <b-checkbox @input="enableComponents()">Components</b-checkbox>
-                        <div v-if="components">
-                            <customized-selected-items
-                            :available-items="availableComponents"
-                            :customized-label="componentsItems.customizedLabel"
-                            :icon="componentsItems.icon"
-                            :place-holder="componentsItems.placeholder"
-                            @getAddedItems="changeCurrentComponents(components)"
-                        />
-                        </div>
-                        <b-checkbox @input="enableDimensions()">Dimensions</b-checkbox>
-                        <div v-if="dimensions">
-                            <b-field label="Dimensions"/>
-                            <b-field>
-                                <b-select
-                                    v-model="dimensionsItems.selected"
-                                    expanded
-                                    icon="wrench"
-                                >
-                                    <option 
-                                        v-for="(dimension,index) in dimensionsItems.values" 
-                                        :key="index"
-                                        :value="dimension"
-                                    >
-                                        {{dimension}}
-                                    </option>
-                                </b-select>
-                                <button class="button is-danger" @click="addDimensions()">
-                                    <b-icon icon="plus"/>
-                                </button>
-                                <button class="button is-danger" @click="removeDimensions()">
-                                    <b-icon icon="minus"/>
-                                </button>
-                            </b-field>
-                            <product-dimensions dimension-label="Width" @getDimension="changeCurrentWidthDimension"/>
-                            <product-dimensions dimension-label="Height" @getDimension="changeCurrentHeightDimension"/>
-                            <product-dimensions dimension-label="Depth" @getDimension="changeCurrentDepthDimension"/>
-                        </div>
-                    </section>
-                    <footer class="modal-card-foot">
-                        <div class="has-text-centered">
-                            <button class="button is-primary" @click="emitProduct($parent)">Save</button>
-                        </div>
-                    </footer>
+    <b-modal :active="true" has-modal-card scroll="keep">
+        <div class="modal-card" style="width: auto">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Edit Product</p>
+            </header>
+            <section class="modal-card-body">
+                <b-field label="Reference">
+                    <b-input
+                        type="String"
+                        v-model="product.reference"
+                        icon="pound"
+                        required>
+                    </b-input>
+                </b-field>
+                <b-field label="Designation">
+                    <b-input
+                        type="String"
+                        v-model="product.designation"
+                        icon="pencil"
+                        required>
+                    </b-input>
+                </b-field>
+                <b-field label="Category">
+                    <b-select 
+                        :placeholder="product.category.name"
+                        v-model="categoryItem.selected"
+                        icon="tag"
+                        @input="changeCurrentCategory"
+                        expanded
+                        >
+                        <option 
+                            v-for="(category,index) in availableCategories" 
+                            :key="index"
+                            :value="category.id"
+                        >
+                            {{category.name}}
+                        </option>
+                    </b-select>
+                </b-field>
+                <customized-selected-items
+                    :added-items="toCustomizedSelectedMaterials(product.materials)"
+                    :available-items="toCustomizedSelectedMaterials(availableMaterials)"
+                    :customized-label="materials.customizedLabel"
+                    :icon="materials.icon"
+                    :place-holder="materials.placeholder"
+                    @emitItems="changeCurrentMaterials"
+                />
+                <b-checkbox @input="enableComponents()">Components</b-checkbox>
+                <div v-if="components">
+                    <customized-selected-items
+                        :added-items="toCustomizedSelectedComponents(product.components ? product.components : [])"
+                        :available-items="toCustomizedSelectedComponents(availableComponents)"
+                        :customized-label="componentsItems.customizedLabel"
+                        :icon="componentsItems.icon"
+                        :place-holder="componentsItems.placeholder"
+                        @emitItems="changeCurrentComponents"
+                    />
                 </div>
+                <b-checkbox @input="enableDimensions()">Dimensions</b-checkbox>
+                <div v-if="dimensions">
+                    <b-field label="Dimensions"/>
+                    <b-field>
+                        <b-select
+                            v-model="this.dimensionsItems.selected"
+                            icon="wrench"
+                            expanded
+                        >
+                            <option 
+                                v-for="(dimension,index) in dimensionsItems.values" 
+                                :key="index"
+                                :value="dimension"
+                            >
+                                {{dimension}}
+                            </option>
+                        </b-select>
+                        <button class="button is-danger" @click="addDimensions()">
+                            <b-icon icon="plus"/>
+                        </button>
+                        <button class="button is-danger" @click="removeDimensions()">
+                            <b-icon icon="minus"/>
+                        </button>
+                    </b-field>
+                    <product-dimensions dimension-label="Width" :current-dimension="product.dimensions[0].width" @getDimension="changeCurrentWidthDimension"/>
+                    <product-dimensions dimension-label="Height" :current-dimension="product.dimensions[0].height" @getDimension="changeCurrentHeightDimension"/>
+                    <product-dimensions dimension-label="Depth" :current-dimension="product.dimensions[0].depth" @getDimension="changeCurrentDepthDimension"/>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <div class="has-text-centered">
+                    <button class="button is-primary" @click="emitProduct($parent)">Save</button>
+                </div>
+            </footer>
+        </div>
     </b-modal>
 </template>
 
@@ -120,6 +120,13 @@ export default {
         ProductDimensions
     },
     /**
+     * Component Created State call
+     */
+    created(){
+        this.dimensionsItems.values=this.product.dimensions.slice();
+        this.dimensionsItems.selected=this.dimensionsItems.values[0];
+    },
+    /**
      * Received properties from father component
      */
     props:{
@@ -140,6 +147,7 @@ export default {
             default: false
         },
         product:{
+            type:Object,
             required:true
         },
     },
@@ -223,11 +231,12 @@ export default {
         removeDimensions(){
             let newDimensions=[];
             this.dimensionsItems.values.forEach((dimension)=>{
-                if(dimension!=this.dimensionsItems.selected){
+                if(dimension.id!=this.dimensionsItems.selected.id){
                     newDimensions.push(dimension);
                 }
             });
             this.dimensionsItems.values=newDimensions.slice();
+            this.dimensionsItems.selected=newDimensions.length!=0 ? newDimensions[0] : 0;
         },
         /**
          * Changes the current category item
@@ -239,6 +248,7 @@ export default {
          * Changes the current components item
          */
         changeCurrentComponents(components){
+            console.log(components)
             this.componentsItem.value=components;
         },
         /**
@@ -304,9 +314,11 @@ export default {
                 id:this.product.id,
                 reference:this.product.reference,
                 designation:this.product.designation,
-                category:this.product.category,
+                category:this.categoryItem.value,
+                components:this.componentsItem.value,
+                dimensions:this.dimensionsItems.values,
+                materials:this.materialsItem.value
             };
-            //modal.close();
             this.$emit('emitProduct',productDetails);
         },
         /**
@@ -326,6 +338,26 @@ export default {
          */
         enableDimensions(){
             this.dimensions=!this.dimensions;
+        },
+        /**
+         * Transforms a list of components to a list of customized selected components
+         */
+        toCustomizedSelectedComponents(components){
+            let customizedSelectedComponents=[];
+            for(let i=0;i<components.length;i++){
+                customizedSelectedComponents.push({id:components[i].id,value:components[i].reference});
+            }
+            return customizedSelectedComponents;
+        },
+        /**
+         * Transforms a list of materials to a list of customized selected materials
+         */
+        toCustomizedSelectedMaterials(materials){
+            let customizedSelectedMaterials=[];
+            for(let i=0;i<materials.length;i++){
+                customizedSelectedMaterials.push({id:materials[i].id,value:materials[i].designation});
+            }
+            return customizedSelectedMaterials;
         }
     }
 }
