@@ -65,6 +65,11 @@ import ProductDetails from './ProductDetails';
  */
 import EditProduct from './EditProduct';
 
+/**
+ * Requires App Configuration for accessing MYCM API URL
+ */
+import Config,{MYCM_API_URL} from '../../../config';
+
 export default {
     /**
      * Components exported components
@@ -142,7 +147,7 @@ export default {
          */
         deleteProduct(productId){
             Axios
-                .delete('http://localhost:5000/mycm/api/products/'+productId)
+                .delete(MYCM_API_URL+'/products/'+productId)
                 .then(()=>{
                     this.$toast.open({message:"Product was deleted with success!"});
                 })
@@ -178,7 +183,7 @@ export default {
         getAllCategories(){
             return new Promise((accept,reject)=>{
                 Axios
-                    .get('http://localhost:5000/mycm/api/categories/')
+                    .get(MYCM_API_URL+'/categories/')
                     .then((categories)=>{
                         this.availableCategories=categories.data;
                         accept();
@@ -195,7 +200,7 @@ export default {
         getAllComponents(){
             return new Promise((accept,reject)=>{
                 Axios
-                    .get('http://localhost:5000/mycm/api/products/')
+                    .get(MYCM_API_URL+'/products/')
                     .then((components)=>{
                         this.availableComponents=components.data;
                         accept();
@@ -212,7 +217,7 @@ export default {
         getAllMaterials(){
             return new Promise((accept,reject)=>{
                 Axios
-                    .get('http://localhost:5000/mycm/api/materials/')
+                    .get(MYCM_API_URL+'/materials/')
                     .then((materials)=>{
                         this.availableMaterials=materials.data;
                         accept();
@@ -229,7 +234,7 @@ export default {
         getProductDetails(productId){
             return new Promise((accept,reject)=>{
                 Axios
-                    .get('http://localhost:5000/mycm/api/products/'+productId)
+                    .get(MYCM_API_URL+'/products/'+productId)
                     .then((product)=>{
                         this.currentSelectedProduct=product.data;
                         this.currentSelectedProduct2=Object.assign({},this.currentSelectedProduct);
@@ -307,7 +312,7 @@ export default {
             return new Promise((accept,reject)=>{
                 if(atLeastOneUpdate){
                     Axios
-                    .put('http://localhost:5000/mycm/api/products/'+productDetails.id,productPropertiesToUpdate)
+                    .put(MYCM_API_URL+'/products/'+productDetails.id,productPropertiesToUpdate)
                     .then((product)=>{
                         accept(product);
                     })
@@ -353,7 +358,7 @@ export default {
                 if(addComponents.length>0){
                     for(let i=0;i<addComponents.length;i++){
                         Axios
-                            .post('http://localhost:5000/mycm/api/products/'+productDetails.id+'/components/',{
+                            .post(MYCM_API_URL+'/products/'+productDetails.id+'/components/',{
                                 id:addComponents[i]
                             })
                             .catch((error_message)=>{
@@ -365,7 +370,7 @@ export default {
                 if(deleteComponents.length>0){
                     for(let i=0;i<deleteComponents.length;i++){
                         Axios
-                            .delete('http://localhost:5000/mycm/api/products/'+productDetails.id+'/components/'+deleteComponents[i])
+                            .delete(MYCM_API_URL+'/products/'+productDetails.id+'/components/'+deleteComponents[i])
                             .catch((error_message)=>{
                                 reject(error_message.data.message);
                             });
@@ -399,7 +404,7 @@ export default {
                 if(addDimensions.length>0){
                     for(let i=0;i<addDimensions.length;i++){
                         Axios
-                            .post('http://localhost:5000/mycm/api/products/'+productDetails.id+'/dimensions/',{
+                            .post(MYCM_API_URL+'/products/'+productDetails.id+'/dimensions/',{
                                 id:addDimensions[i]
                             })
                             .catch((error_message)=>{
@@ -411,7 +416,7 @@ export default {
                 if(deleteDimensions.length>0){
                     for(let i=0;i<deleteDimensions.length;i++){
                         Axios
-                            .delete('http://localhost:5000/mycm/api/products/'+productDetails.id+'/dimensions/'+deleteDimensions[i])
+                            .delete(MYCM_API_URL+'/products/'+productDetails.id+'/dimensions/'+deleteDimensions[i])
                             .catch((error_message)=>{
                                 reject(error_message.data.message);
                             });
@@ -452,7 +457,7 @@ export default {
                     if(addMaterials.length>0){
                         for(let i=0;i<addMaterials.length;i++){
                             Axios
-                                .post('http://localhost:5000/mycm/api/products/'+productDetails.id+'/materials/',{
+                                .post(MYCM_API_URL+'/products/'+productDetails.id+'/materials/',{
                                     id:addMaterials[i]
                                 })
                                 .catch((error_message)=>{
@@ -464,7 +469,7 @@ export default {
                     if(deleteMaterials.length>0){
                         for(let i=0;i<deleteMaterials.length;i++){
                             Axios
-                                .delete('http://localhost:5000/mycm/api/products/'+productDetails.id+'/materials/'+deleteMaterials[i])
+                                .delete(MYCM_API_URL+'/products/'+productDetails.id+'/materials/'+deleteMaterials[i])
                                 .catch((error_message)=>{
                                     reject(error_message.data.message);
                                 });
