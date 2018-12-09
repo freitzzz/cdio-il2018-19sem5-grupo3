@@ -7,6 +7,7 @@ using support.dto;
 using support.utils;
 using System.Linq;
 using support.domain;
+using static core.domain.CustomizedProduct;
 
 namespace core.domain
 {
@@ -170,7 +171,9 @@ namespace core.domain
         /// <returns>boolean true if the customized product is valid for addition, false if not</returns>
         private bool isCustomizedProductValidForAddition(CustomizedProduct customizedProduct)
         {
-            return customizedProduct != null && !collectionProducts.Select(cc => cc.customizedProduct).Contains(customizedProduct);
+            return customizedProduct != null 
+                && customizedProduct.status == CustomizationStatus.FINISHED
+                && !collectionProducts.Select(cc => cc.customizedProduct).Contains(customizedProduct);
         }
 
         /// <summary>

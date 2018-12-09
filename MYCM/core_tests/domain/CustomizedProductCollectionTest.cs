@@ -147,6 +147,19 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureAddingPendingCustomizedProductThrowsException()
+        {
+            Product product = createProductInstance();
+
+            CustomizedProductCollection instance = new CustomizedProductCollection("Mario");
+            
+            Assert.Throws<ArgumentException>(() => instance.addCustomizedProduct(
+                CustomizedProductBuilder.createAnonymousUserCustomizedProduct("123", product,
+                CustomizedDimensions.valueOf(21, 30, 17)).build()
+            ));
+        }
+
+        [Fact]
         public void ensureRemovedCustomizedProductWorksForExistingProduct()
         {
             CustomizedProduct cp = buildCustomizedProductInstance();
@@ -356,6 +369,45 @@ namespace core_tests.domain
             CustomizedMaterial mat = CustomizedMaterial.valueOf(material, color1, finish2);
 
             return CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 123", product, customizedDimensions).withMaterial(mat).build();
+        }
+
+        private Product createProductInstance()
+        {
+            var category = new ProductCategory("It's-a-me again");
+
+            //Creating Dimensions
+            Dimension heightDimension = new SingleValueDimension(21);
+            Dimension widthDimension = new SingleValueDimension(30);
+            Dimension depthDimension = new SingleValueDimension(17);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+            List<Measurement> measurements = new List<Measurement>() { measurement };
+
+            //Creating a material
+            string reference = "Just referencing";
+            string designation = "Doin' my thing";
+
+            List<Color> colors = new List<Color>();
+            Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
+            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
+            colors.Add(color);
+            colors.Add(color1);
+
+            List<Finish> finishes = new List<Finish>();
+            Finish finish = Finish.valueOf("Prayin'", 3);
+            Finish finish2 = Finish.valueOf("Estragado", 9);
+            finishes.Add(finish);
+            finishes.Add(finish2);
+
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
+            List<Material> materials = new List<Material>();
+            materials.Add(material);
+
+            IEnumerable<Material> matsList = materials;
+
+            Product product = new Product("Kinda dead", "So tired", "riperino.gltf", category, matsList, measurements);
+
+            return product;
         }
     }
 }
