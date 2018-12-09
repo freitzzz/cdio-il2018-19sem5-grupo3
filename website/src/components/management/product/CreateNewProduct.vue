@@ -1,103 +1,137 @@
 <template>
-    <b-modal :active.sync="active" has-modal-card scroll="keep">
-                <div class="modal-card" style="width: auto">
-                    <header class="modal-card-head">
-                        <p class="modal-card-title">New Product</p>
-                    </header>
-                    <section class="modal-card-body">
-                        <b-field label="Reference">
-                            <b-input
-                                type="String"
-                                v-model="referenceItem.value"
-                                :placeholder="placeholders.reference"
-                                icon="pound"
-                                required>
-                            </b-input>
-                        </b-field>
-                        <b-field label="Designation">
-                            <b-input
-                                type="String"
-                                v-model="designationItem.value"
-                                :placeholder="placeholders.designation"
-                                icon="pencil"
-                                required>
-                            </b-input>
-                        </b-field>
-                        <b-field label="Category">
-                            <b-select 
-                                v-model="categoryItem.selected"
-                                :placeholder="placeholders.category"
-                                expanded="true" 
-                                icon="tag"
-                                @input="changeCurrentCategory">
-                                <option 
-                                    v-for="(category,index) in availableCategories" 
-                                    :key="index"
-                                    :value="category.id"
-                                >
-                                    {{category.name}}
-                                </option>
-                            </b-select>
-                        </b-field>
-                        <customized-selected-items
-                            :available-items="availableMaterials"
-                            :customized-label="materials.customizedLabel"
-                            :icon="materials.icon"
-                            :place-holder="materials.placeholder"
-                            @getAddedItems="changeCurrentMaterials"
+    <div class="modal-card" style="width: auto">
+        <header class="modal-card-head">
+            <p class="modal-card-title">New Product</p>
+        </header>
+        <section class="modal-card-body">
+            <b-field label="Reference">
+                <b-input
+                    type="String"
+                    v-model="referenceItem.value"
+                    :placeholder="placeholders.reference"
+                    icon="pound"
+                    required>
+                </b-input>
+            </b-field>
+            <b-field label="Designation">
+                <b-input
+                    type="String"
+                    v-model="designationItem.value"
+                    :placeholder="placeholders.designation"
+                    icon="pencil"
+                    required>
+                </b-input>
+            </b-field>
+            <b-field label="Category">
+                <b-select 
+                    v-model="categoryItem.selected"
+                    :placeholder="placeholders.category"
+                    expanded="true" 
+                    icon="tag"
+                    @input="changeCurrentCategory">
+                    <option 
+                        v-for="(category,index) in availableCategories" 
+                        :key="index"
+                        :value="category.id"
+                    >
+                        {{category.name}}
+                    </option>
+                </b-select>
+            </b-field>
+            <customized-selected-items
+                :available-items="availableMaterials"
+                :customized-label="materials.customizedLabel"
+                :icon="materials.icon"
+                :place-holder="materials.placeholder"
+                @emitItems="changeCurrentMaterials"
+            />
+            <b-checkbox @input="enableComponents()">Components</b-checkbox>
+            <div v-if="components">
+                <customized-selected-items
+                :available-items="availableComponents"
+                :customized-label="componentsItems.customizedLabel"
+                :icon="componentsItems.icon"
+                :place-holder="componentsItems.placeholder"
+                @emitItems="changeCurrentComponents"
+            />
+            </div>
+            <b-checkbox @input="enableDimensions()">Dimensions</b-checkbox>
+            <div v-if="dimensions">
+                <b-field label="Dimensions"/>
+                <b-field>
+                    <b-select
+                        v-model="dimensionsItems.selected"
+                        expanded
+                        icon="wrench"
+                    >
+                        <option 
+                            v-for="(dimension,index) in dimensionsItems.values" 
+                            :key="index"
+                            :value="dimension"
+                        >
+                            {{dimension}}
+                        </option>
+                    </b-select>
+                    <button class="button is-danger" @click="addDimensions()">
+                        <b-icon icon="plus"/>
+                    </button>
+                    <button class="button is-danger" @click="removeDimensions()">
+                        <b-icon icon="minus"/>
+                    </button>
+                </b-field>
+                <product-dimensions dimension-label="Width" @getDimension="changeCurrentWidthDimension"/>
+                <product-dimensions dimension-label="Height" @getDimension="changeCurrentHeightDimension"/>
+                <product-dimensions dimension-label="Depth" @getDimension="changeCurrentDepthDimension"/>
+            </div>
+            <b-checkbox @input="enableSlots()">Slots</b-checkbox>
+            <div v-if="slots">
+                <b-field label="Slots"/>
+                <b-field>
+                    <b-field label="Minimum Size Width">
+                        <b-input
+                            type="Number"
+                            :placeholder="200"
+                            :v-model="slotDimensionsItem.min"
+                            icon="wrench"
+                            required
                         />
-                        <b-checkbox @input="enableComponents()">Components</b-checkbox>
-                        <div v-if="components">
-                            <customized-selected-items
-                            :available-items="availableComponents"
-                            :customized-label="componentsItems.customizedLabel"
-                            :icon="componentsItems.icon"
-                            :place-holder="componentsItems.placeholder"
-                            @getAddedItems="changeCurrentComponents(components)"
+                    </b-field>
+                    <b-field label="Recommended Size Width">
+                        <b-input
+                            type="Number"
+                            :placeholder="200"
+                            :v-model="slotDimensionsItem.recommended"
+                            icon="wrench"
+                            required
                         />
-                        </div>
-                        <b-checkbox @input="enableDimensions()">Dimensions</b-checkbox>
-                        <div v-if="dimensions">
-                            <b-field label="Dimensions"/>
-                            <b-field>
-                                <b-select
-                                    v-model="dimensionsItems.selected"
-                                    expanded
-                                    icon="wrench"
-                                >
-                                    <option 
-                                        v-for="(dimension,index) in dimensionsItems.values" 
-                                        :key="index"
-                                        :value="dimension"
-                                    >
-                                        {{dimension}}
-                                    </option>
-                                </b-select>
-                                <button class="button is-danger" @click="addDimensions()">
-                                    <b-icon icon="plus"/>
-                                </button>
-                                <button class="button is-danger" @click="removeDimensions()">
-                                    <b-icon icon="minus"/>
-                                </button>
-                            </b-field>
-                            <product-dimensions dimension-label="Width" @getDimension="changeCurrentWidthDimension"/>
-                            <product-dimensions dimension-label="Height" @getDimension="changeCurrentHeightDimension"/>
-                            <product-dimensions dimension-label="Depth" @getDimension="changeCurrentDepthDimension"/>
-                        </div>
-                        <b-checkbox @input="enableSlots()">Slots</b-checkbox>
-                        <div v-if="slots">
-                            <slots-size :slotName="minSlotName" @getSlotValues="changeCurrentMinSlotDimensions"/>
-                            <slots-size :slotName="recommendedSlotName" @getSlotValues="changeCurrentRecommendedSlotDimensions"/>
-                            <slots-size :slotName="maxSlotName" @getSlotValues="changeCurrentMaxSlotDimensions"/>
-                        </div>
-                    </section>
-                    <footer class="modal-card-foot">
-                        <div class="has-text-centered">
-                            <button class="button is-primary" @click="emitProduct($parent)">Create</button>
-                        </div>
-                    </footer>
-                </div>
-    </b-modal>
+                    </b-field>
+                    <b-field label="Maxmimum Size Width">
+                        <b-input
+                            type="Number"
+                            :placeholder="200"
+                            :v-model="slotDimensionsItem.max"
+                            icon="wrench"
+                            required
+                        />
+                    </b-field>
+                    <b-field label="Unit">
+                        <b-input
+                            type="String"
+                            placeholder="MM"
+                            :v-model="slotDimensionsItem.unit"
+                            icon="ruler"
+                            required
+                        />
+                    </b-field>
+                </b-field>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <div class="has-text-centered">
+                <button class="button is-primary" @click="emitProduct($parent)">Create</button>
+            </div>
+        </footer>
+    </div>
 </template>
 
 <script>
@@ -201,7 +235,8 @@ export default {
             slotDimensionsItem:{
                 min:null,
                 recommended:null,
-                max:null
+                max:null,
+                unit:null
             },
             materials:{
                 availableItems:['MDF','Cherry','Orange'],
@@ -248,7 +283,7 @@ export default {
          */
         changeCurrentMaterials(materials){
             let addedMaterials=[];
-            materials.forEach((material)=>{addedMaterials.push({id:material});});
+            materials.forEach((material)=>{addedMaterials.push(material);});
             this.materialsItem.value=addedMaterials.slice();
         },
         /**
@@ -305,13 +340,12 @@ export default {
             let productDetails={
                 reference:this.referenceItem.value,
                 designation:this.designationItem.value,
-                categoryId:this.categoryItem.value,
+                category:this.categoryItem.value,
                 materials:this.materialsItem.value,
                 dimensions:this.dimensionsItems.values,
                 components:this.componentsItem.value,
-                slotsSize:this.slotsItem.value
+                slots:this.slotDimensionsItem
             };
-            //modal.close();
             this.$emit('emitProduct',productDetails);
         },
         /**

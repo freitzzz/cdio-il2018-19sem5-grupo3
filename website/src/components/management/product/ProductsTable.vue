@@ -21,24 +21,28 @@
                 </button>
                 <button
                     class="button is-danger"
-                    @click="onAction('delete-item', props.rowData, props.rowIndex)"
+                    @click="deleteProduct(props.rowData.id)"
                 >
                     <b-icon icon="minus"/>
                 </button>
             </div>
             <div v-if="showProductDetails">
-                <product-details
-                    :product="currentSelectedProduct"
-                />
+                <b-modal :active.sync="showProductDetails" has-modal-card scroll="keep">
+                    <product-details
+                        :product="currentSelectedProduct"
+                    />
+                </b-modal>
             </div>
             <div v-if="showEditProductDetails">
-                <edit-product
-                    @emitProduct="updateProduct"
-                    :available-categories="availableCategories"
-                    :available-components="availableComponents"
-                    :available-materials="availableMaterials"
-                    :product="currentSelectedProduct2"
-                />
+                <b-modal :active.sync="showEditProductDetails" has-modal-card scroll="keep">
+                    <edit-product
+                        @emitProduct="updateProduct"
+                        :available-categories="availableCategories"
+                        :available-components="availableComponents"
+                        :available-materials="availableMaterials"
+                        :product="currentSelectedProduct2"
+                    />
+                </b-modal>
             </div>
         </template>
     </vuetable>
@@ -61,6 +65,11 @@ import ProductDetails from './ProductDetails';
  */
 import EditProduct from './EditProduct';
 
+/**
+ * Requires App Configuration for accessing MYCM API URL
+ */
+import Config,{MYCM_API_URL} from '../../../config';
+
 export default {
     /**
      * Components exported components
@@ -77,7 +86,7 @@ export default {
             availableCategories:[],
             availableComponents:[],
             availableMaterials:[],
-            /**d
+            /**
              * Current Table Selected Product
              */
             currentSelectedProduct:null,
@@ -133,6 +142,22 @@ export default {
                 : '<span class="ui teal label"><i class="material-icons">close</i></span>'
             ;
         },
+        /**
+         * Deletes a given product
+         */
+        deleteProduct(productId){
+            Axios
+                .delete(MYCM_API_URL+'/products/'+productId)
+                .then(()=>{
+                    this.$toast.open({message:"Product was deleted with success!"});
+                })
+                .catch((error_message)=>{
+                    this.$toast.open({message:error_message.data.message});
+                });
+        },
+        /**
+         * Edits the details of a product
+         */
         editProductDetails(productId){
             this
                 .getProductDetails(productId)
@@ -158,7 +183,7 @@ export default {
         getAllCategories(){
             return new Promise((accept,reject)=>{
                 Axios
-                    .get('http://localhost:5000/mycm/api/categories/')
+                    .get(MYCM_API_URL+'/categories/')
                     .then((categories)=>{
                         this.availableCategories=categories.data;
                         accept();
@@ -175,7 +200,7 @@ export default {
         getAllComponents(){
             return new Promise((accept,reject)=>{
                 Axios
-                    .get('http://localhost:5000/mycm/api/products/')
+                    .get(MYCM_API_URL+'/products/')
                     .then((components)=>{
                         this.availableComponents=components.data;
                         accept();
@@ -192,7 +217,7 @@ export default {
         getAllMaterials(){
             return new Promise((accept,reject)=>{
                 Axios
-                    .get('http://localhost:5000/mycm/api/materials/')
+                    .get(MYCM_API_URL+'/materials/')
                     .then((materials)=>{
                         this.availableMaterials=materials.data;
                         accept();
@@ -209,7 +234,7 @@ export default {
         getProductDetails(productId){
             return new Promise((accept,reject)=>{
                 Axios
-                    .get('http://localhost:5000/mycm/api/products/'+productId)
+                    .get(MYCM_API_URL+'/products/'+productId)
                     .then((product)=>{
                         this.currentSelectedProduct=product.data;
                         this.currentSelectedProduct2=Object.assign({},this.currentSelectedProduct);
@@ -247,6 +272,7 @@ export default {
                                     this
                                         .updateProductDimensions(productDetails)
                                         .then(()=>{
+                                            this.showEditProductDetails=false;
                                             this.$toast.open({message:"Product was updated with success!"});
                                         }).catch((error_message)=>{
                                             this.$toast.open({message:error_message});
@@ -282,19 +308,20 @@ export default {
                 productPropertiesToUpdate.categoryId=productDetails.category;
                 atLeastOneUpdate=true;
             }
-
-            console.log(productDetails)
-            alert("!!!")
+            
             return new Promise((accept,reject)=>{
-                if(!atLeastOneUpdate)accept();
-                Axios
-                .put('http://localhost:5000/mycm/api/products/'+productDetails.id,productPropertiesToUpdate)
-                .then((product)=>{
-                    accept(product);
-                })
-                .catch((error_message)=>{
-                    reject(error_message);
-                });
+                if(atLeastOneUpdate){
+                    Axios
+                    .put(MYCM_API_URL+'/products/'+productDetails.id,productPropertiesToUpdate)
+                    .then((product)=>{
+                        accept(product);
+                    })
+                    .catch((error_message)=>{
+                        reject(error_message.data.message);
+                    });
+                }else{
+                    accept();
+                }
             });
         },
         /**
@@ -304,29 +331,38 @@ export default {
             let oldProductComponents=[];
             let addComponents=[];
             let deleteComponents=[];
-            for(let i=0;i<this.currentSelectedProduct.components.length;i++)
-                oldProductComponents.push(this.currentSelectedProduct.components.id);
-            let componentsToUpdate=productDetails.components!=null ? productDetails.components : [];
-            
-            for(let i=0;i<componentsToUpdate.length;i++){
-                if(!oldProductComponents.includes(componentsToUpdate[i]))
-                    addComponents.push(componentsToUpdate[i]);
+
+            if(this.currentSelectedProduct.components!=null){
+                for(let i=0;i<this.currentSelectedProduct.components.length;i++)
+                    oldProductComponents.push(this.currentSelectedProduct.components[i].id);
             }
-            
+
+            let newProductComponents=productDetails.components!=null ? productDetails.components : [];
+
+            //Components to add
+
+            for(let i=0;i<newProductComponents.length;i++){
+                if(!oldProductComponents.includes(newProductComponents[i]))
+                    addComponents.push(newProductComponents[i]);
+            }
+
+            //Components to delete
+
             for(let i=0;i<oldProductComponents.length;i++){
-                if(!componentsToUpdate.includes(oldProductComponents[i]))
+                if(!newProductComponents.includes(oldProductComponents[i]))
                     deleteComponents.push(oldProductComponents[i]);
             }
-            
+
             return new Promise((accept,reject)=>{
+                if(newProductComponents.length==0)accept();
                 if(addComponents.length>0){
                     for(let i=0;i<addComponents.length;i++){
                         Axios
-                            .post('http://localhost:5000/mycm/api/products/'+productDetails.id+'/components/',{
+                            .post(MYCM_API_URL+'/products/'+productDetails.id+'/components/',{
                                 id:addComponents[i]
                             })
                             .catch((error_message)=>{
-                                reject(error_message);
+                                reject(error_message.data.message);
                             });
                     }
                 }
@@ -334,9 +370,9 @@ export default {
                 if(deleteComponents.length>0){
                     for(let i=0;i<deleteComponents.length;i++){
                         Axios
-                            .delete('http://localhost:5000/mycm/api/products/'+productDetails.id+'/components/'+deleteComponents[i])
+                            .delete(MYCM_API_URL+'/products/'+productDetails.id+'/components/'+deleteComponents[i])
                             .catch((error_message)=>{
-                                reject(error_message);
+                                reject(error_message.data.message);
                             });
                     }
                 }
@@ -351,27 +387,28 @@ export default {
             let addDimensions=[];
             let deleteDimensions=[];
             for(let i=0;i<this.currentSelectedProduct.dimensions.length;i++)
-                oldProductDimensions.push(this.currentSelectedProduct.dimensions.id);
-            let dimensionsToUpdate=productDetails.dimensions!=null ? productDetails.dimensions : [];
+                oldProductDimensions.push(this.currentSelectedProduct.dimensions[i].id);
+            let newProductDimensions=productDetails.dimensions!=null ? productDetails.dimensions : [];
             
-            for(let i=0;i<dimensionsToUpdate.length;i++){
-                if(!oldProductDimensions.includes(dimensionsToUpdate[i]))
-                    addDimensions.push(dimensionsToUpdate[i]);
+            for(let i=0;i<newProductDimensions.length;i++){
+                if(!oldProductDimensions.includes(newProductDimensions[i]))
+                    addDimensions.push(newProductDimensions[i]);
             }
             
             for(let i=0;i<oldProductDimensions.length;i++){
-                if(!dimensionsToUpdate.includes(oldProductDimensions[i]))
+                if(!newProductDimensions.includes(oldProductDimensions[i]))
                     deleteDimensions.push(oldProductDimensions[i]);
             }
             return new Promise((accept,reject)=>{
+                if(newProductDimensions.length==0)accept();
                 if(addDimensions.length>0){
                     for(let i=0;i<addDimensions.length;i++){
                         Axios
-                            .post('http://localhost:5000/mycm/api/products/'+productDetails.id+'/dimensions/',{
+                            .post(MYCM_API_URL+'/products/'+productDetails.id+'/dimensions/',{
                                 id:addDimensions[i]
                             })
                             .catch((error_message)=>{
-                                reject(error_message);
+                                reject(error_message.data.message);
                             });
                     }
                 }
@@ -379,9 +416,9 @@ export default {
                 if(deleteDimensions.length>0){
                     for(let i=0;i<deleteDimensions.length;i++){
                         Axios
-                            .delete('http://localhost:5000/mycm/api/products/'+productDetails.id+'/dimensions/'+deleteDimensions[i])
+                            .delete(MYCM_API_URL+'/products/'+productDetails.id+'/dimensions/'+deleteDimensions[i])
                             .catch((error_message)=>{
-                                reject(error_message);
+                                reject(error_message.data.message);
                             });
                     }
                 }
@@ -397,41 +434,51 @@ export default {
             let addMaterials=[];
             let deleteMaterials=[];
             for(let i=0;i<this.currentSelectedProduct.materials.length;i++)
-                oldProductMaterials.push(this.currentSelectedProduct.materials.id);
-            let materialsToUpdate=productDetails.materials!=null ? productDetails.materials : [];
+                oldProductMaterials.push(this.currentSelectedProduct.materials[i].id);
+            let newProductMaterials=[];
+            if(productDetails.materials!=null){
+                for(let i=0;i<productDetails.materials.length;i++){
+                    newProductMaterials.push(productDetails.materials[i].id);
+                }
+            }
             
-            for(let i=0;i<materialsToUpdate.length;i++){
-                if(!oldProductMaterials.includes(materialsToUpdate[i]))
-                    addMaterials.push(materialsToUpdate[i]);
+            for(let i=0;i<newProductMaterials.length;i++){
+                if(!oldProductMaterials.includes(newProductMaterials[i]))
+                    addMaterials.push(newProductMaterials[i]);
             }
             
             for(let i=0;i<oldProductMaterials.length;i++){
-                if(!materialsToUpdate.includes(oldProductMaterials[i]))
+                if(!newProductMaterials.includes(oldProductMaterials[i]))
                     deleteMaterials.push(oldProductMaterials[i]);
             }
+            
             return new Promise((accept,reject)=>{
-                if(addMaterials.length>0){
-                    for(let i=0;i<addMaterials.length;i++){
-                        Axios
-                            .post('http://localhost:5000/mycm/api/products/'+productDetails.id+'/materials/',{
-                                id:addMaterials[i]
-                            })
-                            .catch((error_message)=>{
-                                reject(error_message);
-                            });
+                if(newProductMaterials.length>0){
+                    if(addMaterials.length>0){
+                        for(let i=0;i<addMaterials.length;i++){
+                            Axios
+                                .post(MYCM_API_URL+'/products/'+productDetails.id+'/materials/',{
+                                    id:addMaterials[i]
+                                })
+                                .catch((error_message)=>{
+                                    reject(error_message.data.message);
+                                });
+                        }
                     }
-                }
 
-                if(deleteMaterials.length>0){
-                    for(let i=0;i<deleteMaterials.length;i++){
-                        Axios
-                            .delete('http://localhost:5000/mycm/api/products/'+productDetails.id+'/materials/'+deleteMaterials[i])
-                            .catch((error_message)=>{
-                                reject(error_message);
-                            });
+                    if(deleteMaterials.length>0){
+                        for(let i=0;i<deleteMaterials.length;i++){
+                            Axios
+                                .delete(MYCM_API_URL+'/products/'+productDetails.id+'/materials/'+deleteMaterials[i])
+                                .catch((error_message)=>{
+                                    reject(error_message.data.message);
+                                });
+                        }
                     }
+                    accept();
+                }else{
+                    accept();
                 }
-                accept();
             });
         },
     },
