@@ -51,21 +51,49 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureValidNameCanBeChanged()
+        public void ensureMultipleSpacesIsNotAValidName()
         {
-            Assert.True(new CustomizedProductCollection("Luigi").changeName("Mario"));
+            Assert.Throws<ArgumentException>(() => new CustomizedProductCollection("       "));
         }
 
         [Fact]
-        public void ensureEmptyNameCantBeChanged()
+        public void ensureNameCanBeChangedToValidNewName()
         {
-            Assert.False(new CustomizedProductCollection("'Shroom").changeName(""));
+            var oldName = "Luigi";
+            var newName = "Mario";
+            CustomizedProductCollection instance =
+                new CustomizedProductCollection(oldName);
+
+            instance.changeName(newName);
+
+            Assert.NotEqual(oldName, instance.name);
         }
 
         [Fact]
-        public void ensureNullNameCantBeChanged()
+        public void ensureNameCantBeChangedToEmptyString()
         {
-            Assert.False(new CustomizedProductCollection("Peach").changeName(null));
+            CustomizedProductCollection instance =
+                new CustomizedProductCollection("Shroom");
+
+            Assert.Throws<ArgumentException>(() => instance.changeName(""));
+        }
+
+        [Fact]
+        public void ensureNameCantBeChangedToNull()
+        {
+            CustomizedProductCollection instance =
+                new CustomizedProductCollection("Peach");
+
+            Assert.Throws<ArgumentException>(() => instance.changeName(null));
+        }
+
+        [Fact]
+        public void ensureNameCantBeChangedToMultipleSpaces()
+        {
+            CustomizedProductCollection instance =
+                new CustomizedProductCollection("Shroom");
+
+            Assert.Throws<ArgumentException>(() => instance.changeName("             "));
         }
 
         [Fact]
@@ -75,16 +103,9 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureToDtoIsTheExpected()
+        public void ensureToDtoThrowsException()
         {
-            var collection = new CustomizedProductCollection("Mario");
-            var collectionDTO = new CustomizedProductCollectionDTO();
-            collectionDTO.name = "Mario";
-            collectionDTO.customizedProducts = new List<CustomizedProductDTO>(DTOUtils.parseToDTOS(collection.collectionProducts.Select(cp => cp.customizedProduct)));
-
-            Assert.Equal(collectionDTO.name, collection.toDTO().name);
-            Assert.Equal(collectionDTO.id, collection.toDTO().id);
-            Assert.Equal(collectionDTO.customizedProducts, collection.toDTO().customizedProducts);
+            Assert.Throws<NotImplementedException>(() => new CustomizedProductCollection("hi").toDTO());
         }
 
         [Fact]
@@ -97,7 +118,12 @@ namespace core_tests.domain
         public void ensureAddCustomizedProductWorksForValidProduct()
         {
             CustomizedProduct customizedProduct = buildCustomizedProductInstance();
-            Assert.True(new CustomizedProductCollection("Mario").addCustomizedProduct(customizedProduct));
+            CustomizedProductCollection instance = new CustomizedProductCollection("Mario");
+
+            instance.addCustomizedProduct(customizedProduct);
+
+            Assert.NotEmpty(instance.collectionProducts);
+            Assert.Equal(customizedProduct, instance.collectionProducts[0].customizedProduct);
         }
 
         [Fact]
@@ -107,23 +133,31 @@ namespace core_tests.domain
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(customizedProduct);
 
-            Assert.False(new CustomizedProductCollection("Mario", list).addCustomizedProduct(customizedProduct));
+            CustomizedProductCollection instance = new CustomizedProductCollection("Mario", list);
+
+            Assert.Throws<ArgumentException>(() => instance.addCustomizedProduct(customizedProduct));
         }
 
         [Fact]
         public void ensureAddCustomizedProductFailsIfItIsNull()
         {
-            Assert.False(new CustomizedProductCollection("Mario").addCustomizedProduct(null));
+            CustomizedProductCollection instance = new CustomizedProductCollection("Mario");
+
+            Assert.Throws<ArgumentException>(() => instance.addCustomizedProduct(null));
         }
 
         [Fact]
-        public void ensureRemovedCustomizedProductWorksForAlreadyExistentProduct()
+        public void ensureRemovedCustomizedProductWorksForExistingProduct()
         {
             CustomizedProduct cp = buildCustomizedProductInstance();
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(cp);
 
-            Assert.True(new CustomizedProductCollection("Mario", list).removeCustomizedProduct(cp));
+            CustomizedProductCollection instance = new CustomizedProductCollection("Mario", list);
+
+            instance.removeCustomizedProduct(cp);
+
+            Assert.Empty(instance.collectionProducts);
         }
 
         [Fact]

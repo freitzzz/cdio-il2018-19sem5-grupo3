@@ -1,23 +1,23 @@
 using System.Runtime.Serialization;
 
-namespace core.modelview.commercialcatalogue
+namespace core.modelview.customizedproductcollection
 {
     /// <summary>
-    /// Class representing a ModelView used for retrieving basic data from instances of Customized Product Collection
+    /// Class representing a ModelView used for retrieving data from instances of Customized Product Collection
     /// </summary>
     [DataContract]
-    public class GetCustomizedProductCollectionModelView
+    public class GetBasicCustomizedProductCollectionModelView
     {
-         /// <summary>
+        /// <summary>
         /// Persistence identifier of the current CustomizedProductCollection
         /// </summary>
         [DataMember]
-        public long id { get; internal set; }
+        public long id { get; set; }
 
         /// <summary>
         /// String with the collection name
         /// </summary>
         [DataMember]
-        public string name { get; protected set; }
+        public string name { get; set; }
     }
 }

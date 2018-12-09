@@ -28,7 +28,7 @@ namespace core.modelview.slot
         /// GetAllCustomizedDimensionsModelView detailing the CustomizedProducts inserted in the Slot.
         /// </summary>
         /// <value>Gets/Sets the instance of GetAllCustomizedProductsModelView.</value>
-        [DataMember]
+        [DataMember(EmitDefaultValue = false)]
         public GetAllCustomizedProductsModelView customizedProducts { get; set; }
     }
 }
