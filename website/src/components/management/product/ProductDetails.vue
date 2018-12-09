@@ -207,7 +207,7 @@ export default {
                     },
                     {
                         name: "increment",
-                        title: "Incremente"
+                        title: "Increment"
                     },
                     {
                         name: "unit",
