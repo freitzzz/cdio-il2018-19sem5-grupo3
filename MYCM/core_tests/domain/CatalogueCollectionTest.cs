@@ -142,6 +142,25 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureCatalogueCollectionCantBeCreatedWithDuplicateCustomizedProductsInCustomizedProductEnumerable()
+        {
+            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Closets Spring 2019");
+
+            CustomizedProduct customizedProduct1 = buildCustomizedProduct("1234");
+            customizedProduct1.finalizeCustomization();     //!customized products added to collections need to be finished
+
+            customizedProductCollection.addCustomizedProduct(customizedProduct1);
+
+            CustomizedProduct customizedProduct2 = buildCustomizedProduct("1235");
+
+            List<CustomizedProduct> customizedProducts = new List<CustomizedProduct>() { customizedProduct1, customizedProduct2, customizedProduct1 };
+
+            Action createCatalogueCollection = () => new CatalogueCollection(customizedProductCollection, customizedProducts);
+
+            Assert.Throws<ArgumentException>(createCatalogueCollection);
+        }
+
+        [Fact]
         public void ensureCatalogueCollectionCanBeCreatedIfCustomizedProductCollectionIsNotNull()
         {
             CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Closets Spring 2019");

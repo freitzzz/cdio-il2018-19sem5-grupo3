@@ -132,7 +132,7 @@ namespace core.domain
 
             foreach (CustomizedProduct customizedProduct in customizedProducts)
             {
-                this.catalogueCollectionProducts.Add(new CatalogueCollectionProduct(this, customizedProduct));
+                this.addCustomizedProduct(customizedProduct);
             }
         }
 
