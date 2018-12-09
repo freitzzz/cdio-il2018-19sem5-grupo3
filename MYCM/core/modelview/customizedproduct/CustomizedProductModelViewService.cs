@@ -61,7 +61,7 @@ namespace core.modelview.customizedproduct
             customizedProductModelView.designation = customizedProduct.designation;
             customizedProductModelView.customizedDimensions = CustomizedDimensionsModelViewService.fromEntity(customizedProduct.customizedDimensions);
 
-            if (customizedProduct.customizedMaterial == null)
+            if (customizedProduct.customizedMaterial != null)
             {
                 customizedProductModelView.customizedMaterial = CustomizedMaterialModelViewService.fromEntity(customizedProduct.customizedMaterial);
             }
