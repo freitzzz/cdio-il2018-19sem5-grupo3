@@ -13,13 +13,13 @@ namespace core.modelview.customizedproductcollection
         /// <summary>
         /// Customized Product Collection's name
         /// </summary>
-        [DataMember]
+        [DataMember(Name = "name")]
         public string name { get; set; }
 
         /// <summary>
         /// Customized Product Collection's list of customized products
         /// </summary>
-        [DataMember(EmitDefaultValue = false)]
+        [DataMember(EmitDefaultValue = false, Name = "customizedProducts")]
         public List<GetBasicCustomizedProductModelView> customizedProducts;
     }
 }

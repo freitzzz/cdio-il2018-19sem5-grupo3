@@ -5,7 +5,7 @@ namespace core.modelview.customizedproductcollection
     [DataContract]
     public class DeleteCustomizedProductCollectionModelView
     {
-        [DataMember]
+        [DataMember(Name = "customizedProductCollectionId")]
         public long customizedProductCollectionId { get; set; }
     }
 }

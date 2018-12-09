@@ -11,13 +11,13 @@ namespace core.modelview.customizedproductcollection
         /// <summary>
         /// Persistence identifier of the current CustomizedProductCollection
         /// </summary>
-        [DataMember]
+        [DataMember(Name = "id")]
         public long id { get; set; }
 
         /// <summary>
         /// String with the collection name
         /// </summary>
-        [DataMember]
+        [DataMember(Name = "name")]
         public string name { get; set; }
     }
 }

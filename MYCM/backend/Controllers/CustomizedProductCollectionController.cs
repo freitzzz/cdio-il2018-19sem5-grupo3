@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using backend.utils;
 
 namespace backend.Controllers
 {
@@ -38,6 +39,11 @@ namespace backend.Controllers
         /// Constant that represents the message that occurs if an update is valid
         /// </summary>
         private const string VALID_UPDATE_MESSAGE = "The resource was updated with success";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if an unexpected error happens
+        /// </summary>
+        private const string UNEXPECTED_ERROR = "An unexpected error occurred, please try again later";
 
         /// <summary>
         /// Constant that represents the log message for when a GET All Request starts
@@ -171,16 +177,28 @@ namespace backend.Controllers
         [HttpGet]
         public ActionResult find([FromQuery]string name)
         {
-            if (name == null)
+            try
             {
-                return findAll();
+                if (name == null)
+                {
+                    return findAll();
+                }
+                else
+                {
+                    return findByName(name);
+                }
             }
-            else
+            catch (Exception exception)
             {
-                return findByName(name);
+                logger.LogWarning(exception, UNEXPECTED_ERROR);
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
+        /// <summary>
+        /// Fetches all available customized product collections
+        /// </summary>
+        /// <returns>ActionResult with all available customized product collections or an error message</returns>
         private ActionResult findAll()
         {
             logger.LogInformation(LOG_GET_ALL_START);
@@ -191,7 +209,7 @@ namespace backend.Controllers
                 return Ok(modelView);
             }
             logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
-            return BadRequest(new { error = NO_COLLECTIONS_AVAILABLE });
+            return NotFound(new SimpleJSONMessageService(NO_COLLECTIONS_AVAILABLE));
         }
 
         private ActionResult findByName(string name)
@@ -210,13 +228,18 @@ namespace backend.Controllers
                 else
                 {
                     logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST, name);
-                    return NotFound(new { error = RESOURCE_NOT_FOUND_MESSAGE });
+                    return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
                 }
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException nullReferenceException)
             {
-                logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST, name);
-                return NotFound(new { error = RESOURCE_NOT_FOUND_MESSAGE });
+                logger.LogWarning(nullReferenceException, LOG_GET_BY_ID_BAD_REQUEST, name);
+                return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
+            }
+            catch (ArgumentException argumentException)
+            {
+                logger.LogWarning(argumentException, LOG_GET_BY_ID_BAD_REQUEST, name);
+                return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
             }
         }
 
@@ -240,12 +263,17 @@ namespace backend.Controllers
                     return Ok(customizedProductCollectionModelView);
                 }
                 logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST, id);
-                return NotFound(new { error = RESOURCE_NOT_FOUND_MESSAGE });
+                return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
             }
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_GET_BY_ID_BAD_REQUEST, id);
-                return NotFound(new { error = RESOURCE_NOT_FOUND_MESSAGE });
+                return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
+            }
+            catch (Exception exception)
+            {
+                logger.LogWarning(exception, UNEXPECTED_ERROR);
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -260,6 +288,12 @@ namespace backend.Controllers
             logger.LogInformation(LOG_POST_START);
             try
             {
+                if (addCustomizedProductCollectionModelView.name == null)
+                {
+                    logger.LogWarning(LOG_POST_BAD_REQUEST, addCustomizedProductCollectionModelView);
+                    return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+                }
+
                 GetCustomizedProductCollectionModelView createdCustomizedProductCollection = new core.application.CustomizedProductCollectionController().addCollection(addCustomizedProductCollectionModelView);
                 logger.LogInformation(LOG_POST_SUCCESS, createdCustomizedProductCollection);
                 return Created(Request.Path, createdCustomizedProductCollection);
@@ -267,17 +301,65 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_POST_BAD_REQUEST, addCustomizedProductCollectionModelView);
-                return BadRequest(new { error = INVALID_REQUEST_BODY_MESSAGE });
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
             catch (InvalidOperationException invalidOperationException)
             {
                 logger.LogWarning(invalidOperationException, LOG_POST_BAD_REQUEST, addCustomizedProductCollectionModelView);
-                return BadRequest(new { error = invalidOperationException.Message });
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
             }
             catch (ArgumentException invalidArgumentsException)
             {
                 logger.LogWarning(invalidArgumentsException, LOG_POST_BAD_REQUEST, addCustomizedProductCollectionModelView);
-                return BadRequest(new { error = invalidArgumentsException.Message });
+                return BadRequest(new SimpleJSONMessageService(invalidArgumentsException.Message));
+            }
+            catch (Exception exception)
+            {
+                logger.LogWarning(exception, UNEXPECTED_ERROR);
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+        /// <summary>
+        /// Adds a given customized product to the customized product collection.
+        /// </summary>
+        /// <param name="id">Long with the customized products collection resource id</param>
+        /// <param name="addCustomizedProductToCustomizedProductCollectionModelView">UpdateCustomizedProductCollection with the information about the update</param>
+        /// <returns>ActionResult with the information regarding the update</returns>
+        [HttpPost("{id}/customizedproducts")]
+        public ActionResult addCustomizedProductsToCustomizedProductCollection(long id, [FromBody]AddCustomizedProductToCustomizedProductCollectionModelView addCustomizedProductToCustomizedProductCollectionModelView)
+        {
+            logger.LogInformation(LOG_POST_CUSTOMIZED_PRODUCT_START);
+            try
+            {
+                addCustomizedProductToCustomizedProductCollectionModelView.customizedProductCollectionId = id;
+                GetCustomizedProductCollectionModelView updatedCustomizedProductCollectionModelView = new core.application.CustomizedProductCollectionController().addCustomizedProductToCustomizedProductCollection(addCustomizedProductToCustomizedProductCollectionModelView);
+                if (updatedCustomizedProductCollectionModelView != null)
+                {
+                    logger.LogInformation(LOG_POST_SUCCESS);
+                    return Ok(VALID_UPDATE_MESSAGE);
+                }
+                return BadRequest(new SimpleJSONMessageService(INVALID_UPDATE_MESSAGE));
+            }
+            catch (NullReferenceException nullReferenceException)
+            {
+                logger.LogWarning(nullReferenceException, LOG_POST_BAD_REQUEST, id, addCustomizedProductToCustomizedProductCollectionModelView);
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                logger.LogWarning(invalidOperationException, LOG_POST_BAD_REQUEST, id, addCustomizedProductToCustomizedProductCollectionModelView);
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+            }
+            catch (ArgumentException argumentException)
+            {
+                logger.LogWarning(argumentException, LOG_POST_BAD_REQUEST, id, addCustomizedProductToCustomizedProductCollectionModelView);
+                return BadRequest(new SimpleJSONMessageService(argumentException.Message));
+            }
+            catch (Exception exception)
+            {
+                logger.LogWarning(exception, UNEXPECTED_ERROR);
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -301,60 +383,27 @@ namespace backend.Controllers
                     return Ok(updatedCollection);
                 }
                 logger.LogWarning(LOG_PUT_BAD_REQUEST, id, updateCustomizedProductCollectionModelView);
-                return BadRequest(new { error = INVALID_UPDATE_MESSAGE });
+                return BadRequest(new SimpleJSONMessageService(INVALID_UPDATE_MESSAGE));
             }
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_POST_BAD_REQUEST, id, updateCustomizedProductCollectionModelView);
-                return BadRequest(new { error = INVALID_REQUEST_BODY_MESSAGE });
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
             catch (InvalidOperationException invalidOperationException)
             {
                 logger.LogWarning(invalidOperationException, LOG_POST_BAD_REQUEST, id, updateCustomizedProductCollectionModelView);
-                return BadRequest(new { error = invalidOperationException.Message });
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
             }
             catch (ArgumentException invalidArgumentsException)
             {
                 logger.LogWarning(invalidArgumentsException, LOG_POST_BAD_REQUEST, id, updateCustomizedProductCollectionModelView);
-                return BadRequest(new { error = invalidArgumentsException.Message });
+                return BadRequest(new SimpleJSONMessageService(invalidArgumentsException.Message));
             }
-        }
-
-        /// <summary>
-        /// Adds a given customized product to the customized product collection.
-        /// </summary>
-        /// <param name="id">Long with the customized products collection resource id</param>
-        /// <param name="addCustomizedProductToCustomizedProductCollectionModelView">UpdateCustomizedProductCollection with the information about the update</param>
-        /// <returns>ActionResult with the information regarding the update</returns>
-        [HttpPost("{id}/customizedproducts")]
-        public ActionResult addCustomizedProductsToCustomizedProductCollection(long id, [FromBody]AddCustomizedProductToCustomizedProductCollectionModelView addCustomizedProductToCustomizedProductCollectionModelView)
-        {
-            logger.LogInformation(LOG_POST_CUSTOMIZED_PRODUCT_START);
-            try
+            catch (Exception exception)
             {
-                addCustomizedProductToCustomizedProductCollectionModelView.customizedProductCollectionId = id;
-                GetCustomizedProductCollectionModelView updatedCustomizedProductCollectionModelView = new core.application.CustomizedProductCollectionController().addCustomizedProductToCustomizedProductCollection(addCustomizedProductToCustomizedProductCollectionModelView);
-                if (updatedCustomizedProductCollectionModelView != null)
-                {
-                    logger.LogInformation(LOG_POST_SUCCESS);
-                    return Ok(VALID_UPDATE_MESSAGE);
-                }
-                return BadRequest(INVALID_UPDATE_MESSAGE);
-            }
-            catch (NullReferenceException nullReferenceException)
-            {
-                logger.LogWarning(nullReferenceException, LOG_POST_BAD_REQUEST, id, addCustomizedProductToCustomizedProductCollectionModelView);
-                return BadRequest(new { error = INVALID_REQUEST_BODY_MESSAGE });
-            }
-            catch (InvalidOperationException invalidOperationException)
-            {
-                logger.LogWarning(invalidOperationException, LOG_POST_BAD_REQUEST, id, addCustomizedProductToCustomizedProductCollectionModelView);
-                return BadRequest(new { error = invalidOperationException.Message });
-            }
-            catch (ArgumentException argumentException)
-            {
-                logger.LogWarning(argumentException, LOG_POST_BAD_REQUEST, id, addCustomizedProductToCustomizedProductCollectionModelView);
-                return BadRequest(new { error = argumentException.Message });
+                logger.LogWarning(exception, UNEXPECTED_ERROR);
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -377,14 +426,16 @@ namespace backend.Controllers
 
                 logger.LogInformation(LOG_DELETE_CUSTOMIZED_PRODUCT_SUCCESS, customizedProductID);
                 return NoContent();
-
-                /* logger.LogWarning(LOG_DELETE_BAD_REQUEST, customizedProductID);
-                return BadRequest(new { error = INVALID_UPDATE_MESSAGE }); */
             }
             catch (ArgumentException argumentException)
             {
                 logger.LogWarning(argumentException, LOG_DELETE_CUSTOMIZED_PRODUCT_NOT_FOUND, customizedProductID);
-                return NotFound(new { error = RESOURCE_NOT_FOUND_MESSAGE });
+                return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
+            }
+            catch (Exception exception)
+            {
+                logger.LogWarning(exception, UNEXPECTED_ERROR);
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -405,19 +456,21 @@ namespace backend.Controllers
 
                 logger.LogWarning(LOG_DELETE_SUCCESS, id);
                 return NoContent();
-
-                /*logger.LogWarning(LOG_DELETE_BAD_REQUEST, id);
-                    return BadRequest(new { error = INVALID_UPDATE_MESSAGE }); */
             }
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_DELETE_BAD_REQUEST, id);
-                return BadRequest(new { error = INVALID_REQUEST_BODY_MESSAGE });
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
             catch (InvalidOperationException invalidOperationException)
             {
                 logger.LogWarning(invalidOperationException, LOG_DELETE_BAD_REQUEST, id);
-                return BadRequest(new { error = invalidOperationException.Message });
+                return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
+            }
+            catch (Exception exception)
+            {
+                logger.LogWarning(exception, UNEXPECTED_ERROR);
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
     }

@@ -12,14 +12,14 @@ namespace core.modelview.customizedproductcollection
         /// <summary>
         /// Customized Product Collection's PID
         /// </summary>
-        [DataMember]
+        [DataMember(Name = "customizedProductCollectionId")]
         public long customizedProductCollectionId { get; set; }
 
         /// <summary>
         /// Customized Product's PID
         /// </summary>
         /// <value></value>
-        [DataMember]
+        [DataMember(Name = "customizedProductId")]
         public long customizedProductId { get; set; }
     }
 }
