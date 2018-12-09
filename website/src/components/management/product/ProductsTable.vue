@@ -21,7 +21,7 @@
                 </button>
                 <button
                     class="button is-danger"
-                    @click="onAction('delete-item', props.rowData, props.rowIndex)"
+                    @click="deleteProduct(props.rowData.id)"
                 >
                     <b-icon icon="minus"/>
                 </button>
@@ -133,6 +133,22 @@ export default {
                 : '<span class="ui teal label"><i class="material-icons">close</i></span>'
             ;
         },
+        /**
+         * Deletes a given product
+         */
+        deleteProduct(productId){
+            Axios
+                .delete('http://localhost:5000/mycm/api/products/'+productId)
+                .then(()=>{
+                    this.$toast.open({message:"Product was deleted with success!"});
+                })
+                .catch((error_message)=>{
+                    this.$toast.open({message:error_message.data.message});
+                });
+        },
+        /**
+         * Edits the details of a product
+         */
         editProductDetails(productId){
             this
                 .getProductDetails(productId)
