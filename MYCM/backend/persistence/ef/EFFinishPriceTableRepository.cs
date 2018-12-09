@@ -21,12 +21,24 @@ namespace backend.persistence.ef
         /// </summary>
         /// <param name="fetchMaterialFinishPriceHistoryDTO">FetchMaterialFinishPriceHistoryDTO with the information about the fetch</param>
         /// <returns>IEnumerable with the material finish price history</returns>
-        public IEnumerable<FinishPriceTableEntry> fetchMaterialFinishPriceHistory(FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO){
+        public IEnumerable<FinishPriceTableEntry> fetchMaterialFinishPriceHistory(FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO)
+        {
             return (from finishPriceTableEntry in base.dbContext.FinishPriceTable
                     from materialPriceTableEntry in dbContext.MaterialPriceTable
-                    where materialPriceTableEntry.Id==fetchMaterialFinishPriceHistoryDTO.materialID
-                    where finishPriceTableEntry.entity.Id==fetchMaterialFinishPriceHistoryDTO.finishID
+                    where materialPriceTableEntry.Id == fetchMaterialFinishPriceHistoryDTO.materialID
+                    where finishPriceTableEntry.entity.Id == fetchMaterialFinishPriceHistoryDTO.finishID
                     select finishPriceTableEntry);
+        }
+
+        /// <summary>
+        /// Fetches the price history of all finishes of a material
+        /// </summary>
+        /// <param name="fetchMaterialFinishPriceHistoryDTO">FetchMaterialFinishPriceHistoryDTO with the information about the fetch</param>
+        /// <returns>IEnumerable with the price history of all finishes of a material</returns>
+        public IEnumerable<FinishPriceTableEntry> fetchAllMaterialFinishesPriceHistory(FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO)
+        {
+            Material material = dbContext.Material.Where(m => m.Id == fetchMaterialFinishPriceHistoryDTO.materialID).SingleOrDefault();
+            return dbContext.FinishPriceTable.Where(fpte => fpte.materialEID == material.id());
         }
     }
 }

@@ -42,18 +42,16 @@ namespace backend.config
                     break;
             }
 
-            services.AddTransient<ProductRepository, EFProductRepository>();
-            services.AddTransient<ProductCategoryRepository, EFProductCategoryRepository>();
-            services.AddTransient<MaterialRepository, EFMaterialRepository>();
-
-            services.AddTransient<CommercialCatalogueRepository, EFCommercialCatalogueRepository>();
-
-            services.AddTransient<CustomizedProductRepository,EFCustomizedProductRepository>();
-            services.AddTransient<CustomizedProductCollectionRepository,EFCustomizedProductCollectionRepository>();
-            services.AddTransient<CommercialCatalogueRepository,EFCommercialCatalogueRepository>();
-
-            services.AddTransient<FinishPriceTableRepository,EFFinishPriceTableRepository>();
-            services.AddTransient<MaterialPriceTableRepository,EFMaterialPriceTableRepository>();
+            services.AddScoped<ProductRepository, EFProductRepository>();
+            services.AddScoped<ProductCategoryRepository, EFProductCategoryRepository>();
+            services.AddScoped<MaterialRepository, EFMaterialRepository>();
+            services.AddScoped<CommercialCatalogueRepository, EFCommercialCatalogueRepository>();
+            services.AddScoped<CustomizedProductSerialNumberRepository, EFCustomizedProductSerialNumberRepository>();
+            services.AddScoped<CustomizedProductRepository,EFCustomizedProductRepository>();
+            services.AddScoped<CustomizedProductCollectionRepository,EFCustomizedProductCollectionRepository>();
+            services.AddScoped<CommercialCatalogueRepository,EFCommercialCatalogueRepository>();
+            services.AddScoped<FinishPriceTableRepository,EFFinishPriceTableRepository>();
+            services.AddScoped<MaterialPriceTableRepository,EFMaterialPriceTableRepository>();
         }
 
         /// <summary>

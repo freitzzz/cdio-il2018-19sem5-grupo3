@@ -5,7 +5,7 @@ namespace core.modelview.material{
     /// Model View representation for the fetch restriction basic information context
     /// </summary>
     [DataContract]
-    public sealed class GetBasicMaterialModelView{
+    public class GetBasicMaterialModelView{
         /// <summary>
         /// Long with the material ID
         /// </summary>
@@ -23,5 +23,12 @@ namespace core.modelview.material{
         /// </summary>
         [DataMember(Name="designation")]
         public string designation{get;set;}
+
+        /// <summary>
+        /// String with material image's file name.
+        /// </summary>
+        /// <value>Gets/sets the image's file name.</value>
+        [DataMember(Name="image")]
+        public string imageFilename {get;set;}
     }
 }

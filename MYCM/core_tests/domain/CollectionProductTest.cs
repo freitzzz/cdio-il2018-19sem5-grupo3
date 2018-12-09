@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using core.domain;
 using Xunit;
 using System.Linq;
+using static core.domain.CustomizedProduct;
 
 namespace core_tests.domain
 {
@@ -22,18 +23,18 @@ namespace core_tests.domain
             Color color = Color.valueOf("Blue", 1, 2, 3, 0);
             List<Color> colors = new List<Color>() { color };
 
-            Finish finish = Finish.valueOf("Super shiny");
+            Finish finish = Finish.valueOf("Super shiny", 90);
             List<Finish> finishes = new List<Finish>() { finish };
 
-            Material material = new Material("123", "456, how original", colors, finishes);
+            Material material = new Material("123", "456, how original", "ola.jpg", colors, finishes);
 
             //Creates a product for the customized product collection's customized product
-            Product product = new Product("0L4", "H4H4", new ProductCategory("Drawers"), new List<Material>() { material }, measurements,
-            CustomizedDimensions.valueOf(1, 1, 1),CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
+            Product product = new Product("0L4", "H4H4", "goodmeme.glb", new ProductCategory("Drawers"), new List<Material>() { material }, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
             Assert.NotNull(new CollectionProduct(new CustomizedProductCollection("Hang in there"),
-            new CustomizedProduct("Or dont", "You choose", CustomizedMaterial.valueOf(material, color, finish),
-            CustomizedDimensions.valueOf(500.0, 500.0, 500.0), product)));
+            CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product,
+                CustomizedDimensions.valueOf(500.0, 500.0, 500.0))
+                .withMaterial(CustomizedMaterial.valueOf(material, color, finish)).build()));
         }
 
         [Fact]
@@ -47,17 +48,18 @@ namespace core_tests.domain
             Color color = Color.valueOf("Blue", 1, 2, 3, 0);
             List<Color> colors = new List<Color>() { color };
 
-            Finish finish = Finish.valueOf("Super shiny");
+            Finish finish = Finish.valueOf("Super shiny", 90);
             List<Finish> finishes = new List<Finish>() { finish };
 
-            Material material = new Material("123", "456, how original", colors, finishes);
+            Material material = new Material("123", "456, how original", "ola.jpg", colors, finishes);
 
             //Creates a product for the customized product collection's customized product
-            Product product = new Product("0L4", "H4H4", new ProductCategory("Drawers"), new List<Material>() { material },measurements,
-            CustomizedDimensions.valueOf(1, 1, 1), CustomizedDimensions.valueOf(5, 5, 5), CustomizedDimensions.valueOf(4, 4, 4));
+            Product product = new Product("0L4", "H4H4", "goodmeme.glb", new ProductCategory("Drawers"), new List<Material>() { material }, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
-            Assert.Throws<ArgumentException>(() => new CollectionProduct(null, new CustomizedProduct("Or dont", "You choose",
-            CustomizedMaterial.valueOf(material, color, finish), CustomizedDimensions.valueOf(1.2, 1.5, 20.3), product)));
+            Assert.Throws<ArgumentException>(() => new CollectionProduct(null,
+                CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product,
+                    CustomizedDimensions.valueOf(500.0, 500.0, 500.0))
+                        .withMaterial(CustomizedMaterial.valueOf(material, color, finish)).build()));
         }
 
         [Fact]

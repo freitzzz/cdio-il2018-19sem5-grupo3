@@ -10,36 +10,37 @@ simulated_annealing(Container, PO, RPL) :-
     (MAX, _, _)=Container,
     random(1, 100, N), %lists with 100 packages max
     randomPackageList(N, MAX, PL), %Generate initial solution
-    descending_sort(PL, APL), %Sort list in descending order (x (depth) value is considered)
-    startup(APL, Container, _, APO, _), %Get initial's solution cost (c_old)
-    while(1.0, APO, Container, N, APL, RPL, PO), !. %Go into recursive while
+    startup(PL, Container, _, APO, _), %Get initial's solution cost (c_old)
+    write("PO original "),
+    write(APO),
+    while(1.0, APO, Container, PL, RPL, PO), !. %Go into recursive while
 
 %Recursive while loop predicate to run the simulated annealing algorithm
-while(T, CPO, Container, N, PL, RPL, RPO) :-
+while(T, CPO, Container, PL, RPL, RPO) :-
     T>0.01,                 %While the temperature is bigger than 0.01
-    (MAX, _, _)=Container,
-    randomPackageList(N, MAX, GPL), %Genereate new solution
-    descending_sort(GPL, DPL),
-    startup(DPL, Container, _, DPO, _), %Get new solution's cost (c_new)
-    (   DPO<CPO,                        %If c_new < c_cold
-        CPO=DPO,                        %then initial solution = new solution
-        PL=DPL
-    ;   Ap is truncate(e**((CPO-DPO)/T)), %else use acceptance probability to maybe
+    random_permutation(PL, GPL), %Generate new solution
+    startup(GPL, Container, _, DPO, _), %Get new solution's cost (c_new)
+    (   DPO>CPO,                        %If c_new > c_cold
+        NCPO=DPO,                        %then initial solution = new solution
+        NPL=GPL
+    ;   calculate_number(CPO, DPO, T, N),
+        Ap is truncate(e**N), %else use acceptance probability to maybe
         random(0.1, 1.0, Ran),            %move to the next solution
-        (   Ap>Ran,                         
-            CPO=DPO,                      %if the acceptance probability function returns
-            PL=DPL                        %a value greater than a random number between 0 and 1
+        (   Ap>Ran,
+            NCPO=DPO,                      %if the acceptance probability function returns
+            NPL=GPL                        %a value greater than a random number between 0 and 1
         ;   true                          %then initial solution = new solution and c_new = c_old
         )
     ),
-    T1 is truncate(T*0.85),              %Calculate new temperature value
-    while(T1,                            %Recursive call to predicate
-          CPO,
-          Container,
-          N,
-          PL,
-          RPL,
-          RPO).
+    nl,
+    write("PO intermédia "),
+    write(NCPO),
+    T1 is T*0.85,              %Calculate new temperature value
+    round(T1, T2, 3),
+    (   while(T2, NCPO, Container, NPL, RPL, RPO)    %Recursive call to predicate
+    ;   RPO=NCPO,
+        RPL=NPL
+    ).
 
 while(T, CPO, _, _, PL, PL, CPO) :-     %Stopping condition
     T=<0.01.
@@ -48,28 +49,48 @@ while(T, CPO, _, _, PL, PL, CPO) :-     %Stopping condition
 %Auxiliary Predicates
 
 %Creates a random package(x,y,z) with values between 1 and MAX
-randomPackage(MAX, X, Y, Z) :-
+randomPackage(MAX, X, Y, Z, Weight, Priority) :-
     random(1, MAX, X),
     random(1, MAX, Y),
-    random(1, MAX, Z).
+    random(1, MAX, Z),
+    random(1, MAX, Weight),
+    random(1, MAX, Priority).
 
 %Creates a random package list with MAX number of orders
 randomPackageList(N, MAX, PL) :-
-    randomPackageList(1,MAX, N, [], PL), !.
+    randomPackageList(1, MAX, N, [], PL), !.
 
 
-randomPackageList(ID,MAX, 1, PL, RPL) :-
-    randomPackage(MAX, X, Y, Z),
-    P=(ID,X, Y, Z),
+randomPackageList(ID, MAX, 1, PL, RPL) :-
+    randomPackage(MAX, X, Y, Z, Weight, Priority),
+    P=(ID, X, Y, Z, Weight, Priority),
     append(PL, [P], RPL).
 
-randomPackageList(ID,MAX, N, PL, RPL) :-
+randomPackageList(ID, MAX, N, PL, RPL) :-
     N1 is N-1,
-    randomPackage(MAX, X, Y, Z),
-    P=(ID,X, Y, Z),
-    ID1 is ID + 1,
+    randomPackage(MAX, X, Y, Z, Weight, Priority),
+    P=(ID, X, Y, Z, Weight, Priority),
+    ID1 is ID+1,
     append(PL, [P], SPL),
-    randomPackageList(ID1,MAX, N1, SPL, RPL).
+    randomPackageList(ID1, MAX, N1, SPL, RPL).
+
+round(X, Y, D) :-
+    Z is X*10^D,
+    round(Z, ZA),
+    Y is ZA/10^D.
+
+calculate_number(N1, N2, T, R) :-
+    N is N1-N2,
+    size_factor(N, 10, SF),
+    R is T*SF.
+
+
+size_factor(C, _, 1) :-
+    C<10, !.
+size_factor(C, N, SF) :-
+    R is C/N,
+    size_factor(R, N, SF1),
+    SF is SF1*N.
 
 %Sorts a list in ascending order
 ascending_sort(PL, SPL) :-

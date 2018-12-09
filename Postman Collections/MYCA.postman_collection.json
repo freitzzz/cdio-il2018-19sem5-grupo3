@@ -1,0 +1,165 @@
+{
+	"info": {
+		"_postman_id": "497cbfe2-6894-4429-a11a-8fc5e0a6f3f2",
+		"name": "MYCA",
+		"description": "Collection of MYCA API Requests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Valid User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"type\":\"credentials\",\n\t\"username\":\"superusername\",\n\t\"password\":\"superpassword\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/myca/api/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myca",
+						"api",
+						"users"
+					]
+				},
+				"description": "Creates a new valid user"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Valid User Session",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Secrete",
+						"value": "Secrete",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"type\":\"credentials\",\n\t\"username\":\"superusername\",\n\t\"password\":\"superpassword\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/myca/api/auth",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myca",
+						"api",
+						"auth"
+					]
+				},
+				"description": "Creates a valid user session"
+			},
+			"response": [
+				{
+					"name": "Create Valid User Session",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Secrete",
+								"value": "Secrete",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"type\":\"credentials\",\n\t\"username\":\"superusername5\",\n\t\"password\":\"superpassword\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/myca/api/auth",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"myca",
+								"api",
+								"auth"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "52"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Invalid authentication secrete details\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Authenticate Valid Client",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Secrete",
+						"value": "Secreted",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/myca/api/autho",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myca",
+						"api",
+						"autho"
+					]
+				},
+				"description": "Authenticates into MYC APIs as a valid Client"
+			},
+			"response": []
+		}
+	]
+}

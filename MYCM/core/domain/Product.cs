@@ -12,6 +12,7 @@ using core.dto;
 using core.dto.options;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace core.domain {
 
@@ -33,13 +34,13 @@ namespace core.domain {
         /// </summary>
         private const string INVALID_PRODUCT_DESIGNATION = "The product designation is invalid";
         /// <summary>
+        /// Constant that represents the message that occurs if the product's model file name is invalid.
+        /// </summary>
+        private const string INVALID_PRODUCT_MODEL_FILENAME = "The model's filename is invalid";
+        /// <summary>
         /// Constant that represents the message that occurs if the product complementary products are invalid
         /// </summary>
         private const string INVALID_PRODUCT_COMPLEMENTARY_PRODUCTS = "The products which the product can be complemented by are invalid";
-        /// <summary>
-        /// Constant that represents the message that occurs if the product component is not valid
-        /// </summary>
-        private const string INVALID_COMPONENT = "The component is not valid!";
         /// <summary>
         /// Constant that represents the message that occurs if the product complementary products are invalid
         /// </summary>
@@ -52,22 +53,10 @@ namespace core.domain {
         /// Constant that represents the message that occurs if the product category is invalid
         /// </summary>
         private const string INVALID_PRODUCT_CATEGORY = "The product category is invalid";
-
         /// <summary>
-        /// Constant that represents the message that occurs if the slots minimum size is larger than the slots maximum size
+        /// Constant that represents the message that occurs if the product slot widths is invalid.
         /// </summary>
-        private const string INVALID_MIN_TO_MAX_SLOT_SIZE_RATIO = "The product's minimum slot size can't be larger than the maximum slot size";
-
-        /// <summary>
-        /// Constant that represents the message that occurs if the slots recommended size is larger than the slots maximum size
-        /// </summary>
-        private const string INVALID_RECOMMENDED_TO_MAX_SLOT_SIZE_RATIO = "The product's recommended slot size can't be larger than the maximum slot size";
-
-        /// <summary>
-        /// Constant that represents the message that occurs if the slots recommended size is smaller than the slots minimum size
-        /// </summary>
-        private const string INVALID_RECOMMENDED_TO_MIN_SLOT_SIZE_RATIO = "The product's recommended slot size can't be smaller than the minimum slot size";
-
+        private const string INVALID_PRODUCT_SLOT_WIDTHS = "The product's slot widths are invalid.";
         /// <summary>
         /// Constant that represents the message that ocurrs if the product reference change is invalid
         /// </summary>
@@ -84,22 +73,13 @@ namespace core.domain {
         private const string INVALID_PRODUCT_CATEGORY_CHANGE="The product category being changed is the same as the actual one";
 
         /// <summary>
-        /// Constant that represents the message that is presented if the given maximum slot dimensions are null.
-        /// </summary>
-        private const string MAXIMUM_SLOT_DIMENSIONS_NULL = "The maximum slot dimensions can not be null";
-        /// <summary>
-        /// Constant that represents the message that is presented if the given minimum slot dimensions are null.
-        /// </summary>
-        private const string MINIMUM_SLOT_DIMENSONS_NULL = "The minimum slot dimensions can not be null";
-        /// <summary>
-        /// Constant that represents the message that is presented if the given recommended slot dimensions are null.
-        /// </summary>
-        private const string RECOMMENDED_SLOT_DIMENSIONS_NULL = "The recommended slot dimensions can not be null";
-
-        /// <summary>
         /// Constant that represents the message that is presented if a null Material is attempted to be added.
         /// </summary>
         private const string MATERIAL_NULL = "The given material can not be null.";
+        /// <summary>
+        /// Constant that represents the message that is presented if the Material could not be found in the Product's list of ProductMaterial.
+        /// </summary>
+        private const string MATERIAL_NOT_FOUND = "The given material could not be found in the product's materials.";
         /// <summary>
         /// Constant that represents the message that is presented if a duplicate Material is attempted to be added.
         /// </summary>
@@ -118,6 +98,10 @@ namespace core.domain {
         /// </summary>
         private const string COMPLEMENTARY_PRODUCT_NULL = "The given complementary product can not be null.";
         /// <summary>
+        /// Constant that represents the message that is presented if the complementary Product could not be found in the Product's list of Component. 
+        /// </summary>
+        private const string COMPLEMENTARY_PRODUCT_NOT_FOUND = "The given complementary product could not be found in the main product's complementary products.";
+        /// <summary>
         /// Constant that represents the message that is presented if the complementary Product being added is equal to the parent Product.
         /// </summary>
         private const string COMPLEMENTARY_PRODUCT_EQUALS_PRODUCT = "The given complementary product can not be equal to the parent product";
@@ -135,6 +119,10 @@ namespace core.domain {
         /// </summary>
         private const string MEASUREMENT_NULL = "The given measurement can not be null.";
         /// <summary>
+        /// Constant that represents the message that is presented if a Measurement could not be found in the Product's list of Measurement.
+        /// </summary>
+        private const string MEASUREMENT_NOT_FOUND = "The given measurement could not be found in the product's measurements.";
+        /// <summary>
         /// Constant that represents the message that is presented if a duplicate Measurement is attempted to be added.
         /// </summary>
         private const string MEASUREMENT_ALREADY_ADDED = "An equal measurement has already been added.";
@@ -146,6 +134,16 @@ namespace core.domain {
         /// Constant that represents the message that is presented if the Measurement could not be removed.
         /// </summary>
         private const string MEASUREMENT_UNABLE_TO_REMOVE = "The given measurement could not be removed.";
+
+        /// <summary>
+        /// Constant representing the error message presented if a null Restriction is attempted to be added/removed.
+        /// </summary>
+        private const string RESTRICTION_NULL = "The given restriction can not be null.";
+
+        /// <summary>
+        /// Constant that represents the model's filename regular expression.
+        /// </summary>
+        private const string SUPPORTED_FILES_PATTERN = @"^[\w\-. ()]+(.gltf|.glb|.obj|.fbx|.dae)$";
 
         /// <summary>
         /// Long property with the persistence iD
@@ -192,31 +190,23 @@ namespace core.domain {
         public ProductCategory productCategory { get => LazyLoader.Load(this, ref _productCategory); protected set => _productCategory = value; }
 
         /// <summary>
-        /// CustomizedDimensions that represents the maximum size of the slots
+        /// Product's allowed slot widths.
         /// </summary>
-        /// <value>Gets/protected sets the CustomizedDimension's value.</value>
-        private CustomizedDimensions _maxSlotSize;//!private field used for lazy loading, do not use this for storing or fetching data
-        public CustomizedDimensions maxSlotSize { get => LazyLoader.Load(this, ref _maxSlotSize); protected set => _maxSlotSize = value; }
+        /// <value>Gets/protected sets the Product's slot widths.</value>
+        private ProductSlotWidths _slotWidths;
+        public ProductSlotWidths slotWidths {get => LazyLoader.Load(this, ref _slotWidths) ;protected set => _slotWidths = value;}
 
         /// <summary>
-        /// CustomizedDimensions that represents the minimum size of the slots
-        /// </summary>
-        /// <value>Gets/protected sets the CustomizedDimension's value.</value>
-        private CustomizedDimensions _minSlotSize;//!private field used for lazy loading, do not use this for storing or fetching data
-        public CustomizedDimensions minSlotSize { get => LazyLoader.Load(this, ref _minSlotSize); protected set => _minSlotSize = value; }
-
-        /// <summary>
-        /// CustomizedDimensions that represents the recommended size of the slots
-        /// </summary>
-        /// <value>Gets/protected sets the CustomizedDimension's value.</value>
-        private CustomizedDimensions _recommendedSlotSize;//!private field used for lazy loading, do not use this for storing or fetching data
-        public CustomizedDimensions recommendedSlotSize { get => LazyLoader.Load(this, ref _recommendedSlotSize); protected set => _recommendedSlotSize = value; }
-
-        /// <summary>
-        /// Booelan that indicates if the product can hold slots
+        /// Boolean that indicates if the product can hold slots
         /// </summary>
         /// <value>Gets/protected sets the value of the supportsSlots flag.</value>
         public bool supportsSlots { get; protected set; }
+
+        /// <summary>
+        /// String representing the Product's model's file name.
+        /// </summary>
+        /// <value>Gets/protected sets the value of the filename.</value>
+        public string modelFilename {get; protected set; }
 
         /// <summary>
         /// LazyLoader injected by the framework.
@@ -225,13 +215,12 @@ namespace core.domain {
         private ILazyLoader LazyLoader { get; set; }
 
         /// <summary>
-        /// Private constructror used by the framework for injecting an instance of ILazyLoader.
+        /// Private constructor used by the framework for injecting an instance of ILazyLoader.
         /// </summary>
         /// <param name="lazyLoader">ILazyLoader being injected.</param>
-        public Product(ILazyLoader lazyLoader) 
+        private Product(ILazyLoader lazyLoader) 
         {
             this.LazyLoader = lazyLoader;
-               
         }
 
         /// <summary>
@@ -241,23 +230,27 @@ namespace core.domain {
 
         //*BASE CONSTRUCTOR (NO SLOT DIMENSIONS, NO COMPONENTS) */
         /// <summary>
-        /// Builds a new product with its reference, designation and materials which it can be made of
+        /// Creates an instance of Product with a reference, a designation, a 3D model's filename, 
+        /// an instance of ProductCategory, an IEnumerable of Material and an IEnumerable of Measurement. 
         /// </summary>
         /// <param name="reference">String with the product reference</param>
         /// <param name="designation">String with the product designation</param>
+        /// <param name="modelFilename">String with the product's model file name</param>
         /// <param name="productCategory">ProductCategory with the product category</param>
         /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
         /// <param name="measurements">IEnumerable with the product measurements</param>
-        public Product(string reference, string designation,
+        public Product(string reference, string designation, string modelFilename,
                         ProductCategory productCategory,
                         IEnumerable<Material> materials,
                         IEnumerable<Measurement> measurements) {
             checkProductProperties(reference, designation);
+            checkProductModelFilename(modelFilename);
             checkProductMaterials(materials);
             checkProductMeasurements(measurements);
             checkProductCategory(productCategory);
             this.reference = reference;
             this.designation = designation;
+            this.modelFilename = modelFilename;
             this.productMaterials = new List<ProductMaterial>();
             foreach (Material mat in materials) {
                 this.productMaterials.Add(new ProductMaterial(this, mat));
@@ -270,27 +263,28 @@ namespace core.domain {
             this.productCategory = productCategory;
             //!MaxValue assigned here because customized dimensions can't have value 0
             //TODO see if there's a better alternative to using Double.MaxValue
-            this.maxSlotSize = CustomizedDimensions.valueOf(Double.MaxValue, Double.MaxValue, Double.MaxValue);
-            this.minSlotSize = CustomizedDimensions.valueOf(Double.MaxValue, Double.MaxValue, Double.MaxValue);
-            this.recommendedSlotSize = CustomizedDimensions.valueOf(Double.MaxValue, Double.MaxValue, Double.MaxValue);
+            this.slotWidths = ProductSlotWidths.valueOf(Double.MaxValue, Double.MaxValue, Double.MaxValue);
         }
 
         //*CONSTRUCTOR WITH COMPONENTS */
         /// <summary>
-        /// Builds a new product with its reference, designation and complementary products
+        /// Creates an instance of Product with a reference, a designation, a 3D model's filename, 
+        /// an instance of ProductCategory, an IEnumerable of Material, an IEnumerable of Measurement 
+        /// and an IEnumerable of Product with its complementary products. 
         /// </summary>
         /// <param name="reference">String with the product reference</param>
         /// <param name="designation">String with the product designation</param>
+        /// <param name="modelFilename">String with the product's model file name</param>
         /// <param name="productCategory">ProductCategory with the product category</param>
         /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
         /// <param name="measurements">IEnumerable with the product measurements</param>
         /// <param name="complementaryProducts">IEnumerable with the product complementary products</param>
-        public Product(string reference, string designation,
+        public Product(string reference, string designation, string modelFilename,
                         ProductCategory productCategory,
                         IEnumerable<Material> materials,
                         IEnumerable<Measurement> measurements,
                         IEnumerable<Product> complementaryProducts) :
-                        this(reference, designation, productCategory, materials, measurements) {
+                        this(reference, designation, modelFilename, productCategory, materials, measurements) {
             checkComplementaryProducts(complementaryProducts);
             this.components = new List<Component>();
             foreach (Product complementaryProduct in complementaryProducts) {
@@ -300,54 +294,49 @@ namespace core.domain {
 
         //*CONSTRUCTOR WITH SLOT DIMENSIONS */
         /// <summary>
-        /// Builds a new product with its reference, designation, maximum number of slots, its category,
-        /// the materials it can be made of and its dimensions.
+        /// Creates an instance of Product with a reference, a designation, a 3D model's filename, 
+        /// an instance of ProductCategory, an IEnumerable of Material, an IEnumerable of Measurement 
+        /// and an instance of ProductSlotWidths. 
         /// </summary>
         /// <param name="reference">Reference of the Product</param>
         /// <param name="designation">Designation of the Product</param>
+        /// <param name="modelFilename">String with the product's model file name</param>
         /// <param name="productCategory">ProductCategory with the product's category</param>
         /// <param name="materials">Materials the product can be made of</param>
         /// <param name="measurements">Product measurements</param>
-        /// <param name="minSlotSize">Minimum slot dimensions</param>
-        /// <param name="maxSlotSize">Maximum slot dimensions</param>
-        /// <param name="recommendedSlotSize">Recommended slot dimensions</param>
-        public Product(string reference, string designation,
+        /// <param name="slotWidths">ProductSlotWidths instance with the Product's slots' widths.</param>
+        public Product(string reference, string designation, string modelFilename,
                         ProductCategory productCategory,
                         IEnumerable<Material> materials, IEnumerable<Measurement> measurements,
-                        CustomizedDimensions minSlotSize, CustomizedDimensions maxSlotSize, 
-                        CustomizedDimensions recommendedSlotSize) :
-                        this(reference, designation, productCategory, materials, measurements) {
-            checkProductSlotsDimensions(maxSlotSize, minSlotSize, recommendedSlotSize);
+                        ProductSlotWidths slotWidths) :
+                        this(reference, designation, modelFilename, productCategory, materials, measurements) {
+            checkProductSlotWidths(slotWidths);
             this.supportsSlots = true;
-            this.minSlotSize = minSlotSize;
-            this.maxSlotSize = maxSlotSize;
-            this.recommendedSlotSize = recommendedSlotSize;
+            this.slotWidths = slotWidths;
         }
 
         //*CONSTRUCTOR WITH SLOT DIMENSIONS AND COMPONENTS */
         /// <summary>
-        /// Builds a new product with its reference, designation and complementary products
+        /// Creates an instance of Product with a reference, a designation, a 3D model's filename, 
+        /// an instance of ProductCategory, an IEnumerable of Material, an IEnumerable of Measurement, 
+        /// an IEnumerable of Product with its complementary products and an instance of ProductSlotWidths. 
         /// </summary>
         /// <param name="reference">String with the product reference</param>
         /// <param name="designation">String with the product designation</param>
-        /// <param name="maxSlotSize">Maximum slot dimensions</param>
-        /// <param name="minSlotSize">Minimum slot dimensions</param>
-        /// <param name="recommendedSlotSize">Recommended slot dimensions</param>
+        /// <param name="modelFilename">String with the product's model file name</param>
         /// <param name="productCategory">ProductCategory with the product category</param>
         /// <param name="materials">IEnumerable with the product materials which it can be made of</param>
-        /// <param name="complementaryProducts">IEnumerable with the product complementary products</param>
         /// <param name="measurements">IEnumerable with the product measurements</param>
-        public Product(string reference, string designation,
+        /// <param name="complementaryProducts">IEnumerable with the product complementary products</param>
+        /// <param name="slotWidths">ProductSlotWidths instance with the Product's slots' widths.</param>
+        public Product(string reference, string designation, string modelFilename,
                         ProductCategory productCategory, IEnumerable<Material> materials, 
                         IEnumerable<Measurement> measurements, IEnumerable<Product> complementaryProducts,
-                        CustomizedDimensions minSlotSize, CustomizedDimensions maxSlotSize,
-                        CustomizedDimensions recommendedSlotSize) : 
-                        this(reference, designation, productCategory, materials, measurements, complementaryProducts) {
-            checkProductSlotsDimensions(maxSlotSize, minSlotSize, recommendedSlotSize);
+                        ProductSlotWidths slotWidths) : 
+                        this(reference, designation, modelFilename, productCategory, materials, measurements, complementaryProducts) {
+            checkProductSlotWidths(slotWidths);
             this.supportsSlots = true;
-            this.minSlotSize = minSlotSize;
-            this.maxSlotSize = maxSlotSize;
-            this.recommendedSlotSize = recommendedSlotSize;
+            this.slotWidths = slotWidths;
         }
 
         //*BEGINING OF ADD METHODS */
@@ -373,20 +362,26 @@ namespace core.domain {
         }
 
         /// <summary>
-        /// Adds a restriction to a component
+        /// Restricts a Product's complementary Product.
         /// </summary>
-        /// <param name="component">component to add restriction to</param>
-        /// <param name="restriction">restriction to be added</param>
+        /// <param name="component">Product being restricted.</param>
+        /// <param name="restriction">Restriction being added.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when any of the provided arguments is null.</exception>
         /// <exception cref="System.ArgumentException">Thrown when the restriction could not be applied</exception>
-        public void addComponentRestriction(Product component, Restriction restriction) {
-            //TODO: validate restriction
+        public void addComplementaryProductRestriction(Product component, Restriction restriction) {
             if (component == null) {
-                throw new ArgumentNullException(INVALID_COMPONENT);
+                throw new ArgumentNullException(COMPLEMENTARY_PRODUCT_NULL);
             }
+
+            if(restriction == null){
+                throw new ArgumentNullException(RESTRICTION_NULL);
+            }
+
             Component comp = this.components.Where(c => c.complementaryProduct.Equals(component)).SingleOrDefault();
             if(comp == null){
-                
+                throw new ArgumentException(COMPLEMENTARY_PRODUCT_NOT_FOUND);
             }
+            
             comp.addRestriction(restriction);
         }
 
@@ -400,8 +395,28 @@ namespace core.domain {
             this.productMaterials.Add(new ProductMaterial(this, productMaterial));
         }
 
+        /// <summary>
+        /// Restricts a Product's Material.
+        /// </summary>
+        /// <param name="material">Material being restricted.</param>
+        /// <param name="restriction">Restriction being added.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when any of the provided arguments is null.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when Restriction could not be added.</exception>
         public void addMaterialRestriction(Material material, Restriction restriction){
-            throw new NotImplementedException();
+            if(material == null){
+                throw new ArgumentNullException(MATERIAL_NULL);
+            }
+            if(restriction == null){
+                throw new ArgumentNullException(RESTRICTION_NULL);
+            }
+
+            ProductMaterial productMaterial = this.productMaterials.Where(pm => pm.material.Equals(material)).SingleOrDefault();
+
+            if(productMaterial == null){
+                throw new ArgumentException(MATERIAL_NOT_FOUND);
+            }
+
+            productMaterial.addRestriction(restriction);
         }
 
         /// <summary>
@@ -414,8 +429,29 @@ namespace core.domain {
             this.productMeasurements.Add(new ProductMeasurement(this, measurement));
         }
 
+        /// <summary>
+        /// Restricts a Product's Measurement.
+        /// </summary>
+        /// <param name="measurement">Measurement being restricted.</param>
+        /// <param name="restriction">Restriction being added.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when any of the provided arguments is null.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when Restriction could not be added.</exception>
+
         public void addMeasurementRestriction(Measurement measurement, Restriction restriction){
-            throw new NotImplementedException();
+            if(measurement == null){
+                throw new ArgumentNullException(MEASUREMENT_NULL);
+            }   
+            if(restriction == null){
+                throw new ArgumentNullException(RESTRICTION_NULL);
+            }
+
+            Measurement measurementBeingRestricted = productMeasurements.Select(pm => pm.measurement).Where(m => m.Equals(measurement)).SingleOrDefault();
+
+            if(measurementBeingRestricted == null){
+                throw new ArgumentException(MEASUREMENT_NOT_FOUND);
+            }
+
+            measurementBeingRestricted.addRestriction(restriction);
         }
 
         //*END OF ADD METHODS */
@@ -439,6 +475,16 @@ namespace core.domain {
         public void changeProductDesignation(string designation) {
             checkIfProductDesignationIsValidForChange(designation);
             this.designation=designation;
+        }
+
+        /// <summary>
+        /// Changes the model's filename.
+        /// </summary>
+        /// <param name="modelFilename">String with the new model's filename.</param>
+        /// <exception cref="System.ArgumentException">Thrown when the provided filename is not valid.</exception>
+        public void changeModelFilename(string modelFilename){
+            checkProductModelFilename(modelFilename);
+            this.modelFilename = modelFilename;
         }
 
         /// <summary>
@@ -475,6 +521,32 @@ namespace core.domain {
         }
 
         /// <summary>
+        /// Removes a Restriction from a Measurement.
+        /// </summary>
+        /// <param name="measurement">Instance of Measurement.</param>
+        /// <param name="restriction">Instance of Restriction being removed.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when any of the provided arguments are null.</exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown when the Measurement could not be found in the Product's measurements or when the Restriction could not be removed.
+        /// </exception>
+        public void removeMeasurementRestriction(Measurement measurement, Restriction restriction){
+            if(measurement == null){
+                throw new ArgumentNullException(MEASUREMENT_NULL);
+            }
+            if(restriction == null){
+                throw new ArgumentNullException(RESTRICTION_NULL);
+            }
+
+            Measurement measurementBeingUnrestricted = productMeasurements.Select(pm => pm.measurement).Where(m => m.Equals(measurement)).SingleOrDefault();
+
+            if(measurementBeingUnrestricted == null){
+                throw new ArgumentException(MEASUREMENT_NOT_FOUND);
+            }
+
+            measurementBeingUnrestricted.removeRestriction(restriction);
+        }
+
+        /// <summary>
         /// Removes a material which the current product can be made of
         /// </summary>
         /// <param name="material">Material with the material being removed</param>
@@ -495,16 +567,68 @@ namespace core.domain {
         }
 
         /// <summary>
+        /// Removes a restriction from a Material.
+        /// </summary>
+        /// <param name="material">Instance of Material.</param>
+        /// <param name="restriction">Instance of Restriction being removed.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when any of the provided arguments are null.</exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown when the Material could not be found in the Product's materials or when the Restriction could not be removed.
+        /// </exception>
+        public void removeMaterialRestriction(Material material, Restriction restriction){
+            if(material == null){
+                throw new ArgumentNullException(MATERIAL_NULL);
+            }
+            if(restriction == null){
+                throw new ArgumentNullException(RESTRICTION_NULL);
+            }
+
+            ProductMaterial productMaterial = productMaterials.Where(pm => pm.material.Equals(material)).SingleOrDefault();
+
+            if(productMaterial == null){
+                throw new ArgumentException(MATERIAL_NOT_FOUND);
+            }
+
+            productMaterial.removeRestriction(restriction);
+        }
+
+        /// <summary>
         /// Removes a complementary Product which the current Product can be complemented by
         /// </summary>
         /// <param name="complementaryProduct">Instance of Product which complements this instance.</param>
         /// <exception cref="System.ArgumentException">If the given instance of Product could not be removed.</exception>
-        public void removecomplementaryProduct(Product complementaryProduct) {
+        public void removeComplementaryProduct(Product complementaryProduct) {
             if(!this.components.Remove(
                 this.components.Where(pc => pc.complementaryProduct.Equals(complementaryProduct)).SingleOrDefault()
                 )){
                     throw new ArgumentException(COMPLEMENTARY_PRODUCT_UNABLE_TO_REMOVE);
             } 
+        }
+
+        /// <summary>
+        /// Removes a restriction from a complementary Product.
+        /// </summary>
+        /// <param name="complementaryProduct">Instance of Product.</param>
+        /// <param name="restriction">Instance of Restriction being removed.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when any of the provided arguments are null.</exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown when the Component could not be found in the Product's components or when the Restriction could not be removed.
+        /// </exception>
+        public void removeComplementaryProductRestriction(Product complementaryProduct, Restriction restriction){
+            if(complementaryProduct == null){
+                throw new ArgumentNullException(COMPLEMENTARY_PRODUCT_NULL);
+            }
+            if(restriction == null){
+                throw new ArgumentNullException(RESTRICTION_NULL);
+            }
+
+            Component component = components.Where(c => c.complementaryProduct.Equals(complementaryProduct)).SingleOrDefault();
+
+            if(component == null){
+                throw new ArgumentException(COMPLEMENTARY_PRODUCT_NOT_FOUND);
+            }
+
+            component.removeRestriction(restriction);
         }
 
         //*END OF REMOVE METHODS */
@@ -620,8 +744,8 @@ namespace core.domain {
             foreach (ProductMaterial pm in this.productMaterials) {
                 dto.productMaterials.Add(pm.material.toDTO());
             }
-            //TODO: remove null check once complement database mappping is complete
-            if (components != null && components.Count >= 0) {
+
+            if (components.Count >= 0) {
                 List<ComponentDTO> complementDTOList = new List<ComponentDTO>();
 
                 foreach (Component complement in components) {
@@ -632,9 +756,6 @@ namespace core.domain {
 
             if (this.supportsSlots) {
                 SlotDimensionSetDTO slotDimensionSetDTO = new SlotDimensionSetDTO();
-                slotDimensionSetDTO.maximumSlotDimensions = this.maxSlotSize.toDTO();
-                slotDimensionSetDTO.minimumSlotDimensions = this.minSlotSize.toDTO();
-                slotDimensionSetDTO.recommendedSlotDimensions = this.recommendedSlotSize.toDTO();
                 dto.slotDimensions = slotDimensionSetDTO;
             }
 
@@ -653,6 +774,17 @@ namespace core.domain {
         private void checkProductProperties(string reference, string designation) {
             checkProductReference(reference);
             checkProductDesignation(designation);
+        }
+
+        /// <summary>
+        /// Checks if the Product's model's filename is valid (matches the regular expression).
+        /// </summary>
+        /// <param name="modelFilename">Model's filename.</param>
+        /// <exception cref="System.ArgumentException">Thrown when the given model file name does not match the model file name regular expression.</exception>
+        private void checkProductModelFilename(string modelFilename) {
+            if(Strings.isNullOrEmpty(modelFilename) || !Regex.Match(modelFilename, SUPPORTED_FILES_PATTERN, RegexOptions.IgnoreCase).Success) {
+                throw new ArgumentException(INVALID_PRODUCT_MODEL_FILENAME);
+            }
         }
 
         /// <summary>
@@ -699,30 +831,13 @@ namespace core.domain {
         }
 
         /// <summary>
-        /// Checks if the product's slot sizes are valid (non-negative values with proper ratios between them).
+        /// Checks if the product's slot widths are valid.
         /// </summary>
-        /// <param name="maxSlotSize">CustomizedDimensions with the maximum size of the slots</param>
-        /// <param name="minSlotSize">CustomizedDimensions with the minimum size of the slots</param>
-        /// <param name="recommendedSlotSize">CustomizedDimensions with the recommended size of the slots</param>
-        /// <exception cref="System.ArgumentException">Thrown when any of the instances of CustomizedDimensions are</exception>
-        private void checkProductSlotsDimensions(CustomizedDimensions maxSlotSize, CustomizedDimensions minSlotSize, CustomizedDimensions recommendedSlotSize) {
-            if(maxSlotSize == null){
-                throw new ArgumentNullException(MAXIMUM_SLOT_DIMENSIONS_NULL);
+        /// <param name="slotWidths">Instance of ProductSlotWidths being checked.</param>
+        private void checkProductSlotWidths(ProductSlotWidths slotWidths){
+            if(slotWidths == null) {
+                throw new ArgumentNullException(INVALID_PRODUCT_SLOT_WIDTHS);
             }
-            if(minSlotSize == null){
-                throw new ArgumentNullException(MINIMUM_SLOT_DIMENSONS_NULL);
-            }
-            if(recommendedSlotSize == null){
-                throw new ArgumentNullException(RECOMMENDED_SLOT_DIMENSIONS_NULL);
-            }
-            if (minSlotSize.depth > maxSlotSize.depth || minSlotSize.height > maxSlotSize.height || minSlotSize.width > maxSlotSize.width)
-                throw new ArgumentException(INVALID_MIN_TO_MAX_SLOT_SIZE_RATIO);
-
-            if (recommendedSlotSize.depth > maxSlotSize.depth || recommendedSlotSize.height > maxSlotSize.height || recommendedSlotSize.width > maxSlotSize.width)
-                throw new ArgumentException(INVALID_RECOMMENDED_TO_MAX_SLOT_SIZE_RATIO);
-
-            if (recommendedSlotSize.depth < minSlotSize.depth || recommendedSlotSize.height < minSlotSize.height || recommendedSlotSize.width < minSlotSize.width)
-                throw new ArgumentException(INVALID_RECOMMENDED_TO_MIN_SLOT_SIZE_RATIO);
         }
 
         //*END OF CONSTRUCTOR CHECK METHODS */

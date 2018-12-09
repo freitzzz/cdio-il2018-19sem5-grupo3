@@ -1,3 +1,6 @@
+###Website JEST Test Coverage Files
+website/coverage/*
+
 ###Configuration JSON File for NodeJS Integration Tests###
 MYCO/tests/globalConfig.json
 
@@ -554,3 +557,4 @@ ASALocalRun/
 
 
 # End of https://www.gitignore.io/api/rider,aspnetcore,visualstudio,visualstudiocode
+/MYCA/myca/core/nbproject/

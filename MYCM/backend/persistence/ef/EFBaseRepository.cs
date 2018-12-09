@@ -58,22 +58,21 @@ namespace backend.persistence.ef
 
         public E save(E entity)
         {
-            //*Avoid adding entities with the same business identifier
-            //*A unique index could also work, but if the business identifier is a string,
-            //*it's harder to ensure that field is case insensitive
-
             /*If there is an already persisted and deactivated entity 
             with a matching business identifier, then simply reactivate that entity*/
-
             E equalEntity = findDeactivatedEntityWithSameBusinessIdentifier(entity);
 
             if (equalEntity != null)
             {
                 equalEntity.activate();
-
-                return update(equalEntity);
+                dbContext.Entry(equalEntity).State = EntityState.Modified;
+                dbContext.SaveChanges();
+                return equalEntity;
             }
 
+            //*Avoid adding entities with the same business identifier
+            //*A unique index could also work, but if the business identifier is a string,
+            //*it's harder to ensure that field is case insensitive
             if (find(entity.id()) != null)
             {
                 return null;
@@ -92,15 +91,33 @@ namespace backend.persistence.ef
         /// <returns></returns>
         private E findDeactivatedEntityWithSameBusinessIdentifier(E entity)
         {
-            return dbContext.Set<E>().Where(e => e.sameAs(entity.id())).Where(e => !e.activated).SingleOrDefault();
+            //*use LastOrDefault() instead of SingleOrDefault() since there may have been multiple entities with the 
+            //*same business identifier that have since been deactivated
+            return dbContext.Set<E>().Where(e => e.sameAs(entity.id())).Where(e => !e.activated).LastOrDefault();
         }
 
         public virtual E update(E entity)
         {
+            //check if the entity is still valid(if there's not more than one entity with the same business identifier)
+            if (!isValidForUpdate(entity))
+            {
+                return null;
+            }
+
             dbContext.Entry(entity).State = EntityState.Modified;
             dbContext.SaveChanges();
 
             return entity;
+        }
+
+        /// <summary>
+        /// Determines whether or not an Entity is valid for an update.
+        /// </summary>
+        /// <param name="entity">Entity being checked.</param>
+        /// <returns>true, there's no other entity with the given entity's business identifer; false, otherwise.</returns>
+        private bool isValidForUpdate(E entity)
+        {
+            return dbContext.Set<E>().Where(e => e.activated).Where(e => e.sameAs(entity.id())).Count() == 1;
         }
     }
 }

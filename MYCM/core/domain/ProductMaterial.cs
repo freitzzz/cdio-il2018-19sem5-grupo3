@@ -11,7 +11,7 @@ namespace core.domain
     /// <summary>
     /// Represents the relation between a Product and a Material
     /// </summary>
-    public class ProductMaterial
+    public class ProductMaterial : Restrictable
     {
 
         /// <summary>
@@ -28,12 +28,6 @@ namespace core.domain
         public Material material { get => LazyLoader.Load(this, ref _material); protected set => _material = value; }
 
         /// <summary>
-        /// List of restrictions in this relation
-        /// </summary>
-        private List<Restriction> _restrictions;//!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); protected set => _restrictions = value; }
-
-        /// <summary>
         /// Product's database identifier (Foreign Key, part of this class's Primary Key).
         /// </summary>
         /// <value>Get/protected sets the Product's database identifier.</value>
@@ -45,11 +39,6 @@ namespace core.domain
         private Product _product;//!private field used for lazy loading, do not use this for storing or fetching data
         public Product product { get => LazyLoader.Load(this, ref _product); protected set => _product = value; }
 
-        /// <summary>
-        /// LazyLoader injected by the framework.
-        /// </summary>
-        /// <value>Private Gets/Sets the LazyLoader.</value>
-        private ILazyLoader LazyLoader { get; set; }
 
         /// <summary>
         /// Protected constructor in order to allow ORM mapping
@@ -90,45 +79,6 @@ namespace core.domain
             this.product = product;
         }
 
-        /// <summary>
-        /// Adds a restriction to the list of restrictions
-        /// </summary>
-        /// <param name="restriction">Restriction to be added</param>
-        /// <returns>true if the Restriction was successfully added, false if not</returns>
-        public bool addRestriction(Restriction restriction)
-        {
-            if (restriction == null || restrictionExists(restriction))
-            {
-                return false;
-            }
-            restrictions.Add(restriction);
-            return true;
-        }
-
-        /// <summary>
-        /// Checks if a Restriction exists in the list of restrictions
-        /// </summary>
-        /// <param name="restriction">Restriction to check</param>
-        /// <returns>true if the list contains the Restriction, false if not</returns>
-        public bool restrictionExists(Restriction restriction)
-        {
-            return restrictions.Contains(restriction);
-        }
-
-        /// <summary>
-        /// Removes a Restriction from the list
-        /// </summary>
-        /// <param name="restriction">Restriction to be removed</param>
-        /// <returns>true if the Restriction was removed, false if not</returns>
-        public bool removeRestriction(Restriction restriction)
-        {
-            if (restriction != null && restrictionExists(restriction))
-            {
-                restrictions.Remove(restriction);
-                return true;
-            }
-            return false;
-        }
 
         /// <summary>
         /// Checks if this relation has a Material

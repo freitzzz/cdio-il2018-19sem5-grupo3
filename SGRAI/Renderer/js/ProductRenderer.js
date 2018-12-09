@@ -38,9 +38,24 @@ var closet_poles_ids = [];
 var closet_shelves_ids = [];
 
 /**
- * Global variable with the current closet doors ids (Mesh IDs from Three.js)
+ * Global variable with the current closet sliding doors ids (Mesh IDs from Three.js)
  */
-var closet_doors_ids = [];
+var closet_sliding_doors_ids = [];
+
+/**
+ * Global variable with the current closet hinged doors ids (Mesh IDs from Three.js)
+ */
+var closet_hinged_doors_ids = [];
+
+/**
+ * Global variable with the current closet drawers ids (Mesh IDs from Three.js)
+ */
+var closet_drawers_ids = [];
+
+/**
+ * Global variable with the current closet drawer modules ids (Mesh IDs from Three.js)
+ */
+var closet_modules_ids = [];
 
 /**
  * Global variable with the WebGL canvas
@@ -51,7 +66,10 @@ var canvasWebGL;
 /**
  * Global variables that represent the currently selected closet component (null if none)
  */
-var selected_slot = null, selected_face = null, selected_component = null, selected_door = null;;
+var selected_slot = null,
+    selected_face = null,
+    selected_component = null,
+    selected_door = null;
 
 /**
  * Global variable that represents the object being hovered (null if none)
@@ -92,11 +110,47 @@ var raycaster = new THREE.Raycaster();
 var thickness = 4.20;
 
 /**
+ * Global variables to know when to animate a drawer's movement
+ */
+var drawer_back_face = null,
+    drawer_base_face = null,
+    drawer_front_face = null,
+    drawer_left_face = null,
+    drawer_right_face = null;
+/**
+ * Global variable to know when to animate a hinged door 
+ */
+var hingedDoor = null;
+
+/**
+ * Global variable to know when to animate a sliding door
+ */
+var slidingDoor = null;
+
+/**
+ * Waiting list for doors that are waiting to be rendered (e.g. drawer animation has to end)
+ */
+var waitingDoors = [];
+
+/**
+ * Flag to know whether a drawer is closed or not
+ */
+var openDrawers = [];
+
+/**
+ * Flag to know whether a hinged door is closed or not
+ */
+var isHingedDoorClosed = false;
+
+/**
  * Initial Product Draw function
  */
 function main(textureSource) {
     canvasWebGL = document.getElementById("webgl");
-    renderer = new THREE.WebGLRenderer({ canvas: canvasWebGL, antialias: true });
+    renderer = new THREE.WebGLRenderer({
+        canvas: canvasWebGL,
+        antialias: true
+    });
 
     initCamera();
     initControls();
@@ -138,7 +192,7 @@ function main(textureSource) {
     //Finishes creating the intersection plane
     scene.add(dispPlane);
     scene.add(camera);
-  //  scene.add(mesh);
+    //  scene.add(mesh);
 
     registerEvents();
     animate();
@@ -157,11 +211,11 @@ function initCloset(textureSource) {
     //     , [thickness, 300, 100, 300, -60, -295] //dir
     //     , [600, 300, 0, 0, -60, -345]); //tras
 
-    closet = new Closet([204.5, thickness, 100, 0, 0,0] //c a p x y z baixo
-        , [204.5, thickness, 100, 0, 100,0] // cima
-        , [thickness, 100,100,-100,50,0] // esq
-        , [thickness, 100,100,100,50,0] //dir
-        , [200, 100, 0, 0, 50,-50]); //tras
+    closet = new Closet([204.5, thickness, 100, 0, 0, 0] //c a p x y z baixo
+        , [204.5, thickness, 100, 0, 100, 0] // cima
+        , [thickness, 100, 100, -100, 50, 0] // esq
+        , [thickness, 100, 100, 100, 50, 0] //dir
+        , [200, 100, 0, 0, 50, -50]); //tras
 
     var faces = closet.closet_faces;
 
@@ -171,11 +225,9 @@ function initCloset(textureSource) {
     //A MeshPhongMaterial allows for shiny surfaces
     //A soft white light is being as specular light
     //The shininess value is the same as the matte finishing's value
-    material = new THREE.MeshPhongMaterial({ map: texture, specular: 0x404040, shininess: 20 });
+    material = new THREE.MeshPhongMaterial( /*{ map: texture, specular: 0x404040, shininess: 20 }*/);
     for (var i = 0; i < faces.length; i++) {
-        closet_faces_ids.push(generateParellepiped(faces[i][0], faces[i][1], faces[i][2]
-            , faces[i][3], faces[i][4], faces[i][5]
-            , material, group));
+        closet_faces_ids.push(generateParellepiped(faces[i][0], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], material, group));
     }
     scene.add(group);
     renderer.setClearColor(0xFFFFFF, 1);
@@ -233,9 +285,7 @@ function addSlot() {
 function addSlotNumbered(slotsToAdd) {
     for (var i = 0; i < slotsToAdd; i++) {
         var slotFace = closet.addSlot();
-        closet_slots_faces_ids.push(generateParellepiped(slotFace[0], slotFace[1], slotFace[2]
-            , slotFace[3], slotFace[4], slotFace[5]
-            , material, group));
+        closet_slots_faces_ids.push(generateParellepiped(slotFace[0], slotFace[1], slotFace[2], slotFace[3], slotFace[4], slotFace[5], material, group));
     }
     updateClosetGV();
 }
@@ -291,9 +341,181 @@ function applyTexture(texture) {
 
 function addComponent(component, slot) {
     if (component == "Pole") generateCylinder(slot);
-    // if(component == "Drawer") generateDrawer(slot);
+    if (component == "Drawer") {
+        checkAddDrawerTriggers(slot);
+    }
     if (component == "Shelf") generateShelf(slot);
-    if (component == "Sliding Door") generateSlidingDoor();
+    if (component == "Sliding Door") {
+        checkAddSlidingDoorTriggers();
+    }
+    if (component == "Door") {
+        checkAddHingedDoorTriggers(slot);
+    }
+}
+
+function checkAddDrawerTriggers(slot) {
+    generateDrawer(slot);
+    if (doesSlotHaveHingedDoor(slot)) {
+        if (!isHingedDoorClosed) {
+            hingedDoor = group.getObjectById(closet_hinged_doors_ids[slot - 1]);
+            requestAnimationFrame(openHingedDoor);
+        }
+    }
+    if (doesClosetHaveSlidingDoors()) {
+        var front_door = group.getObjectById(closet_sliding_doors_ids[0]);
+        var back_door = group.getObjectById(closet_sliding_doors_ids[1]);
+        //Front face of the last added drawer is always at index length - 4
+        var addedDrawer = group.getObjectById(closet_drawers_ids[closet_drawers_ids.length - 4]);
+        if (addedDrawer.position.x < 0) {
+            if (front_door.position.x < 0) {
+                slidingDoor = front_door;
+                slideDoorToRight();
+            }
+            if (back_door.position.x < 0) {
+                slidingDoor = back_door;
+                slideDoorToLeft();
+            }
+        } else {
+            if (front_door.position.x > 0) {
+                slidingDoor = front_door;
+                slideDoorToLeft();
+            }
+            if (back_door.position.x > 0) {
+                slidingDoor = back_door;
+                slideDoorToRight();
+            }
+        }
+
+    }
+}
+
+function checkAddSlidingDoorTriggers() {
+    if (doesClosetHaveHingedDoors()) {
+        alert("There are closet slots that have hinged doors!");
+    } else {
+        if (doesClosetHaveOpenDrawers()) {
+            if (openDrawers.length > 0) {
+                waitingDoors.push(function () {
+                    generateSlidingDoor();
+                });
+                closeAllOpenDrawers();
+            } else {
+                generateSlidingDoor();
+            }
+        } else {
+            generateSlidingDoor();
+        }
+    }
+}
+
+function checkAddHingedDoorTriggers(slot) {
+    if (doesSlotHaveHingedDoor(slot)) {
+        alert("This slot already has a door!");
+    } else if (doesClosetHaveSlidingDoors()) {
+        alert("The closet already has sliding doors!");
+    } else {
+        if (doesSlotHaveOpenDrawers(slot)) {
+            if (openDrawers.length > 0) {
+                waitingDoors.push(function () {
+                    addHingedDoor(slot);
+                });
+                closeSlotOpenDrawers(slot);
+            } else {
+                addHingedDoor(slot);
+            }
+        } else {
+            addHingedDoor(slot);
+        }
+    }
+}
+
+function addHingedDoor(slot) {
+    if (openDrawers.length == 0) {
+        generateHingedDoor(slot);
+    } else {
+        generateHingedDoor(slot);
+    }
+}
+
+function closeSlotOpenDrawers(slot) {
+    var i = 0;
+    var index = 0;
+    var closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
+    while (i < closet_drawers_ids.length) {
+        if (closet.drawers[index].slotId == slot) {
+            console.log(closet.drawers[index]);
+            var drawer_front_face = group.getObjectById(closet_drawers_ids[5 * index + 1]);
+            if (drawer_front_face.position.z > closet_front) {
+                var drawer_base_face = group.getObjectById(closet_drawers_ids[5 * index]);
+                var drawer_left_face = group.getObjectById(closet_drawers_ids[5 * index + 2]);
+                var drawer_right_face = group.getObjectById(closet_drawers_ids[5 * index + 3]);
+                var drawer_back_face = group.getObjectById(closet_drawers_ids[5 * index + 4]);
+                closeDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face);
+            }
+        }
+        i += 5;
+        index++;
+    }
+}
+
+function closeAllOpenDrawers() {
+    var i = 0;
+    var index = 0;
+    var closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
+    while (i < closet_drawers_ids.length) {
+        var drawer_front_face = group.getObjectById(closet_drawers_ids[5 * index + 1]);
+        if (drawer_front_face.position.z > closet_front) {
+            var drawer_base_face = group.getObjectById(closet_drawers_ids[5 * index]);
+            var drawer_left_face = group.getObjectById(closet_drawers_ids[5 * index + 2]);
+            var drawer_right_face = group.getObjectById(closet_drawers_ids[5 * index + 3]);
+            var drawer_back_face = group.getObjectById(closet_drawers_ids[5 * index + 4]);
+            closeDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face);
+        }
+        i += 5;
+        index++;
+    }
+}
+
+
+function doesSlotHaveHingedDoor(slot) {
+    for (let i = 0; i < closet_hinged_doors_ids.length; i++) {
+        if (closet.hingedDoors[i].slotId == slot) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function doesSlotHaveOpenDrawers(slot) {
+    var closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
+    var index = 0;
+    for (let i = 0; i < closet_drawers_ids.length; i += 6) {
+        if (closet.drawers[index].slotId == slot) {
+            return group.getObjectById(closet_drawers_ids[5 * index + 1]).position.z
+                >= closet_front;
+        }
+        index++;
+    }
+    return false;
+}
+
+function doesClosetHaveOpenDrawers() {
+    var closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
+    var index = 0;
+    for (let i = 0; i < closet_drawers_ids.length; i += 6) {
+        if (i > 0) index = i - 5;
+        return group.getObjectById(closet_drawers_ids[5 * index + 1]).position.z
+            >= closet_front;
+    }
+    return false;
+}
+
+function doesClosetHaveHingedDoors() {
+    return closet.hingedDoors.length != 0;
+}
+
+function doesClosetHaveSlidingDoors() {
+    return closet.slidingDoors.length != 0;
 }
 
 /**
@@ -379,8 +601,14 @@ function removePole() {
  * @param {THREE.Group} group cylinder's group
  */
 function generateCylinder(slot) {
-    var leftFace = group.getObjectById(closet_faces_ids[2]), rightFace = group.getObjectById(closet_faces_ids[3]);
-    var radiusTop = 3, radiusBottom = 3, radialSegments = 20, heightSegments = 20, thetaStart = 0, thetaLength = Math.PI * 2;
+    var leftFace = group.getObjectById(closet_faces_ids[2]),
+        rightFace = group.getObjectById(closet_faces_ids[3]);
+    var radiusTop = 3,
+        radiusBottom = 3,
+        radialSegments = 20,
+        heightSegments = 20,
+        thetaStart = 0,
+        thetaLength = Math.PI * 2;
     var openEnded = false;
     var height, x, y, z;
 
@@ -474,6 +702,113 @@ function generateShelf(slot) {
     closet_shelves_ids.push(meshID);
 }
 
+function generateDrawer(slot) {
+
+    var leftFace = group.getObjectById(closet_faces_ids[2]);
+    var rightFace = group.getObjectById(closet_faces_ids[3]);
+    var depthDrawer = 3;
+    var heightDrawer = 15;
+    var depthCloset = closet.getClosetDepth();
+    var width;
+    var x, y, z;
+    var spaceDrawerModule = 10;
+
+    //For now this follows the same logic as the pole, it should be changed to whatever dimensions the shelf is allowed to have
+    if (closet_slots_faces_ids.length == 0) {
+        width = getCurrentClosetWidth();
+        x = calculateComponentPosition(rightFace.position.x, leftFace.position.x);
+        y = calculateComponentPosition(rightFace.position.y, leftFace.position.y);
+        z = calculateComponentPosition(rightFace.position.z, leftFace.position.z);
+    } else if (slot == 1) {
+        let firstSlot = group.getObjectById(closet_slots_faces_ids[0]);
+        width = calculateDistance(leftFace.position.x, firstSlot.position.x);
+        x = calculateComponentPosition(leftFace.position.x, firstSlot.position.x);
+        y = calculateComponentPosition(leftFace.position.y, firstSlot.position.y);
+        z = calculateComponentPosition(leftFace.position.z, firstSlot.position.z);
+    } else if (slot > 1 && slot <= closet_slots_faces_ids.length) {
+        let slotToTheLeft = group.getObjectById(closet_slots_faces_ids[slot - 2]);
+        let slotToTheRight = group.getObjectById(closet_slots_faces_ids[slot - 1]);
+        width = calculateDistance(slotToTheLeft.position.x, slotToTheRight.position.x);
+        x = calculateComponentPosition(slotToTheLeft.position.x, slotToTheRight.position.x);
+        y = calculateComponentPosition(slotToTheLeft.position.y, slotToTheRight.position.y);
+        z = calculateComponentPosition(slotToTheLeft.position.z, slotToTheRight.position.z);
+    } else {
+        let lastSlot = group.getObjectById(closet_slots_faces_ids[slot - 2]);
+        width = calculateDistance(lastSlot.position.x, rightFace.position.x);
+        x = calculateComponentPosition(lastSlot.position.x, rightFace.position.x);
+        y = calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
+        z = calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
+    }
+    var module = new Module([width, depthDrawer, depthCloset, x, y - (spaceDrawerModule / 4), z], ///Base
+        [width, depthDrawer, depthCloset, x, y + heightDrawer + (spaceDrawerModule / 4), z], ///Cima
+        [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x - (width / 2), y + (heightDrawer / 2), z], ///Left
+        [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x + (width / 2), y + (heightDrawer / 2), z]); ///Rigtht
+    var borders = module.module_faces;
+    for (var i = 0; i < borders.length; i++) {
+        closet_modules_ids.push(generateParellepiped(borders[i][0],
+            borders[i][1], borders[i][2], borders[i][3],
+            borders[i][4], borders[i][5], material, group));
+    }
+    var drawer = new Drawer([width - spaceDrawerModule, depthDrawer, depthCloset, x, y + (depthDrawer / 2), z], ///Base
+        [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z + (depthCloset / 2) - (depthDrawer / 2)], ///Frent
+        [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x - (width / 2) + (spaceDrawerModule / 2), y + (heightDrawer / 2), z], ///Left
+        [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x + (width / 2) - (spaceDrawerModule / 2), y + (heightDrawer / 2), z], ///Right
+        [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z - (depthCloset / 2) + (depthDrawer / 2)],
+        slot); ///Back
+    var borders_drawer = drawer.drawer_faces;
+
+    for (var i = 0; i < borders_drawer.length; i++) {
+        closet_drawers_ids.push(generateParellepiped(borders_drawer[i][0],
+            borders_drawer[i][1], borders_drawer[i][2], borders_drawer[i][3],
+            borders_drawer[i][4], borders_drawer[i][5], material, group));
+    }
+
+    closet.addModule(module);
+    closet.addDrawer(drawer);
+}
+
+function generateHingedDoor(slot) {
+    var leftFace = group.getObjectById(closet_faces_ids[2]);
+    var rightFace = group.getObjectById(closet_faces_ids[3]);
+    var depth = 3;
+    var height = closet.getClosetHeight();
+    var depth_closet = closet.getClosetDepth();
+    var width;
+    var x, y, z;
+
+    //For now this follows the same logic as the pole, it should be changed to whatever dimensions the shelf is allowed to have
+    if (closet_slots_faces_ids.length == 0) {
+        width = getCurrentClosetWidth();
+        x = calculateComponentPosition(rightFace.position.x, leftFace.position.x);
+        y = calculateComponentPosition(rightFace.position.y, leftFace.position.y);
+        z = calculateComponentPosition(rightFace.position.z, leftFace.position.z);
+    } else if (slot == 1) {
+        let firstSlot = group.getObjectById(closet_slots_faces_ids[0]);
+        width = calculateDistance(leftFace.position.x, firstSlot.position.x);
+        x = calculateComponentPosition(leftFace.position.x, firstSlot.position.x);
+        y = calculateComponentPosition(leftFace.position.y, firstSlot.position.y);
+        z = calculateComponentPosition(leftFace.position.z, firstSlot.position.z);
+    } else if (slot > 1 && slot <= closet_slots_faces_ids.length) {
+        let slotToTheLeft = group.getObjectById(closet_slots_faces_ids[slot - 2]);
+        let slotToTheRight = group.getObjectById(closet_slots_faces_ids[slot - 1]);
+        width = calculateDistance(slotToTheLeft.position.x, slotToTheRight.position.x);
+        x = calculateComponentPosition(slotToTheLeft.position.x, slotToTheRight.position.x);
+        y = calculateComponentPosition(slotToTheLeft.position.y, slotToTheRight.position.y);
+        z = calculateComponentPosition(slotToTheLeft.position.z, slotToTheRight.position.z);
+    } else {
+        let lastSlot = group.getObjectById(closet_slots_faces_ids[slot - 2]);
+        width = calculateDistance(lastSlot.position.x, rightFace.position.x);
+        x = calculateComponentPosition(lastSlot.position.x, rightFace.position.x);
+        y = calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
+        z = calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
+    }
+
+    var meshID = generateParellepiped(width, height, depth, x, y, z + (depth_closet / 2), material, group);
+    var hingedDoor = new HingedDoor([width, height, depth, x, y, z + (depth_closet / 2)], slot, meshID);
+    closet.addHingedDoor(hingedDoor);
+    closet_hinged_doors_ids.push(meshID);
+}
+
 function generateSlidingDoor() {
     var leftFace = group.getObjectById(closet_faces_ids[2]);
     var rightFace = group.getObjectById(closet_faces_ids[3]);
@@ -525,11 +860,11 @@ function generateSlidingDoor() {
         back_door.sliding_door_axes[5],
         material, group);
 
-    closet.addDoor(front_door);
-    closet.addDoor(back_door);
+    closet.addSlidingDoor(front_door);
+    closet.addSlidingDoor(back_door);
 
-    closet_doors_ids.push(front_door_mesh_id);
-    closet_doors_ids.push(back_door_mesh_id);
+    closet_sliding_doors_ids.push(front_door_mesh_id);
+    closet_sliding_doors_ids.push(back_door_mesh_id);
 
     //Adds back frame
     var borders = back_frame.module_faces;
@@ -539,6 +874,7 @@ function generateSlidingDoor() {
             borders[i][4], borders[i][5], material, group);
     }
 }
+
 
 /**
  * Calculates a pole's height
@@ -567,9 +903,9 @@ function calculateDistance(topPosition, bottomPosition) {
  */
 function animate() {
     //animate the scene at 60 frames per second
-    setTimeout(function () {
-        requestAnimationFrame(animate);
-    }, 1000 / 60);
+    //setTimeout(function () {
+    requestAnimationFrame(animate);
+    //}, 1000 / 60);
     controls.update();
     render();
 }
@@ -748,16 +1084,219 @@ function onDocumentMouseDown(event) {
                 }
             }
 
+            var flagOpen = false;
+            var flagClose = false;
+            var j = 0;
+
             //Checks if the selected object is a door
-            for (let j = 0; j < closet_doors_ids.length; j++) {
-                let door = group.getObjectById(closet_doors_ids[j]);
-                if (door == face) {
+
+            while (!flagOpen && !flagClose && j < closet_sliding_doors_ids.length) {
+                slidingDoor = group.getObjectById(closet_sliding_doors_ids[j]);
+                if (slidingDoor == face) {
                     controls.enabled = false;
-                    selected_door = face;
-                    if (raycaster.ray.intersectPlane(plane, intersection)) {
-                        offset = intersection.x - selected_door.position.x;
+                    if (slidingDoor.position.x < 0) {
+                        flagClose = true; //"Closing" ==> slide door to the right
+                    } else {
+                        flagOpen = true; //"Opening" ==> slide door to the left
                     }
                 }
+                j++;
+            }
+
+            if (flagOpen) {
+                requestAnimationFrame(slideDoorToLeft);
+            } else if (flagClose) {
+                requestAnimationFrame(slideDoorToRight);
+            }
+
+            flagOpen = false;
+            flagClose = false;
+            j = 0;
+
+            while (!flagOpen && !flagClose && j < closet_drawers_ids.length) {
+                //Always get the front face of any drawer at index 5*j+1
+                var drawer_front_face = group.getObjectById(closet_drawers_ids[5 * j + 1]);
+                //Check if the selected object is a drawer's front face
+                if (drawer_front_face == face) {
+                    controls.enabled = false;
+                    var drawer_base_face = group.getObjectById(closet_drawers_ids[5 * j]);
+                    var drawer_left_face = group.getObjectById(closet_drawers_ids[5 * j + 2]);
+                    var drawer_right_face = group.getObjectById(closet_drawers_ids[5 * j + 3]);
+                    var drawer_back_face = group.getObjectById(closet_drawers_ids[5 * j + 4]);
+                    if (drawer_front_face.position.z >= 130) {
+                        flagClose = true;
+                    } else {
+                        flagOpen = true;
+                    }
+                }
+                j++;
+            }
+            if (flagOpen) {
+                requestAnimationFrame(function () {
+                    openDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face);
+                });
+            } else if (flagClose) {
+                requestAnimationFrame(function () {
+                    closeDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face);
+                });
+            }
+
+
+            j = 0;
+            flagOpen = false;
+            flagClose = false;
+            while (!flagOpen && !flagClose && j < closet_hinged_doors_ids.length) {
+                hingedDoor = group.getObjectById(closet_hinged_doors_ids[j]);
+                var closet_face = group.getObjectById(closet_faces_ids[0]);
+                if (hingedDoor == face) {
+                    controls.enabled = false;
+                    if (hingedDoor.rotation.y < 0) {
+                        flagClose = true;
+                    } else {
+                        flagOpen = true;
+                    }
+                }
+                j++;
+            }
+            if (flagOpen) {
+                requestAnimationFrame(openHingedDoor);
+            } else if (flagClose) {
+                requestAnimationFrame(closeHingedDoor);
+            }
+        }
+    }
+}
+
+var slideDoorToLeft = function () {
+    if (doesClosetHaveOpenDrawers()) {
+        waitingDoors.push(slideDoorToLeftAnimation);
+        closeAllOpenDrawers();
+    } else {
+        slideDoorToLeftAnimation();
+    }
+}
+
+function slideDoorToLeftAnimation() {
+    let closet_left = group.getObjectById(closet_faces_ids[2]);
+    let distanceFromDoorToLeftFace = Math.abs(slidingDoor.position.x - closet_left.position.x);
+    let position = (Math.abs(closet_left.position.x - closet_left.geometry.parameters.width) / 2) - 2;
+    if (position < distanceFromDoorToLeftFace) {
+        slidingDoor.translateX(-1);
+        requestAnimationFrame(slideDoorToLeft);
+        render();
+        controls.update();
+    }
+}
+
+var slideDoorToRight = function () {
+    if (doesClosetHaveOpenDrawers()) {
+        waitingDoors.push(slideDoorToRightAnimation);
+        closeAllOpenDrawers();
+    } else {
+        slideDoorToRightAnimation();
+    }
+}
+
+function slideDoorToRightAnimation() {
+    let closet_right = group.getObjectById(closet_faces_ids[3]);
+    let distanceFromDoorToRightFace = Math.abs(slidingDoor.position.x - closet_right.position.x);
+    let position = (Math.abs(closet_right.position.x + closet_right.geometry.parameters.width) / 2) - 2;
+    if (position < distanceFromDoorToRightFace) {
+        slidingDoor.translateX(1);
+        requestAnimationFrame(slideDoorToRight);
+        render();
+        controls.update();
+    }
+}
+
+var incrementHingedDoor = 100;
+
+var openHingedDoor = function () {
+    if (hingedDoor.rotation.y > (-Math.PI / 2)) {
+        var rotationX = (hingedDoor.geometry.parameters.width / 2);
+        hingedDoor.translateX(-rotationX);
+        hingedDoor.rotation.y -= Math.PI / incrementHingedDoor;
+        hingedDoor.translateX(rotationX);
+        requestAnimationFrame(openHingedDoor);
+        render();
+        controls.update();
+    }
+}
+
+var closeHingedDoor = function () {
+    var hingedDoorSlot = getHingedDoorSlot(hingedDoor);
+    if (doesSlotHaveOpenDrawers(hingedDoorSlot)) {
+        waitingDoors.push(closeHingedDoorAnimation);
+        closeSlotOpenDrawers(hingedDoorSlot);
+    } else {
+        closeHingedDoorAnimation();
+    }
+}
+
+function closeHingedDoorAnimation() {
+    if (hingedDoor.rotation.y < 0) {
+        var rotationX = hingedDoor.geometry.parameters.width / 2;
+        hingedDoor.translateX(-rotationX);
+        hingedDoor.rotation.y += Math.PI / incrementHingedDoor;
+        hingedDoor.translateX(rotationX);
+        requestAnimationFrame(closeHingedDoor);
+        render();
+        controls.update();
+    } else {
+        isHingedDoorClosed = true;
+    }
+}
+
+function getHingedDoorSlot(hingedDoorMesh) {
+    for (let i = 0; i < closet.hingedDoors.length; i++) {
+        if (hingedDoorMesh.id == closet.hingedDoors[i].meshId) {
+            return closet.hingedDoors[i].slotId;
+        }
+    }
+    return;
+}
+
+var incrementDrawer = 1;
+
+var openDrawer = function (drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face) {
+    if (drawer_front_face.position.z <= 130) {
+
+        drawer_front_face.translateZ(incrementDrawer);
+        drawer_back_face.translateZ(incrementDrawer);
+        drawer_base_face.translateZ(incrementDrawer);
+        drawer_left_face.translateZ(incrementDrawer);
+        drawer_right_face.translateZ(incrementDrawer);
+
+        requestAnimationFrame(function () {
+            openDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face);
+        });
+        render();
+        controls.update();
+    } else {
+        openDrawers.push(true);
+    }
+}
+
+var closeDrawer = function (drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face) {
+    var closet_front = Math.abs(group.getObjectById(closet_faces_ids[4]).position.z);
+    if (drawer_front_face.position.z > closet_front) {
+        drawer_front_face.translateZ(-incrementDrawer);
+        drawer_back_face.translateZ(-incrementDrawer);
+        drawer_base_face.translateZ(-incrementDrawer);
+        drawer_left_face.translateZ(-incrementDrawer);
+        drawer_right_face.translateZ(-incrementDrawer);
+        requestAnimationFrame(function () {
+            closeDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face);
+        });
+        render();
+        controls.update();
+    } else {
+        console.log(openDrawers);
+        openDrawers.pop();
+        if (openDrawers.length == 0) {
+            while (waitingDoors.length != 0) {
+                waitingDoors.pop()();
+                //isDrawerClosed = false;
             }
         }
     }
@@ -793,7 +1332,7 @@ function onDocumentMouseMove(event) {
     var x = event.clientX;
     var y = event.clientY;
     mouse.x = (x - rect.left) / (canvasWebGL.clientWidth / 2.0) - 1.0; //Get mouse x position
-    mouse.y = - ((y - rect.bottom) / (canvasWebGL.clientHeight / 2.0) + 1.0); //Get mouse y position
+    mouse.y = -((y - rect.bottom) / (canvasWebGL.clientHeight / 2.0) + 1.0); //Get mouse y position
     raycaster.setFromCamera(mouse, camera); //Set raycast position
 
     //If the selected object is a slot
@@ -885,7 +1424,9 @@ function moveComponent() {
         var topFacePosition = group.getObjectById(closet_faces_ids[1]).position.y;
 
         if (Math.abs(newPosition) < Math.abs(topFacePosition) - thickness &&
-            newPosition >= bottomFacePosition + thickness) { selected_component.position.y = newPosition; }
+            newPosition >= bottomFacePosition + thickness) {
+            selected_component.position.y = newPosition;
+        }
     }
 
     var intersects = raycaster.intersectObjects(scene.children[0].children);
@@ -906,7 +1447,7 @@ function moveFace() {
     if (raycaster.ray.intersectPlane(plane, intersection)) {
 
         var rightFacePosition = intersection.x - offset + selected_face.position.x; //Position of the right closet face
-        var leftFacePosition = - intersection.x - offset - selected_face.position.x; //Position of the left closet face
+        var leftFacePosition = -intersection.x - offset - selected_face.position.x; //Position of the left closet face
 
         if (closet_slots_faces_ids.length == 0) {
 
@@ -936,7 +1477,7 @@ function moveFace() {
         } else {
 
             var rightSlotPosition = group.getObjectById(closet_slots_faces_ids[closet_slots_faces_ids.length - 1]).position.x; //Position of the last (more to the right) slot 
-            var leftSlotPosition = - group.getObjectById(closet_slots_faces_ids[0]).position.x; //Position of the first (more to the left) slot
+            var leftSlotPosition = -group.getObjectById(closet_slots_faces_ids[0]).position.x; //Position of the first (more to the left) slot
 
             /**
              * Checks if...

@@ -4,8 +4,13 @@ using support.dto;
 using core.domain;
 using core.dto;
 using Xunit;
+using static core.domain.CustomizedProduct;
+
 namespace core_tests.domain
 {
+    /// <summary>
+    /// Tests of the class CatalogueCollection
+    /// </summary>
     public class CatalogueCollectionTest
     {
         [Fact]
@@ -31,22 +36,22 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("Amém", 12);
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             Assert.NotNull(new CatalogueCollection(customCollection));
@@ -76,18 +81,18 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido", 34);
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
@@ -95,7 +100,7 @@ namespace core_tests.domain
 
 
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(cp);
 
@@ -109,7 +114,6 @@ namespace core_tests.domain
         public void ensureCatalogueCollectionContructorIsValid()
         {
             var category = new ProductCategory("Drawers");
-
 
             //Creating Dimensions
             List<Double> values2 = new List<Double>();
@@ -132,18 +136,18 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém", 12);
+            Finish finish2 = Finish.valueOf("Acabamento polido",34);
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
@@ -151,7 +155,7 @@ namespace core_tests.domain
 
 
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(cp);
 
@@ -190,18 +194,18 @@ namespace core_tests.domain
             colors.Add(color1);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
-            Finish finish2 = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Amém",12);
+            Finish finish2 = Finish.valueOf("Acabamento polido",34);
             finishes.Add(finish);
             finishes.Add(finish2);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
@@ -209,7 +213,7 @@ namespace core_tests.domain
 
 
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(cp);
 
@@ -248,26 +252,27 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("Amém",12);
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             Assert.Equal("List of Customized Products: System.Collections.Generic.List`1[core.domain.CatalogueCollectionProduct], Customized Product Collection Name Lab Coats", new CatalogueCollection(customCollection).ToString());
         }
+
         [Fact]
         public void ensureEqualsSucceedsIfSameInstance()
         {
@@ -291,27 +296,28 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("Amém",12);
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CatalogueCollection collection = new CatalogueCollection(customCollection);
             Assert.True(collection.Equals(collection));
         }
+
         [Fact]
         public void ensureEqualsFailsIfObjjectIsNull()
         {
@@ -335,22 +341,22 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("Amém",12);
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CatalogueCollection collection = new CatalogueCollection(customCollection);
@@ -379,22 +385,22 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CatalogueCollection collection = new CatalogueCollection(customCollection);
@@ -423,22 +429,22 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CatalogueCollection collection = new CatalogueCollection(customCollection);
@@ -467,22 +473,22 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CustomizedProductCollection customCollection2 = new CustomizedProductCollection("Phone Microwave (Temporary Name)");
@@ -513,23 +519,23 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
-            CustomizedProduct cp2 = new CustomizedProduct("#619", "Sherfu", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
+            CustomizedProduct cp2 = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 2", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             customCollection.addCustomizedProduct(cp2);
@@ -549,7 +555,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -560,23 +566,23 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
-            CustomizedProduct cp2 = new CustomizedProduct("#619", "Sherfu", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
+            CustomizedProduct cp2 = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 2", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CustomizedProductCollection customCollection2 = new CustomizedProductCollection("Phone Microwave (Temporary Name)");
@@ -597,7 +603,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -608,22 +614,22 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CatalogueCollection collection = new CatalogueCollection(customCollection);
@@ -641,7 +647,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -652,26 +658,26 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CatalogueCollection collection = new CatalogueCollection(customCollection);
-            CustomizedProduct cp2 = new CustomizedProduct("#619", "Sherfu", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp2 = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 2", product, customizedDimensions).withMaterial(custMaterial1).build();
             Assert.False(collection.hasCustomizedProduct(cp2));
         }
         [Fact]
@@ -686,7 +692,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -697,22 +703,22 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             CatalogueCollection collection = new CatalogueCollection(customCollection);
@@ -732,7 +738,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -743,23 +749,23 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
-            CustomizedProduct cp2 = new CustomizedProduct("#619", "Sherfu", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
+            CustomizedProduct cp2 = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 2", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             Assert.Throws<ArgumentException>(() => new CatalogueCollection(customCollection, new List<CustomizedProduct>(new[] { cp2 })));
@@ -776,7 +782,7 @@ namespace core_tests.domain
             DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
             Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() {measurement};
+            List<Measurement> measurements = new List<Measurement>() { measurement };
 
             //Creating a material
             string reference = "1160912";
@@ -787,22 +793,22 @@ namespace core_tests.domain
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém");
+            Finish finish = Finish.valueOf("amém", 12);
             finishes.Add(finish);
 
-            Material material = new Material(reference, designation, colors, finishes);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
             List<Material> materials = new List<Material>();
             materials.Add(material);
 
             IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("#666", "Shelf", category, matsList, measurements);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = new CustomizedProduct("#666", "Shelf", custMaterial1, customizedDimensions, product);
+            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
             CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
             customCollection.addCustomizedProduct(cp);
             Assert.Throws<ArgumentException>(() => new CatalogueCollection(customCollection, null));

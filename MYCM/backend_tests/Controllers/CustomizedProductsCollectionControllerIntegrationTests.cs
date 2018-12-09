@@ -44,7 +44,7 @@ namespace backend_tests.Controllers
                 BaseAddress = new Uri("http://localhost:5001")
             });
         }
-        
+/*         
         /// <summary>
         /// Ensures that's not possible to create a customized product collection with an invalid name (null/empty)
         /// </summary>
@@ -141,7 +141,7 @@ namespace backend_tests.Controllers
             grantExistsCustomizedProductCollectionExistWithName(name);
             //We can also grant that its possible to fetch the customized product collection by its ID
             return JsonConvert.DeserializeObject<CustomizedProductCollectionDTO>(await createCustomizedProductsCollection.Content.ReadAsStringAsync());
-        }
+        } */
 
         //!
         //TODO URGENT COMMENT OUT THESE TESTS AND FIX THEM AFTER FIXES ARE MADE TO CUSTOMIZEDPRODUCTCONTROLLERINTEGRATION TESTS
@@ -226,7 +226,7 @@ namespace backend_tests.Controllers
             return updatedCustomizedProductCollectionDTO;
         } */
 
-        /// <summary>
+/*         /// <summary>
         /// Ensures that there is no customized product collection with a certain name
         /// </summary>
         /// <param name="name">string with the customized product collection name</param>
@@ -251,6 +251,6 @@ namespace backend_tests.Controllers
         private void grantExistsCustomizedProductCollectionExistWithResourceID(long id){
             var customizedProductCollection=httpClient.GetAsync(CUSTOMIZED_PRODUCTS_COLLECTION_URI+"/"+id);
             Assert.Equal(HttpStatusCode.OK,customizedProductCollection.Result.StatusCode);
-        }
+        } */
     }
 }

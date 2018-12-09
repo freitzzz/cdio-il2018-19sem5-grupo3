@@ -1,5 +1,6 @@
 using System.Runtime.Serialization;
-using core.dto;
+using core.modelview.color;
+using core.modelview.finish;
 
 namespace core.modelview.customizedmaterial
 {
@@ -14,7 +15,7 @@ namespace core.modelview.customizedmaterial
         /// </summary>
         /// <value>Gets/Sets the identifier</value>
         [DataMember(Name = "id")]
-        public long id { get; set; }
+        public long customizedMaterialId { get; set; }
 
         /// <summary>
         /// Materials PID
@@ -28,13 +29,14 @@ namespace core.modelview.customizedmaterial
         /// CustomizedMaterials finish
         /// </summary>
         /// <value>Gets/Sets the finish</value>
-        public FinishDTO finish { get; set; }
+        [DataMember(Name = "finish")]
+        public GetFinishModelView finish { get; set; }
 
         /// <summary>
         /// CustomizedMaterials color
         /// </summary>
         /// <value>Gets/Sets the color</value>
         [DataMember(Name = "color")]
-        public ColorDTO color { get; set; }
+        public GetColorModelView color { get; set; }
     }
 }

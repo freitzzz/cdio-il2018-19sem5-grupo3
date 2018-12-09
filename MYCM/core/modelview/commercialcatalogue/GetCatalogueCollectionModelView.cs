@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using core.modelview.customizedproduct;
+using core.modelview.customizedproductcollection;
 
 namespace core.modelview.commercialcatalogue
 {
@@ -9,7 +11,7 @@ namespace core.modelview.commercialcatalogue
     [DataContract]
     public class GetCatalogueCollectionModelView
     {
-        
+
 
         /// <summary>
         /// Catalogue Collection's Customized Product Collection.

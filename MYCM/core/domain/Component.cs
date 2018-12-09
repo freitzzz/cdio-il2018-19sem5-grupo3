@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace core.domain
 {
-    public class Component : DTOAble<ComponentDTO>
+    public class Component : Restrictable, DTOAble<ComponentDTO>
     {
 
         /// <summary>
@@ -50,17 +50,6 @@ namespace core.domain
         /// </summary>
         private Product _complementaryProduct;       //!private field used for lazy loading, do not use this for storing or fetching data
         public Product complementaryProduct { get => LazyLoader.Load(this, ref _complementaryProduct); protected set => _complementaryProduct = value; }
-        /// <summary>
-        /// List with the restrictions which the current component can be have
-        /// </summary>
-        private List<Restriction> _restrictions;    //!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); protected set => _restrictions = value; }
-
-        /// <summary>
-        /// LazyLoader being injected by the Framework.
-        /// </summary>
-        /// <value>Private Gets/Sets the LazyLoader.</value>
-        private ILazyLoader LazyLoader { get; set; }
 
         /// <summary>
         /// Private constructor used for injecting a LazyLoader.
@@ -143,20 +132,6 @@ namespace core.domain
         private void checkComponentProduct(Product product)
         {
             if (product == null) throw new ArgumentException(INVALID_COMPONENT_PRODUCT);
-        }
-        /// <summary>
-        /// Adds a restriction to the list of restrictions
-        /// </summary>
-        /// <param name="restriction">restriction to be added</param>
-        /// <returns>true if restriction was added successfully</returns>
-        public bool addRestriction(Restriction restriction)
-        {
-            if (restriction == null || restrictions.Contains(restriction))
-            {
-                throw new ArgumentException(INVALID_COMPONENT_RESTRICTIONS);
-            }
-            restrictions.Add(restriction);
-            return true;
         }
         
         /// <summary>

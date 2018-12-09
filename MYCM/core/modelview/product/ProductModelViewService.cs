@@ -4,10 +4,12 @@ using core.modelview.customizeddimensions;
 using core.modelview.material;
 using core.modelview.measurement;
 using core.modelview.productcategory;
-using core.modelview.slotdimensions;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using core.services;
+using core.modelview.productslotwidths;
+using core.modelview.productmaterial;
 
 namespace core.modelview.product
 {
@@ -39,9 +41,12 @@ namespace core.modelview.product
             }
 
             GetBasicProductModelView basicProductModelView = new GetBasicProductModelView();
-            basicProductModelView.id = product.Id;
+            basicProductModelView.productId = product.Id;
             basicProductModelView.reference = product.reference;
             basicProductModelView.designation = product.designation;
+            basicProductModelView.modelFilename = product.modelFilename;
+            basicProductModelView.supportsSlots = product.supportsSlots;
+            basicProductModelView.hasComponents = product.components.Any();
             return basicProductModelView;
         }
 
@@ -58,23 +63,21 @@ namespace core.modelview.product
             }
 
             GetProductModelView productModelView = new GetProductModelView();
-            productModelView.id = product.Id;
+            productModelView.productId = product.Id;
             productModelView.reference = product.reference;
             productModelView.designation = product.designation;
+            productModelView.modelFilename = product.modelFilename;
             productModelView.category = ProductCategoryModelViewService.fromEntityAsBasic(product.productCategory);
             if (product.components.Any())
             {
                 productModelView.components = ComponentModelViewService.fromCollection(product.components);
             }
             //no need to check if the product has materials and measurements, since they're mandatory
-            productModelView.materials = MaterialModelViewService.fromCollection(product.productMaterials.Select(pm => pm.material));
+            productModelView.materials = ProductMaterialModelViewService.fromCollection(product.productMaterials);
             productModelView.measurements = MeasurementModelViewService.fromCollection(product.productMeasurements.Select(pm => pm.measurement));
             if (product.supportsSlots)
             {
-                productModelView.slotSizes = new GetSlotDimensionsModelView();
-                productModelView.slotSizes.minSize = CustomizedDimensionsModelViewService.fromEntity(product.minSlotSize);
-                productModelView.slotSizes.maxSize = CustomizedDimensionsModelViewService.fromEntity(product.maxSlotSize);
-                productModelView.slotSizes.recommendedSize = CustomizedDimensionsModelViewService.fromEntity(product.recommendedSlotSize);
+                productModelView.slotWidths = ProductSlotWidthsModelViewService.fromEntity(product.slotWidths);
             }
             return productModelView;
         }
@@ -94,23 +97,21 @@ namespace core.modelview.product
             }
 
             GetProductModelView productModelView = new GetProductModelView();
-            productModelView.id = product.Id;
+            productModelView.productId = product.Id;
             productModelView.reference = product.reference;
             productModelView.designation = product.designation;
+            productModelView.modelFilename = product.modelFilename;
             productModelView.category = ProductCategoryModelViewService.fromEntityAsBasic(product.productCategory);
             if (product.components.Any())
             {
                 productModelView.components = ComponentModelViewService.fromCollection(product.components);
             }
             //no need to check if the product has materials and measurements, since they're mandatory
-            productModelView.materials = MaterialModelViewService.fromCollection(product.productMaterials.Select(pm => pm.material));
+            productModelView.materials = ProductMaterialModelViewService.fromCollection(product.productMaterials);
             productModelView.measurements = MeasurementModelViewService.fromCollection(product.productMeasurements.Select(pm => pm.measurement), unit);
             if (product.supportsSlots)
             {
-                productModelView.slotSizes = new GetSlotDimensionsModelView();
-                productModelView.slotSizes.minSize = CustomizedDimensionsModelViewService.fromEntity(product.minSlotSize, unit);
-                productModelView.slotSizes.maxSize = CustomizedDimensionsModelViewService.fromEntity(product.maxSlotSize, unit);
-                productModelView.slotSizes.recommendedSize = CustomizedDimensionsModelViewService.fromEntity(product.recommendedSlotSize, unit);
+                productModelView.slotWidths = ProductSlotWidthsModelViewService.fromEntity(product.slotWidths, unit);
             }
             return productModelView;
         }

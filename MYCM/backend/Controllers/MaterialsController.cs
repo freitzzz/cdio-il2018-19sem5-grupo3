@@ -31,36 +31,31 @@ namespace backend.Controllers
         /// <summary>
         /// Constant that represents the 400 Bad Request message for when no Materials are found.
         /// </summary>
-        private const string NO_MATERIALS_FOUND_REFERENCE = "No materials found";
-
+        private const string NO_MATERIALS_FOUND = "No materials found.";
         /// <summary>
         /// Constant that represents the 400 Bad Request message for when a Material is not found.
         /// </summary>
-        private const string MATERIAL_NOT_FOUND_REFERENCE = "Material not found";
-
+        private const string MATERIAL_NOT_FOUND = "Material not found.";
         /// <summary>
         /// Constant that represents the 400 Bad Request message for when a Material is not removed.
         /// </summary>
-        private const string MATERIAL_NOT_REMOVED_REFERENCE = "Could not remove material";
-
+        private const string UNABLE_TO_REMOVE_MATERIAL = "Could not remove the material.";
         /// <summary>
         /// Constant that represents the 400 Bad Request message for when a Material is not removed.
         /// </summary>
-        private const string MATERIAL_NOT_ADDED_REFERENCE = "Could not add material";
+        private const string UNABLE_TO_ADD_MATERIAL = "Could not add the material.";
         /// <summary>
         /// Constant that represents the message that ocurres if the update of a material is successful
         /// </summary>
-        private const string VALID_MATERIAL_UPDATE_MESSAGE = "Material was updated with success";
+        private const string UPDATE_MATERIAL_SUCCESS = "The material was updated with success.";
         /// <summary>
         /// Constant that represents the message that ocurres if the update of a material fails
         /// </summary>
-        private const string INVALID_MATERIAL_UPDATE_MESSAGE = "An error occured while updating the material";
-
+        private const string UNABLE_TO_UPDATE_MATERIAL = "An error occured while updating the material.";
         /// <summary>
         /// Constant that represents the message for creating a Material with an invalid Request Body.
         /// </summary>
         private const string INVALID_REQUEST_BODY_MESSAGE = "The request body is invalid\nCheck documentation for more information";
-
         /// <summary>
         /// Constant that represents the log message for when a GET All Request starts
         /// </summary>
@@ -196,7 +191,7 @@ namespace backend.Controllers
             if (Collections.isListEmpty(materials))
             {
                 logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
-                return BadRequest(new{error = NO_MATERIALS_FOUND_REFERENCE});
+                return BadRequest(new SimpleJSONMessageService(NO_MATERIALS_FOUND));
             }
             logger.LogInformation(LOG_GET_ALL_SUCCESS, materials);
             return Ok(materials);
@@ -220,7 +215,7 @@ namespace backend.Controllers
                 if (materialDTO == null)
                 {
                     logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST, id);
-                    return BadRequest(new {error = MATERIAL_NOT_FOUND_REFERENCE});
+                    return BadRequest(new SimpleJSONMessageService(MATERIAL_NOT_FOUND));
                 }
                 logger.LogInformation(LOG_GET_BY_ID_SUCCESS, materialDTO);
                 return Ok(materialDTO);
@@ -228,7 +223,7 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_GET_BY_ID_BAD_REQUEST, id);
-                return BadRequest(new {error = INVALID_REQUEST_BODY_MESSAGE});
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
         }
 
@@ -254,18 +249,18 @@ namespace backend.Controllers
                 }
                 else
                 {
-                    return BadRequest(new{error = MATERIAL_NOT_ADDED_REFERENCE});
+                    return BadRequest(new SimpleJSONMessageService(UNABLE_TO_ADD_MATERIAL));
                 }
             }
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_POST_BAD_REQUEST, materialDTO);
-                return BadRequest(new {error = INVALID_REQUEST_BODY_MESSAGE});
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
             catch (ArgumentException argumentException)
             {
                 logger.LogWarning(argumentException, LOG_POST_BAD_REQUEST, materialDTO);
-                return BadRequest(new {error = argumentException.Message});
+                return BadRequest(new SimpleJSONMessageService(argumentException.Message));
             }
         }
 
@@ -289,11 +284,11 @@ namespace backend.Controllers
                 logger.LogInformation(LOG_DELETE_SUCCESS, id);
                 return NoContent();
             }catch(ResourceNotFoundException e){
-                logger.LogWarning(LOG_DELETE_BAD_REQUEST, id);
-                return NotFound(new{error = MATERIAL_NOT_REMOVED_REFERENCE});
+                logger.LogWarning(e, LOG_DELETE_BAD_REQUEST, id);
+                return NotFound(new SimpleJSONMessageService(UNABLE_TO_REMOVE_MATERIAL));
             }catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new {error = UNEXPECTED_ERROR});
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
         /// <summary>
@@ -313,16 +308,16 @@ namespace backend.Controllers
                 if (new core.application.MaterialsController().updateMaterialBasicInformation(updateMaterialData))
                 {
                     logger.LogInformation(LOG_PUT_SUCCESS, id, updateMaterialData);
-                    return Ok(new{error = VALID_MATERIAL_UPDATE_MESSAGE});
+                    return Ok(new SimpleJSONMessageService(UPDATE_MATERIAL_SUCCESS));
                 }
             }
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, id, updateMaterialData);
-                return BadRequest(new{error = INVALID_REQUEST_BODY_MESSAGE});
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
             logger.LogWarning(LOG_PUT_BAD_REQUEST, id, updateMaterialData);
-            return BadRequest(new{error = INVALID_MATERIAL_UPDATE_MESSAGE});
+            return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }
 
         /// <summary>
@@ -347,10 +342,10 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, addFinishDTO);
-                return BadRequest(new{error = INVALID_REQUEST_BODY_MESSAGE});
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
             logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, addFinishDTO);
-            return BadRequest(new{error = INVALID_MATERIAL_UPDATE_MESSAGE});
+            return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }
         /// <summary>
         /// Remove finish of a material for update
@@ -373,10 +368,10 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, idFinish);
-                return BadRequest(new {error = INVALID_REQUEST_BODY_MESSAGE});
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
             logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, idFinish);
-            return BadRequest(new {error = INVALID_MATERIAL_UPDATE_MESSAGE});
+            return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }
 
         /// <summary>
@@ -401,10 +396,10 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, addColorDTO);
-                return BadRequest(new {error = INVALID_REQUEST_BODY_MESSAGE});
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
             logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, addColorDTO);
-            return BadRequest(new {error = INVALID_MATERIAL_UPDATE_MESSAGE});
+            return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }
         /// <summary>
         /// Remove color of a material for update
@@ -427,10 +422,10 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, idColor);
-                return BadRequest(new {error = INVALID_REQUEST_BODY_MESSAGE});
+                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
             logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, idColor);
-            return BadRequest(new {error = INVALID_MATERIAL_UPDATE_MESSAGE});
+            return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }
     }
 }

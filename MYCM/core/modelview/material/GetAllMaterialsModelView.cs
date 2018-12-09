@@ -7,5 +7,5 @@ namespace core.modelview.material{
     /// </summary>
     /// <typeparam name="GetBasicMaterialModelView">Generic-Type param of the material basic information model view</typeparam>
     [CollectionDataContract]
-    public sealed class GetAllMaterialsModelView:List<GetBasicMaterialModelView>{}
+    public class GetAllMaterialsModelView:List<GetBasicMaterialModelView>{}
 }

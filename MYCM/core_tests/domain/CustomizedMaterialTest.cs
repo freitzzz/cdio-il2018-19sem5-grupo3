@@ -14,7 +14,7 @@ namespace core_tests.domain
         public void ensureCustomizedMaterialCantBeCreatedWithNullMaterial()
         {
             Color color = Color.valueOf("Ola", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Adeus");
+            Finish finish = Finish.valueOf("Adeus", 12);
 
             Action act = () => CustomizedMaterial.valueOf(null, color, finish);
 
@@ -24,8 +24,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureCustomizedMaterialCantBeCreatedWithNullColor()
         {
-            Finish finish = Finish.valueOf("Ola");
-            Material material = new Material("#verycoolreference", "designation",
+            Finish finish = Finish.valueOf("Ola", 12);
+            Material material = new Material("#verycoolreference", "designation", "ola.jpg",
             new List<Color>(new[] { Color.valueOf("Ola", 1, 1, 1, 1) }),
             new List<Finish>(new[] { finish }));
 
@@ -38,9 +38,9 @@ namespace core_tests.domain
         public void ensureCustomizedMaterialCantBeCreatedWithNullFinish()
         {
             Color color = Color.valueOf("ola", 1, 1, 1, 1);
-            Material material = new Material("#eeee213", "designation",
+            Material material = new Material("#eeee213", "designation", "ola.jpg",
             new List<Color>(new[] { color }),
-            new List<Finish>(new[] { Finish.valueOf("Ola") }));
+            new List<Finish>(new[] { Finish.valueOf("Ola", 12) }));
 
             Action act = () => CustomizedMaterial.valueOf(material, color, null);
 
@@ -52,8 +52,8 @@ namespace core_tests.domain
         {
             Color color = Color.valueOf("ola", 1, 1, 1, 1);
             Color otherColor = Color.valueOf("adeus", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("finish");
-            Material material = new Material("#material", "designation",
+            Finish finish = Finish.valueOf("finish", 12);
+            Material material = new Material("#material", "designation", "ola.jpg",
             new List<Color>() { color },
             new List<Finish>() { finish });
 
@@ -66,9 +66,9 @@ namespace core_tests.domain
         public void ensureCustomizedMaterialCantHaveAFinishThatTheMaterialItReferencesDoesNotHave()
         {
             Color color = Color.valueOf("ola", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("finish");
-            Finish otherFinish = Finish.valueOf("im different");
-            Material material = new Material("#material", "designation",
+            Finish finish = Finish.valueOf("finish", 12);
+            Finish otherFinish = Finish.valueOf("im different", 23);
+            Material material = new Material("#material", "designation", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish }));
 
@@ -81,8 +81,8 @@ namespace core_tests.domain
         public void ensureCustomizedMaterialCanBeCreatedWithAColorAndAMaterialOnly()
         {
             Color color = Color.valueOf("ola", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("ola");
-            Material material = new Material("#HELLO123", "designation",
+            Finish finish = Finish.valueOf("Ola", 12);
+            Material material = new Material("#HELLO123", "designation", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish }));
 
@@ -93,8 +93,8 @@ namespace core_tests.domain
         public void ensureCustomizedMaterialCanBeCreatedWithAFinishAndAMaterialOnly()
         {
             Color color = Color.valueOf("ola", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("ola");
-            Material material = new Material("#HELLO123", "designation",
+            Finish finish = Finish.valueOf("Ola", 12);
+            Material material = new Material("#HELLO123", "designation", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish }));
 
@@ -105,8 +105,8 @@ namespace core_tests.domain
         public void ensureCustomizedMaterialCanBeCreatedWithAColorAMaterialAndAFinish()
         {
             Color color = Color.valueOf("ola", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("ola");
-            Material material = new Material("#HELLO123", "designation",
+            Finish finish = Finish.valueOf("Ola", 12);
+            Material material = new Material("#HELLO123", "designation", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish }));
 
@@ -117,12 +117,12 @@ namespace core_tests.domain
         public void ensureGetHashCodeWorks()
         {
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 12);
             List<Color> colors = new List<Color>();
             colors.Add(color);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             CustomizedMaterial cuntMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedMaterial cuntMaterial2 = CustomizedMaterial.valueOf(material, color, finish);
 
@@ -133,12 +133,12 @@ namespace core_tests.domain
         public void ensureCustomizedMaterialsWithSameMaterialSameColorSameFinishAreEqual()
         {
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 12);
             List<Color> colors = new List<Color>();
             colors.Add(color);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedMaterial custMaterial2 = CustomizedMaterial.valueOf(material, color, finish);
 
@@ -149,11 +149,11 @@ namespace core_tests.domain
         public void ensureCustomizedMaterialsWithDifferentMaterialsAreNotEqual()
         {
             Color color = Color.valueOf("ola", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("xau");
-            Material material = new Material("#imdifferent", "aerg",
+            Finish finish = Finish.valueOf("xau", 12);
+            Material material = new Material("#imdifferent", "aerg", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish }));
-            Material otherMaterial = new Material("#imalsodifferent", "aerge",
+            Material otherMaterial = new Material("#imalsodifferent", "aerge", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish }));
 
@@ -168,8 +168,8 @@ namespace core_tests.domain
         {
             Color color = Color.valueOf("ola", 1, 1, 1, 1);
             Color otherColor = Color.valueOf("adios", 2, 2, 2, 1);
-            Finish finish = Finish.valueOf("xa");
-            Material material = new Material("#dzone", "areae",
+            Finish finish = Finish.valueOf("xa", 12);
+            Material material = new Material("#dzone", "areae", "ola.jpg",
             new List<Color>(new[] { color, otherColor }),
             new List<Finish>(new[] { finish }));
 
@@ -183,9 +183,9 @@ namespace core_tests.domain
         public void ensureCustomizedMaterialsWithDifferentFinishesAreNotEqual()
         {
             Color color = Color.valueOf("ola", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("xa");
-            Finish otherFinish = Finish.valueOf("ax");
-            Material material = new Material("#dzone", "areae",
+            Finish finish = Finish.valueOf("xa", 12);
+            Finish otherFinish = Finish.valueOf("ax", 12);
+            Material material = new Material("#dzone", "areae", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish, otherFinish }));
 
@@ -199,11 +199,11 @@ namespace core_tests.domain
         public void ensureCustomizedMaterialsWithColorOnlyWithDifferentMaterialsAreNotEqual()
         {
             Color color = Color.valueOf("ola", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("xa");
-            Material material = new Material("#dzone", "areae",
+            Finish finish = Finish.valueOf("xa", 12);
+            Material material = new Material("#dzone", "areae", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish }));
-            Material otherMaterial = new Material("#aoerig", "aer",
+            Material otherMaterial = new Material("#aoerig", "aer", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish }));
 
@@ -218,8 +218,8 @@ namespace core_tests.domain
         {
             Color color = Color.valueOf("ola", 1, 1, 1, 1);
             Color otherColor = Color.valueOf("adeus", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("xa");
-            Material material = new Material("#dzone", "areae",
+            Finish finish = Finish.valueOf("xa", 12);
+            Material material = new Material("#dzone", "areae", "ola.jpg",
             new List<Color>(new[] { color, otherColor }),
             new List<Finish>(new[] { finish }));
 
@@ -233,8 +233,8 @@ namespace core_tests.domain
         public void ensureCustomizedMaterialsWithColorOnlyAreEqual()
         {
             Color color = Color.valueOf("ola", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("xa");
-            Material material = new Material("#dzone", "areae",
+            Finish finish = Finish.valueOf("xa", 12);
+            Material material = new Material("#dzone", "areae", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish }));
 
@@ -247,12 +247,12 @@ namespace core_tests.domain
         [Fact]
         public void ensureCustomizedMaterialsWithFinishOnlyWithDifferentMaterialsAreNotEqual()
         {
-            Finish finish = Finish.valueOf("ola");
+            Finish finish = Finish.valueOf("Ola", 12);
             Color color = Color.valueOf("arg", 1, 1, 1, 1);
-            Material material = new Material("#aegrae", "aerga",
+            Material material = new Material("#aegrae", "aerga", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish }));
-            Material otherMaterial = new Material("#aegre", "aergae",
+            Material otherMaterial = new Material("#aegre", "aergae", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish }));
 
@@ -265,10 +265,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureCustomizedMaterialsWithFinishOnlyWithDifferentFinishesAreNotEqual()
         {
-            Finish finish = Finish.valueOf("ola");
-            Finish otherFinish = Finish.valueOf("bananas");
+            Finish finish = Finish.valueOf("Ola", 12);
+            Finish otherFinish = Finish.valueOf("bananas", 12);
             Color color = Color.valueOf("aerg", 1, 1, 1, 1);
-            Material material = new Material("#aerga", "asdfsa",
+            Material material = new Material("#aerga", "asdfsa", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish, otherFinish }));
 
@@ -281,9 +281,9 @@ namespace core_tests.domain
         [Fact]
         public void ensureCustomizedMaterialsWithFinishOnlyAreEqual()
         {
-            Finish finish = Finish.valueOf("ola");
+            Finish finish = Finish.valueOf("Ola", 12);
             Color color = Color.valueOf("aerga", 1, 1, 1, 1);
-            Material material = new Material("#aergaer", "aergae",
+            Material material = new Material("#aergaer", "aergae", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish }));
 
@@ -296,10 +296,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureCustomizedMaterialWithColorOnlyAndCustomizedMaterialWithColorAndFinishAreNotEqual()
         {
-            Finish finish = Finish.valueOf("ola");
+            Finish finish = Finish.valueOf("Ola", 12);
             Color color = Color.valueOf("aerga", 1, 1, 1, 1);
             Color otherColor = Color.valueOf("otherColor", 1, 1, 1, 1);
-            Material material = new Material("#aergaer", "aergae",
+            Material material = new Material("#aergaer", "aergae", "ola.jpg",
             new List<Color>(new[] { color, otherColor }),
             new List<Finish>(new[] { finish }));
 
@@ -312,9 +312,9 @@ namespace core_tests.domain
         [Fact]
         public void ensureCustomizedMaterialWithColorOnlyAndCustomizedMaterialWithColorAndFinishAreEqual()
         {
-            Finish finish = Finish.valueOf("ola");
+            Finish finish = Finish.valueOf("Ola", 12);
             Color color = Color.valueOf("aerga", 1, 1, 1, 1);
-            Material material = new Material("#aergaer", "aergae",
+            Material material = new Material("#aergaer", "aergae", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish }));
 
@@ -327,10 +327,10 @@ namespace core_tests.domain
         [Fact]
         public void ensureCustomizedMaterialWithFinishOnlyAndCustomizedMaterialWithColorAndFinishAreNotEqual()
         {
-            Finish finish = Finish.valueOf("ola");
+            Finish finish = Finish.valueOf("Ola", 12);
             Color color = Color.valueOf("aerga", 1, 1, 1, 1);
-            Finish otherFinish = Finish.valueOf("description");
-            Material material = new Material("#aergaer", "aergae",
+            Finish otherFinish = Finish.valueOf("description", 12);
+            Material material = new Material("#aergaer", "aergae", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish, otherFinish }));
 
@@ -343,9 +343,9 @@ namespace core_tests.domain
         [Fact]
         public void ensureCustomizedMaterialWithFinishOnlyAndCustomizedMaterialWithColorAndFinishAreEqual()
         {
-            Finish finish = Finish.valueOf("ola");
+            Finish finish = Finish.valueOf("Ola", 12);
             Color color = Color.valueOf("aerga", 1, 1, 1, 1);
-            Material material = new Material("#aergaer", "aergae",
+            Material material = new Material("#aergaer", "aergae", "ola.jpg",
             new List<Color>(new[] { color }),
             new List<Finish>(new[] { finish }));
 
@@ -359,12 +359,12 @@ namespace core_tests.domain
         public void ensureCustomizedMaterialAndNullAreNotEqual()
         {
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 12);
             List<Color> colors = new List<Color>();
             colors.Add(color);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
             Assert.False(custMaterial1.Equals(null));
@@ -374,13 +374,13 @@ namespace core_tests.domain
         public void ensureCustomizedMaterialAndInstanceOfDifferentTypeAreNotEqual()
         {
 
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 12);
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             List<Color> colors = new List<Color>();
             colors.Add(color);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
 
             Assert.False(custMaterial.Equals(finishes));
@@ -390,12 +390,12 @@ namespace core_tests.domain
         public void testToString()
         {
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 12);
             List<Color> colors = new List<Color>();
             colors.Add(color);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedMaterial custMaterial2 = CustomizedMaterial.valueOf(material, color, finish);
 
@@ -407,13 +407,13 @@ namespace core_tests.domain
         {
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Color otherColor = Color.valueOf("Amarelo", 2, 2, 3, 3);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 12);
             List<Color> colors = new List<Color>();
             colors.Add(color);
             colors.Add(otherColor);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
 
             Assert.True(customizedMaterial.changeColor(otherColor));
@@ -424,12 +424,12 @@ namespace core_tests.domain
         public void ensureChangeColorDoesNotChangeColorIfNewColorIsNull()
         {
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 12);
             List<Color> colors = new List<Color>();
             colors.Add(color);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
 
             Action act = () => customizedMaterial.changeColor(null);
@@ -443,12 +443,12 @@ namespace core_tests.domain
         {
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
             Color otherColor = Color.valueOf("Amarelo", 2, 2, 3, 3);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 12);
             List<Color> colors = new List<Color>();
             colors.Add(color);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
 
             Action act = () => customizedMaterial.changeColor(otherColor);
@@ -461,14 +461,14 @@ namespace core_tests.domain
         public void ensureChangeFinishChangesFinish()
         {
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
-            Finish otherFinish = Finish.valueOf("Wax");
+            Finish finish = Finish.valueOf("Acabamento polido", 12);
+            Finish otherFinish = Finish.valueOf("Wax", 12);
             List<Color> colors = new List<Color>();
             colors.Add(color);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
             finishes.Add(otherFinish);
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
 
             Assert.True(customizedMaterial.changeFinish(otherFinish));
@@ -479,12 +479,12 @@ namespace core_tests.domain
         public void ensureChangeFinishDoesNotChangeFinishIfNewFinishIsNull()
         {
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 12);
             List<Color> colors = new List<Color>();
             colors.Add(color);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
 
             Action act = () => customizedMaterial.changeFinish(null);
@@ -497,13 +497,13 @@ namespace core_tests.domain
         public void ensureChangeFinishDoesNotChangeFinishIfNewFinishIsNotInTheMaterial()
         {
             Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido");
-            Finish otherFinish = Finish.valueOf("Wax");
+            Finish finish = Finish.valueOf("Acabamento polido", 12);
+            Finish otherFinish = Finish.valueOf("Wax", 12);
             List<Color> colors = new List<Color>();
             colors.Add(color);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
-            Material material = new Material("1234", "Material", colors, finishes);
+            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
 
             Action act = () => customizedMaterial.changeFinish(otherFinish);

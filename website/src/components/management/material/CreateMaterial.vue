@@ -16,7 +16,7 @@
                         </b-field>
                         <b-field label="Designation">
                             <b-input
-                                v-model="designation"
+                                v-model="designationMaterial"
                                 type="String"
                                 placeholder="Insert designation"
                                 icon="pound"
@@ -24,23 +24,32 @@
                             </b-input>
                         </b-field>
                         <b-field label="Colors"> 
-                            <b-select placeholder="Colors" icon="tag">
+                            <b-select placeholder="Colors" icon="tag" v-model="selectedColor">
                                 <option  v-for="color in nameColors" 
                                     :key="color" 
                                     :value="color">
                                     {{color}}</option>
                             </b-select>
                         </b-field>
-                         <button class="button is-primary" @click="createColor()">+</button>
+                        <button class="button is-primary" @click="createColor()">+</button>
+                        <button class="button is-primary" @click="deleteColor()">-</button>
                         <b-field label="Finish">
-                            <b-select placeholder="Finishes" icon="tag">
-                                 <option v-for="reference in availableFinishes" 
-                                    :key="reference" 
-                                    :value="reference" @click="createEditFinish()">
-                                    {{reference}} </option>
+                            <b-select placeholder="Finishes" icon="tag" v-model="selectedFinish">
+                                 <option v-for="finish in availableFinishes" 
+                                    :key="finish.id" :value="finish">{{finish.referenceFinish}} </option>
                             </b-select>
                         </b-field>
                         <button class="button is-primary" @click="createFinish()">+</button>
+                        <button class="button is-primary" @click="deleteFinish()">-</button>
+                         <b-field class="modal-card-body">
+                        <button class="button is-primary" >Select Image</button>
+                            <b-input
+                                v-model="pathImage"
+                                type="String"
+                                disabled
+                                required>
+                            </b-input>
+                        </b-field>
                     </section>
                     <footer class="modal-card-foot">
                         <button class="button is-primary" @click="postMaterial()">Create</button>
@@ -94,21 +103,21 @@
 import Swatches from "vue-swatches";
 import Axios from "axios";
 import "vue-swatches/dist/vue-swatches.min.css";
-
 export default {
   name: "CreateMaterial",
   data() {
     return {
       referenceMaterial: "",
       referenceFinish: "",
-      designation: "",
+      designationMaterial: "",
+      pathImage:"",
       panelCreateMaterial: true,
       createColorPanelEnabled: false,
       createFinishPanelEnabled: false,
       defineNewFinish: false,
       createNewFinish: false,
-      availableFinishes: [],
-      availableColors: [],
+      availableFinishes: {},
+      availableColors: {},
       nameColors: [],
       color: "#000000",
       nameColor: "",
@@ -119,13 +128,17 @@ export default {
     Swatches
   }, // window.VueSwatches.default - from CDN
 
-  /*  */
   methods: {
+    /* popup() {
+      let route = this.$router.resolve({path: 'https://stackoverflow.com/questions/40015037/can-vue-router-open-a-link-in-a-new-tab'});
+      // let route = this.$router.resolve('/link/to/page'); // This also works.
+      window.open(route.href, '_blank');
+    }, */
     postMaterial() {
       let finishesToAdd = [];
       this.availableFinishes.forEach(element => {
         finishesToAdd.push({
-          description: element
+          description: element.description
         });
       });
       let colorsToAdd = [];
@@ -140,14 +153,31 @@ export default {
       });
       Axios.post("http://localhost:5000/mycm/api/materials", {
         reference: this.referenceMaterial,
-        designation: this.designation,
+        designation: this.designationMaterial,
         colors: colorsToAdd,
         finishes: finishesToAdd
       })
         .then(response => {
+          this.$toast.open("Material Created");
         })
-        .catch(error => {
-        });this.$toast.open("Material Created");
+        .catch(error => {});
+    },
+    deleteFinish() {
+      if (selectedFinish != null) {
+        this.availableFinishes.splice(this.selectedFinish, 1),
+          this.$toast.open("Delete finish with success!");
+          this.selectedFinish = null;
+      }
+    },
+    deleteColor() {
+      if (selectedColor != null) {
+        let selectedColorIndex = this.availableColors.indexOf(
+          this.selectedColor
+        );
+        this.availableColors.splice(selectedColorIndex, 1);
+        this.selectedColor = null;
+        this.$toast.open("Delete color with success!");
+      }
     },
     createColor() {
       this.panelCreateMaterial = false;
@@ -181,18 +211,13 @@ export default {
         this.nameColor != null &&
         this.nameColor.trim() != "" &&
         this.nameColors.indexOf(this.nameColor) < 0 &&
-        this.availableColors.indexOf(this.color) < 0 
-
+        this.availableColors.indexOf(this.color) < 0
       ) {
         this.nameColors.push(this.nameColor);
         this.availableColors.push(this.color);
-        alert("The color was successfully inserted!");
-      } else {
-        alert("The inserted color is invalid!");
       }
-      this.nameColor = ""
-    },
-    
+      this.nameColor = "";
+    }
   }
 };
 </script>

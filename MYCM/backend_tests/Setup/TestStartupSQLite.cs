@@ -26,7 +26,7 @@ namespace backend_tests.Setup
             services.AddScoped<MaterialRepository, EFMaterialRepository>();
 
             services.AddScoped<CommercialCatalogueRepository, EFCommercialCatalogueRepository>();
-
+            services.AddScoped<CustomizedProductSerialNumberRepository, EFCustomizedProductSerialNumberRepository>();
             services.AddScoped<CustomizedProductRepository, EFCustomizedProductRepository>();
             services.AddScoped<CustomizedProductCollectionRepository, EFCustomizedProductCollectionRepository>();
             services.AddScoped<CommercialCatalogueRepository, EFCommercialCatalogueRepository>();

@@ -130,7 +130,7 @@ namespace core_tests.domain
         public void testDifferentTypesAreNotEqual()
         {
 
-            Finish finish = Finish.valueOf("Acabamento polido");
+            Finish finish = Finish.valueOf("Acabamento polido", 12);
             CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(15.1, 3, 2.1);
 
             Assert.False(finish.Equals(custDimensions));
@@ -159,9 +159,21 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureToDTOWithUnitWorks()
+        {
+            CustomizedDimensions instance = CustomizedDimensions.valueOf(100, 200, 300);
+            CustomizedDimensionsDTO instanceDTO = instance.toDTO("cm");
+
+            Assert.Equal(instanceDTO.height, 10);
+            Assert.Equal(instanceDTO.width, 20);
+            Assert.Equal(instanceDTO.depth, 30);
+            Assert.Equal(instanceDTO.Id, instance.Id);
+        }
+
+        [Fact]
         public void ensureCustomizedDimensionsWithZeroHeightCantBeCreated()
         {
-            Action act = () => CustomizedDimensions.valueOf(0,100,200);
+            Action act = () => CustomizedDimensions.valueOf(0, 100, 200);
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -169,7 +181,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureCustomizedDimensionsWithZeroDepthCantBeCreated()
         {
-            Action act = () => CustomizedDimensions.valueOf(100,100,0);
+            Action act = () => CustomizedDimensions.valueOf(100, 100, 0);
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -177,7 +189,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureCustomizedDimensionsWithZeroWidthCantBeCreated()
         {
-            Action act = () => CustomizedDimensions.valueOf(100,0,100);
+            Action act = () => CustomizedDimensions.valueOf(100, 0, 100);
 
             Assert.Throws<ArgumentException>(act);
         }

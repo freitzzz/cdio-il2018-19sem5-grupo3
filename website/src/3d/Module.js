@@ -1,7 +1,8 @@
+//@ts-check
 /**
  * Represents the internal core of a Module
  */
-class Module{    
+export default class Module{    
     /**
      * Builds a new module with the dimensions and axes values for all faces
      * @param {Array} module_base_face_dimensions_axes Array with the base face dimensions and axes values

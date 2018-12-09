@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using core.domain;
@@ -12,20 +13,21 @@ namespace core.services
     /// <summary>
     /// Service that helps transforming GetCustomizedProductByIdModelViews into entities and vice versa
     /// </summary>
+    [Obsolete]
     public static class GetCustomizedProductByIdModelViewService
     {
         /// <summary>
         /// Transforms a model view into a CustomizedProduct entity and saves it to the database
         /// </summary>
         /// <param name="customizedProductModelView">model view to transform</param>
-        public static GetCustomizedProductByIdModelView transform(GetCustomizedProductByIdModelView customizedProductModelView)
+        public static GetCustomizedProductModelView transform(GetCustomizedProductModelView customizedProductModelView)
         {
-            CustomizedProduct fetchedCustomizedProduct =
+           /*  CustomizedProduct fetchedCustomizedProduct =
                              PersistenceContext.repositories().
                                 createCustomizedProductRepository().
                                     find(customizedProductModelView.id);
 
-            GetCustomizedProductByIdModelView fetchedCustomizedProductModelView = new GetCustomizedProductByIdModelView();
+            GetCustomizedProductModelView fetchedCustomizedProductModelView = new GetCustomizedProductModelView();
             fetchedCustomizedProductModelView.customizedMaterial = new GetCustomizedMaterialModelView();
 
             fetchedCustomizedProductModelView.id = fetchedCustomizedProduct.Id;
@@ -39,13 +41,13 @@ namespace core.services
             fetchedCustomizedProductModelView.customizedMaterial.finish = fetchedCustomizedProduct.customizedMaterial.finish.toDTO();
             fetchedCustomizedProductModelView.customizedDimensions = CustomizedDimensionsModelViewService.
                                                                         fromEntity(fetchedCustomizedProduct.customizedDimensions);
-            fetchedCustomizedProductModelView.slots = new List<GetCustomizedProductByIdSlotModelView>();
+            fetchedCustomizedProductModelView.slots = new List<GetCustomizedProductSlotModelView>();
 
             if (!Collections.isEnumerableNullOrEmpty(fetchedCustomizedProduct.slots))
             {
                 foreach (Slot slot in fetchedCustomizedProduct.slots)
                 {
-                    GetCustomizedProductByIdSlotModelView slotModelView = new GetCustomizedProductByIdSlotModelView();
+                    GetCustomizedProductSlotModelView slotModelView = new GetCustomizedProductSlotModelView();
                     slotModelView.id = slot.Id;
                     slotModelView.slotDimensions = CustomizedDimensionsModelViewService.fromEntity(slot.slotDimensions);
                     slotModelView.customizedProducts = new List<BasicCustomizedProductModelView>();
@@ -65,16 +67,18 @@ namespace core.services
                     fetchedCustomizedProductModelView.slots.Add(slotModelView);
                 }
             }
-            return fetchedCustomizedProductModelView;
+            return fetchedCustomizedProductModelView; */
+
+            throw new NotImplementedException();
         }
 
         /// <summary>
         /// Transforms a CustomizedProduct entity into a ModelView
         /// </summary>
         /// <param name="customizedProduct">customized product to transform</param>
-        public static GetCustomizedProductByIdModelView transform(CustomizedProduct customizedProduct)
+        public static GetCustomizedProductModelView transform(CustomizedProduct customizedProduct)
         {
-            GetCustomizedProductByIdModelView fetchedCustomizedProductModelView = new GetCustomizedProductByIdModelView();
+            /* GetCustomizedProductModelView fetchedCustomizedProductModelView = new GetCustomizedProductModelView();
             fetchedCustomizedProductModelView.customizedMaterial = new GetCustomizedMaterialModelView();
 
             fetchedCustomizedProductModelView.id = customizedProduct.Id;
@@ -88,13 +92,13 @@ namespace core.services
             fetchedCustomizedProductModelView.customizedMaterial.finish = customizedProduct.customizedMaterial.finish.toDTO();
             fetchedCustomizedProductModelView.customizedDimensions = CustomizedDimensionsModelViewService.
                                                                         fromEntity(customizedProduct.customizedDimensions);
-            fetchedCustomizedProductModelView.slots = new List<GetCustomizedProductByIdSlotModelView>();
+            fetchedCustomizedProductModelView.slots = new List<GetCustomizedProductSlotModelView>();
 
             if (!Collections.isEnumerableNullOrEmpty(customizedProduct.slots))
             {
                 foreach (Slot slot in customizedProduct.slots.ToList())
                 {
-                    GetCustomizedProductByIdSlotModelView slotModelView = new GetCustomizedProductByIdSlotModelView();
+                    GetCustomizedProductSlotModelView slotModelView = new GetCustomizedProductSlotModelView();
                     slotModelView.id = slot.Id;
                     slotModelView.slotDimensions = CustomizedDimensionsModelViewService.fromEntity(slot.slotDimensions);
                     slotModelView.customizedProducts = new List<BasicCustomizedProductModelView>();
@@ -113,7 +117,8 @@ namespace core.services
                     fetchedCustomizedProductModelView.slots.Add(slotModelView);
                 }
             }
-            return fetchedCustomizedProductModelView;
+            return fetchedCustomizedProductModelView; */
+            throw new NotImplementedException();
         }
     }
 }

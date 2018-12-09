@@ -15,7 +15,7 @@ namespace core.services
         /// </summary>
         /// <param name="deleteSlotFromCustomizedProductModelView">ModelView with the necessary information to remove a slot from a customized product</param>
         /// <returns>true if the slot was removed successfully, false if otherwise</returns>
-        public static bool delete(DeleteSlotFromCustomizedProductModelView deleteSlotFromCustomizedProductModelView)
+        /* public static bool delete(DeleteSlotFromCustomizedProductModelView deleteSlotFromCustomizedProductModelView)
         {
             bool slotRemoved = false;
             CustomizedProductRepository customizedProductRepository =
@@ -44,6 +44,6 @@ namespace core.services
                 }
             }
             return slotRemoved;
-        }
+        } */
     }
 }

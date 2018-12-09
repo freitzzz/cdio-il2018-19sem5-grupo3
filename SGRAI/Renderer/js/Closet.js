@@ -23,8 +23,10 @@ class Closet {
         this._prepare_closet_init();
         this.poles = [];
         this.shelves = [];
-        this.doors = [];
+        this.slidingDoors = [];
+        this.hingedDoors = [];
         this.drawers = [];
+        this.modules = [];
     }
 
     //Closet Logic
@@ -148,16 +150,63 @@ class Closet {
      * Adds a door to the closet
      * @param {SlidingDoor} door to add 
      */
-    addDoor(door) {
-        this.doors.push(door);
+    addSlidingDoor(door) {
+        this.slidingDoors.push(door);
     }
 
     /**
      * Removes a door from the closet
      *  @param {SlidingDoor} door to remove
      */
-    removeDoor() {
-        this.doors.pop();
+    removeSlidingDoor() {
+        this.slidingDoors.pop();
+    }
+
+     /**
+     * Adds a door to the closet
+     * @param {HingedDoor} door to add 
+     */
+    addHingedDoor(door) {
+        this.hingedDoors.push(door);
+    }
+
+    /**
+     * Removes a door from the closet
+     *  @param {HingedDoor} door to remove
+     */
+    removeHingedDoor() {
+        this.hingedDoors.pop();
+    }
+    /**
+     * Adds a drawer to the closet
+     * @param {Drawer} drawer to add 
+     */
+    addDrawer(drawer) {
+        this.drawers.push(drawer);
+    }
+
+    /**
+     * Removes a drawer from the closet
+     *  @param {Drawer} drawer to remove
+     */
+    removeDrawer() {
+        this.drawers.pop();
+    }
+
+    /**
+     * Adds a module to the closet
+     * @param {Module} module to add 
+     */
+    addModule(module) {
+        this.modules.push(module);
+    }
+
+    /**
+     * Removes a module from the closet
+     *  @param {Module} module to remove
+     */
+    removeModule() {
+        this.modules.pop();
     }
 
     //Accessors

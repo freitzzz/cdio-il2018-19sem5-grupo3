@@ -1,7 +1,8 @@
+//@ts-check
 /**
  * Represents a sliding door using box geometry
  */
-class SlidingDoor {
+export default class SlidingDoor {
 
     /**
      * Builds a new SlidingDoor with the dimensions and axes values for the door

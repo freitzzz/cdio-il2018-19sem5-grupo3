@@ -9,6 +9,7 @@
 :- http_handler('/mycl/api/algorithms',display_available_algorithms,[]). % Endpoint to display all algorithms available
 :- http_handler('/mycl/api/travel',compute_algorithm,[time_limit(0)]). % Endpoint to compute a city circuit
 :- http_handler('/mycl/api/factories',shortest_factory,[time_limit(0)]). % Endpoint to compute the shortest factory
+:- http_handler('/mycl/api/packing',bin_packing,[time_limit(0)]). % Endpoint to compute the bin packing
 
 % Loads required knowledge bases
 carregar:-['intersept.pl'],['cdio-tsp.pl'],['parameters.pl'],load_computations,load_algorithms,load_json_objects.
@@ -17,10 +18,12 @@ carregar:-['intersept.pl'],['cdio-tsp.pl'],['parameters.pl'],load_computations,l
 load_json_objects:-['json_algorithms.pl'].
 
 % Loads required algorithms
-load_algorithms:- ['algorithms/branch_and_bound.pl'],['algorithms/greedy.pl'],['algorithms/2opt.pl'],['algorithms/genetics.pl'].
+load_algorithms:- ['algorithms/branch_and_bound.pl'],['algorithms/greedy.pl'],['algorithms/2opt.pl'],['algorithms/genetics.pl'],load_bin_packing_algorithms.
 
 % Loads computation predicates
 load_computations:- ['algorithm_computation.pl'],['location_computation.pl'].
+
+load_bin_packing_algorithms:- ['algorithms/binpacking/guillotine_packing.pl'],['algorithms/binpacking/simulated_annealing.pl'].
 
 % Starts the server
 server(Port) :-						% (2)
@@ -84,6 +87,29 @@ shortest_factory(Request):-
         prolog_to_json(factories_body_response(JShortestFactory,JDistance),SFJ),
         reply_json(SFJ).
 
+
+
+
+% Processes the bin packing algorithm computation request
+bin_packing(Request):-
+        http_read_json(Request,JSONIn,[json_object(bin_packing_request)]),
+        json_to_prolog(JSONIn,BPR),
+        BPR=bin_packing_request(_,ContainerObject,PackageObjectsList),
+        ContainerObject=container_object(CWidth,CHeight,CDepth,CWeight),
+        json_packages_packages_tuples(PackageObjectsList,Packages),
+        compute_algorithm(5,(CWidth,CHeight,CDepth,CWeight),Packages,Packed,OccupationPercentage),
+        package_tuples_to_json_packages(Packed,PackedJO),
+        prolog_to_json(bin_packing_response(OccupationPercentage,ContainerObject,PackedJO),BPRS),
+        reply_json(BPRS),
+        !.
+
+
+% Replies 400 Bad Request if an error occurs while processing the request
+bin_packing(_Request):-
+        prolog_to_json(message_object("An error occurd while processing the algorithm"),Message),
+        reply_json(Message,[status(400)]).
+
+
 % Checks the query parameters that can be extracted from the available algorithms URI
 check_available_algorithms_query_parameters(Request,Id):-
         http_parameters(Request, [
@@ -106,3 +132,19 @@ cities_to_json_cities([H|T],JSONCities):-
 
 % Parses a city fact into a json city object
 city_to_city_json_object(city(Name,LT,LO),city_object(Name,LT,LO)).
+
+
+% Parses a list of package json objects into a list of package tuples
+json_packages_packages_tuples([],[]):-!.
+
+json_packages_packages_tuples([H|T],LPT):-
+        H=package_object(PID,PW,PH,PD,PPID,PWE),
+        json_packages_packages_tuples(T,LPT1),
+        append([(PID,PW,PH,PD,PWE,PPID)],LPT1,LPT).
+
+% Parses a list of package tuples into a list of package json objects
+package_tuples_to_json_packages([],[]):-!.
+
+package_tuples_to_json_packages([(ID,PW,PH,PD,PPD,PPI)|T],LPJ):-
+        package_tuples_to_json_packages(T,LPJ1),
+        append([package_response_object(ID,PW,PH,PD,PPI,PPD)],LPJ1,LPJ).

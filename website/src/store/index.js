@@ -10,11 +10,18 @@ Vue.use(Vuex)
  * State that contains the retrieved product from MYCM and the builded customized product
  */
 const state = {
+    canvasControls: {
+        canMoveCloset: "false",
+        canMoveSlots: "false",
+        canMoveComponents: "false"
+    },
+
     product: {},
-    
+
     customizedProduct: {
         designation: "",
         reference: "",
+        components: [],
         product: {
             id: ""
         },
@@ -35,11 +42,13 @@ const state = {
         },
         slots: [
             {
-                depth: "",
+                idSlot: "",
                 width: "",
                 height: "",
-                unit: ""
-            }
+                depth: "",
+                unit: "",
+                components: []
+            }, 
         ],
         customizedDimensions: {
             width: "",
@@ -50,16 +59,58 @@ const state = {
     }
 }
 
-const getters = {
-    width: state => {
-        return state.customizedProduct.customizedDimensions.width;
+export const getters = {
+    productId: state => {
+        return state.product.id;
     },
-    height: state => {
-        return state.customizedProduct.customizedDimensions.height;
+    productDimensions: state => {
+        return state.product.dimensions;
+    },
+    productSlotWidths: state => {
+        return state.product.slotWidths;
+    },
+    recommendedSlotWidth: state => {
+        return state.product.slotWidths.recommendedWidth;
+    },
+    maxSlotWidth: state => {
+        return state.product.slotWidths.maxWidth;
+    },
+    minSlotWidth: state => {
+        return state.product.slotWidths.minWidth;
+    },
+    productMaterials: state => {
+        return state.product.materials;
+    },
+    productComponents: state => {
+        return state.product.components;
+    },
+    width: state => {
+        return state.customizedProduct.dimensions.width;
+    },
+    customizedProductDimensions: state=>{
+        return state.customizedProduct.customizedDimensions;
     },
     depth: state => {
-        return state.customizedProduct.customizedDimensions.depth;
-    }
+        return state.customizedProduct.dimensions.depth;
+    },
+    unit: state => {
+        return state.customizedProduct.dimensions.unit;
+    },
+    customizedProductSlotWidth: state => index => {
+        return state.customizedProduct.slots[index];
+    },
+    customizedProductComponents: state => index => {
+        return state.customizedProduct.slots[index].components;
+    },
+    canMoveCloset: state => { 
+        return state.canvasControls.canMoveCloset;
+    },
+    canMoveSlots: state => {
+        return state.canvasControls.canMoveSlots;
+    },
+    canMoveComponents: state => {
+        return state.canvasControls.canMoveComponents;
+     }
 }
 
 export default new Vuex.Store({

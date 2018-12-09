@@ -37,7 +37,8 @@ export default {
   methods: {
     deleteMaterial() {
     Axios.delete(`http://localhost:5000/mycm/api/materials/${this.materialData}`)
-      .then(this.availableMaterials.pop(this.materialData), this.materialData=null ) //push all elements onto the array
+      .then(this.availableMaterials.pop(this.materialData), this.materialData=null ,
+      this.$toast.open("Delete material with success!")) //push all elements onto the array
       .catch(function(error) {
         //TODO: inform an error occured while fetching materials
       });
@@ -46,8 +47,8 @@ export default {
   created() {
     Axios.get("http://localhost:5000/mycm/api/materials")
       .then(response => this.availableMaterials.push(...response.data)) //push all elements onto the array
-      .catch(function(error) {
-        //TODO: inform an error occured while fetching materials
+      .catch(error => {
+        this.$toast.open(error.response.status + "Not found materials");
       });
   }
 };
