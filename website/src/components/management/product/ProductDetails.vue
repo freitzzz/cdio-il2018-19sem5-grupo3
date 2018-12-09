@@ -1,120 +1,118 @@
 <template>
-    <b-modal :active="true" has-modal-card scroll="keep">
-        <div class="modal-card" style="width: auto">
-            <header class="modal-card-head">
-                <p class="modal-card-title">Product Details</p>
-            </header>
-            <section class="modal-card-body">
-                <b-field label="Reference">
-                    <b-input
-                        type="String"
-                        :value="product.reference"
-                        disabled="true"
-                        icon="pound"
-                        required>
-                    </b-input>
-                </b-field>
-                <b-field label="Designation">
-                    <b-input
-                        type="String"
-                        :value="product.designation"
-                        disabled="true"
-                        icon="pencil"
-                        required>
-                    </b-input>
-                </b-field>
-                <b-field label="Category">
-                    <b-input
-                        type="String"
-                        :value="product.category.name"
-                        disabled="true"
-                        icon="tag"
+    <div class="modal-card" style="width: auto">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Product Details</p>
+        </header>
+        <section class="modal-card-body">
+            <b-field label="Reference">
+                <b-input
+                    type="String"
+                    :value="product.reference"
+                    disabled="true"
+                    icon="pound"
+                    required>
+                </b-input>
+            </b-field>
+            <b-field label="Designation">
+                <b-input
+                    type="String"
+                    :value="product.designation"
+                    disabled="true"
+                    icon="pencil"
+                    required>
+                </b-input>
+            </b-field>
+            <b-field label="Category">
+                <b-input
+                    type="String"
+                    :value="product.category.name"
+                    disabled="true"
+                    icon="tag"
+                />
+            </b-field>
+            <b-checkbox @input="enableMaterials()">Materials</b-checkbox>
+            <div v-if="showMaterials">
+                <b-field label="Materials">
+                    <simple-table
+                        :columns="simpleTablesColumns.materials"
+                        :data="product.materials"
                     />
                 </b-field>
-                <b-checkbox @input="enableMaterials()">Materials</b-checkbox>
-                <div v-if="showMaterials">
-                    <b-field label="Materials">
+            </div>
+            <b-checkbox v-if="product.components!=null" @input="enableComponents()">Components</b-checkbox>
+            <div v-if="showComponents">
+                <b-field label="Components">
+                    <simple-table
+                        :columns="simpleTablesColumns.components"
+                        :data="product.components"
+                    />
+                </b-field>
+            </div>
+            <b-checkbox v-if="product.dimensions!=null" @input="enableDimensions()">Dimensions</b-checkbox>
+                <div v-if="showDimensions">
+                    <b-field label="Width Dimensions">
                         <simple-table
-                            :columns="simpleTablesColumns.materials"
-                            :data="product.materials"
+                            :columns="simpleTablesColumns.dimensions"
+                            :data="productDimensions.width"
+                        />
+                    </b-field>
+                    <b-field label="Height Dimensions">
+                        <simple-table
+                            :columns="simpleTablesColumns.dimensions"
+                            :data="productDimensions.height"
+                        />
+                    </b-field>
+                    <b-field label="Depth Dimensions">
+                        <simple-table
+                            :columns="simpleTablesColumns.dimensions"
+                            :data="productDimensions.depth"
                         />
                     </b-field>
                 </div>
-                <b-checkbox v-if="product.components!=null" @input="enableComponents()">Components</b-checkbox>
-                <div v-if="showComponents">
-                    <b-field label="Components">
-                        <simple-table
-                            :columns="simpleTablesColumns.components"
-                            :data="product.components"
+            <b-checkbox v-if="product.slotWidths!=null" @input="enableSlots()">Slots</b-checkbox>
+            <div v-if="showSlots">
+                <b-field label="Slots"/>
+                <b-field>
+                    <b-field label="Minimum Size Width">
+                        <b-input
+                            type="String"
+                            :value="product.slotWidths.minWidth"
+                            disabled="true"
+                            icon="wrench"
+                            required
                         />
                     </b-field>
-                </div>
-                <b-checkbox v-if="product.dimensions!=null" @input="enableDimensions()">Dimensions</b-checkbox>
-                    <div v-if="showDimensions">
-                        <b-field label="Width Dimensions">
-                            <simple-table
-                                :columns="simpleTablesColumns.dimensions"
-                                :data="productDimensions.width"
-                            />
-                        </b-field>
-                        <b-field label="Height Dimensions">
-                            <simple-table
-                                :columns="simpleTablesColumns.dimensions"
-                                :data="productDimensions.height"
-                            />
-                        </b-field>
-                        <b-field label="Depth Dimensions">
-                            <simple-table
-                                :columns="simpleTablesColumns.dimensions"
-                                :data="productDimensions.depth"
-                            />
-                        </b-field>
-                    </div>
-                <b-checkbox v-if="product.slotWidths!=null" @input="enableSlots()">Slots</b-checkbox>
-                <div v-if="showSlots">
-                    <b-field label="Slots"/>
-                    <b-field>
-                        <b-field label="Minimum Size Width">
-                            <b-input
-                                type="String"
-                                :value="product.slotWidths.minWidth"
-                                disabled="true"
-                                icon="wrench"
-                                required
-                            />
-                        </b-field>
-                        <b-field label="Recommended Size Width">
-                            <b-input
-                                type="String"
-                                :value="product.slotWidths.recommendedWidth"
-                                disabled="true"
-                                icon="wrench"
-                                required
-                            />
-                        </b-field>
-                        <b-field label="Maxmimum Size Width">
-                            <b-input
-                                type="String"
-                                :value="product.slotWidths.maxWidth"
-                                disabled="true"
-                                icon="wrench"
-                                required
-                            />
-                        </b-field>
-                        <b-field label="Unit">
-                            <b-input
-                                type="String"
-                                :value="product.slotWidths.unit"
-                                disabled="true"
-                                icon="ruler"
-                                required
-                            />
-                        </b-field>
+                    <b-field label="Recommended Size Width">
+                        <b-input
+                            type="String"
+                            :value="product.slotWidths.recommendedWidth"
+                            disabled="true"
+                            icon="wrench"
+                            required
+                        />
                     </b-field>
-                </div>
-            </section>
-        </div>
-    </b-modal>
+                    <b-field label="Maxmimum Size Width">
+                        <b-input
+                            type="String"
+                            :value="product.slotWidths.maxWidth"
+                            disabled="true"
+                            icon="wrench"
+                            required
+                        />
+                    </b-field>
+                    <b-field label="Unit">
+                        <b-input
+                            type="String"
+                            :value="product.slotWidths.unit"
+                            disabled="true"
+                            icon="ruler"
+                            required
+                        />
+                    </b-field>
+                </b-field>
+            </div>
+        </section>
+    </div>
 </template>
 
 <script>

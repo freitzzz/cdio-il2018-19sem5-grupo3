@@ -1,98 +1,96 @@
 <template>
-    <b-modal :active="true" has-modal-card scroll="keep">
-        <div class="modal-card" style="width: auto">
-            <header class="modal-card-head">
-                <p class="modal-card-title">Edit Product</p>
-            </header>
-            <section class="modal-card-body">
-                <b-field label="Reference">
-                    <b-input
-                        type="String"
-                        v-model="product.reference"
-                        icon="pound"
-                        required>
-                    </b-input>
-                </b-field>
-                <b-field label="Designation">
-                    <b-input
-                        type="String"
-                        v-model="product.designation"
-                        icon="pencil"
-                        required>
-                    </b-input>
-                </b-field>
-                <b-field label="Category">
-                    <b-select 
-                        :placeholder="product.category.name"
-                        v-model="categoryItem.selected"
-                        icon="tag"
-                        @input="changeCurrentCategory"
+    <div class="modal-card" style="width: auto">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Edit Product</p>
+        </header>
+        <section class="modal-card-body">
+            <b-field label="Reference">
+                <b-input
+                    type="String"
+                    v-model="product.reference"
+                    icon="pound"
+                    required>
+                </b-input>
+            </b-field>
+            <b-field label="Designation">
+                <b-input
+                    type="String"
+                    v-model="product.designation"
+                    icon="pencil"
+                    required>
+                </b-input>
+            </b-field>
+            <b-field label="Category">
+                <b-select 
+                    :placeholder="product.category.name"
+                    v-model="categoryItem.selected"
+                    icon="tag"
+                    @input="changeCurrentCategory"
+                    expanded
+                    >
+                    <option 
+                        v-for="(category,index) in availableCategories" 
+                        :key="index"
+                        :value="category.id"
+                    >
+                        {{category.name}}
+                    </option>
+                </b-select>
+            </b-field>
+            <customized-selected-items
+                :added-items="toCustomizedSelectedMaterials(product.materials)"
+                :available-items="toCustomizedSelectedMaterials(availableMaterials)"
+                :customized-label="materials.customizedLabel"
+                :icon="materials.icon"
+                :place-holder="materials.placeholder"
+                @emitItems="changeCurrentMaterials"
+            />
+            <b-checkbox @input="enableComponents()">Components</b-checkbox>
+            <div v-if="components">
+                <customized-selected-items
+                    :added-items="toCustomizedSelectedComponents(product.components ? product.components : [])"
+                    :available-items="toCustomizedSelectedComponents(availableComponents)"
+                    :customized-label="componentsItems.customizedLabel"
+                    :icon="componentsItems.icon"
+                    :place-holder="componentsItems.placeholder"
+                    @emitItems="changeCurrentComponents"
+                />
+            </div>
+            <b-checkbox @input="enableDimensions()">Dimensions</b-checkbox>
+            <div v-if="dimensions">
+                <b-field label="Dimensions"/>
+                <b-field>
+                    <b-select
+                        v-model="this.dimensionsItems.selected"
+                        icon="wrench"
                         expanded
-                        >
+                    >
                         <option 
-                            v-for="(category,index) in availableCategories" 
+                            v-for="(dimension,index) in dimensionsItems.values" 
                             :key="index"
-                            :value="category.id"
+                            :value="dimension"
                         >
-                            {{category.name}}
+                            {{dimension}}
                         </option>
                     </b-select>
+                    <button class="button is-danger" @click="addDimensions()">
+                        <b-icon icon="plus"/>
+                    </button>
+                    <button class="button is-danger" @click="removeDimensions()">
+                        <b-icon icon="minus"/>
+                    </button>
                 </b-field>
-                <customized-selected-items
-                    :added-items="toCustomizedSelectedMaterials(product.materials)"
-                    :available-items="toCustomizedSelectedMaterials(availableMaterials)"
-                    :customized-label="materials.customizedLabel"
-                    :icon="materials.icon"
-                    :place-holder="materials.placeholder"
-                    @emitItems="changeCurrentMaterials"
-                />
-                <b-checkbox @input="enableComponents()">Components</b-checkbox>
-                <div v-if="components">
-                    <customized-selected-items
-                        :added-items="toCustomizedSelectedComponents(product.components ? product.components : [])"
-                        :available-items="toCustomizedSelectedComponents(availableComponents)"
-                        :customized-label="componentsItems.customizedLabel"
-                        :icon="componentsItems.icon"
-                        :place-holder="componentsItems.placeholder"
-                        @emitItems="changeCurrentComponents"
-                    />
-                </div>
-                <b-checkbox @input="enableDimensions()">Dimensions</b-checkbox>
-                <div v-if="dimensions">
-                    <b-field label="Dimensions"/>
-                    <b-field>
-                        <b-select
-                            v-model="this.dimensionsItems.selected"
-                            icon="wrench"
-                            expanded
-                        >
-                            <option 
-                                v-for="(dimension,index) in dimensionsItems.values" 
-                                :key="index"
-                                :value="dimension"
-                            >
-                                {{dimension}}
-                            </option>
-                        </b-select>
-                        <button class="button is-danger" @click="addDimensions()">
-                            <b-icon icon="plus"/>
-                        </button>
-                        <button class="button is-danger" @click="removeDimensions()">
-                            <b-icon icon="minus"/>
-                        </button>
-                    </b-field>
-                    <product-dimensions dimension-label="Width" :current-dimension="product.dimensions[0].width" @getDimension="changeCurrentWidthDimension"/>
-                    <product-dimensions dimension-label="Height" :current-dimension="product.dimensions[0].height" @getDimension="changeCurrentHeightDimension"/>
-                    <product-dimensions dimension-label="Depth" :current-dimension="product.dimensions[0].depth" @getDimension="changeCurrentDepthDimension"/>
-                </div>
-            </section>
-            <footer class="modal-card-foot">
-                <div class="has-text-centered">
-                    <button class="button is-primary" @click="emitProduct($parent)">Save</button>
-                </div>
-            </footer>
-        </div>
-    </b-modal>
+                <product-dimensions dimension-label="Width" :current-dimension="product.dimensions[0].width" @getDimension="changeCurrentWidthDimension"/>
+                <product-dimensions dimension-label="Height" :current-dimension="product.dimensions[0].height" @getDimension="changeCurrentHeightDimension"/>
+                <product-dimensions dimension-label="Depth" :current-dimension="product.dimensions[0].depth" @getDimension="changeCurrentDepthDimension"/>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <div class="has-text-centered">
+                <button class="button is-primary" @click="emitProduct($parent)">Save</button>
+            </div>
+        </footer>
+    </div>
 </template>
 
 <script>

@@ -27,18 +27,22 @@
                 </button>
             </div>
             <div v-if="showProductDetails">
-                <product-details
-                    :product="currentSelectedProduct"
-                />
+                <b-modal :active.sync="showProductDetails" has-modal-card scroll="keep">
+                    <product-details
+                        :product="currentSelectedProduct"
+                    />
+                </b-modal>
             </div>
             <div v-if="showEditProductDetails">
-                <edit-product
-                    @emitProduct="updateProduct"
-                    :available-categories="availableCategories"
-                    :available-components="availableComponents"
-                    :available-materials="availableMaterials"
-                    :product="currentSelectedProduct2"
-                />
+                <b-modal :active.sync="showEditProductDetails" has-modal-card scroll="keep">
+                    <edit-product
+                        @emitProduct="updateProduct"
+                        :available-categories="availableCategories"
+                        :available-components="availableComponents"
+                        :available-materials="availableMaterials"
+                        :product="currentSelectedProduct2"
+                    />
+                </b-modal>
             </div>
         </template>
     </vuetable>
@@ -77,7 +81,7 @@ export default {
             availableCategories:[],
             availableComponents:[],
             availableMaterials:[],
-            /**d
+            /**
              * Current Table Selected Product
              */
             currentSelectedProduct:null,
@@ -263,6 +267,7 @@ export default {
                                     this
                                         .updateProductDimensions(productDetails)
                                         .then(()=>{
+                                            this.showEditProductDetails=false;
                                             this.$toast.open({message:"Product was updated with success!"});
                                         }).catch((error_message)=>{
                                             this.$toast.open({message:error_message});
