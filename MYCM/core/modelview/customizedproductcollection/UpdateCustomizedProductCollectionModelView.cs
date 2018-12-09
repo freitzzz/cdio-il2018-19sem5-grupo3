@@ -19,7 +19,7 @@ namespace core.modelview.customizedproductcollection
         /// <summary>
         /// Customized Product Collection's updated name
         /// </summary>
-        [DataMember]
+        [DataMember(Name = "name")]
         public string name { get; set; }
     }
 }
