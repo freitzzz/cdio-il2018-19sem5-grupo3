@@ -337,7 +337,7 @@ namespace backend.Controllers
                 if (updatedCustomizedProductCollectionModelView != null)
                 {
                     logger.LogInformation(LOG_POST_SUCCESS);
-                    return Ok(VALID_UPDATE_MESSAGE);
+                    return Ok(updatedCustomizedProductCollectionModelView);
                 }
                 return BadRequest(new SimpleJSONMessageService(INVALID_UPDATE_MESSAGE));
             }
@@ -432,6 +432,11 @@ namespace backend.Controllers
                 logger.LogWarning(argumentException, LOG_DELETE_CUSTOMIZED_PRODUCT_NOT_FOUND, customizedProductID);
                 return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
             }
+            catch (NullReferenceException nullReferenceException)
+            {
+                logger.LogWarning(nullReferenceException, LOG_DELETE_CUSTOMIZED_PRODUCT_NOT_FOUND, customizedProductID);
+                return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
+            }
             catch (Exception exception)
             {
                 logger.LogWarning(exception, UNEXPECTED_ERROR);
@@ -460,7 +465,7 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_DELETE_BAD_REQUEST, id);
-                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+                return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
             }
             catch (InvalidOperationException invalidOperationException)
             {
