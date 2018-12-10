@@ -85,6 +85,18 @@ export const mutations = {
       components: []
     })
   },
+  
+/**
+   * Changes the states's customized product's material 
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the new material 
+   */
+  [types.SET_MATERIAL](state, payload) {
+    state.customizedProduct.customizedMaterial.id = payload.id,
+    state.customizedProduct.customizedMaterial.reference = payload.reference,
+    state.customizedProduct.customizedMaterial.designation =  payload.designation,
+    state.customizedProduct.customizedMaterial.image = payload.image
+    },
 
   /**
    * Adds a component to a slot from the state's customized product's
