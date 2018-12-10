@@ -37,6 +37,10 @@
     color: #67c8eb;
   }
 
+  .material-icons.md-blue.no-hover:hover{
+    color: #0ba2db;
+  }
+
   /* Rules for using icons as white on a dark background. */
   .material-icons.md-light {
     color: rgba(255, 255, 255, 1);
@@ -110,20 +114,12 @@
     padding: 20px;
     transition: all 0.8s;
   }
+
   #menu.navbar-default {
     background-color: rgba(248, 248, 248, 0);
     border-color: rgba(231, 231, 231, 0);
   }
-  #menu a.navbar-brand {
-    font-size: 20px;
-    color: #444;
-    font-weight: 500;
-    text-transform: uppercase;
-  }
-  #menu a.navbar-brand i.fa {
-    color: #0ba2db;
-    vertical-align: top;
-  }
+  
   #menu.navbar-default .navbar-nav > li > a {
     text-transform: uppercase;
     color: #444;
@@ -131,8 +127,53 @@
     font-size: 15px;
     letter-spacing: 1px;
   }
+
   #menu.navbar-default .navbar-nav > li > a:hover {
     color: #0ba2db;
+  }
+  
+
+  .topnav {
+    overflow: hidden;
+  /* background-color: #cecece; */
+    height: 40%;
+  }
+  
+  .topnav a {
+    float: left;
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+  
+  .topnav .login-container {
+    float: right;
+    margin: 1%;
+  }
+
+  .topnav .title-container {
+    float: left;
+    margin: 1%;
+  }
+  
+  @media screen and (max-width: 600px) {
+    .topnav .login-container {
+      float: none;
+    }
+    .topnav a, .topnav input[type=text], .topnav .login-container button {
+      float: none;
+      display: block;
+      text-align: left;
+      width: 100%;
+      margin: 0;
+      padding: 14px;
+    }
+    .topnav input[type=text] {
+      border: 1px solid #ccc;  
+    }
   }
   
   .container {
@@ -170,6 +211,7 @@
   .navbar-default .navbar-toggle:hover>.icon-bar {
     background-color: #FFF;
   }
+
   .section-title {
     margin-bottom: 70px;
   }
@@ -180,6 +222,12 @@
 .btn-primary {
   background-color: #0ba2db !important;
   border-color: #0ba2db !important;
+  border: 0;
+  padding: 5px 15px;
+  margin: 0;
+  font-size: 16px;
+  border-radius: 6px;
+  transition: all 0.3s;
 }
 
 .btn-primary:hover {
@@ -187,7 +235,7 @@
   border-color: #7eddff !important;
 }
 
-  .btn-custom {
+.btn-custom {
     text-transform: uppercase;
     color: #fff !important;
     background-color: #0ba2db;
@@ -195,23 +243,30 @@
     padding: 14px 20px;
     margin: 0;
     font-size: 16px;
-    border-radius: 8px;
+    border-radius: 6px;
     margin-top: 20px;
     transition: all 0.3s;
-  }
+ }
   
   .btn-custom-2 {
     color: #fff !important;
     background-color: #0ba2db;
     border: 3px;
-    padding: 4px 4px;
+    padding-top: 4px 4px;
+    padding-right: 15px;
     margin: 0;
     font-size: 15px;
-    border-radius: 1px;
+    border-radius: 3px;
     margin-top: 4px;
     transition: all 0.3s;
   }
-  
+
+  .btn-custom-2:hover {
+    color: #fff !important;
+    background-color: #7eddff;
+    cursor: pointer;
+  }
+
   .btn-component{
     text-transform: uppercase;
     color: #fff;
@@ -245,6 +300,15 @@
   }
 
   /* Header Section */
+  .small-text {
+    color: rgb(73, 73, 73);
+    text-transform: uppercase;
+    font-size: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    text-align: center;
+  }
+
   .intro {
     display: table;
     width: 100%;
