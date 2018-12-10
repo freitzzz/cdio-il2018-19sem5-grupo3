@@ -1638,7 +1638,6 @@ namespace backend_tests.Controllers
             AddCustomizedProductModelView modelView =
                 new AddCustomizedProductModelView();
 
-            modelView.reference = "Reference " + testNumber;
             modelView.designation = "Designation " + testNumber;
             AddCustomizedMaterialModelView customizedMaterialModelView =
                 new AddCustomizedMaterialModelView();
@@ -1652,7 +1651,6 @@ namespace backend_tests.Controllers
             modelView.customizedDimensions.width = 1000;
             modelView.customizedDimensions.height = 1000;
             modelView.customizedDimensions.unit = "mm";
-            modelView.userAuthToken = "reallycooltoken";
 
             return modelView;
         }
