@@ -59,7 +59,7 @@ export default {
         getAddedItems(){
             let realAddedItems=[];
             this.addedItems.forEach((item)=>{realAddedItems.push(item.id)});
-            this.$emit('getAddedItems',realAddedItems.slice());
+            this.$emit('emitItems',realAddedItems.slice());
         },
         /**
          * Removes the current selected item from the added items list
@@ -83,11 +83,13 @@ export default {
     data(){
         return {
             currentSelectedItem:0,
-            addedItems:[],
             currentSelectedAddedItem:0
         }
     },
     props:{
+        addedItems:{
+            type:Array
+        },
         availableItems:{
             type:Array,
             required:true

@@ -6,6 +6,18 @@ import 'buefy/dist/buefy.css';
 
 Vue.use(Buefy); 
 
+import Vuetable from "vuetable-2";
+//import VueTablePagination from 'vuetable-2/src/components/VuetablePagination'
+
+function install(Vue){
+    Vue.component("vuetable", Vuetable);
+    /* Vue.component("vuetable-pagination", VueTablePagination);
+    Vue.component("vuetable-pagination-dropdown", VueTablePaginationDropDown);
+    Vue.component("vuetable-pagination-info", VueTablePaginationInfo); */
+  }
+
+install(Vue);
+
 new Vue({
     el: '#app',
     store,

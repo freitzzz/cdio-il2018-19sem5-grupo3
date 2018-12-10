@@ -5,38 +5,26 @@
             <button class="button is-danger" @click="createNewProduct()">
                 <b-icon icon="plus"/>
             </button>
-            <create-new-product 
-                :active="createNewProductModal" 
-                :available-materials="availableMaterials"
-                :available-categories="availableCategories"
-                :available-components="availableComponents"
-                @emitProduct="postProduct"
-            />
-            <button class="button is-danger" @click="removeSelectedProduct()">
-                <b-icon icon="minus"/>
-            </button>
-            <button class="button is-danger" @click="updateSelectedProduct()">
+            <div v-if="createNewProductModal">
+                <b-modal :active.sync="createNewProductModal" has-modal-card scroll="keep">
+                    <create-new-product 
+                        :active="createNewProductModal" 
+                        :available-materials="availableMaterials"
+                        :available-categories="availableCategories"
+                        :available-components="availableComponents"
+                        @emitProduct="postProduct"
+                    />
+                </b-modal>
+            </div>
+            <button class="button is-danger" @click="fetchRequests()">
                 <b-icon 
                     icon="refresh"
                     custom-class="fa-spin"/>
             </button>
-            <edit-product
-                :active="updateProductModal"
-                :product="product"
-                :available-materials="availableMaterials"
-                :available-categories="availableCategories"
-                :available-components="availableComponents"
-                @emitProduct="updateProduct"
-                />
         </div>
-        <paginated-table 
-        :total.sync="total" 
-        :columns.sync="columns"
-        :data.sync="data"
-        :title.sync="title"
-        :showTotalInput=false
-        :showItemsPerPageInput=false
-        @clicked="changeSelectedProduct"
+        <products-table
+            :data.sync="data"
+            @refreshData="refreshProducts"
         />
     </div>
 </template>
@@ -44,9 +32,10 @@
 <script>
 
 import CreateNewProduct from './CreateNewProduct.vue';
-import EditProduct from './EditProduct.vue';
-import PaginatedTable from './../../UIComponents/PaginatedTable.vue';
+import ProductsTable from './ProductsTable';
 import Axios from 'axios';
+import Config,{ MYCM_API_URL } from '../../../config.js';
+
 
 let categories=[];
 let components=[];
@@ -54,9 +43,8 @@ let materials=[];
 
 export default {
     components:{
-        PaginatedTable,
         CreateNewProduct,
-        EditProduct
+        ProductsTable
     },
     /**
      * Function that is called when the component is created
@@ -95,130 +83,86 @@ export default {
             this.createNewProductModal=true;
         },
         /**
-         * Triggers the update of a selected product
-         */
-        updateSelectedProduct(){
-            this.fetchSelectedProduct();
-            this.updateProductModal=true;
-        },
-        /**
          * Posts a new product
          */
         postProduct(productDetails){
+            let newProduct={};
+            newProduct.reference=productDetails.reference;
+            newProduct.designation=productDetails.designation;
+            newProduct.categoryId=productDetails.category;
+            
+            if(productDetails.materials!=null){
+                let newProductMaterials=[];
+                for(let i=0;i<productDetails.materials.length;i++){
+                    newProductMaterials.push({id:productDetails.materials[i]});
+                }
+                newProduct.materials=newProductMaterials.slice();
+            }
+
+            if(productDetails.components!=null){
+                let newProductComponents=[];
+                for(let i=0;i<productDetails.components.length;i++){
+                    newProductComponents.push({id:productDetails.components[i]});
+                }
+                newProduct.components=newProductComponents.slice();
+            }
+            
+            newProduct.dimensions=productDetails.dimensions;
+            if(productDetails.slots!=null){
+                if(!(productDetails.slots.min==null 
+                    && productDetails.slots.recommended==null 
+                    && productDetails.slots.max==null
+                    && productDetails.slots.unit==null)){
+                        newProduct.slotsWidth={
+                            minWidth:productDetails.slots.min,
+                            recommendedWidth:productDetails.slots.recommended,
+                            maxWidth:productDetails.slots.max,
+                            unit:productDetails.slots.unit
+                        };
+                    }
+            }
+
+            newProduct.model="closet.glb";
+
             Axios
-                .post('http://localhost:5000/mycm/api/products',productDetails)
+                .post(MYCM_API_URL+'/products',newProduct)
                 .then((response)=>{
                     this.$toast.open({message:"The product was created with success!"});
                     this.createNewProductModal=false;    
                     this.fetchRequests();
                 })
-                .catch((_error)=>{
-                    this.$toast.open({message:_error.response.data.error});
-                });
-        },
-        updateProduct(productDetails){
-            this.updateProductProperties(productDetails);
-        },
-        updateProductProperties(productDetails){
-            let productProperties={};
-            if(this.productClone.reference!=productDetails.reference)productProperties.reference=productDetails.reference;
-            if(this.productClone.designation!=productDetails.designation)productProperties.designation=productDetails.designation
-            if(this.productClone.category!=productDetails.category)productProperties.categoryId=productDetails.category;
-            Axios
-                .put('http://localhost:5000/mycm/api/products/'+this.currentSelectedProduct
-                    ,productProperties)
-                .then((_response)=>{
-                    this.$toast.open({message:"The product properties were updated with success"});
-                    this.updateProductFromData(_response.data);
-                    this.fetchRequests();
-                    this.updateProductModal=false;
-                })
-                .catch((_error)=>{
-                    this.$toast.open({message:"An error ocurrd while updating the product properties"})
-                });
-        },
-        /**
-         * Triggers the deletion of the selected product
-         */
-        removeSelectedProduct(){
-            Axios
-            .delete('http://localhost:5000/mycm/api/products/'+this.currentSelectedProduct)
-            .then((response)=>{
-                this.$toast.open({message:"The product was deleted with success!"});
-                this.fetchRequests();
-            })
-            .catch(()=>{
-                this.$toast.open({message:"An error occurred while deleting the product"});
-            });
-        },
-        updateProductFromData(data){
-            let productDetails=data;
-            this.product={
-                id:productDetails.id,
-                reference:productDetails.reference,
-                designation:productDetails.designation,
-                category:productDetails.category.id,
-                materials:materials
-            };
-            this.productClone={
-                id:productDetails.id,
-                reference:productDetails.reference,
-                designation:productDetails.designation,
-                category:productDetails.category.id,
-                materials:materials
-            };
-        },
-        fetchSelectedProduct(){
-            Axios
-                .get('http://localhost:5000/mycm/api/products/'+this.currentSelectedProduct)
-                .then((response)=>{
-                    let productDetails=response.data;
-                    let materials=[];
-                    productDetails.material.forEach((material)=>{
-                        materials.push({id:material.id,value:material.designation});
-                    });
-                    this.product={
-                        id:productDetails.id,
-                        reference:productDetails.reference,
-                        designation:productDetails.designation,
-                        category:productDetails.category.id,
-                        materials:materials
-                    };
-                    this.productClone={
-                        id:productDetails.id,
-                        reference:productDetails.reference,
-                        designation:productDetails.designation,
-                        category:productDetails.category.id,
-                        materials:materials
-                    };
-                    console.log(productDetails)
-                })
-                .catch(()=>{
-                    this.$toast.open({message:"An error occurred while fetching the product"});
+                .catch((error_message)=>{
+                    this.$toast.open({message:error_message.response.data.message});
                 });
         },
         fetchRequests(){
-            this.updateFetchedProducts();
+            this.refreshProducts();
             this.fetchAvailableCategories();
             this.fetchAvailableComponents();
             this.fetchAvailableMaterials();
         },
+        /**
+         * Fetches the available categories
+         */
         fetchAvailableCategories(){
         Axios
-          .get('http://localhost:5000/mycm/api/categories/leaves')
+          .get(MYCM_API_URL+'/categories/leaves')
           .then((response)=>{
             let availableCategories=response.data;
             availableCategories.forEach((category)=>{
               categories.push(category);
             });
           })
-          .catch(()=>{
-
+          .catch((error_message)=>{
+              this.$toast.open({message:error_message.response.data.message});
           });
     },
+    /**
+     * Fetches the available components
+     */
     fetchAvailableComponents(){
         Axios
-          .get('http://localhost:5000/mycm/api/products')
+          .get(MYCM_API_URL+'/products')
           .then((response)=>{
             let availableComponents=response.data;
             availableComponents.forEach((component)=>{
@@ -228,13 +172,16 @@ export default {
               });
             });
           })
-          .catch(()=>{
-            
+          .catch((error_message)=>{
+              this.$toast.open({message:error_message.response.data.message});
           });
     },
+    /**
+     * Fetches the available materials
+     */
     fetchAvailableMaterials(){
         Axios
-          .get('http://localhost:5000/mycm/api/materials')
+          .get(MYCM_API_URL+'/materials')
           .then((response)=>{
             let availableMaterials=response.data;
             availableMaterials.forEach((material)=>{
@@ -244,22 +191,22 @@ export default {
               });
             });
           })
-          .catch(()=>{
-            
+          .catch((error_message)=>{
+              this.$toast.open({message:error_message.response.data.message});
           });
         },
         /**
          * Fetches all available products
          */
-        updateFetchedProducts(){
-            Axios.get('http://localhost:5000/mycm/api/products')
+        refreshProducts(){
+            Axios.get(MYCM_API_URL+'/products')
             .then((_response)=>{
                 this.data=this.generateProductsTableData(_response.data);
                 this.columns=this.generateProductsTableColumns();
                 this.total=this.data.length;
             })
-            .catch((_error)=>{
-                console.log(_error);
+            .catch((error_message)=>{
+                this.$toast.open({message:error_message.response.data.message});
             });
         },
         /**
@@ -281,9 +228,17 @@ export default {
                     field:"designation",
                     label:"Designation",
                     centered:true   
+                },
+                {
+                    field:"actions",
+                    label:"Actions",
+                    centered:true
                 }
             ];
         },
+        /**
+         * Generates the data of a products table by a given list of products
+         */
         generateProductsTableData(products){
             let productsTableData=[];
             products.forEach((product)=>{

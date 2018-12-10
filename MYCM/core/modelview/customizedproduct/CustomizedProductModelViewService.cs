@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using core.domain;
 using core.modelview.customizeddimensions;
 using core.modelview.customizedmaterial;
+using core.modelview.product;
+using core.modelview.slot;
 
 namespace core.modelview.customizedproduct
 {
@@ -59,12 +61,14 @@ namespace core.modelview.customizedproduct
             customizedProductModelView.designation = customizedProduct.designation;
             customizedProductModelView.customizedDimensions = CustomizedDimensionsModelViewService.fromEntity(customizedProduct.customizedDimensions);
 
-            if (customizedProduct.customizedMaterial == null)
+            if (customizedProduct.customizedMaterial != null)
             {
                 customizedProductModelView.customizedMaterial = CustomizedMaterialModelViewService.fromEntity(customizedProduct.customizedMaterial);
             }
 
-            //customizedProductModelView.slots = 
+            customizedProductModelView.product = ProductModelViewService.fromEntityAsBasic(customizedProduct.product);
+            customizedProductModelView.slots = SlotModelViewService.fromCollection(customizedProduct.slots);
+
 
             return customizedProductModelView;
         }

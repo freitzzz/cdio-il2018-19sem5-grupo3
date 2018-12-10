@@ -10,9 +10,10 @@
                                 v-model="dimension.single.value"
                                 placeholder="200"
                                 icon="wrench"
-                                expanded=true
                                 required
-                                @input="emitDimension">
+                                @input="emitDimension"
+                                expanded
+                            >
                             </b-input>
                         </b-field>
                         <b-field label="Dimension Type">
@@ -36,9 +37,10 @@
                                 v-model="dimension.discrete.value"
                                 placeholder="200"
                                 icon="wrench"
-                                expanded=true
                                 required
-                                @input="emitDimension">
+                                @input="emitDimension"
+                                expanded    
+                            >
                             </b-input>
                         </b-field>
                         <b-field label="Values">
@@ -167,6 +169,31 @@ const availableDimensionTypes=[
 
 export default {
     /**
+     * Component Created State call
+     */
+    created(){
+        let currentDimension=this.currentDimension;
+        if(currentDimension!=null){
+            if(currentDimension.value!=null){
+                this.dimension.selected=1;
+                this.dimension.single.value=currentDimension.value;
+                this.changeDimensionType();
+            }else if(currentDimension.minValue!=null){
+                this.dimension.selected=2;
+                this.dimension.continuous.minValue=currentDimension.minValue;
+                this.dimension.continuous.maxValue=currentDimension.maxValue;
+                this.dimension.continuous.increment=currentDimension.increment;
+                this.changeDimensionType();
+            }else{
+                this.dimension.selected=3;
+                this.dimension.discrete.selected=currentDimension.values[0];
+                this.dimension.discrete.value=currentDimension.values[0];
+                this.dimension.discrete.values=currentDimension.values;
+                this.changeDimensionType();
+            }
+        }
+    },
+    /**
      * Internal component data
      */
     data(){
@@ -283,7 +310,8 @@ export default {
      * Received values from father component
      */
     props:{
-        dimensionLabel:String
+        dimensionLabel:String,
+        currentDimension:Object
     }
 }
 </script>

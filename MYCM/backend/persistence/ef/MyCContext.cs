@@ -122,7 +122,7 @@ namespace backend.persistence.ef
             builder.Entity<Component>().HasMany(c => c.restrictions);
 
             builder.Entity<CustomizedProduct>().HasOne(cp => cp.product);       //one-to-one relationship
-            builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedDimensions); //embedded Dimensions
+            builder.Entity<CustomizedProduct>().HasOne(cp => cp.customizedDimensions); //one-to-one relationship
             builder.Entity<CustomizedProduct>().HasOne(cp => cp.customizedMaterial);
             builder.Entity<CustomizedProduct>().HasMany(cp => cp.slots).WithOne().OnDelete(DeleteBehavior.Cascade);        //one-to-many relationship
 
@@ -131,7 +131,7 @@ namespace backend.persistence.ef
             builder.Entity<CustomizedMaterial>().HasOne(cm => cm.color);
 
 
-            builder.Entity<Slot>().OwnsOne(s => s.slotDimensions);              //embedded Dimensions
+            builder.Entity<Slot>().HasOne(s => s.slotDimensions);              //one-to-one relationship
             builder.Entity<Slot>().HasMany(s => s.customizedProducts).WithOne(cp => cp.insertedInSlot).HasForeignKey(cp => cp.insertedInSlotId).OnDelete(DeleteBehavior.Cascade);          //one-to-many relationship
 
             //Compound key for CollectionProduct

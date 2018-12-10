@@ -3,6 +3,8 @@ using System.Runtime.Serialization;
 using core.dto;
 using core.modelview.customizeddimensions;
 using core.modelview.customizedmaterial;
+using core.modelview.product;
+using core.modelview.slot;
 
 namespace core.modelview.customizedproduct
 {
@@ -20,11 +22,11 @@ namespace core.modelview.customizedproduct
         public long customizedProductId { get; set; }
 
         /// <summary>
-        /// GetBasicCustomizedProductModelView with Product data.
+        /// GetBasicProductModelView with Product data.
         /// </summary>
-        /// <value>Gets/Sets the instance of GetBasicCustomizedProductModelView.</value>
+        /// <value>Gets/Sets the instance of GetBasicProductModelView.</value>
         [DataMember]
-        public GetBasicCustomizedProductModelView product { get; set; }
+        public GetBasicProductModelView product { get; set; }
 
         /// <summary>
         /// CustomizedProducts designation
@@ -66,6 +68,6 @@ namespace core.modelview.customizedproduct
         /// </summary>
         /// <value></value>
         [DataMember(EmitDefaultValue = false)]
-        public GetAllCustomizedProductsModelView slots { get; set; }
+        public GetAllSlotsModelView slots { get; set; }
     }
 }

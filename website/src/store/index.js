@@ -26,19 +26,10 @@ const state = {
             id: ""
         },
         customizedMaterial: {
-            material: {
-                id: ""
-            },
-            color: {
-                name: "",
-                red: "",
-                green: "",
-                blue: "",
-                alpha: ""
-            },
-            finish: {
-                description: ""
-            }
+            id:"",
+            reference:"",
+            designation:"",
+            image:""              
         },
         slots: [
             {
@@ -110,7 +101,10 @@ export const getters = {
     },
     canMoveComponents: state => {
         return state.canvasControls.canMoveComponents;
-     }
+     },
+     customizedMaterial: state => {
+         return state.customizedProduct.customizedMaterial;
+    }
 }
 
 export default new Vuex.Store({

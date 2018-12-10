@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using core.domain;
 using core.modelview.customizeddimensions;
 using core.modelview.customizedproduct;
@@ -28,9 +30,34 @@ namespace core.modelview.slot
             GetSlotModelView slotModelView = new GetSlotModelView();
             slotModelView.slotId = slot.Id;
             slotModelView.slotDimensions = CustomizedDimensionsModelViewService.fromEntity(slot.slotDimensions);
-            slotModelView.customizedProducts = CustomizedProductModelViewService.fromCollection(slot.customizedProducts);
+
+            if (slot.customizedProducts.Any())
+            {
+                slotModelView.customizedProducts = CustomizedProductModelViewService.fromCollection(slot.customizedProducts);
+            }
 
             return slotModelView;
+        }
+
+        /// <summary>
+        /// Converts an IEnumerable of Slot into an instance of GetAllSlotsModelView.
+        /// </summary>
+        /// <param name="slots"></param>
+        /// <returns></returns>
+        public static GetAllSlotsModelView fromCollection(IEnumerable<Slot> slots)
+        {
+            if (slots == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            GetAllSlotsModelView allSlotsModelView = new GetAllSlotsModelView();
+            foreach (Slot slot in slots)
+            {
+                allSlotsModelView.Add(fromEntity(slot));
+            }
+
+            return allSlotsModelView;
         }
     }
 }

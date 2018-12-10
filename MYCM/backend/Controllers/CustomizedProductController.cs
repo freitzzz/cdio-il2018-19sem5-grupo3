@@ -217,7 +217,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-                //logger.LogWarning(e, UNEXPECTED_ERROR);
+                logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -284,7 +284,7 @@ namespace backend.Controllers
         /// <param name="customizedProductModelView">CustomizedProductDTO with the customized product being added</param>
         /// <returns>ActionResult with the created customized product</returns>
         [HttpPost]
-        [HttpPost("{customizedProductId}/slots/{slotId}")]
+        [HttpPost("{customizedProductId}/slots/{slotId}/customizedproducts")]
         public ActionResult addCustomizedProduct(long? customizedProductId, long? slotId, [FromBody]AddCustomizedProductModelView customizedProductModelView)
         {
             logger.LogInformation(LOG_POST_START);
@@ -338,6 +338,7 @@ namespace backend.Controllers
             {
                 AddSlotModelView addSlotModelView = new AddSlotModelView();
                 addSlotModelView.customizedProductId = id;
+                addSlotModelView.slotDimensions = slotDimensions;
 
                 GetCustomizedProductModelView customizedProductModelView = new core.application.CustomizedProductController().addSlotToCustomizedProduct(addSlotModelView);
 
@@ -388,7 +389,7 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (InvalidCastException e)
+            catch (InvalidOperationException e)
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
@@ -426,7 +427,7 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (InvalidCastException e)
+            catch (InvalidOperationException e)
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
@@ -457,7 +458,7 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (InvalidCastException e)
+            catch (InvalidOperationException e)
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
@@ -489,7 +490,7 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (InvalidCastException e)
+            catch (InvalidOperationException e)
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
