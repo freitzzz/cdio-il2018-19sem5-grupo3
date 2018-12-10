@@ -4,7 +4,7 @@
 <script>
 import Customizer from "./Customizer.vue";
 import Intro from "./Intro.vue";
-import SideBar from "./SideBar";
+import ManagementTopBar from "./ManagementTopBar";
 import ListProductsVue from './management/product/ListProducts.vue';
 import ProductsTableVue from './management/product/ProductsTable.vue';
 export default {
@@ -18,13 +18,13 @@ export default {
   methods: {
     switchPage() {
   
-      this.currentComp = SideBar;
+      this.currentComp = ManagementTopBar;
     }
   },
   components: {
     Customizer,
     Intro,
-    SideBar
+    ManagementTopBar
   }
 };
 </script>
