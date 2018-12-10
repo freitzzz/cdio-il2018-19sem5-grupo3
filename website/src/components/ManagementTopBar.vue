@@ -2,26 +2,12 @@
 <nav class="navbar" role="navigation" aria-label="main navigation">
 
   <div id="navBarManagement" class="navbar-menu">
-    <div class="navbar-start">
+        <div class="navbar-start">
         <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">
+        <a class="navbar-link" @click="enableListCategories">
           Category
         </a>
 
-        <div class="navbar-dropdown">
-          <a class="navbar-item" @click="enableCreateCategory">
-            Create Category
-          </a>
-          <a class="navbar-item" @click="enableEditCategory">
-            Edit Category
-          </a>
-          <a class="navbar-item" @click="enableRemoveCategory">
-            Remove Category
-          </a>
-        </div>
-      </div>
-
-    <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link">
           Material
         </a>
@@ -43,17 +29,9 @@
        
         <div class="navbar-start">
         <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">
+        <a class="navbar-link" @click="enableListProducts">
           Product
-        </a>
-
-        <div class="navbar-dropdown">
-          <a class="navbar-item" @click="enableListProducts">
-            List Products
-          </a>
-        </div>
-
-     
+        </a>    
       </div>
         <a class="navbar-item"  @click="enableWIP">
             Create Customized Product
@@ -117,9 +95,7 @@ export default {
     return {
       activeTab: 0,
       showBooks: false,
-      CustomCreateCategory: false,
-      CustomEditCategory: false,
-      CustomRemoveCategory: false,
+      CustomListCategories:false,
       WIPFlag: false,
       /*   CountSamePage: 0, //Counts the amount of times*/
       CustomCreateMaterial: false,
@@ -130,7 +106,7 @@ export default {
     };
   },
   methods: {
-    enableCreateCategory() {
+    enableListCategory() {
       if (this.CustomCreateCategory === true) {
         this.CustomCreateCategory = false;
       }
@@ -140,22 +116,7 @@ export default {
       this.WIPFlag = false;
       disableMaterial();
     },
-    enableEditCategory() {
-      this.CustomEditCategory = true;
-      this.CustomCreateCategory = false;
-      this.CustomRemoveCategory = false;
-      this.WIPFlag = false;
-      disableMaterial();
-
-    },
-    enableRemoveCategory() {
-      this.CustomRemoveCategory = true;
-      this.CustomCreateCategory = false;
-      this.CustomEditCategory = false;
-      this.WIPFlag = false;
-      disableMaterial();
-
-    },
+ 
     enableCreateMaterial() {
       this.CustomCreateMaterial = true;
       this.CustomEditMaterial = false;
