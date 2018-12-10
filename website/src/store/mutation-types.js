@@ -12,3 +12,4 @@ export const DEACTIVATE_CAN_MOVE_CLOSET = 'deactivate_can_move_closet';
 export const ACTIVATE_CAN_MOVE_COMPONENTS = 'activate_can_move_components';
 export const DEACTIVATE_CAN_MOVE_COMPONENTS = 'deactivate_can_move_components';
 export const SET_CUSTOMIZED_PRODUCT_DIMENSIONS = 'set_customized_product_dimensions';
+export const SET_MATERIAL = 'set_material';
