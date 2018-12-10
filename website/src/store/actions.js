@@ -41,6 +41,12 @@ export const actions = {
     [types.SET_SLOT_DIMENSIONS]: ({ commit }, payload) => {
         commit(types.SET_SLOT_DIMENSIONS, payload);
     },
+    /**
+     * Action used to commit the mutation SET_MATERIAL
+     */
+    [types.SET_MATERIAL]: ({ commit }, payload) => {
+        commit(types.SET_MATERIAL, payload);
+    },
 
     /**
      * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_DIMENSIONS

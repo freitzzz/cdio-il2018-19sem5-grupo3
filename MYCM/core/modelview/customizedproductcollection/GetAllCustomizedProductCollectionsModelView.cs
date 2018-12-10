@@ -12,7 +12,7 @@ namespace core.modelview.customizedproductcollection
         /// <summary>
         /// List of model views representing basic info about a customized product collection
         /// </summary>
-        [DataMember]
+        [DataMember(Name = "customizedProductCollections")]
         public List<GetBasicCustomizedProductCollectionModelView> customizedProductCollections { get; set; }
     }
 }

@@ -32,6 +32,7 @@ namespace core.modelview.customizedproduct
         /// </summary>
         /// <value>Gets/Sets the user's authentication token.</value>
         [IgnoreDataMember]
+        [DataMember]
         public string userAuthToken { get; set; }
 
         /// <summary>

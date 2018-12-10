@@ -34,9 +34,19 @@ namespace core.domain
         private const string INVALID_CUSTOMIZED_PRODUCT = "The Customized Product is invalid!";
 
         /// <summary>
-        /// Constant that represents the message that occurs if the customized product isn't removed from the collection
+        /// Constant that represents the message that occurs if the customized product isn't from the collection
         /// </summary>
-        private const string CUSTOMIZED_PRODUCT_WASNT_REMOVED = "Customized Product wasn't removed";
+        private const string CUSTOMIZED_PRODUCT_NOT_FROM_COLLECTION = "The customized product trying to be removed doesn't exist in this collection";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the customized product trying to be added is in PENDING State
+        /// </summary>
+        private const string PENDING_CUSTOMIZED_PRODUCT = "The customized product trying to be added to the collection isn't finished yet!";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the customized produc trying to be added is already in the collection
+        /// </summary>
+        private const string CUSTOMIZED_PRODUCT_EXISTS_IN_COLLECTION = "This customized product is already in the collection!";
 
         /// <summary>
         /// Persistence identifier of the current CustomizedProductCollection
@@ -81,7 +91,7 @@ namespace core.domain
         public CustomizedProductCollection(string name)
         {
             checkCustomizedProductCollectionName(name);
-            this.name = name;
+            this.name = name.Trim();
             this.collectionProducts = new List<CollectionProduct>();
         }
 
@@ -117,6 +127,7 @@ namespace core.domain
             if (Collections.isEnumerableNullOrEmpty(enumerableCustomizedProducts))
                 throw new ArgumentException(INVALID_COLLECTION_CUSTOMIZED_PRODUCTS);
             checkCustomizedProductsDuplicates(enumerableCustomizedProducts);
+            checkCustomizedProductsState(enumerableCustomizedProducts);
         }
 
         /// <summary>
@@ -132,13 +143,28 @@ namespace core.domain
         }
 
         /// <summary>
+        /// Checks if any customized product from an enumerable have a PENDING State
+        /// </summary>
+        /// <param name="customizedProducts">IEnumerable with the customized products</param>
+        private void checkCustomizedProductsState(IEnumerable<CustomizedProduct> customizedProducts)
+        {
+            foreach (CustomizedProduct customizedProduct in customizedProducts)
+            {
+                if (customizedProduct.status == CustomizationStatus.PENDING)
+                {
+                    throw new ArgumentException(PENDING_CUSTOMIZED_PRODUCT);
+                }
+            }
+        }
+
+        /// <summary>
         /// Add's a customized product to the current customized products collection
         /// </summary>
         /// <param name="customizedProduct">CustomizedProduct with the customized product being added</param>
         /// <returns>boolean true if the customized product was added with success, false if not</returns>
         public void addCustomizedProduct(CustomizedProduct customizedProduct)
         {
-            if (!isCustomizedProductValidForAddition(customizedProduct)) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT);
+            checkIfCustomizedProductIsValidForAddition(customizedProduct);
             collectionProducts.Add(new CollectionProduct(this, customizedProduct));
         }
 
@@ -161,7 +187,7 @@ namespace core.domain
         public void removeCustomizedProduct(CustomizedProduct customizedProduct)
         {
             bool removed = collectionProducts.Remove(collectionProducts.Where(cc => cc.customizedProduct.Equals(customizedProduct)).FirstOrDefault());
-            if (!removed) throw new ArgumentException(CUSTOMIZED_PRODUCT_WASNT_REMOVED);
+            if (!removed) throw new ArgumentException(CUSTOMIZED_PRODUCT_NOT_FROM_COLLECTION);
         }
 
         /// <summary>
@@ -169,11 +195,11 @@ namespace core.domain
         /// </summary>
         /// <param name="customizedProduct">CustomizedProduct with the customized product being validated</param>
         /// <returns>boolean true if the customized product is valid for addition, false if not</returns>
-        private bool isCustomizedProductValidForAddition(CustomizedProduct customizedProduct)
+        private void checkIfCustomizedProductIsValidForAddition(CustomizedProduct customizedProduct)
         {
-            return customizedProduct != null 
-                && customizedProduct.status == CustomizationStatus.FINISHED
-                && !collectionProducts.Select(cc => cc.customizedProduct).Contains(customizedProduct);
+            if (customizedProduct == null) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT);
+            if (customizedProduct.status == CustomizationStatus.PENDING) throw new ArgumentException(PENDING_CUSTOMIZED_PRODUCT);
+            if (collectionProducts.Select(cc => cc.customizedProduct).Contains(customizedProduct)) throw new ArgumentException(CUSTOMIZED_PRODUCT_EXISTS_IN_COLLECTION);
         }
 
         /// <summary>

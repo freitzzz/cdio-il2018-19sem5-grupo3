@@ -53,6 +53,9 @@ export default {
         array.push(Store.getters.customizedProductComponents(i));
       }
       return array;
+    },
+    addMaterial(){
+      return Store.getters.customizedMaterial;
     }
   },
   components: {
@@ -75,6 +78,9 @@ export default {
     },
     addComponent: function(component) {
       this.productRenderer.addComponent(component);
+    },
+    addMaterial: function(newMaterial) {
+      this.productRenderer.applyTexture("./src/assets/materials/" + newMaterial.image);
     }
   },
   methods: {

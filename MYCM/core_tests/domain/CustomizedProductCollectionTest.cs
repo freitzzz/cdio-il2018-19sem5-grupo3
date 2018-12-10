@@ -30,12 +30,26 @@ namespace core_tests.domain
         [Fact]
         public void ensureCustomizedProductsListWithDuplicatesIsNotValid()
         {
-            CustomizedProduct cp = buildCustomizedProductInstance();
+            CustomizedProduct cp = buildFinishedCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
             products.Add(cp);
 
             Assert.Throws<ArgumentException>(() => new CustomizedProductCollection("Mario", products));
+        }
+
+        [Fact]
+        public void ensureCollectionCantBeInstantiatedWithUnfinishedCustomizedProducts()
+        {
+            Assert.Throws<ArgumentException>(
+                () => new CustomizedProductCollection(
+                        "Mario",
+                        new List<CustomizedProduct>(){
+                            buildFinishedCustomizedProductInstance(),
+                            buildUnfinishedCustomizedProductInstance()
+                        }
+                    )
+            );
         }
 
         [Fact]
@@ -117,7 +131,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureAddCustomizedProductWorksForValidProduct()
         {
-            CustomizedProduct customizedProduct = buildCustomizedProductInstance();
+            CustomizedProduct customizedProduct = buildFinishedCustomizedProductInstance();
             CustomizedProductCollection instance = new CustomizedProductCollection("Mario");
 
             instance.addCustomizedProduct(customizedProduct);
@@ -129,7 +143,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureAddCustomizedProductFailsIfItAlreadyExists()
         {
-            CustomizedProduct customizedProduct = buildCustomizedProductInstance();
+            CustomizedProduct customizedProduct = buildFinishedCustomizedProductInstance();
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(customizedProduct);
 
@@ -149,20 +163,19 @@ namespace core_tests.domain
         [Fact]
         public void ensureAddingPendingCustomizedProductThrowsException()
         {
-            Product product = createProductInstance();
+            Product product = buildValidProduct();
 
             CustomizedProductCollection instance = new CustomizedProductCollection("Mario");
-            
+
             Assert.Throws<ArgumentException>(() => instance.addCustomizedProduct(
-                CustomizedProductBuilder.createAnonymousUserCustomizedProduct("123", product,
-                CustomizedDimensions.valueOf(21, 30, 17)).build()
+                buildUnfinishedCustomizedProductInstance()
             ));
         }
 
         [Fact]
         public void ensureRemovedCustomizedProductWorksForExistingProduct()
         {
-            CustomizedProduct cp = buildCustomizedProductInstance();
+            CustomizedProduct cp = buildFinishedCustomizedProductInstance();
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(cp);
 
@@ -239,6 +252,7 @@ namespace core_tests.domain
             CustomizedProduct cp = CustomizedProductBuilder
                 .createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions)
                 .withMaterial(mat).build();
+            cp.finalizeCustomization();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -248,7 +262,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureEqualCustomizedProductCollectionsAreEqual()
         {
-            CustomizedProduct cp = buildCustomizedProductInstance();
+            CustomizedProduct cp = buildFinishedCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -258,7 +272,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureDifferentTypeObjectIsNotEqualToCustomizedProductCollection()
         {
-            CustomizedProduct cp = buildCustomizedProductInstance();
+            CustomizedProduct cp = buildFinishedCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -268,7 +282,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureNullObjectIsNotEqualToCustomizedProductCollection()
         {
-            CustomizedProduct cp = buildCustomizedProductInstance();
+            CustomizedProduct cp = buildFinishedCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -278,7 +292,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureHashCodeWorks()
         {
-            CustomizedProduct cp = buildCustomizedProductInstance();
+            CustomizedProduct cp = buildFinishedCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -290,7 +304,7 @@ namespace core_tests.domain
         public void ensureToStringWorks()
         {
 
-            CustomizedProduct cp = buildCustomizedProductInstance();
+            CustomizedProduct cp = buildFinishedCustomizedProductInstance();
 
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
@@ -312,7 +326,7 @@ namespace core_tests.domain
         {
             CustomizedProductCollection collection = new CustomizedProductCollection("Collection");
 
-            CustomizedProduct customizedProduct = buildCustomizedProductInstance();
+            CustomizedProduct customizedProduct = buildFinishedCustomizedProductInstance();
 
             Assert.False(collection.hasCustomizedProduct(customizedProduct));
         }
@@ -322,92 +336,110 @@ namespace core_tests.domain
         {
             CustomizedProductCollection collection = new CustomizedProductCollection("Collection");
 
-            CustomizedProduct customizedProduct = buildCustomizedProductInstance();
+            CustomizedProduct customizedProduct = buildFinishedCustomizedProductInstance();
 
             collection.addCustomizedProduct(customizedProduct);
 
             Assert.True(collection.hasCustomizedProduct(customizedProduct));
         }
 
-        private CustomizedProduct buildCustomizedProductInstance()
+        private ProductCategory buildValidCategory()
         {
-            var category = new ProductCategory("It's-a-me again");
-
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            //Creating a material
-            string reference = "Just referencing";
-            string designation = "Doin' my thing";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
-            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
-            colors.Add(color);
-            colors.Add(color1);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Prayin'", 12);
-            Finish finish2 = Finish.valueOf("Estragado", 13);
-            finishes.Add(finish);
-            finishes.Add(finish2);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("Kinda dead", "So tired", "riperino.gltf", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-
-            //Customized Material
-            CustomizedMaterial mat = CustomizedMaterial.valueOf(material, color1, finish2);
-
-            return CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 123", product, customizedDimensions).withMaterial(mat).build();
+            return new ProductCategory("Closets");
         }
 
-        private Product createProductInstance()
+        private Finish buildGlossyFinish()
         {
-            var category = new ProductCategory("It's-a-me again");
+            return Finish.valueOf("Glossy", 90);
+        }
 
-            //Creating Dimensions
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
+        private Finish buildMatteFinish()
+        {
+            return Finish.valueOf("Matte", 2);
+        }
 
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
+        private Color buildRedColor()
+        {
+            return Color.valueOf("Deep Red", 255, 0, 0, 0);
+        }
 
-            //Creating a material
-            string reference = "Just referencing";
-            string designation = "Doin' my thing";
+        private Color buildGreenColor()
+        {
+            return Color.valueOf("Totally Green", 0, 255, 0, 0);
+        }
 
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("Goin' to church", 1, 2, 3, 0);
-            Color color1 = Color.valueOf("Burro quando foge", 1, 2, 3, 4);
-            colors.Add(color);
-            colors.Add(color1);
+        private Material buildValidMaterial()
+        {
 
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Prayin'", 3);
-            Finish finish2 = Finish.valueOf("Estragado", 9);
-            finishes.Add(finish);
-            finishes.Add(finish2);
+            Finish glossy = buildGlossyFinish();
+            Finish matte = buildMatteFinish();
 
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
+            Color red = buildRedColor();
+            Color green = buildGreenColor();
 
-            IEnumerable<Material> matsList = materials;
 
-            Product product = new Product("Kinda dead", "So tired", "riperino.gltf", category, matsList, measurements);
+            return new Material("#123", "MDF", "ola.jpg", new List<Color>() { red, green }, new List<Finish>() { glossy, matte });
+        }
 
-            return product;
+        private Product buildValidProduct()
+        {
+            Dimension firstHeightDimension = new ContinuousDimensionInterval(50, 100, 2);
+            Dimension firstWidthDimension = new DiscreteDimensionInterval(new List<double>() { 75, 80, 85, 90, 95, 120 });
+            Dimension firstDepthDimension = new SingleValueDimension(25);
+
+            Measurement firstMeasurement = new Measurement(firstHeightDimension, firstWidthDimension, firstDepthDimension);
+
+            Dimension sideDimension = new SingleValueDimension(60);
+            Measurement secondMeasurement = new Measurement(sideDimension, sideDimension, sideDimension);
+
+            ProductSlotWidths slotWidths = ProductSlotWidths.valueOf(25, 50, 35);
+
+            return new Product("#429", "Fabulous Closet", "fabcloset.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { firstMeasurement, secondMeasurement }, slotWidths);
+        }
+
+        private CustomizedDimensions buildCustomizedDimensions()
+        {
+            return CustomizedDimensions.valueOf(76, 80, 25);
+        }
+
+        private CustomizedMaterial buildCustomizedMaterial()
+        {
+            Material material = buildValidMaterial();
+            Finish selectedFinish = buildMatteFinish();
+            Color selectedColor = buildRedColor();
+            return CustomizedMaterial.valueOf(material, selectedColor, selectedFinish);
+        }
+
+        private CustomizedProduct buildFinishedCustomizedProductInstance()
+        {
+            string serialNumber = "123";
+
+            CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
+
+            CustomizedDimensions selectedDimensions = buildCustomizedDimensions();
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, buildValidProduct(), selectedDimensions).build();
+
+            customizedProduct.changeCustomizedMaterial(customizedMaterial);
+
+            customizedProduct.finalizeCustomization();
+
+            return customizedProduct;
+        }
+
+        private CustomizedProduct buildUnfinishedCustomizedProductInstance()
+        {
+            string serialNumber = "123";
+
+            CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
+
+            CustomizedDimensions selectedDimensions = buildCustomizedDimensions();
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, buildValidProduct(), selectedDimensions).build();
+
+            customizedProduct.changeCustomizedMaterial(customizedMaterial);
+
+            return customizedProduct;
         }
     }
 }

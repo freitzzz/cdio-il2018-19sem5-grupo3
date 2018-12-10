@@ -13,19 +13,19 @@ namespace core.modelview.customizedproductcollection
         /// <summary>
         /// Persistence identifier of the current CustomizedProductCollection
         /// </summary>
-        [DataMember]
+        [DataMember(Order = 0)]
         public long id { get; set; }
 
         /// <summary>
         /// String with the collection name
         /// </summary>
-        [DataMember]
+        [DataMember(Order = 1)]
         public string name { get; set; }
 
         /// <summary>
         /// List with basic model views of the collection's products
         /// </summary>
-        [DataMember]
+        [DataMember(EmitDefaultValue = false, Order = 2)]
         public List<GetBasicCustomizedProductModelView> customizedProducts;
     }
 }
