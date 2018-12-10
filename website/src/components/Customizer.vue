@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import ProductRenderer from "./../3d/ProductRenderer.js";
+import ProductRenderer from "./../3d/ProductRendererTemp.js";
 import CustomizerSideBar from "./CustomizerSideBar";
 import CustomizerProgressBar from "./CustomizerProgressBar.vue";
 import Store from "./../store/index.js";
