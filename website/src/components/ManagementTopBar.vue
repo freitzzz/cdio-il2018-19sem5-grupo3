@@ -17,6 +17,9 @@
         <a class="navbar-item">
                                 Create Customized Product
                             </a>
+        <a class = "navbar-item" @click="enableListCollections">
+                                Customized Product Collections
+                            </a>
       </div>
   
     </div>
@@ -59,6 +62,7 @@
   import ListMaterials from './management/material/ListMaterials.vue'
   import ListCategories from './management/category/ListCategories.vue'
   import ListProducts from './management/product/ListProducts.vue';
+  import ListCustomizedProductCollections from './management/customizedproductcollections/ListCustomizedProductCollections.vue';
   export default {
     data() {
       return {
@@ -66,31 +70,41 @@
         showBooks: false,
         CustomListCategories: false,
         CustomListMaterials: false,
-        CustomListProducts: false
+        CustomListProducts: false,
+        CustomListCollections: false
       };
     },
     methods: {
       enableListCategories() {
         this.CustomListMaterials = false;
         this.CustomListProducts = false;
+        this.CustomListCollections = false;
         this.CustomListCategories = true;
       },
   
       enableListProducts() {
         this.CustomListCategories = false;
         this.CustomListMaterials = false;
+        this.CustomListCollections = false;
         this.CustomListProducts = true;
       },
       enableListMaterials() {
         this.CustomListProducts = false;
         this.CustomListCategories = false;
+        this.CustomListCollections = false;
         this.CustomListMaterials = true;
+      },
+      enableListCollections(){
+        this.CustomListProducts = false;
+        this.CustomListCategories = false;
+        this.CustomListMaterials = false;
       }
     },
     components: {
       ListCategories,
       ListMaterials,
-      ListProducts
+      ListProducts,
+      ListCustomizedProductCollections
     }
   };
 </script>
