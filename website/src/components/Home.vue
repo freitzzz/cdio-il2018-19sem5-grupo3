@@ -7,6 +7,8 @@ import Intro from "./Intro.vue";
 import ManagementTopBar from "./ManagementTopBar";
 import ListProductsVue from './management/product/ListProducts.vue';
 import ProductsTableVue from './management/product/ProductsTable.vue';
+import ListCustomizedProductCollections from './management/customizedproductcollections/ListCustomizedProductCollections';
+
 export default {
   name: "home",
   data() {
