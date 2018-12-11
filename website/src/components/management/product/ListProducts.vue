@@ -23,7 +23,8 @@
             </button>
         </div>
         <products-table
-            :data="data"
+            :data.sync="data"
+            @refreshData="refreshProducts"
         />
     </div>
 </template>

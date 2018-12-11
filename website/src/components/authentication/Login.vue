@@ -1,7 +1,5 @@
 <template>
-    <b-modal :active="active">
-        <login-form @emitLogin="login"/>
-    </b-modal>
+    <login-form @emitLogin="login" @signUp="signUp"/>
 </template>
 
 <script>
@@ -20,14 +18,6 @@ export default {
         LoginForm
     },
     /**
-     * Component data
-     */
-    data(){
-        return{
-            active:true
-        }
-    },
-    /**
      * Component methods
      */
     methods:{
@@ -37,7 +27,7 @@ export default {
         login(details){
             let authenticationRequestData={
                 type:"credentials",
-                username:details.username,
+                email:details.email,
                 password:details.password,
             };
             let authenticationRequestHeaders={
@@ -51,7 +41,6 @@ export default {
                 let sessionCookie=authenticationData.headers.cookie;
                 this.$cookies.set("asdasd",sessionCookie);
                 this.$toast.open({message:"Succesful Login!\nWe have stored a session cookie in your browser :)"});
-                this.active=false;
                 emitCloseLogin();
             })
             .catch((_error_message)=>{
@@ -64,6 +53,9 @@ export default {
          */
         emitCloseLogin(){
             this.$emit("closeLogin");
+        },
+        signUp(){
+            this.$emit("signUp");
         }
     }
 }

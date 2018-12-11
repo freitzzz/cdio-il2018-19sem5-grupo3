@@ -26,50 +26,6 @@ export const mutations = {
     }
   },
 
-  // /* *
-  //  * Changes the states's customized product's width
-  //  * @param {*} state The store's state
-  //  * @param {*} payload Payload with the new width
-  //  */
-  // [types.SET_CUSTOMIZED_PRODUCT_WIDTH](state, payload) {
-  //   state.customizedProduct.customizedDimensions.width = payload.width;
-  // },
-
-  // /**
-  //  * Changes the states's customized product's heigth
-  //  * @param {*} state The store's state
-  //  * @param {*} payload Payload with the new height
-  //  */
-  // [types.SET_CUSTOMIZED_PRODUCT_HEIGHT](state, payload) {
-  //   state.customizedProduct.customizedDimensions.height = payload.height;
-  // },
-
-  // /**
-  //  * Changes the states's customized product's depth
-  //  * @param {*} state The store's state
-  //  * @param {*} payload Payload with the new depth 
-  //  */
-  // [types.SET_CUSTOMIZED_PRODUCT_DEPTH](state, payload) {
-  //   state.customizedProduct.customizedDimensions.depth = payload.depth;
-  // },
-
-  // /**
-  //  * Changes the states's customized product's unit
-  //  * @param {*} state The store's state
-  //  * @param {*} payload Payload with the new unit 
-  //  */
-  // [types.SET_CUSTOMIZED_PRODUCT_UNIT](state, payload) {
-  //   state.customizedProduct.customizedDimensions.unit = payload.unit;
-  // },
-  // /**
-  //  * Changes the states's customized product's unit
-  //  * @param {*} state The store's state
-  //  * @param {*} payload Payload with the new unit 
-  //  */
-  // [types.SET_CUSTOMIZED_PRODUCT_UNIT](state, payload) {
-  //   state.customizedProduct.customizedDimensions.unit = payload.unit;
-  // },
-
   /**
    * Changes the states's customized product's slot width
    * @param {*} state The store's state
@@ -91,7 +47,7 @@ export const mutations = {
    * @param {*} state The store's state
    * @param {*} payload Payload with the new material 
    */
-  [types.SET_MATERIAL](state, payload) {
+  [types.SET_CUSTOMIZED_PRODUCT_MATERIAL](state, payload) {
     state.customizedProduct.customizedMaterial.id = payload.id,
     state.customizedProduct.customizedMaterial.reference = payload.reference,
     state.customizedProduct.customizedMaterial.designation =  payload.designation,
@@ -99,19 +55,13 @@ export const mutations = {
     },
 
   /**
-   * Adds a component to a slot from the state's customized product's
+   * Adds a component to the state's customized product's
    * @param {*} state The store's state
    * @param {*} payload Payload with the component to add
    */
   [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS](state, payload) {
     if (state.customizedProduct.slots.length >= payload.component.slot) {
-      if (payload.component.slot > 0) {
-        state.customizedProduct.slots[payload.component.slot - 1].components = [];
-        state.customizedProduct.slots[payload.component.slot - 1].components.push(payload.component);
-      } else {
-        state.customizedProduct.slots[payload.component.slot].components = [];
-        state.customizedProduct.slots[payload.component.slot].components.push(payload.component);
-      }
+        state.customizedProduct.components.push(payload.component);
     }
   },
 

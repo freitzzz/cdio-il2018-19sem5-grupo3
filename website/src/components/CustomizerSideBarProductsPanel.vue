@@ -2,11 +2,22 @@
   <div>
     <!--Only render products if the API call was successful-->
     <div v-if="getProductsOk">
-        <div class="text-entry">Select a structure:</div>
         <div class="icon-div-top"><i class="material-icons md-12 md-blue btn">help</i>
           <span class="tooltiptext">In this step, you must choose one of our base products in order to start customizing it.</span>
         </div>
-      <a class="product-entry" v-for="product in products" :key="product.id" @click="selectProduct(product.id)">{{product.designation}}</a>
+        <div class="text-entry">Select a structure:</div>
+       <div class="padding-div">
+        <div class="scrollable-div" style="height: 400px; width: 100%;">
+            <ul class="image-list" v-for="product in products" :key="product.id">
+            <li>
+              <div class="image-btn" @click="selectProduct(product.id)">
+                <img :src="findProductImage(product.model)" width="100%">
+                <p>{{product.designation}}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
     <div v-else-if="getProductsNotFound">
       <div class="text-entry"><b>No base products</b></div>
@@ -28,7 +39,7 @@
 <script>
 import Axios from "axios";
 import store from "./../store";
-import { INIT_PRODUCT } from "./../store/mutation-types.js";
+import { INIT_PRODUCT, SET_CUSTOMIZED_PRODUCT_MATERIAL } from "./../store/mutation-types.js";
 import { MYCM_API_URL } from "./../config.js";
 
 export default {
@@ -55,6 +66,10 @@ export default {
       Axios.get(`${MYCM_API_URL}/products/${productId}`)
         .then(response => {
           store.dispatch(INIT_PRODUCT, { product: response.data }); //Dispatches the action INIT_PRODUCT
+          store.dispatch(SET_CUSTOMIZED_PRODUCT_MATERIAL, {id : response.data.materials[0].id, //Applies initial material 
+          reference : response.data.materials[0].reference,
+          designation : response.data.materials[0].designation,
+          image : response.data.materials[0].image});
           this.httpCode = response.status;
           this.$emit("advance"); //Progresses to the next step (change product dimensions)
         })
@@ -78,8 +93,11 @@ export default {
             this.httpCode = error.response.status;
           }
         });
+    },
+    findProductImage(filename) {
+      return "./src/assets/products/" + filename.split(".")[0] + ".png";
     }
-  },
+  },  
   created() {
     this.getBaseProducts();
   }
