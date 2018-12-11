@@ -150,8 +150,8 @@ namespace backend_tests.Controllers
             GetAllCustomizedProductCollectionsModelView getAllCustomizedProductCollections =
                 await getAll.Content.ReadAsAsync<GetAllCustomizedProductCollectionsModelView>();
 
-            Assert.Equal(modelView.name, getAllCustomizedProductCollections.customizedProductCollections[0].name);
-            Assert.Equal(otherModelView.name, getAllCustomizedProductCollections.customizedProductCollections[1].name);
+            Assert.Equal(modelView.name, getAllCustomizedProductCollections[0].name);
+            Assert.Equal(otherModelView.name, getAllCustomizedProductCollections[1].name);
 
             await httpClient.DeleteAsync(BASE_URI + "/" + collectionModelView.id);
             await httpClient.DeleteAsync(BASE_URI + "/" + otherCollectionModelView.id);
