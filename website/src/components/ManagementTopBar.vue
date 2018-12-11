@@ -38,13 +38,16 @@
           </a>
         </div>
 
-     
       </div>
         <a class="navbar-item" >
             Create Customized Product
         </a>
-         
-    
+      </div>
+
+      <div class = "navbar-start">
+        <a class = "navbar-item" @click="enableListCustomizedProductCollections">
+          Customized Product Collections
+        </a>
       </div>
     </div>
 
@@ -58,9 +61,9 @@
     </div>
   </div>
 <div id="management">
-  <b-message title="Information" v-if="WIPFlag">
+ <!--  <b-message title="Information" v-if="WIPFlag">
     Feature is not implemented yet.
-  </b-message>
+  </b-message> -->
   <create-category v-if="CustomCreateCategory"></create-category>
   <edit-category v-if="CustomEditCategory"></edit-category>
   <remove-category v-if="CustomRemoveCategory"></remove-category>
@@ -74,6 +77,9 @@
   </section>
   <section v-if="CustomListMaterials" style="width:100%">
     <list-materials />
+  </section>
+  <section v-if="CustomListCustomizedProductsCollection" style="width:100%">
+    <list-customized-product-collections/>
   </section>
 </nav>
 
@@ -95,6 +101,8 @@ import EditCategory from "./management/category/EditCategory.vue";
 import RemoveCategory from "./management/category/RemoveCategory.vue";
 import ListMaterials from './management/material/ListMaterials.vue';
 import ListProducts from './management/product/ListProducts.vue';
+import ListCustomizedProductCollections from './management/customizedproductcollections/ListCustomizedProductCollections.vue';
+
 export default {
   data() {
     return {
@@ -105,7 +113,8 @@ export default {
       CustomRemoveCategory: false,
       /*   CountSamePage: 0, //Counts the amount of times*/
       CustomListMaterials: false,
-      CustomListProducts:false
+      CustomListProducts:false,
+      CustomListCustomizedProductsCollection: false
     };
   },
   methods: {
@@ -138,6 +147,14 @@ export default {
       this.CustomEditCategory = false;
       this.CustomListMaterials=true;
     },
+    enableListCustomizedProductCollections(){
+      this.CustomRemoveCategory = false;
+      this.CustomCreateCategory = false;
+      this.CustomEditCategory = false;
+      this.CustomListMaterials = false;
+      this.CustomListProducts = false;
+      this.CustomListCustomizedProductsCollection = true;
+    },
     enableListProducts(){
       this.CustomListMaterials=false;
       this.CustomListProducts=true;
@@ -154,7 +171,8 @@ export default {
     EditCategory,
     RemoveCategory,
     ListMaterials,
-    ListProducts
+    ListProducts,
+    ListCustomizedProductCollections
   }
 };
 </script>
