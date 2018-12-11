@@ -218,7 +218,7 @@ namespace backend.Controllers
         {
             logger.LogInformation(LOG_GET_ALL_START);
             GetAllCustomizedProductCollectionsModelView modelView = new core.application.CustomizedProductCollectionController().findAllCollections();
-            if (!Collections.isEnumerableNullOrEmpty(modelView.customizedProductCollections))
+            if (!Collections.isEnumerableNullOrEmpty(modelView))
             {
                 logger.LogInformation(LOG_GET_ALL_SUCCESS, modelView);
                 return Ok(modelView);
