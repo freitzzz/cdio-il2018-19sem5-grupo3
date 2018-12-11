@@ -48,6 +48,9 @@
     <section v-if="CustomListMaterials" style="width:100%">
       <list-materials />
     </section>
+    <section v-if="CustomListCollections" style="width:100%">
+      <list-customized-product-collections/>
+    </section>
   </nav>
 </template>
 
@@ -98,6 +101,7 @@
         this.CustomListProducts = false;
         this.CustomListCategories = false;
         this.CustomListMaterials = false;
+        this.CustomListCollections = true;
       }
     },
     components: {
