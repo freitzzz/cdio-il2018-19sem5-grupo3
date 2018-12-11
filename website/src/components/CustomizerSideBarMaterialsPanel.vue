@@ -7,7 +7,7 @@
       </div>
       <div class="text-entry">Choose material to add:</div>
       <div class="padding-div">
-        <div class="scrollable-div" style="height: 300px; width: 100%;">
+        <div class="scrollable-div" style="height: 400px; width: 100%;">
           <ul class="image-list" v-for="material in materials" :key="material.id">
             <li>
               <div class="image-btn" @click="createDivElements(material)">
@@ -30,6 +30,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import Vue from "vue";
 import Axios from "axios";
