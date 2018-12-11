@@ -238,7 +238,7 @@ export default {
                     .get(MYCM_API_URL+'/products/'+productId)
                     .then((product)=>{
                         this.currentSelectedProduct=product.data;
-                        this.currentSelectedProduct2=Object.assign({},this.currentSelectedProduct);
+                        this.currentSelectedProductClone=Object.assign({},this.currentSelectedProduct);
                         accept(product);
                     })
                     .catch((error_message)=>{
