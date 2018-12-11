@@ -142,7 +142,14 @@ export default {
     var remainderWidth =
       widthCloset - recommendedNumberSlots * recommendedSlotWidth;
 
-    if (remainder > 0 && remainderWidth >= store.getters.minSlotWidth) {
+    if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth*/) {
+      store.dispatch(SET_SLOT_DIMENSIONS, {
+        idSlot: recommendedNumberSlots,
+        width: remainderWidth,
+        height: heightCloset,
+        depth: depthCloset,
+        unit: unitCloset
+      });
       /* var addToMin = store.getters.minSlotWidth - remainder;
       recommendedNumberSlots--;
       var slotAn = re - addToMin

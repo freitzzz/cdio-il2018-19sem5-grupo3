@@ -379,17 +379,13 @@ export default class ProductRenderer {
   /**
    * Adds components to the current closet
    */
-  addComponent(components) {
-    if (components == null || components == undefined) return;
-    for (let i = 0; i < components.length; i++) {
-      for (let j = 0; j < components[i].length; j++) {
-        if (components[i][0].designation == "Shelf") this.generateShelf(components[i][0].slot);
-        if (components[i][0].designation == "Pole") this.generatePole(components[i][0].slot);
-        if (components[i][0].designation == "Drawer") this.generateDrawer(components[i][0].slot);
-        if (components[i][0].designation == "Hinged Door") this.generateHingedDoor(components[i][0].slot);
-        if (components[i][0].designation == "Sliding Door") this.generateSlidingDoor();
-      }
-    }
+  addComponent(component) {
+    if (!component) return;
+    if (component.designation == "Shelf") this.generateShelf(component.slot);
+    if (component.designation == "Pole") this.generatePole(component.slot);
+    if (component.designation == "Drawer") this.generateDrawer(component.slot);
+    if (component.designation == "Hinged Door") this.generateHingedDoor(component.slot);
+    if (component.designation == "Sliding Door") this.generateSlidingDoor();
   }
 
   /**
