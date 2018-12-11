@@ -2,21 +2,18 @@
     <div>
         <div>
             <button class="button is-danger" @click="createNewCategory()">
-                <b-icon icon="plus"/>
-                </button>
+                    <b-icon icon="plus"/>
+                    </button>
             <div v-if="createNewCategoryModal">
-                <b-modal has-modal-card scroll="keep">
-                    <create-new-category
-                    @emitCategory="postCategory"
-                    />
-    
+                <b-modal :active.sync="createNewCategoryModal" has-modal-card scroll="keep">
+                    <create-new-category @emitCategory="postCategory" />
                 </b-modal>
             </div>
             <button class="button is-danger" @click="fetchRequests()">
-                    <b-icon icon="refresh" custom-class="fa-spin"/>
+                        <b-icon icon="refresh" custom-class="fa-spin"/>
             </button>
         </div>
-        <categories-table :data="data"></categories-table>
+        <categories-table :data="data" @refreshData="refreshCategories"></categories-table>
     </div>
 </template>
 
