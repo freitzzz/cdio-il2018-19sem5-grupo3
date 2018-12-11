@@ -39,7 +39,7 @@
 <script>
 import Axios from "axios";
 import store from "./../store";
-import { INIT_PRODUCT } from "./../store/mutation-types.js";
+import { INIT_PRODUCT, SET_CUSTOMIZED_PRODUCT_MATERIAL } from "./../store/mutation-types.js";
 import { MYCM_API_URL } from "./../config.js";
 
 export default {
@@ -66,6 +66,10 @@ export default {
       Axios.get(`${MYCM_API_URL}/products/${productId}`)
         .then(response => {
           store.dispatch(INIT_PRODUCT, { product: response.data }); //Dispatches the action INIT_PRODUCT
+          store.dispatch(SET_CUSTOMIZED_PRODUCT_MATERIAL, {id : response.data.materials[0].id, //Applies initial material 
+          reference : response.data.materials[0].reference,
+          designation : response.data.materials[0].designation,
+          image : response.data.materials[0].image});
           this.httpCode = response.status;
           this.$emit("advance"); //Progresses to the next step (change product dimensions)
         })

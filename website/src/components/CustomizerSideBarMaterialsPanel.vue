@@ -9,11 +9,9 @@
       <div class="padding-div">
         <div class="scrollable-div" style="height: 400px; width: 100%;">
           <ul class="image-list" v-for="material in materials" :key="material.id">
-            <li>
-              <div class="image-btn" @click="createDivElements(material)">
+            <li class="image-btn" @click="applyMaterial(material)">
                 <img :src="findMaterialImage(material.image)" width="100%">
                 <p>{{material.designation}}</p>
-              </div>
             </li>
           </ul>
         </div>
@@ -38,7 +36,7 @@ import { error } from "three";
 import store from "./../store";
 import Toasted from "vue-toasted";
 import { MYCM_API_URL } from "./../config.js";
-import { SET_MATERIAL } from "./../store/mutation-types.js";
+import { SET_MATERIAL, SET_CUSTOMIZED_PRODUCT_MATERIAL } from "./../store/mutation-types.js";
 Vue.use(Toasted);
 export default {
   name: "CustomizerSideBarMaterialsPanel",
@@ -72,8 +70,8 @@ export default {
     findMaterialImage(filename) {
       return "./src/assets/materials/" + filename;
     },
-    createDivElements(material) {
-      store.dispatch(SET_MATERIAL, {
+    applyMaterial(material) {
+      store.dispatch(SET_CUSTOMIZED_PRODUCT_MATERIAL, {
         id: material.id,
         reference: material.reference,
         designation: material.designation,

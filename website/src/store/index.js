@@ -29,24 +29,17 @@ const state = {
             id:"",
             reference:"",
             designation:"",
-            image:""              
+            image:""            
         },
-        slots: [
-            {
-                idSlot: "",
-                width: "",
-                height: "",
-                depth: "",
-                unit: "",
-                components: []
-            }, 
+        slots: [ 
         ],
         customizedDimensions: {
             width: "",
             height: "",
             depth: "",
             unit: ""
-        }
+        },
+        components: []
     }
 }
 
@@ -78,7 +71,7 @@ export const getters = {
     width: state => {
         return state.customizedProduct.dimensions.width;
     },
-    customizedProductDimensions: state=>{
+    customizedProductDimensions: state => {
         return state.customizedProduct.customizedDimensions;
     },
     depth: state => {
@@ -90,8 +83,8 @@ export const getters = {
     customizedProductSlotWidth: state => index => {
         return state.customizedProduct.slots[index];
     },
-    customizedProductComponents: state => index => {
-        return state.customizedProduct.slots[index].components;
+    customizedProductComponents: state => {
+        return state.customizedProduct.components;
     },
     canMoveCloset: state => { 
         return state.canvasControls.canMoveCloset;
@@ -103,7 +96,7 @@ export const getters = {
         return state.canvasControls.canMoveComponents;
      },
      customizedMaterial: state => {
-         return state.customizedProduct.customizedMaterial;
+         return state.customizedProduct.customizedMaterial.image;
     }
 }
 

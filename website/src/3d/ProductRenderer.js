@@ -616,13 +616,14 @@ export default class ProductRenderer {
       this.resizeVec[i] = this.initialDimensions[i] / this.websiteDimensions[i];
     }
   }
+
   /**
    * Applies the texture to the closet.
    * @param {string} texture - texture being applied.
    */
   applyTexture(texture) {
     this.textureLoader.load(texture, tex => {
-      this.material.map = tex
+      this.material.map = tex;
     })
   }
 
