@@ -36,7 +36,7 @@ export default {
     },
     slots() {
       var array = [];
-      for (let i = 0; i < Store.state.customizedProduct.slots.length; i++) {
+      for (let i = 0; i < Store.state.customizedProduct.slots.length - 1; i++) {
         array.push(Store.getters.customizedProductSlotWidth(i));
       }
       return array;
@@ -73,7 +73,7 @@ export default {
       );
     },
     addComponent: function(newValue) {
-      this.productRenderer.addComponent(newValue);
+      this.productRenderer.addComponent(newValue[newValue.length - 1]);
     },
     applyMaterial: function(newValue) {
       this.productRenderer.applyTexture("./src/assets/materials/" + newValue);
