@@ -1,5 +1,5 @@
 <template>
-    <vuetable :api-mode="false" :data="data" :fields="columns">
+    <vuetable :api-mode="false" :data="this.data" :fields="columns">
         <template slot="actions" slot-scope="props">
                 <div class="custom-actions">
                      <button
@@ -21,7 +21,7 @@
                 <div v-if="showCategoryDetails">
                     <b-modal :active.sync="showCategoryDetails" has-modal-card scroll="keep">
                         <category-details
-                            :category="currentSectedCategory"
+                            :category="currentSelectedCategory"
                         />
                     </b-modal>
                 </div>
@@ -150,7 +150,7 @@
                 this
                     .getCategoryDetails(categoryId)
                     .then((category) => {
-                        this.categoryDetails = true;
+                        this.showCategoryDetails = true;
                     });
             },
             /**
@@ -185,12 +185,10 @@
                 })
             }
         },
-        /**
-         * Component properties
-         */
+         
         props: {
             data: []
         }
-    
+     
     }
 </script>
