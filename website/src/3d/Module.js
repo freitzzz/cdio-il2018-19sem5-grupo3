@@ -1,8 +1,14 @@
 //@ts-check
+
+/**
+ * Requires BaseProduct for product base properties
+ */
+import BaseProduct from "./BaseProduct";
+
 /**
  * Represents the internal core of a Module
  */
-export default class Module{    
+export default class Module extends BaseProduct{    
     /**
      * Builds a new module with the dimensions and axes values for all faces
      * @param {Array} module_base_face_dimensions_axes Array with the base face dimensions and axes values

@@ -1,8 +1,15 @@
 //@ts-check
+
+/**
+ * Requires BaseProduct for product base properties
+ */
+import BaseProduct from "./BaseProduct";
+
+
 /**
  * Represents the internal core of a Closet
  */
-export default class Closet {
+export default class Closet extends BaseProduct{
     /**
      * Builds a new Closet with the dimensions and axes values for all faces
      * @param {Array} closet_base_face_dimensions_axes Array with the base face dimensions and axes values

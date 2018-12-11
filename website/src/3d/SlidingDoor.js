@@ -1,8 +1,14 @@
 //@ts-check
+
+/**
+ * Requires BaseProduct for product base properties
+ */
+import BaseProduct from "./BaseProduct";
+
 /**
  * Represents a sliding door using box geometry
  */
-export default class SlidingDoor {
+export default class SlidingDoor extends BaseProduct{
 
     /**
      * Builds a new SlidingDoor with the dimensions and axes values for the door

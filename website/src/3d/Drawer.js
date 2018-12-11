@@ -1,8 +1,14 @@
 //@ts-check
+
+/**
+ * Requires BaseProduct for product base properties
+ */
+import BaseProduct from "./BaseProduct";
+
 /**
  * Represents the internal core of a Drawer
  */
-export default class Drawer{
+export default class Drawer extends BaseProduct{
     
     /**
      * Builds a new Drawer with the dimensions and axes values for all faces

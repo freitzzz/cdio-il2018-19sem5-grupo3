@@ -1,8 +1,14 @@
 //@ts-check
+
+/**
+ * Requires BaseProduct for product base properties
+ */
+import BaseProduct from "./BaseProduct";
+
 /**
  * Represents a hinged door using box geometry
  */
-export default class HingedDoor {
+export default class HingedDoor extends BaseProduct{
 
     /**
      * Builds a new HingedDoor with the dimensions and axes values for the door
