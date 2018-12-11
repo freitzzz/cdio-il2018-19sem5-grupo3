@@ -203,8 +203,10 @@ namespace core.application
 
             if (updateCustomizedProductModelView.customizedMaterial != null)
             {
-                //check if only the finish or the color are being updated
-                customizedProduct.changeCustomizedMaterial(updateCustomizedProductModelView.customizedMaterial.toEntity());
+                //TODO: check if only the finish or the color are being updated
+                CustomizedMaterial customizedMaterial = CreateCustomizedMaterialService.create(updateCustomizedProductModelView.customizedMaterial);
+
+                customizedProduct.changeCustomizedMaterial(customizedMaterial);
                 performedAtLeastOneUpdate = true;
             }
 
