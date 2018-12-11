@@ -73,11 +73,9 @@ namespace core.modelview.customizedproductcollection
             }
 
             GetAllCustomizedProductCollectionsModelView customizedProductCollectionsModelView = new GetAllCustomizedProductCollectionsModelView();
-            customizedProductCollectionsModelView.customizedProductCollections = new List<GetBasicCustomizedProductCollectionModelView>();
-
             foreach (CustomizedProductCollection customizedProductCollection in customizedProductCollections)
             {
-                customizedProductCollectionsModelView.customizedProductCollections.Add(fromEntityAsBasic(customizedProductCollection));
+                customizedProductCollectionsModelView.Add(fromEntityAsBasic(customizedProductCollection));
             }
 
             return customizedProductCollectionsModelView;
