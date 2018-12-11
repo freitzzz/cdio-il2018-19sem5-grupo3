@@ -6,30 +6,42 @@ carregar :-
     ['guillotine_packing.pl'].
 
 %Main predicate that runs the simulated annealing algorithm
-simulated_annealing(Container, PO, RPL) :-
+simulated_annealing(Container, PO, RL) :-
     (MAX, _, _)=Container,
     random(1, 100, N), %lists with 100 packages max
     randomPackageList(N, MAX, PL), %Generate initial solution
-    startup(PL, Container, _, APO, _), %Get initial's solution cost (c_old)
+    startup(PL, Container, MC, APO, _), %Get initial's solution cost (c_old)
     write("PO original "),
     write(APO),
-    while(1.0, APO, Container, PL, RPL, PO), !. %Go into recursive while
+    while(1.0,
+          APO,
+          Container,
+          PL,
+          _,
+          PO,
+          MC,
+          RC),%Go into recursive while
+    get_list(RC, [], RL), !. 
 
 %Recursive while loop predicate to run the simulated annealing algorithm
-while(T, CPO, Container, PL, RPL, RPO) :-
+while(T, CPO, Container, PL, RPL, RPO, MC, RC) :-
     T>0.01,                 %While the temperature is bigger than 0.01
     random_permutation(PL, GPL), %Generate new solution
-    startup(GPL, Container, _, DPO, _), %Get new solution's cost (c_new)
+    startup(GPL, Container, DC, DPO, _), %Get new solution's cost (c_new)
     (   DPO>CPO,                        %If c_new > c_cold
         NCPO=DPO,                        %then initial solution = new solution
-        NPL=GPL
+        NPL=GPL,
+        NC=DC
     ;   calculate_number(CPO, DPO, T, N),
         Ap is truncate(e**N), %else use acceptance probability to maybe
         random(0.1, 1.0, Ran),            %move to the next solution
         (   Ap>Ran,
             NCPO=DPO,                      %if the acceptance probability function returns
-            NPL=GPL                        %a value greater than a random number between 0 and 1
-        ;   true                          %then initial solution = new solution and c_new = c_old
+            NPL=GPL,                        %a value greater than a random number between 0 and 1
+            NC=DC                         %then initial solution = new solution and c_new = c_old
+        ;   NCPO=CPO,
+            NPL=PL,
+            NC=MC
         )
     ),
     nl,
@@ -37,12 +49,20 @@ while(T, CPO, Container, PL, RPL, RPO) :-
     write(NCPO),
     T1 is T*0.85,              %Calculate new temperature value
     round(T1, T2, 3),
-    (   while(T2, NCPO, Container, NPL, RPL, RPO)    %Recursive call to predicate
+    (   while(T2,
+              NCPO,
+              Container,
+              NPL,
+              RPL,
+              RPO,
+              NC,
+              RC)    %Recursive call to predicate
     ;   RPO=NCPO,
-        RPL=NPL
+        RPL=NPL,
+        RC=NC
     ).
 
-while(T, CPO, _, _, PL, PL, CPO) :-     %Stopping condition
+while(T, CPO, _, _, PL, PL, CPO, MC, MC) :-     %Stopping condition
     T=<0.01.
 
 
@@ -99,3 +119,12 @@ ascending_sort(PL, SPL) :-
 %Sorts a list in descending order
 descending_sort(PL, SPL) :-
     sort(0, @>=, PL, SPL).
+
+get_list([], L, L).
+
+get_list(MC, L, RL) :-
+    MC=[((P, TL), SL)|FL],
+    append([P], L, NL),
+    get_list(TL, NL, NNL),
+    get_list(SL, NNL, NNNL),
+    get_list(FL, NNNL, RL).

@@ -3,57 +3,43 @@
         <!-- CUD BUTTONS -->
         <div>
             <button class="button is-danger" @click="createMaterial()">
-                <b-icon icon="plus"/>
+               <b-icon icon="plus"/>
             </button>
-            <create-material 
-                :active="createMaterialModal" 
-                :available-colors="availableColors"
-                :available-finishes="availableFinishes"
-                @emitMaterial="postMaterial"
-            />
-            <button class="button is-danger" @click="removeSelectedMaterial()">
-                <b-icon icon="minus"/>
-            </button>
-            <button class="button is-danger" @click="updateSelectedMaterial()">
+            <div v-if="createMaterialModal">
+                <b-modal :active.sync="createMaterialModal" has-modal-card scroll="keep">
+                    <create-material 
+                        :active="createMaterialModal" 
+                        :available-colors="availableColors"
+                        :available-finishes="availableFinishes"
+                        @emitMaterial="postMaterial"
+                    />
+                </b-modal>
+            </div>
+            <button class="button is-danger" @click="fetchRequests()">
                 <b-icon 
                     icon="refresh"
                     custom-class="fa-spin"/>
             </button>
-            <edit-material
-                :active="updateMaterialModal"
-                :material="material"
-                :available-colors="availableColors"
-                :available-finishes="availableFinishes"
-                @emitMaterial="updateMaterial"
-                />
         </div>
-        <paginated-table 
-        :total.sync="total" 
-        :columns.sync="columns"
-        :data.sync="data"
-        :title.sync="title"
-        :showTotalInput=false
-        :showItemsPerPageInput=false
-        @clicked="changeSelectedMaterial"
+        <materials-table
+            :data="data"
         />
     </div>
 </template>
 
 <script>
-
 import CreateMaterial from './CreateMaterial.vue';
-import EditMaterial from './EditMaterial.vue';
-import PaginatedTable from './../../UIComponents/PaginatedTable.vue';
+import MaterialsTable from './MaterialsTable.vue';
 import Axios from 'axios';
+import Config,{ MYCM_API_URL } from '../../../config.js';
 
 let colors=[];
 let finishes=[];
 
 export default {
     components:{
-        PaginatedTable,
+        MaterialsTable,
         CreateMaterial,
-        EditMaterial
     },
     /**
      * Function that is called when the component is created
@@ -91,155 +77,61 @@ export default {
             this.createMaterialModal=true;
         },
         /**
-         * Triggers the update of a selected material
-         */
-        updateSelectedMaterial(){
-            this.fetchSelectedMaterial();
-            this.updateMaterialModal=true;
-        },
-        /**
          * Posts a new material
          */
         postMaterial(materialDetails){
+            let newMaterial={};
+            newMaterial.reference=materialDetails.reference;
+            newMaterial.designation=materialDetails.designation;
+            
+            if(materialDetails.colors!=null){
+                let newMaterialColors=[];
+                for(let i=0;i<materialDetails.colors.length;i++){
+                    newMaterialColors.push({id:materialDetails.colors[i]});
+                }
+                newMaterial.colors=newMaterialColors.slice();
+            }
+
+            if(materialDetails.finishes!=null){
+                let newMaterialFinishes=[];
+                for(let i=0;i<materialDetails.finishes.length;i++){
+                    newMaterialFinishes.push({id:materialDetails.finishes[i]});
+                }
+                newMaterial.finishes=newMaterialFinishes.slice();
+            }
+
+            newMaterial.model="closet.glb";
+
             Axios
-                .post('http://localhost:5000/mycm/api/materials',materialDetails)
+                .post(MYCM_API_URL+'/material',newMaterial)
                 .then((response)=>{
                     this.$toast.open({message:"The material was created with success!"});
                     this.createMaterialModal=false;    
                     this.fetchRequests();
                 })
-                .catch((_error)=>{
-                    this.$toast.open({message:_error.response.data.error});
-                });
-        },
-        updateMaterial(materialDetails){
-            this.updateMaterialProperties(materialDetails);
-        },
-        updateMaterialProperties(materialDetails){
-            let materialProperties={};
-            if(this.materialClone.reference!=materialDetails.reference)materialProperties.reference=materialDetails.reference;
-            if(this.materialClone.designation!=materialDetails.designation)materialProperties.designation=materialDetails.designation
-            Axios
-                .put('http://localhost:5000/mycm/api/materials/'+this.currentSelectedMaterial
-                    ,materialProperties)
-                .then((_response)=>{
-                    this.$toast.open({message:"The material properties were updated with success"});
-                    this.updateMaterialFromData(_response.data);
-                    this.fetchRequests();
-                    this.updateMaterialModal=false;
-                })
-                .catch((_error)=>{
-                    this.$toast.open({message:"An error ocurrd while updating the material properties"})
-                });
-        },
-        /**
-         * Triggers the deletion of the selected material
-         */
-        removeSelectedMaterial(){
-            Axios
-            .delete('http://localhost:5000/mycm/api/material/'+this.currentSelectedMaterial)
-            .then((response)=>{
-                this.$toast.open({message:"The material was deleted with success!"});
-                this.fetchRequests();
-            })
-            .catch(()=>{
-                this.$toast.open({message:"An error occurred while deleting the material"});
-            });
-        },
-        updateMaterialFromData(data){
-            let materialDetails=data;
-            this.material={
-                id:materialDetails.id,
-                reference:materialDetails.reference,
-                designation:materialDetails.designation,
-                colors:colors
-            };
-            this.materialClone={
-                id:materialDetails.id,
-                reference:materialDetails.reference,
-                designation:materialDetails.designation,
-                colors:colors
-            };
-        },
-        fetchSelectedMaterial(){
-            Axios
-                .get('http://localhost:5000/mycm/api/materials/'+this.currentSelectedMaterial)
-                .then((response)=>{
-                    let materialDetails=response.data;
-                    let materials=[];
-                    materialDetails.material.forEach((material)=>{
-                        materials.push({id:material.id,value:material.designation});
-                    });
-                    this.material={
-                        id:materialDetails.id,
-                        reference:materialDetails.reference,
-                        designation:materialDetails.designation,
-                        colors:colors
-                    };
-                    this.materialClone={
-                        id:materialDetails.id,
-                        reference:materialDetails.reference,
-                        designation:materialDetails.designation,
-                        colors:colors
-                    };
-                    console.log(materialDetails)
-                })
-                .catch(()=>{
-                    this.$toast.open({message:"An error occurred while fetching the material"});
+                .catch((error_message)=>{
+                    this.$toast.open({message:error_message.response.data.message});
                 });
         },
         fetchRequests(){
-            this.updateFetchedMaterials();
-            this.fetchAvailableFinishes();
-            this.fetchAvailableColors();
-        },
-    },
-    fetchAvailableFinishes(){
-        Axios
-          .get('http://localhost:5000/mycm/api/finishes')
-          .then((response)=>{
-            let availableFinishes=response.data;
-            availableFinishes.forEach((finish)=>{
-              finishes.push({
-                id:finish.id,
-                value:finish.designation
-              });
-            });
-          })
-          .catch(()=>{
-            
-          });
-    },
-    fetchAvailableColors(){
-        Axios
-          .get('http://localhost:5000/mycm/api/colors')
-          .then((response)=>{
-            let availableColors=response.data;
-            availableColors.forEach((color)=>{
-              colors.push({
-                id:color.id,
-                value:color.designation
-              });
-            });
-          })
-          .catch(()=>{
-            
-          });
+            this.refreshMaterials();
+            /* this.fetchAvailableColors();
+            this.fetchAvailableFinishes(); */
         },
         /**
          * Fetches all available materials
          */
-        updateFetchedMaterials(){
-            Axios.get('http://localhost:5000/mycm/api/materials')
+        refreshMaterials(){
+            Axios.get(MYCM_API_URL+'/materials')
             .then((_response)=>{
                 this.data=this.generateMaterialsTableData(_response.data);
                 this.columns=this.generateMaterialsTableColumns();
                 this.total=this.data.length;
             })
-            .catch((_error)=>{
-                console.log(_error);
+            .catch((error_message)=>{
+                this.$toast.open({message:error_message.response.data.message});
             });
-        },
+        },   
         /**
          * Generates the needed columns for the materials table
          */
@@ -259,9 +151,17 @@ export default {
                     field:"designation",
                     label:"Designation",
                     centered:true   
+                },
+                {
+                    field:"actions",
+                    label:"Actions",
+                    centered:true
                 }
             ];
         },
+        /**
+         * Generates the data of a materials table by a given list of materials
+         */
         generateMaterialsTableData(materials){
             let materialsTableData=[];
             materials.forEach((material)=>{
@@ -273,5 +173,6 @@ export default {
             });
             return materialsTableData;
         }
+    }
     }
 </script>

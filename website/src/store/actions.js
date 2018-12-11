@@ -44,8 +44,8 @@ export const actions = {
     /**
      * Action used to commit the mutation SET_MATERIAL
      */
-    [types.SET_MATERIAL]: ({ commit }, payload) => {
-        commit(types.SET_MATERIAL, payload);
+    [types.SET_CUSTOMIZED_PRODUCT_MATERIAL]: ({ commit }, payload) => {
+        commit(types.SET_CUSTOMIZED_PRODUCT_MATERIAL, payload);
     },
 
     /**

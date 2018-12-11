@@ -312,10 +312,11 @@ export default class ProductRenderer {
     //A MeshPhongMaterial allows for shiny surfaces
     //A soft white light is being as specular light
     //The shininess value is the same as the matte finishing's value
-    this.material = new THREE.MeshPhongMaterial({
-      specular: 0x404040,
-      shininess: 20
-    });
+    this.material = new THREE.MeshPhongMaterial();
+    this.material.specular = new THREE.Color(0x404040);
+    this.material.shininess = 20;
+    this.material.map;
+    //this.applyTexture("./src/assets/materials/worn-wood.jpg");
 
     for (var i = 0; i < faces.length; i++) {
       this.closet_faces_ids.push(this.generateParellepiped(faces[i][0], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], this.material, this.group));
@@ -378,17 +379,13 @@ export default class ProductRenderer {
   /**
    * Adds components to the current closet
    */
-  addComponent(components) {
-    if (components == null || components == undefined) return;
-    for (let i = 0; i < components.length; i++) {
-      for (let j = 0; j < components[i].length; j++) {
-        if (components[i][0].designation == "Shelf") this.generateShelf(components[i][0].slot);
-        if (components[i][0].designation == "Pole") this.generatePole(components[i][0].slot);
-        if (components[i][0].designation == "Drawer") this.generateDrawer(components[i][0].slot);
-        if (components[i][0].designation == "Hinged Door") this.generateHingedDoor(components[i][0].slot);
-        if (components[i][0].designation == "Sliding Door") this.generateSlidingDoor();
-      }
-    }
+  addComponent(component) {
+    if (!component) return;
+    if (component.designation == "Shelf") this.generateShelf(component.slot);
+    if (component.designation == "Pole") this.generatePole(component.slot);
+    if (component.designation == "Drawer") this.generateDrawer(component.slot);
+    if (component.designation == "Hinged Door") this.generateHingedDoor(component.slot);
+    if (component.designation == "Sliding Door") this.generateSlidingDoor();
   }
 
   /**
@@ -616,15 +613,11 @@ export default class ProductRenderer {
       this.resizeVec[i] = this.initialDimensions[i] / this.websiteDimensions[i];
     }
   }
-
   /**
    * Applies the texture to the closet.
-   * @param {string} texture - texture being applied.
    */
   applyTexture(texture) {
-    this.textureLoader.load(texture, tex => {
-      this.material.map = tex;
-    })
+    this.material.map = THREE.ImageUtils.loadTexture(texture);
   }
 
   /**

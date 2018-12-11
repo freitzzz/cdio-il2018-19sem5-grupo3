@@ -149,6 +149,7 @@ export default {
             Axios
                 .delete(MYCM_API_URL+'/products/'+productId)
                 .then(()=>{
+                    this.$emit('refreshData');
                     this.$toast.open({message:"Product was deleted with success!"});
                 })
                 .catch((error_message)=>{
@@ -273,6 +274,7 @@ export default {
                                         .updateProductDimensions(productDetails)
                                         .then(()=>{
                                             this.showEditProductDetails=false;
+                                            this.$emit('refreshData');
                                             this.$toast.open({message:"Product was updated with success!"});
                                         }).catch((error_message)=>{
                                             this.$toast.open({message:error_message});
