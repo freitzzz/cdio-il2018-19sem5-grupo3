@@ -29,17 +29,9 @@ const state = {
             id:"",
             reference:"",
             designation:"",
-            image:""              
+            image:""            
         },
-        slots: [
-            {
-                idSlot: "",
-                width: "",
-                height: "",
-                depth: "",
-                unit: "",
-                components: []
-            }, 
+        slots: [ 
         ],
         customizedDimensions: {
             width: "",
