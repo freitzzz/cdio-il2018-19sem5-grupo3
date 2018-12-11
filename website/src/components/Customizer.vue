@@ -36,7 +36,7 @@ export default {
     },
     slots() {
       var array = [];
-      for (let i = 0; i < Store.state.customizedProduct.slots.length - 1; i++) {
+      for (let i = 0; i < Store.state.customizedProduct.slots.length; i++) {
         array.push(Store.getters.customizedProductSlotWidth(i));
       }
       return array;
