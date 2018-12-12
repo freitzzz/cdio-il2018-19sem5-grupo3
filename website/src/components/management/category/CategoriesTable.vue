@@ -123,7 +123,11 @@
              * Edit details of a category
              */
             editCategoryDetails(categoryId) {
-                this.getCategoryDetails(categoryId);
+                this.getCategoryDetails(categoryId)
+                .then((material)=>{
+                    this.showEditCategoryDetails = true;
+                });
+                
             },
             /**
              * Fetches the details of a certain category 
@@ -134,6 +138,7 @@
                         .then((category) => {
                             this.currentSelectedCategory = category.data;
                             this.currentSelectedCategory2 = Object.assign({}, this.currentSelectedCategory);
+                            accept(category);
                         })
                         .catch((error_message) => {
                             this.$toast.open({

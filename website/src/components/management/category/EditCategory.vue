@@ -7,14 +7,14 @@
                     </header>
                     <section class="modal-card-body">
                                             
-                        <b-field label="Category">
+                       <!--  <b-field label="Category">
                             <b-select placeholder="Select a category" icon="tag" v-model="categoryData">
                                   <option :value="null"></option>
                                   <option v-for="category in availableCategories" 
                                     :key="category.id" :value="category.id">{{category.name}} </option>
                             </b-select>
                             
-                        </b-field>
+                        </b-field> -->
                         <b-field label="Name" >
                             <b-input 
                                 v-model="nameCategory"
