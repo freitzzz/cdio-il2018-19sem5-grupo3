@@ -50,6 +50,7 @@ namespace core.modelview.productcategory
                 GetBasicProductCategoryModelView basicInfoModelView = new GetBasicProductCategoryModelView();
                 basicInfoModelView.id = productCategory.Id;
                 basicInfoModelView.name = productCategory.name;
+                basicInfoModelView.parentId = productCategory.parentId;
 
                 result.Add(basicInfoModelView);
             }
