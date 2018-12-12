@@ -36,7 +36,7 @@ import { error } from "three";
 import store from "./../store";
 import Toasted from "vue-toasted";
 import { MYCM_API_URL } from "./../config.js";
-import { SET_MATERIAL, SET_CUSTOMIZED_PRODUCT_MATERIAL } from "./../store/mutation-types.js";
+import { SET_CUSTOMIZED_PRODUCT_MATERIAL, DEACTIVATE_CAN_MOVE_CLOSET, DEACTIVATE_CAN_MOVE_SLOTS } from "./../store/mutation-types.js";
 Vue.use(Toasted);
 export default {
   name: "CustomizerSideBarMaterialsPanel",
@@ -81,9 +81,12 @@ export default {
   },
   created() {
     this.getProductMaterials();
+    store.dispatch(DEACTIVATE_CAN_MOVE_CLOSET);
+    store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS);
   }
 };
 </script>
+
 <style>
 .icon-div-top .tooltiptext {
   visibility: hidden;

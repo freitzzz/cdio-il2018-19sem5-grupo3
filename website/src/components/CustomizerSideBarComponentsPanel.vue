@@ -69,17 +69,12 @@ import { error } from "three";
 import store from "./../store";
 import Toasted from "vue-toasted";
 import { MYCM_API_URL } from "./../config.js";
-import { SET_CUSTOMIZED_PRODUCT_COMPONENTS } from "./../store/mutation-types.js";
+import { SET_CUSTOMIZED_PRODUCT_COMPONENTS, ACTIVATE_CAN_MOVE_COMPONENTS } from "./../store/mutation-types.js";
 
 Vue.use(Toasted);
 
 export default {
   name: "CustomizerSideBarComponentsPanel",
-  created() {
-    // store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, {
-    //   components: this.components
-    // });
-  },
   data() {
     return {
       components: [],
@@ -162,6 +157,7 @@ export default {
   },
   created() {
     this.getProductComponents();
+    store.dispatch(ACTIVATE_CAN_MOVE_COMPONENTS);
   }
 };
 </script>
