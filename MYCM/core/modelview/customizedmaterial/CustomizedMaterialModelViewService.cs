@@ -27,9 +27,15 @@ namespace core.modelview.customizedmaterial
             GetCustomizedMaterialModelView customizedMaterialModelView = new GetCustomizedMaterialModelView();
             customizedMaterialModelView.customizedMaterialId = customizedMaterial.Id;
             customizedMaterialModelView.materialId = customizedMaterial.material.Id;
-            customizedMaterialModelView.finish = FinishModelViewService.fromEntity(customizedMaterial.finish);
-            customizedMaterialModelView.color = ColorModelViewService.fromEntity(customizedMaterial.color);
-
+            if (customizedMaterial.finish != null)
+            {
+                customizedMaterialModelView.finish = FinishModelViewService.fromEntity(customizedMaterial.finish);
+            }
+            if (customizedMaterial.color != null)
+            {
+                customizedMaterialModelView.color = ColorModelViewService.fromEntity(customizedMaterial.color);
+            }
+            
             return customizedMaterialModelView;
         }
     }
