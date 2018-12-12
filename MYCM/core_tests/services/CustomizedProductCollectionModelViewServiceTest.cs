@@ -99,8 +99,8 @@ namespace core_tests.services
             GetAllCustomizedProductCollectionsModelView expectedModelView =
                 new GetAllCustomizedProductCollectionsModelView();
 
-            expectedModelView.customizedProductCollections =
-                new List<GetBasicCustomizedProductCollectionModelView>(){
+            expectedModelView =
+                new GetAllCustomizedProductCollectionsModelView(){
                     CustomizedProductCollectionModelViewService.fromEntityAsBasic(customizedProductCollection),
                     CustomizedProductCollectionModelViewService.fromEntityAsBasic(otherCustomizedProductCollection)
                 };
@@ -112,8 +112,8 @@ namespace core_tests.services
             GetAllCustomizedProductCollectionsModelView actualModelView =
                 CustomizedProductCollectionModelViewService.fromCollection(collection);
 
-            assertBasicModelView(expectedModelView.customizedProductCollections[0], actualModelView.customizedProductCollections[0]);
-            assertBasicModelView(expectedModelView.customizedProductCollections[1], actualModelView.customizedProductCollections[1]);
+            assertBasicModelView(expectedModelView[0], actualModelView[0]);
+            assertBasicModelView(expectedModelView[1], actualModelView[1]);
         }
 
         private void assertBasicModelView(GetBasicCustomizedProductCollectionModelView expectedModelView, GetBasicCustomizedProductCollectionModelView actualModelView)
@@ -173,7 +173,15 @@ namespace core_tests.services
             //Customized Material
             CustomizedMaterial mat = CustomizedMaterial.valueOf(material, color1, finish2);
 
-            return CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 123", product, customizedDimensions).withMaterial(mat).build();
+            CustomizedProduct customizedProduct =
+                 CustomizedProductBuilder.createAnonymousUserCustomizedProduct
+                    (
+                     "serial number 123", product, customizedDimensions
+                    ).withMaterial(mat).build();
+            
+            customizedProduct.finalizeCustomization();
+
+            return customizedProduct;
         }
     }
 }

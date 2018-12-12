@@ -40,6 +40,11 @@ namespace core.services
         private const string ERROR_NO_CUSTOMIZED_DIMENSIONS = "Unable to create a customized product without dimensions.";
 
         /// <summary>
+        /// Constant representing the error message presented when the CustomizedProduct's customized material has null color and finish
+        /// </summary>
+        private const string NULL_COLOR_AND_FINISH = "Color and Finish of customized material both null";
+
+        /// <summary>
         /// Creates an instance of CustomizedProduct.
         /// </summary>
         /// <param name="addCustomizedProductModelView">AddCustomizedProductModelView containing </param>
@@ -161,6 +166,36 @@ namespace core.services
             if (addCustomizedProductModelView.customizedMaterial != null)
             {
                 CustomizedMaterial customizedMaterial = CreateCustomizedMaterialService.create(addCustomizedProductModelView.customizedMaterial);
+
+                Material material = materialRepository.find(addCustomizedProductModelView.customizedMaterial.materialId);
+
+                if (material == null)
+                {
+                    throw new ArgumentException(string.Format(ERROR_UNABLE_TO_FIND_MATERIAL, addCustomizedProductModelView.customizedMaterial.materialId));
+                }
+                //TODO: replace usage of dto
+                FinishDTO finishDTO = addCustomizedProductModelView.customizedMaterial.finish;
+                ColorDTO colorDTO = addCustomizedProductModelView.customizedMaterial.color;
+
+                if (finishDTO == null && colorDTO == null)
+                {
+                    throw new ArgumentException(NULL_COLOR_AND_FINISH);
+                }
+
+                CustomizedMaterial customizedMaterial = null;
+
+                if (finishDTO == null && colorDTO != null)
+                {
+                    customizedMaterial = CustomizedMaterial.valueOf(material, colorDTO.toEntity());
+                }
+                else if (finishDTO != null && colorDTO == null)
+                {
+                    customizedMaterial = CustomizedMaterial.valueOf(material, finishDTO.toEntity());
+                }
+                else
+                {
+                    customizedMaterial = CustomizedMaterial.valueOf(material,colorDTO.toEntity(), finishDTO.toEntity());
+                }
 
                 customizedProductBuilder.withMaterial(customizedMaterial);
             }
