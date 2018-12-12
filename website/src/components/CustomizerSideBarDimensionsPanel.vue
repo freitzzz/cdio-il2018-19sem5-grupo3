@@ -119,7 +119,8 @@ import {
   SET_CUSTOMIZED_PRODUCT_HEIGHT,
   SET_CUSTOMIZED_PRODUCT_DEPTH,
   SET_CUSTOMIZED_PRODUCT_UNIT,
-  SET_CUSTOMIZED_PRODUCT_DIMENSIONS
+  SET_CUSTOMIZED_PRODUCT_DIMENSIONS,
+  ACTIVATE_CAN_MOVE_CLOSET
 } from "./../store/mutation-types.js";
 
 import { error } from "three";
@@ -193,23 +194,20 @@ export default {
       depth: this.depth,
       unit: this.unit
     });
-
+    store.dispatch(ACTIVATE_CAN_MOVE_CLOSET);
     /*Get all available dimensions of the given product of the array*/
     Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions`)
       .then(response => this.availableOptionsDimensions.push(...response.data))
       .catch(error => {
         this.$toast.open(error.response.status + "An error occurred");
       });
-
     /*Get all available units of measurement*/
     Axios.get(`${MYCM_API_URL}/units`)
       .then(response => this.availableOptionsUnits.push(...response.data))
       .catch(error => {
         this.$toast.open(error.response.status + "An error occurred");
       });
-
     this.initialPopulate();
-      
   },
  
   methods: {

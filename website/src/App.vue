@@ -6,7 +6,6 @@
 
 <script>
 import Home from "./components/Home.vue";
-import ManagementTopBar from "./components/ManagementTopBar.vue";
 export default {
   name: "app",
   data() {
@@ -15,9 +14,7 @@ export default {
     };
   },
   components: {
-    Home,
-    ManagementTopBar
-
+    Home
   }
 };
 </script> 
