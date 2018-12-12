@@ -22,6 +22,15 @@
                     required>
                 </b-input>
             </b-field>
+            <b-field label="Image">
+                <b-input
+                    type="String"
+                    :value="material.image"
+                    disabled="true"
+                    icon="pencil"
+                    required>
+                </b-input>
+            </b-field>
              <b-checkbox @input="enableColors()">Colors</b-checkbox>
             <div v-if="showColors">
                 <b-field label="Colors">
@@ -115,6 +124,10 @@ export default {
                     {
                         name: "description",
                         title: "Description"
+                    },
+                    {
+                        name: "shininess",
+                        title: "Shininess"
                     },
                 ],
     },

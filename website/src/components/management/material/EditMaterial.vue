@@ -74,6 +74,14 @@
                                 required>
                             </b-input>
                         </b-field>
+                         <b-field label="Shininess">
+                          <input
+                              type="number"
+                              v-model="inputFinishShininess"
+                              min= "0"
+                              max= "100"
+                              icon="pencil">
+                        </b-field>
                     </section>
                     <footer class="modal-card-foot">
                       <button class="button is-primary" @click="addFinish()">+</button>
@@ -118,7 +126,8 @@ export default {
       selectedFinish: {},
       inputColorName: null, //this value needs to be null so that the placeholder can be rendered
       inputColorValues: "#000000",
-      inputFinishDesignation: null, //this value needs to be null so that the placeholder can be rendered
+      inputFinishDesignation: null,
+      inputFinishShininess: 0, //this value needs to be null so that the placeholder can be rendered
       availableMaterials: [],
       panelEditMaterial: true,
       createFinishPanelEnabled: false,
@@ -233,7 +242,8 @@ export default {
         ) < 0
       ) {
         var finish = {
-          description: this.inputFinishDesignation
+          description: this.inputFinishDesignation,
+          shininess: this.inputFinishShininess
         };
 
         Axios.post(
