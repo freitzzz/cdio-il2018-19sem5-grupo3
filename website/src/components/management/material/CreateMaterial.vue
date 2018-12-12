@@ -25,10 +25,10 @@
                         </b-field>
                         <b-field label="Colors"> 
                             <b-select placeholder="Colors" icon="tag" v-model="selectedColor">
-                                <option  v-for="color in nameColors" 
-                                    :key="color" 
+                                <option  v-for="color in availableColors" 
+                                    :key="color.id" 
                                     :value="color">
-                                    {{color}}</option>
+                                    {{color.nameColor}}</option>
                             </b-select>
                         </b-field>
                         <button class="button is-primary" @click="createColor()">+</button>
@@ -36,33 +36,45 @@
                         <b-field label="Finish">
                             <b-select placeholder="Finishes" icon="tag" v-model="selectedFinish">
                                  <option v-for="finish in availableFinishes" 
-                                    :key="finish.id" :value="finish">{{finish.referenceFinish}} </option>
+                                    :key="finish.id" :value="finish">{{finish.designationFinish}} </option>
                             </b-select>
                         </b-field>
                         <button class="button is-primary" @click="createFinish()">+</button>
                         <button class="button is-primary" @click="deleteFinish()">-</button>
-                         <b-field class="modal-card-body">
-                        <button class="button is-primary" >Select Image</button>
-                            <b-input
+
+                              <div class="example-btn , modal-card-body">
+                                <file-upload
+                                  class="button is-primary"
+                                  post-action="/files/"
+                                  :maximum="1"
+                                  :drop="true"
+                                  :drop-directory="true"
+                                  v-model="file"
+                                  @input-file="inputFile"
+                                  ref="upload">
+                                  Select Image
+                                </file-upload>
+                                <b-input
                                 v-model="pathImage"
                                 type="String"
-                                disabled
+                                icon="pound"
+                                disabled="true"
                                 required>
                             </b-input>
-                        </b-field>
+                            </div>
                     </section>
                     <footer class="modal-card-foot">
                         <button class="button is-primary" @click="postMaterial()">Create</button>
                     </footer>
                 </div>
-                <div v-if="createFinishPanelEnabled" class="modal-card" style="width: auto">
+                <div v-if= "createFinishPanelEnabled" class="modal-card" style="width: auto">
                     <header class="modal-card-head">
                         <p class="modal-card-title">Create Finish</p>
                     </header>
                     <section class="modal-card-body">
                         <b-field label="Designation: ">
                             <b-input
-                                v-model="referenceFinish" 
+                                v-model="inputFinishDesignation" 
                                 type="String"
                                 placeholder="Insert reference"
                                 icon="pound"
@@ -71,8 +83,8 @@
                         </b-field>
                     </section>
                     <footer class="modal-card-foot">
-                      <button class="button is-primary" @click="newFinish()">+</button>
-                      <button class="button is-primary" @click="desabelFinish()">Back</button>
+                      <button class="button is-primary" @click="addFinish()">+</button>
+                      <button class="button is-primary" @click="disableFinishWindow()">Back</button>
                     </footer>
                 </div>
                 <div v-if="createColorPanelEnabled" class="modal-card" style="width: auto">
@@ -82,27 +94,28 @@
                     <section class="modal-card-body">
                     <b-field label="Name">
                             <b-input
-                                v-model="nameColor"
+                                v-model="inputColorName"
                                 type="String"
                                 placeholder="Insert name"
-                                icon="pound"
                                 required>
                             </b-input>
                         </b-field>
-                    <swatches v-model="color" colors="text-advanced"></swatches>
+                    <swatches v-model="inputColorValues" colors="text-advanced"></swatches>
                     <br> <br> <br> <br> <br><br> <br>
                     </section>
                     <footer class="modal-card-foot">
-                      <button class="button is-primary" @click="newColor()">+</button>
-                      <button class="button is-primary" @click="desabelColor()">Back</button>
+                      <button class="button is-primary" @click="addColor()">+</button>
+                      <button class="button is-primary" @click="disableColorWindow()">Back</button>
                     </footer>
                 </div> 
     </b-modal>
 </template>
 <script>
-import Swatches from "vue-swatches";
 import Axios from "axios";
+
+import Swatches from "vue-swatches";
 import "vue-swatches/dist/vue-swatches.min.css";
+import FileUpload from 'vue-upload-component'
 export default {
   name: "CreateMaterial",
   data() {
@@ -116,44 +129,46 @@ export default {
       createFinishPanelEnabled: false,
       defineNewFinish: false,
       createNewFinish: false,
-      availableFinishes: {},
-      availableColors: {},
-      nameColors: [],
-      color: "#000000",
-      nameColor: "",
-      active: true
+      inputColorName: "", //this value needs to be null so that the placeholder can be rendered
+      inputColorValues: "#000000",
+      inputFinishDesignation: "", //this value needs to be null so that the placeholder can be rendered
+      availableColors: [],
+      availableFinishes: [],
+      active: true,
+      file: [],
+      selectedFinish:{},
+      selectedColor:{}
+
     };
   },
   components: {
+    FileUpload,
     Swatches
+    
   }, // window.VueSwatches.default - from CDN
 
   methods: {
-    /* popup() {
-      let route = this.$router.resolve({path: 'https://stackoverflow.com/questions/40015037/can-vue-router-open-a-link-in-a-new-tab'});
-      // let route = this.$router.resolve('/link/to/page'); // This also works.
-      window.open(route.href, '_blank');
-    }, */
     postMaterial() {
       let finishesToAdd = [];
-      this.availableFinishes.forEach(element => {
+      /* this.availableFinishes.forEach(element => {
         finishesToAdd.push({
           description: element.description
         });
-      });
+      }); */
       let colorsToAdd = [];
-      this.availableColors.forEach(element => {
+      /* this.availableColors.forEach(element => {
         colorsToAdd.push({
           name: element,
           red: parseInt(element.replace("#", "").substring(0, 2), 16),
           green: parseInt(element.replace("#", "").substring(2, 4), 16),
           blue: parseInt(element.replace("#", "").substring(4, 6), 16),
-          alpha: "0"
+          alpha: "0",
         });
-      });
+      }); */
       Axios.post("http://localhost:5000/mycm/api/materials", {
         reference: this.referenceMaterial,
         designation: this.designationMaterial,
+        image: this.file[0].name,
         colors: colorsToAdd,
         finishes: finishesToAdd
       })
@@ -187,36 +202,67 @@ export default {
       this.panelCreateMaterial = false;
       this.createFinishPanelEnabled = true;
     },
-    desabelFinish() {
+    disableFinishWindow() {
       this.panelCreateMaterial = true;
       this.createFinishPanelEnabled = false;
-      this.referenceFinish = "";
     },
-    desabelColor() {
+    disableColorWindow() {
       this.panelCreateMaterial = true;
       this.createColorPanelEnabled = false;
     },
-    newFinish() {
+    addColor() {
       if (
-        this.referenceFinish != null &&
-        this.referenceFinish.trim() != "" &&
-        this.availableFinishes.indexOf(this.referenceFinish.trim()) < 0
+        this.inputColorName != null &&
+        this.inputColorName.trim() != "" &&
+        this.availableColors.colors.indexOf(this.inputColorName) < 0
       ) {
-        this.availableFinishes.push(this.referenceFinish);
+        let color = {
+          name: this.inputColorName,
+          red: parseInt(
+            this.inputColorValues.replace("#", "").substring(0, 2),
+            16
+          ),
+          green: parseInt(
+            this.inputColorValues.replace("#", "").substring(2, 4),
+            16
+          ),
+          blue: parseInt(
+            this.inputColorValues.replace("#", "").substring(4, 6),
+            16
+          ),
+          alpha: "0"
+        };
       }
-      this.referenceFinish = "";
+      this.inputColorName = "";
     },
-    newColor() {
+    addFinish() {
       if (
-        this.nameColor != null &&
-        this.nameColor.trim() != "" &&
-        this.nameColors.indexOf(this.nameColor) < 0 &&
-        this.availableColors.indexOf(this.color) < 0
+        this.inputFinishDesignation != null &&
+        this.inputFinishDesignation.trim() != "" &&
+        this.availableFinishes.finishes.indexOf(
+          this.inputFinishDesignation.trim()
+        ) < 0
       ) {
-        this.nameColors.push(this.nameColor);
-        this.availableColors.push(this.color);
+        var finish = {
+          description: this.inputFinishDesignation
+        };
       }
-      this.nameColor = "";
+      this.inputFinishDesignation = "";
+    },
+    inputFile(newFile, oldFile) {
+      this.pathImage=this.file[0].name
+      if (newFile && !oldFile) {
+        // add
+        console.log('add', newFile)
+      }
+      if (newFile && oldFile) {
+        // update
+        console.log('update', newFile)
+      }
+      if (!newFile && oldFile) {
+        // remove
+        console.log('remove', oldFile)
+      }
     }
   }
 };
