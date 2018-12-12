@@ -5,17 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
-
-
-
-
 var mongoServer=require('mongodb-memory-server');
-
-
-
-
-
-
 var ordersRouter = require('./routes/orders');
 var factoriesRouter=require('./routes/factories');
 var citiesRouter=require('./routes/cities');
