@@ -1,15 +1,15 @@
 //@ts-check
 
 /**
- * Requires BaseProduct for product base properties
+ * Requires SlotableProduct for representing products that can have slots
  */
-import BaseProduct from "./BaseProduct";
+import SlotableProduct from "./BaseProduct";
 
 
 /**
  * Represents the internal core of a Closet
  */
-export default class Closet extends BaseProduct{
+export default class Closet extends SlotableProduct{
     /**
      * Builds a new Closet with the dimensions and axes values for all faces
      * @param {Array} closet_base_face_dimensions_axes Array with the base face dimensions and axes values
@@ -22,20 +22,22 @@ export default class Closet extends BaseProduct{
         , closet_top_face_dimensions_axes
         , closet_left_face_dimensions_axes
         , closet_right_face_dimensions_axes
-        , closet_back_face_dimensions_axes) {
-        this.closet_base_face_dimensions_axes = closet_base_face_dimensions_axes.slice();
-        this.closet_top_face_dimensions_axes = closet_top_face_dimensions_axes.slice();
-        this.closet_left_face_dimensions_axes = closet_left_face_dimensions_axes.slice();
-        this.closet_right_face_dimensions_axes = closet_right_face_dimensions_axes.slice();
-        this.closet_back_face_dimensions_axes = closet_back_face_dimensions_axes.slice();
-        this._prepare_closet_init();
-        this.poles = [];
-        this.shelves = [];
-        this.slidingDoors = [];
-        this.hingedDoors = [];
-        this.drawers = [];
-        this.modules = [];
-    }
+        , closet_back_face_dimensions_axes
+        , productId) {
+            super(productId);
+            this.closet_base_face_dimensions_axes = closet_base_face_dimensions_axes.slice();
+            this.closet_top_face_dimensions_axes = closet_top_face_dimensions_axes.slice();
+            this.closet_left_face_dimensions_axes = closet_left_face_dimensions_axes.slice();
+            this.closet_right_face_dimensions_axes = closet_right_face_dimensions_axes.slice();
+            this.closet_back_face_dimensions_axes = closet_back_face_dimensions_axes.slice();
+            this._prepare_closet_init();
+            this.poles = [];
+            this.shelves = [];
+            this.slidingDoors = [];
+            this.hingedDoors = [];
+            this.drawers = [];
+            this.modules = [];
+        }
 
     //Closet Logic
 
@@ -169,7 +171,7 @@ export default class Closet extends BaseProduct{
 
     /**
     * Adds a door to the closet
-    * @param {} door to add 
+    * @param {SlidingDoor|HingedDoor} door to add 
     */
     addHingedDoor(door) {
         this.hingedDoors.push(door);
