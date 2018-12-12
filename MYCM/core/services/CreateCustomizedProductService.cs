@@ -39,6 +39,11 @@ namespace core.services
         private const string ERROR_UNABLE_TO_SAVE_CUSTOMIZED_PRODUCT = "Unable to save the customized product. Please, make sure the reference/serial number is unique";
 
         /// <summary>
+        /// Constant representing the error message presented when the CustomizedProduct's customized material has null color and finish
+        /// </summary>
+        private const string NULL_COLOR_AND_FINISH = "Color and Finish of customized material both null";
+
+        /// <summary>
         /// Creates an instance of CustomizedProduct.
         /// </summary>
         /// <param name="addCustomizedProductModelView">AddCustomizedProductModelView containing </param>
@@ -164,7 +169,25 @@ namespace core.services
                 FinishDTO finishDTO = addCustomizedProductModelView.customizedMaterial.finish;
                 ColorDTO colorDTO = addCustomizedProductModelView.customizedMaterial.color;
 
-                CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, colorDTO.toEntity(), finishDTO.toEntity());
+                if (finishDTO == null && colorDTO == null)
+                {
+                    throw new ArgumentException(NULL_COLOR_AND_FINISH);
+                }
+
+                CustomizedMaterial customizedMaterial = null;
+
+                if (finishDTO == null && colorDTO != null)
+                {
+                    customizedMaterial = CustomizedMaterial.valueOf(material, colorDTO.toEntity());
+                }
+                else if (finishDTO != null && colorDTO == null)
+                {
+                    customizedMaterial = CustomizedMaterial.valueOf(material, finishDTO.toEntity());
+                }
+                else
+                {
+                    customizedMaterial = CustomizedMaterial.valueOf(material,colorDTO.toEntity(), finishDTO.toEntity());
+                }
 
                 customizedProductBuilder.withMaterial(customizedMaterial);
             }
