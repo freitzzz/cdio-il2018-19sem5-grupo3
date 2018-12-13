@@ -87,7 +87,11 @@ export default {
       );
     },
     addComponent: function(newValue) {
-      this.productRenderer.addComponent(newValue[newValue.length - 1]);
+      if(newValue.length > 0){
+        this.productRenderer.addComponent(newValue[newValue.length - 1]);
+      } else {
+        this.productRenderer.removeAllComponents();
+      }
     },
     applyMaterial: function(newValue) {
       this.productRenderer.applyTexture("./src/assets/materials/" + newValue);

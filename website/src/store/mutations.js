@@ -62,8 +62,10 @@ export const mutations = {
    * @param {*} payload Payload with the component to add
    */
   [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS](state, payload) {
-    if (state.customizedProduct.slots.length >= payload.component.slot) {
+    if (payload && state.customizedProduct.slots.length >= payload.component.slot) {
         state.customizedProduct.components.push(payload.component);
+    } else if(!payload){
+      state.customizedProduct.components = [];
     }
   },
 

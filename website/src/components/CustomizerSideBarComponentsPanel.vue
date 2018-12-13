@@ -156,12 +156,14 @@ export default {
         position: "top-center",
         duration: 2000
       });
-      //!TODO communicate with Three.js & Remove from store
+      //TODO! communicate with Three.js & Remove from store
     },
     nextPanel(){
       this.$emit("advance");
     },
     previousPanel(){
+      //TODO! DELETE components
+      store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS);
       this.$emit("back");
     }
   },

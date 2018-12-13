@@ -11,10 +11,23 @@ import HingedDoor from './HingedDoor'
 
 export default class ProductRenderer {
 
+  /* Flags used to interact with the graphical representation on certain steps of the wizard */
+
+  /**
+   * Flag used to control if the user can or can not resize the closet.
+   */
   canMoveCloset;
 
+
+  /**
+   * Flag used to control if the user can or can not move the closet's slots.
+   */
   canMoveSlots;
 
+
+  /**
+   * Flag used to control if the user can or can not move the closet's components.
+   */
   canMoveComponents;
 
   /**
@@ -101,14 +114,34 @@ export default class ProductRenderer {
    */
   closet_shelves_ids;
 
+  /**
+ * Global variable with the current closet poles ids (Mesh IDs from Three.js)
+ * @type {number[]}
+ */
   closet_poles_ids;
 
+  /**
+ * Global variable with the current closet modules ids (Mesh IDs from Three.js)
+ * @type {number[]}
+ */
   closet_modules_ids;
 
+  /**
+ * Global variable with the current closet drawers ids (Mesh IDs from Three.js)
+ * @type {number[]}
+ */
   closet_drawers_ids;
 
+  /**
+ * Global variable with the current closet hinged doors ids (Mesh IDs from Three.js)
+ * @type {number[]}
+ */
   closet_hinged_doors_ids;
 
+  /**
+ * Global variable with the current closet sliding doors ids (Mesh IDs from Three.js)
+ * @type {number[]}
+ */
   closet_sliding_doors_ids;
 
   /**
@@ -117,17 +150,19 @@ export default class ProductRenderer {
    */
   canvasWebGL;
 
-  // ------------ Instance variables used to dinamically resize Slots ------------
   /**
-   * Instance variables that represent the currently selected slot and face (null if none)
+   * Instance variables that represent the currently selected slot (null if none)
    */
   selected_slot;
 
   /**
-   * 
+   * Instance variables that represent the currently selected face (null if none)
    */
   selected_face;
 
+  /**
+   * Instance variables that represent the currently selected component (null if none)
+   */
   selected_component;
 
   /**
@@ -165,7 +200,6 @@ export default class ProductRenderer {
    * @type{THREE.Raycaster}
    */
   raycaster;
-  // ------------ End of instance variables used to dinamically resize Slots ------------
 
   // --------------Beggining of resize control ----------------------
 
@@ -188,6 +222,7 @@ export default class ProductRenderer {
   /**Number of dimensions in question */
   NUMBER_DIMENSIONS;
   // ---------------- End of resize control --------------------------
+
   /**
    * 
    * @param {HTMLCanvasElement} htmlCanvasElement 
@@ -572,10 +607,86 @@ export default class ProductRenderer {
   }
 
   /*New method*/
-  removeAllSlots(){
-    for(let i = 0;i<this.closet_slots_faces_ids.length;i++){
+  removeAllSlots() {
+    var size = this.closet_slots_faces_ids.length;
+    for (let i = 0; i < size; i++) {
       this.removeSlot();
     }
+  }
+
+  /*New method*/
+  removeAllComponents() {
+    var size = this.closet_drawers_ids.length;
+    for (let i = 0; i < size; i++) {
+      this.removeDrawer();
+    }
+
+    size =  this.closet_modules_ids.length;
+    for (let i = 0; i < size; i++) {
+      this.removeModule();
+    }
+
+    size = this.closet_hinged_doors_ids.length;
+    for(let i = 0; i < size; i++){
+      this.removeHingedDoor();
+    }
+
+    size = this.closet_sliding_doors_ids.length;
+    for(let i = 0; i < size; i++){
+      this.removeSlidingDoor();
+    }
+
+    size = this.closet_shelves_ids.length;
+    for(let i = 0; i < size; i++){
+      this.removeShelf();
+    }
+
+    size = this.closet_poles_ids.length;
+    for(let i = 0; i < size; i++){
+      this.removePole();
+    }
+  }
+
+  removeShelf(){
+    this.closet.removeShelf();
+    var closet_shelf_face_id = this.closet_shelves_ids.pop();
+    this.group.remove(this.group.getObjectById(closet_shelf_face_id));
+    this.updateClosetGV();
+  }
+
+  removePole(){
+    this.closet.removePole();
+    var closet_poles_id = this.closet_poles_ids.pop();
+    this.group.remove(this.group.getObjectById(closet_poles_id));
+    this.updateClosetGV();
+  }
+
+  removeSlidingDoor() {
+    this.closet.removeSlidingDoor();
+    var closet_sliding_door_face_id = this.closet_sliding_doors_ids.pop();
+    this.group.remove(this.group.getObjectById(closet_sliding_door_face_id));
+    this.updateClosetGV();
+  }
+
+  removeHingedDoor() {
+    this.closet.removeHingedDoor();
+    var closet_hinged_door_face_id = this.closet_hinged_doors_ids.pop();
+    this.group.remove(this.group.getObjectById(closet_hinged_door_face_id));
+    this.updateClosetGV();
+  }
+
+  removeDrawer() {
+    this.closet.removeDrawer();
+    var closet_drawer_face_id = this.closet_drawers_ids.pop();
+    this.group.remove(this.group.getObjectById(closet_drawer_face_id));
+    this.updateClosetGV();
+  }
+
+  removeModule() {
+    this.closet.removeModule();
+    var closet_module_face_id = this.closet_modules_ids.pop();
+    this.group.remove(this.group.getObjectById(closet_module_face_id));
+    this.updateClosetGV();
   }
 
   /**
