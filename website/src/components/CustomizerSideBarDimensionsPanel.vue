@@ -102,6 +102,10 @@
         :value="optionUnit.unit"
       >{{optionUnit.unit}}</option>
     </select>
+    <div class="center-controls">
+      <i class="btn btn-primary material-icons" @click="previousPanel()" >arrow_back</i>
+      <i class="btn btn-primary material-icons" @click="nextPanel()" >arrow_forward</i>
+    </div>
   </div>
 </template>
 
@@ -119,7 +123,9 @@ import {
   SET_CUSTOMIZED_PRODUCT_HEIGHT,
   SET_CUSTOMIZED_PRODUCT_DEPTH,
   SET_CUSTOMIZED_PRODUCT_UNIT,
-  SET_CUSTOMIZED_PRODUCT_DIMENSIONS
+  SET_CUSTOMIZED_PRODUCT_DIMENSIONS,
+  ACTIVATE_CAN_MOVE_CLOSET,
+  DEACTIVATE_CAN_MOVE_SLOTS
 } from "./../store/mutation-types.js";
 
 import { error } from "three";
@@ -193,23 +199,21 @@ export default {
       depth: this.depth,
       unit: this.unit
     });
-
+    store.dispatch(ACTIVATE_CAN_MOVE_CLOSET);
+    store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS);
     /*Get all available dimensions of the given product of the array*/
     Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions`)
       .then(response => this.availableOptionsDimensions.push(...response.data))
       .catch(error => {
         this.$toast.open(error.response.status + "An error occurred");
       });
-
     /*Get all available units of measurement*/
     Axios.get(`${MYCM_API_URL}/units`)
       .then(response => this.availableOptionsUnits.push(...response.data))
       .catch(error => {
         this.$toast.open(error.response.status + "An error occurred");
       });
-
     this.initialPopulate();
-      
   },
  
   methods: {
@@ -362,7 +366,7 @@ export default {
     },
     determineIncrementOfInterval: function(dimensionJson) {
       return dimensionJson.increment;
-    }
+    },
     /*  //Organizes vector to crescent order.
         organizeCrescentOrder: function(vec) {
           var tmp, minTmp;
@@ -381,6 +385,12 @@ export default {
             }
           }
         } */
+    nextPanel(){
+      this.$emit("advance");
+    },
+    previousPanel(){
+      this.$emit("back");
+    }
   }
 };
 </script>
@@ -430,7 +440,7 @@ export default {
 .slider {
   margin-left: 15%;
   margin-right: 15%;
-}
+} 
 </style>
 
 

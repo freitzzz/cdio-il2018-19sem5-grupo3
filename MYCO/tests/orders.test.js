@@ -3,10 +3,9 @@ const {
     MongoClient
 } = require('mongodb');
 const axios = require('axios');
-const orders = require('../routes/orders');
 
 
-describe('getAll', () => {
+describe('Tests with city and factory setup', () => {
     let connection;
     let db;
     var cityID;

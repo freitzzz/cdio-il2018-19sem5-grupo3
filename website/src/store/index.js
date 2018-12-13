@@ -26,12 +26,12 @@ const state = {
             id: ""
         },
         customizedMaterial: {
-            id:"",
-            reference:"",
-            designation:"",
-            image:""            
+            id: "",
+            reference: "",
+            designation: "",
+            image: ""
         },
-        slots: [ 
+        slots: [
         ],
         customizedDimensions: {
             width: "",
@@ -86,7 +86,10 @@ export const getters = {
     customizedProductComponents: state => {
         return state.customizedProduct.components;
     },
-    canMoveCloset: state => { 
+    customizedMaterial: state => {
+        return state.customizedProduct.customizedMaterial.image;
+    },
+    canMoveCloset: state => {
         return state.canvasControls.canMoveCloset;
     },
     canMoveSlots: state => {
@@ -94,9 +97,6 @@ export const getters = {
     },
     canMoveComponents: state => {
         return state.canvasControls.canMoveComponents;
-     },
-     customizedMaterial: state => {
-         return state.customizedProduct.customizedMaterial.image;
     }
 }
 

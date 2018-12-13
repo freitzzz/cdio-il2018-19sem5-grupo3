@@ -208,9 +208,9 @@ export default class ProductRenderer {
 
     this.websiteDimensions = [500, 100, 15000];
 
-    this.canMoveCloset = true;
-    this.canMoveSlots = true;
-    this.canMoveComponents = true;
+    this.canMoveCloset = false;
+    this.canMoveSlots = false;
+    this.canMoveComponents = false;
 
     this.hingedDoor = null;
     this.slidingDoor = null;

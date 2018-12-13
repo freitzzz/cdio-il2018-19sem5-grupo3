@@ -7,16 +7,12 @@
       <!--The child component changes dinamically depending on tthe currently selected component.-->
       <!--The Sidebar component listens out for any event that the child may trigger-->
       <customizer-side-bar-products-panel v-if="currentPanelIndex == 0" @advance="selectProduct"></customizer-side-bar-products-panel>
-      <customizer-side-bar-dimensions-panel v-if="currentPanelIndex == 1"></customizer-side-bar-dimensions-panel>
-      <customizer-side-bar-slots-panel v-if="currentPanelIndex == 2"></customizer-side-bar-slots-panel>
-      <customizer-side-bar-materials-panel v-if="currentPanelIndex == 3"></customizer-side-bar-materials-panel>
-      <customizer-side-bar-components-panel v-if="currentPanelIndex == 4"></customizer-side-bar-components-panel>
+      <customizer-side-bar-dimensions-panel v-if="currentPanelIndex == 1" @advance="nextPanel" @back="previousPanel"></customizer-side-bar-dimensions-panel>
+      <customizer-side-bar-slots-panel v-if="currentPanelIndex == 2" @advance="nextPanel" @back="previousPanel"></customizer-side-bar-slots-panel>
+      <customizer-side-bar-materials-panel v-if="currentPanelIndex == 3" @advance="nextPanel" @back="previousPanel"></customizer-side-bar-materials-panel>
+      <customizer-side-bar-components-panel v-if="currentPanelIndex == 4" @advance="nextPanel" @back="previousPanel"></customizer-side-bar-components-panel>
       
       
-      <div class="sidenav-controls">
-        <i class="btn btn-primary material-icons" @click="previousPanel()" v-if="canDisplayPreviousButton">arrow_back</i>
-        <i class="btn btn-primary material-icons" @click="nextPanel()" v-if="canDisplayNextButton">arrow_forward</i>
-      </div>
     </div>
     <div v-if="currentPanelIndex == 5"  class="sidenavSpecial">
       <h3>{{panels[currentPanelIndex].title}}</h3>
@@ -74,7 +70,7 @@
       CustomizerSideBarMaterialsPanel,
       CustomizerSideBarSlotsPanel,
       CustomizerSideBarComponentsPanel,
-      CustomizerCheckOut
+      CustomizerCheckOut,
     },
     computed: {
        
@@ -116,6 +112,7 @@
       previousPanel() {
         if (this.currentPanelIndex > 0) {
           while (this.currentPanelIndex > 0 && !this.panels[--this.currentPanelIndex].enabled);
+          this.$emit('changeStage', this.currentPanelIndex);
         }
       },
       /**
@@ -124,6 +121,7 @@
       nextPanel() {
         if (this.currentPanelIndex < this.panels.length - 1) {
           while (this.currentPanelIndex < this.panels.length && !this.panels[++this.currentPanelIndex].enabled);
+          this.$emit('changeStage', this.currentPanelIndex)
         }
       },
       /**
@@ -169,38 +167,6 @@
     transition: 0.3s;
     background-color: #e9e9e9a0;
   }
-
-  .sidenavSpecial{
-    height: 100%;
-    /* Full height */
-    width: 1000px;
-    /*full width on initial load, changed with Vue*/
-    position: fixed;
-    
-    /*stay in place*/
-    z-index: 1;
-    /*stay on top*/
-    top: 15%;
-    /*Display from top left corner*/
-    left: 0;
-    overflow-x: hidden;
-    /*Disable horizontal scroll*/
-    padding-top: 60px;
-    margin: 2%;
-    transition: 0.3s;
-    background-color: #e9e9e9a0;
-  }
-
-.sidenavSpecial h3{
-   font-size: 24px;
-    color: #797979 !important;
-    cursor: default;
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    margin-right: 50px;
-    cursor: pointer;
-}
   
   .sidenav h3 {
     font-size: 24px;
@@ -231,5 +197,37 @@
     margin-left: 50px;
     cursor: pointer;
   }
+
+    .sidenavSpecial{
+    height: 100%;
+    /* Full height */
+    width: 1000px;
+    /*full width on initial load, changed with Vue*/
+    position: fixed;
+    
+    /*stay in place*/
+    z-index: 1;
+    /*stay on top*/
+    top: 15%;
+    /*Display from top left corner*/
+    left: 0;
+    overflow-x: hidden;
+    /*Disable horizontal scroll*/
+    padding-top: 60px;
+    margin: 2%;
+    transition: 0.3s;
+    background-color: #e9e9e9a0;
+  }
+
+.sidenavSpecial h3{
+   font-size: 24px;
+    color: #797979 !important;
+    cursor: default;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    margin-right: 50px;
+    cursor: pointer;
+}
 </style>
 

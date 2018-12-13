@@ -12,6 +12,7 @@
                     @click="openMaterialDetails(props.rowData.id)"
                 >
                     <b-icon icon="magnify"/>
+                   
                 </button>
                 <button
                     class="button is-danger"
@@ -32,12 +33,12 @@
                         :material="currentSelectedMaterial"
                     />
                 </b-modal>
-            </div>
+            </div>                    
             <div v-if="showEditMaterialDetails">
                 <b-modal :active.sync="showEditMaterialDetails" has-modal-card scroll="keep">
                     <edit-material
                         @emitMaterial="updateMaterial"
-                        :available-colors="availableMaterials"
+                        :available-colors="availableColors"
                         :available-finishes="availableFinishes"
                         :material="currentSelectedMaterial2"
                     />
@@ -69,13 +70,14 @@ import EditMaterial from './EditMaterial';
  */
 import Config,{MYCM_API_URL} from '../../../config';
 
+
 export default {
     /**
      * Components exported components
      */
     components:{
         EditMaterial,
-        MaterialDetails
+        MaterialDetails,
     },
     /**
      * Component data
@@ -139,6 +141,13 @@ export default {
                     .get(MYCM_API_URL+'/materials/'+materialId)
                     .then((material)=>{
                         this.currentSelectedMaterial=material.data;
+                        for(let i =0; i<this.currentSelectedMaterial.colors.length; i++){
+                            this.currentSelectedMaterial.colors[i].colors = {
+                                red: this.currentSelectedMaterial.colors[i].red,
+                                green: this.currentSelectedMaterial.colors[i].green,
+                                blue: this.currentSelectedMaterial.colors[i].blue,
+                            }
+                        }
                         this.currentSelectedMaterial2=Object.assign({},this.currentSelectedMaterial);
                         accept(material);
                     })
@@ -208,10 +217,179 @@ export default {
                     });
             });
         },
+        /**
+         * Updates a given material
+         */
+        updateMaterial(materialDetails){
+            this
+                .updateMaterialProperties(materialDetails)
+                .then(()=>{
+                    this
+                        .updateMaterialColors(materialDetails)
+                        .then(()=>{
+                            this
+                                .updateMaterialFinishes(materialDetails)
+                                
+                                        .then(()=>{
+                                            this.showEditMaterialDetails=false;
+                                            this.$emit('refreshData');
+                                            this.$toast.open({message:"Material was updated with success!"});
+                                        }).catch((error_message)=>{
+                                            this.$toast.open({message:error_message});
+                                        });
+                               
+                        })
+                        .catch((error_message)=>{
+                            this.$toast.open({message:error_message});
+                        });
+                })
+                .catch((error_message)=>{
+                    this.$toast.open({message:error_message});
+                });
+        },
+        /**
+         * Updates a given material properties (PUT) in a promise way
+         */
+        updateMaterialProperties(materialDetails){
+            let materialPropertiesToUpdate={};
+            let atLeastOneUpdate=false;
+            if(materialDetails.reference!=null && materialDetails.reference!=this.currentSelectedMaterial.reference){
+                materialPropertiesToUpdate.reference=materialDetails.reference;
+                atLeastOneUpdate=true;
+            }
+            if(materialDetails.designation!=null && materialDetails.designation!=this.currentSelectedMaterial.designation){
+                materialPropertiesToUpdate.designation=materialDetails.designation;
+                atLeastOneUpdate=true;
+            }            
+            return new Promise((accept,reject)=>{
+                if(atLeastOneUpdate){
+                    Axios
+                    .put(MYCM_API_URL+'/materials/'+materialDetails.id,materialPropertiesToUpdate)
+                    .then((material)=>{
+                        accept(material);
+                    })
+                    .catch((error_message)=>{
+                        reject(error_message.data.message);
+                    });
+                }else{
+                    accept();
+                }
+            });
+        },
+        /**
+         * Updates a given material colors (POST + DELETE) in a promise way
+         */
+        updateMaterialColors(materialDetails){
+            let oldMaterialColors=[];
+            let addColors=[];
+            let deleteColors=[];
+
+            if(this.currentSelectedMaterial.colors!=null){
+                for(let i=0;i<this.currentSelectedMaterial.colors.length;i++)
+                    oldMaterialColors.push(this.currentSelectedMaterial.colors[i].id);
+            }
+
+            let newMaterialColors=materialDetails.colors!=null ? materialDetails.colors : [];
+
+            //Color to add
+
+            for(let i=0;i<newMaterialColors.length;i++){
+                if(!oldMaterialColors.includes(newMaterialColors[i]))
+                    addColors.push(newMaterialColors[i]);
+            }
+
+            //Color to delete
+
+            for(let i=0;i<oldMaterialColors.length;i++){
+                if(!newMaterialColors.includes(oldMaterialColors[i]))
+                    addColors.push(oldMaterialColors[i]);
+            }
+
+            return new Promise((accept,reject)=>{
+                if(newMaterialColors.length==0)accept();
+                if(addColors.length>0){
+                    for(let i=0;i<addColors.length;i++){
+                        Axios
+                            .post(MYCM_API_URL+'/materials/'+materialDetails.id+'/colors/',{
+                                id:addColors[i]
+                            })
+                            .catch((error_message)=>{
+                                reject(error_message.data.message);
+                            });
+                    }
+                }
+
+                if(deleteColors.length>0){
+                    for(let i=0;i<deleteColors.length;i++){
+                        Axios
+                            .delete(MYCM_API_URL+'/materials/'+materialDetails.id+'/colors/'+deleteColors[i])
+                            .catch((error_message)=>{
+                                reject(error_message.data.message);
+                            });
+                    }
+                }
+                accept();
+            });
+        },
+        /**
+         * Updates a given material finishes (POST + DELETE) in a promise way
+         */
+        updateMaterialFinishes(materialDetails){
+            let oldMaterialFinishes=[];
+            let addFinishes=[];
+            let deleteFinishes=[];
+
+            if(this.currentSelectedMaterial.finishes!=null){
+                for(let i=0;i<this.currentSelectedMaterial.finishes.length;i++)
+                    oldMaterialFinishes.push(this.currentSelectedMaterial.finishes[i].id);
+            }
+
+            let newMaterialFinishes=materialDetails.finishes!=null ? materialDetails.finishes : [];
+
+            //Finish to add
+
+            for(let i=0;i<newMaterialFinishes.length;i++){
+                if(!oldMaterialFinishes.includes(newMaterialFinishes[i]))
+                    addFinishes.push(newMaterialFinishes[i]);
+            }
+
+            //Finish to delete
+
+            for(let i=0;i<oldMaterialFinishes.length;i++){
+                if(!newMaterialFinishes.includes(oldMaterialFinishes[i]))
+                    deleteFinishes.push(oldMaterialFinishes[i]);
+            }
+
+            return new Promise((accept,reject)=>{
+                if(newMaterialFinishes.length==0)accept();
+                if(addFinishes.length>0){
+                    for(let i=0;i<addFinishes.length;i++){
+                        Axios
+                            .post(MYCM_API_URL+'/materials/'+materialDetails.id+'/finishes/',{
+                                id:addFinishes[i]
+                            })
+                            .catch((error_message)=>{
+                                reject(error_message.data.message);
+                            });
+                    }
+                }
+
+                if(deleteFinishes.length>0){
+                    for(let i=0;i<deleteFinishes.length;i++){
+                        Axios
+                            .delete(MYCM_API_URL+'/materials/'+materialDetails.id+'/finishes/'+deleteFinishes[i])
+                            .catch((error_message)=>{
+                                reject(error_message.data.message);
+                            });
+                    }
+                }
+                accept();
+            });
+        },
        
     },
-    props:{
+      props:{
         data:[]
-    }
+    } 
 }
 </script>

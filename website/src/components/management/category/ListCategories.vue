@@ -2,16 +2,16 @@
     <div>
         <div>
             <button class="button is-danger" @click="createNewCategory()">
-                    <b-icon icon="plus"/>
-                    </button>
+                            <b-icon icon="plus"/>
+                            </button>
             <div v-if="createNewCategoryModal">
                 <b-modal :active.sync="createNewCategoryModal" has-modal-card scroll="keep">
                     <create-new-category @emitCategory="postCategory" />
                 </b-modal>
             </div>
             <button class="button is-danger" @click="fetchRequests()">
-                        <b-icon icon="refresh" custom-class="fa-spin"/>
-            </button>
+                                <b-icon icon="refresh" custom-class="fa-spin"/>
+                    </button>
         </div>
         <categories-table :data="data" @refreshData="refreshCategories"></categories-table>
     </div>
@@ -88,6 +88,51 @@
     
             },
             /**
+             * Fetches all parent categories data by their ids
+             */
+            getParentCategories(parentCategoriesIds) {
+                return new Promise((accept, reject) => {
+                    let parentCategories = [];
+                    let parents = 0;
+                    for (let i = 0; i < parentCategoriesIds.length; i++)
+                        if (parentCategoriesIds[i]) parents++;
+                    for (let i = 0; i < parentCategoriesIds.length; i++) {
+                        if (parentCategoriesIds[i]) {
+                            this
+                                .getParentCategory(parentCategoriesIds[i])
+                                .then((parentCategory) => {
+                                    parentCategories.push(parentCategory);
+                                    parents--;
+                                })
+                                .catch((error_message) => {
+                                    parents--;
+                                    rejectIteration(error_message);
+                                });
+                        }
+                    };
+                    alert(parents);
+                    if (parents == 0) {
+                        alert("!!!")
+                        accept(parentCategories);
+                    }
+                });
+            },
+            /**
+             * Fetches the parent category data by his id
+             */
+            getParentCategory(parentCategoryId) {
+                return new Promise((accept, reject) => {
+                    Axios
+                        .get(MYCM_API_URL + "/categories/" + parentCategoryId)
+                        .then((parentcategory) => {
+                            accept(parentcategory.data);
+                        })
+                        .then((error_message) => {
+                            reject(error_message.response.data.message);
+                        });
+                });
+            },
+            /**
              * fetches all possible requests
              */
             fetchRequests() {
@@ -99,9 +144,11 @@
             refreshCategories() {
                 Axios.get(MYCM_API_URL + '/categories')
                     .then((_response) => {
-                        this.data = this.generateCategoriesTableData(_response.data);
+                        let allCategories = _response.data;
+                        this.data = this.generateCategoriesTableData(allCategories);
                         this.columns = this.generateCategoriesTableColumns();
                         this.total = this.data.length;
+    
                     })
                     .catch((error_message) => {
                         this.$toast.open({
@@ -124,6 +171,11 @@
                         centered: true
                     },
                     {
+                        field: "parentName",
+                        label: "Parent Category",
+                        centered: true
+                    },
+                    {
                         field: "actions",
                         label: "Action",
                         centered: true
@@ -138,7 +190,8 @@
                 categories.forEach((category) => {
                     categoriesTableData.push({
                         id: category.id,
-                        name: category.name
+                        name: category.name,
+                        parentName: category.parentName
                     });
                 });
                 return categoriesTableData;

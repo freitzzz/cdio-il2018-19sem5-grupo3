@@ -626,4 +626,8 @@
 .image-btn:hover, .image-btn:focus, .image-btn.focus, .image-btn:active, .btn-custom.active {
 	color: #0ba2db;
 	cursor: pointer;
+}  
+.center-controls {
+  text-align: center;
+  margin: auto;
 }
