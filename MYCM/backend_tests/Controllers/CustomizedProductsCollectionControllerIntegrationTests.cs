@@ -1586,7 +1586,7 @@ namespace backend_tests.Controllers
             AddCustomizedProductModelView modelView =
                 new AddCustomizedProductModelView();
 
-            modelView.reference = "Reference " + testNumber;
+            //modelView.reference = "Reference " + testNumber;
             modelView.designation = "Designation " + testNumber;
             modelView.productId = productModelViewFromPost.productId;
             modelView.customizedDimensions = new AddCustomizedDimensionsModelView();
