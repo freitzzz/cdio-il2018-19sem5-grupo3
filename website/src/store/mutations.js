@@ -32,6 +32,7 @@ export const mutations = {
    * @param {*} payload Payload with the new slot width 
    */
   [types.SET_SLOT_DIMENSIONS](state, payload) {
+    if(payload){
     state.customizedProduct.slots.push({
       idSlot: payload.idSlot,
       depth: payload.depth,
@@ -40,6 +41,7 @@ export const mutations = {
       unit: payload.unit,
       components: []
     })
+  }else{state.customizedProduct.slots=[];}
   },
   
 /**

@@ -370,13 +370,6 @@ export default class ProductRenderer {
     }
   }
   /**
-   * Adds a slot to the current closet
-   */
-  addSlot() {
-    ///this.addSlotNumbered([]);
-  }
-
-  /**
    * Adds components to the current closet
    */
   addComponent(component) {
@@ -576,6 +569,13 @@ export default class ProductRenderer {
       this.closet_slots_faces_ids.push(this.generateParellepiped(slotFace[0], slotFace[1], slotFace[2], slotFace[3], slotFace[4], slotFace[5], this.material, this.group));
     }
     this.updateClosetGV();
+  }
+
+  /*New method*/
+  removeAllSlots(){
+    for(let i = 0;i<this.closet_slots_faces_ids.length;i++){
+      this.removeSlot();
+    }
   }
 
   /**

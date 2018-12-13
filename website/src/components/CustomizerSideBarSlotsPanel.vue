@@ -6,10 +6,10 @@
     </div>
     <div>
       <label class="slotsSelections">
-        <input type="radio" id="recommendedSlots" value="recommendedSlots" v-model="picked"> Recommended Number Slots
+        <input type="radio" id="recommendedSlots" value="recommendedSlots" v-model="picked"  @change="deactivateCanvasControls()"> Recommended Number Slots
       </label>
       <label class="slotsSelections">
-        <input type="radio" id="customizedSlots" value="customizedSlots" v-model="picked"> Customized Number Slots
+        <input type="radio" id="customizedSlots" value="customizedSlots" v-model="picked"  @change="activateCanvasControls()" > Customized Number Slots
       </label>
     </div>
     <div v-if="displaySliders" class="slidersSection">
@@ -47,7 +47,7 @@
 import vueSlider from "vue-slider-component";
 import store from "./../store";
 import Axios from "axios";
-import { SET_SLOT_DIMENSIONS, DEACTIVATE_CAN_MOVE_CLOSET, ACTIVATE_CAN_MOVE_SLOTS } from "./../store/mutation-types.js";
+import { SET_SLOT_DIMENSIONS, DEACTIVATE_CAN_MOVE_CLOSET, ACTIVATE_CAN_MOVE_SLOTS, DEACTIVATE_CAN_MOVE_SLOTS } from "./../store/mutation-types.js";
 
 export default {
   name: "CustomizerSideBarSlotsPanel",
@@ -74,14 +74,6 @@ export default {
       ///}
       return 200;
     },
-    /*  recommendedNumberSlots() {
-      ///if (store.getters.recommendedSlotSize.unit == store.getters.unit) {
-      ///  return ( parseInt( store.getters.width / store.getters.recommendedSlotSize.width ) + 3);
-      ///} else {
-      ///convert(store.getters.unit,store.getters.recommendedSlotSize.unit,store.getters.recommendedSlotSize.width );
-      /// return parseInt(store.getters.width / this.valueConverted) + 3;
-      return 3;
-    }, */
     minNumberSlots() {
       ///return parseInt(store.getters.width / store.getters.maxSlotSize);
       return 1;
@@ -120,11 +112,19 @@ export default {
       if (!this.blockRemoval) this.lines.splice(lineId, 1);
     },
     nextPanel(){
+      //TODO! POST slots
       this.$emit("advance");
     },
     previousPanel(){
+      //TODO! DELETE slots
+
+ store.dispatch(SET_SLOT_DIMENSIONS);
       this.$emit("back");
-    }
+    },
+    activateCanvasControls(){store.dispatch(ACTIVATE_CAN_MOVE_SLOTS);},
+  deactivateCanvasControls(){
+    //TODO! Desenhar slots recommendados quando checado o recommended 
+    store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS)}
   },
   watch: {
     lines() {
@@ -135,41 +135,8 @@ export default {
     this.addLine();
   },
   created() {
-    var widthCloset = 404.5;
-
-    var depthCloset = 100;
-    var heightCloset = 300;
-    var unitCloset = "cm";
-
-    var recommendedSlotWidth = store.getters.recommendedSlotWidth;
-
-    var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
-    var remainder = widthCloset % recommendedSlotWidth;
-
-    var remainderWidth =
-      widthCloset - recommendedNumberSlots * recommendedSlotWidth;
-
-    if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth*/) {
-      store.dispatch(SET_SLOT_DIMENSIONS, {
-        idSlot: recommendedNumberSlots,
-        width: remainderWidth,
-        height: heightCloset,
-        depth: depthCloset,
-        unit: unitCloset
-      });
-    }
-    for (let i = 0; i < recommendedNumberSlots; i++) {
-      store.dispatch(SET_SLOT_DIMENSIONS, {
-        idSlot: i,
-        width: recommendedSlotWidth,
-        height: heightCloset,
-        depth: depthCloset,
-        unit: unitCloset
-      });
-    }
     store.dispatch(DEACTIVATE_CAN_MOVE_CLOSET);
-    store.dispatch(ACTIVATE_CAN_MOVE_SLOTS);
-  }
+  },
 };
 </script>
 <style>

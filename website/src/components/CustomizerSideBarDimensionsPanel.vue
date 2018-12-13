@@ -124,6 +124,7 @@ import {
   SET_CUSTOMIZED_PRODUCT_DEPTH,
   SET_CUSTOMIZED_PRODUCT_UNIT,
   SET_CUSTOMIZED_PRODUCT_DIMENSIONS,
+  SET_SLOT_DIMENSIONS,
   ACTIVATE_CAN_MOVE_CLOSET,
   DEACTIVATE_CAN_MOVE_SLOTS
 } from "./../store/mutation-types.js";
@@ -386,9 +387,39 @@ export default {
           }
         } */
     nextPanel(){
-      this.$emit("advance");
+      //!TODO POST product
+      
+      var widthCloset = 404.5;
+    var depthCloset = 100;
+    var heightCloset = 300;
+    var unitCloset = "cm";
+    var recommendedSlotWidth = store.getters.recommendedSlotWidth;
+    var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
+    var remainder = widthCloset % recommendedSlotWidth;
+    var remainderWidth =
+      widthCloset - recommendedNumberSlots * recommendedSlotWidth;
+    if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth*/) {
+      store.dispatch(SET_SLOT_DIMENSIONS, {
+        idSlot: recommendedNumberSlots,
+        width: remainderWidth,
+        height: heightCloset,
+        depth: depthCloset,
+        unit: unitCloset
+      });
+    }
+    for (let i = 0; i < recommendedNumberSlots; i++) {
+      store.dispatch(SET_SLOT_DIMENSIONS, {
+        idSlot: i,
+        width: recommendedSlotWidth,
+        height: heightCloset,
+        depth: depthCloset,
+        unit: unitCloset
+      });
+    }
+    this.$emit("advance");
     },
     previousPanel(){
+      //!TODO DELETE product
       this.$emit("back");
     }
   }

@@ -70,7 +70,11 @@ export default {
   },
   watch: {
     slots: function(newValue, oldValue) {
-      this.productRenderer.addSlotNumbered(newValue);
+      if(newValue.length > 0){
+        this.productRenderer.addSlotNumbered(newValue);
+      } else {
+        this.productRenderer.removeAllSlots();
+      }
     },
     loadProduct: function() {
       this.productRenderer.showCloset();
