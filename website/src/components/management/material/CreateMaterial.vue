@@ -165,7 +165,8 @@ export default {
       let finishesToAdd = [];
        this.availableFinishes.forEach(element => {
         finishesToAdd.push({
-          description: element.description
+          description: element.description,
+          shininess: element.shininess
         });
       });
       let colorsToAdd = [];
@@ -265,6 +266,7 @@ export default {
         this.availableFinishes.push(finish)
       }
       this.inputFinishDesignation = "";
+      this.inputFinishShininess=0;
     },
     inputFile(newFile, oldFile) {
       this.nameImage=this.file[0].name

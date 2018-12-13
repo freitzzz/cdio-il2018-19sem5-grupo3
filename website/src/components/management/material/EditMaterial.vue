@@ -262,6 +262,7 @@ export default {
           .catch(function(error) {});
       }
       this.inputFinishDesignation = "";
+      this.inputFinishShininess = 0;
     },
   inputFile(newFile, oldFile) {
     this.material.image=this.file[0].name
