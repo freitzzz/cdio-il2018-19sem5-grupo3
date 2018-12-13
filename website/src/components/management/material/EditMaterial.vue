@@ -35,7 +35,7 @@
                         </b-field> 
                             <button class="button is-primary" @click="createFinish()">+</button>
                             <button class="button is-primary" @click="deleteFinish()">-</button>
-                            <div class="example-btn , modal-card-body">
+                            <div class="example-btn , image">
                                 <file-upload
                                   class="button is-primary"
                                   post-action="/files/"
@@ -48,9 +48,9 @@
                                   Edit Image
                                 </file-upload>
                                 <b-input
+                                class="image"
                                 v-model="material.image"
                                 type="String"
-                                icon="pound"
                                 disabled="true"
                                 required>
                             </b-input>
@@ -74,14 +74,15 @@
                                 required>
                             </b-input>
                         </b-field>
-                         <b-field label="Shininess">
-                          <input
-                              type="number"
-                              v-model="inputFinishShininess"
-                              min= "0"
-                              max= "100"
-                              icon="pencil">
-                        </b-field>
+                          <b-field label="Shininess:">
+                            <vue-slider
+                            class="slidersSection"
+                            :min="0"
+                            :max="100"
+                            v-model="inputFinishShininess"
+                            :interval="0.01"
+                          ></vue-slider>
+                         </b-field>
                     </section>
                     <footer class="modal-card-foot">
                       <button class="button is-primary" @click="addFinish()">+</button>
@@ -117,7 +118,8 @@ import Axios from "axios";
 import Swatches from "vue-swatches";
 import "vue-swatches/dist/vue-swatches.min.css";
 import { Dialog } from "buefy/dist/components/dialog";
-import FileUpload from 'vue-upload-component'
+import FileUpload from 'vue-upload-component';
+import vueSlider from "vue-slider-component";
 export default {
   name: "EditMaterial",
   data() {
@@ -138,7 +140,8 @@ export default {
   },
   components: {
     Swatches,
-    FileUpload
+    FileUpload,
+    vueSlider
   },
   methods: {
     createColor() {
@@ -294,3 +297,13 @@ export default {
     },
 };
 </script>
+<style>
+.slidersSection {
+  margin-bottom: 13%;
+  width: 7px 30px;
+  margin-top: 15%;
+}
+.image{
+  margin-top: 5%;
+}
+</style>
