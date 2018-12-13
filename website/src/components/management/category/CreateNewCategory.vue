@@ -1,5 +1,4 @@
 <template>
-    <b-modal :active.sync="active" has-modal-card>
                 <div class="modal-card" style="width: auto">
                     <header class="modal-card-head">
                         <p class="modal-card-title">New Category</p>
@@ -28,8 +27,7 @@
              
                     </footer>
                 </div>
-       
-    </b-modal>
+   
 </template> 
 
 <script>

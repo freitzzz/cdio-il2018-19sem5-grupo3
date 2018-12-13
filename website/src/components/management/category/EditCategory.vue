@@ -1,5 +1,5 @@
 <template>
-  <b-modal :active.sync="activeFlag" has-modal-card>
+
   
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
@@ -25,8 +25,7 @@
         <button class="button is-primary" @click="editCategory">Edit</button>
       </footer>
     </div>
-  
-  </b-modal>
+
 </template>
 
 <script>
