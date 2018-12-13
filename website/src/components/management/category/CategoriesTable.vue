@@ -84,7 +84,7 @@
                         title: "Name"
                     },
                     {
-                        name: "parentcategory",
+                        name: "parentName",
                         title: "Parent Category",
                         callback: this.booleansAsIcons
                     },
@@ -105,7 +105,7 @@
              */
             booleansAsIcons(value) {
                 return value ?
-                    '<span class="ui teal label"> value </span>' :
+                    value :
                     '<span class="ui teal label"><i class="material-icons">close</i></span>';
             },
             /**
@@ -143,30 +143,15 @@
                 return new Promise((accept, reject) => {
                     Axios.get(MYCM_API_URL + '/categories/' + categoriesId)
                         .then((category) => {
-                            alert("!!!")
-                            this
-                            .getParentCategory(category.data.id)
-                            .then((parentCategoryName)=>{
-                                 alert("angelo volta");
-                                this.currentSelectedCategory = `{
-                                                                 "id:"` + category.data.id + `,
-                                                                 "name":` + category.data.name + `,
-                                                                 "parentcategory":` + parentCategory + `}`;
-                                /* this.currentSelectedCategory.parentcategory = parentCategory; */
-                                alert(this.currentSelectedCategory.parentcategory);
-                                this.currentSelectedCategory2 = Object.assign({}, this.currentSelectedCategory);
-                                accept(category);
-                            })
-                            .catch(()=>{
-                                alert("!!!!!!!!!222!!!11")
+                           
                                 this.currentSelectedCategory = category.data;
     
                                 this.currentSelectedCategory2 = Object.assign({}, this.currentSelectedCategory);
                                 accept(category);
-                            });
+                        
                         })
                         .catch((error_message) => {
-                            alert("!!!!!11")
+                 
                             this.$toast.open({
                                 message: error_message
                             });
@@ -174,39 +159,7 @@
                         });
                 });
             },
-            /**
-             * Fetches parent category if exists
-             */
-            getParentCategory(childId) {
-                let parentCategory;
-                var parentCategories = [];
-                var childrenCategories = [];
-                return new Promise((accept, reject) => {
-                    /**Fetch all categories */
-                    Axios.get(MYCM_API_URL + '/categories')
-                        .then((response => {
-                            parentCategories.push(...response.data)
-                            /* Verify if there's at least a parent category */
-                            if (parentCategories.length > 0) {
-                                /* Get all sub categories for each parent */
-                                for (let i = 0; i < parentCategories.length; i++) {
-                                    Axios.get(MYCM_API_URL + '/categories/' + parentCategories[i].id + '/subcategories')
-                                        .then((response => {
-                                            childrenCategories.push(...response.data)
-                                            for (let i = 0; i < childrenCategories.length; i++) {
-                                                if (childrenCategories[i].id == childId) {
-                                                    accept(parentCategories[i].name);
-                                                }
-                                            }
-                                        }));
-    
-                                } /* Check if any of the children match the initial id */
-                            }
-                        }));
-                        reject();
-                });
-    
-            },
+        
             /**
              * Opens a modal with the category details
              */
