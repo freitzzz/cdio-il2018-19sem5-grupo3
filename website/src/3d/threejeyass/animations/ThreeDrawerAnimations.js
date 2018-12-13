@@ -6,6 +6,11 @@
 import ThreeDrawer from '../domain/ThreeDrawer';
 
 /**
+ * Requires FaceOrientation for identifying drawer faces orientation
+ */
+import FaceOrientation from '../../api/domain/FaceOrientation';
+
+/**
  * Service class that holds all three.js drawer animations functions
  */
 export default class ThreeDrawerAnimations{
@@ -19,11 +24,12 @@ export default class ThreeDrawerAnimations{
     //Our drawer front face doesn't hit a certain a certain desired length
     static open(drawer){
         let drawerThreeFaces=drawer.getThreeFaces();
-        let drawerFrontThreeFace=drawerThreeFaces.get(ThreeDrawer.FRONT);
-        if(drawerFrontThreeFace.Z()<=-50){
+        let drawerFrontThreeFace=drawerThreeFaces.get(FaceOrientation.FRONT);
+        if(drawerFrontThreeFace.position.z<=-50){
             let drawerThreeFacesValues=drawerThreeFaces.values();
-            for(let i=0;i<drawerThreeFacesValues.length;i++)
-                drawerThreeFacesValues[i].translateZ(1);
+            for(let threeDrawerFace of drawerThreeFacesValues){
+                threeDrawerFace.translateZ(1);
+            }
             this.open(drawer);
         }
     }
