@@ -4,12 +4,14 @@
       <i class="material-icons md-12 md-blue btn">help</i>
       <span class="tooltiptext">In this step, you can add divisions to the closet's structure and customize their sizes.</span>
     </div>
-    <label class="slotsSelections">
-      <input type="radio" id="recommendedSlots" value="recommendedSlots" v-model="picked"> Recommended Number Slots
-    </label>
-    <label class="slotsSelections">
-      <input type="radio" id="customizedSlots" value="customizedSlots" v-model="picked"> Customized Number Slots
-    </label>
+    <div>
+      <label class="slotsSelections">
+        <input type="radio" id="recommendedSlots" value="recommendedSlots" v-model="picked"> Recommended Number Slots
+      </label>
+      <label class="slotsSelections">
+        <input type="radio" id="customizedSlots" value="customizedSlots" v-model="picked"> Customized Number Slots
+      </label>
+    </div>
     <div v-if="displaySliders" class="slidersSection">
       <input type="text" :placeholder="freeSpaceValue" id="freeSpace" v-model="freeSpace" disabled>
       <i class="btn btn-primary material-icons" @click="removeLine(index)">-</i>
@@ -35,12 +37,11 @@
         </div>
       </div>
     </div>
-    <div class="sidenav-controls, sidenav">
-        <i class="btn btn-primary material-icons">arrow_back</i>
-        <i class="btn btn-primary material-icons">arrow_forward</i>
-      </div>
+    <div class="center-controls">
+      <i class="btn btn-primary material-icons" @click="previousPanel()" >arrow_back</i>
+      <i class="btn btn-primary material-icons" @click="nextPanel()" >arrow_forward</i>
+    </div>
   </div>
-  
 </template>
 <script>
 import vueSlider from "vue-slider-component";
@@ -117,6 +118,12 @@ export default {
     },
     removeLine(lineId) {
       if (!this.blockRemoval) this.lines.splice(lineId, 1);
+    },
+    nextPanel(){
+      this.$emit("advance");
+    },
+    previousPanel(){
+      this.$emit("back");
     }
   },
   watch: {

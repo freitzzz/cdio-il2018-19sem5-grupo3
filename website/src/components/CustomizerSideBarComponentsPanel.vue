@@ -59,6 +59,10 @@
         <i class="material-icons md-36 md-blue btn" @click="getProductComponents">refresh</i>
       </div>
     </div>
+    <div class="center-controls">
+      <i class="btn btn-primary material-icons" @click="previousPanel()" >arrow_back</i>
+      <i class="btn btn-primary material-icons" @click="nextPanel()" >arrow_forward</i>
+    </div>
   </div>
 </template>
 
@@ -153,6 +157,12 @@ export default {
         duration: 2000
       });
       //!TODO communicate with Three.js & Remove from store
+    },
+    nextPanel(){
+      this.$emit("advance");
+    },
+    previousPanel(){
+      this.$emit("back");
     }
   },
   created() {
