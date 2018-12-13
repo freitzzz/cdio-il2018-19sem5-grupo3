@@ -120,7 +120,8 @@ import {
   SET_CUSTOMIZED_PRODUCT_DEPTH,
   SET_CUSTOMIZED_PRODUCT_UNIT,
   SET_CUSTOMIZED_PRODUCT_DIMENSIONS,
-  ACTIVATE_CAN_MOVE_CLOSET
+  ACTIVATE_CAN_MOVE_CLOSET,
+  DEACTIVATE_CAN_MOVE_SLOTS
 } from "./../store/mutation-types.js";
 
 import { error } from "three";
@@ -195,6 +196,7 @@ export default {
       unit: this.unit
     });
     store.dispatch(ACTIVATE_CAN_MOVE_CLOSET);
+    store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS);
     /*Get all available dimensions of the given product of the array*/
     Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions`)
       .then(response => this.availableOptionsDimensions.push(...response.data))

@@ -15,7 +15,7 @@
       <i class="btn btn-primary material-icons" @click="removeLine(index)">-</i>
       <i class="btn btn-primary material-icons" @click="addLine">+</i>
       <div class="slidersSection">
-        <span v-for="n in minNumberSlots" :key="n">
+        <span v-for="n in recommendedNumberSlots" :key="n">
           <vue-slider
             class="slidersSection"
             :min="minSizeSlot"
@@ -35,7 +35,12 @@
         </div>
       </div>
     </div>
+    <div class="sidenav-controls, sidenav">
+        <i class="btn btn-primary material-icons">arrow_back</i>
+        <i class="btn btn-primary material-icons">arrow_forward</i>
+      </div>
   </div>
+  
 </template>
 <script>
 import vueSlider from "vue-slider-component";

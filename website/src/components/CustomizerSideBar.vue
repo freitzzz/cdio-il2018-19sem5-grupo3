@@ -12,7 +12,6 @@
       <customizer-side-bar-materials-panel v-if="currentPanelIndex == 3"></customizer-side-bar-materials-panel>
       <customizer-side-bar-components-panel v-if="currentPanelIndex == 4"></customizer-side-bar-components-panel>
       
-      
       <div class="sidenav-controls">
         <i class="btn btn-primary material-icons" @click="previousPanel()" v-if="canDisplayPreviousButton">arrow_back</i>
         <i class="btn btn-primary material-icons" @click="nextPanel()" v-if="canDisplayNextButton">arrow_forward</i>
@@ -74,7 +73,7 @@
       CustomizerSideBarMaterialsPanel,
       CustomizerSideBarSlotsPanel,
       CustomizerSideBarComponentsPanel,
-      CustomizerCheckOut
+      CustomizerCheckOut,
     },
     computed: {
        
@@ -116,6 +115,7 @@
       previousPanel() {
         if (this.currentPanelIndex > 0) {
           while (this.currentPanelIndex > 0 && !this.panels[--this.currentPanelIndex].enabled);
+          this.$emit('changeStage', this.currentPanelIndex);
         }
       },
       /**
@@ -124,6 +124,7 @@
       nextPanel() {
         if (this.currentPanelIndex < this.panels.length - 1) {
           while (this.currentPanelIndex < this.panels.length && !this.panels[++this.currentPanelIndex].enabled);
+          this.$emit('changeStage', this.currentPanelIndex)
         }
       },
       /**

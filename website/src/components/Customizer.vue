@@ -1,7 +1,7 @@
 <template>
   <div>
-    <customizer-progress-bar></customizer-progress-bar>
-    <customizer-side-bar></customizer-side-bar>
+    <customizer-progress-bar :stageIndex="currentStage"></customizer-progress-bar>
+    <customizer-side-bar @changeStage="changeProgressBarStage"></customizer-side-bar>
     <canvas
       ref="threeCanvas"
       @mouseup="onMouseUp"
@@ -24,7 +24,8 @@ export default {
   name: "Customizer",
   data() {
     return {
-      productRenderer: {}
+      productRenderer: {},
+      currentStage: 0
     };
   },
   computed: {
@@ -123,6 +124,9 @@ export default {
       alert("keydown");
       this.productRenderer.onKeyDown(event);
       event.preventDefault();
+    },
+    changeProgressBarStage: function(currentPanelIndex){
+      this.currentStage = currentPanelIndex;
     }
   },
   mounted() {
