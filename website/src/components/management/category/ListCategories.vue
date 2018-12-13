@@ -88,6 +88,50 @@
     
             },
             /**
+             * Fetches all parent categories data by their ids
+             */
+            getParentCategories(parentCategoriesIds){
+                return new Promise((accept,reject)=>{
+                    let parentCategories=[];
+                        let parents=0;
+                        for(let i=0;i<parentCategoriesIds.length;i++)if(parentCategoriesIds[i])parents++;
+                        for(let i=0;i<parentCategoriesIds.length;i++){
+                            if(parentCategoriesIds[i]){
+                                this
+                                    .getParentCategory(parentCategoriesIds[i])
+                                    .then((parentCategory)=>{
+                                        parentCategories.push(parentCategory);
+                                        parents--;
+                                    })
+                                    .catch((error_message)=>{
+                                        parents--;  
+                                        rejectIteration(error_message);
+                                    });
+                            }
+                        };
+                        alert(parents);
+                        if(parents==0){
+                            alert("!!!")
+                            accept(parentCategories);
+                        }
+                });
+            },
+            /**
+             * Fetches the parent category data by his id
+             */
+            getParentCategory(parentCategoryId){
+                return new Promise((accept,reject)=>{
+                    Axios
+                        .get(MYCM_API_URL+"/categories/"+parentCategoryId)
+                        .then((parentcategory)=>{
+                            accept(parentcategory.data);
+                        })
+                        .then((error_message)=>{
+                            reject(error_message.response.data.message);
+                        });
+                });
+            },
+            /**
              * fetches all possible requests
              */
             fetchRequests() {
@@ -99,9 +143,24 @@
             refreshCategories() {
                 Axios.get(MYCM_API_URL + '/categories')
                     .then((_response) => {
-                        this.data = this.generateCategoriesTableData(_response.data);
-                        this.columns = this.generateCategoriesTableColumns();
-                        this.total = this.data.length;
+                        let allCategories=_response.data;
+                        let allCategoriesParentIds=[];
+                        console.log(allCategories);
+                        for(let i=0;i<allCategories.length;i++)allCategoriesParentIds.push(allCategories[i].parentId);
+                        console.log(allCategoriesParentIds);
+                        this
+                            .getParentCategories(allCategoriesParentIds)
+                            .then((allCategoriesParents)=>{
+                                for(let i=0;i<allCategoriesParents;i++)allCategories[i].parentCategoryName=allCategoriesParents[i].name;
+                                console.log(allCategoriesParents);
+                                alert("!!!!")
+                                this.data = this.generateCategoriesTableData(allCategories);
+                                this.columns = this.generateCategoriesTableColumns();
+                                this.total = this.data.length;
+                            })
+                            .catch((error_message)=>{
+                                this.$toast.open({message:error_message});
+                            });
                     })
                     .catch((error_message) => {
                         this.$toast.open({
@@ -124,6 +183,11 @@
                         centered: true
                     },
                     {
+                        field: "parentCategoryName",
+                        label: "Parent Category",
+                        centered: true
+                    },
+                    {
                         field: "actions",
                         label: "Action",
                         centered: true
@@ -138,7 +202,8 @@
                 categories.forEach((category) => {
                     categoriesTableData.push({
                         id: category.id,
-                        name: category.name
+                        name: category.name,
+                        parentCategoryName: category.parentCategoryName
                     });
                 });
                 return categoriesTableData;

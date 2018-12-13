@@ -41,7 +41,7 @@
 import vueSlider from "vue-slider-component";
 import store from "./../store";
 import Axios from "axios";
-import { SET_SLOT_DIMENSIONS } from "./../store/mutation-types.js";
+import { SET_SLOT_DIMENSIONS, DEACTIVATE_CAN_MOVE_CLOSET, ACTIVATE_CAN_MOVE_SLOTS } from "./../store/mutation-types.js";
 
 export default {
   name: "CustomizerSideBarSlotsPanel",
@@ -123,11 +123,6 @@ export default {
     this.addLine();
   },
   created() {
-    /* var widthCloset = store.getters.width;
-    var depthCloset = store.getters.depth;
-    var heightCloset = store.getters.height;
-    var unitCloset = store.getters.unit; */
-
     var widthCloset = 404.5;
 
     var depthCloset = 100;
@@ -150,22 +145,6 @@ export default {
         depth: depthCloset,
         unit: unitCloset
       });
-      /* var addToMin = store.getters.minSlotWidth - remainder;
-      recommendedNumberSlots--;
-      var slotAn = re - addToMin
-      if(slotAn>=store.getters.minSlotWidth){
-        store.dispatch(SET_SLOT_DIMENSIONS, { 
-        width: slotAn,
-        height: heightCloset,
-        depth: depthCloset,
-        unit: unitCloset }); 
-
-        store.dispatch(SET_SLOT_DIMENSIONS, { 
-        width: store.getters.minSlotWidth,
-        height: heightCloset,
-        depth: depthCloset,
-        unit: unitCloset }); 
-      } */
     }
     for (let i = 0; i < recommendedNumberSlots; i++) {
       store.dispatch(SET_SLOT_DIMENSIONS, {
@@ -176,6 +155,8 @@ export default {
         unit: unitCloset
       });
     }
+    store.dispatch(DEACTIVATE_CAN_MOVE_CLOSET);
+    store.dispatch(ACTIVATE_CAN_MOVE_SLOTS);
   }
 };
 </script>

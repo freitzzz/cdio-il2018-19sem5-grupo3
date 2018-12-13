@@ -19,14 +19,14 @@
             ></b-input>
           </b-field>
           <b-field label="Password">
-            <input class ="b-input"
+            <b-input
               type="password"
               v-model="password"
               :placeholder="placeholder.password"
               icon="key"
               password-reveal
               required
-            >
+            ></b-input>
           </b-field>
           <b-field>
             <a class="underlined-button" @click="signUp()">

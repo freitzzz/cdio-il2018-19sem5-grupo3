@@ -52,6 +52,15 @@ export default {
     },
     applyMaterial(){
       return Store.getters.customizedMaterial;
+    },
+    canMoveCloset(){
+      return Store.getters.canMoveCloset;
+    },
+    canMoveSlots(){
+      return Store.getters.canMoveSlots;
+    },
+    canMoveComponents(){
+      return Store.getters.canMoveComponents;
     }
   },
   components: {
@@ -77,6 +86,15 @@ export default {
     },
     applyMaterial: function(newValue) {
       this.productRenderer.applyTexture("./src/assets/materials/" + newValue);
+    },
+    canMoveCloset(newValue){
+      this.productRenderer.canMoveCloset = newValue;
+    },
+    canMoveSlots(newValue){
+      this.productRenderer.canMoveSlots = newValue;
+    },
+    canMoveComponents(newValue){
+      this.productRenderer.canMoveComponents = newValue;
     }
   },
   methods: {
