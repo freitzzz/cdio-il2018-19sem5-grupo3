@@ -63,7 +63,7 @@ factoriesRoute.route('/factories').post(function(request,response){
                         response.status(201).json(deserializeFactory(createdFactory));
                     })
                     .catch((_error_message)=>{
-                        response.status(500).json({message:"An expected error has occurd! Please contact the developers and send them this message",cause:_error_message})
+                        response.status(500).json({message:"An expected error has occurred! Please contact the developers and send them this message",cause:_error_message})
                     });
             })
             .catch((possible_error)=>{
@@ -74,7 +74,7 @@ factoriesRoute.route('/factories').post(function(request,response){
                         response.status(201).json(deserializeFactory(createdFactory));
                     })
                     .catch((_error_message)=>{
-                        response.status(500).json({message:"An expected error has occurd! Please contact the developers and send them this message",cause:_error_message})
+                        response.status(500).json({message:"An expected error has occurred! Please contact the developers and send them this message",cause:_error_message})
                     });
             });
         })
@@ -102,7 +102,7 @@ factoriesRoute.route('/factories/:id').put(function(request,response){
                     response.status(200).json(savedUpdatedFactory);
                 })
                 .catch(()=>{
-                    response.status(500).json({message:"An internal error occurd while accesing our database :("});
+                    response.status(500).json({message:"An internal error occurred while accesing our database :("});
                 });
         })
         .catch((_error_message)=>{
@@ -129,7 +129,7 @@ factoriesRoute.route('/factories/:id').delete(function(request,response){
                     response.status(204).json();
                 })
                 .catch(()=>{
-                    response.status(500).json({message:"An internal error occurd while accesing our database :("});
+                    response.status(500).json({message:"An internal error occurred while accesing our database :("});
                 });
         })
         .catch((_error_message)=>{

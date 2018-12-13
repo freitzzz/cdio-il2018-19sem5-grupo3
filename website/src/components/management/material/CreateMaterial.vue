@@ -28,7 +28,7 @@
                                 <option  v-for="color in availableColors" 
                                     :key="color.id" 
                                     :value="color">
-                                    {{color.nameColor}}</option>
+                                    {{color.name}}</option>
                             </b-select>
                         </b-field>
                         <button class="button is-primary" @click="createColor()">+</button>
@@ -36,13 +36,13 @@
                         <b-field label="Finish">
                             <b-select placeholder="Finishes" icon="tag" v-model="selectedFinish">
                                  <option v-for="finish in availableFinishes" 
-                                    :key="finish.id" :value="finish">{{finish.designationFinish}} </option>
+                                    :key="finish.id" :value="finish">{{finish.description}} </option>
                             </b-select>
                         </b-field>
                         <button class="button is-primary" @click="createFinish()">+</button>
                         <button class="button is-primary" @click="deleteFinish()">-</button>
 
-                              <div class="example-btn , modal-card-body">
+                              <div class="example-btn , image">
                                 <file-upload
                                   class="button is-primary"
                                   post-action="/files/"
@@ -55,9 +55,10 @@
                                   Select Image
                                 </file-upload>
                                 <b-input
-                                v-model="pathImage"
+                                class="image"
+                                v-model="nameImage"
                                 type="String"
-                                icon="pound"
+                                placeholder="Name the Image"
                                 disabled="true"
                                 required>
                             </b-input>
@@ -80,6 +81,15 @@
                                 icon="pound"
                                 required>
                             </b-input>
+                        </b-field>
+                         <b-field label="Shininess:">
+                          <vue-slider
+                            class="slidersSection"
+                            :min="0"
+                            :max="100"
+                            v-model="inputFinishShininess"
+                            :interval="0.01"
+                          ></vue-slider>
                         </b-field>
                     </section>
                     <footer class="modal-card-foot">
@@ -115,7 +125,8 @@ import Axios from "axios";
 
 import Swatches from "vue-swatches";
 import "vue-swatches/dist/vue-swatches.min.css";
-import FileUpload from 'vue-upload-component'
+import FileUpload from 'vue-upload-component';
+import vueSlider from "vue-slider-component";
 export default {
   name: "CreateMaterial",
   data() {
@@ -123,7 +134,7 @@ export default {
       referenceMaterial: "",
       referenceFinish: "",
       designationMaterial: "",
-      pathImage:"",
+      nameImage:"",
       panelCreateMaterial: true,
       createColorPanelEnabled: false,
       createFinishPanelEnabled: false,
@@ -131,7 +142,8 @@ export default {
       createNewFinish: false,
       inputColorName: "", //this value needs to be null so that the placeholder can be rendered
       inputColorValues: "#000000",
-      inputFinishDesignation: "", //this value needs to be null so that the placeholder can be rendered
+      inputFinishDesignation: "",
+      inputFinishShininess: 0, //this value needs to be null so that the placeholder can be rendered
       availableColors: [],
       availableFinishes: [],
       active: true,
@@ -143,32 +155,35 @@ export default {
   },
   components: {
     FileUpload,
-    Swatches
+    Swatches,
+    vueSlider
     
   }, // window.VueSwatches.default - from CDN
 
   methods: {
     postMaterial() {
       let finishesToAdd = [];
-      /* this.availableFinishes.forEach(element => {
+       this.availableFinishes.forEach(element => {
         finishesToAdd.push({
-          description: element.description
+          description: element.description,
+          shininess: element.shininess
         });
-      }); */
+      });
       let colorsToAdd = [];
-      /* this.availableColors.forEach(element => {
+       this.availableColors.forEach(element => {
         colorsToAdd.push({
-          name: element,
-          red: parseInt(element.replace("#", "").substring(0, 2), 16),
-          green: parseInt(element.replace("#", "").substring(2, 4), 16),
-          blue: parseInt(element.replace("#", "").substring(4, 6), 16),
+          name: element.name,
+          red: element.red,
+          green: element.green,
+          blue: element.blue,
           alpha: "0",
         });
-      }); */
+      })
+      
       Axios.post("http://localhost:5000/mycm/api/materials", {
         reference: this.referenceMaterial,
         designation: this.designationMaterial,
-        image: this.file[0].name,
+        image: this.nameImage,
         colors: colorsToAdd,
         finishes: finishesToAdd
       })
@@ -214,7 +229,7 @@ export default {
       if (
         this.inputColorName != null &&
         this.inputColorName.trim() != "" &&
-        this.availableColors.colors.indexOf(this.inputColorName) < 0
+        this.availableColors.indexOf(this.inputColorName.trim()) < 0
       ) {
         let color = {
           name: this.inputColorName,
@@ -231,7 +246,8 @@ export default {
             16
           ),
           alpha: "0"
-        };
+        }
+        this.availableColors.push(color)
       }
       this.inputColorName = "";
     },
@@ -239,18 +255,21 @@ export default {
       if (
         this.inputFinishDesignation != null &&
         this.inputFinishDesignation.trim() != "" &&
-        this.availableFinishes.finishes.indexOf(
+        this.availableFinishes.indexOf(
           this.inputFinishDesignation.trim()
         ) < 0
       ) {
         var finish = {
-          description: this.inputFinishDesignation
-        };
+          description: this.inputFinishDesignation,
+          shininess: this.inputFinishShininess
+        }
+        this.availableFinishes.push(finish)
       }
       this.inputFinishDesignation = "";
+      this.inputFinishShininess=0;
     },
     inputFile(newFile, oldFile) {
-      this.pathImage=this.file[0].name
+      this.nameImage=this.file[0].name
       if (newFile && !oldFile) {
         // add
         console.log('add', newFile)
@@ -267,3 +286,13 @@ export default {
   }
 };
 </script>
+<style>
+.slidersSection {
+  margin-bottom: 13%;
+  width: 7px 30px;
+  margin-top: 7%;
+}
+.image{
+  margin-top: 2%;
+}
+</style>
