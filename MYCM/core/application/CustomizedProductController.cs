@@ -263,7 +263,9 @@ namespace core.application
             {
                 CustomizedDimensions updatedDimensions = CustomizedDimensionsModelViewService.fromModelView(updateSlotModelView.dimensions);
 
-                slot.changeDimensions(updatedDimensions);
+                customizedProduct.resizeSlot(slot, updatedDimensions);
+
+                performedAtLeastOneUpdate = true;
             }
 
             if (!performedAtLeastOneUpdate)
@@ -337,6 +339,8 @@ namespace core.application
             }
 
             customizedProduct.removeSlot(slot);
+
+            customizedProductRepository.update(customizedProduct);
         }
     }
 }
