@@ -20,35 +20,35 @@
   <!-- Vulnerability POST COLLECTIONS -->
     <session name="collections" weight="1" type="ts_http">
       <request>
-        <http url="/myc/api/collections" method="POST" version="1.1" contents="{&quot;name&quot;:&quot;nome&quot;}" content_type="application/json">
+        <http url="/mycm/api/collections" method="POST" version="1.1" contents="{&quot;name&quot;:&quot;nome&quot;}" content_type="application/json">
         </http>
       </request>
     </session>
     <!-- Vulnerability POST CATEGORIES-->
     <session name="collections" weight="2" type="ts_http">
       <request>
-        <http url="/myc/api/categories" method="POST" version="1.1" contents="{&quot;name&quot;:&quot;nome&quot;}" content_type="application/json">
+        <http url="/mycm/api/categories" method="POST" version="1.1" contents="{&quot;name&quot;:&quot;nome&quot;}" content_type="application/json">
         </http>
       </request>
     </session>
     <!-- Stress for all categories -->
     <session name="fetch_categories" weight="3" type="ts_http">
       <request>
-        <http url="/myc/api/categories" method="GET" version="1.1" >
+        <http url="/mycm/api/categories" method="GET" version="1.1" >
         </http>
       </request>
     </session>
     <!-- Stress for all products -->
     <session name="fetch_products" weight="4" type="ts_http">
       <request>
-        <http url="/myc/api/products" method="GET" version="1.1" >
+        <http url="/mycm/api/products" method="GET" version="1.1" >
         </http>
       </request>
     </session>
     <!-- Stress for all collections -->
     <session name="fetch_collections" weight="5" type="ts_http">
       <request>
-        <http url="/myc/api/collections" method="GET" version="1.1" >
+        <http url="/mycm/api/collections" method="GET" version="1.1" >
         </http>
       </request>
     </session>

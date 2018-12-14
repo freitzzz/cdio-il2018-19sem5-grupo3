@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using System;
+using System.Threading;
 
 namespace backend.persistence.ef
 {
@@ -72,7 +73,12 @@ namespace backend.persistence.ef
         /// </summary>
         /// <param name="options">The options for the context.</param>
         /// <returns>New instance of MyCContext.</returns>
-        public MyCContext(DbContextOptions<MyCContext> options) : base(options) { BackendConfiguration.entityFrameworkContext = this; }
+        public MyCContext(DbContextOptions<MyCContext> options) : base(options) {
+            if(BackendConfiguration.entityFrameworkContexts.containsKey(Thread.CurrentThread.ManagedThreadId)){
+                BackendConfiguration.entityFrameworkContexts.removeKey(Thread.CurrentThread.ManagedThreadId);
+            }
+            BackendConfiguration.entityFrameworkContexts.put(Thread.CurrentThread.ManagedThreadId,this); 
+            }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

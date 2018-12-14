@@ -31,6 +31,7 @@ namespace core_tests.services
                 new GetBasicCustomizedProductCollectionModelView();
 
             expectedModelView.name = customizedProductCollection.name;
+            expectedModelView.hasCustomizedProducts = customizedProductCollection.collectionProducts.Count != 0;
 
             GetBasicCustomizedProductCollectionModelView actualModelView =
                 CustomizedProductCollectionModelViewService.fromEntityAsBasic(customizedProductCollection);
@@ -119,6 +120,7 @@ namespace core_tests.services
         private void assertBasicModelView(GetBasicCustomizedProductCollectionModelView expectedModelView, GetBasicCustomizedProductCollectionModelView actualModelView)
         {
             Assert.Equal(expectedModelView.name, actualModelView.name);
+            Assert.Equal(expectedModelView.hasCustomizedProducts, actualModelView.hasCustomizedProducts);
         }
 
         private CustomizedProductCollection createCustomizedProductCollection()
