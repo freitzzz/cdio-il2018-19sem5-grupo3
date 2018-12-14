@@ -41,7 +41,7 @@ export default class ThreeSlidingDoorAnimations{
         let distanceFromSlidingDoorToSlotLeftFace=Math.abs(slidingDoorThreeFace.position.x-slidingDoorSlotLeftThreeFace.position.x);
         let slidingDoorSlotPosition=(Math.abs(slidingDoorSlotLeftThreeFace.position.x-slidingDoorSlotLeftThreeFace.geometry.parameters.width)/2)-2;
         if(slidingDoorSlotPosition<distanceFromSlidingDoorToSlotLeftFace){
-            slidingDoor.translateX(-1);
+            slidingDoorThreeFace.translateX(-1);
             this.open(slidingDoor);
         }
         //TODO: Notify Render
@@ -60,7 +60,7 @@ export default class ThreeSlidingDoorAnimations{
         let distanceFromSlidingDoorToSlotRightFace=Math.abs(slidingDoorThreeFace.position.x-slidingDoorSlotRightThreeFace.position.x);
         let slidingDoorSlotPosition=(Math.abs(slidingDoorSlotRightThreeFace.position.x+slidingDoorSlotRightThreeFace.geometry.parameters.width)/2)-2;
         if(slidingDoorSlotPosition<distanceFromSlidingDoorToSlotRightFace){
-            slidingDoor.translateX(1);
+            slidingDoorThreeFace.translateX(1);
             this.close(slidingDoor);
         }
         //TODO: Notify Render
