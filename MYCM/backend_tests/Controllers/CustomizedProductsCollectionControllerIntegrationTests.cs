@@ -1044,7 +1044,7 @@ namespace backend_tests.Controllers
                 modelView
             );
 
-            Assert.Equal(HttpStatusCode.OK, postCustomizedProductToCollection.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, postCustomizedProductToCollection.StatusCode);
 
             var postDuplicate = await httpClient.PostAsJsonAsync
             (
@@ -1108,7 +1108,7 @@ namespace backend_tests.Controllers
                 modelView
             );
 
-            Assert.Equal(HttpStatusCode.OK, postCustomizedProductToCollection.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, postCustomizedProductToCollection.StatusCode);
 
             GetCustomizedProductCollectionModelView collectionAfterCustomizedProductPost =
                 await postCustomizedProductToCollection.Content.ReadAsAsync<GetCustomizedProductCollectionModelView>();
