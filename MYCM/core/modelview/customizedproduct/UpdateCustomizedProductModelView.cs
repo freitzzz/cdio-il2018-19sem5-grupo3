@@ -3,6 +3,7 @@ using System;
 using core.dto;
 using core.modelview.customizeddimensions;
 using static core.domain.CustomizedProduct;
+using core.modelview.customizedmaterial;
 
 namespace core.modelview.customizedproduct
 {
@@ -49,7 +50,6 @@ namespace core.modelview.customizedproduct
         /// </summary>
         /// <value>Gets/Sets the customized material</value>
         [DataMember(Name = "customizedMaterial")]
-        public CustomizedMaterialDTO customizedMaterial { get; set; }
-        //TODO: replace this with ModelView
+        public AddCustomizedMaterialModelView customizedMaterial { get; set; }
     }
 }
