@@ -128,7 +128,7 @@ namespace core_tests.domain
 
             Measurement otherComponentMeasurement = new Measurement(otherComponentHeightDimension, otherComponentWidthDimension, otherComponentDepthDimension);
 
-            Product otherComponent = new Product("This is another reference", "This is another Designation", "component.gltf", buildValidCategory(),
+            Product otherComponent = new Product("This is another another reference", "This is another Designation", "component.gltf", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { componentMeasurement });
 
             Product component = new Product("This is another reference", "This is another Designation", "component.gltf", buildValidCategory(),
