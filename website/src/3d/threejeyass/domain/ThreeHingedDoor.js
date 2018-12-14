@@ -1,11 +1,6 @@
 //@ts-check
 
 /**
- * Requires HingedDoor base properties
- */
-import HingedDoor from '../../api/domain/HingedDoor';
-
-/**
  * Requires Face properties
  */
 import Face from '../../api/domain/Face';
@@ -15,6 +10,14 @@ import Face from '../../api/domain/Face';
  */
 import {Object3D} from 'three';
 
+/**
+ * Requires HingedDoor base properties
+ */
+import HingedDoor from '../../api/domain/HingedDoor';
+
+/**
+ * Represents a HingedDoor built with Three.js properties
+ */
 export default class ThreeHingeedDoor extends HingedDoor{
 
     /**

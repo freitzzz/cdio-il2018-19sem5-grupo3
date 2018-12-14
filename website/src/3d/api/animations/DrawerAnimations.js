@@ -3,10 +3,10 @@
 /**
  * Requires Drawer properties
  */
-import Drawer from '../Drawer';
+import Drawer from '../domain/HingedDoor';
 
 /**
- * Class that holds all drawer animations functions
+ * Class that holds all drawer animations functionalities
  */
 export default class DrawerAnimations{
 
@@ -21,11 +21,5 @@ export default class DrawerAnimations{
      * @param {Drawer} drawer Drawer with the drawer to be closed
      */
     static close(drawer){};
-
-    /**
-     * Draws a drawer
-     * @param {Drawer} drawer Drawer with the drawer to be drawed
-     */
-    static draw(drawer){};
-
+    
 }

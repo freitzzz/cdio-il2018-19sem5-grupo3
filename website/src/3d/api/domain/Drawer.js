@@ -51,7 +51,7 @@ export default class Drawer extends BaseProduct{
     /**
      * Changes the drawer height
      */
-    changeDrawertHeight(height){
+    changeDrawerHeight(height){
         if(height>0){
             var axesHeight=height/2;
             this.drawer_faces.get(FaceOrientation.BASE).changeYAxis((this.drawer_faces.get(FaceOrientation.BASE).Y()+this.drawer_faces.get(FaceOrientation.LEFT).height()/2)-axesHeight);

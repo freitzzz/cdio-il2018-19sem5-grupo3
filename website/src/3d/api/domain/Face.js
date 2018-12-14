@@ -12,7 +12,7 @@ export default class Face{
     
     /**
      * Builds a new Product Face
-     * @param {FaceOrientation} faceOrientation FaceOrientation with the face orientation
+     * @param {String} faceOrientation FaceOrientation with the face orientation
      * @param {Number} faceWidth Number with the face width dimension value
      * @param {Number} faceHeight Number with the face height dimension value
      * @param {Number} faceDepth Number with the face depth dimension value
