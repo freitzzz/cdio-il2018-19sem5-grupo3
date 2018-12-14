@@ -16,6 +16,11 @@ import Face from './Face';
 import FaceOrientation from './FaceOrientation';
 
 /**
+ * Requires ProductType for identifying the drawer product type
+ */
+import ProductType from "./ProductType";
+
+/**
  * Represents the internal core of a Drawer
  */
 export default class Drawer extends BaseProduct{
@@ -27,7 +32,7 @@ export default class Drawer extends BaseProduct{
      * @param {Number} slotId Number with the slot id
      */
     constructor(drawer_faces,productId,slotId=null){
-        super(productId,slotId);
+        super(ProductType.DRAWER,productId,slotId);
         this.drawer_faces=Object.assign({},drawer_faces);
         this.initial_drawer_faces=Object.assign({},drawer_faces);
     }

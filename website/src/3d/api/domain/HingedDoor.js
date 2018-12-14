@@ -11,6 +11,11 @@ import BaseProduct from "./BaseProduct";
 import Face from './Face';
 
 /**
+ * Requires ProductType for identifying the hinged door product type
+ */
+import ProductType from "./ProductType";
+
+/**
  * Represents a hinged door using box geometry
  */
 export default class HingedDoor extends BaseProduct{
@@ -22,7 +27,7 @@ export default class HingedDoor extends BaseProduct{
      * @param {Number} slotId Number with the slot id
      */
     constructor(face,productId,slotId=null) {
-        super(productId,slotId);
+        super(ProductType.HINGED_DOOR,productId,slotId);
         this.face=face;
     }
 

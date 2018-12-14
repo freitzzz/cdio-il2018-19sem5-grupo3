@@ -6,13 +6,17 @@
 import BaseProduct from "./BaseProduct";
 
 /**
+ * Requires ProductType for identifying the pole product type
+ */
+import ProductType from "./ProductType";
+
+/**
 * Represents a pole by using cylinder geometry
 */
 export default class Pole extends BaseProduct{
 
 	/**
      * Builds a new Pole 
-     * 
      * @param {Number} radiusTop Radius of the pole at the top
 	 * @param {Number} radiusBottom Radius of the pole at the bottom
 	 * @param {Number} height Height of the pole
@@ -25,7 +29,9 @@ export default class Pole extends BaseProduct{
 	constructor(radiusTop,radiusBottom,
 				height,radialSegments,
 				heightSegments,openEnded,
-				thetaStart,thetaLength){
+				thetaStart,thetaLength,
+				productId,slotId=null){
+		super(ProductType.POLE,productId,slotId);
 		this.radiusTop = radiusTop;
 		this.radiusBottom = radiusBottom;
 		this.height = height;

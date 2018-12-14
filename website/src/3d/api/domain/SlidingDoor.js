@@ -11,6 +11,11 @@ import BaseProduct from "./BaseProduct";
 import Face from './Face';
 
 /**
+ * Requires ProductType for identifying the sliding door product type
+ */
+import ProductType from "./ProductType";
+
+/**
  * Represents a sliding door using box geometry
  */
 export default class SlidingDoor extends BaseProduct{
@@ -22,7 +27,7 @@ export default class SlidingDoor extends BaseProduct{
      * @param {Number} slotId Number with the slot id
      */
     constructor(face,productId,slotId) {
-        super(productId,slotId);
+        super(ProductType.SLIDING_DOOR,productId,slotId);
         this.face=face;
     }
 
