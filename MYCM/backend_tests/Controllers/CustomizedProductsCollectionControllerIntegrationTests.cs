@@ -133,13 +133,43 @@ namespace backend_tests.Controllers
             AddCustomizedProductCollectionModelView otherModelView = createCollectionWithNoCustomizedProducts(testNumber + " 2");
 
             var postCollection = await httpClient.PostAsJsonAsync(BASE_URI, modelView);
-            var otherPostCollection = await httpClient.PostAsJsonAsync(BASE_URI, otherModelView);
 
             Assert.Equal(HttpStatusCode.Created, postCollection.StatusCode);
-            Assert.Equal(HttpStatusCode.Created, otherPostCollection.StatusCode);
 
             GetCustomizedProductCollectionModelView collectionModelView =
                 await postCollection.Content.ReadAsAsync<GetCustomizedProductCollectionModelView>();
+
+            AddCustomizedProductModelView customizedProductModelView =
+                await createFinishedCustomizedProduct(testNumber);
+
+            var postCustomizedProduct = await httpClient.PostAsJsonAsync(
+                "mycm/api/customizedproducts", customizedProductModelView
+            );
+
+            Assert.Equal(HttpStatusCode.Created, postCustomizedProduct.StatusCode);
+
+            GetBasicCustomizedProductModelView createdCustomizedProductModelView =
+                await postCustomizedProduct.Content.
+                    ReadAsAsync<GetBasicCustomizedProductModelView>();
+
+            otherModelView.customizedProducts =
+                new List<GetBasicCustomizedProductModelView>() { createdCustomizedProductModelView };
+
+            UpdateCustomizedProductModelView updateCustomizedProductModelView =
+                new UpdateCustomizedProductModelView();
+            updateCustomizedProductModelView.customizationStatus = CustomizationStatus.FINISHED;
+
+            var finishCustomizedProduct = await httpClient.PutAsJsonAsync(
+                "mycm/api/customizedProducts/" + createdCustomizedProductModelView.customizedProductId,
+                updateCustomizedProductModelView
+            );
+
+            Assert.Equal(HttpStatusCode.OK, finishCustomizedProduct.StatusCode);
+
+            var otherPostCollection = await httpClient.PostAsJsonAsync(BASE_URI, otherModelView);
+
+            Assert.Equal(HttpStatusCode.Created, otherPostCollection.StatusCode);
+
             GetCustomizedProductCollectionModelView otherCollectionModelView =
                 await otherPostCollection.Content.ReadAsAsync<GetCustomizedProductCollectionModelView>();
 
@@ -152,9 +182,12 @@ namespace backend_tests.Controllers
 
             Assert.Equal(modelView.name, getAllCustomizedProductCollections[0].name);
             Assert.Equal(otherModelView.name, getAllCustomizedProductCollections[1].name);
+            Assert.False(getAllCustomizedProductCollections[0].hasCustomizedProducts);
+            Assert.True(getAllCustomizedProductCollections[1].hasCustomizedProducts);
 
             await httpClient.DeleteAsync(BASE_URI + "/" + collectionModelView.id);
             await httpClient.DeleteAsync(BASE_URI + "/" + otherCollectionModelView.id);
+            await httpClient.DeleteAsync("mycm/api/customizedproducts/" + createdCustomizedProductModelView.customizedProductId);
         }
 
         [Fact, TestPriority(-7)]
