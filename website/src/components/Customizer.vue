@@ -51,6 +51,9 @@ export default {
     addComponent() {
       return Store.getters.customizedProductComponents;
     },
+    removeComponent(){
+      return Store.getters.componentToRemove;
+    },
     applyMaterial(){
       return Store.getters.customizedMaterial;
     },
@@ -86,12 +89,15 @@ export default {
         Store.getters.customizedProductDimensions.depth
       );
     },
-    addComponent: function(newValue) {
-      if(newValue.length > 0){
+    addComponent: function(newValue, oldValue) {
+      if(oldValue.length <= newValue.length){
         this.productRenderer.addComponent(newValue[newValue.length - 1]);
-      } else {
+      } else if(newValue.length == 0) {
         this.productRenderer.removeAllComponents();
       }
+    },
+    removeComponent: function(newValue){
+      this.productRenderer.removeComponent(newValue);
     },
     applyMaterial: function(newValue) {
       this.productRenderer.applyTexture("./src/assets/materials/" + newValue);

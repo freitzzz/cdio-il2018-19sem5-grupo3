@@ -63,6 +63,13 @@ export const actions = {
     },
 
     /**
+     * Action used to commit the mutation REMOVE_CUSTOMIZED_PRODUCT_COMPONENT
+     */
+    [types.REMOVE_CUSTOMIZED_PRODUCT_COMPONENT]: ({ commit }, payload) => {
+        commit(types.REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, payload);
+    },
+
+    /**
     * Action used to commit the mutation ACTIVATE_CAN_MOVE_CLOSET
     */
     [types.ACTIVATE_CAN_MOVE_CLOSET]: ({ commit }) => {
@@ -102,5 +109,5 @@ export const actions = {
       */
     [types.DEACTIVATE_CAN_MOVE_COMPONENTS]: ({ commit }) => {
         commit(types.DEACTIVATE_CAN_MOVE_COMPONENTS);
-    }
+    },
 }

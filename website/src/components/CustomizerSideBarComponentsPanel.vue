@@ -73,8 +73,12 @@ import { error } from "three";
 import store from "./../store";
 import Toasted from "vue-toasted";
 import { MYCM_API_URL } from "./../config.js";
-import { SET_CUSTOMIZED_PRODUCT_COMPONENTS, ACTIVATE_CAN_MOVE_COMPONENTS } from "./../store/mutation-types.js";
+import { SET_CUSTOMIZED_PRODUCT_COMPONENTS,
+        REMOVE_CUSTOMIZED_PRODUCT_COMPONENT,
+        ACTIVATE_CAN_MOVE_COMPONENTS }
+        from "./../store/mutation-types.js";
 
+//TODO! CHANGE Toast
 Vue.use(Toasted);
 
 export default {
@@ -136,13 +140,17 @@ export default {
         } else {
           component.slot = this.div_inputs[index];
           store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
+          //TODO! DISABLE apply button
         }
       } else if(!this.hasSlots() || !this.canAddComponentToSlot(component.model)){
         component.slot = 0;
         store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
+          //TODO! DISABLE apply button
       }
     },
     removeDivElement(component, index) {
+      store.dispatch(REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, { component: component });
+
       var aux;
       for (let i = index + 1; i < this.div_inputs.length; i++) {
         aux = this.div_inputs[i];
