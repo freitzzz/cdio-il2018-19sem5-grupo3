@@ -20,15 +20,15 @@ namespace core.modelview.cataloguecollection
         /// Customized Product Collection id
         /// </summary>
         /// <value>Gets/sets the database identifier.</value>
-        [DataMember]
+        [DataMember(Name = "collectionId")]
         public long customizedProductCollectionId { get; set; }
 
         /// <summary>
         /// List of all the Customized Product ids
         /// </summary>
         /// <value>Gets/sets the database identifier.</value>
-        [DataMember]
-        public List<CustomizedProductIdModelView> customizedProducts { get; set; }
+        [DataMember(Name = "customizedProducts")]
+        public List<CustomizedProductIdModelView> customizedProductIds { get; set; } = new List<CustomizedProductIdModelView>();
     }
 
     /// <summary>

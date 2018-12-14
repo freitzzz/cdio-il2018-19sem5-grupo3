@@ -28,8 +28,8 @@ namespace core.modelview.commercialcatalogue
         /// List of Commercial Catalogue Catalogue Collection.
         /// </summary>
         /// <value>Gets/sets the name.</value>
-        [DataMember]
-        public List<AddCatalogueCollectionModelView> catalogueCollectionList { get; set; }
+        [DataMember(Name = "collections")]
+        public List<AddCatalogueCollectionModelView> catalogueCollections { get; set; } = new List<AddCatalogueCollectionModelView>();
 
     }
 }
