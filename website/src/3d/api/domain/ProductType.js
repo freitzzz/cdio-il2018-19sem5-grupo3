@@ -27,7 +27,7 @@ const POLE="pole";
 /**
  * Represents a "shelf" product type
  */
-const SELF="shelf";
+const SHELF="shelf";
 
 /**
  * Represents a "sliding door" product type
@@ -43,9 +43,9 @@ const ProductTypeEnum={
     HINGED_DOOR:HINGED_DOOR,
     MODULE:MODULE,
     POLE:POLE,
-    SELF:SELF,
+    SHELF:SHELF,
     SLIDING_DOOR:SLIDING_DOOR,
-    values:[CLOSET,DRAWER,HINGED_DOOR,MODULE,POLE,SELF,SLIDING_DOOR]
+    values:[CLOSET,DRAWER,HINGED_DOOR,MODULE,POLE,SHELF,SLIDING_DOOR]
 };
 
 /**
