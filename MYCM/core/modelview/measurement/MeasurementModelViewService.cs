@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using core.domain;
 using core.modelview.dimension;
 using core.modelview.product;
+using core.services;
 using support.utils;
 
 namespace core.modelview.measurement
@@ -40,22 +41,7 @@ namespace core.modelview.measurement
         /// <exception cref="System.ArgumentNullException">If the provided Measurement is null.</exception>
         public static GetMeasurementModelView fromEntity(Measurement measurement)
         {
-            if (measurement == null)
-            {
-                throw new ArgumentNullException(ERROR_NULL_MEASUREMENT);
-            }
-
-            GetDimensionModelView heightMV = DimensionModelViewService.fromEntity(measurement.height);
-            GetDimensionModelView widthMV = DimensionModelViewService.fromEntity(measurement.width);
-            GetDimensionModelView depthMV = DimensionModelViewService.fromEntity(measurement.depth);
-
-            GetMeasurementModelView measurementModelView = new GetMeasurementModelView();
-            measurementModelView.measurementId = measurement.Id;
-            measurementModelView.height = heightMV;
-            measurementModelView.width = widthMV;
-            measurementModelView.depth = depthMV;
-
-            return measurementModelView;
+            return fromEntity(measurement, MeasurementUnitService.getMinimumUnit());
         }
 
         /// <summary>
