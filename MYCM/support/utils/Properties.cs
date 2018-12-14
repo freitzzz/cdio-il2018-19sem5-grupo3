@@ -1,6 +1,7 @@
 using System.IO;
 using support.io;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace support.system{
     /// <summary>
@@ -15,7 +16,7 @@ namespace support.system{
         /// <summary>
         /// Holder of the current properties
         /// </summary>
-        private readonly IDictionary<object,object> holder=new Dictionary<object,object>();
+        private readonly IDictionary<object,object> holder=new ConcurrentDictionary<object,object>();
         /// <summary>
         /// Creates an empty properties holder
         /// </summary>
@@ -37,6 +38,14 @@ namespace support.system{
             object value=null;
             holder.TryGetValue(key,out value);
             return value; 
+        }
+
+        public bool containsKey(object key){
+            return get(key) != null;
+        }
+
+        public void removeKey(object key){
+            holder.Remove(key);
         }
         
         /// <summary>
