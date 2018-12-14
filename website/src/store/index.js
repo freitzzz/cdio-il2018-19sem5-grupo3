@@ -13,7 +13,8 @@ const state = {
     canvasControls: {
         canMoveCloset: "false",
         canMoveSlots: "false",
-        canMoveComponents: "false"
+        canMoveComponents: "false",
+        componentToRemove: {}
     },
 
     product: {},
@@ -40,7 +41,7 @@ const state = {
             unit: ""
         },
         components: []
-    }
+       }
 }
 
 export const getters = {
@@ -97,6 +98,9 @@ export const getters = {
     },
     canMoveComponents: state => {
         return state.canvasControls.canMoveComponents;
+    },
+    componentToRemove: state => {
+        return state.canvasControls.componentToRemove;
     }
 }
 

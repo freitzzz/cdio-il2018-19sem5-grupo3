@@ -340,15 +340,15 @@ function applyTexture(texture) {
 }
 
 function addComponent(component, slot) {
-    if (component == "Pole") generateCylinder(slot);
-    if (component == "Drawer") {
+    if (component.toUpperCase() == "Pole".toUpperCase()) generateCylinder(slot);
+    if (component.toUpperCase() == "Drawer".toUpperCase()) {
         checkAddDrawerTriggers(slot);
     }
-    if (component == "Shelf") generateShelf(slot);
-    if (component == "Sliding Door") {
+    if (component.toUpperCase() == "Shelf".toUpperCase()) generateShelf(slot);
+    if (component.toUpperCase() == "Sliding Door".toUpperCase()) {
         checkAddSlidingDoorTriggers();
     }
-    if (component == "Door") {
+    if (component.toUpperCase() == "Door".toUpperCase()) {
         checkAddHingedDoorTriggers(slot);
     }
 }
@@ -974,10 +974,64 @@ function createMaterialWithTexture() {
     return new THREE.MeshNormalMaterial();
 }
 
+
+function renderDroppedComponent(event){
+    var componentData = event.detail.componentData;
+    var rect = event.detail.boundingRect;
+    var x = event.detail.clientX;
+    var y = event.detail.clientY;
+    mouse.x = (x - rect.left) / (canvasWebGL.clientWidth / 2.0) - 1.0; //Get mouse x position
+    mouse.y = -((y - rect.bottom) / (canvasWebGL.clientHeight / 2.0) + 1.0); //Get mouse y position
+    raycaster.setFromCamera(mouse, camera); //Set raycast position
+    //Finds all intersected objects (closet faces)
+    var intersects = raycaster.intersectObjects(scene.children[0].children);
+
+    //Check if the raycaster intersected anything
+    if (intersects.length > 0) {
+        //Gets the raycaster point
+        var raycasterPointX = intersects[0].point.x;
+        
+        //Snapping to know where the component is going to be rendered
+
+        if(closet_slots_faces_ids.length == 0){
+            addComponent(componentData, 0);
+        }else if(closet_slots_faces_ids){
+
+            var distanceFromRaycasterRayToSlot = [];
+
+            for(let i = 0; i < closet_slots_faces_ids.length; i++){
+                let currentSlot = group.getObjectById(closet_slots_faces_ids[i]);
+
+                distanceFromRaycasterRayToSlot.push(
+                    Math.abs(currentSlot.position.x - raycasterPointX)
+                );
+            }
+
+            var closetRightFace = group.getObjectById(closet_faces_ids[3]);
+            var minDistance = Math.min.apply(null, distanceFromRaycasterRayToSlot);
+            var distanceFromRaycasterRayToClosetRightFace = Math.abs(closetRightFace.position.x - raycasterPointX);
+
+            if(minDistance < distanceFromRaycasterRayToClosetRightFace){
+                let slotId = distanceFromRaycasterRayToSlot.indexOf(minDistance) + 1;
+                addComponent(componentData, slotId);
+            }else{
+                addComponent(componentData,closet_slots_faces_ids.length+1);
+            }
+        }
+    }else{
+        alert("You have to drop the component inside the closet!");
+    }
+}
+
 /**
  * Register the events that can be communicated through the document
  */
 function registerEvents() {
+    
+    document.addEventListener("dropComponent", function(dropComponentEvent){
+        renderDroppedComponent(dropComponentEvent);
+    });
+
     document.addEventListener("changeDimensions", function (changeDimensionsEvent) {
         changeClosetDimensions(changeDimensionsEvent.detail.width, changeDimensionsEvent.detail.height,
             changeDimensionsEvent.detail.depth, changeDimensionsEvent.detail.index);

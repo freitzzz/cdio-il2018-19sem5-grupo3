@@ -73,8 +73,12 @@ import { error } from "three";
 import store from "./../store";
 import Toasted from "vue-toasted";
 import { MYCM_API_URL } from "./../config.js";
-import { SET_CUSTOMIZED_PRODUCT_COMPONENTS, ACTIVATE_CAN_MOVE_COMPONENTS } from "./../store/mutation-types.js";
+import { SET_CUSTOMIZED_PRODUCT_COMPONENTS,
+        REMOVE_CUSTOMIZED_PRODUCT_COMPONENT,
+        ACTIVATE_CAN_MOVE_COMPONENTS }
+        from "./../store/mutation-types.js";
 
+//TODO! CHANGE Toast
 Vue.use(Toasted);
 
 export default {
@@ -124,25 +128,23 @@ export default {
       //If the product has slots and the chosen component can be added to a slot, checks if the 
       if (this.hasSlots() && this.canAddComponentToSlot(component.model)){
         if(this.div_inputs[index] == undefined) {
-          this.$toasted.show("You must choose a slot to apply the component!", {
-            position: "top-center",
-            duration: 2000
-          });
+          this.$toast.open("You must choose a slot to apply the component!");
       } else if(this.div_inputs[index] < 1 || this.div_inputs[index] > store.state.customizedProduct.slots.length + 1){
-          this.$toasted.show("You must choose a valid slot to apply the component!", {
-            position: "top-center",
-            duration: 2000
-          });
+          this.$toast.open("You must choose a valid slot to apply the component!");
         } else {
           component.slot = this.div_inputs[index];
           store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
+          //TODO! DISABLE apply button
         }
       } else if(!this.hasSlots() || !this.canAddComponentToSlot(component.model)){
         component.slot = 0;
         store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
+          //TODO! DISABLE apply button
       }
     },
     removeDivElement(component, index) {
+      store.dispatch(REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, { component: component });
+
       var aux;
       for (let i = index + 1; i < this.div_inputs.length; i++) {
         aux = this.div_inputs[i];
@@ -152,16 +154,16 @@ export default {
       this.div_elements.splice(component, 1);
       this.div_inputs.splice(this.div_inputs.length);
 
-      this.$toasted.show("The component was sucessfully removed!", {
-        position: "top-center",
-        duration: 2000
-      });
-      //!TODO communicate with Three.js & Remove from store
+      this.$toast.open("The component was sucessfully removed!");
+
+      //TODO! communicate with Three.js & Remove from store
     },
     nextPanel(){
       this.$emit("advance");
     },
     previousPanel(){
+      //TODO! DELETE components
+      store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS);
       this.$emit("back");
     }
   },

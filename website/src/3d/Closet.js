@@ -162,7 +162,6 @@ export default class Closet {
 
     /**
     * Adds a door to the closet
-    * @param {} door to add 
     */
     addHingedDoor(door) {
         this.hingedDoors.push(door);
@@ -203,7 +202,6 @@ export default class Closet {
     }
 
     //Accessors
-
     /**
      * Returns the current width of the closet
      */
