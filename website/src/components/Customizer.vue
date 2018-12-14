@@ -1,7 +1,7 @@
 <template>
   <div>
-    <customizer-progress-bar></customizer-progress-bar>
-    <customizer-side-bar></customizer-side-bar>
+    <customizer-progress-bar :stageIndex="currentStage"></customizer-progress-bar>
+    <customizer-side-bar @changeStage="changeProgressBarStage"></customizer-side-bar>
     <canvas
       ref="threeCanvas"
       @mouseup="onMouseUp"
@@ -24,7 +24,8 @@ export default {
   name: "Customizer",
   data() {
     return {
-      productRenderer: {}
+      productRenderer: {},
+      currentStage: 0
     };
   },
   computed: {
@@ -50,6 +51,9 @@ export default {
     addComponent() {
       return Store.getters.customizedProductComponents;
     },
+    removeComponent(){
+      return Store.getters.componentToRemove;
+    },
     applyMaterial(){
       return Store.getters.customizedMaterial;
     },
@@ -69,7 +73,11 @@ export default {
   },
   watch: {
     slots: function(newValue, oldValue) {
-      this.productRenderer.addSlotNumbered(newValue);
+      if(newValue.length > 0){
+        this.productRenderer.addSlotNumbered(newValue);
+      } else {
+        this.productRenderer.removeAllSlots();
+      }
     },
     loadProduct: function() {
       this.productRenderer.showCloset();
@@ -81,8 +89,15 @@ export default {
         Store.getters.customizedProductDimensions.depth
       );
     },
-    addComponent: function(newValue) {
-      this.productRenderer.addComponent(newValue[newValue.length - 1]);
+    addComponent: function(newValue, oldValue) {
+      if(oldValue.length <= newValue.length){
+        this.productRenderer.addComponent(newValue[newValue.length - 1]);
+      } else if(newValue.length == 0) {
+        this.productRenderer.removeAllComponents();
+      }
+    },
+    removeComponent: function(newValue){
+      this.productRenderer.removeComponent(newValue);
     },
     applyMaterial: function(newValue) {
       this.productRenderer.applyTexture("./src/assets/materials/" + newValue);
@@ -123,6 +138,9 @@ export default {
       alert("keydown");
       this.productRenderer.onKeyDown(event);
       event.preventDefault();
+    },
+    changeProgressBarStage: function(currentPanelIndex){
+      this.currentStage = currentPanelIndex;
     }
   },
   mounted() {

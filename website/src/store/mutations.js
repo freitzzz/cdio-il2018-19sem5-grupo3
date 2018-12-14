@@ -32,27 +32,29 @@ export const mutations = {
    * @param {*} payload Payload with the new slot width 
    */
   [types.SET_SLOT_DIMENSIONS](state, payload) {
-    state.customizedProduct.slots.push({
-      idSlot: payload.idSlot,
-      depth: payload.depth,
-      width: payload.width,
-      height: payload.height,
-      unit: payload.unit,
-      components: []
-    })
+    if (payload) {
+      state.customizedProduct.slots.push({
+        idSlot: payload.idSlot,
+        depth: payload.depth,
+        width: payload.width,
+        height: payload.height,
+        unit: payload.unit,
+        components: []
+      })
+    } else { state.customizedProduct.slots = []; }
   },
-  
-/**
-   * Changes the states's customized product's material 
-   * @param {*} state The store's state
-   * @param {*} payload Payload with the new material 
-   */
+
+  /**
+     * Changes the states's customized product's material 
+     * @param {*} state The store's state
+     * @param {*} payload Payload with the new material 
+     */
   [types.SET_CUSTOMIZED_PRODUCT_MATERIAL](state, payload) {
     state.customizedProduct.customizedMaterial.id = payload.id,
-    state.customizedProduct.customizedMaterial.reference = payload.reference,
-    state.customizedProduct.customizedMaterial.designation =  payload.designation,
-    state.customizedProduct.customizedMaterial.image = payload.image
-    },
+      state.customizedProduct.customizedMaterial.reference = payload.reference,
+      state.customizedProduct.customizedMaterial.designation = payload.designation,
+      state.customizedProduct.customizedMaterial.image = payload.image
+  },
 
   /**
    * Adds a component to the state's customized product's
@@ -60,9 +62,28 @@ export const mutations = {
    * @param {*} payload Payload with the component to add
    */
   [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS](state, payload) {
-    if (state.customizedProduct.slots.length >= payload.component.slot) {
-        state.customizedProduct.components.push(payload.component);
+    if (payload && state.customizedProduct.slots.length >= payload.component.slot) {
+      let copiedArray = state.customizedProduct.components.slice(0);
+      copiedArray.push(payload.component);
+      state.customizedProduct.components = copiedArray;
+    } else if (!payload) {
+      state.customizedProduct.components = [];
     }
+  },
+
+  /**
+   * Removes a component from the state's customized product's
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the component to remove
+   */
+  [types.REMOVE_CUSTOMIZED_PRODUCT_COMPONENT](state, payload) {
+    state.canvasControls.componentToRemove = payload.component;
+    let index = state.customizedProduct.components.indexOf(payload.component);
+
+    let copiedArray = state.customizedProduct.components.slice(0);
+    copiedArray.splice(index, 1);
+
+    state.customizedProduct.components = copiedArray;
   },
 
   /**
