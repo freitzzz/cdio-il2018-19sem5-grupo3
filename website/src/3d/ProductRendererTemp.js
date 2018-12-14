@@ -404,8 +404,10 @@ export default class ProductRenderer {
       closet_face.position.z = this.closet.getClosetSlotFaces()[i][5];
     }
   }
+
   /**
    * Adds components to the current closet
+   * @param {*} component Component to add
    */
   addComponent(component) {
     if (!component) return;
@@ -414,6 +416,79 @@ export default class ProductRenderer {
     if (component.designation == "Drawer") this.generateDrawer(component.slot);
     if (component.designation == "Hinged Door") this.generateHingedDoor(component.slot);
     if (component.designation == "Sliding Door") this.generateSlidingDoor();
+  }
+
+  /**
+  * Removes a components from the current closet
+  * @param {*} component Component to remove
+  */
+  removeComponent(component) {
+    if (!component) return;
+    if (component.designation == "Shelf") this.removeShelf(component.slot);
+    if (component.designation == "Pole") this.removePole(component.slot);
+    if (component.designation == "Drawer") this.removeDrawer(component.slot);
+    if (component.designation == "Hinged Door") this.removeHingedDoor(component.slot);
+    if (component.designation == "Sliding Door") this.removeSlidingDoor();
+  }
+
+  removeShelf(slot) {
+    for (let i = 0; i < this.closet.shelves.length; i++) {
+      if (this.closet.shelves[i].slotId == slot) {
+        this.closet.shelves.splice(i, 1);
+        var closet_shelf_face_id = this.closet_shelves_ids.splice(i, 1);
+        this.group.remove(this.group.getObjectById(closet_shelf_face_id[0]));
+        this.updateClosetGV();
+        return;
+      }
+    }
+  }
+
+  removeHingedDoor(slot) {
+    for (let i = 0; i < this.closet.hingedDoors.length; i++) {
+      if (this.closet.hingedDoors[i].slotId == slot) {
+        this.closet.hingedDoors.splice(i, 1);
+        var closet_door_face_id = this.closet_hinged_doors_ids.splice(i, 1);
+        this.group.remove(this.group.getObjectById(closet_door_face_id[0]));
+        this.updateClosetGV();
+        return;
+      }
+    }
+  }
+
+  removePole(slot) {
+    for (let i = 0; i < this.closet.poles.length; i++) {
+      if (this.closet.poles[i].slotId == slot) {
+        this.closet.poles.splice(i, 1);
+        var closet_pole_id = this.closet_poles_ids.splice(i, 1);
+        this.group.remove(this.group.getObjectById(closet_pole_id[0]));
+        this.updateClosetGV();
+        return;
+      }
+    }
+  }
+
+  removeSlidingDoor(){
+    this.closet.removeSlidingDoor();
+    var closet_sliding_door_face_id = this.closet_sliding_doors_ids.pop();
+    this.group.remove(this.group.getObjectById(closet_sliding_door_face_id));
+  }
+
+  //TODO! Remove all drawer faces
+  removeDrawer(slot) {
+    for (let i = 0; i < this.closet.drawers.length; i++) {
+      if (this.closet.drawers[i].slotId == slot) {
+        this.closet.drawers.splice(i, 1);
+        var closet_drawer_face_id = this.closet_drawers_ids.splice(i + 5, (i + 5) * 5);
+        var closet_module_face_id = this.closet_modules_ids.splice(i + 5, (i + 5) * 5);
+
+        for (let j = 0; j < closet_drawer_face_id.length; j++) {
+          this.group.remove(this.group.getObjectById(closet_drawer_face_id[j]));
+          this.group.remove(this.group.getObjectById(closet_module_face_id[j]));
+        }
+        return;
+        this.updateClosetGV();
+      }
+    }
   }
 
   /**
@@ -431,7 +506,7 @@ export default class ProductRenderer {
     var openEnded = false;
     var height, x, y, z;
 
-    var pole = new Pole(radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength);
+    var pole = new Pole(radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength, slot);
 
     //If the closet has no slots, the pole's height needs to be the width of the closet
     //Otherwise the pole needs to go from the closet's left wall to a slot, 
@@ -475,7 +550,7 @@ export default class ProductRenderer {
     poleMesh.position.y = y;
     poleMesh.position.z = z;
     poleMesh.rotation.z = Math.PI / 2;
-    //this.closet.addPole(pole);
+    this.closet.addPole(pole);
     this.group.add(poleMesh);
     this.closet_poles_ids.push(poleMesh.id);
   }
@@ -510,11 +585,8 @@ export default class ProductRenderer {
       y = this.calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
       z = this.calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
     }
-
-    //new Shelf([width, height, depth, x, y, z]);
-    var meshID = this.generateParellepiped(width, 3, this.closet.getClosetDepth(), x, y, z, this.material, this.group);
-    // this.closet.addShelf(shelf);
-    this.closet_shelves_ids.push(meshID);
+    this.closet.addShelf(new Shelf([width, 3, this.closet.getClosetDepth(), x, y, z], slot));
+    this.closet_shelves_ids.push(this.generateParellepiped(width, 3, this.closet.getClosetDepth(), x, y, z, this.material, this.group));
   }
 
 
@@ -554,23 +626,26 @@ export default class ProductRenderer {
       y = this.calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
       z = this.calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
     }
-    var module = new Module([width, depthDrawer, depthCloset, x, y - (spaceDrawerModule / 4), z], ///Base
-      [width, depthDrawer, depthCloset, x, y + heightDrawer + (spaceDrawerModule / 4), z], ///Cima
-      [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x - (width / 2), y + (heightDrawer / 2), z], ///Left
-      [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x + (width / 2), y + (heightDrawer / 2), z]); ///Rigtht
-    var borders = module.module_faces;
-    for (var i = 0; i < borders.length; i++) {
-      this.closet_modules_ids.push(this.generateParellepiped(borders[i][0],
-        borders[i][1], borders[i][2], borders[i][3],
-        borders[i][4], borders[i][5], this.material, this.group));
-    }
-    var drawer = new Drawer([width - spaceDrawerModule, depthDrawer, depthCloset, x, y + (depthDrawer / 2), z], ///Base
-      [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z + (depthCloset / 2) - (depthDrawer / 2)], ///Frent
-      [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x - (width / 2) + (spaceDrawerModule / 2), y + (heightDrawer / 2), z], ///Left
-      [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x + (width / 2) - (spaceDrawerModule / 2), y + (heightDrawer / 2), z], ///Right
-      [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z - (depthCloset / 2) + (depthDrawer / 2)]); ///Back
-    var borders_drawer = drawer.drawer_faces;
 
+    var module = new Module([width, depthDrawer, depthCloset, x, y - (spaceDrawerModule / 4), z], //Base
+      [width, depthDrawer, depthCloset, x, y + heightDrawer + (spaceDrawerModule / 4), z], //Top
+      [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x - (width / 2), y + (heightDrawer / 2), z], //Left
+      [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x + (width / 2), y + (heightDrawer / 2), z]); //Right
+
+    var borders_module = module.module_faces;
+    for (var i = 0; i < borders_module.length; i++) {
+      this.closet_modules_ids.push(this.generateParellepiped(borders_module[i][0],
+        borders_module[i][1], borders_module[i][2], borders_module[i][3],
+        borders_module[i][4], borders_module[i][5], this.material, this.group));
+    }
+
+    var drawer = new Drawer([width - spaceDrawerModule, depthDrawer, depthCloset, x, y + (depthDrawer / 2), z], //Base
+      [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z + (depthCloset / 2) - (depthDrawer / 2)], //Front
+      [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x - (width / 2) + (spaceDrawerModule / 2), y + (heightDrawer / 2), z], //Left
+      [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x + (width / 2) - (spaceDrawerModule / 2), y + (heightDrawer / 2), z], //Right
+      [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z - (depthCloset / 2) + (depthDrawer / 2)], slot); //Back
+
+    var borders_drawer = drawer.drawer_faces;
     for (var i = 0; i < borders_drawer.length; i++) {
       this.closet_drawers_ids.push(this.generateParellepiped(borders_drawer[i][0],
         borders_drawer[i][1], borders_drawer[i][2], borders_drawer[i][3],
@@ -606,7 +681,7 @@ export default class ProductRenderer {
     this.updateClosetGV();
   }
 
-  /*New method*/
+  /*New methods*/
   removeAllSlots() {
     var size = this.closet_slots_faces_ids.length;
     for (let i = 0; i < size; i++) {
@@ -614,78 +689,46 @@ export default class ProductRenderer {
     }
   }
 
-  /*New method*/
   removeAllComponents() {
     var size = this.closet_drawers_ids.length;
     for (let i = 0; i < size; i++) {
-      this.removeDrawer();
+      this.closet.removeDrawer();
+      var closet_drawer_face_id = this.closet_drawers_ids.pop();
+      this.group.remove(this.group.getObjectById(closet_drawer_face_id));
     }
 
-    size =  this.closet_modules_ids.length;
+    size = this.closet_modules_ids.length;
     for (let i = 0; i < size; i++) {
-      this.removeModule();
+      this.closet.removeModule();
+      var closet_module_face_id = this.closet_modules_ids.pop();
+      this.group.remove(this.group.getObjectById(closet_module_face_id));
     }
 
     size = this.closet_hinged_doors_ids.length;
-    for(let i = 0; i < size; i++){
-      this.removeHingedDoor();
+    for (let i = 0; i < size; i++) {
+      this.closet.removeHingedDoor();
+      var closet_hinged_door_face_id = this.closet_hinged_doors_ids.pop();
+      this.group.remove(this.group.getObjectById(closet_hinged_door_face_id));
     }
 
     size = this.closet_sliding_doors_ids.length;
-    for(let i = 0; i < size; i++){
+    for (let i = 0; i < size; i++) {
       this.removeSlidingDoor();
     }
 
     size = this.closet_shelves_ids.length;
-    for(let i = 0; i < size; i++){
-      this.removeShelf();
+    for (let i = 0; i < size; i++) {
+      this.closet.removeShelf();
+      var closet_shelf_face_id = this.closet_shelves_ids.pop();
+      this.group.remove(this.group.getObjectById(closet_shelf_face_id));
     }
 
     size = this.closet_poles_ids.length;
-    for(let i = 0; i < size; i++){
-      this.removePole();
+    for (let i = 0; i < size; i++) {
+      this.closet.removePole();
+      var closet_poles_id = this.closet_poles_ids.pop();
+      this.group.remove(this.group.getObjectById(closet_poles_id));
     }
-  }
-
-  removeShelf(){
-    this.closet.removeShelf();
-    var closet_shelf_face_id = this.closet_shelves_ids.pop();
-    this.group.remove(this.group.getObjectById(closet_shelf_face_id));
-    this.updateClosetGV();
-  }
-
-  removePole(){
-    this.closet.removePole();
-    var closet_poles_id = this.closet_poles_ids.pop();
-    this.group.remove(this.group.getObjectById(closet_poles_id));
-    this.updateClosetGV();
-  }
-
-  removeSlidingDoor() {
-    this.closet.removeSlidingDoor();
-    var closet_sliding_door_face_id = this.closet_sliding_doors_ids.pop();
-    this.group.remove(this.group.getObjectById(closet_sliding_door_face_id));
-    this.updateClosetGV();
-  }
-
-  removeHingedDoor() {
-    this.closet.removeHingedDoor();
-    var closet_hinged_door_face_id = this.closet_hinged_doors_ids.pop();
-    this.group.remove(this.group.getObjectById(closet_hinged_door_face_id));
-    this.updateClosetGV();
-  }
-
-  removeDrawer() {
-    this.closet.removeDrawer();
-    var closet_drawer_face_id = this.closet_drawers_ids.pop();
-    this.group.remove(this.group.getObjectById(closet_drawer_face_id));
-    this.updateClosetGV();
-  }
-
-  removeModule() {
-    this.closet.removeModule();
-    var closet_module_face_id = this.closet_modules_ids.pop();
-    this.group.remove(this.group.getObjectById(closet_module_face_id));
     this.updateClosetGV();
   }
 
@@ -698,6 +741,7 @@ export default class ProductRenderer {
     this.group.remove(this.group.getObjectById(closet_slot_face_id));
     this.updateClosetGV();
   }
+  /*End new methods*/
 
   /**
    * Changes the dimensions of the closet
