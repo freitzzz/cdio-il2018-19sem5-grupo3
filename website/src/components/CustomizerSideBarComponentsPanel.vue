@@ -128,15 +128,9 @@ export default {
       //If the product has slots and the chosen component can be added to a slot, checks if the 
       if (this.hasSlots() && this.canAddComponentToSlot(component.model)){
         if(this.div_inputs[index] == undefined) {
-          this.$toasted.show("You must choose a slot to apply the component!", {
-            position: "top-center",
-            duration: 2000
-          });
+          this.$toast.open("You must choose a slot to apply the component!");
       } else if(this.div_inputs[index] < 1 || this.div_inputs[index] > store.state.customizedProduct.slots.length + 1){
-          this.$toasted.show("You must choose a valid slot to apply the component!", {
-            position: "top-center",
-            duration: 2000
-          });
+          this.$toast.open("You must choose a valid slot to apply the component!");
         } else {
           component.slot = this.div_inputs[index];
           store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
@@ -160,10 +154,8 @@ export default {
       this.div_elements.splice(component, 1);
       this.div_inputs.splice(this.div_inputs.length);
 
-      this.$toasted.show("The component was sucessfully removed!", {
-        position: "top-center",
-        duration: 2000
-      });
+      this.$toast.open("The component was sucessfully removed!");
+
       //TODO! communicate with Three.js & Remove from store
     },
     nextPanel(){
