@@ -28,7 +28,8 @@ namespace core.modelview.customizeddimensions
         /// <exception cref="System.ArgumentNullException">Thrown when the provided AddCustomizedDimensionsModelView is null.</exception>
         public static CustomizedDimensions fromModelView(AddCustomizedDimensionsModelView modelView)
         {
-            if(modelView == null){
+            if (modelView == null)
+            {
                 throw new ArgumentNullException(ERROR_NULL_MODEL_VIEW);
             }
 
@@ -47,19 +48,7 @@ namespace core.modelview.customizeddimensions
         /// <exception cref="System.ArgumentNullException">Thrown when the provided CustomizedDimensions is null.</exception>
         public static GetCustomizedDimensionsModelView fromEntity(CustomizedDimensions customizedDimensions)
         {
-            if (customizedDimensions == null)
-            {
-                throw new ArgumentNullException(ERROR_NULL_CUSTOMIZED_DIMENSIONS);
-            }
-
-            GetCustomizedDimensionsModelView modelView = new GetCustomizedDimensionsModelView();
-            modelView.customizedDimensionsId = customizedDimensions.Id;
-            modelView.unit = MeasurementUnitService.getMinimumUnit();
-            modelView.height = MeasurementUnitService.convertFromUnit(customizedDimensions.height, modelView.unit);
-            modelView.width = MeasurementUnitService.convertFromUnit(customizedDimensions.width, modelView.unit);
-            modelView.depth = MeasurementUnitService.convertFromUnit(customizedDimensions.depth, modelView.unit);
-
-            return modelView;
+            return fromEntity(customizedDimensions, MeasurementUnitService.getMinimumUnit());
         }
 
         /// <summary>
