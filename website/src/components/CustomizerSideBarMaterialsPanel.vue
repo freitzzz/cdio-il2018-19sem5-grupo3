@@ -26,6 +26,10 @@
         <i class="material-icons md-36 md-blue btn" @click="getProductMaterials">refresh</i>
       </div>
     </div>
+    <div class="center-controls">
+      <i class="btn btn-primary material-icons" @click="previousPanel()" >arrow_back</i>
+      <i class="btn btn-primary material-icons" @click="nextPanel()" >arrow_forward</i>
+    </div>
   </div>
 </template>
 
@@ -36,7 +40,7 @@ import { error } from "three";
 import store from "./../store";
 import Toasted from "vue-toasted";
 import { MYCM_API_URL } from "./../config.js";
-import { SET_MATERIAL, SET_CUSTOMIZED_PRODUCT_MATERIAL } from "./../store/mutation-types.js";
+import { SET_CUSTOMIZED_PRODUCT_MATERIAL, DEACTIVATE_CAN_MOVE_CLOSET, DEACTIVATE_CAN_MOVE_SLOTS } from "./../store/mutation-types.js";
 Vue.use(Toasted);
 export default {
   name: "CustomizerSideBarMaterialsPanel",
@@ -78,12 +82,21 @@ export default {
         image: material.image
       })
     },
+    nextPanel(){
+      this.$emit("advance");
+    },
+    previousPanel(){
+      this.$emit("back");
+    }
   },
   created() {
     this.getProductMaterials();
+    store.dispatch(DEACTIVATE_CAN_MOVE_CLOSET);
+    store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS);
   }
 };
 </script>
+
 <style>
 .icon-div-top .tooltiptext {
   visibility: hidden;

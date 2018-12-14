@@ -1,13 +1,13 @@
 <template>
     <div class="modal-card" style="width: auto">
         <header class="modal-card-head">
-            <p class="modal-card-title">Product Details</p>
+            <p class="modal-card-title">Category Details</p>
         </header>
          <section class="modal-card-body">
                 <b-field label="Name">
                 <b-input
                     type="String"
-                    :value="product.name"
+                    :value="category.name"
                     disabled="true"
                     icon="pound"
                     required>

@@ -1,38 +1,38 @@
 <template>
     <vuetable :api-mode="false" :data="this.data" :fields="columns">
         <template slot="actions" slot-scope="props">
-                <div class="custom-actions">
-                     <button
-                        class="button is-danger"
-                        @click="openCategoryDetails(props.rowData.id)">
-                        <b-icon icon="magnify"/>
-                    </button>
-                    <button
-                        class="button is-danger"
-                        @click="editCategoryDetails(props.rowData.id)">
-                        <b-icon icon="pencil"/>
-                    </button>
-                    <button
-                        class="button is-danger"
-                        @click="deleteCategory(props.rowData.id)">
-                        <b-icon icon="minus"/>
-                    </button>
-                </div>
-                <div v-if="showCategoryDetails">
-                    <b-modal :active.sync="showCategoryDetails" has-modal-card scroll="keep">
-                        <category-details
-                            :category="currentSelectedCategory"
-                        />
-                    </b-modal>
-                </div>
-                <div v-if="showEditCategoryDetails">
-                    <b-modal :active.sync="showEditCategoryDetails" has-modal-card scroll="keep">
-                        <edit-category
-                            @emitCategory="updateCategory"
-                            :category="currentSelectedCategory2"
-                        />
-                    </b-modal>
-                </div>
+        <div class="custom-actions">
+             <button
+                class="button is-danger"
+                @click="openCategoryDetails(props.rowData.id)">
+                <b-icon icon="magnify"/>
+            </button>
+            <button
+                class="button is-danger"
+                @click="editCategoryDetails(props.rowData.id)">
+                <b-icon icon="pencil"/>
+            </button>
+            <button
+                class="button is-danger"
+                @click="deleteCategory(props.rowData.id)">
+                <b-icon icon="minus"/>
+            </button>
+        </div>
+        <div v-if="showCategoryDetails">
+            <b-modal :active.sync="showCategoryDetails" has-modal-card scroll="keep">
+                <category-details
+                    :category="currentSelectedCategory"
+                />
+            </b-modal>
+        </div>
+        <div v-if="showEditCategoryDetails">
+            <b-modal :active.sync="showEditCategoryDetails" has-modal-card scroll="keep">
+                <edit-category
+                    @emitCategory="updateCategory"
+                    :category="currentSelectedCategory2"
+                     />
+                 </b-modal>
+             </div>
 </template>
     </vuetable>
 </template>
@@ -56,7 +56,9 @@
     /**
      * Requires App Configuration for accessing MYCM API URL
      */
-    import Config, {MYCM_API_URL} from '../../../config.js';
+    import Config, {
+        MYCM_API_URL
+    } from '../../../config.js';
     
     export default {
         /**
@@ -82,6 +84,11 @@
                         title: "Name"
                     },
                     {
+                        name: "parentName",
+                        title: "Parent Category",
+                        callback: this.booleansAsIcons
+                    },
+                    {
                         name: "__slot:actions", // <----
                         title: "Actions",
                         titleClass: "center aligned",
@@ -98,7 +105,7 @@
              */
             booleansAsIcons(value) {
                 return value ?
-                    '<span class="ui teal label"><i class="material-icons">check</i></span>' :
+                    value :
                     '<span class="ui teal label"><i class="material-icons">close</i></span>';
             },
             /**
@@ -123,7 +130,11 @@
              * Edit details of a category
              */
             editCategoryDetails(categoryId) {
-                this.getCategoryDetails(categoryId);
+                this.getCategoryDetails(categoryId)
+                    .then((category) => {
+                        this.showEditCategoryDetails = true;
+                    });
+    
             },
             /**
              * Fetches the details of a certain category 
@@ -132,10 +143,15 @@
                 return new Promise((accept, reject) => {
                     Axios.get(MYCM_API_URL + '/categories/' + categoriesId)
                         .then((category) => {
-                            this.currentSelectedCategory = category.data;
-                            this.currentSelectedCategory2 = Object.assign({}, this.currentSelectedCategory);
+                           
+                                this.currentSelectedCategory = category.data;
+    
+                                this.currentSelectedCategory2 = Object.assign({}, this.currentSelectedCategory);
+                                accept(category);
+                        
                         })
                         .catch((error_message) => {
+                 
                             this.$toast.open({
                                 message: error_message
                             });
@@ -143,6 +159,7 @@
                         });
                 });
             },
+        
             /**
              * Opens a modal with the category details
              */
@@ -185,10 +202,10 @@
                 })
             }
         },
-         
+    
         props: {
             data: []
         }
-     
+    
     }
 </script>

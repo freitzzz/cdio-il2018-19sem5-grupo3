@@ -16,6 +16,7 @@ const mongod = new MongodbMemoryServer.default({
 module.exports = async () => {
   if (!mongod.isRunning) {
     await mongod.start();
+    await require("../testapp");
   }
 
   const mongoConfig = {

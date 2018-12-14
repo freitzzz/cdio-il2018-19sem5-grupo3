@@ -19,7 +19,7 @@ export default class Pole{
 	constructor(radiusTop,radiusBottom,
 				height,radialSegments,
 				heightSegments,openEnded,
-				thetaStart,thetaLength){
+				thetaStart,thetaLength, slotId){
 		this.radiusTop = radiusTop;
 		this.radiusBottom = radiusBottom;
 		this.height = height;
@@ -28,6 +28,7 @@ export default class Pole{
 		this.openEnded = openEnded;
 		this.thetaStart = thetaStart;
 		this.thetaLength = thetaLength;
+		this.slotId = slotId;
 	}
 	
 	/**

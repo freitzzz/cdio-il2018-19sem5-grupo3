@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var city = require('./City');
 var factory = require('./Factory');
-var package = require('./Package');
+var orderPackage = require('./Package');
 
 /**
  * Requires OrderState enums
@@ -47,7 +47,7 @@ var orderSchema = new Schema({
 
     orderContents: { type: [orderContentsSchemas], required: true },
 
-    packages: { type: [package.schema], required: false, default:[] },
+    packages: { type: [orderPackage.schema], required: false, default:[] },
 
     status: {
         type: String,
@@ -90,7 +90,7 @@ orderSchema.methods.registerPackages=function(packages){
     for(let i=0;i<packages.length;i++){
         let nextPackage=packages[i];
         grantOrderPackageCountIsValid(nextPackage.count);
-        for(let j=0;j<nextPackage.count;j++)newPackages.push(package.createPackage(nextPackage.size,[],nextPackage.weight,nextPackage.dimensions));
+        for(let j=0;j<nextPackage.count;j++)newPackages.push(orderPackage.createPackage(nextPackage.size,[],nextPackage.weight,nextPackage.dimensions));
     }
     this.packages=newPackages;
 }

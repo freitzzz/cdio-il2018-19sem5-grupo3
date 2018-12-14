@@ -4,18 +4,20 @@
       <i class="material-icons md-12 md-blue btn">help</i>
       <span class="tooltiptext">In this step, you can add divisions to the closet's structure and customize their sizes.</span>
     </div>
-    <label class="slotsSelections">
-      <input type="radio" id="recommendedSlots" value="recommendedSlots" v-model="picked"> Recommended Number Slots
-    </label>
-    <label class="slotsSelections">
-      <input type="radio" id="customizedSlots" value="customizedSlots" v-model="picked"> Customized Number Slots
-    </label>
+    <div>
+      <label class="slotsSelections">
+        <input type="radio" id="recommendedSlots" value="recommendedSlots" v-model="picked"  @change="deactivateCanvasControls()"> Recommended Number Slots
+      </label>
+      <label class="slotsSelections">
+        <input type="radio" id="customizedSlots" value="customizedSlots" v-model="picked"  @change="activateCanvasControls()" > Customized Number Slots
+      </label>
+    </div>
     <div v-if="displaySliders" class="slidersSection">
       <input type="text" :placeholder="freeSpaceValue" id="freeSpace" v-model="freeSpace" disabled>
       <i class="btn btn-primary material-icons" @click="removeLine(index)">-</i>
       <i class="btn btn-primary material-icons" @click="addLine">+</i>
       <div class="slidersSection">
-        <span v-for="n in minNumberSlots" :key="n">
+        <span v-for="n in recommendedNumberSlots" :key="n">
           <vue-slider
             class="slidersSection"
             :min="minSizeSlot"
@@ -35,13 +37,17 @@
         </div>
       </div>
     </div>
+    <div class="center-controls">
+      <i class="btn btn-primary material-icons" @click="previousPanel()" >arrow_back</i>
+      <i class="btn btn-primary material-icons" @click="nextPanel()" >arrow_forward</i>
+    </div>
   </div>
 </template>
 <script>
 import vueSlider from "vue-slider-component";
 import store from "./../store";
 import Axios from "axios";
-import { SET_SLOT_DIMENSIONS } from "./../store/mutation-types.js";
+import { SET_SLOT_DIMENSIONS, DEACTIVATE_CAN_MOVE_CLOSET, ACTIVATE_CAN_MOVE_SLOTS, DEACTIVATE_CAN_MOVE_SLOTS } from "./../store/mutation-types.js";
 
 export default {
   name: "CustomizerSideBarSlotsPanel",
@@ -68,14 +74,6 @@ export default {
       ///}
       return 200;
     },
-    /*  recommendedNumberSlots() {
-      ///if (store.getters.recommendedSlotSize.unit == store.getters.unit) {
-      ///  return ( parseInt( store.getters.width / store.getters.recommendedSlotSize.width ) + 3);
-      ///} else {
-      ///convert(store.getters.unit,store.getters.recommendedSlotSize.unit,store.getters.recommendedSlotSize.width );
-      /// return parseInt(store.getters.width / this.valueConverted) + 3;
-      return 3;
-    }, */
     minNumberSlots() {
       ///return parseInt(store.getters.width / store.getters.maxSlotSize);
       return 1;
@@ -112,7 +110,21 @@ export default {
     },
     removeLine(lineId) {
       if (!this.blockRemoval) this.lines.splice(lineId, 1);
-    }
+    },
+    nextPanel(){
+      //TODO! POST slots
+      this.$emit("advance");
+    },
+    previousPanel(){
+      //TODO! DELETE slots
+
+ store.dispatch(SET_SLOT_DIMENSIONS);
+      this.$emit("back");
+    },
+    activateCanvasControls(){store.dispatch(ACTIVATE_CAN_MOVE_SLOTS);},
+  deactivateCanvasControls(){
+    //TODO! Desenhar slots recommendados quando checado o recommended 
+    store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS)}
   },
   watch: {
     lines() {
@@ -123,60 +135,8 @@ export default {
     this.addLine();
   },
   created() {
-    /* var widthCloset = store.getters.width;
-    var depthCloset = store.getters.depth;
-    var heightCloset = store.getters.height;
-    var unitCloset = store.getters.unit; */
-
-    var widthCloset = 404.5;
-
-    var depthCloset = 100;
-    var heightCloset = 300;
-    var unitCloset = "cm";
-
-    var recommendedSlotWidth = store.getters.recommendedSlotWidth;
-
-    var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
-    var remainder = widthCloset % recommendedSlotWidth;
-
-    var remainderWidth =
-      widthCloset - recommendedNumberSlots * recommendedSlotWidth;
-
-    if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth*/) {
-      store.dispatch(SET_SLOT_DIMENSIONS, {
-        idSlot: recommendedNumberSlots,
-        width: remainderWidth,
-        height: heightCloset,
-        depth: depthCloset,
-        unit: unitCloset
-      });
-      /* var addToMin = store.getters.minSlotWidth - remainder;
-      recommendedNumberSlots--;
-      var slotAn = re - addToMin
-      if(slotAn>=store.getters.minSlotWidth){
-        store.dispatch(SET_SLOT_DIMENSIONS, { 
-        width: slotAn,
-        height: heightCloset,
-        depth: depthCloset,
-        unit: unitCloset }); 
-
-        store.dispatch(SET_SLOT_DIMENSIONS, { 
-        width: store.getters.minSlotWidth,
-        height: heightCloset,
-        depth: depthCloset,
-        unit: unitCloset }); 
-      } */
-    }
-    for (let i = 0; i < recommendedNumberSlots; i++) {
-      store.dispatch(SET_SLOT_DIMENSIONS, {
-        idSlot: i,
-        width: recommendedSlotWidth,
-        height: heightCloset,
-        depth: depthCloset,
-        unit: unitCloset
-      });
-    }
-  }
+    store.dispatch(DEACTIVATE_CAN_MOVE_CLOSET);
+  },
 };
 </script>
 <style>
