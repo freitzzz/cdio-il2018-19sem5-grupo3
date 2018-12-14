@@ -10,7 +10,8 @@ using support.domain.ddd;
 namespace core.domain
 {
     /// <summary>
-    /// Represents a Catalogue Collection (list of customized products and customized product collections)
+    /// Class representing a CatalogueCollection, which acts as join class between CommercialCatalogue and CustomizedProductCollection with the nuance
+    /// that not all the CustomizedProducts in the CustomizedProductCollection have to be added to the CommercialCatalogue.
     /// </summary>
     /// <typeparam name="CatalogueCollectionDTO">DTO Type</typeparam>
     public class CatalogueCollection : DomainEntity<string>, DTOAble<CatalogueCollectionDTO>
@@ -52,10 +53,22 @@ namespace core.domain
         private const string ERROR_REMOVE_NOT_ADDED_CUSTOMIZED_PRODUCT = "Unable to remove the given customized product.";
 
         /// <summary>
-        /// CatalogueCollection's database identifier.
+        /// CommercialCatalogue's persistence identifier.
         /// </summary>
-        /// <value>Gets/sets the value of the database identifier.</value>
-        public long Id { get; internal set; }
+        /// <value>Gets/Protected sets the CommercialCatalogue's persistence identifier.</value>
+        public long commercialCatalogueId { get; protected set; }
+
+        /// <summary>
+        /// CustomizedProductCollection's persistence identifier.
+        /// </summary>
+        /// <value>Gets/Protected sets the CustomizedProductCollection's persistence identifier.</value>
+        public long customizedProductCollectionId { get; protected set; }
+
+        /// <summary>
+        /// CatalogueCollection's name.
+        /// </summary>
+        /// <value>Gets/Protected sets the CatalogueCollection's name.</value>
+        public string collectionName { get; protected set; }
 
         ///<summary>
         ///CustomizedProductCollection being added to the CommercialCatalogue.
@@ -104,6 +117,11 @@ namespace core.domain
         {
             checkAttributes(customizedProductCollection);
             this.customizedProductCollection = customizedProductCollection;
+
+            //*Replicating the Collection's name may seem redundant, but it prevents StackOverflows from occuring */
+            //*It's not perfect however, because the name is not updated if the CustomizedProductCollection's name is updated */
+            //TODO: find a better solution
+            this.collectionName = this.customizedProductCollection.name;
 
             //*If no list of CustomizedProduct is specified, then assume all instances of CustomizedProduct that belong to the collection are to be added */
 
@@ -249,7 +267,7 @@ namespace core.domain
         /// <returns>CatalogueCollection's business identifier.</returns>
         public string id()
         {
-            return this.customizedProductCollection.id();
+            return this.collectionName;
         }
 
         /// <summary>
@@ -259,7 +277,7 @@ namespace core.domain
         /// <returns>true if the given string is the same as the business identifier; false, otherwise.</returns>
         public bool sameAs(string comparingEntity)
         {
-            return this.customizedProductCollection.sameAs(comparingEntity);
+            return this.collectionName.Equals(comparingEntity);
         }
 
         /// <summary>
@@ -288,7 +306,7 @@ namespace core.domain
             {
                 int hash = 29;
 
-                hash = hash * 31 + customizedProductCollection.GetHashCode();
+                hash = hash * 31 + collectionName.GetHashCode();
 
                 return hash;
             }
@@ -312,7 +330,7 @@ namespace core.domain
 
             CatalogueCollection other = (CatalogueCollection)obj;
 
-            return this.customizedProductCollection.Equals(other.customizedProductCollection);
+            return this.collectionName.Equals(other.collectionName);
         }
 
         ///<summary>
