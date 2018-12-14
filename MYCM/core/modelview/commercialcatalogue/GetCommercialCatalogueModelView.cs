@@ -35,7 +35,7 @@ namespace core.modelview.commercialcatalogue
         /// List of Commercial Catalogue Catalogue Collection.
         /// </summary>
         /// <value>Gets/sets the name.</value>
-        [DataMember]
+        [DataMember (EmitDefaultValue = false)]
         public GetAllCatalogueCollectionsModelView commercialCatalogueCollections { get; set; }
     }
 }
