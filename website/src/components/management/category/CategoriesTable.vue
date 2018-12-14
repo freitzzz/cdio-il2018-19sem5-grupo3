@@ -3,17 +3,17 @@
         <template slot="actions" slot-scope="props">
         <div class="custom-actions">
              <button
-                class="button is-danger"
+                class="button is-info"
                 @click="openCategoryDetails(props.rowData.id)">
                 <b-icon icon="magnify"/>
             </button>
             <button
-                class="button is-danger"
+                class="button is-info"
                 @click="editCategoryDetails(props.rowData.id)">
                 <b-icon icon="pencil"/>
             </button>
             <button
-                class="button is-danger"
+                class="button is-info"
                 @click="deleteCategory(props.rowData.id)">
                 <b-icon icon="minus"/>
             </button>
