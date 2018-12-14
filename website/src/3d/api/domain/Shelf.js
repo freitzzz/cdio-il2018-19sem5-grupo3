@@ -6,54 +6,60 @@
 import BaseProduct from "./BaseProduct";
 
 /**
+ * Requires Face for representing the shelf face
+ */
+import Face from './Face';
+
+/**
+ * Requires ProductType for identifying the shelf product type
+ */
+import ProductType from "./ProductType";
+
+/**
  * Represents the internal core of a shelf
  */
 export default class Shelf extends BaseProduct{
+
     /**
-     * Builds a new shelf with the dimensions and axes values for all faces
-     * @param {Array} shelf_base_face_dimensions_axes Array with the base face dimensions and axes values
+     * Builds a new Shelf
+     * @param {Face} face Face with the shelf face
+     * @param {Number} productId Number with the product id
+     * @param {Number} slotId Number with the slot id
      */
-    constructor(shelf_base_face_dimensions_axes) {
-        this.shelf_base_face_dimensions_axes = shelf_base_face_dimensions_axes.slice();
-        this._prepare_shelf_init();
+    constructor(face,productId,slotId=null) {
+        super(ProductType.SHELF,productId,slotId);
+        this.face=face;
+        this.initial_face=Object.assign({},face);
     }
 
     /**
      * Returns the current width of the shelf
      */
-    getShelfWidth() { return this.shelf_base_face_dimensions_axes[0]; }
+    getShelfWidth() { return this.face.width(); }
 
     /**
      * Returns the current height of the shelf
      */
-    getShelfHeight() { return this.shelf_base_face_dimensions_axes[1]; }
+    getShelfHeight() { return this.face.height(); }
 
     /**
      * Returns the current depth of the shelf
      */
-    getShelfDepth() { return this.shelf_base_face_dimensions_axes[2]; }
+    getShelfDepth() { return this.face.depth(); }
 
     /**
      * Returns all current shelf initial faces
      */
-    getInitialShelfFaces() { return this.initial_shelf_faces; }
+    getInitialShelfFaces() { return [this.initial_face]; }
 
     /**
      * Returns all current shelf faces
      */
-    getShelfFaces() { return this.shelf_faces; }
+    getShelfFaces() { return [this.face]; }
 
     /**
     * Changes the width of the Shelf
-    * @param {Number} width 
+    * @param {Number} width Number with the new shelf width
     */
-    changeShelfWidth(width) { this.width = width; }
-
-    /**
-     * Prepare the shelf initialization
-     */
-    _prepare_shelf_init() {
-        this.shelf_faces = [this.shelf_base_face_dimensions_axes];
-        this.initial_shelf_faces = [this.shelf_base_face_dimensions_axes.slice()];
-    }
+    changeShelfWidth(width) { this.face.changeWidth(width); }
 }
