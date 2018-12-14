@@ -6,20 +6,24 @@
 import BaseProduct from "./BaseProduct";
 
 /**
+ * Requires Face for hinged door face properties
+ */
+import Face from './Face';
+
+/**
  * Represents a hinged door using box geometry
  */
 export default class HingedDoor extends BaseProduct{
 
     /**
-     * Builds a new HingedDoor with the dimensions and axes values for the door
-     * @param {Array} hinged_door_axes Array with the dimensions and axes values of the door
-     * @param {Number} slotId Id of the slot that the hinged door belongs to
-     * @param {Number} meshId Id of the hinged door mesh
+     * Builds a new HingedDoor
+     * @param {Face} face Face with the hinged door product face
+     * @param {Number} productId Number with the product id
+     * @param {Number} slotId Number with the slot id
      */
-    constructor(hinged_door_axes, slotId, meshId) {
-        this.hinged_door_axes = hinged_door_axes.slice();
-        this.slotId = slotId;
-        this.meshId = meshId;
+    constructor(face,productId,slotId=null) {
+        super(productId,slotId);
+        this.face=face;
     }
 
     /**
@@ -27,27 +31,22 @@ export default class HingedDoor extends BaseProduct{
      * 
      * @param {Number} height New height of the door 
      */
-    changeHeight(height) { if (height > 0) this.hinged_door_axes[1] = height; }
+    changeHeight(height) { if (height > 0) this.face.changeHeight(height); }
 
     /**
      * Changes the width of the hingedDoor
      * 
      * @param {Number} width New width of the door 
      */
-    changeWidth(width) { if (width > 0) this.hinged_door_axes[0] = width; }
+    changeWidth(width) { if (width > 0) this.face.changeWidth(width); }
 
     /**
      * Returns the height of the hingedDoor
      */
-    getHeight() { return this.hinged_door_axes[1]; }
+    getHeight() { return this.face.height(); }
 
     /**
      * Returns the width of the hingedDoor
      */
-    getWidth() { return this.hinged_door_axes[0]; }
-
-    /**
-     * Returns the ID of the slot
-     */
-    getSlotId() { return this.slotId; }
+    getWidth() { return this.face.width(); }
 }
