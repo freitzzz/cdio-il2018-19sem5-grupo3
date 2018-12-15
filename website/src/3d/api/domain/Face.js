@@ -123,4 +123,10 @@ export default class Face{
      * @param {Number} ZAxis Number with the face Z axis
      */
     changeZAxis(ZAxis){this.faceZAxis=ZAxis};
+
+    /**
+     * Draws the current face
+     * @returns {Object} Drawn Face
+     */
+    draw(){}
 }
