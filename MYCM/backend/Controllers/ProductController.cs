@@ -612,14 +612,14 @@ namespace backend.Controllers
         }
 
         [HttpGet("{productId}/components")]
-        public ActionResult findProductComponents(long productId){
+        public ActionResult findProductComponents(long productId, [FromQuery]FindComponentsOptions groupBy){
             logger.LogInformation(LOG_GET_PRODUCT_COMPONENTS_STARTED);
-            FetchProductDTO fetchProductDTO = new FetchProductDTO();
-            fetchProductDTO.id = productId;
             try{
-                GetAllComponentsModelView allComponentsModelView = new core.application.ProductController().findProductComponents(fetchProductDTO);
-                logger.LogInformation(LOG_GET_PRODUCT_COMPONENTS_SUCCESS, productId, allComponentsModelView);
-                return Ok(allComponentsModelView);
+                    FindComponentsModelView findComponentsModel = new FindComponentsModelView();
+                    findComponentsModel.fatherProductId = productId;
+                    findComponentsModel.option = groupBy;
+                    GetAllComponentsModelView allComponentsByCategory = new core.application.ProductController().findProductComponents(findComponentsModel);
+                    return Ok(allComponentsByCategory);
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_GET_PRODUCT_COMPONENTS_NOT_FOUND, productId);
                 return NotFound(new SimpleJSONMessageService(e.Message));
