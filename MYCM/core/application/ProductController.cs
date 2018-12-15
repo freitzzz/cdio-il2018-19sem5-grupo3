@@ -168,15 +168,15 @@ namespace core.application
         /// <summary>
         /// Finds a Product's collection of Component.
         /// </summary>
-        /// <param name="fetchProductDTO">DTO containing information used for querying.</param>
+        /// <param name="findComponentsModelView">DTO containing information used for querying.</param>
         /// <returns>GetAllComponentsModelView with all of the elements in the Product's Collection of Component.</returns>
         /// <exception cref="ResourceNotFoundException">Thrown when the Product could not be found.</exception>
-        public GetAllComponentsModelView findProductComponents(FetchProductDTO fetchProductDTO){
+        public GetAllComponentsModelView findProductComponents(FindComponentsModelView findComponentsModelView){
             
-            Product product = PersistenceContext.repositories().createProductRepository().find(fetchProductDTO.id);
+            Product product = PersistenceContext.repositories().createProductRepository().find(findComponentsModelView.fatherProductId);
 
             if(product == null){
-                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, fetchProductDTO.id));
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, findComponentsModelView.fatherProductId));
             }
 
             //if no components are found, throw an exception so that a 404 code is sent
@@ -184,7 +184,11 @@ namespace core.application
                 throw new ResourceNotFoundException(ERROR_UNABLE_TO_FIND_COMPONENTS);
             }
 
-            return ComponentModelViewService.fromCollection(product.components);
+            if(findComponentsModelView.option == FindComponentsOptions.CATEGORY){
+                return ComponentModelViewService.fromCollectionGroupedByCategory(product.components);
+            }else{
+                return ComponentModelViewService.fromCollection(product.components);
+            }
         }
 
         /// <summary>
