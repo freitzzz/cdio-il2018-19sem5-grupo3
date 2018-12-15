@@ -12,6 +12,7 @@ export default class Face{
     
     /**
      * Builds a new Product Face
+     * @param {Number} faceId Number with the face id
      * @param {String} faceOrientation FaceOrientation with the face orientation
      * @param {Number} faceWidth Number with the face width dimension value
      * @param {Number} faceHeight Number with the face height dimension value
@@ -20,7 +21,8 @@ export default class Face{
      * @param {Number} faceYAxis Number with the face Y axis value
      * @param {Number} faceZAxis Number with the face Z axis value
      */
-    constructor(faceOrientation,faceWidth,faceHeight,faceDepth,faceXAxis,faceYAxis,faceZAxis){
+    constructor(faceId=null,faceOrientation,faceWidth,faceHeight,faceDepth,faceXAxis,faceYAxis,faceZAxis){
+        this.faceId=faceId;
         this.faceOrientation=faceOrientation;
         this.faceWidth=faceWidth;
         this.faceHeight=faceHeight;
@@ -29,6 +31,11 @@ export default class Face{
         this.faceYAxis=faceYAxis;
         this.faceZAxis=faceZAxis;
     }
+
+    /**
+     * Returns the face identifier
+     */
+    id(){return this.faceId;}
 
     /**
      * Returns the current face axis values
@@ -74,6 +81,12 @@ export default class Face{
      * Returns the current face Z axis value
      */
     Z(){return this.faceZAxis;}
+
+    /**
+     * Changes the id of the current face
+     * @param {Number} faceId Number with the new face id
+     */
+    changeId(faceId){this.faceId=faceId;}
 
     /**
      * Changes the current face width
