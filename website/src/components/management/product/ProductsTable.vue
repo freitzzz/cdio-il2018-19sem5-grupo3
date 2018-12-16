@@ -385,30 +385,35 @@ export default {
          * Updates a given product dimensions (POST + DELETE) in a promise way
          */
         updateProductDimensions(productDetails){
-            let oldProductDimensions=[];
+            let oldProductDimensionsIds=[];
             let addDimensions=[];
             let deleteDimensions=[];
+            let newProductDimensionsIds=[];
+
             for(let i=0;i<this.currentSelectedProduct.dimensions.length;i++)
-                oldProductDimensions.push(this.currentSelectedProduct.dimensions[i].id);
+                oldProductDimensionsIds.push(this.currentSelectedProduct.dimensions[i].id)
+            
             let newProductDimensions=productDetails.dimensions!=null ? productDetails.dimensions : [];
             
+            for(let i=0;i<newProductDimensions.length;i++)
+                newProductDimensionsIds.push(newProductDimensions[i].id);
+
             for(let i=0;i<newProductDimensions.length;i++){
-                if(!oldProductDimensions.includes(newProductDimensions[i]))
+                if(newProductDimensions[i].id==0)
                     addDimensions.push(newProductDimensions[i]);
             }
             
-            for(let i=0;i<oldProductDimensions.length;i++){
-                if(!newProductDimensions.includes(oldProductDimensions[i]))
-                    deleteDimensions.push(oldProductDimensions[i]);
+            for(let i=0;i<oldProductDimensionsIds.length;i++){
+                if(!newProductDimensionsIds.includes(oldProductDimensionsIds[i]))
+                    deleteDimensions.push(oldProductDimensionsIds[i]);
             }
+
             return new Promise((accept,reject)=>{
                 if(newProductDimensions.length==0)accept();
                 if(addDimensions.length>0){
                     for(let i=0;i<addDimensions.length;i++){
                         Axios
-                            .post(MYCM_API_URL+'/products/'+productDetails.id+'/dimensions/',{
-                                id:addDimensions[i]
-                            })
+                            .post(MYCM_API_URL+'/products/'+productDetails.id+'/dimensions/',addDimensions[i])
                             .catch((error_message)=>{
                                 reject(error_message.data.message);
                             });
