@@ -32,6 +32,16 @@ export default class ThreeCloset extends Closet{
     }
 
     /**
+     * Adds a new slot to the closet
+     */
+    addClosetSlot(){
+        let slot=super.addClosetSlot();
+        let drawnSlot=slot.draw();
+        this.faceGroup.add(drawnSlot);
+        return slot;
+    }
+
+    /**
      * Draws the current Three.js closet
      * @returns {Group} Group with the created closet
      */
