@@ -38,8 +38,11 @@ import Config,{ MYCM_API_URL } from '../../../config.js';
 
 
 let categories=[];
+let categoriesIds=[];
 let components=[];
+let componentsIds=[];
 let materials=[];
+let materialsIds=[];
 
 export default {
     components:{
@@ -146,54 +149,63 @@ export default {
          */
         fetchAvailableCategories(){
         Axios
-          .get(MYCM_API_URL+'/categories/leaves')
-          .then((response)=>{
-            let availableCategories=response.data;
-            availableCategories.forEach((category)=>{
-              categories.push(category);
+            .get(MYCM_API_URL+'/categories/leaves')
+            .then((response)=>{
+                let availableCategories=response.data;
+                availableCategories.forEach((category)=>{
+                    if(!categoriesIds.includes(category.id)){
+                        categories.push(category);
+                        categoriesIds.push(category.id);
+                    }
+                });
+            })
+            .catch((error_message)=>{
+                this.$toast.open({message:error_message.response.data.message});
             });
-          })
-          .catch((error_message)=>{
-              this.$toast.open({message:error_message.response.data.message});
-          });
     },
     /**
      * Fetches the available components
      */
     fetchAvailableComponents(){
         Axios
-          .get(MYCM_API_URL+'/products')
-          .then((response)=>{
-            let availableComponents=response.data;
-            availableComponents.forEach((component)=>{
-              components.push({
-                id:component.id,
-                value:component.designation
-              });
+            .get(MYCM_API_URL+'/products')
+            .then((response)=>{
+                let availableComponents=response.data;
+                availableComponents.forEach((component)=>{
+                    if(!componentsIds.includes(component.id)){
+                        components.push({
+                            id:component.id,
+                            value:component.designation
+                        });
+                        componentsIds.push(component.id);
+                    }
+                });
+            })
+            .catch((error_message)=>{
+                this.$toast.open({message:error_message.response.data.message});
             });
-          })
-          .catch((error_message)=>{
-              this.$toast.open({message:error_message.response.data.message});
-          });
     },
     /**
      * Fetches the available materials
      */
     fetchAvailableMaterials(){
         Axios
-          .get(MYCM_API_URL+'/materials')
-          .then((response)=>{
-            let availableMaterials=response.data;
-            availableMaterials.forEach((material)=>{
-              materials.push({
-                id:material.id,
-                value:material.designation
-              });
+            .get(MYCM_API_URL+'/materials')
+            .then((response)=>{
+                let availableMaterials=response.data;
+                availableMaterials.forEach((material)=>{
+                    if(!materialsIds.includes(material.id)){
+                        materials.push({
+                            id:material.id,
+                            value:material.designation
+                        });
+                        materialsIds.push(material.id);
+                    }
+                });
+            })
+            .catch((error_message)=>{
+                this.$toast.open({message:error_message.response.data.message});
             });
-          })
-          .catch((error_message)=>{
-              this.$toast.open({message:error_message.response.data.message});
-          });
         },
         /**
          * Fetches all available products
