@@ -112,16 +112,16 @@ export default {
             
             newProduct.dimensions=productDetails.dimensions;
             if(productDetails.slots!=null){
-                if(!(productDetails.slots.min==null 
-                    && productDetails.slots.recommended==null 
-                    && productDetails.slots.max==null
-                    && productDetails.slots.unit==null)){
-                        newProduct.slotsWidth={
-                            minWidth:productDetails.slots.min,
-                            recommendedWidth:productDetails.slots.recommended,
-                            maxWidth:productDetails.slots.max,
-                            unit:productDetails.slots.unit
+                console.log(Object.assign({},productDetails.slots));
+                if(!(productDetails.slots.minSize==null 
+                    && productDetails.slots.recommendedSize==null 
+                    && productDetails.slots.maxSize==null)){
+                        newProduct.slotWidths={
+                            minWidth:productDetails.slots.minSize,
+                            recommendedWidth:productDetails.slots.recommendedSize,
+                            maxWidth:productDetails.slots.maxSize
                         };
+                        if(productDetails.slots.unit)newProduct.slotWidths.unit=productDetails.slots.unit;
                     }
             }
 

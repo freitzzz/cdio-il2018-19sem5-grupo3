@@ -91,7 +91,7 @@
                         <b-input
                             type="Number"
                             :placeholder="200"
-                            :v-model="slotDimensionsItem.min"
+                            v-model="slotDimensionsItem.min"
                             icon="wrench"
                             required
                         />
@@ -100,16 +100,16 @@
                         <b-input
                             type="Number"
                             :placeholder="200"
-                            :v-model="slotDimensionsItem.recommended"
+                            v-model="slotDimensionsItem.recommended"
                             icon="wrench"
                             required
                         />
                     </b-field>
-                    <b-field label="Maxmimum Size Width">
+                    <b-field label="Maximum Size Width">
                         <b-input
                             type="Number"
                             :placeholder="200"
-                            :v-model="slotDimensionsItem.max"
+                            v-model="slotDimensionsItem.max"
                             icon="wrench"
                             required
                         />
@@ -118,7 +118,7 @@
                         <b-input
                             type="String"
                             placeholder="MM"
-                            :v-model="slotDimensionsItem.unit"
+                            v-model="slotDimensionsItem.unit"
                             icon="ruler"
                             required
                         />
@@ -329,7 +329,8 @@ export default {
             this.slotsItem.value={
                 minSize:this.slotDimensionsItem.min,
                 recommendedSize:this.slotDimensionsItem.recommended,
-                maxSize:this.slotDimensionsItem.max
+                maxSize:this.slotDimensionsItem.max,
+                unit:this.slotDimensionsItem.unit
             };
         },
         /**
@@ -344,7 +345,7 @@ export default {
                 materials:this.materialsItem.value,
                 dimensions:this.dimensionsItems.values,
                 components:this.componentsItem.value,
-                slots:this.slotDimensionsItem
+                slots:this.slotsItem.value
             };
             this.$emit('emitProduct',productDetails);
         },
