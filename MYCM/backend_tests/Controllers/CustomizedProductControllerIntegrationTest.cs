@@ -24,6 +24,7 @@ using core.modelview.component;
 using core.modelview.slot;
 using static core.domain.CustomizedProduct;
 using core.modelview.material;
+using System.Text;
 
 namespace backend_tests.Controllers
 {
@@ -842,9 +843,21 @@ namespace backend_tests.Controllers
                 await createFinishedCustomizedProduct(testNumber, true);
 
             customizedProductModelView.reference = "Reference " + testNumber;
-            customizedProductModelView.userAuthToken = "Valid auth token " + testNumber;
 
-            var response = await httpClient.PostAsJsonAsync(BASE_URI, customizedProductModelView);
+            Uri baseUri = new Uri(httpClient.BaseAddress.ToString() + BASE_URI);
+
+            var request = new HttpRequestMessage()
+            {
+                RequestUri = baseUri,
+                Method = HttpMethod.Post
+            };
+
+            string json = JsonConvert.SerializeObject(customizedProductModelView);
+
+            request.Headers.Add("userAuthToken", "Valid auth token " + testNumber);
+            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.SendAsync(request);
 
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
@@ -873,9 +886,21 @@ namespace backend_tests.Controllers
                 await createFinishedCustomizedProduct(testNumber, true);
 
             customizedProductModelView.reference = "Reference " + testNumber;
-            customizedProductModelView.userAuthToken = "Valid auth token " + testNumber;
 
-            var response = await httpClient.PostAsJsonAsync(BASE_URI, customizedProductModelView);
+            Uri baseUri = new Uri(httpClient.BaseAddress.ToString() + BASE_URI);
+
+            var request = new HttpRequestMessage()
+            {
+                RequestUri = baseUri,
+                Method = HttpMethod.Post
+            };
+
+            string json = JsonConvert.SerializeObject(customizedProductModelView);
+
+            request.Headers.Add("userAuthToken", "Valid auth token " + testNumber);
+            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.SendAsync(request);
 
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
@@ -1615,8 +1640,8 @@ namespace backend_tests.Controllers
                 new UpdateCustomizedProductModelView();
 
             //TODO Replace with ModelView
-            update.customizedMaterial = new CustomizedMaterialDTO();
-            update.customizedMaterial.id = createdCustomizedProductModelView.customizedMaterial.customizedMaterialId + 1;
+            update.customizedMaterial = new AddCustomizedMaterialModelView();
+            update.customizedMaterial.materialId = createdCustomizedProductModelView.customizedMaterial.customizedMaterialId + 1;
 
             var response =
                 await httpClient.PutAsJsonAsync
@@ -1626,9 +1651,8 @@ namespace backend_tests.Controllers
                     update
                 );
 
-            //!This is sending status code 500 due to the use of DTOs for Materials
             //TODO Change DTOs to ModelViews ASAP
-            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
             //TODO Compare Message
         }
@@ -1654,8 +1678,8 @@ namespace backend_tests.Controllers
                 new UpdateCustomizedProductModelView();
 
             //TODO Replace with ModelView
-            update.customizedMaterial = new CustomizedMaterialDTO();
-            update.customizedMaterial.id =
+            update.customizedMaterial = new AddCustomizedMaterialModelView();
+            update.customizedMaterial.materialId =
                 otherCreatedCustomizedProductModelView.customizedMaterial.customizedMaterialId;
 
             var response =
@@ -1666,9 +1690,8 @@ namespace backend_tests.Controllers
                     update
                 );
 
-            //!This is sending status code 500 due to the use of DTOs for Materials
             //TODO Change DTOs to ModelViews ASAP
-            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
             //TODO Compare Message
         }
@@ -1688,7 +1711,7 @@ namespace backend_tests.Controllers
                 new UpdateCustomizedProductModelView();
 
             //TODO Replace with ModelView
-            update.customizedMaterial = new CustomizedMaterialDTO();
+            update.customizedMaterial = new AddCustomizedMaterialModelView();
             update.customizedMaterial.color = new ColorDTO();
             update.customizedMaterial.color.name = "BREAK IT TO ME";
             update.customizedMaterial.color.red = 200;
@@ -1704,9 +1727,8 @@ namespace backend_tests.Controllers
                     update
                 );
 
-            //!This is sending status code 500 due to the use of DTOs for Materials
             //TODO Change DTOs to ModelViews ASAP
-            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
             //TODO Compare Message
         }
@@ -1726,7 +1748,7 @@ namespace backend_tests.Controllers
                 new UpdateCustomizedProductModelView();
 
             //TODO Replace with ModelView
-            update.customizedMaterial = new CustomizedMaterialDTO();
+            update.customizedMaterial = new AddCustomizedMaterialModelView();
             update.customizedMaterial.finish = new FinishDTO();
             update.customizedMaterial.finish.description = "GET UP AND FIGHT";
             update.customizedMaterial.finish.shininess = 20;
@@ -1741,7 +1763,7 @@ namespace backend_tests.Controllers
 
             //!This is sending status code 500 due to the use of DTOs for Materials
             //TODO Change DTOs to ModelViews ASAP
-            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
             //TODO Compare Message
         }
@@ -2230,7 +2252,20 @@ namespace backend_tests.Controllers
             customizedProductModelView.reference = "Reference " + testNumber;
             customizedProductModelView.userAuthToken = "Valid auth token " + testNumber;
 
-            var response = await httpClient.PostAsJsonAsync(BASE_URI, customizedProductModelView);
+            Uri baseUri = new Uri(httpClient.BaseAddress.ToString() + BASE_URI);
+
+            var request = new HttpRequestMessage()
+            {
+                RequestUri = baseUri,
+                Method = HttpMethod.Post
+            };
+
+            string json = JsonConvert.SerializeObject(customizedProductModelView);
+
+            request.Headers.Add("userAuthToken", "Valid auth token " + testNumber);
+            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.SendAsync(request);
 
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
@@ -2492,7 +2527,6 @@ namespace backend_tests.Controllers
             AddCustomizedProductModelView modelView =
                 new AddCustomizedProductModelView();
 
-            modelView.reference = "Reference " + testNumber;
             modelView.designation = "Designation " + testNumber;
             modelView.productId = productModelViewFromPost.productId;
             modelView.customizedDimensions = new AddCustomizedDimensionsModelView();
@@ -2500,7 +2534,6 @@ namespace backend_tests.Controllers
             modelView.customizedDimensions.width = 1000;
             modelView.customizedDimensions.height = 1000;
             modelView.customizedDimensions.unit = "mm";
-            modelView.userAuthToken = "reallycooltoken";
 
             return modelView;
         }

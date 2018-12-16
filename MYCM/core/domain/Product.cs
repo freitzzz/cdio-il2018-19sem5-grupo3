@@ -252,13 +252,13 @@ namespace core.domain {
             this.designation = designation;
             this.modelFilename = modelFilename;
             this.productMaterials = new List<ProductMaterial>();
-            foreach (Material mat in materials) {
-                this.productMaterials.Add(new ProductMaterial(this, mat));
+            foreach (Material material in materials) {
+                this.addMaterial(material);
             }
             this.components = new List<Component>();
             this.productMeasurements = new List<ProductMeasurement>();
             foreach(Measurement measurement in measurements){
-                this.productMeasurements.Add(new ProductMeasurement(this, measurement));
+                this.addMeasurement(measurement);
             }
             this.productCategory = productCategory;
             //!MaxValue assigned here because customized dimensions can't have value 0
@@ -288,7 +288,7 @@ namespace core.domain {
             checkComplementaryProducts(complementaryProducts);
             this.components = new List<Component>();
             foreach (Product complementaryProduct in complementaryProducts) {
-                this.components.Add(new Component(this, complementaryProduct));
+                this.addComplementaryProduct(complementaryProduct);
             }
         }
 

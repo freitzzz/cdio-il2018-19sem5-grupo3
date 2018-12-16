@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using core.modelview.cataloguecollection;
 
 namespace core.modelview.commercialcatalogue
 {
@@ -13,8 +14,8 @@ namespace core.modelview.commercialcatalogue
         /// Commercial Catalogue's database identifier.
         /// </summary>
         /// <value>Gets/sets the database identifier.</value>
-        [DataMember]
-        public long id { get; set; }
+        [DataMember(Name = "id")]
+        public long commercialCatalogueId { get; set; }
 
         /// <summary>
         /// Commercial Catalogue's reference.
@@ -30,14 +31,11 @@ namespace core.modelview.commercialcatalogue
         [DataMember]
         public string designation { get; set; }
 
-    
         /// <summary>
         /// List of Commercial Catalogue Catalogue Collection.
         /// </summary>
         /// <value>Gets/sets the name.</value>
-        [DataMember]
-        public List<GetCatalogueCollectionModelView> commercialCatalogueCatalogueCollectionList { get; set; }
-
-      
+        [DataMember (EmitDefaultValue = false)]
+        public GetAllCatalogueCollectionsModelView commercialCatalogueCollections { get; set; }
     }
 }

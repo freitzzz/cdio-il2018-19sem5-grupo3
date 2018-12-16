@@ -1,5 +1,6 @@
 using backend.config;
 using core.persistence;
+using System.Threading;
 
 namespace backend.persistence.ef
 {
@@ -15,7 +16,9 @@ namespace backend.persistence.ef
         /// <returns>CommercialCatalogueRepository with the repository for CommercialCatalogue entities</returns>
         public CommercialCatalogueRepository createCommercialCatalogueRepository()
         {
-            return new EFCommercialCatalogueRepository(BackendConfiguration.entityFrameworkContext);
+            return new EFCommercialCatalogueRepository(
+                (MyCContext)BackendConfiguration.entityFrameworkContexts.get(Thread.CurrentThread.ManagedThreadId)
+            );
         }
 
         /// <summary>
@@ -24,7 +27,9 @@ namespace backend.persistence.ef
         /// <returns>CustomizedProductCollectionRepository with the repository for customized products collections</returns>
         public CustomizedProductCollectionRepository createCustomizedProductCollectionRepository()
         {
-            return new EFCustomizedProductCollectionRepository(BackendConfiguration.entityFrameworkContext);
+            return new EFCustomizedProductCollectionRepository(
+                (MyCContext)BackendConfiguration.entityFrameworkContexts.get(Thread.CurrentThread.ManagedThreadId)
+            );
         }
 
         /// <summary>
@@ -33,22 +38,30 @@ namespace backend.persistence.ef
         /// <returns>CustomizedProductRepository with the repository for customized products</returns>
         public CustomizedProductRepository createCustomizedProductRepository()
         {
-            return new EFCustomizedProductRepository(BackendConfiguration.entityFrameworkContext);
+            return new EFCustomizedProductRepository(
+                (MyCContext)BackendConfiguration.entityFrameworkContexts.get(Thread.CurrentThread.ManagedThreadId)
+            );
         }
 
         public CustomizedProductSerialNumberRepository createCustomizedProductSerialNumberRepository()
         {
-            return new EFCustomizedProductSerialNumberRepository(BackendConfiguration.entityFrameworkContext);
+            return new EFCustomizedProductSerialNumberRepository(
+                (MyCContext)BackendConfiguration.entityFrameworkContexts.get(Thread.CurrentThread.ManagedThreadId)
+            );
         }
 
         public FinishPriceTableRepository createFinishPriceTableRepository()
         {
-            return new EFFinishPriceTableRepository(BackendConfiguration.entityFrameworkContext);
+            return new EFFinishPriceTableRepository(
+                (MyCContext)BackendConfiguration.entityFrameworkContexts.get(Thread.CurrentThread.ManagedThreadId)
+            );
         }
 
         public MaterialPriceTableRepository createMaterialPriceTableRepository()
         {
-            return new EFMaterialPriceTableRepository(BackendConfiguration.entityFrameworkContext);
+            return new EFMaterialPriceTableRepository(
+                (MyCContext)BackendConfiguration.entityFrameworkContexts.get(Thread.CurrentThread.ManagedThreadId)
+            );
         }
 
         /// <summary>
@@ -57,7 +70,9 @@ namespace backend.persistence.ef
         /// <returns>MaterialRepository with the repository for material entities</returns>
         public MaterialRepository createMaterialRepository()
         {
-            return new EFMaterialRepository(BackendConfiguration.entityFrameworkContext);
+            return new EFMaterialRepository(
+                (MyCContext)BackendConfiguration.entityFrameworkContexts.get(Thread.CurrentThread.ManagedThreadId)
+            );
         }
 
         /// <summary>
@@ -66,7 +81,9 @@ namespace backend.persistence.ef
         /// <returns>ProductCategoryRepository with the repository for product category entities</returns>
         public ProductCategoryRepository createProductCategoryRepository()
         {
-            return new EFProductCategoryRepository(BackendConfiguration.entityFrameworkContext);
+            return new EFProductCategoryRepository(
+                (MyCContext)BackendConfiguration.entityFrameworkContexts.get(Thread.CurrentThread.ManagedThreadId)
+            );
         }
 
         // <summary>
@@ -75,7 +92,9 @@ namespace backend.persistence.ef
         /// <returns>ProductRepository with the repository for product entities</returns>
         public ProductRepository createProductRepository()
         {
-            return new EFProductRepository(BackendConfiguration.entityFrameworkContext);
+            return new EFProductRepository(
+                (MyCContext)BackendConfiguration.entityFrameworkContexts.get(Thread.CurrentThread.ManagedThreadId)
+            );
         }
     }
 }

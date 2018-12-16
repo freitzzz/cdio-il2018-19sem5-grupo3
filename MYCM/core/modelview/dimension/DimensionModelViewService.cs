@@ -20,7 +20,7 @@ namespace core.modelview.dimension
         /// Constant representing the error message presented when a null Collection of AddDimensionModelView is provided.
         /// </summary>
         private const string ERROR_NULL_DIMENSION_VIEW_COLLECTION = "Invalid dimension view collection provided.";
-        
+
         /// <summary>
         /// Constant representing the error message presented when a null Dimension is provided.
         /// </summary>
@@ -49,55 +49,7 @@ namespace core.modelview.dimension
         /// <exception cref="System.ArgumentNullException">Throw when the provided Dimension is null.</exception>
         public static GetDimensionModelView fromEntity(Dimension dimension)
         {
-            if (dimension == null)
-            {
-                throw new ArgumentNullException(ERROR_NULL_DIMENSION);
-            }
-
-            Type dimensionType = dimension.GetType();
-
-            if (dimensionType == typeof(SingleValueDimension))
-            {
-                SingleValueDimension singleValueDimension = (SingleValueDimension)dimension;
-                GetSingleValueDimensionModelView singleMV = new GetSingleValueDimensionModelView();
-                singleMV.id = singleValueDimension.Id;
-                singleMV.unit = MeasurementUnitService.getMinimumUnit();
-                singleMV.value = singleValueDimension.value;
-
-                return singleMV;
-            }
-            else if (dimensionType == typeof(DiscreteDimensionInterval))
-            {
-                DiscreteDimensionInterval discreteDimension = (DiscreteDimensionInterval)dimension;
-                GetDiscreteDimensionIntervalModelView discreteMV = new GetDiscreteDimensionIntervalModelView();
-                discreteMV.id = discreteDimension.Id;
-                discreteMV.unit = MeasurementUnitService.getMinimumUnit();
-
-                List<double> values = new List<double>();
-                foreach (double value in discreteDimension.values)
-                {
-                    values.Add(value);
-                }
-                discreteMV.values = values;
-
-                return discreteMV;
-            }
-            else if (dimensionType == typeof(ContinuousDimensionInterval))
-            {
-                ContinuousDimensionInterval continuousDimension = (ContinuousDimensionInterval)dimension;
-                GetContinuousDimensionIntervalModelView continuousMV = new GetContinuousDimensionIntervalModelView();
-                continuousMV.id = continuousDimension.Id;
-                continuousMV.unit = MeasurementUnitService.getMinimumUnit();
-                continuousMV.minValue = continuousDimension.minValue;
-                continuousMV.maxValue = continuousDimension.maxValue;
-                continuousMV.increment = continuousDimension.increment;
-
-                return continuousMV;
-            }
-            else
-            {
-                throw new NotImplementedException(ERROR_NO_IMPLEMENTATION_UNKNOWN_DIMENSION);
-            }
+            return fromEntity(dimension, MeasurementUnitService.getMinimumUnit());
 
         }
 
@@ -174,13 +126,7 @@ namespace core.modelview.dimension
         /// <exception cref="System.ArgumentNullException">Throw when the provided IEnumerable of Dimension is null.</exception>
         public static GetAllDimensionsModelView fromCollection(IEnumerable<Dimension> dimensions)
         {
-            if(dimensions == null){
-                throw new ArgumentException(ERROR_NULL_DIMENSION_COLLECTION);
-            }
-
-            GetAllDimensionsModelView allDimensionsModelView = new GetAllDimensionsModelView();
-            foreach (Dimension dimension in dimensions) allDimensionsModelView.Add(fromEntity(dimension));
-            return allDimensionsModelView;
+            return fromCollection(dimensions, MeasurementUnitService.getMinimumUnit());
         }
 
         /// <summary>
@@ -192,11 +138,13 @@ namespace core.modelview.dimension
         /// <exception cref="System.ArgumentNullException">Throw when the provided IEnumerable of Dimension is null.</exception>
         public static GetAllDimensionsModelView fromCollection(IEnumerable<Dimension> dimensions, string unit)
         {
-            if(dimensions == null){
+            if (dimensions == null)
+            {
                 throw new ArgumentNullException(ERROR_NULL_DIMENSION_COLLECTION);
             }
             //if the provided unit string is null or empty, resort to the default implementation
-            if(Strings.isNullOrEmpty(unit)){
+            if (Strings.isNullOrEmpty(unit))
+            {
                 return fromCollection(dimensions);
             }
 
@@ -206,11 +154,11 @@ namespace core.modelview.dimension
         }
 
         /// <summary>
-        /// Creates an instance of Dimension from an AddDImensionModelView instance.
+        /// Creates an instance of Dimension from an AddDimensionModelView instance.
         /// </summary>
         /// <param name="addDimensionModelView">AddDimensionModelView instance.</param>
         /// <returns>Created Dimension.</returns>
-        /// <exception cref="System.ArgumentNullException">Thtown when the provided AddDimensionModelView is null.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown when the provided AddDimensionModelView is null.</exception>
         public static Dimension fromModelView(AddDimensionModelView addDimensionModelView)
         {
             if (addDimensionModelView == null)
@@ -256,7 +204,7 @@ namespace core.modelview.dimension
             }
             else
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException(ERROR_NO_IMPLEMENTATION_UNKNOWN_VIEW);
             }
         }
 

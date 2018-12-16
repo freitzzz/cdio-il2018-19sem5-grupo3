@@ -28,6 +28,7 @@ namespace core.modelview.customizedproductcollection
 
             basicModelView.id = customizedProductCollection.Id;
             basicModelView.name = customizedProductCollection.name;
+            basicModelView.hasCustomizedProducts = customizedProductCollection.collectionProducts.Count != 0;
 
             return basicModelView;
         }

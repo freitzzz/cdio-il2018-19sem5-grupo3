@@ -1,4 +1,6 @@
 using backend.persistence.ef;
+using System.Collections.Generic;
+using support.system;
 
 namespace backend.config{
     /// <summary>
@@ -9,5 +11,10 @@ namespace backend.config{
         /// Current entity framework context
         /// </summary>
         public static MyCContext entityFrameworkContext{get;set;}
+
+        /// <summary>
+        /// Dictionary holding all MyCContexts 
+        /// </summary>
+        public static Properties entityFrameworkContexts = new Properties();
     }
 }

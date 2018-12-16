@@ -2111,7 +2111,8 @@ namespace backend_tests.Controllers
 
             Assert.Equal(HttpStatusCode.OK, getComponentsResponse.StatusCode);
 
-            GetAllComponentsModelView getAllComponentsModelView = await getComponentsResponse.Content.ReadAsAsync<GetAllComponentsModelView>();
+            //*Downcast has to be done in order to compare contents */
+            GetAllComponentsListModelView getAllComponentsModelView = await getComponentsResponse.Content.ReadAsAsync<GetAllComponentsListModelView>();
 
             for (int i = 0; i < getAllComponentsModelView.Count; i++)
             {

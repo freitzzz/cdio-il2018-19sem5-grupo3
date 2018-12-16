@@ -13,8 +13,7 @@ namespace core_tests.domain
     /// </summary>
     public class CatalogueCollectionTest
     {
-        [Fact]
-        public void ensureCatalogueCollectionCanBeCreatedWithCustomizedProductCollection()
+        private CustomizedProduct buildCustomizedProduct(string serialNumber)
         {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
@@ -51,767 +50,470 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
-            customCollection.addCustomizedProduct(cp);
-            Assert.NotNull(new CatalogueCollection(customCollection));
-        }
-        [Fact]
-        public void ensureCatalogueCollectionContructorIsInvalid()
-        {
-            var category = new ProductCategory("Drawers");
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
-
-            values2.Add(500.0); //Width
-
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            colors.Add(color);
-            colors.Add(color1);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém", 12);
-            Finish finish2 = Finish.valueOf("Acabamento polido", 34);
-            finishes.Add(finish);
-            finishes.Add(finish2);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
-
-
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            List<CustomizedProduct> list = new List<CustomizedProduct>();
-            list.Add(cp);
-
-            Action action = () => new CatalogueCollection(null, list);
-
-            Assert.Throws<ArgumentException>(action);
+            return CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, product, customizedDimensions).withMaterial(custMaterial1).build();
         }
 
-
-        [Fact]
-        public void ensureCatalogueCollectionContructorIsValid()
+        private CustomizedProductCollection buildCustomizedProductCollection()
         {
-            var category = new ProductCategory("Drawers");
+            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Closets Spring 2019");
 
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
+            CustomizedProduct customizedProduct1 = buildCustomizedProduct("1234");
+            customizedProduct1.finalizeCustomization();     //!customized products added to collections need to be finished
 
-            values2.Add(500.0); //Width
+            customizedProductCollection.addCustomizedProduct(customizedProduct1);
 
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            CustomizedProduct customizedProduct2 = buildCustomizedProduct("1235");
+            customizedProduct2.finalizeCustomization();     //!customized products added to collections need to be finished
 
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
+            customizedProductCollection.addCustomizedProduct(customizedProduct2);
 
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
+            return customizedProductCollection;
+        }
 
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            colors.Add(color);
-            colors.Add(color1);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém", 12);
-            Finish finish2 = Finish.valueOf("Acabamento polido",34);
-            finishes.Add(finish);
-            finishes.Add(finish2);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
-
-
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            List<CustomizedProduct> list = new List<CustomizedProduct>();
-            list.Add(cp);
-
-
-
-            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Mario");
-            customizedProductCollection.addCustomizedProduct(cp);
-
-            CatalogueCollection CatalogueCollection = new CatalogueCollection(customizedProductCollection, list);
-            Assert.NotNull(CatalogueCollection);
+        private CatalogueCollection buildCatalogueCollection()
+        {
+            return new CatalogueCollection(buildCustomizedProductCollection());
         }
 
         [Fact]
-        public void ensureHashCodeIsEqual()
+        public void ensureCatalogueCollectionCantBeCreatedWithNullCustomizedProductCollection()
         {
-            var category = new ProductCategory("Drawers");
+            Action createCatalogueCollection = () => new CatalogueCollection(null);
 
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
-
-            values2.Add(500.0); //Width
-
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            Color color1 = Color.valueOf("Azul", 1, 1, 1, 1);
-            colors.Add(color);
-            colors.Add(color1);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém",12);
-            Finish finish2 = Finish.valueOf("Acabamento polido",34);
-            finishes.Add(finish);
-            finishes.Add(finish2);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color1, finish2);
-
-
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            List<CustomizedProduct> list = new List<CustomizedProduct>();
-            list.Add(cp);
-
-
-            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Mario");
-            customizedProductCollection.addCustomizedProduct(cp);
-            CatalogueCollection CatalogueCollection = new CatalogueCollection(customizedProductCollection, list);
-
-            CatalogueCollection copyCatalogueCollection = new CatalogueCollection(customizedProductCollection, list);
-
-            int hashCode1 = CatalogueCollection.GetHashCode();
-            int hashCode2 = copyCatalogueCollection.GetHashCode();
-
-            Assert.Equal(hashCode1, hashCode2);
-        }
-        [Fact]
-        public void ensureToStringSucceeds()
-        {
-            var category = new ProductCategory("Drawers");
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
-
-            values2.Add(500.0); //Width
-
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém",12);
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
-            customCollection.addCustomizedProduct(cp);
-            Assert.Equal("List of Customized Products: System.Collections.Generic.List`1[core.domain.CatalogueCollectionProduct], Customized Product Collection Name Lab Coats", new CatalogueCollection(customCollection).ToString());
+            Assert.Throws<ArgumentException>(createCatalogueCollection);
         }
 
         [Fact]
-        public void ensureEqualsSucceedsIfSameInstance()
+        public void ensureCatalogueCollectionCantBeCreatedWithNullCustomizedProducts()
         {
-            var category = new ProductCategory("Drawers");
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
+            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Closets Spring 2019");
 
-            values2.Add(500.0); //Width
+            Action createCatalogueCollection = () => new CatalogueCollection(customizedProductCollection, null);
 
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém",12);
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
-            customCollection.addCustomizedProduct(cp);
-            CatalogueCollection collection = new CatalogueCollection(customCollection);
-            Assert.True(collection.Equals(collection));
+            Assert.Throws<ArgumentException>(createCatalogueCollection);
         }
 
         [Fact]
-        public void ensureEqualsFailsIfObjjectIsNull()
+        public void ensureCatalogueCollectionCantBeCreatedWithNullCustomizedProductCollectionWhenSpecifyingCustomizedProducts()
         {
-            var category = new ProductCategory("Drawers");
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
+            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Closets Spring 2019");
 
-            values2.Add(500.0); //Width
+            Action createCatalogueCollection = () => new CatalogueCollection(null, new List<CustomizedProduct>());
 
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("Amém",12);
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
-            customCollection.addCustomizedProduct(cp);
-            CatalogueCollection collection = new CatalogueCollection(customCollection);
-            Assert.False(collection.Equals(null));
+            Assert.Throws<ArgumentException>(createCatalogueCollection);
         }
+
         [Fact]
-        public void ensureEqualsFailsIfObjectNotSameType()
+        public void ensureCatalogueCollectionCantBeCreatedWithProductsNotInCustomizedProductCollection()
         {
-            var category = new ProductCategory("Drawers");
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
+            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Closets Spring 2019");
 
-            values2.Add(500.0); //Width
+            CustomizedProduct customizedProduct1 = buildCustomizedProduct("1234");
+            customizedProduct1.finalizeCustomization();     //!customized products added to collections need to be finished
 
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            customizedProductCollection.addCustomizedProduct(customizedProduct1);
 
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
+            CustomizedProduct customizedProduct2 = buildCustomizedProduct("1235");
 
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
+            List<CustomizedProduct> customizedProducts = new List<CustomizedProduct>() { customizedProduct1, customizedProduct2 };
 
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            colors.Add(color);
+            Action createCatalogueCollection = () => new CatalogueCollection(customizedProductCollection, customizedProducts);
 
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("amém", 12);
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
-            customCollection.addCustomizedProduct(cp);
-            CatalogueCollection collection = new CatalogueCollection(customCollection);
-            Assert.False(collection.Equals(cp));
+            Assert.Throws<ArgumentException>(createCatalogueCollection);
         }
+
         [Fact]
-        public void ensureEqualsSucceeds()
+        public void ensureCatalogueCollectionCantBeCreatedWithNullCustomizedProductsInCustomizedProductEnumerable()
         {
-            var category = new ProductCategory("Drawers");
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
+            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Closets Spring 2019");
 
-            values2.Add(500.0); //Width
+            CustomizedProduct customizedProduct1 = buildCustomizedProduct("1234");
+            customizedProduct1.finalizeCustomization();     //!customized products added to collections need to be finished
 
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            customizedProductCollection.addCustomizedProduct(customizedProduct1);
 
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
+            CustomizedProduct customizedProduct2 = buildCustomizedProduct("1235");
 
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
+            List<CustomizedProduct> customizedProducts = new List<CustomizedProduct>() { customizedProduct1, customizedProduct2, null };
 
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            colors.Add(color);
+            Action createCatalogueCollection = () => new CatalogueCollection(customizedProductCollection, customizedProducts);
 
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("amém", 12);
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
-            customCollection.addCustomizedProduct(cp);
-            CatalogueCollection collection = new CatalogueCollection(customCollection);
-            Assert.True(collection.Equals(new CatalogueCollection(customCollection)));
+            Assert.Throws<ArgumentException>(createCatalogueCollection);
         }
+
         [Fact]
-        public void ensureEqualsFailsIfCustomizedProductCollectionIsNotEqual()
+        public void ensureCatalogueCollectionCantBeCreatedWithDuplicateCustomizedProductsInCustomizedProductEnumerable()
         {
-            var category = new ProductCategory("Drawers");
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
+            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Closets Spring 2019");
 
-            values2.Add(500.0); //Width
+            CustomizedProduct customizedProduct1 = buildCustomizedProduct("1234");
+            customizedProduct1.finalizeCustomization();     //!customized products added to collections need to be finished
 
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            customizedProductCollection.addCustomizedProduct(customizedProduct1);
 
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
+            CustomizedProduct customizedProduct2 = buildCustomizedProduct("1235");
 
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
+            List<CustomizedProduct> customizedProducts = new List<CustomizedProduct>() { customizedProduct1, customizedProduct2, customizedProduct1 };
 
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            colors.Add(color);
+            Action createCatalogueCollection = () => new CatalogueCollection(customizedProductCollection, customizedProducts);
 
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("amém", 12);
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
-            customCollection.addCustomizedProduct(cp);
-            CustomizedProductCollection customCollection2 = new CustomizedProductCollection("Phone Microwave (Temporary Name)");
-            customCollection2.addCustomizedProduct(cp);
-            CatalogueCollection collection = new CatalogueCollection(customCollection);
-            Assert.False(collection.Equals(new CatalogueCollection(customCollection2)));
+            Assert.Throws<ArgumentException>(createCatalogueCollection);
         }
+
         [Fact]
-        public void ensureEqualsFailsIfCatalogueCollectionProductListNotSameSize()
+        public void ensureCatalogueCollectionCanBeCreatedIfCustomizedProductCollectionIsNotNull()
         {
-            var category = new ProductCategory("Drawers");
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
+            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Closets Spring 2019");
 
-            values2.Add(500.0); //Width
+            CatalogueCollection catalogueCollection = new CatalogueCollection(customizedProductCollection);
 
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("amém", 12);
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProduct cp2 = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 2", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
-            customCollection.addCustomizedProduct(cp);
-            customCollection.addCustomizedProduct(cp2);
-            CatalogueCollection collection = new CatalogueCollection(customCollection);
-            CatalogueCollection collection2 = new CatalogueCollection(customCollection, new List<CustomizedProduct>(new[] { cp2 }));
-            Assert.False(collection.Equals(collection2));
+            Assert.NotNull(catalogueCollection);
         }
+
         [Fact]
-        public void ensureEqualsFailsIfCatalogueCollectionProductsAreNotTheSame()
+        public void ensureCatalogueCollectionCanBeCreatedIfAllCustomizedProductsWereAddedToCustomizedProductCollection()
         {
-            var category = new ProductCategory("Drawers");
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
+            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Closets Spring 2019");
 
-            values2.Add(500.0); //Width
+            CustomizedProduct customizedProduct1 = buildCustomizedProduct("1234");
+            customizedProduct1.finalizeCustomization();     //!customized products added to collections need to be finished
 
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            customizedProductCollection.addCustomizedProduct(customizedProduct1);
 
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
+            CustomizedProduct customizedProduct2 = buildCustomizedProduct("1235");
+            customizedProduct2.finalizeCustomization();     //!customized products added to collections need to be finished
 
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
+            customizedProductCollection.addCustomizedProduct(customizedProduct2);
 
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            colors.Add(color);
+            List<CustomizedProduct> customizedProducts = new List<CustomizedProduct>() { customizedProduct1, customizedProduct2 };
 
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("amém", 12);
-            finishes.Add(finish);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(customizedProductCollection, customizedProducts);
 
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProduct cp2 = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 2", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
-            customCollection.addCustomizedProduct(cp);
-            CustomizedProductCollection customCollection2 = new CustomizedProductCollection("Phone Microwave (Temporary Name)");
-            customCollection2.addCustomizedProduct(cp2);
-            CatalogueCollection collection = new CatalogueCollection(customCollection);
-            CatalogueCollection collection2 = new CatalogueCollection(customCollection2);
-            Assert.False(collection.Equals(collection2));
+            Assert.NotNull(catalogueCollection);
         }
+
         [Fact]
-        public void ensureHasCustomizedProductSucceeds()
+        public void ensureCreatingCatalogueCollectionWithCustomizedProductCollectionAddsAllCustomizedProducts()
         {
-            var category = new ProductCategory("Drawers");
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
+            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Closets Spring 2019");
 
-            values2.Add(500.0); //Width
+            CustomizedProduct customizedProduct1 = buildCustomizedProduct("1234");
+            customizedProduct1.finalizeCustomization();     //!customized products added to collections need to be finished
 
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            customizedProductCollection.addCustomizedProduct(customizedProduct1);
 
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
+            CustomizedProduct customizedProduct2 = buildCustomizedProduct("1235");
+            customizedProduct2.finalizeCustomization();     //!customized products added to collections need to be finished
 
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
+            customizedProductCollection.addCustomizedProduct(customizedProduct2);
 
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            colors.Add(color);
+            CatalogueCollection catalogueCollection = new CatalogueCollection(customizedProductCollection);
 
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("amém", 12);
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
-            customCollection.addCustomizedProduct(cp);
-            CatalogueCollection collection = new CatalogueCollection(customCollection);
-            Assert.True(collection.hasCustomizedProduct(cp));
+            Assert.True(catalogueCollection.hasCustomizedProduct(customizedProduct1));
+            Assert.True(catalogueCollection.hasCustomizedProduct(customizedProduct2));
         }
+
+
         [Fact]
-        public void ensureHasCustomizedProductFails()
+        public void ensureAddingNullCustomizedProductThrowsException()
         {
-            var category = new ProductCategory("Drawers");
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
 
-            values2.Add(500.0); //Width
+            Action addNullCustomizedProduct = () => catalogueCollection.addCustomizedProduct(null);
 
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("amém", 12);
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
-            customCollection.addCustomizedProduct(cp);
-            CatalogueCollection collection = new CatalogueCollection(customCollection);
-            CustomizedProduct cp2 = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 2", product, customizedDimensions).withMaterial(custMaterial1).build();
-            Assert.False(collection.hasCustomizedProduct(cp2));
+            Assert.Throws<ArgumentException>(addNullCustomizedProduct);
         }
+
         [Fact]
-        public void ensureToDTOWorks()
+        public void ensureAddingNullCustomizedProductDoesNotAddCustomizedProduct()
         {
-            var category = new ProductCategory("Drawers");
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
 
-            values2.Add(500.0); //Width
+            try
+            {
+                catalogueCollection.addCustomizedProduct(null);
+            }
+            catch (Exception) { }
 
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
-
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("amém", 12);
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
-            customCollection.addCustomizedProduct(cp);
-            CatalogueCollection collection = new CatalogueCollection(customCollection);
-            CatalogueCollectionDTO dto = collection.toDTO();
-            Assert.Equal(collection.customizedProductCollection.name, dto.customizedProductCollectionDTO.name);
-            Assert.Equal(collection.catalogueCollectionProducts.Count, dto.customizedProductDTOs.Count);
+            Assert.Equal(2, catalogueCollection.catalogueCollectionProducts.Count);
         }
+
         [Fact]
-        public void ensureCatalogueCollectionIsNotCreatedIfACustomizedProductDoesNotBelongToTheCollection()
+        public void ensureAddingCustomizedProductNotAddedToCustomizedProductCollectionThrowsException()
         {
-            var category = new ProductCategory("Drawers");
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
 
-            values2.Add(500.0); //Width
+            CustomizedProduct customizedProduct = buildCustomizedProduct("12345");
 
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            Action addCustomizedProduct = () => catalogueCollection.addCustomizedProduct(customizedProduct);
 
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("amém", 12);
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProduct cp2 = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number 2", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
-            customCollection.addCustomizedProduct(cp);
-            Assert.Throws<ArgumentException>(() => new CatalogueCollection(customCollection, new List<CustomizedProduct>(new[] { cp2 })));
+            Assert.Throws<ArgumentException>(addCustomizedProduct);
         }
+
         [Fact]
-        public void ensureCatalgueCollectionIsNotCreatedIfEitherArgumentIsNull()
+        public void ensureAddingCustomizedProductNotAddedTocustomizedProductCollectionDoesNotAddCustomizedProduct()
         {
-            var category = new ProductCategory("Drawers");
-            //Creating Dimensions
-            List<Double> values2 = new List<Double>();
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
 
-            values2.Add(500.0); //Width
+            CustomizedProduct customizedProduct = buildCustomizedProduct("12345");
 
-            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
+            try
+            {
+                catalogueCollection.addCustomizedProduct(customizedProduct);
+            }
+            catch (Exception) { }
 
-            Measurement measurement = new Measurement(d2, d2, d2);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            //Creating a material
-            string reference = "1160912";
-            string designation = "FR E SH A VOCA DO";
-
-            List<Color> colors = new List<Color>();
-            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            Finish finish = Finish.valueOf("amém", 12);
-            finishes.Add(finish);
-
-            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
-            List<Material> materials = new List<Material>();
-            materials.Add(material);
-
-            IEnumerable<Material> matsList = materials;
-
-            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
-
-            //Customized Material
-            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
-
-            CustomizedProduct cp = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(custMaterial1).build();
-            CustomizedProductCollection customCollection = new CustomizedProductCollection("Lab Coats");
-            customCollection.addCustomizedProduct(cp);
-            Assert.Throws<ArgumentException>(() => new CatalogueCollection(customCollection, null));
+            Assert.Equal(2, catalogueCollection.catalogueCollectionProducts.Count);
+            Assert.False(catalogueCollection.hasCustomizedProduct(customizedProduct));
         }
+
+        [Fact]
+        public void ensureAddingDuplicateCustomizedProductThrowsException()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            CustomizedProduct customizedProduct = buildCustomizedProduct("1234");
+
+            Action addCustomizedProduct = () => catalogueCollection.addCustomizedProduct(customizedProduct);
+
+            Assert.Throws<ArgumentException>(addCustomizedProduct);
+        }
+
+        [Fact]
+        public void ensureAddingDuplicateCustomizedProductDoesNotAddCustomizedProduct()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            CustomizedProduct customizedProduct = buildCustomizedProduct("1234");
+
+            try
+            {
+                catalogueCollection.addCustomizedProduct(customizedProduct);
+            }
+            catch (Exception) { }
+
+            Assert.Equal(2, catalogueCollection.catalogueCollectionProducts.Count);
+        }
+
+        [Fact]
+        public void ensureAddingValidCustomizedProductDoesNotThrowException()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            CustomizedProductCollection customizedProductCollection = catalogueCollection.customizedProductCollection;
+
+            CustomizedProduct customizedProduct = buildCustomizedProduct("123545");
+            customizedProduct.finalizeCustomization();
+
+            customizedProductCollection.addCustomizedProduct(customizedProduct);
+
+            Action addValidCustomizedProduct = () => catalogueCollection.addCustomizedProduct(customizedProduct);
+
+            Exception exception = Record.Exception(addValidCustomizedProduct);
+
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void ensureAddingValidCustomizedProductAddsCustomizedProduct()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            CustomizedProductCollection customizedProductCollection = catalogueCollection.customizedProductCollection;
+
+            CustomizedProduct customizedProduct = buildCustomizedProduct("123545");
+            customizedProduct.finalizeCustomization();
+
+            customizedProductCollection.addCustomizedProduct(customizedProduct);
+
+            catalogueCollection.addCustomizedProduct(customizedProduct);
+
+            Assert.Equal(3, catalogueCollection.catalogueCollectionProducts.Count);
+            Assert.True(catalogueCollection.hasCustomizedProduct(customizedProduct));
+        }
+
+        [Fact]
+        public void ensureRemovingNullCustomizedProductThrowsException()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            Action removeCustomizedProduct = () => catalogueCollection.removeCustomizedProduct(null);
+
+            Assert.Throws<ArgumentException>(removeCustomizedProduct);
+        }
+
+        [Fact]
+        public void ensureRemovingNullCustomizedProductDoesNotRemoveCustomizedProduct()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            try
+            {
+                catalogueCollection.removeCustomizedProduct(null);
+            }
+            catch (Exception) { }
+
+            Assert.Equal(2, catalogueCollection.catalogueCollectionProducts.Count);
+        }
+
+        [Fact]
+        public void ensureRemovingNotAddedCustomizedProductThrowsException()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            CustomizedProduct customizedProduct = buildCustomizedProduct("12354112");
+
+            Action removeCustomizedProduct = () => catalogueCollection.removeCustomizedProduct(customizedProduct);
+
+            Assert.Throws<ArgumentException>(removeCustomizedProduct);
+        }
+
+        [Fact]
+        public void ensureRemovingNotAddedCustomizedProductDoesNotRemoveCustomizedProduct()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            CustomizedProduct customizedProduct = buildCustomizedProduct("12354112");
+
+            try
+            {
+                catalogueCollection.removeCustomizedProduct(customizedProduct);
+            }
+            catch (Exception) { }
+
+            Assert.Equal(2, catalogueCollection.catalogueCollectionProducts.Count);
+        }
+
+        [Fact]
+        public void ensureRemovingValidCustomizedProductDoesNotThrowException()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            CustomizedProduct customizedProduct = buildCustomizedProduct("1234");
+
+            Action removeCustomizedProduct = () => catalogueCollection.removeCustomizedProduct(customizedProduct);
+
+            Exception exception = Record.Exception(removeCustomizedProduct);
+
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void ensureRemovingValidCustomizedProductRemovesCustomizedProduct()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            CustomizedProduct customizedProduct = buildCustomizedProduct("1234");
+
+            catalogueCollection.removeCustomizedProduct(customizedProduct);
+
+            Assert.False(catalogueCollection.hasCustomizedProduct(customizedProduct));
+            Assert.Single(catalogueCollection.catalogueCollectionProducts);
+        }
+
+        [Fact]
+        public void ensureIdReturnsCustomizedProductCollectionBusinessIdentifier()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            Assert.Equal(catalogueCollection.id(), catalogueCollection.customizedProductCollection.id());
+        }
+
+        [Fact]
+        public void ensureSameAsReturnsTrueIfArgumentIsEqualToTheBusinessIdentifier()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            string name = catalogueCollection.customizedProductCollection.name;
+
+            Assert.True(catalogueCollection.sameAs(name));
+        }
+
+        [Fact]
+        public void ensureSameAsReturnsFalseIfArgumentIsNotEqualToTheBusinessIdentifier()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            string name = "some other name";
+
+            Assert.False(catalogueCollection.sameAs(name));
+        }
+
+
+        [Fact]
+        public void ensureInstancesHaveSameHashCode()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+            CatalogueCollection catalogueCollection2 = buildCatalogueCollection();
+
+            Assert.Equal(catalogueCollection.GetHashCode(), catalogueCollection2.GetHashCode());
+        }
+
+        [Fact]
+        public void ensureInstancesHaveDifferentHashCode()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Some other collection");
+            CatalogueCollection otherCatalogueCollection = new CatalogueCollection(customizedProductCollection);
+
+            Assert.NotEqual(catalogueCollection.GetHashCode(), otherCatalogueCollection.GetHashCode());
+        }
+
+        [Fact]
+        public void ensureInstanceIsEqualToItself()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            Assert.True(catalogueCollection.Equals(catalogueCollection));
+        }
+
+        [Fact]
+        public void ensureNullIsNotEqual()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            Assert.False(catalogueCollection.Equals(null));
+        }
+
+        [Fact]
+        public void ensureDifferentObjectTypeIsNotEqual()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            Assert.False(catalogueCollection.Equals("this is a string"));
+        }
+
+        [Fact]
+        public void ensureCatalogueCollectionWithDifferentCustomizedProductCollectionIsNotEqual()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection("Some other collection");
+            CatalogueCollection otherCatalogueCollection = new CatalogueCollection(customizedProductCollection);
+
+            Assert.False(catalogueCollection.Equals(otherCatalogueCollection));
+        }
+
+        [Fact]
+        public void ensureCatalogueCollectionWithEqualCustomizedProductCollectionIsEqual()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            CatalogueCollection otherCatalogueCollection = buildCatalogueCollection();
+
+            Assert.True(catalogueCollection.Equals(otherCatalogueCollection));
+        }
+
+        [Fact]
+        public void ensureToStringIsEqualIfInstancesAreEqual()
+        {
+            CatalogueCollection catalogueCollection = buildCatalogueCollection();
+
+            CatalogueCollection otherCatalogueCollection = buildCatalogueCollection();
+
+            Assert.Equal(catalogueCollection.ToString(), otherCatalogueCollection.ToString());
+        }
+
     }
 }
