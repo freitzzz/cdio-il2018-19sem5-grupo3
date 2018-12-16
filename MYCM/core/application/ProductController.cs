@@ -601,7 +601,8 @@ namespace core.application
         /// <param name="deleteMeasurementModelView">DeleteMeasurementFromProductModelView with the Product's and the Measurement's persistence identifiers.</param>
         /// <exception cref="ResourceNotFoundException">Throw when either the Product or the Measurement could not be found.</exception>
         public void deleteMeasurementFromProduct(DeleteMeasurementModelView deleteMeasurementModelView){
-            Product product = PersistenceContext.repositories().createProductRepository().find(deleteMeasurementModelView.productId);
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product product = productRepository.find(deleteMeasurementModelView.productId);
     
             if(product == null){
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteMeasurementModelView.productId));
@@ -615,6 +616,9 @@ namespace core.application
             }
 
             product.removeMeasurement(measurement);
+
+            productRepository.update(product);
+
         }
         
         /// <summary>
