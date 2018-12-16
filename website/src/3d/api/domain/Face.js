@@ -129,4 +129,10 @@ export default class Face{
      * @returns {Object} Drawn Face
      */
     draw(){}
+
+    /**
+     * Clones the current face and returns a new unique one
+     * @return {Face} Face with the cloned face
+     */
+    clone(){return new Face(this.id(),this.faceOrientation,this.faceWidth,this.faceHeight,this.faceDepth,this.faceXAxis,this.faceYAxis,this.faceZAxis);}
 }
