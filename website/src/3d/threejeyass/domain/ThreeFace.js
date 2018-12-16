@@ -64,4 +64,10 @@ export default class ThreeFace extends Face{
         return this.faceMesh;
     }
 
+    /**
+     * Clones the current face and returns a new unique one
+     * @return {Face} Face with the cloned face
+     */
+    clone(){return new ThreeFace(null,this.faceMaterial,this.faceOrientation,this.faceWidth,this.faceHeight,this.faceDepth,this.faceXAxis,this.faceYAxis,this.faceZAxis);}
+
 }
