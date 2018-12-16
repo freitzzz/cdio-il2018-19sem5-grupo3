@@ -202,17 +202,17 @@ namespace backend.Controllers
         [HttpGet("base")]
         public ActionResult findBaseCustomizedProducts()
         {
-            //logger.LogInformation(LOG_GET_ALL_START);
+            logger.LogInformation(LOG_GET_ALL_START);
 
             try
             {
                 GetAllCustomizedProductsModelView getAllModelView = new core.application.CustomizedProductController().findAllBaseCustomizedProducts();
-                //logger.LogInformation(LOG_GET_ALL_SUCCESS);
+                logger.LogInformation(LOG_GET_ALL_SUCCESS);
                 return Ok(getAllModelView);
             }
             catch (ResourceNotFoundException e)
             {
-                //logger.LogWarning(LOG_GET_ALL_NOT_FOUND);
+                logger.LogWarning(LOG_GET_ALL_NOT_FOUND);
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
             catch (Exception e)
@@ -285,7 +285,8 @@ namespace backend.Controllers
         /// <returns>ActionResult with the created customized product</returns>
         [HttpPost]
         [HttpPost("{customizedProductId}/slots/{slotId}/customizedproducts")]
-        public ActionResult addCustomizedProduct(long? customizedProductId, long? slotId, [FromBody]AddCustomizedProductModelView customizedProductModelView)
+        public ActionResult addCustomizedProduct(long? customizedProductId, long? slotId, [FromHeader]string userAuthToken, 
+            [FromBody]AddCustomizedProductModelView customizedProductModelView)
         {
             logger.LogInformation(LOG_POST_START);
 
@@ -299,6 +300,7 @@ namespace backend.Controllers
             {
                 customizedProductModelView.parentCustomizedProductId = customizedProductId;
                 customizedProductModelView.insertedInSlotId = slotId;
+                customizedProductModelView.userAuthToken = userAuthToken;
 
                 GetCustomizedProductModelView createdCustomizedProductModelView = new core.application
                     .CustomizedProductController().addCustomizedProduct(customizedProductModelView);

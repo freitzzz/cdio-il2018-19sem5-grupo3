@@ -128,7 +128,7 @@ namespace core.domain
         /// <summary>
         /// Constant that represents the message presented when the only Slot is attempted to be removed.
         /// </summary>
-        private const string RESIZE_LAST_SLOT = "Resizing the last slot is not allowed.";
+        private const string RESIZE_ONLY_SLOT = "Resizing the only slot in the customized product is not allowed.";
 
         /// <summary>
         /// Constant that represents the error message presented when a null CustomizedProduct is attempted to be added.
@@ -164,6 +164,11 @@ namespace core.domain
         /// Constant that represents the message presented when any action is attempted to be performed after the customization is finished.
         /// </summary>
         private const string ACTION_AFTER_CUSTOMIZATION_FINISHED = "The current customization's status does not allow further customization.";
+
+        /// <summary>
+        /// Constant that represents the message presented when an instance of Slot could not be resized.
+        /// </summary>
+        private const string UNABLE_TO_RESIZE_SLOT = "Unable to resize the slot, since it would invalidate other slots.";
 
         /// <summary>
         /// Long that represents the CustomizedProduct's persistence ID.
@@ -426,11 +431,7 @@ namespace core.domain
 
             if (!smallerThanCustomizedProduct(slotDimensions)) throw new ArgumentException(SLOT_LARGER_THAN_CUSTOMIZED_PRODUCT);
 
-            foreach (Slot slot in this.slots)
-            {
-                //check if any of the slots already have customized products
-                if (slot.hasCustomizedProducts()) throw new InvalidOperationException(ADD_SLOT_AFTER_ADDING_CUSTOMIZED_PRODUCTS);
-            }
+            if (hasCustomizedProducts()) throw new InvalidOperationException(ADD_SLOT_AFTER_ADDING_CUSTOMIZED_PRODUCTS);
 
             //check if there's only the slot matching the CustomizedProduct's dimensions
             if (this.slots.Count == 1)
@@ -562,12 +563,48 @@ namespace core.domain
 
             if (slot == null) throw new ArgumentException(NULL_SLOT);
 
-            if (!this.slots.Contains(slot)) throw new ArgumentException(SLOT_NOT_FOUND);
+            Slot slotBeingRemoved = this.slots.Where(s => s.Equals(slot)).SingleOrDefault();
+
+            if (slotBeingRemoved == null) throw new ArgumentException(SLOT_NOT_FOUND);
 
             if (this.slots.Count == 1) throw new InvalidOperationException(REMOVE_LAST_SLOT);
 
-            //TODO: resize adjacent slots
-            throw new NotImplementedException();
+            if (hasCustomizedProducts()) throw new InvalidOperationException(ADD_SLOT_AFTER_ADDING_CUSTOMIZED_PRODUCTS);
+
+            if (this.slots.Count == 2)
+            {
+                //the last slot has to match the product's dimensions
+                this.slots.Remove(slotBeingRemoved);
+
+                Slot mainSlot = this.slots.SingleOrDefault();
+
+                mainSlot.changeDimensions(this.customizedDimensions);
+            }
+            else
+            {
+                double previousSlotWidth = slotBeingRemoved.slotDimensions.width;
+
+                IDictionary<Slot, double> slotWidthMap = buildSlotLayoutDictionary(previousSlotWidth, 0, slotBeingRemoved, this.slots);
+
+                foreach (KeyValuePair<Slot, double> entry in slotWidthMap)
+                {
+                    //remove the desired slot and resize all the others
+                    if (entry.Key.Equals(slotBeingRemoved))
+                    {
+                        this.slots.Remove(slotBeingRemoved);
+                    }
+                    else
+                    {
+                        double height = entry.Key.slotDimensions.height;
+                        double width = entry.Value;
+                        double depth = entry.Key.slotDimensions.depth;
+
+                        CustomizedDimensions resizedDimensions = CustomizedDimensions.valueOf(height, width, depth);
+
+                        entry.Key.changeDimensions(resizedDimensions);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -587,14 +624,132 @@ namespace core.domain
 
             if (slot == null) throw new ArgumentException(NULL_SLOT);
 
-            if (!this.slots.Contains(slot)) throw new ArgumentException(SLOT_NOT_FOUND);
-
-            if (this.slots.Count == 1) throw new InvalidOperationException(RESIZE_LAST_SLOT);
-
             if (!isWithinProductSlotWidthsRange(newSlotDimensions.width)) throw new ArgumentException(SLOT_DIMENSIONS_NOT_RESPECTING_SPECIFICATION);
 
-            //TODO: resize adjacent slots
-            slot.changeDimensions(newSlotDimensions);
+            Slot slotBeingResized = this.slots.Where(s => s.Equals(slot)).SingleOrDefault();
+
+            if (slotBeingResized == null) throw new ArgumentException(SLOT_NOT_FOUND);
+
+            if (this.slots.Count == 1) throw new InvalidOperationException(RESIZE_ONLY_SLOT);
+
+            //skip doing all the other operations
+            if (slotBeingResized.slotDimensions.Equals(newSlotDimensions)) return;
+
+            IDictionary<Slot, double> slotWidthMap = buildSlotLayoutDictionary(slotBeingResized.slotDimensions.width, newSlotDimensions.width, slotBeingResized, this.slots);
+
+            //resize all the slots with the values in the Dictionary
+            foreach (KeyValuePair<Slot, double> entry in slotWidthMap)
+            {
+                double height = entry.Key.slotDimensions.height;
+                double width = entry.Value;
+                double depth = entry.Key.slotDimensions.depth;
+
+                CustomizedDimensions resizedDimensions = CustomizedDimensions.valueOf(height, width, depth);
+
+                entry.Key.changeDimensions(resizedDimensions);
+            }
+        }
+
+        /// <summary>
+        /// Builds a Dictionary detailing how the slots will be laid out.
+        /// When adding a Slot, currentSlotWidth should be 0 and newSlotWidth should be the value of the Slot's width. The list should contain the new Slot.
+        /// When resizing a Slot, currentSlotWidth should be it's current width value and newSlotWidth should be its new value. The list should be the instance's list of Slot.
+        /// When removing a slot, currentSlotWidth should be it's current width value and newSlotWidth should be 0 and the list should be the instance's list of Slot.
+        /// </summary>
+        /// <param name="currentSlotWidth">Slot's current width.</param>
+        /// <param name="newSlotWidth">Slot's new width.</param>
+        /// <param name="slotBeingResized">Instance of Slot being resized.</param>
+        /// <param name="slots">List containing instances of Slot.</param>
+        /// <returns>A Dictionary detailing how the slots will be structured.</returns>
+        /// <exception cref="System.ArgumentException">Thrown when the Slot can't be resized.</exception>
+        private IDictionary<Slot, double> buildSlotLayoutDictionary(double currentSlotWidth, double newSlotWidth, Slot slotBeingResized, List<Slot> slots)
+        {
+            Dictionary<Slot, double> slotWidthMap = new Dictionary<Slot, double>();
+
+            //build dictionary with slots and their current widths
+            foreach (Slot slot in slots)
+            {
+                if (slot.Equals(slotBeingResized))
+                {
+                    slotWidthMap.Add(slot, newSlotWidth);
+                }
+                else
+                {
+                    slotWidthMap.Add(slot, slot.slotDimensions.width);
+                }
+            }
+
+            double minPossibleWidth = this.product.slotWidths.minWidth;
+            double maxPossibleWidth = this.product.slotWidths.maxWidth;
+
+            int slotIndex = slots.LastIndexOf(slotBeingResized);
+            int currentIndex = slotIndex;
+            int lastIndex = slots.Count - 1;
+
+            //value will be negative when decreasing
+            //and positive when increasing
+            double widthToBeResized = newSlotWidth - currentSlotWidth;
+
+            //width that has been resized so far
+            double resizedWidth = 0;
+
+            while (true)
+            {
+                //if the end is reached, go to the beginning of the list
+                if (currentIndex == lastIndex)
+                {
+                    currentIndex = 0;
+                }
+                else
+                {
+                    //otherwise, iterate normally
+                    currentIndex++;
+                }
+
+                //exit if it has looped around or has finished resizing
+                if (currentIndex == slotIndex || resizedWidth == Math.Abs(widthToBeResized))
+                {
+                    break;
+                }
+
+                Slot otherSlot = slots[currentIndex];
+
+                double currentOtherSlotWidth = slotWidthMap[otherSlot];
+
+                double newOtherSlotWidth = currentOtherSlotWidth - (widthToBeResized - resizedWidth);
+
+                if (newOtherSlotWidth <= minPossibleWidth)
+                {
+                    resizedWidth += (currentOtherSlotWidth - minPossibleWidth);
+                    slotWidthMap[otherSlot] = minPossibleWidth;
+                }
+                else if (newOtherSlotWidth >= maxPossibleWidth)
+                {
+                    resizedWidth += (currentOtherSlotWidth - maxPossibleWidth);
+                    slotWidthMap[otherSlot] = maxPossibleWidth;
+                }
+                else
+                {
+                    resizedWidth += (newOtherSlotWidth - currentOtherSlotWidth);
+
+                    //if it's in the allowed value range, change the value
+                    slotWidthMap[otherSlot] = newOtherSlotWidth;
+                }
+            }
+
+            double totalWidthAfterResize = slotWidthMap.Sum(entry => entry.Value);
+
+            double customizedProductWidth = this.customizedDimensions.width;
+
+            //check if the widths match
+            if (customizedProductWidth == totalWidthAfterResize)
+            {
+                return slotWidthMap;
+            }
+
+            //this should never happen when using this method to remove a slot
+            //it should only happen when adding or resizing invalidates other slots
+            throw new ArgumentException(UNABLE_TO_RESIZE_SLOT);
         }
 
         /// <summary>
@@ -646,16 +801,7 @@ namespace core.domain
             //check if the customized product's product is a possible component
             IEnumerable<Product> availableChildProducts = this.product.components.Select(cp => cp.complementaryProduct);
 
-            bool matchesComponent = false;
-
-            foreach (Product childProduct in availableChildProducts)
-            {
-                if (childCustomizedProduct.product.Equals(childProduct))
-                {
-                    matchesComponent = true;
-                    break;
-                }
-            }
+            bool matchesComponent = availableChildProducts.Contains(childCustomizedProduct.product);
 
             if (!matchesComponent) throw new ArgumentException(CUSTOMIZED_PRODUCT_DOES_NOT_MATCH_CHILDREN);
 
@@ -692,6 +838,25 @@ namespace core.domain
             equivalentSlot.removeCustomizedProduct(childCustomizedProduct);
         }
 
+
+        /// <summary>
+        /// Checks if the CustomizedProduct has had other instances of CustomizedProduct added to its slots.
+        /// </summary>
+        /// <returns>true if the CustomizedProduct has sub CustomizedProducts; false, otherwise.</returns>
+        public bool hasCustomizedProducts()
+        {
+            foreach (Slot addedSlot in this.slots)
+            {
+                //check if any of the slots already have customized products
+                if (addedSlot.hasCustomizedProducts())
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Finalizes the CustomizedProduct.
         /// </summary>
@@ -712,19 +877,7 @@ namespace core.domain
         /// <param name="currentCustomizedProduct">CustomizedProduct being finalized.</param>
         private void finalizeCustomization(CustomizedProduct currentCustomizedProduct)
         {
-            foreach (Slot slot in currentCustomizedProduct.slots)
-            {
-                foreach (CustomizedProduct childCustomizedProduct in slot.customizedProducts)
-                {
-                    finalizeCustomization(childCustomizedProduct);
-                }
-            }
-
-            //if any of the customized products does not have material, then the customization process can't be concluded
-            if (currentCustomizedProduct.customizedMaterial == null) throw new ArgumentException(FINALIZING_WITHOUT_MATERIAL);
-
-
-            //check if all the mandatory components were added to the customization
+            //hashset with all the mandatory child products
             HashSet<Product> mandatoryProducts = currentCustomizedProduct.product
                 .components.Where(cmp => cmp.mandatory).Select(cmp => cmp.complementaryProduct).ToHashSet();
 
@@ -732,12 +885,17 @@ namespace core.domain
 
             foreach (Slot slot in currentCustomizedProduct.slots)
             {
-                foreach (CustomizedProduct customizedProduct in slot.customizedProducts)
+                foreach (CustomizedProduct childCustomizedProduct in slot.customizedProducts)
                 {
-                    addedProducts.Add(customizedProduct.product);
+                    addedProducts.Add(childCustomizedProduct.product);
+                    finalizeCustomization(childCustomizedProduct);
                 }
             }
 
+            //if any of the customized products does not have material, then the customization process can't be concluded
+            if (currentCustomizedProduct.customizedMaterial == null) throw new ArgumentException(FINALIZING_WITHOUT_MATERIAL);
+
+            //check if all the mandatory components were added to the customization
             if (!mandatoryProducts.IsSubsetOf(addedProducts)) throw new InvalidOperationException(FINALIZING_WITHOUT_MANDATORY_COMPONENTS);
 
             currentCustomizedProduct.status = CustomizationStatus.FINISHED;

@@ -13,7 +13,6 @@ namespace core_tests.domain
     /// <summary>
     /// Unit testing class for CustomizedProduct
     /// </summary>
-    //TODO Create a method that returns a customized product to substantially reduce lines of code
     public class CustomizedProductTest
     {
         //These are all seperated into their own methods in order to allow for each property to be tested
@@ -129,7 +128,7 @@ namespace core_tests.domain
 
             Measurement otherComponentMeasurement = new Measurement(otherComponentHeightDimension, otherComponentWidthDimension, otherComponentDepthDimension);
 
-            Product otherComponent = new Product("This is another reference", "This is another Designation", "component.gltf", buildValidCategory(),
+            Product otherComponent = new Product("This is another another reference", "This is another Designation", "component.gltf", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { componentMeasurement });
 
             Product component = new Product("This is another reference", "This is another Designation", "component.gltf", buildValidCategory(),
@@ -194,6 +193,48 @@ namespace core_tests.domain
             customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
 
             customizedProduct.finalizeCustomization();
+
+            return customizedProduct;
+        }
+
+        private CustomizedProduct buildValidInstanceWithSlotsAndSubCustomizedProducts()
+        {
+            Dimension heightDimension = new ContinuousDimensionInterval(60, 80, 2);
+            Dimension widthDimension = new SingleValueDimension(200);
+            Dimension depthDimension = new SingleValueDimension(60);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            ProductSlotWidths productSlotWidths = ProductSlotWidths.valueOf(40, 140, 60);
+
+            Dimension componentHeightDimension = new SingleValueDimension(60);
+            Dimension componentWidthDimension = new SingleValueDimension(60);
+            Dimension componentDepthDimension = new SingleValueDimension(60);
+
+            Measurement componentMeasurement = new Measurement(componentHeightDimension, componentWidthDimension, componentDepthDimension);
+
+            Product component = new Product("This is another reference", "This is another Designation", "component.gltf", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { componentMeasurement });
+
+            Product product = new Product("This is A Reference", "This is A Designation", "model.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { measurement }, complementaryProducts: new List<Product> { component }, slotWidths: productSlotWidths);
+
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 200, 60);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, customizedProductDimensions).build();
+
+            CustomizedDimensions customizedComponentDimensions = CustomizedDimensions.valueOf(60, 60, 60);
+
+            CustomizedProduct customizedComponent = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", component, customizedComponentDimensions).build();
+
+            customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
+            customizedComponent.changeCustomizedMaterial(buildCustomizedMaterial());
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(60, 60, 60));
+
+            customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[1]);
 
             return customizedProduct;
         }
@@ -823,13 +864,29 @@ namespace core_tests.domain
         [Fact]
         public void ensureChangingColorIfCustomizedMaterialIsNotDefinedThrowsException()
         {
-            //TODO: implement this
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            Color green = buildGreenColor();
+
+            Action changeColor = () => customizedProduct.changeColor(green);
+
+            Assert.Throws<InvalidOperationException>(changeColor);
         }
 
         [Fact]
         public void ensureChangingColorIfCustomizedMaterialIsNotDefinedDoesNotChangeColor()
         {
-            //TODO: implement this
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            Color green = buildGreenColor();
+
+            try
+            {
+                customizedProduct.changeColor(green);
+            }
+            catch (Exception) { }
+
+            Assert.Null(customizedProduct.customizedMaterial);
         }
 
         [Fact]
@@ -964,6 +1021,7 @@ namespace core_tests.domain
         {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
+            //the width is smaller than the minimum of 25
             CustomizedDimensions invalidDimensions = CustomizedDimensions.valueOf(76, 23, 25);
 
             Action addSlot = () => customizedProduct.addSlot(invalidDimensions);
@@ -976,6 +1034,7 @@ namespace core_tests.domain
         {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
+            //the width is smaller than the minimum of 25
             CustomizedDimensions invalidDimensions = CustomizedDimensions.valueOf(76, 23, 25);
 
             try
@@ -1028,25 +1087,71 @@ namespace core_tests.domain
         [Fact]
         public void ensureAddingSlotWiderThanCustomizedProductThrowsException()
         {
-            //TODO: implement this
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
+
+            CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(60, 70, 60);
+
+            Action addSlot = () => customizedProduct.addSlot(slotDimensions);
+
+            Assert.Throws<ArgumentException>(addSlot);
         }
 
         [Fact]
         public void ensureAddingSlotWiderThanCustomizedProductDoesNotAddSlot()
         {
-            //TODO: implement this
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
+
+            CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(60, 70, 60);
+
+            try
+            {
+                customizedProduct.addSlot(slotDimensions);
+            }
+            catch (Exception) { }
+
+            //Make sure that there's only one slot
+            //And that that slot is the one matching the customized product's dimensions
+            Assert.Single(customizedProduct.slots);
+            Assert.Equal(customizedProduct.customizedDimensions, customizedProduct.slots.First().slotDimensions);
         }
 
         [Fact]
         public void ensureAddingSlotDeeperThanCustomizedProductThrowsException()
         {
-            //TODO: implement this
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
+
+            CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(60, 60, 70);
+
+            Action addSlot = () => customizedProduct.addSlot(slotDimensions);
+
+            Assert.Throws<ArgumentException>(addSlot);
         }
 
         [Fact]
         public void ensureAddingSlotDeeperThanCustomizedProductDoesNotAddSlot()
         {
-            //TODO: implement this
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
+
+            CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(60, 60, 70);
+
+            try
+            {
+                customizedProduct.addSlot(slotDimensions);
+            }
+            catch (Exception) { }
+
+            //Make sure that there's only one slot
+            //And that that slot is the one matching the customized product's dimensions
+            Assert.Single(customizedProduct.slots);
+            Assert.Equal(customizedProduct.customizedDimensions, customizedProduct.slots.First().slotDimensions);
         }
 
         [Fact]
@@ -1331,8 +1436,6 @@ namespace core_tests.domain
             CustomizedProduct customizedProduct = CustomizedProductBuilder
                 .createAnonymousUserCustomizedProduct("serial number", product, customizedProductDimensions).build();
 
-            int recommendedNumberOfSlots = (int)(customizedProductDimensions.width / productSlotWidths.recommendedWidth);
-
             CustomizedDimensions slotDimensions =
                 CustomizedDimensions.valueOf(60, productSlotWidths.recommendedWidth, 60);
 
@@ -1347,6 +1450,605 @@ namespace core_tests.domain
             Exception exception = Record.Exception(addSlots);
 
             Assert.Null(exception);
+        }
+
+
+        [Fact]
+        public void ensureResizingSlotAfterCustomizationIsFinishedThrowsException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 40, 25);
+
+            customizedProduct.addSlot(slotDimensions);
+
+            CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
+
+            customizedProduct.changeCustomizedMaterial(customizedMaterial);
+
+            customizedProduct.finalizeCustomization();
+
+            Slot slot = customizedProduct.slots.LastOrDefault();
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 50, 25);
+
+            Action resizeSlot = () => customizedProduct.resizeSlot(slot, newSlotDimensions);
+
+            Assert.Throws<InvalidOperationException>(resizeSlot);
+        }
+
+        [Fact]
+        public void ensureResizingSlotAfterCustomizationIsFinishedDoesNotResizeSlot()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 40, 25);
+
+            customizedProduct.addSlot(slotDimensions);
+
+            CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
+
+            customizedProduct.changeCustomizedMaterial(customizedMaterial);
+
+            customizedProduct.finalizeCustomization();
+
+            Slot slot = customizedProduct.slots.LastOrDefault();
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 50, 25);
+
+            try
+            {
+                customizedProduct.resizeSlot(slot, newSlotDimensions);
+            }
+            catch (Exception) { }
+
+            Assert.Equal(2, customizedProduct.slots.Count);
+            Assert.Equal(slotDimensions, customizedProduct.slots.LastOrDefault().slotDimensions);
+        }
+
+        [Fact]
+        public void ensureResizingNullSlotThrowsException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 40, 25);
+
+            customizedProduct.addSlot(slotDimensions);
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 50, 25);
+
+            Action resizeSlot = () => customizedProduct.resizeSlot(null, newSlotDimensions);
+
+            Assert.Throws<ArgumentException>(resizeSlot);
+        }
+
+        [Fact]
+        public void ensureResizingNullSlotDoesNotResizeOtherSlots()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 40, 25);
+
+            customizedProduct.addSlot(slotDimensions);
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 50, 25);
+
+            try
+            {
+                customizedProduct.resizeSlot(null, newSlotDimensions);
+            }
+            catch (Exception) { }
+
+            Assert.Equal(slotDimensions, customizedProduct.slots.FirstOrDefault().slotDimensions);
+            Assert.Equal(slotDimensions, customizedProduct.slots.LastOrDefault().slotDimensions);
+        }
+
+        [Fact]
+        public void ensureResizingOnlyExistingSlotThrowsException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            Slot slot = customizedProduct.slots.SingleOrDefault();
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 50, 25);
+
+            Action resizeSlot = () => customizedProduct.resizeSlot(slot, newSlotDimensions);
+
+            Assert.Throws<InvalidOperationException>(resizeSlot);
+        }
+
+        [Fact]
+        public void ensureResizingOnlyExistingSlotDoesNotResizeSlot()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            Slot slot = customizedProduct.slots.SingleOrDefault();
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 50, 25);
+
+            try
+            {
+                customizedProduct.resizeSlot(slot, newSlotDimensions);
+            }
+            catch (Exception) { }
+
+            CustomizedDimensions expectedDimensions = buildCustomizedDimensions();
+
+            Assert.Equal(expectedDimensions, slot.slotDimensions);
+        }
+
+        [Fact]
+        public void ensureResizingSlotWithWidthLessThanMinimumThrowsException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 40, 25));
+
+            Slot slot = customizedProduct.slots.LastOrDefault();
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 20, 25);
+
+            Action resizeSlot = () => customizedProduct.resizeSlot(slot, newSlotDimensions);
+
+            Assert.Throws<ArgumentException>(resizeSlot);
+        }
+
+        [Fact]
+        public void ensureResizingSlotWithWidthLessThanMinimumDoesNotResizeSlot()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 40, 25);
+
+            customizedProduct.addSlot(slotDimensions);
+
+            Slot slot = customizedProduct.slots.LastOrDefault();
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 20, 25);
+
+            try
+            {
+                customizedProduct.resizeSlot(slot, newSlotDimensions);
+            }
+            catch (Exception) { }
+
+            Assert.Equal(slotDimensions, slot.slotDimensions);
+        }
+
+        [Fact]
+        public void ensureResizingSlotWithWidthGreaterThanMaximumThrowsException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 40, 25));
+
+            Slot slot = customizedProduct.slots.LastOrDefault();
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 60, 25);
+
+            Action resizeSlot = () => customizedProduct.resizeSlot(slot, newSlotDimensions);
+
+            Assert.Throws<ArgumentException>(resizeSlot);
+        }
+
+        [Fact]
+        public void ensureResizingSlotWithWidthGreaterThanMaximumDoesNotResizeSlot()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 40, 25);
+
+            customizedProduct.addSlot(slotDimensions);
+
+            Slot slot = customizedProduct.slots.LastOrDefault();
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 60, 25);
+
+            try
+            {
+                customizedProduct.resizeSlot(slot, newSlotDimensions);
+            }
+            catch (Exception) { }
+
+            Assert.Equal(slotDimensions, slot.slotDimensions);
+        }
+
+        [Fact]
+        public void ensureResizingNotAddedSlotThrowsException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 40, 25));
+
+            Slot slot = new Slot("not added slot", CustomizedDimensions.valueOf(76, 25, 25));
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 30, 25);
+
+            Action resizeSlot = () => customizedProduct.resizeSlot(slot, newSlotDimensions);
+
+            Assert.Throws<ArgumentException>(resizeSlot);
+        }
+
+        [Fact]
+        public void ensureResizingNotAddedSlotDoesNotResizeOtherSlots()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 40, 25);
+
+            customizedProduct.addSlot(slotDimensions);
+
+            Slot slot = new Slot("not added slot", CustomizedDimensions.valueOf(76, 25, 25));
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 30, 25);
+
+            try
+            {
+                customizedProduct.resizeSlot(slot, newSlotDimensions);
+            }
+            catch (Exception) { }
+
+            Assert.Equal(slotDimensions, customizedProduct.slots.FirstOrDefault().slotDimensions);
+            Assert.Equal(slotDimensions, customizedProduct.slots.LastOrDefault().slotDimensions);
+        }
+
+        [Fact]
+        public void ensureResizingValidSlotDoesNotThrowException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 30, 25));
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 30, 25));
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 25, 25);
+
+            Action resizeSlot = () => customizedProduct.resizeSlot(customizedProduct.slots.LastOrDefault(), newSlotDimensions);
+
+            Exception exception = Record.Exception(resizeSlot);
+
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void ensureResizingValidSlotResizesSlot()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 30, 25));
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 30, 25));
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 25, 25);
+
+            customizedProduct.resizeSlot(customizedProduct.slots.LastOrDefault(), newSlotDimensions);
+
+            List<CustomizedDimensions> expectedSlotDimensions = new List<CustomizedDimensions>(){
+
+                CustomizedDimensions.valueOf(76,30,25),
+                CustomizedDimensions.valueOf(76,25,25),
+                CustomizedDimensions.valueOf(76,25,25)
+            };
+
+            Assert.Equal(expectedSlotDimensions, customizedProduct.slots.Select(s => s.slotDimensions));
+        }
+
+
+        [Fact]
+        public void ensureResizingSlotAffectsOtherSlots()
+        {
+            Dimension heightDimension = new ContinuousDimensionInterval(50, 100, 2);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 75, 80, 85, 90, 95, 120 });
+            Dimension depthDimension = new SingleValueDimension(25);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            ProductSlotWidths slotWidths = ProductSlotWidths.valueOf(25, 60, 35);
+
+            Product product = new Product("#429", "Fabulous Closet", "fabcloset.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { measurement }, slotWidths);
+
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(76, 120, 25);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("1234", product, customizedProductDimensions).build();
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 60, 25));    // <-60-> | <-60->
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 28, 25));    // <-46-> | <-46-> | <-28->
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 28, 25));    // <-27,(3)-> | <-36,(6)-> | <-28-> | <-28->
+
+            Slot slotBeingResized = customizedProduct.slots[1];
+
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 43.6, 25);
+
+            customizedProduct.resizeSlot(slotBeingResized, newSlotDimensions);
+
+            List<CustomizedDimensions> expectedDimensions = new List<CustomizedDimensions>(){
+                CustomizedDimensions.valueOf(76, 26.4, 25),
+                CustomizedDimensions.valueOf(76, 43.6, 25),
+                CustomizedDimensions.valueOf(76, 25, 25),
+                CustomizedDimensions.valueOf(76, 25, 25)
+            };
+
+            for (int i = 0; i < 4; i++)
+            {
+                Assert.Equal(expectedDimensions[i].width, customizedProduct.slots[i].slotDimensions.width, 1);
+            }
+        }
+
+
+        [Fact]
+        public void ensureIncreasingSlotThrowsExceptionIfUnableToDecreaseOtherSlots()
+        {
+
+            Dimension heightDimension = new ContinuousDimensionInterval(50, 100, 2);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 75, 80, 85, 90, 95, 120 });
+            Dimension depthDimension = new SingleValueDimension(25);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            ProductSlotWidths slotWidths = ProductSlotWidths.valueOf(25, 60, 35);
+
+            Product product = new Product("#429", "Fabulous Closet", "fabcloset.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { measurement }, slotWidths);
+
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(76, 120, 25);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("1234", product, customizedProductDimensions).build();
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 60, 25));    // <-60-> | <-60->
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 60, 25));    // <-30-> | <-30-> | <-60->
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 45, 25));    // <-25-> | <-25-> | <-25-> | <-45->
+
+            Slot slotBeingResized = customizedProduct.slots.LastOrDefault();
+
+            //Even though 60 is within specification, it will be impossible, because the other slots are already at their minimum
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 60, 25);
+
+            Action resizeSlot = () => customizedProduct.resizeSlot(slotBeingResized, newSlotDimensions);
+
+            Assert.Throws<ArgumentException>(resizeSlot);
+        }
+
+        [Fact]
+        public void ensureDecreasingSlotThrowsExceptionIfUnableToIncreaseOtherSlots()
+        {
+            Dimension heightDimension = new ContinuousDimensionInterval(50, 100, 2);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 75, 80, 85, 90, 95, 120 });
+            Dimension depthDimension = new SingleValueDimension(25);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            ProductSlotWidths slotWidths = ProductSlotWidths.valueOf(25, 60, 35);
+
+            Product product = new Product("#429", "Fabulous Closet", "fabcloset.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { measurement }, slotWidths);
+
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(76, 120, 25);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("1234", product, customizedProductDimensions).build();
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 60, 25));    // <-60-> | <-60->
+
+            Slot slotBeingResized = customizedProduct.slots.LastOrDefault();
+
+            //Resizing the slot to 45, would cause the other slot to be resized to 75 which is out of range
+            CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 45, 25);
+
+            Action resizeSlot = () => customizedProduct.resizeSlot(slotBeingResized, newSlotDimensions);
+
+            Assert.Throws<ArgumentException>(resizeSlot);
+        }
+
+
+        [Fact]
+        public void ensureRemovingSlotWhenCustomizationIsFinishedThrowsException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
+
+            CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
+
+            customizedProduct.changeCustomizedMaterial(customizedMaterial);
+
+            customizedProduct.finalizeCustomization();
+
+            Action removeSlot = () => customizedProduct.removeSlot(customizedProduct.slots.LastOrDefault());
+
+            Assert.Throws<InvalidOperationException>(removeSlot);
+        }
+
+        [Fact]
+        public void ensureRemovingSlotWhenCustomizationIsFinishedDoesNotRemoveSlot()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
+
+            CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
+
+            customizedProduct.changeCustomizedMaterial(customizedMaterial);
+
+            customizedProduct.finalizeCustomization();
+
+            try
+            {
+                customizedProduct.removeSlot(customizedProduct.slots.LastOrDefault());
+            }
+            catch (Exception) { }
+
+            Assert.Equal(2, customizedProduct.slots.Count);
+        }
+
+        [Fact]
+        public void ensureRemovingNullSlotThrowsException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
+
+            Action removeSlot = () => customizedProduct.removeSlot(null);
+
+            Assert.Throws<ArgumentException>(removeSlot);
+        }
+
+        [Fact]
+        public void ensureRemovingNullSlotDoesNotRemoveOtherSlots()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
+
+            try
+            {
+                customizedProduct.removeSlot(null);
+            }
+            catch (Exception) { }
+
+            Assert.Equal(2, customizedProduct.slots.Count);
+        }
+
+        [Fact]
+        public void ensureRemovingNotAddedSlotThrowsException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
+
+            Slot unknownSlot = new Slot("I'm not in the customized product", CustomizedDimensions.valueOf(76, 30, 25));
+
+            Action removeSlot = () => customizedProduct.removeSlot(unknownSlot);
+
+            Assert.Throws<ArgumentException>(removeSlot);
+        }
+
+        [Fact]
+        public void ensureRemovingNotAddedSlotDoesNotRemoveOtherSlots()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
+
+            Slot unknownSlot = new Slot("I'm not in the customized product", CustomizedDimensions.valueOf(76, 30, 25));
+
+            try
+            {
+                customizedProduct.removeSlot(unknownSlot);
+            }
+            catch (Exception) { }
+
+            Assert.Equal(2, customizedProduct.slots.Count);
+        }
+
+        [Fact]
+        public void ensureRemovingSingleSlotThrowsException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            Action removeSlot = () => customizedProduct.removeSlot(customizedProduct.slots.SingleOrDefault());
+
+            Assert.Throws<InvalidOperationException>(removeSlot);
+        }
+
+        [Fact]
+        public void ensureRemovingSingleSlotDoesNotRemoveSlot()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            Slot slot = customizedProduct.slots.SingleOrDefault();
+
+            try
+            {
+                customizedProduct.removeSlot(slot);
+            }
+            catch (Exception) { }
+
+            Assert.Single(customizedProduct.slots);
+        }
+
+        [Fact]
+        public void ensureRemovingSlotIfCustomizedProductHasSubCustomizedProductsThrowsException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstanceWithSlotsAndSubCustomizedProducts();
+
+            Action removeSlot = () => customizedProduct.removeSlot(customizedProduct.slots.LastOrDefault());
+
+            Assert.Throws<InvalidOperationException>(removeSlot);
+        }
+
+
+        [Fact]
+        public void ensureRemovingSlotIfCustomizedProductHasSubCustomizedProductsDoesNotRemoveSlot()
+        {
+            CustomizedProduct customizedProduct = buildValidInstanceWithSlotsAndSubCustomizedProducts();
+
+            try
+            {
+                customizedProduct.removeSlot(customizedProduct.slots.LastOrDefault());
+            }
+            catch (Exception) { }
+
+            Assert.Equal(2, customizedProduct.slots.Count);
+        }
+
+
+        [Fact]
+        public void ensureRemovingPenultimateSlotResizesRemainingSlotToMatchCustomizedProduct()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
+
+            customizedProduct.removeSlot(customizedProduct.slots.LastOrDefault());
+
+            Slot mainSlot = customizedProduct.slots.SingleOrDefault();
+
+            Assert.Equal(mainSlot.slotDimensions, customizedProduct.customizedDimensions);
+        }
+
+        [Fact]
+        public void ensureRemovingValidSlotDoesNotThrowException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
+
+            Action removeSlot = () => customizedProduct.removeSlot(customizedProduct.slots.LastOrDefault());
+
+            Exception exception = Record.Exception(removeSlot);
+
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void ensureRemovingValidSlotRemovesSlot()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
+
+            customizedProduct.removeSlot(customizedProduct.slots.LastOrDefault());
+
+            Assert.Single(customizedProduct.slots);
+        }
+
+        [Fact]
+        public void ensureRemovingSlotResizesOtherSlots()
+        {
+            CustomizedProduct customizedProduct = buildValidInstance("1234");
+
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
+            customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 30, 25)); //<-25-> | <-25-> | <-30->
+
+            Slot middleSlot = customizedProduct.slots[1];
+
+            customizedProduct.removeSlot(middleSlot);
+
+            //Expected layout: <-30-> | <-50->
+
+            List<CustomizedDimensions> expectedDimensions = new List<CustomizedDimensions>(){
+                CustomizedDimensions.valueOf(76,30,25),
+                CustomizedDimensions.valueOf(76,50,25)
+            };
+
+            Assert.Equal(expectedDimensions, customizedProduct.slots.Select(s => s.slotDimensions));
         }
 
         [Fact]

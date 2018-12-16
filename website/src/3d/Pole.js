@@ -25,7 +25,7 @@ export default class Pole extends BaseProduct{
 	constructor(radiusTop,radiusBottom,
 				height,radialSegments,
 				heightSegments,openEnded,
-				thetaStart,thetaLength){
+				thetaStart,thetaLength, slotId){
 		this.radiusTop = radiusTop;
 		this.radiusBottom = radiusBottom;
 		this.height = height;
@@ -34,6 +34,7 @@ export default class Pole extends BaseProduct{
 		this.openEnded = openEnded;
 		this.thetaStart = thetaStart;
 		this.thetaLength = thetaLength;
+		this.slotId = slotId;
 	}
 	
 	/**

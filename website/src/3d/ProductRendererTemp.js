@@ -11,10 +11,23 @@ import HingedDoor from './HingedDoor'
 
 export default class ProductRenderer {
 
+  /* Flags used to interact with the graphical representation on certain steps of the wizard */
+
+  /**
+   * Flag used to control if the user can or can not resize the closet.
+   */
   canMoveCloset;
 
+
+  /**
+   * Flag used to control if the user can or can not move the closet's slots.
+   */
   canMoveSlots;
 
+
+  /**
+   * Flag used to control if the user can or can not move the closet's components.
+   */
   canMoveComponents;
 
   /**
@@ -101,14 +114,34 @@ export default class ProductRenderer {
    */
   closet_shelves_ids;
 
+  /**
+ * Global variable with the current closet poles ids (Mesh IDs from Three.js)
+ * @type {number[]}
+ */
   closet_poles_ids;
 
+  /**
+ * Global variable with the current closet modules ids (Mesh IDs from Three.js)
+ * @type {number[]}
+ */
   closet_modules_ids;
 
+  /**
+ * Global variable with the current closet drawers ids (Mesh IDs from Three.js)
+ * @type {number[]}
+ */
   closet_drawers_ids;
 
+  /**
+ * Global variable with the current closet hinged doors ids (Mesh IDs from Three.js)
+ * @type {number[]}
+ */
   closet_hinged_doors_ids;
 
+  /**
+ * Global variable with the current closet sliding doors ids (Mesh IDs from Three.js)
+ * @type {number[]}
+ */
   closet_sliding_doors_ids;
 
   /**
@@ -117,17 +150,19 @@ export default class ProductRenderer {
    */
   canvasWebGL;
 
-  // ------------ Instance variables used to dinamically resize Slots ------------
   /**
-   * Instance variables that represent the currently selected slot and face (null if none)
+   * Instance variables that represent the currently selected slot (null if none)
    */
   selected_slot;
 
   /**
-   * 
+   * Instance variables that represent the currently selected face (null if none)
    */
   selected_face;
 
+  /**
+   * Instance variables that represent the currently selected component (null if none)
+   */
   selected_component;
 
   /**
@@ -165,7 +200,6 @@ export default class ProductRenderer {
    * @type{THREE.Raycaster}
    */
   raycaster;
-  // ------------ End of instance variables used to dinamically resize Slots ------------
 
   // --------------Beggining of resize control ----------------------
 
@@ -188,6 +222,7 @@ export default class ProductRenderer {
   /**Number of dimensions in question */
   NUMBER_DIMENSIONS;
   // ---------------- End of resize control --------------------------
+
   /**
    * 
    * @param {HTMLCanvasElement} htmlCanvasElement 
@@ -208,9 +243,9 @@ export default class ProductRenderer {
 
     this.websiteDimensions = [500, 100, 15000];
 
-    this.canMoveCloset = true;
-    this.canMoveSlots = true;
-    this.canMoveComponents = true;
+    this.canMoveCloset = false;
+    this.canMoveSlots = false;
+    this.canMoveComponents = false;
 
     this.hingedDoor = null;
     this.slidingDoor = null;
@@ -312,10 +347,11 @@ export default class ProductRenderer {
     //A MeshPhongMaterial allows for shiny surfaces
     //A soft white light is being as specular light
     //The shininess value is the same as the matte finishing's value
-    this.material = new THREE.MeshPhongMaterial({
-      specular: 0x404040,
-      shininess: 20
-    });
+    this.material = new THREE.MeshPhongMaterial();
+    this.material.specular = new THREE.Color(0x404040);
+    this.material.shininess = 20;
+    this.material.map;
+    //this.applyTexture("./src/assets/materials/worn-wood.jpg");
 
     for (var i = 0; i < faces.length; i++) {
       this.closet_faces_ids.push(this.generateParellepiped(faces[i][0], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], this.material, this.group));
@@ -368,25 +404,89 @@ export default class ProductRenderer {
       closet_face.position.z = this.closet.getClosetSlotFaces()[i][5];
     }
   }
-  /**
-   * Adds a slot to the current closet
-   */
-  addSlot() {
-    ///this.addSlotNumbered([]);
-  }
 
   /**
    * Adds components to the current closet
+   * @param {*} component Component to add
    */
-  addComponent(components) {
-    if (components == null || components == undefined) return;
-    for (let i = 0; i < components.length; i++) {
-      for (let j = 0; j < components[i].length; j++) {
-        if (components[i][0].designation == "Shelf") this.generateShelf(components[i][0].slot);
-        if (components[i][0].designation == "Pole") this.generatePole(components[i][0].slot);
-        if (components[i][0].designation == "Drawer") this.generateDrawer(components[i][0].slot);
-        if (components[i][0].designation == "Hinged Door") this.generateHingedDoor(components[i][0].slot);
-        if (components[i][0].designation == "Sliding Door") this.generateSlidingDoor();
+  addComponent(component) {
+    if (!component) return;
+    if (component.designation == "Shelf") this.generateShelf(component.slot);
+    if (component.designation == "Pole") this.generatePole(component.slot);
+    if (component.designation == "Drawer") this.generateDrawer(component.slot);
+    if (component.designation == "Hinged Door") this.generateHingedDoor(component.slot);
+    if (component.designation == "Sliding Door") this.generateSlidingDoor();
+  }
+
+  /**
+  * Removes a components from the current closet
+  * @param {*} component Component to remove
+  */
+  removeComponent(component) {
+    if (!component) return;
+    if (component.designation == "Shelf") this.removeShelf(component.slot);
+    if (component.designation == "Pole") this.removePole(component.slot);
+    if (component.designation == "Drawer") this.removeDrawer(component.slot);
+    if (component.designation == "Hinged Door") this.removeHingedDoor(component.slot);
+    if (component.designation == "Sliding Door") this.removeSlidingDoor();
+  }
+
+  removeShelf(slot) {
+    for (let i = 0; i < this.closet.shelves.length; i++) {
+      if (this.closet.shelves[i].slotId == slot) {
+        this.closet.shelves.splice(i, 1);
+        var closet_shelf_face_id = this.closet_shelves_ids.splice(i, 1);
+        this.group.remove(this.group.getObjectById(closet_shelf_face_id[0]));
+        this.updateClosetGV();
+        return;
+      }
+    }
+  }
+
+  removeHingedDoor(slot) {
+    for (let i = 0; i < this.closet.hingedDoors.length; i++) {
+      if (this.closet.hingedDoors[i].slotId == slot) {
+        this.closet.hingedDoors.splice(i, 1);
+        var closet_door_face_id = this.closet_hinged_doors_ids.splice(i, 1);
+        this.group.remove(this.group.getObjectById(closet_door_face_id[0]));
+        this.updateClosetGV();
+        return;
+      }
+    }
+  }
+
+  removePole(slot) {
+    for (let i = 0; i < this.closet.poles.length; i++) {
+      if (this.closet.poles[i].slotId == slot) {
+        this.closet.poles.splice(i, 1);
+        var closet_pole_id = this.closet_poles_ids.splice(i, 1);
+        this.group.remove(this.group.getObjectById(closet_pole_id[0]));
+        this.updateClosetGV();
+        return;
+      }
+    }
+  }
+
+  removeSlidingDoor(){
+    this.closet.removeSlidingDoor();
+    var closet_sliding_door_face_id = this.closet_sliding_doors_ids.pop();
+    this.group.remove(this.group.getObjectById(closet_sliding_door_face_id));
+  }
+
+  //TODO! Remove all drawer faces
+  removeDrawer(slot) {
+    for (let i = 0; i < this.closet.drawers.length; i++) {
+      if (this.closet.drawers[i].slotId == slot) {
+        this.closet.drawers.splice(i, 1);
+        var closet_drawer_face_id = this.closet_drawers_ids.splice(i + 5, (i + 5) * 5);
+        var closet_module_face_id = this.closet_modules_ids.splice(i + 5, (i + 5) * 5);
+
+        for (let j = 0; j < closet_drawer_face_id.length; j++) {
+          this.group.remove(this.group.getObjectById(closet_drawer_face_id[j]));
+          this.group.remove(this.group.getObjectById(closet_module_face_id[j]));
+        }
+        return;
+        this.updateClosetGV();
       }
     }
   }
@@ -406,7 +506,7 @@ export default class ProductRenderer {
     var openEnded = false;
     var height, x, y, z;
 
-    var pole = new Pole(radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength);
+    var pole = new Pole(radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength, slot);
 
     //If the closet has no slots, the pole's height needs to be the width of the closet
     //Otherwise the pole needs to go from the closet's left wall to a slot, 
@@ -450,7 +550,7 @@ export default class ProductRenderer {
     poleMesh.position.y = y;
     poleMesh.position.z = z;
     poleMesh.rotation.z = Math.PI / 2;
-    //this.closet.addPole(pole);
+    this.closet.addPole(pole);
     this.group.add(poleMesh);
     this.closet_poles_ids.push(poleMesh.id);
   }
@@ -485,11 +585,8 @@ export default class ProductRenderer {
       y = this.calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
       z = this.calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
     }
-
-    //new Shelf([width, height, depth, x, y, z]);
-    var meshID = this.generateParellepiped(width, 3, this.closet.getClosetDepth(), x, y, z, this.material, this.group);
-    // this.closet.addShelf(shelf);
-    this.closet_shelves_ids.push(meshID);
+    this.closet.addShelf(new Shelf([width, 3, this.closet.getClosetDepth(), x, y, z], slot));
+    this.closet_shelves_ids.push(this.generateParellepiped(width, 3, this.closet.getClosetDepth(), x, y, z, this.material, this.group));
   }
 
 
@@ -529,23 +626,26 @@ export default class ProductRenderer {
       y = this.calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
       z = this.calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
     }
-    var module = new Module([width, depthDrawer, depthCloset, x, y - (spaceDrawerModule / 4), z], ///Base
-      [width, depthDrawer, depthCloset, x, y + heightDrawer + (spaceDrawerModule / 4), z], ///Cima
-      [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x - (width / 2), y + (heightDrawer / 2), z], ///Left
-      [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x + (width / 2), y + (heightDrawer / 2), z]); ///Rigtht
-    var borders = module.module_faces;
-    for (var i = 0; i < borders.length; i++) {
-      this.closet_modules_ids.push(this.generateParellepiped(borders[i][0],
-        borders[i][1], borders[i][2], borders[i][3],
-        borders[i][4], borders[i][5], this.material, this.group));
-    }
-    var drawer = new Drawer([width - spaceDrawerModule, depthDrawer, depthCloset, x, y + (depthDrawer / 2), z], ///Base
-      [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z + (depthCloset / 2) - (depthDrawer / 2)], ///Frent
-      [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x - (width / 2) + (spaceDrawerModule / 2), y + (heightDrawer / 2), z], ///Left
-      [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x + (width / 2) - (spaceDrawerModule / 2), y + (heightDrawer / 2), z], ///Right
-      [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z - (depthCloset / 2) + (depthDrawer / 2)]); ///Back
-    var borders_drawer = drawer.drawer_faces;
 
+    var module = new Module([width, depthDrawer, depthCloset, x, y - (spaceDrawerModule / 4), z], //Base
+      [width, depthDrawer, depthCloset, x, y + heightDrawer + (spaceDrawerModule / 4), z], //Top
+      [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x - (width / 2), y + (heightDrawer / 2), z], //Left
+      [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x + (width / 2), y + (heightDrawer / 2), z]); //Right
+
+    var borders_module = module.module_faces;
+    for (var i = 0; i < borders_module.length; i++) {
+      this.closet_modules_ids.push(this.generateParellepiped(borders_module[i][0],
+        borders_module[i][1], borders_module[i][2], borders_module[i][3],
+        borders_module[i][4], borders_module[i][5], this.material, this.group));
+    }
+
+    var drawer = new Drawer([width - spaceDrawerModule, depthDrawer, depthCloset, x, y + (depthDrawer / 2), z], //Base
+      [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z + (depthCloset / 2) - (depthDrawer / 2)], //Front
+      [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x - (width / 2) + (spaceDrawerModule / 2), y + (heightDrawer / 2), z], //Left
+      [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x + (width / 2) - (spaceDrawerModule / 2), y + (heightDrawer / 2), z], //Right
+      [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z - (depthCloset / 2) + (depthDrawer / 2)], slot); //Back
+
+    var borders_drawer = drawer.drawer_faces;
     for (var i = 0; i < borders_drawer.length; i++) {
       this.closet_drawers_ids.push(this.generateParellepiped(borders_drawer[i][0],
         borders_drawer[i][1], borders_drawer[i][2], borders_drawer[i][3],
@@ -581,6 +681,57 @@ export default class ProductRenderer {
     this.updateClosetGV();
   }
 
+  /*New methods*/
+  removeAllSlots() {
+    var size = this.closet_slots_faces_ids.length;
+    for (let i = 0; i < size; i++) {
+      this.removeSlot();
+    }
+  }
+
+  removeAllComponents() {
+    var size = this.closet_drawers_ids.length;
+    for (let i = 0; i < size; i++) {
+      this.closet.removeDrawer();
+      var closet_drawer_face_id = this.closet_drawers_ids.pop();
+      this.group.remove(this.group.getObjectById(closet_drawer_face_id));
+    }
+
+    size = this.closet_modules_ids.length;
+    for (let i = 0; i < size; i++) {
+      this.closet.removeModule();
+      var closet_module_face_id = this.closet_modules_ids.pop();
+      this.group.remove(this.group.getObjectById(closet_module_face_id));
+    }
+
+    size = this.closet_hinged_doors_ids.length;
+    for (let i = 0; i < size; i++) {
+      this.closet.removeHingedDoor();
+      var closet_hinged_door_face_id = this.closet_hinged_doors_ids.pop();
+      this.group.remove(this.group.getObjectById(closet_hinged_door_face_id));
+    }
+
+    size = this.closet_sliding_doors_ids.length;
+    for (let i = 0; i < size; i++) {
+      this.removeSlidingDoor();
+    }
+
+    size = this.closet_shelves_ids.length;
+    for (let i = 0; i < size; i++) {
+      this.closet.removeShelf();
+      var closet_shelf_face_id = this.closet_shelves_ids.pop();
+      this.group.remove(this.group.getObjectById(closet_shelf_face_id));
+    }
+
+    size = this.closet_poles_ids.length;
+    for (let i = 0; i < size; i++) {
+      this.closet.removePole();
+      var closet_poles_id = this.closet_poles_ids.pop();
+      this.group.remove(this.group.getObjectById(closet_poles_id));
+    }
+    this.updateClosetGV();
+  }
+
   /**
    * Removes a slot from the current closet
    */
@@ -590,6 +741,7 @@ export default class ProductRenderer {
     this.group.remove(this.group.getObjectById(closet_slot_face_id));
     this.updateClosetGV();
   }
+  /*End new methods*/
 
   /**
    * Changes the dimensions of the closet
@@ -618,12 +770,9 @@ export default class ProductRenderer {
   }
   /**
    * Applies the texture to the closet.
-   * @param {string} texture - texture being applied.
    */
   applyTexture(texture) {
-    this.textureLoader.load(texture, tex => {
-      this.material.map = tex
-    })
+    this.material.map = THREE.ImageUtils.loadTexture(texture);
   }
 
   /**

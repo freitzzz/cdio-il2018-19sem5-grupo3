@@ -218,7 +218,7 @@ namespace backend.Controllers
         {
             logger.LogInformation(LOG_GET_ALL_START);
             GetAllCustomizedProductCollectionsModelView modelView = new core.application.CustomizedProductCollectionController().findAllCollections();
-            if (!Collections.isEnumerableNullOrEmpty(modelView.customizedProductCollections))
+            if (!Collections.isEnumerableNullOrEmpty(modelView))
             {
                 logger.LogInformation(LOG_GET_ALL_SUCCESS, modelView);
                 return Ok(modelView);
@@ -357,7 +357,7 @@ namespace backend.Controllers
                 if (updatedCustomizedProductCollectionModelView != null)
                 {
                     logger.LogInformation(LOG_POST_SUCCESS);
-                    return Ok(updatedCustomizedProductCollectionModelView);
+                    return Created(Request.Path,updatedCustomizedProductCollectionModelView);
                 }
                 return BadRequest(new SimpleJSONMessageService(INVALID_UPDATE_MESSAGE));
             }

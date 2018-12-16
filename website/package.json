@@ -25,6 +25,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.8",
     "@fortawesome/free-solid-svg-icons": "^5.5.0",
     "@fortawesome/vue-fontawesome": "^0.1.3",
+    "@types/three": "^0.93.13",
     "axios": "^0.18.0",
     "buefy": "^0.7.0",
     "es6-promise": "^4.2.5",
@@ -32,11 +33,13 @@
     "imports-loader": "^0.8.0",
     "npm": "^6.4.1",
     "three": "^0.98.0",
+    "v-file-upload": "^3.1.3",
     "vue": "^2.5.11",
     "vue-slider-component": "^2.8.2",
     "vue-swatches": "^1.0.2",
     "vue-tables-2": "^1.4.70",
     "vue-toasted": "^1.1.26",
+    "vue-upload-component": "^2.8.16",
     "vuex": "^3.0.1"
   },
   "browserslist": [
@@ -46,6 +49,7 @@
   ],
   "devDependencies": {
     "babel-core": "^6.26.3",
+    "babel-eslint": "^10.0.1",
     "babel-install": "2.1.0",
     "babel-jest": "^23.6.0",
     "babel-loader": "^7.1.2",
@@ -54,6 +58,7 @@
     "babel-preset-stage-3": "^6.24.1",
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
+    "eslint": "^5.10.0",
     "file-loader": "^1.1.4",
     "jest": "^23.6.0",
     "jest-localstorage-mock": "^2.3.0",

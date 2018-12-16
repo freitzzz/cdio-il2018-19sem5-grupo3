@@ -1,7 +1,7 @@
 <template>
   <div>
-    <customizer-progress-bar></customizer-progress-bar>
-    <customizer-side-bar></customizer-side-bar>
+    <customizer-progress-bar :stageIndex="currentStage"></customizer-progress-bar>
+    <customizer-side-bar @changeStage="changeProgressBarStage"></customizer-side-bar>
     <canvas
       ref="threeCanvas"
       @mouseup="onMouseUp"
@@ -24,7 +24,8 @@ export default {
   name: "Customizer",
   data() {
     return {
-      productRenderer: {}
+      productRenderer: {},
+      currentStage: 0
     };
   },
   computed: {
@@ -48,14 +49,22 @@ export default {
       return Store.getters.customizedProductDimensions;
     },
     addComponent() {
-      var array = [];
-      for (let i = 0; i < Store.state.customizedProduct.slots.length; i++) {
-        array.push(Store.getters.customizedProductComponents(i));
-      }
-      return array;
+      return Store.getters.customizedProductComponents;
     },
-    addMaterial(){
+    removeComponent(){
+      return Store.getters.componentToRemove;
+    },
+    applyMaterial(){
       return Store.getters.customizedMaterial;
+    },
+    canMoveCloset(){
+      return Store.getters.canMoveCloset;
+    },
+    canMoveSlots(){
+      return Store.getters.canMoveSlots;
+    },
+    canMoveComponents(){
+      return Store.getters.canMoveComponents;
     }
   },
   components: {
@@ -64,7 +73,11 @@ export default {
   },
   watch: {
     slots: function(newValue, oldValue) {
-      this.productRenderer.addSlotNumbered(newValue);
+      if(newValue.length > 0){
+        this.productRenderer.addSlotNumbered(newValue);
+      } else {
+        this.productRenderer.removeAllSlots();
+      }
     },
     loadProduct: function() {
       this.productRenderer.showCloset();
@@ -76,11 +89,27 @@ export default {
         Store.getters.customizedProductDimensions.depth
       );
     },
-    addComponent: function(component) {
-      this.productRenderer.addComponent(component);
+    addComponent: function(newValue, oldValue) {
+      if(oldValue.length <= newValue.length){
+        this.productRenderer.addComponent(newValue[newValue.length - 1]);
+      } else if(newValue.length == 0) {
+        this.productRenderer.removeAllComponents();
+      }
     },
-    addMaterial: function(newMaterial) {
-      this.productRenderer.applyTexture("./src/assets/materials/" + newMaterial.image);
+    removeComponent: function(newValue){
+      this.productRenderer.removeComponent(newValue);
+    },
+    applyMaterial: function(newValue) {
+      this.productRenderer.applyTexture("./src/assets/materials/" + newValue);
+    },
+    canMoveCloset(newValue){
+      this.productRenderer.canMoveCloset = newValue;
+    },
+    canMoveSlots(newValue){
+      this.productRenderer.canMoveSlots = newValue;
+    },
+    canMoveComponents(newValue){
+      this.productRenderer.canMoveComponents = newValue;
     }
   },
   methods: {
@@ -109,6 +138,9 @@ export default {
       alert("keydown");
       this.productRenderer.onKeyDown(event);
       event.preventDefault();
+    },
+    changeProgressBarStage: function(currentPanelIndex){
+      this.currentStage = currentPanelIndex;
     }
   },
   mounted() {

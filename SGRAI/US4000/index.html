@@ -44,6 +44,32 @@
     var lastUnit = "cm", hasDoors = false, canClick = true;
 
     /**
+     * Drag and drop functions related to dragging and dropping components on WebGL Canvas 
+    */
+    function drag(ev){
+      ev.dataTransfer.setData("text",ev.target.id);
+    }
+
+    function allowDrop(ev){
+      ev.preventDefault();
+    }
+
+    function drop(ev){
+      ev.preventDefault();
+      var canvas = document.getElementById("webgl");
+      var data = ev.dataTransfer.getData("text");
+      var event = new CustomEvent("dropComponent", {
+        detail: {
+          componentData: data,
+          clientX: ev.clientX,
+          clientY: ev.clientY,
+          boundingRect: canvas.getBoundingClientRect()
+        }
+      });
+      document.dispatchEvent(event);
+    }
+
+    /**
      * Converts the dimensions' values according to the selected unit on the HTML page 
      **/
     function convertUnit(unitToConvert) {
@@ -717,33 +743,43 @@
             <li>
               <div class="material-btn" onclick="createComponent('pole');">
                 <!--Change the texture source, if the server or the port need to change-->
-                <img id="pole" src="http://127.0.0.1:8002/US4000/img/pole.jpeg" alt="Pole" width="100%" />
+                <img id="pole" src="http://127.0.0.1:8002/US4000/img/pole.jpeg" draggable="true"
+                ondragstart="drag(event)"
+                alt="Pole" width="100%" />
                 <p>Pole</p>
               </div>
             </li>
             <li>
               <div class="material-btn" onclick="createComponent('shelf')">
                 <!--Change the texture source, if the server or the port need to change-->
-                <img id="shelf" src="http://127.0.0.1:8002/US4000/img/shelf.jpeg" alt="Shelf" width="100%" />
+                <img id="shelf" src="http://127.0.0.1:8002/US4000/img/shelf.jpeg" draggable="true"
+                ondragstart="drag(event)"
+                alt="Shelf" width="100%" />
                 <p>Shelf</p>
               </div>
             </li>
             <li>
               <div class="material-btn" onclick="createComponent('drawer');">
                 <!--Change the texture source, if the server or the port need to change-->
-                <img id="drawer" src="http://127.0.0.1:8002/US4000/img/drawer.jpeg" alt="Drawer" width="100%" />
+                <img id="drawer" src="http://127.0.0.1:8002/US4000/img/drawer.jpeg"  draggable="true"
+                ondragstart="drag(event)"
+                alt="Drawer" width="100%" />
                 <p>Drawer</p>
               </div>
             </li>
             <li>
               <div class="material-btn" onclick="createDoor('slidingDoor');">
                 <!--Change the texture source, if the server or the port need to change-->
-                <img id="slidingDoor" src="http://127.0.0.1:8002/US4000/img/slidingDoor.jpeg" alt="Sliding Door" width="100%" />
+                <img id="slidingDoor" src="http://127.0.0.1:8002/US4000/img/slidingDoor.jpeg" draggable="true"
+                ondragstart="drag(event)"
+                alt="Sliding Door" width="100%" />
                 <p>Sliding Door</p>
               </div>
               <div class="material-btn" onclick="createComponent('door');">
                 <!--Change the texture source, if the server or the port need to change-->
-                <img id="door" src="http://127.0.0.1:8002/US4000/img/door.jpeg" alt="Door" width="100%" />
+                <img id="door" src="http://127.0.0.1:8002/US4000/img/door.jpeg" draggable="true"
+                ondragstart="drag(event)"
+                alt="Door" width="100%" />
                 <p>Door</p>
               </div>
             </li>
@@ -759,7 +795,7 @@
 
       <div class="column right">
 
-        <canvas id="webgl" width="800" height="600">
+        <canvas id="webgl" width="800" height="600" ondrop="drop(event)" ondragover="allowDrop(event)">
           Please use a browser that supports "canvas"
         </canvas>
         <script src="../Renderer/js/threeless.js"></script>

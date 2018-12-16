@@ -1,6 +1,8 @@
 <template>
   <ul class="progressbar">
-      <li v-for="stage in stages" :key="stage.title" :class="stage.class">{{stage.title}}</li>
+      <li v-for="stage in stages" :key="stage.title" :class="stage.class">
+        {{stage.title}}
+      </li>
   </ul>
 </template>
 <script>
@@ -8,6 +10,7 @@ export default {
   name: "CustomizerProgressBar",
   data() {
     return {
+      currentStageIndex: 0,
       stages: [
         {
           title: "Structure",
@@ -36,7 +39,38 @@ export default {
       ]
     };
   },
-  methods: {}
+  props: {
+    stageIndex: 0
+  },
+  watch: {
+    stageIndex: function(){
+      if(this.currentStageIndex > this.stageIndex){
+        this.currentStageIndex = this.stageIndex;
+        this.previousStage()
+      }else{
+        this.currentStageIndex = this.stageIndex;
+        this.nextStage()
+      }
+    }
+  },
+  methods: {
+     /**
+       * Go to the previous stage.
+       */
+      previousStage() {
+        if (this.currentStageIndex >= 0) {
+          this.stages[this.currentStageIndex + 1].class = "before"
+        }
+      },
+      /**
+       * Go to the next stage.
+       */
+      nextStage() {
+        if (this.currentStageIndex < this.stages.length - 1) {
+          this.stages[this.currentStageIndex].class = "active";
+        }
+      }
+  }
 };
 </script>
 

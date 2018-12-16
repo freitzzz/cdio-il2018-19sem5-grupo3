@@ -44,8 +44,8 @@ export const actions = {
     /**
      * Action used to commit the mutation SET_MATERIAL
      */
-    [types.SET_MATERIAL]: ({ commit }, payload) => {
-        commit(types.SET_MATERIAL, payload);
+    [types.SET_CUSTOMIZED_PRODUCT_MATERIAL]: ({ commit }, payload) => {
+        commit(types.SET_CUSTOMIZED_PRODUCT_MATERIAL, payload);
     },
 
     /**
@@ -60,6 +60,13 @@ export const actions = {
      */
     [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS]: ({ commit }, payload) => {
         commit(types.SET_CUSTOMIZED_PRODUCT_COMPONENTS, payload);
+    },
+
+    /**
+     * Action used to commit the mutation REMOVE_CUSTOMIZED_PRODUCT_COMPONENT
+     */
+    [types.REMOVE_CUSTOMIZED_PRODUCT_COMPONENT]: ({ commit }, payload) => {
+        commit(types.REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, payload);
     },
 
     /**
@@ -102,5 +109,5 @@ export const actions = {
       */
     [types.DEACTIVATE_CAN_MOVE_COMPONENTS]: ({ commit }) => {
         commit(types.DEACTIVATE_CAN_MOVE_COMPONENTS);
-    }
+    },
 }

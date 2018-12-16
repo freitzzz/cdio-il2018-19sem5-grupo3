@@ -5,6 +5,16 @@
  */
 import SlotableProduct from "./BaseProduct";
 
+/**
+ * Requires HingedDoor
+ */
+import HingedDoor from './HingedDoor';
+
+/**
+ * Requires SlidingDoor
+ */
+import SlidingDoor from './SlidingDoor';
+
 
 /**
  * Represents the internal core of a Closet
@@ -212,7 +222,6 @@ export default class Closet extends SlotableProduct{
     }
 
     //Accessors
-
     /**
      * Returns the current width of the closet
      */
