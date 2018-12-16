@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using System;
+using System.Threading;
 
 namespace backend.persistence.ef
 {
@@ -72,7 +73,12 @@ namespace backend.persistence.ef
         /// </summary>
         /// <param name="options">The options for the context.</param>
         /// <returns>New instance of MyCContext.</returns>
-        public MyCContext(DbContextOptions<MyCContext> options) : base(options) { BackendConfiguration.entityFrameworkContext = this; }
+        public MyCContext(DbContextOptions<MyCContext> options) : base(options) {
+            if(BackendConfiguration.entityFrameworkContexts.containsKey(Thread.CurrentThread.ManagedThreadId)){
+                BackendConfiguration.entityFrameworkContexts.removeKey(Thread.CurrentThread.ManagedThreadId);
+            }
+            BackendConfiguration.entityFrameworkContexts.put(Thread.CurrentThread.ManagedThreadId,this); 
+            }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -144,17 +150,19 @@ namespace backend.persistence.ef
 
             //Compound key for CatalogueCollectionProduct
             //Many-to-Many relationship between CatalogueCollection and CustomizedProduct
-            builder.Entity<CatalogueCollectionProduct>().HasKey(ccp => new { ccp.catalogueCollectionId, ccp.customizedProductId });
+            builder.Entity<CatalogueCollectionProduct>().HasKey(ccp => new { ccp.commercialCatalogueId, ccp.customizedProductCollectionId, ccp.customizedProductId });
             builder.Entity<CatalogueCollectionProduct>().HasOne(ccp => ccp.customizedProduct)
                 .WithMany().HasForeignKey(ccp => ccp.customizedProductId);
             builder.Entity<CatalogueCollectionProduct>().HasOne(ccp => ccp.catalogueCollection)
-                .WithMany(cc => cc.catalogueCollectionProducts).HasForeignKey(ccp => ccp.catalogueCollectionId);
+                .WithMany(cc => cc.catalogueCollectionProducts).HasForeignKey(ccp => new { ccp.commercialCatalogueId, ccp.customizedProductCollectionId });
 
-            builder.Entity<CommercialCatalogueCatalogueCollection>().HasKey(cccc => new { cccc.commercialCatalogueId, cccc.catalogueCollectionId });
-            builder.Entity<CommercialCatalogueCatalogueCollection>()
-                .HasOne(cccc => cccc.commercialCatalogue).WithMany(cc => cc.catalogueCollectionList).HasForeignKey(cccc => cccc.commercialCatalogueId);
-            builder.Entity<CommercialCatalogueCatalogueCollection>().HasOne(cccc => cccc.catalogueCollection).WithOne();
+            builder.Entity<CommercialCatalogue>().HasMany(catalogue => catalogue.catalogueCollectionList)
+                .WithOne().HasForeignKey(catalogueCollection => catalogueCollection.commercialCatalogueId);
 
+            builder.Entity<CatalogueCollection>().HasKey(cc => new { cc.commercialCatalogueId, cc.customizedProductCollectionId });
+            builder.Entity<CatalogueCollection>().HasOne(catalogueCollection => catalogueCollection.customizedProductCollection)
+                .WithMany().HasForeignKey(cc => cc.customizedProductCollectionId);
+            builder.Entity<CatalogueCollection>().HasMany(catalogueCollection => catalogueCollection.catalogueCollectionProducts);
 
             //TimePeriod conversion mapping
             var localDateTimeConverter = new ValueConverter<LocalDateTime, DateTime>(v => v.ToDateTimeUnspecified(), v => LocalDateTime.FromDateTime(v));

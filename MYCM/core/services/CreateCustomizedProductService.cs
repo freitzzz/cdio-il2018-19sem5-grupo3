@@ -25,10 +25,6 @@ namespace core.services
         /// </summary>
         private const string ERROR_UNABLE_TO_FIND_PRODUCT = "Unable to find a product with an identifier of: {0}";
         /// <summary>
-        /// Constant representing the error message presented when the Material is not found.
-        /// </summary>
-        private const string ERROR_UNABLE_TO_FIND_MATERIAL = "Unable to find a material with an identifier of: {0}";
-        /// <summary>
         /// Constant representing the error message presented when the Slot is not found.
         /// </summary>
         private const string ERROR_UNABLE_TO_FIND_SLOT = "Unable to find a slot with an identifier of: {0}";
@@ -39,9 +35,9 @@ namespace core.services
         private const string ERROR_UNABLE_TO_SAVE_CUSTOMIZED_PRODUCT = "Unable to save the customized product. Please, make sure the reference/serial number is unique";
 
         /// <summary>
-        /// Constant representing the error message presented when the CustomizedProduct's customized material has null color and finish
+        /// Constant representing the error message presented when a CustomizedProduct is attempted to be created without dimensions.
         /// </summary>
-        private const string NULL_COLOR_AND_FINISH = "Color and Finish of customized material both null";
+        private const string ERROR_NO_CUSTOMIZED_DIMENSIONS = "Unable to create a customized product without dimensions.";
 
         /// <summary>
         /// Creates an instance of CustomizedProduct.
@@ -111,10 +107,17 @@ namespace core.services
         /// <param name="addCustomizedProductModelView">AddCustomizedProductModelView containing the CustomizedProduct's information.</param>
         /// <param name="product">Instance of Product.</param>
         /// <returns>Built instance of CustomizedProduct.</returns>
-        /// <exception cref="System.ArgumentException">Thrown when the Material referenced by the CustomizedMaterial is not found.</exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown when the Material referenced by the CustomizedMaterial is not found or when no CustomizedDimensions are provided.
+        /// </exception>
         private static CustomizedProduct buildCustomizedProduct(AddCustomizedProductModelView addCustomizedProductModelView, Product product)
         {
             CustomizedProductBuilder customizedProductBuilder = null;
+
+            if (addCustomizedProductModelView.customizedDimensions == null)
+            {
+                throw new ArgumentException(ERROR_NO_CUSTOMIZED_DIMENSIONS);
+            }
 
             CustomizedDimensions customizedProductDimensions = CustomizedDimensionsModelViewService.fromModelView(addCustomizedProductModelView.customizedDimensions);
 
@@ -157,37 +160,7 @@ namespace core.services
             //build customized product with optional properties if they're defined
             if (addCustomizedProductModelView.customizedMaterial != null)
             {
-                MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
-
-                Material material = materialRepository.find(addCustomizedProductModelView.customizedMaterial.materialId);
-
-                if (material == null)
-                {
-                    throw new ArgumentException(string.Format(ERROR_UNABLE_TO_FIND_MATERIAL, addCustomizedProductModelView.customizedMaterial.materialId));
-                }
-                //TODO: replace usage of dto
-                FinishDTO finishDTO = addCustomizedProductModelView.customizedMaterial.finish;
-                ColorDTO colorDTO = addCustomizedProductModelView.customizedMaterial.color;
-
-                if (finishDTO == null && colorDTO == null)
-                {
-                    throw new ArgumentException(NULL_COLOR_AND_FINISH);
-                }
-
-                CustomizedMaterial customizedMaterial = null;
-
-                if (finishDTO == null && colorDTO != null)
-                {
-                    customizedMaterial = CustomizedMaterial.valueOf(material, colorDTO.toEntity());
-                }
-                else if (finishDTO != null && colorDTO == null)
-                {
-                    customizedMaterial = CustomizedMaterial.valueOf(material, finishDTO.toEntity());
-                }
-                else
-                {
-                    customizedMaterial = CustomizedMaterial.valueOf(material,colorDTO.toEntity(), finishDTO.toEntity());
-                }
+                CustomizedMaterial customizedMaterial = CreateCustomizedMaterialService.create(addCustomizedProductModelView.customizedMaterial);
 
                 customizedProductBuilder.withMaterial(customizedMaterial);
             }

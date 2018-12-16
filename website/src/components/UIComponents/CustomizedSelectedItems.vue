@@ -25,10 +25,10 @@
                         {{item.value}}
                 </option>
             </b-select>
-            <button class="button is-danger" @click="addSelectedItem()">
+            <button class="button is-info" @click="addSelectedItem()">
                 <b-icon icon="plus"/>
             </button>
-            <button class="button is-danger" @click="removeSelectedItem()">
+            <button class="button is-info" @click="removeSelectedItem()">
                 <b-icon icon="minus"/>
             </button>
         </b-field>
@@ -51,6 +51,8 @@ export default {
                 if(item!=null)return;
                 item=this.containsItem(this.availableItems,this.currentSelectedItem);
                 this.addedItems.push(item);
+                this.getAddedItems();
+                this.currentSelectedAddedItem = item.id;
             }
         },
         /**
@@ -71,6 +73,7 @@ export default {
                     newAddedItems.push(item);
             });
             this.addedItems=newAddedItems;
+            this.getAddedItems();
         },
         containsItem(collection,itemID){
             for(let i=0;i<collection.length;i++){

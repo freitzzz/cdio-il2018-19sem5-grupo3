@@ -33,6 +33,11 @@
     color: #0ba2db;
   }
 
+  /* Red colored icons */
+  .material-icons.md-red {
+    color: #b53030;
+  }
+
   .material-icons.md-blue:hover{
     color: #67c8eb;
   }
@@ -405,45 +410,48 @@
     cursor: pointer;
   }
 
-  .scrollable-div{
+  .scrollable-div {
     overflow-y: scroll;
     border: thin solid #0ba2db;
     background-color: rgb(255, 255, 255)
   }
 
   .sidepanel {
-    height: 0; /* Specify a height */
-    width: 0; /* 0 width - change this with JavaScript */
     position: relative; /* Stay in place */
     z-index: 1; /* Stay on top */
     top: 0;
     left: 0;
     background-color: #0ba2db;
+    text-align: left !important;
+    color: white !important;
+    opacity: .9;
     overflow-x: hidden; /* Disable horizontal scroll */
     transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
   }
+
   /* The sidepanel links */
   .sidepanel-entry {
       padding: 8px 8px 8px 32px;
-      text-decoration: none;
+      background-color: #0ba2db;
       font-size: 25px;
-      color: white;
       display: block;
       transition: 0.3s;
+      opacity: .9;
   }
   
   /* When you mouse over the navigation links, change their color */
   .sidepanel-entry:hover {
     color: #f1f1f1;
-    background-color: rgb(66, 66, 240);
+    background-color: #67c8eb;
+    opacity: .9 !important;
     cursor: pointer;
   }
+
   /* The sidepanel links */
   .sidepanel-subentry {
       padding: 8px 8px 8px 32px;
       text-decoration: none;
       font-size: 15px;
-      color: white;
       display: block;
       transition: 0.3s;
   }
@@ -451,7 +459,8 @@
   /* When you mouse over the navigation links, change their color */
   .sidepanel-subentry:hover {
     color: #f1f1f1;
-    background-color: rgb(101, 101, 245);
+    background-color: #67c8eb;
+    opacity: .9;
     cursor: pointer;
   }
   
@@ -459,10 +468,10 @@
   .sidepanel .closebtn {
     position: absolute;
     color: white;
-      top: 0;
-      right: 25px;
-      font-size: 25px;
-      margin-left: 50px;
+    top: 0;
+    right: 25px;
+    font-size: 25px;
+    margin-left: 50px;
   }
   
   /* Style the button that is used to open the sidepanel */
@@ -477,8 +486,7 @@
   
   .openbtn:hover {
     background-color: #444;
-  }
-  
+  }  
   
   ul.image-list>li{
     text-align:center;

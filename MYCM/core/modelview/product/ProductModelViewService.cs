@@ -57,29 +57,7 @@ namespace core.modelview.product
         /// <returns>GetProductModelView with the product information model view</returns>
         public static GetProductModelView fromEntity(Product product)
         {
-            if (product == null)
-            {
-                throw new ArgumentNullException(ERROR_NULL_PRODUCT);
-            }
-
-            GetProductModelView productModelView = new GetProductModelView();
-            productModelView.productId = product.Id;
-            productModelView.reference = product.reference;
-            productModelView.designation = product.designation;
-            productModelView.modelFilename = product.modelFilename;
-            productModelView.category = ProductCategoryModelViewService.fromEntityAsBasic(product.productCategory);
-            if (product.components.Any())
-            {
-                productModelView.components = ComponentModelViewService.fromCollection(product.components);
-            }
-            //no need to check if the product has materials and measurements, since they're mandatory
-            productModelView.materials = ProductMaterialModelViewService.fromCollection(product.productMaterials);
-            productModelView.measurements = MeasurementModelViewService.fromCollection(product.productMeasurements.Select(pm => pm.measurement));
-            if (product.supportsSlots)
-            {
-                productModelView.slotWidths = ProductSlotWidthsModelViewService.fromEntity(product.slotWidths);
-            }
-            return productModelView;
+            return fromEntity(product, MeasurementUnitService.getMinimumUnit());
         }
 
         /// <summary>

@@ -19,5 +19,11 @@ namespace core.modelview.customizedproductcollection
         /// </summary>
         [DataMember(Name = "name")]
         public string name { get; set; }
+
+        /// <summary>
+        /// Boolean indicating whether the collection has customized products or not
+        /// </summary>
+        [DataMember(Name="hasCustomizedProducts")]
+        public bool hasCustomizedProducts {get; set;}
     }
 }

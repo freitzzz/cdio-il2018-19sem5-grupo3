@@ -1,13 +1,20 @@
 //@ts-check
+
+/**
+ * Requires BaseProduct for product base properties
+ */
+import BaseProduct from "./BaseProduct";
+
 /**
  * Represents the internal core of a shelf
  */
-export default class Shelf {
+export default class Shelf extends BaseProduct{
     /**
      * Builds a new shelf with the dimensions and axes values for all faces
      * @param {Array} shelf_base_face_dimensions_axes Array with the base face dimensions and axes values
      */
     constructor(shelf_base_face_dimensions_axes, slotId) {
+        super(1,1);
         this.shelf_base_face_dimensions_axes = shelf_base_face_dimensions_axes.slice();
         this.slotId = slotId;
         this._prepare_shelf_init();

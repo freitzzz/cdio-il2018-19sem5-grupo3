@@ -221,6 +221,7 @@ export default {
     methods:{
         addDimensions(){
             this.dimensionsItems.values.push({
+                id:0,
                 width:this.addDimensionItems.width,
                 height:this.addDimensionItems.height,
                 depth:this.addDimensionItems.depth,

@@ -1,8 +1,14 @@
-//@ts-check
+////@ts-check
+
+/**
+ * Requires BaseProduct for product base properties
+ */
+import BaseProduct from "./BaseProduct";
+
 /**
 * Represents a pole by using cylinder geometry
 */
-export default class Pole{
+export default class Pole extends BaseProduct{
 
 	/**
      * Builds a new Pole 
@@ -20,6 +26,7 @@ export default class Pole{
 				height,radialSegments,
 				heightSegments,openEnded,
 				thetaStart,thetaLength, slotId){
+					super(1,1);
 		this.radiusTop = radiusTop;
 		this.radiusBottom = radiusBottom;
 		this.height = height;

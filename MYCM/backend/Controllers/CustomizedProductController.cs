@@ -285,7 +285,8 @@ namespace backend.Controllers
         /// <returns>ActionResult with the created customized product</returns>
         [HttpPost]
         [HttpPost("{customizedProductId}/slots/{slotId}/customizedproducts")]
-        public ActionResult addCustomizedProduct(long? customizedProductId, long? slotId, [FromBody]AddCustomizedProductModelView customizedProductModelView)
+        public ActionResult addCustomizedProduct(long? customizedProductId, long? slotId, [FromHeader]string userAuthToken, 
+            [FromBody]AddCustomizedProductModelView customizedProductModelView)
         {
             logger.LogInformation(LOG_POST_START);
 
@@ -299,6 +300,7 @@ namespace backend.Controllers
             {
                 customizedProductModelView.parentCustomizedProductId = customizedProductId;
                 customizedProductModelView.insertedInSlotId = slotId;
+                customizedProductModelView.userAuthToken = userAuthToken;
 
                 GetCustomizedProductModelView createdCustomizedProductModelView = new core.application
                     .CustomizedProductController().addCustomizedProduct(customizedProductModelView);

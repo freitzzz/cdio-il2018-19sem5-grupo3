@@ -9,9 +9,13 @@
       <div class="padding-div">
         <div class="scrollable-div" style="height: 200px; width: 100%;">
           <ul class="image-list" v-for="component in components" :key="component.id">
-            <li>
+            <li class="image-icon-div">
               <div class="image-btn" @click="createDivElements(component)">
                 <img :src="findComponentImage(component.model)" width="100%">
+                <span v-if="isComponentMandatory(component.id)">
+                <i class="image-icon material-icons md-12 md-red btn">warning</i>
+                <span class="tooltiptext">This component is mandatory!</span>
+                </span>
                 <p>{{component.designation}}</p>
               </div>
             </li>
@@ -78,7 +82,6 @@ import { SET_CUSTOMIZED_PRODUCT_COMPONENTS,
         ACTIVATE_CAN_MOVE_COMPONENTS }
         from "./../store/mutation-types.js";
 
-//TODO! CHANGE Toast
 Vue.use(Toasted);
 
 export default {
@@ -124,6 +127,11 @@ export default {
     canAddComponentToSlot(model){
       return model.split(".")[0] != "sliding-door";
     },
+    isComponentMandatory(componentId){
+      for(let i = 0; i < this.components.length; i++){
+        if(this.components[i].id == componentId) return this.components[i].mandatory == true;
+      }
+    },
     addDivElement(component, index) {
       //If the product has slots and the chosen component can be added to a slot, checks if the 
       if (this.hasSlots() && this.canAddComponentToSlot(component.model)){
@@ -155,10 +163,9 @@ export default {
       this.div_inputs.splice(this.div_inputs.length);
 
       this.$toast.open("The component was sucessfully removed!");
-
-      //TODO! communicate with Three.js & Remove from store
     },
     nextPanel(){
+      //TODO! POST components
       this.$emit("advance");
     },
     previousPanel(){
@@ -175,6 +182,42 @@ export default {
 </script>
 
 <style>
+.image-icon-div {
+  position: relative;
+  overflow-x: hidden;
+}
+
+.image-icon-div .image-icon {
+ position: absolute;
+ top: 10%;
+  left: 90%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.image-icon-div .tooltiptext {
+  visibility: hidden;
+  width: 100px;
+  background-color: #797979;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 10px;
+  padding: 10%;
+  position: absolute;
+  top: 10px;
+  left: 0px;
+  right: 0px;
+}
+
+.image-icon-div:hover .tooltiptext  {
+  visibility: visible;
+}
+
 .icon-div-top .tooltiptext {
   visibility: hidden;
   width: 100px;

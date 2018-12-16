@@ -357,7 +357,7 @@ namespace backend.Controllers
                 if (updatedCustomizedProductCollectionModelView != null)
                 {
                     logger.LogInformation(LOG_POST_SUCCESS);
-                    return Ok(updatedCustomizedProductCollectionModelView);
+                    return Created(Request.Path,updatedCustomizedProductCollectionModelView);
                 }
                 return BadRequest(new SimpleJSONMessageService(INVALID_UPDATE_MESSAGE));
             }

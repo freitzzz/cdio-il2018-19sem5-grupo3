@@ -5,6 +5,7 @@ using core.domain;
 using core.dto;
 using support.dto;
 using static core.domain.CustomizedProduct;
+using System.Linq;
 
 namespace core_tests.domain
 {
@@ -15,1472 +16,586 @@ namespace core_tests.domain
     public class CommercialCatalogueTest
     {
 
-        [Fact]
-        public void ensureIdMethodWorks()
+        private CustomizedProduct buildCustomizedProduct(string serialNumber)
         {
-            Console.WriteLine("ensureIdMethodWorks");
+            var category = new ProductCategory("Drawers");
+            //Creating Dimensions
+            List<Double> values2 = new List<Double>();
 
-            string reference = "123456789";
-            string designation = "Commercial Catalogue 2019";
+            values2.Add(500.0); //Width
 
-            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
+            DiscreteDimensionInterval d2 = new DiscreteDimensionInterval(values2);
 
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
-
-
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+            Measurement measurement = new Measurement(d2, d2, d2);
             List<Measurement> measurements = new List<Measurement>() { measurement };
+
+            //Creating a material
+            string reference = "1160912";
+            string designation = "FR E SH A VOCA DO";
+
             List<Color> colors = new List<Color>();
+            Color color = Color.valueOf("AND READ-ER-BIBLE", 1, 2, 3, 0);
             colors.Add(color);
 
             List<Finish> finishes = new List<Finish>();
+            Finish finish = Finish.valueOf("Amém", 12);
             finishes.Add(finish);
 
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
+            Material material = new Material(reference, designation, "ola.jpg", colors, finishes);
+            List<Material> materials = new List<Material>();
+            materials.Add(material);
 
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder
-                .createAnonymousUserCustomizedProduct("serial number", product, custDimensions)
-                .withMaterial(custMaterial).build();
-            custProducts.Add(custProduct);
+            IEnumerable<Material> matsList = materials;
 
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
+            Product product = new Product("#666", "Shelf", "shelf666.glb", category, matsList, measurements);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(500.0, 500.0, 500.0);
 
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
+            //Customized Material
+            CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            listCollection.Add(custProCollection);
-            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
+            return CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, product, customizedDimensions).withMaterial(custMaterial1).build();
+        }
 
-            Assert.Equal(comCatalogue.id(), reference, true);
+        private CustomizedProductCollection buildCustomizedProductCollection(string collectionName)
+        {
+            CustomizedProductCollection customizedProductCollection = new CustomizedProductCollection(collectionName);
+
+            CustomizedProduct customizedProduct1 = buildCustomizedProduct("1234");
+            customizedProduct1.finalizeCustomization();     //!customized products added to collections need to be finished
+
+            customizedProductCollection.addCustomizedProduct(customizedProduct1);
+
+            CustomizedProduct customizedProduct2 = buildCustomizedProduct("1235");
+            customizedProduct2.finalizeCustomization();     //!customized products added to collections need to be finished
+
+            customizedProductCollection.addCustomizedProduct(customizedProduct2);
+
+            return customizedProductCollection;
+        }
+
+        private CatalogueCollection buildCatalogueCollection(string collectionName)
+        {
+            return new CatalogueCollection(buildCustomizedProductCollection(collectionName));
         }
 
         [Fact]
-        public void ensurechangeReferenceInComCatalogue()
+        public void ensureCommercialCatalogueCantBeCreatedWithNullReference()
         {
-            Console.WriteLine("ensurechangeReferenceInComCatalogue");
+            Action createCommercialCatalogue = () => new CommercialCatalogue(null, "catalogue's designation");
 
-            string reference = "123456789";
-            string designation = "Commercial Catalogue 2019";
-
-            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
-
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
-
-
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder
-                .createAnonymousUserCustomizedProduct("serial number", product, custDimensions)
-                .withMaterial(custMaterial).build();
-            custProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
-            listCollection.Add(custProCollection);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
-
-            comCatalogue.changeReference("Mudei referecia");
-            Assert.Equal("Mudei referecia", comCatalogue.reference, true);
+            Assert.Throws<ArgumentException>(createCommercialCatalogue);
         }
 
         [Fact]
-        public void ensurechangeNullReferenceInComCatalogue()
+        public void ensureCommercialCatalogueCantBeCreatedWithEmptyReference()
         {
-            Console.WriteLine("ensurechangeNullReferenceInComCatalogue");
+            Action createCommercialCatalogue = () => new CommercialCatalogue("", "catalogue's designation");
 
-            string reference = "123456789";
-            string designation = "Commercial Catalogue 2019";
-
-            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
-
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
-
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-
-            CustomizedProduct custProduct = CustomizedProductBuilder
-                .createAnonymousUserCustomizedProduct("serial number", product, custDimensions)
-                .withMaterial(custMaterial).build();
-            custProducts.Add(custProduct);
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
-
-
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
-
-            Assert.Throws<ArgumentException>(() => comCatalogue.changeReference(null));
-
+            Assert.Throws<ArgumentException>(createCommercialCatalogue);
         }
 
         [Fact]
-        public void ensurechangeEmpetyReferenceInComCatalogue()
+        public void ensureCommercialCatalogueCantBeCreatedWithNullDesignation()
         {
-            Console.WriteLine("ensurechangeEmpetyReferenceInComCatalogue");
+            Action createCommercialCatalogue = () => new CommercialCatalogue("reference", null);
 
-            string reference = "123456789";
-            string designation = "Commercial Catalogue 2019";
-
-            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
-
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
-
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder
-                .createAnonymousUserCustomizedProduct("serial number", product, custDimensions)
-                .withMaterial(custMaterial).build();
-            custProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
-            listCollection.Add(custProCollection);
-
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
-
-            Assert.Throws<ArgumentException>(() => comCatalogue.changeReference(""));
+            Assert.Throws<ArgumentException>(createCommercialCatalogue);
         }
 
         [Fact]
-        public void ensurechangeDesignationInComCatalogue()
+        public void ensureCommercialCatalogueCantBeCreatedWithEmptyDesignation()
         {
-            Console.WriteLine("ensurechangeDesignationInComCatalogue");
+            Action createCommercialCatalogue = () => new CommercialCatalogue("reference", "");
 
-            string reference = "123456789";
-            string designation = "Commercial Catalogue 2019";
-
-            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
-
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
-
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder
-                .createAnonymousUserCustomizedProduct("serial number", product, custDimensions)
-                .withMaterial(custMaterial).build();
-            custProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
-
-            comCatalogue.changeDesignation("Mudei designation");
-            Assert.Equal("Mudei designation", comCatalogue.designation, true);
+            Assert.Throws<ArgumentException>(createCommercialCatalogue);
         }
 
         [Fact]
-        public void ensurechangeNullDesignationInComCatalogue()
+        public void ensureCommercialCatalogueCantBeCreatedWithNullCatalogueCollectionsEnumerable()
         {
-            Console.WriteLine("ensurechangeNullDesignationInComCatalogue");
+            Action createCommercialCatalogue = () => new CommercialCatalogue("reference", "designation", null);
 
-            string reference = "123456789";
-            string designation = "Commercial Catalogue 2019";
-
-            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
-
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
-
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder
-                .createAnonymousUserCustomizedProduct("serial number", product, custDimensions)
-                .withMaterial(custMaterial).build();
-            custProducts.Add(custProduct);
-
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
-
-            ///comCatalogue.changeDesignation("Mudei designation");
-            Assert.Throws<ArgumentException>(() => comCatalogue.changeDesignation(null));
-
+            Assert.Throws<ArgumentException>(createCommercialCatalogue);
         }
 
         [Fact]
-        public void ensurechangeEmpetyDesignationInComCatalogue()
+        public void ensureCommercialCatalogueCantBeCreatedWithNullCatalogueCollections()
         {
-            Console.WriteLine("ensurechangeEmpetyDesignationInComCatalogue");
+            Action createCommercialCatalogue = () => new CommercialCatalogue("reference", "designation", new List<CatalogueCollection>() { null });
 
-            string reference = "123456789";
-            string designation = "Commercial Catalogue 2019";
-
-            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
-
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
-
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-            custProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
-            listCollection.Add(custProCollection);
-
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
-
-            Assert.Throws<ArgumentException>(() => comCatalogue.changeDesignation(""));
+            Assert.Throws<ArgumentException>(createCommercialCatalogue);
         }
 
         [Fact]
-        public void ensureComCataloguesWithEqualIdentitiesAreTheSame()
+        public void ensureCommercialCatalogueCantBeCreatedWithEmptyCatalogueCollectionsEnumerable()
         {
-            Console.WriteLine("ensureComCataloguesWithEqualIdentitiesAreTheSame");
+            Action createCommercialCatalogue = () => new CommercialCatalogue("reference", "designation", new List<CatalogueCollection>());
 
-            string reference = "123456789";
-            string designation = "Commercial Catalogue 2019";
-
-            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
-
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
-
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-            custProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
-            listCollection.Add(custProCollection);
-            ;
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
-
-            Assert.True(comCatalogue.sameAs(reference));
+            Assert.Throws<ArgumentException>(createCommercialCatalogue);
         }
 
         [Fact]
-        public void ensureComCataloguesWithDifferentIdentitiesAreNotTheSame()
+        public void ensureCommercialCatalogueCanBeCreatedWithValidCatalogueCollectionEnumerable()
         {
-            Console.WriteLine("ensureComCataloguesWithDifferentIdentitiesAreNotTheSame");
+            CatalogueCollection catalogueCollection = buildCatalogueCollection("Christmas 2018");
+            CatalogueCollection catalogueCollection1 = buildCatalogueCollection("Happy New 2019");
 
-            string anotherReference = "1160907";
+            IEnumerable<CatalogueCollection> catalogueCollections = new List<CatalogueCollection>() { catalogueCollection, catalogueCollection1 };
 
-            string reference = "123456789";
-            string designation = "Commercial Catalogue 2019";
+            Action createCommercialCatalogue = () => new CommercialCatalogue("reference", "designation", catalogueCollections);
 
-            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
+            Exception exception = Record.Exception(createCommercialCatalogue);
 
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
-
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-            custProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
-            listCollection.Add(custProCollection);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-            CommercialCatalogue comCatalogue = new CommercialCatalogue(reference, designation, list);
-
-
-
-            Assert.False(comCatalogue.sameAs(anotherReference));
+            Assert.Null(exception);
         }
 
         [Fact]
-        public void ensureNullReferenceIsNotValid()
+        public void ensureChangingToNullReferenceThrowsException()
         {
-            Console.WriteLine("ensureNullReferenceIsNotValid");
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
+            Action changeReference = () => commercialCatalogue.changeReference(null);
 
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
-
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-            custProducts.Add(custProduct);
-
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-
-            Assert.Throws<ArgumentException>(() => new CommercialCatalogue(null, "This doesn't work", list));
+            Assert.Throws<ArgumentException>(changeReference);
         }
 
         [Fact]
-        public void ensureEmptyReferenceIsNotValid()
+        public void ensureChangingtoNullReferenceDoesNotChangeReference()
         {
-            Console.WriteLine("ensureEmptyReferenceIsNotValid");
+            string reference = "reference";
 
-            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue(reference, "designation");
 
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            try
+            {
+                commercialCatalogue.changeReference(null);
+            }
+            catch (Exception) { }
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-            custProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
-            listCollection.Add(custProCollection);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-
-            Assert.Throws<ArgumentException>(() => new CommercialCatalogue("", "Let me see...", list));
+            Assert.Equal(reference, commercialCatalogue.reference);
         }
 
         [Fact]
-        public void ensureNullDesignationIsNotValid()
+        public void ensureChangingToEmptyReferenceThrowsException()
         {
-            Console.WriteLine("ensureNullDesignationIsNotValid");
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
+            Action changeReference = () => commercialCatalogue.changeReference("");
 
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
-
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-            custProducts.Add(custProduct);
-
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-
-
-            Assert.Throws<ArgumentException>(() => new CommercialCatalogue("Have you tried turning it off and then on again?", null, list));
+            Assert.Throws<ArgumentException>(changeReference);
         }
 
         [Fact]
-        public void ensureEmptyDesignationIsNotValid()
+        public void ensureChangingToEmptyReferenceDoesNotChangeReference()
         {
-            Console.WriteLine("ensureEmptyDesignationIsNotValid");
+            string reference = "reference";
 
-            List<CustomizedProduct> custProducts = new List<CustomizedProduct>();
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue(reference, "designation");
 
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            try
+            {
+                commercialCatalogue.changeReference("");
+            }
+            catch (Exception) { }
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-            custProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custProducts);
-            listCollection.Add(custProCollection);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
+            Assert.Equal(reference, commercialCatalogue.reference);
+        }
 
 
-            Assert.Throws<ArgumentException>(() => new CommercialCatalogue("Still not working", "", list));
+        [Fact]
+        public void ensureChangingReferenceToValidReferenceDoesNotThrowException()
+        {
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            Action changeReference = () => commercialCatalogue.changeReference("New reference");
+
+            Exception exception = Record.Exception(changeReference);
+
+            Assert.Null(exception);
+        }
+
+
+        [Fact]
+        public void ensureChangingReferenceToValidReferenceChangesReference()
+        {
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            string newReference = "New reference";
+
+            commercialCatalogue.changeReference(newReference);
+
+            Assert.Equal(newReference, commercialCatalogue.reference);
+        }
+
+
+        [Fact]
+        public void ensureChangingToNullDesignationThrowsException()
+        {
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            Action changeDesignation = () => commercialCatalogue.changeDesignation(null);
+
+            Assert.Throws<ArgumentException>(changeDesignation);
         }
 
         [Fact]
-        public void ensureNullCustProductListIsNotValid()
+        public void ensureChangingToNullDesignationDoesNotChangeDesignation()
         {
-            Console.WriteLine("ensureNullCustProductListIsNotValid");
+            string designation = "designation";
 
-            Assert.Throws<ArgumentException>(() => new CommercialCatalogue("Hello", "It's me, Mario", null));
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", designation);
+
+            try
+            {
+                commercialCatalogue.changeDesignation(null);
+            }
+            catch (Exception) { }
+
+            Assert.Equal(designation, commercialCatalogue.designation);
+        }
+
+
+        [Fact]
+        public void ensureChangingToEmptyDesignationThrowsException()
+        {
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            Action changeDesignation = () => commercialCatalogue.changeDesignation("");
+
+            Assert.Throws<ArgumentException>(changeDesignation);
         }
 
         [Fact]
-        public void ensureEmptyCustProductListIsNotValid()
+        public void ensureChangingToEmptyDesignationDoesNotChangeDesignation()
         {
-            Console.WriteLine("ensureEmptyCustProductListIsNotValid");
+            string designation = "designation";
 
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", designation);
 
-            Assert.Throws<ArgumentException>(() => new CommercialCatalogue("Goodbye", "See you later", list));
+            try
+            {
+                commercialCatalogue.changeDesignation("");
+            }
+            catch (Exception) { }
+
+            Assert.Equal(designation, commercialCatalogue.designation);
         }
 
         [Fact]
-        public void ensureAlreadyExistCollectionCannotBeAdded()
+        public void ensureChangingToValidDesignationDoesNotThrowException()
         {
-            Console.WriteLine("ensureAlreadyExistentCustProducCannotBeAdded");
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            Action changeDesignation = () => commercialCatalogue.changeDesignation("a different designation");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
+            Exception exception = Record.Exception(changeDesignation);
 
-            ProductCategory prodCat = new ProductCategory("Category 1");
-
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-            custoProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-            listCollection.Add(custProCollection);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
-
-            Assert.False(comCatalogue.addCollection(catalogueCollection));
+            Assert.Null(exception);
         }
 
         [Fact]
-        public void ensureaddCollectionCanBeAdded()
+        public void ensureChangingToValidDesignationChangesDesignation()
         {
-            Console.WriteLine("ensureaddCollectionCanBeAdded");
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            string newDesignation = "a different designation";
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
+            commercialCatalogue.changeDesignation(newDesignation);
 
-            ProductCategory prodCat = new ProductCategory("Category 1");
-
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-            custoProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-            listCollection.Add(custProCollection);
-
-
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-
-            listCollection.Add(custProCollection);
-
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One");
-
-            Assert.True(comCatalogue.addCollection(catalogueCollection));
+            Assert.Equal(newDesignation, commercialCatalogue.designation);
         }
 
         [Fact]
-        public void ensureNullCollectionCannotBeAdded()
+        public void ensureAddingNullCatalogueCollectionThrowsException()
         {
-            Console.WriteLine("ensureNullCollectionCannotBeAdded");
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
+            Action addCollection = () => commercialCatalogue.addCollection(null);
 
-            ProductCategory prodCat = new ProductCategory("Category 1");
-
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-            custoProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-            listCollection.Add(custProCollection);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
-            Assert.False(comCatalogue.addCollection(null));
+            Assert.Throws<ArgumentException>(addCollection);
         }
 
         [Fact]
-        public void ensureNonExistentCollectionCannotBeRemoved()
+        public void ensureAddingNullCatalogueCollectionDoesNotAddCollection()
         {
-            Console.WriteLine("ensureNonExistentCollectionCannotBeRemoved");
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            try
+            {
+                commercialCatalogue.addCollection(null);
+            }
+            catch (Exception) { }
+
+            Assert.Empty(commercialCatalogue.catalogueCollectionList);
+        }
 
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
+        [Fact]
+        public void ensureAddingDuplicateCatalogueCollectionThrowsException()
+        {
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            ProductCategory prodCat = new ProductCategory("Category 1");
+            string collectionName = "Winter 2018";
 
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
+            CatalogueCollection catalogueCollection = buildCatalogueCollection(collectionName);
+            commercialCatalogue.addCollection(catalogueCollection);
 
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
+            CatalogueCollection otherCatalogueCollection = buildCatalogueCollection(collectionName);
 
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
+            Action addCatalogueCollection = () => commercialCatalogue.addCollection(otherCatalogueCollection);
 
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-
-            custoProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-            listCollection.Add(custProCollection);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
-
-            ///Assert.False(comCatalogue.removeCollection(new CatalogueCollection(custProCollection, listCustomizedProducts)));
-
+            Assert.Throws<ArgumentException>(addCatalogueCollection);
         }
 
         [Fact]
-        public void ensureExistentCollectionCannotBeRemoved()
+        public void ensureAddingDuplicateCatalogueCollectionDoesNotAddCollection()
         {
-            Console.WriteLine("ensureNonExistentCollectionCannotBeRemoved");
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            string collectionName = "Winter 2018";
 
+            CatalogueCollection catalogueCollection = buildCatalogueCollection(collectionName);
+            commercialCatalogue.addCollection(catalogueCollection);
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
+            CatalogueCollection otherCatalogueCollection = buildCatalogueCollection(collectionName);
 
-            ProductCategory prodCat = new ProductCategory("Category 1");
+            try
+            {
+                commercialCatalogue.addCollection(otherCatalogueCollection);
+            }
+            catch (Exception) { }
 
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-
-            custoProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-            listCollection.Add(custProCollection);
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
-
-            Assert.False(comCatalogue.removeCollection(null));
+            Assert.Single(commercialCatalogue.catalogueCollectionList);
         }
 
         [Fact]
-        public void ensureValidCollectionExists()
+        public void ensureAddingValidCatalogueCollectionDoesNotThrowException()
         {
-            Console.WriteLine("ensureValidCollectionExists");
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            CatalogueCollection catalogueCollection = buildCatalogueCollection("Winter 2018");
+            commercialCatalogue.addCollection(catalogueCollection);
 
+            CatalogueCollection otherCatalogueCollection = buildCatalogueCollection("Spring 2019");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
+            Action addCatalogueCollection = () => commercialCatalogue.addCollection(otherCatalogueCollection);
 
-            ProductCategory prodCat = new ProductCategory("Category 1");
+            Exception exception = Record.Exception(addCatalogueCollection);
 
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-
-            custoProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-            listCollection.Add(custProCollection);
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
-
-            Assert.True(comCatalogue.hasCollection(custProCollection));
+            Assert.Null(exception);
         }
 
         [Fact]
-        public void ensureValidCollectionNotExists()
+        public void ensureAddingValidCatalogueCollectionAddsCollection()
         {
-            Console.WriteLine("ensureValidCollectionNotExists");
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            CatalogueCollection catalogueCollection = buildCatalogueCollection("Winter 2018");
+            commercialCatalogue.addCollection(catalogueCollection);
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
+            CatalogueCollection otherCatalogueCollection = buildCatalogueCollection("Spring 2019");
+            commercialCatalogue.addCollection(otherCatalogueCollection);
 
-            ProductCategory prodCat = new ProductCategory("Category 1");
-
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-
-            custoProducts.Add(custProduct);
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One");
-
-            Assert.False(comCatalogue.hasCollection(custProCollection));
+            Assert.Equal(2, commercialCatalogue.catalogueCollectionList.Count);
+            Assert.True(commercialCatalogue.hasCollection(otherCatalogueCollection));
         }
 
         [Fact]
-        public void ensureNullComCatalogueDoesNotExist()
+        public void ensureRemovingNullCatalogueCollectionThrowsException()
         {
-            Console.WriteLine("ensureNullComCatalogueDoesNotExist");
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            Action removeCollection = () => commercialCatalogue.removeCollection(null);
 
-
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-
-            ProductCategory prodCat = new ProductCategory("Category 1");
-
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-
-            custoProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-            listCollection.Add(custProCollection);
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            CommercialCatalogue comCatalogue = new CommercialCatalogue("Another", "One", list);
-
-            Assert.False(comCatalogue.hasCollection(null));
+            Assert.Throws<ArgumentException>(removeCollection);
         }
 
         [Fact]
-        public void ensureGetHashCodeWorks()
+        public void ensureRemovingNullCatalogueCollectionDoesNotRemoveCatalogueCollection()
         {
-            Console.WriteLine("ensureGetHashCodeWorks");
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            CatalogueCollection catalogueCollection = buildCatalogueCollection("Winter 2018");
+            commercialCatalogue.addCollection(catalogueCollection);
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-            ProductCategory prodCat = new ProductCategory("Category 1");
 
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
+            try
+            {
+                commercialCatalogue.removeCollection(null);
+            }
+            catch (Exception) { }
 
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-
-            custoProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-            listCollection.Add(custProCollection);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-
-            CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", list);
-
-            Assert.Equal(comCatalogue1.GetHashCode(), comCatalogue1.GetHashCode());
+            Assert.Single(commercialCatalogue.catalogueCollectionList);
         }
 
         [Fact]
-        public void ensureComCatalogueWithDifferentReferencesAreNotEqual()
+        public void ensureRemovingNotAddedCatalogueCollectionThrowsException()
         {
-            Console.WriteLine("ensureComCatalogueWithDifferentReferencesAreNotEqual");
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            CatalogueCollection catalogueCollection = buildCatalogueCollection("Winter 2018");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
+            Action removeCollection = () => commercialCatalogue.removeCollection(catalogueCollection);
 
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-
-            custoProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-            listCollection.Add(custProCollection);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-
-            CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", list);
-            CommercialCatalogue comCatalogue2 = new CommercialCatalogue("Equal", "One", list);
-
-            Assert.False(comCatalogue1.Equals(comCatalogue2));
+            Assert.Throws<ArgumentException>(removeCollection);
         }
 
         [Fact]
-        public void ensureCommercialCataloguesWithSameReferencesAreEqual()
+        public void ensureRemovingNotAddedCatalogueCollectionDoesNotRemoveCatalogueCollection()
         {
-            Console.WriteLine("ensureMaterialsWithSameReferencesAreEqual");
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            CatalogueCollection catalogueCollection = buildCatalogueCollection("Winter 2018");
+            commercialCatalogue.addCollection(catalogueCollection);
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
+            CatalogueCollection otherCatalogueCollection = buildCatalogueCollection("Spring 2019");
 
-            ProductCategory prodCat = new ProductCategory("Category 1");
+            try
+            {
+                commercialCatalogue.removeCollection(otherCatalogueCollection);
+            }
+            catch (Exception) { }
 
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-
-            custoProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-            listCollection.Add(custProCollection);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-
-            CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", list);
-            CommercialCatalogue comCatalogue2 = new CommercialCatalogue("Another", "One", list);
-
-            Assert.True(comCatalogue1.Equals(comCatalogue2));
+            Assert.True(commercialCatalogue.hasCollection(catalogueCollection));
+            Assert.Single(commercialCatalogue.catalogueCollectionList);
         }
 
         [Fact]
-        public void ensureNullObjectIsNotEqual()
+        public void ensureRemovingAddedCatalogueCollectionDoesNotThrowException()
         {
-            Console.WriteLine("ensureNullObjectIsNotEqual");
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            CatalogueCollection catalogueCollection = buildCatalogueCollection("Winter 2018");
+            commercialCatalogue.addCollection(catalogueCollection);
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
+            CatalogueCollection otherCatalogueCollection = buildCatalogueCollection("Spring 2019");
+            commercialCatalogue.addCollection(otherCatalogueCollection);
 
-            ProductCategory prodCat = new ProductCategory("Category 1");
+            Action removeCollection = () => commercialCatalogue.removeCollection(otherCatalogueCollection);
 
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-
-            custoProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-            listCollection.Add(custProCollection);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-
-            CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", list);
-
-            Assert.False(comCatalogue1.Equals(null));
+            Exception exception = Record.Exception(removeCollection);
+            Assert.Null(exception);
         }
 
         [Fact]
-        public void ensureDifferentTypesAreNotEqual()
+        public void ensureRemovingAddedCatalogueCollectionRemovesCollection()
         {
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
+            CatalogueCollection catalogueCollection = buildCatalogueCollection("Winter 2018");
+            commercialCatalogue.addCollection(catalogueCollection);
 
-            ProductCategory prodCat = new ProductCategory("Category 1");
+            CatalogueCollection otherCatalogueCollection = buildCatalogueCollection("Spring 2019");
+            commercialCatalogue.addCollection(otherCatalogueCollection);
 
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
+            commercialCatalogue.removeCollection(otherCatalogueCollection);
 
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-
-            custoProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-            listCollection.Add(custProCollection);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-
-
-            CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", list);
-
-            Assert.False(comCatalogue1.Equals("stars"));
+            Assert.False(commercialCatalogue.hasCollection(otherCatalogueCollection));
         }
 
         [Fact]
-        public void ensureToStringWorks()
+        public void ensureIdReturnsCommercialCatalogueBusinessIdentifier()
         {
-            Console.WriteLine("ensureToStringWorks");
+            string reference = "reference";
 
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue(reference, "designation");
 
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-
-            ProductCategory prodCat = new ProductCategory("Category 1");
-
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
-
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
-
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-
-            custoProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-            listCollection.Add(custProCollection);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-
-            CommercialCatalogue comCatalogue1 = new CommercialCatalogue("Another", "One", list);
-            CommercialCatalogue comCatalogue2 = new CommercialCatalogue("Another", "One", list);
-
-            Assert.Equal(comCatalogue1.ToString(), comCatalogue2.ToString());
+            Assert.Equal(reference, commercialCatalogue.id());
         }
 
         [Fact]
-        public void testToDTO()
+        public void ensureSameAsReturnsTrueIfArgumentIsEqualToTheBusinessIdentifier()
         {
-            Console.WriteLine("toDTO");
-            string reference = "123456789.";
-            string designation = "Commercial Catalogue 2019";
-            Color color = Color.valueOf("Azul", 1, 1, 1, 1);
-            Finish finish = Finish.valueOf("Acabamento polido", 50);
-            CustomizedDimensions custDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-            ProductCategory prodCat = new ProductCategory("Category 1");
-            Dimension heightDimension = new SingleValueDimension(21);
-            Dimension widthDimension = new SingleValueDimension(30);
-            Dimension depthDimension = new SingleValueDimension(17);
+            string reference = "reference";
 
-            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            List<Measurement> measurements = new List<Measurement>() { measurement };
-            List<Color> colors = new List<Color>();
-            colors.Add(color);
-            List<Finish> finishes = new List<Finish>();
-            finishes.Add(finish);
-            Material material = new Material("1234", "Material", "ola.jpg", colors, finishes);
-            List<Material> listMaterial = new List<Material>();
-            listMaterial.Add(material);
-            IEnumerable<Material> materials = listMaterial;
-            Product product = new Product("123", "product1", "product123.glb", prodCat, materials, measurements);
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue(reference, "designation");
 
-            CustomizedMaterial custMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            List<CustomizedProduct> custoProducts = new List<CustomizedProduct>();
-            CustomizedProduct custProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, custDimensions).withMaterial(custMaterial).build();
-
-            custoProducts.Add(custProduct);
-            List<CustomizedProductCollection> listCollection = new List<CustomizedProductCollection>();
-            CustomizedProductCollection custProCollection = new CustomizedProductCollection("Collection", custoProducts);
-            listCollection.Add(custProCollection);
-
-            List<CatalogueCollection> list = new List<CatalogueCollection>();
-            List<CustomizedProduct> listCustomizedProducts = new List<CustomizedProduct>();
-            listCustomizedProducts.Add(custProduct);
-            CatalogueCollection catalogueCollection = new CatalogueCollection(custProCollection, listCustomizedProducts);
-            list.Add(catalogueCollection);
-
-            listCollection.Add(custProCollection);
-
-            CommercialCatalogue comCatalogue1 = new CommercialCatalogue(reference, designation, list);
-            CommercialCatalogueDTO dto = new CommercialCatalogueDTO();
-            dto.reference = reference;
-            dto.designation = designation;
-            dto.catalogueCollectionDTOs = new List<CatalogueCollectionDTO>(DTOUtils.parseToDTOS(list));
-            CommercialCatalogueDTO dto2 = comCatalogue1.toDTO();
-            Assert.Equal(dto.reference, dto2.reference);
-            Assert.Equal(dto.designation, dto2.designation);
+            Assert.True(commercialCatalogue.sameAs(reference));
         }
+
+        [Fact]
+        public void ensureSameAsReturnsFalseIfArgumentIsNotEqualToTheBusinessIdentifier()
+        {
+            string reference = "other reference";
+
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            Assert.False(commercialCatalogue.sameAs(reference));
+        }
+
+        [Fact]
+        public void ensureInstancesHaveSameHashCode()
+        {
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            CommercialCatalogue otherCommercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            Assert.Equal(commercialCatalogue.GetHashCode(), otherCommercialCatalogue.GetHashCode());
+        }
+
+        [Fact]
+        public void ensureInstancesHaveDifferentHashCode()
+        {
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            CommercialCatalogue otherCommercialCatalogue = new CommercialCatalogue("other reference", "designation");
+
+            Assert.NotEqual(commercialCatalogue.GetHashCode(), otherCommercialCatalogue.GetHashCode());
+        }
+
+        [Fact]
+        public void ensureInstanceIsEqualToItself()
+        {
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            Assert.True(commercialCatalogue.Equals(commercialCatalogue));
+        }
+
+        [Fact]
+        public void ensureNullIsNotEqual()
+        {
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            Assert.False(commercialCatalogue.Equals(null));
+        }
+
+        [Fact]
+        public void ensureDifferentObjectTypeIsNotEqual()
+        {
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            Assert.False(commercialCatalogue.Equals("reference"));
+        }
+
+        [Fact]
+        public void ensureCommercialCatalogueWithDifferentReferenceIsNotEqual()
+        {
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            CommercialCatalogue otherCommercialCatalogue = new CommercialCatalogue("other reference", "designation");
+
+            Assert.NotEqual(commercialCatalogue, otherCommercialCatalogue);
+        }
+
+        [Fact]
+        public void ensureCommercialCatalogueWithEqualReferenceIsEqual()
+        {
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            CommercialCatalogue otherCommercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            Assert.Equal(commercialCatalogue, otherCommercialCatalogue);
+        }
+
+        [Fact]
+        public void ensureToStringIsEqualIfInstancesAreEqual()
+        {
+            CommercialCatalogue commercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            CommercialCatalogue otherCommercialCatalogue = new CommercialCatalogue("reference", "designation");
+
+            Assert.Equal(commercialCatalogue.ToString(), otherCommercialCatalogue.ToString());
+        }
+
     }
 }

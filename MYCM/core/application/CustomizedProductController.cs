@@ -203,8 +203,10 @@ namespace core.application
 
             if (updateCustomizedProductModelView.customizedMaterial != null)
             {
-                //check if only the finish or the color are being updated
-                customizedProduct.changeCustomizedMaterial(updateCustomizedProductModelView.customizedMaterial.toEntity());
+                //TODO: check if only the finish or the color are being updated
+                CustomizedMaterial customizedMaterial = CreateCustomizedMaterialService.create(updateCustomizedProductModelView.customizedMaterial);
+
+                customizedProduct.changeCustomizedMaterial(customizedMaterial);
                 performedAtLeastOneUpdate = true;
             }
 
@@ -261,7 +263,9 @@ namespace core.application
             {
                 CustomizedDimensions updatedDimensions = CustomizedDimensionsModelViewService.fromModelView(updateSlotModelView.dimensions);
 
-                slot.changeDimensions(updatedDimensions);
+                customizedProduct.resizeSlot(slot, updatedDimensions);
+
+                performedAtLeastOneUpdate = true;
             }
 
             if (!performedAtLeastOneUpdate)
@@ -335,6 +339,8 @@ namespace core.application
             }
 
             customizedProduct.removeSlot(slot);
+
+            customizedProductRepository.update(customizedProduct);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using core.domain;
 using core.modelview.product;
+using core.modelview.productcategory;
 using core.modelview.restriction;
 
 namespace core.modelview.component
@@ -77,27 +78,61 @@ namespace core.modelview.component
         }
 
         /// <summary>
-        /// Converts an IEnumerable of Component into an instance of GetAllComponentsModelView.
+        /// Converts an IEnumerable of Component into an instance of GetAllComponentsListModelView.
         /// </summary>
         /// <param name="components">IEnumerable of Component.</param>
         /// <returns>An instance of GetAllComponentsModelView.</returns>        
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when the provided IEnumerable of Component is null.
         /// </exception>
-        public static GetAllComponentsModelView fromCollection(IEnumerable<Component> components)
+        public static GetAllComponentsListModelView fromCollection(IEnumerable<Component> components)
         {
             if (components == null)
             {
                 throw new ArgumentNullException(ERROR_NULL_COMPONENT_COLLECTION);
             }
 
-            GetAllComponentsModelView allComponentsModelView = new GetAllComponentsModelView();
+            GetAllComponentsListModelView allComponentsModelView = new GetAllComponentsListModelView();
             foreach (Component component in components)
             {
                 allComponentsModelView.Add(fromEntityAsBasic(component));
             }
 
             return allComponentsModelView;
+        }
+
+        /// <summary>
+        /// Converts an IEnumerable of Component into an instance of GetAllComponentsGroupedByCategoryModelView.
+        /// </summary>
+        /// <param name="components">IEnumerable of Component being converted.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when the provided IEnumerable of Component is null.
+        /// </exception>
+        public static GetAllComponentsDictionaryModelView fromCollectionGroupedByCategory(IEnumerable<Component> components)
+        {
+            if (components == null)
+            {
+                throw new ArgumentNullException(ERROR_NULL_COMPONENT_COLLECTION);
+            }
+
+            GetAllComponentsDictionaryModelView allComponentsGroupedByCategoryModelView = new GetAllComponentsDictionaryModelView();
+
+            foreach (Component component in components)
+            {
+                string categoryName = component.complementaryProduct.productCategory.name;
+
+                if (!allComponentsGroupedByCategoryModelView.ContainsKey(categoryName))
+                {
+                    allComponentsGroupedByCategoryModelView.Add(categoryName, new GetAllComponentsListModelView());
+                }
+
+                GetBasicComponentModelView basicComponentModelView = fromEntityAsBasic(component);
+
+                allComponentsGroupedByCategoryModelView[categoryName].Add(basicComponentModelView);
+            }
+
+            return allComponentsGroupedByCategoryModelView;
         }
     }
 }
