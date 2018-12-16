@@ -32,9 +32,9 @@ export default class Closet extends SlotableProduct{
      * @param {Number} slotId Number with the slot id
      */
     constructor(faces,productId,slotId=null) {
-        super(ProductType.CLOSET,Object.assign({},faces.get(FaceOrientation.RIGHT)),productId,slotId);
+        super(ProductType.CLOSET,faces.get(FaceOrientation.RIGHT).clone(),productId,slotId);
         this.faces=faces;
-        this.initial_faces=Object.assign({},faces);
+        this.initial_faces=new Map(faces);
     }
 
     //Closet Logic
@@ -103,9 +103,9 @@ export default class Closet extends SlotableProduct{
 
     /**
      * Adds a slot to the closet
-     * @param {Face} slotFace Face with the slot face being added
      */
-    addClosetSlot(slotFace) {
+    addClosetSlot() {
+        let slotFace=this.getClosetFaces().get(FaceOrientation.LEFT).clone();
         let slotWidth = slotFace.width();
         this.addSlot(slotFace);
         this._updateClosetSlots(slotWidth);
@@ -153,7 +153,7 @@ export default class Closet extends SlotableProduct{
     /**
      * Returns all current closet initial faces
      */
-    getInitialClosetSlotFaces() { return this.getInitialClosetSlotFaces(); }
+    getInitialClosetSlotFaces() { return this.getInitialSlotFaces(); }
 
     /**
      * Returns all current closet faces
