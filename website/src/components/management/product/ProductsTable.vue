@@ -40,7 +40,7 @@
                         :available-categories="availableCategories"
                         :available-components="availableComponents"
                         :available-materials="availableMaterials"
-                        :product="currentSelectedProduct2"
+                        :product="currentSelectedProductClone"
                     />
                 </b-modal>
             </div>
@@ -90,7 +90,7 @@ export default {
              * Current Table Selected Product
              */
             currentSelectedProduct:null,
-            currentSelectedProduct2:null,
+            currentSelectedProductClone:null,
             /**
              * Products table columns
              */

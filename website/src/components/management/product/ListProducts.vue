@@ -257,7 +257,9 @@ export default {
                 productsTableData.push({
                     id:product.id,
                     reference:product.reference,
-                    designation:product.designation
+                    designation:product.designation,
+                    hasComponents:product.hasComponents,
+                    supportsSlots:product.supportsSlots
                 });
             });
             return productsTableData;
