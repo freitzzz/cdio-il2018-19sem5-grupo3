@@ -1,4 +1,4 @@
-//@ts-check
+////@ts-check
 
 /**
  * Requires BaseProduct for product base properties
@@ -24,6 +24,7 @@ export default class Drawer extends BaseProduct{
                ,drawer_right_face_dimensions_axes
                ,drawer_back_face_dimensions_axes,
                slotId){
+        super(1,1);
         this.drawer_base_face_dimensions_axes=drawer_base_face_dimensions_axes.slice();
         this.drawer_frent_face_dimensions_axes=drawer_frent_face_dimensions_axes.slice();
         this.drawer_left_face_dimensions_axes=drawer_left_face_dimensions_axes.slice();

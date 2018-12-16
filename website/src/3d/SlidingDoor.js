@@ -15,6 +15,7 @@ export default class SlidingDoor extends BaseProduct{
      * @param {Array} sliding_door_axes Array with the dimensions and axes values of the door
      */
     constructor(sliding_door_axes) {
+        super(1,1);
         this.sliding_door_axes = sliding_door_axes.slice();
     }
 

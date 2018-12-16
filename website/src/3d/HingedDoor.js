@@ -1,4 +1,4 @@
-//@ts-check
+////@ts-check
 
 /**
  * Requires BaseProduct for product base properties
@@ -17,6 +17,7 @@ export default class HingedDoor extends BaseProduct{
      * @param {Number} meshId Id of the hinged door mesh
      */
     constructor(hinged_door_axes, slotId, meshId) {
+        super(1,1);
         this.hinged_door_axes = hinged_door_axes.slice();
         this.slotId = slotId;
         this.meshId = meshId;

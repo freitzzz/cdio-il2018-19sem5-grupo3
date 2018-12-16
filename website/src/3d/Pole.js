@@ -1,4 +1,4 @@
-//@ts-check
+////@ts-check
 
 /**
  * Requires BaseProduct for product base properties
@@ -26,6 +26,7 @@ export default class Pole extends BaseProduct{
 				height,radialSegments,
 				heightSegments,openEnded,
 				thetaStart,thetaLength, slotId){
+					super(1,1);
 		this.radiusTop = radiusTop;
 		this.radiusBottom = radiusBottom;
 		this.height = height;
