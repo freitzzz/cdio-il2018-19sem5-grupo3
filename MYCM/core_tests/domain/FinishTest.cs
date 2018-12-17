@@ -6,7 +6,6 @@ using core.dto;
 
 namespace core_tests.domain
 {
-
     /// <summary>
     /// Tests of the class Finish
     /// </summary>
@@ -17,24 +16,32 @@ namespace core_tests.domain
         public void testGetHashCode()
         {
             Assert.Equal(Finish.valueOf("Acabamento polido", 12).GetHashCode(),
-            Finish.valueOf("Acabamento polido", 34).GetHashCode());
+            Finish.valueOf("Acabamento polido", 12).GetHashCode());
         }
 
         [Fact]
-        public void testDifferentFinishsAreNotEqual()
+        public void testFinishesWithDifferentDescriptionsAreNotEqual()
         {
             Assert.False(Finish.valueOf("Acabamento polido", 12).Equals(
-            Finish.valueOf("Acabamento matte", 12)));
+            Finish.valueOf("Acabamento mate", 12)));
+        }
+
+
+        [Fact]
+        public void testFinishesWithDifferentShininessAreNotEqual()
+        {
+            Assert.False(Finish.valueOf("Acabamento polido", 12).Equals(
+            Finish.valueOf("Acabamento polido", 14)));
         }
 
         [Fact]
-        public void testEqualFinishsAreEqual()
+        public void testEqualFinishesAreEqual()
         {
             Assert.True(Finish.valueOf("Acabamento polido", 12).Equals(
-            Finish.valueOf("Acabamento polido", 34)));
+            Finish.valueOf("Acabamento polido", 12)));
         }
 
-        [Fact]
+        [Fact] 
         public void testNullFinishIsNotEqual()
         {
             Assert.False(Finish.valueOf("Acabamento polido", 12).Equals(null));

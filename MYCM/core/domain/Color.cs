@@ -90,7 +90,7 @@ namespace core.domain {
                 return false;
             }
 
-            return String.Equals(this.Name, other.Name);
+            return String.Equals(this.Name, other.Name)&&(this.Red == other.Red && this.Green == other.Green && this.Blue == other.Blue && this.Alpha == other.Alpha);
         }
         /// <summary>
         /// toString override method

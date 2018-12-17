@@ -23,7 +23,7 @@
                      
                     </section>
                     <footer class="modal-card-foot">
-                        <button class="button is-primary" @click="postCategory">Create</button>
+                        <button class="btn-primary" @click="postCategory">Create</button>
              
                     </footer>
                 </div>

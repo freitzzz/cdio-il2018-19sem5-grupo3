@@ -56,13 +56,13 @@ export default {
             required:true
         }
     },
-    methods:{
+   /*  methods:{
         booleansAsIcons(value){
             return value 
                 ? '<span class="ui teal label"><i class="material-icons">check</i></span>'
                 : '<span class="ui teal label"><i class="material-icons">close</i></span>'
             ;
         },
-    }
+    } */
 }
 </script>

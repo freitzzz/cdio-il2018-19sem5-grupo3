@@ -24,20 +24,20 @@
                                   <option v-for="color in material.colors" 
                                     :key="color.id" :value="color">{{color.name}} </option>
                             </b-select>
-                        </b-field> 
-                            <button class="button is-primary" @click="createColor()">+</button>
-                            <button class="button is-primary" @click="deleteColor()">-</button>
+                        </b-field>
+                              <button class="btn-primary" @click="createColor()">+</button>
+                              <button class="btn-primary" @click="deleteColor()">-</button>
                         <b-field label="Edit Finishes">
                             <b-select icon="tag" v-model="selectedFinish">
                                   <option v-for="finish in material.finishes" 
                                     :key="finish.id" :value="finish">{{finish.description}} </option>
                             </b-select>
                         </b-field> 
-                            <button class="button is-primary" @click="createFinish()">+</button>
-                            <button class="button is-primary" @click="deleteFinish()">-</button>
+                            <button class="btn-primary" @click="createFinish()">+</button>
+                            <button class="btn-primary" @click="deleteFinish()">-</button>
                             <div class="example-btn , image">
                                 <file-upload
-                                  class="button is-primary"
+                                  class="btn-primary"
                                   post-action="/files/"
                                   :maximum="1"
                                   :drop="true"
@@ -57,7 +57,7 @@
                             </div>
                     </section>
                     <footer class="modal-card-foot">
-                        <button class="button is-primary" @click="updateBasicInformation()">Edit</button>                    
+                        <button class="btn-primary" @click="updateBasicInformation()">Edit</button>                    
                     </footer>
             </div>
             <div v-if = "createFinishPanelEnabled" class="modal-card" style="width: auto">
@@ -85,8 +85,10 @@
                          </b-field>
                     </section>
                     <footer class="modal-card-foot">
-                      <button class="button is-primary" @click="addFinish()">+</button>
-                      <button class="button is-primary" @click="disableFinishWindow()">Back</button>
+                      <small-padding-div>
+                        <button class="btn-primary" @click="addFinish()">+</button>
+                        <button class="btn-primary" @click="disableFinishWindow()">Back</button>
+                      </small-padding-div>
                     </footer>    
                  </div>
             <div v-if= "createColorPanelEnabled" class="modal-card" style="width: auto" >
@@ -107,8 +109,10 @@
                       <br> <br> <br> <br> <br><br> <br> <br>
                     </section>
                     <footer class="modal-card-foot">
-                      <button class="button is-primary" @click="addColor()">+</button>
-                      <button class="button is-primary" @click="disableColorWindow()">Back</button>
+                      <small-padding-div>
+                        <button class="btn-primary" @click="addColor()">+</button>
+                        <button class="btn-primary" @click="disableColorWindow()">Back</button>
+                      </small-padding-div>
                     </footer>
             </div>
         </b-modal>

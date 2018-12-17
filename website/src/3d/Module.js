@@ -19,12 +19,14 @@ export default class Module extends BaseProduct{
     constructor(module_base_face_dimensions_axes
                ,module_top_face_dimensions_axes
                ,module_left_face_dimensions_axes
-               ,module_right_face_dimensions_axes){
+               ,module_right_face_dimensions_axes,
+               slotId){
         super(1,1);
         this.module_base_face_dimensions_axes=module_base_face_dimensions_axes.slice();
         this.module_top_face_dimensions_axes=module_top_face_dimensions_axes.slice();
         this.module_left_face_dimensions_axes=module_left_face_dimensions_axes.slice();
         this.module_right_face_dimensions_axes=module_right_face_dimensions_axes.slice();
+        this.slotId = slotId;
         this._prepare_module_init();
     }
 

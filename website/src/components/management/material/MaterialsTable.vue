@@ -8,20 +8,20 @@
             <!-- Table Actions -->
             <div class="custom-actions">
                 <button
-                    class="button is-danger"
+                    class="btn-primary"
                     @click="openMaterialDetails(props.rowData.id)"
                 >
                     <b-icon icon="magnify"/>
                    
                 </button>
                 <button
-                    class="button is-danger"
+                    class="btn-primary"
                     @click="editMaterialDetails(props.rowData.id)"
                 >
                     <b-icon icon="pencil"/>
                 </button>
                 <button
-                    class="button is-danger"
+                    class="btn-primary"
                     @click="deleteMaterial(props.rowData.id)"
                 >
                     <b-icon icon="minus"/>
@@ -164,6 +164,7 @@ export default {
             Axios
                 .delete(MYCM_API_URL+'/materials/'+materialId)
                 .then(()=>{
+                    this.$emit('refreshData');
                     this.$toast.open({message:"Material was deleted with success!"});
                 })
                 .catch((error_message)=>{
