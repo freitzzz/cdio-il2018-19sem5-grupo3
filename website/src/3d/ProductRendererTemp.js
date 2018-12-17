@@ -477,16 +477,15 @@ export default class ProductRenderer {
   removeDrawer(slot) {
     for (let i = 0; i < this.closet.drawers.length; i++) {
       if (this.closet.drawers[i].slotId == slot) {
-        this.closet.drawers.splice(i, 1);
-        var closet_drawer_face_id = this.closet_drawers_ids.splice(i + 5, (i + 5) * 5);
-        var closet_module_face_id = this.closet_modules_ids.splice(i + 5, (i + 5) * 5);
+        var closet_drawer_face_id = this.closet_drawers_ids.splice(i * 5, i * 5 + 5);
+        var closet_module_face_id = this.closet_modules_ids.splice(i * 4, i * 4 + 4);
 
         for (let j = 0; j < closet_drawer_face_id.length; j++) {
           this.group.remove(this.group.getObjectById(closet_drawer_face_id[j]));
           this.group.remove(this.group.getObjectById(closet_module_face_id[j]));
         }
-        return;
         this.updateClosetGV();
+        return;
       }
     }
   }
@@ -630,7 +629,7 @@ export default class ProductRenderer {
     var module = new Module([width, depthDrawer, depthCloset, x, y - (spaceDrawerModule / 4), z], //Base
       [width, depthDrawer, depthCloset, x, y + heightDrawer + (spaceDrawerModule / 4), z], //Top
       [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x - (width / 2), y + (heightDrawer / 2), z], //Left
-      [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x + (width / 2), y + (heightDrawer / 2), z]); //Right
+      [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x + (width / 2), y + (heightDrawer / 2), z], slot); //Right
 
     var borders_module = module.module_faces;
     for (var i = 0; i < borders_module.length; i++) {

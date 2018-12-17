@@ -105,8 +105,8 @@ namespace core.domain
             }
             else
             {
-                Finish finish = (Finish)obj;
-                return description.Equals(finish.description);
+                Finish finish = (Finish) obj;
+                return description.Equals(finish.description) && shininess.Equals(finish.shininess);
             }
         }
         
@@ -125,7 +125,7 @@ namespace core.domain
          /// <returns>The generated hash code</returns>
         public override int GetHashCode()
         {
-            return description.GetHashCode();
+            return description.GetHashCode() ^ shininess.GetHashCode();
         }
 
         /// <summary>

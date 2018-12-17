@@ -14,7 +14,7 @@ namespace core.modelview.product
     /// Class representing the ModelView used for retrieving Products' information.
     /// </summary>
     [DataContract]
-    public sealed class GetProductModelView
+    public class GetProductModelView
     {
         /// <summary>
         /// Product's persistence identifier.
