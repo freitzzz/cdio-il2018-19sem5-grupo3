@@ -60,10 +60,19 @@
             <b-checkbox v-if="product.components!=null" @input="enableComponents()">Components</b-checkbox>
             <div v-if="showComponents">
                 <b-field label="Components">
-                    <simple-table
-                        :columns="simpleTablesColumns.components"
-                        :data="product.components"
-                    />
+                    <b-field>
+                        <simple-table
+                            :columns="simpleTablesColumns.components"
+                            :data="product.components"
+                            :allowActions="true"
+                            @emitShowDetails="showComponentDetails"
+                        />
+                        <b-modal :active.sync="detailsModals.components">
+                            <product-details
+                                :product="detailsData.component"
+                            />
+                        </b-modal>
+                    </b-field>
                 </b-field>
             </div>
             <b-checkbox v-if="product.dimensions!=null" @input="enableDimensions()">Dimensions</b-checkbox>
@@ -141,9 +150,19 @@
 import Axios from 'axios';
 
 /**
+ * Requires MYCM API URL
+ */
+import Config,{MYCM_API_URL} from '../../../config.js';
+
+/**
  * Requires MaterialDetails component
  */
 import MaterialDetails from '../material/MaterialDetails';
+
+/**
+ * Requires own recursive component for product components details
+ */
+import ProductDetails from './ProductDetails';
 
 /**
  * Requires SimpleTable component
@@ -156,6 +175,7 @@ export default {
      */
     components:{
         MaterialDetails,
+        ProductDetails,
         SimpleTable
     },
     /**
@@ -200,6 +220,11 @@ export default {
                     {
                         name: "designation",
                         title: "Designation"
+                    },
+                    {
+                        name: "mandatory",
+                        title: "Mandatory",
+                        callback: this.booleansAsIcons
                     },
                     {
                         name: "supportsSlots",
@@ -344,14 +369,14 @@ export default {
          * Shows the details of a material
          */
         showMaterialDetails(materialId){
-            let promise=new Promise((accept,resolve)=>{
+            let promise=new Promise((accept,reject)=>{
                 Axios
-                    .get('http://localhost:5000/mycm/api/materials/'+materialId)
+                    .get(MYCM_API_URL+'/materials/'+materialId)
                     .then((material)=>{
                         accept(material.data);
                     })
-                    .catch(()=>{
-                        reject("An unexpected error occurd");
+                    .catch((error_message)=>{
+                        reject(error_message.response.data.message);
                     });
             });
             promise
@@ -368,7 +393,34 @@ export default {
                 .catch((error_message)=>{
                     this.$toast.open({message:error_message});
                 });
+        },
+        /**
+         * Shows the details of a component
+         */
+        showComponentDetails(componentId){
+            let promise=new Promise((accept,reject)=>{
+                Axios
+                    .get(MYCM_API_URL+'/products/'+this.product.id+'/components/'+componentId)
+                    .then((component)=>{
+                        accept(component.data);
+                    })
+                    .catch((error_message)=>{
+                        reject(error_message.response.data.message);
+                    });
+            });
+            promise
+                .then((component)=>{
+                    this.detailsData.component=component;
+                    this.detailsModals.components=true;
+                })
+                .catch((error_message)=>{
+                    this.$toast.open({message:error_message});
+                });
         }
-    }
+    },
+    /**
+     * Component name
+     */
+    name:"ProductDetails"
 }
 </script>
