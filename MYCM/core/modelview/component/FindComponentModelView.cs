@@ -17,5 +17,11 @@ namespace core.modelview.component
         /// </summary>
         /// <value>Gets/sets the child's persistence identifier.</value>
         public long childProductId { get; set; }
+
+        /// <summary>
+        /// Unit to show measurements in
+        /// </summary>
+        /// <value>Gets/sets the measurement unit</value>
+        public string unit {get; set;}
     }
 }
