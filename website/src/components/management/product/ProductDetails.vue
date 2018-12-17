@@ -356,6 +356,12 @@ export default {
             });
             promise
                 .then((material)=>{
+                    for(let i =0;i<material.colors.length;i++)
+                        material.colors[i].colors={
+                            red: material.colors[i].red,
+                            green: material.colors[i].green,
+                            blue: material.colors[i].blue,
+                        };
                     this.detailsData.material=material;
                     this.detailsModals.materials=true;
                 })
