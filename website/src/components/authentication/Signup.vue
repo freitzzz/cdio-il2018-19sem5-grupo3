@@ -1,7 +1,6 @@
 <template>
-    <b-modal :active.sync="active">
         <signup-form @emitSignup="signup"/>
-    </b-modal>
+   
 </template>
 
 <script>

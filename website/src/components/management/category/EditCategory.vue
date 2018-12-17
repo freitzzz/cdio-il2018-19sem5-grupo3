@@ -1,31 +1,28 @@
 <template>
-
+  <div class="modal-card" style="width: auto">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Edit Category</p>
+    </header>
+    <section class="modal-card-body">
   
-    <div class="modal-card" style="width: auto">
-      <header class="modal-card-head">
-        <p class="modal-card-title">Edit Category</p>
-      </header>
-      <section class="modal-card-body">
+      <!--  <b-field label="Category">
+                                <b-select placeholder="Select a category" icon="tag" v-model="categoryData">
+                                      <option :value="null"></option>
+                                      <option v-for="category in availableCategories" 
+                                        :key="category.id" :value="category.id">{{category.name}} </option>
+                                </b-select>
+                                
+                            </b-field> -->
+      <b-field label="Name">
+        <b-input type="String" :value="category.name" disabled="true" icon="pound" required>
+        </b-input>
   
-        <!--  <b-field label="Category">
-                              <b-select placeholder="Select a category" icon="tag" v-model="categoryData">
-                                    <option :value="null"></option>
-                                    <option v-for="category in availableCategories" 
-                                      :key="category.id" :value="category.id">{{category.name}} </option>
-                              </b-select>
-                              
-                          </b-field> -->
-        <b-field label="Name">
-          <b-input type="String" :value="category.name" disabled="true" icon="pound" required>
-          </b-input>
-  
-        </b-field>
-      </section>
-      <footer class="modal-card-foot">
-        <button class="button is-primary" @click="editCategory">Edit</button>
-      </footer>
-    </div>
-
+      </b-field>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="btn-primary" @click="editCategory">Edit</button>
+    </footer>
+  </div>
 </template>
 
 <script>
@@ -74,15 +71,15 @@
           availableCategories: [];
         });
     },
-    props:{
-
-        /**
-         * Current Product details
-         */
-        category:{
-            type:Object,
-            required:true
-        }
+    props: {
+  
+      /**
+       * Current Product details
+       */
+      category: {
+        type: Object,
+        required: true
+      }
     },
   };
 </script>

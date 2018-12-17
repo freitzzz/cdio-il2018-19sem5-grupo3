@@ -2,9 +2,11 @@
     <div>
         <!-- CUD BUTTONS -->
         <div>
-            <button class="button is-danger" @click="createMaterial()">
-               <b-icon icon="plus"/>
-            </button>
+            <small-padding-div>
+                <button class="btn-primary" @click="createMaterial()">
+                <b-icon icon="plus"/>
+                </button>
+            </small-padding-div>
             <div v-if="createMaterialModal">
                 <b-modal :active.sync="createMaterialModal" has-modal-card scroll="keep">
                     <create-material 
@@ -15,7 +17,7 @@
                     />
                 </b-modal>
             </div>
-            <button class="button is-danger" @click="fetchRequests()">
+            <button class="btn-primary" @click="fetchRequests()">
                 <b-icon 
                     icon="refresh"
                     custom-class="fa-spin"/>

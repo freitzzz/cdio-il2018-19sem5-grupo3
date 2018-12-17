@@ -1,5 +1,5 @@
 <template>
-    <b-modal :active.sync="active" as-modal-card>
+    <div>
                 <div v-if="panelCreateMaterial" class="modal-card" style="width: auto">
                     <header class="modal-card-head">
                         <p class="modal-card-title">Create Material</p>
@@ -31,20 +31,20 @@
                                     {{color.name}}</option>
                             </b-select>
                         </b-field>
-                        <button class="button is-primary" @click="createColor()">+</button>
-                        <button class="button is-primary" @click="deleteColor()">-</button>
+                        <button class="btn-primary" @click="createColor()">+</button>
+                        <button class="btn-primary" @click="deleteColor()">-</button>
                         <b-field label="Finish">
                             <b-select placeholder="Finishes" icon="tag" v-model="selectedFinish">
                                  <option v-for="finish in availableFinishes" 
                                     :key="finish.id" :value="finish">{{finish.description}} </option>
                             </b-select>
                         </b-field>
-                        <button class="button is-primary" @click="createFinish()">+</button>
-                        <button class="button is-primary" @click="deleteFinish()">-</button>
+                        <button class="btn-primary" @click="createFinish()">+</button>
+                        <button class="btn-primary" @click="deleteFinish()">-</button>
 
                               <div class="example-btn , image">
                                 <file-upload
-                                  class="button is-primary"
+                                  class="btn-primary"
                                   post-action="/files/"
                                   :maximum="1"
                                   :drop="true"
@@ -65,7 +65,7 @@
                             </div>
                     </section>
                     <footer class="modal-card-foot">
-                        <button class="button is-primary" @click="postMaterial()">Create</button>
+                        <button class="btn-primary" @click="postMaterial()">Create</button>
                     </footer>
                 </div>
                 <div v-if= "createFinishPanelEnabled" class="modal-card" style="width: auto">
@@ -93,8 +93,10 @@
                         </b-field>
                     </section>
                     <footer class="modal-card-foot">
-                      <button class="button is-primary" @click="addFinish()">+</button>
-                      <button class="button is-primary" @click="disableFinishWindow()">Back</button>
+                      <small-padding-div>
+                        <button class="btn-primary" @click="addFinish()">+</button>
+                        <button class="btn-primary" @click="disableFinishWindow()">Back</button>
+                      </small-padding-div>
                     </footer>
                 </div>
                 <div v-if="createColorPanelEnabled" class="modal-card" style="width: auto">
@@ -114,11 +116,13 @@
                     <br> <br> <br> <br> <br><br> <br>
                     </section>
                     <footer class="modal-card-foot">
-                      <button class="button is-primary" @click="addColor()">+</button>
-                      <button class="button is-primary" @click="disableColorWindow()">Back</button>
+                      <small-padding-div>
+                        <button class="btn-primary" @click="addColor()">+</button>
+                        <button class="btn-primary" @click="disableColorWindow()">Back</button>
+                      </small-padding-div>
                     </footer>
                 </div> 
-    </b-modal>
+    </div>
 </template>
 <script>
 import Axios from "axios";
