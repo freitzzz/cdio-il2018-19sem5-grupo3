@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using core.domain;
+using core.modelview.measurement;
 using core.modelview.product;
 using core.modelview.productcategory;
+using core.modelview.productmaterial;
+using core.modelview.productslotwidths;
 using core.modelview.restriction;
 
 namespace core.modelview.component
@@ -55,7 +58,7 @@ namespace core.modelview.component
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when the provided instance of Component is null.
         /// </exception>
-        public static GetComponentModelView fromEntity(Component component)
+        public static GetComponentModelView fromEntity(Component component, string unit)
         {
             if (component == null)
             {
@@ -68,6 +71,18 @@ namespace core.modelview.component
             componentModelView.designation = component.complementaryProduct.designation;
             componentModelView.modelFilename = component.complementaryProduct.modelFilename;
             componentModelView.mandatory = component.mandatory;
+            componentModelView.category = ProductCategoryModelViewService.fromEntityAsBasic(component.complementaryProduct.productCategory);
+            if (component.complementaryProduct.components.Any())
+            {
+                componentModelView.components = ComponentModelViewService.fromCollection(component.complementaryProduct.components);
+            }
+            //no need to check if the product has materials and measurements, since they're mandatory
+            componentModelView.materials = ProductMaterialModelViewService.fromCollection(component.complementaryProduct.productMaterials);
+            componentModelView.measurements = MeasurementModelViewService.fromCollection(component.complementaryProduct.productMeasurements.Select(pm => pm.measurement), unit);
+            if (component.complementaryProduct.supportsSlots)
+            {
+                componentModelView.slotWidths = ProductSlotWidthsModelViewService.fromEntity(component.complementaryProduct.slotWidths, unit);
+            }
             /*Skip converting Restrictions if the Component has none,
             since null GetAllRestrictionsModelView won't be serialized */
             if (component.restrictions.Any())

@@ -147,6 +147,30 @@ namespace core.application
             return ProductModelViewService.fromEntity(product, fetchProductDTO.productDTOOptions.requiredUnit);
         }
 
+        public GetComponentModelView findProductComponent(FindComponentModelView findComponentModelView){
+            
+            ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
+
+            Product product = productRepository.find(findComponentModelView.fatherProductId);
+
+            if(product == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, findComponentModelView.fatherProductId));
+            }
+
+            //if no components are found, throw an exception so that a 404 code is sent
+            if(!product.components.Any()){
+                throw new ResourceNotFoundException(ERROR_UNABLE_TO_FIND_COMPONENTS);
+            }
+
+            Component component = product.components.Where(c => c.complementaryProductId == findComponentModelView.childProductId).SingleOrDefault();
+
+            if(component == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, findComponentModelView.childProductId));
+            }
+
+            return ComponentModelViewService.fromEntity(component, findComponentModelView.unit);
+        }
+
         /// <summary>
         /// Finds a Product's Collection of Measurement.
         /// </summary>

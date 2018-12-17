@@ -27,6 +27,17 @@
                                 </option>
                             </b-select>
                         </b-field>
+                        <b-field label="Unit">
+                            <b-select v-model="unit.selected" @input="changeDimensionUnit" >
+                                <option 
+                                        v-for="(dimensionUnit,index) in availableUnits" 
+                                        :key="index"
+                                        :value="dimensionUnit.id"
+                                >
+                                    {{dimensionUnit.unit}}
+                                </option>
+                            </b-select>
+                        </b-field>
                     </b-field>
                 </b-section>
                 <b-section v-if="dimension.discrete.available">
@@ -78,6 +89,17 @@
                                 </option>
                             </b-select>
                         </b-field>
+                        <b-field label="Unit">
+                            <b-select v-model="unit.selected">
+                                <option 
+                                        v-for="(dimensionUnit,index) in availableUnits" 
+                                        :key="index"
+                                        :value="dimensionUnit.id"
+                                >
+                                    {{dimensionUnit.unit}}
+                                </option>
+                            </b-select>
+                        </b-field>
                     </b-field>
                 </b-section>
                 <b-section v-if="dimension.continuous.available">
@@ -123,6 +145,17 @@
                                         :value="dimensionType.id"
                                 >
                                     {{dimensionType.name}}
+                                </option>
+                            </b-select>
+                        </b-field>
+                        <b-field label="Unit">
+                            <b-select v-model="unit.selected">
+                                <option 
+                                        v-for="(dimensionUnit,index) in availableUnits" 
+                                        :key="index"
+                                        :value="dimensionUnit.id"
+                                >
+                                    {{dimensionUnit.unit}}
                                 </option>
                             </b-select>
                         </b-field>
@@ -172,6 +205,8 @@ export default {
      * Component Created State call
      */
     created(){
+        for(let i=0;i<this.availableUnits.length;i++)
+            this.availableUnits[i].id=i+1;
         let currentDimension=this.currentDimension;
         if(currentDimension!=null){
             if(currentDimension.value!=null){
@@ -218,6 +253,10 @@ export default {
                 },
                 availableDimensionTypes:availableDimensionTypes
             },
+            unit:{
+                selected:1,
+                value:String
+            },
             availableDimensionTypes
         }
     },
@@ -243,10 +282,12 @@ export default {
          * Returns the current dimension values
          */
         getCurrentDimension(){
+            this.changeDimensionUnit();
             if(this.dimension.single.available){
                 return {
                     type:SINGLE,
-                    value:this.dimension.single.value
+                    value:this.dimension.single.value,
+                    unit:this.unit.value
                 };
             }else if(this.dimension.continuous.available){
                 return {
@@ -254,11 +295,13 @@ export default {
                     minValue:this.dimension.continuous.minValue,
                     maxValue:this.dimension.continuous.maxValue,
                     increment:this.dimension.continuous.increment,
+                    unit:this.unit.value
                 };
             }else{
                 return {
                     type:DISCRETE,
-                    values:this.dimension.discrete.values
+                    values:this.dimension.discrete.values,
+                    unit:this.unit.value
                 };
             }
         },
@@ -280,6 +323,12 @@ export default {
                     this.toggleDimensionDiscrete();
                     break;
             }
+        },
+        /**
+         * Changes the current dimension unit
+         */
+        changeDimensionUnit(){
+            this.unit.value=this.availableUnits[this.unit.selected-1].unit;
         },
         /**
          * Toggles the single dimension type
@@ -310,6 +359,7 @@ export default {
      * Received values from father component
      */
     props:{
+        availableUnits:Array,
         dimensionLabel:String,
         currentDimension:Object
     }
