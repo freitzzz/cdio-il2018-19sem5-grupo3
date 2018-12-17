@@ -42,10 +42,19 @@
             <b-checkbox @input="enableMaterials()">Materials</b-checkbox>
             <div v-if="showMaterials">
                 <b-field label="Materials">
-                    <simple-table
-                        :columns="simpleTablesColumns.materials"
-                        :data="product.materials"
-                    />
+                    <b-field>
+                        <simple-table
+                            :columns="simpleTablesColumns.materials"
+                            :data="product.materials"
+                            :allowActions="true"
+                            @emitShowDetails="showMaterialDetails"
+                        />
+                        <b-modal :active.sync="detailsModals.materials">
+                            <material-details
+                                :material="detailsData.material"
+                            />
+                        </b-modal>
+                    </b-field>
                 </b-field>
             </div>
             <b-checkbox v-if="product.components!=null" @input="enableComponents()">Components</b-checkbox>
@@ -127,6 +136,16 @@
 <script>
 
 /**
+ * Requires Axios for HTTP requests
+ */
+import Axios from 'axios';
+
+/**
+ * Requires MaterialDetails component
+ */
+import MaterialDetails from '../material/MaterialDetails';
+
+/**
  * Requires SimpleTable component
  */
 import SimpleTable from './../../UIComponents/SimpleTable';
@@ -136,6 +155,7 @@ export default {
      * Exported used components
      */
     components:{
+        MaterialDetails,
         SimpleTable
     },
     /**
@@ -245,13 +265,24 @@ export default {
             showComponents:false,
             showDimensions:false,
             showMaterials:false,
-            showSlots:false
+            showSlots:false,
+            detailsModals:{
+                components:false,
+                materials:false
+            },
+            detailsData:{
+                component:null,
+                material:null
+            }
         }
     },
     /**
      * Component methods
      */
     methods:{
+        /**
+         * Deprecated ?
+         */
         addDimensions(){
             this.dimensionsItems.values.push({
                 width:this.addDimensionItems.width,
@@ -308,6 +339,29 @@ export default {
             this.productDimensions.width=widthDimensions;
             this.productDimensions.height=heightDimensions;
             this.productDimensions.depth=depthDimensions;
+        },
+        /**
+         * Shows the details of a material
+         */
+        showMaterialDetails(materialId){
+            let promise=new Promise((accept,resolve)=>{
+                Axios
+                    .get('http://localhost:5000/mycm/api/materials/'+materialId)
+                    .then((material)=>{
+                        accept(material.data);
+                    })
+                    .catch(()=>{
+                        reject("An unexpected error occurd");
+                    });
+            });
+            promise
+                .then((material)=>{
+                    this.detailsData.material=material;
+                    this.detailsModals.materials=true;
+                })
+                .catch((error_message)=>{
+                    this.$toast.open({message:error_message});
+                });
         }
     }
 }
