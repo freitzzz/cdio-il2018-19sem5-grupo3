@@ -22,6 +22,15 @@
                     required>
                 </b-input>
             </b-field>
+            <b-field label="3D Model">
+                <b-input
+                    type="String"
+                    :value="product.model"
+                    disabled="true"
+                    icon="video-3d"
+                    required>
+                </b-input>
+            </b-field>
             <b-field label="Category">
                 <b-input
                     type="String"
@@ -73,7 +82,7 @@
             <div v-if="showSlots">
                 <b-field label="Slots"/>
                 <b-field>
-                    <b-field label="Minimum Size Width">
+                    <b-field label="Minimum Width">
                         <b-input
                             type="String"
                             :value="product.slotWidths.minWidth"
@@ -82,7 +91,7 @@
                             required
                         />
                     </b-field>
-                    <b-field label="Recommended Size Width">
+                    <b-field label="Recommended Width">
                         <b-input
                             type="String"
                             :value="product.slotWidths.recommendedWidth"
@@ -91,7 +100,7 @@
                             required
                         />
                     </b-field>
-                    <b-field label="Maxmimum Size Width">
+                    <b-field label="Maximum Width">
                         <b-input
                             type="String"
                             :value="product.slotWidths.maxWidth"
