@@ -3,17 +3,17 @@
         <template slot="actions" slot-scope="props">
         <div class="custom-actions">
              <button
-                class="button is-info"
+                class="btn-primary"
                 @click="openCategoryDetails(props.rowData.id)">
                 <b-icon icon="magnify"/>
             </button>
             <button
-                class="button is-info"
+                class="btn-primary"
                 @click="editCategoryDetails(props.rowData.id)">
                 <b-icon icon="pencil"/>
             </button>
             <button
-                class="button is-info"
+                class="btn-primary"
                 @click="deleteCategory(props.rowData.id)">
                 <b-icon icon="minus"/>
             </button>
@@ -209,3 +209,42 @@
     
     }
 </script>
+
+<style>
+/* Underlined button (register button) */
+.underlined-button {
+  color: rgb(158, 158, 158) !important;
+  border: 3px;
+  margin: 5px;
+  font-size: 13px;
+  margin-top: 4px;
+  transition: all 0.3s;
+}
+
+.underlined-button:hover {
+  color: rgb(231, 231, 231) !important;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+/* Custom text box (email, password input fields) */
+.b-input {
+  border-radius: 6px;
+  outline: none;
+  width: 100%;
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+  border: 1px solid #f0f0f0;
+}
+
+.b-input:focus {
+  box-shadow: 0 0 5px #87d5f1;
+  border: 1px solid #87d5f1;
+  transition: all 0.3s;
+}
+
+.b-input:hover {
+  box-shadow: 0 0 5px #e6e6e6;
+  transition: all 0.3s;
+}
+</style>

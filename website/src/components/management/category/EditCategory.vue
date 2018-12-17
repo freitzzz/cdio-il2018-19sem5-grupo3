@@ -22,7 +22,7 @@
         </b-field>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-info" @click="editCategory">Edit</button>
+        <button class="btn-primary" @click="editCategory">Edit</button>
       </footer>
     </div>
 
