@@ -1,21 +1,21 @@
 <template>
-  <div class="component">
+  <div>
     <div class="icon-div-top">
       <i class="material-icons md-12 md-blue btn">help</i>
       <span class="tooltiptext">In this step, you can add divisions to the closet's structure and customize their sizes.</span>
     </div>
-    <div>
-      <label class="slotsSelections">
+    <div class="slotsSelections">
+      <label >
         <input type="radio" id="recommendedSlots" value="recommendedSlots" v-model="picked"  @change="deactivateCanvasControls()"> Recommended Number Slots
       </label>
-      <label class="slotsSelections">
+      <label >
         <input type="radio" id="customizedSlots" value="customizedSlots" v-model="picked"  @change="activateCanvasControls()" > Customized Number Slots
       </label>
     </div>
     <div v-if="displaySliders" class="slidersSection">
-      <input type="text" :placeholder="freeSpaceValue" id="freeSpace" v-model="freeSpace" disabled>
-      <i class="btn btn-primary material-icons" @click="removeLine(index)">-</i>
-      <i class="btn btn-primary material-icons" @click="addLine">+</i>
+      <input  class="slidersSection" size = 13  type="text" :placeholder="freeSpaceValue" id="freeSpace" v-model="freeSpace" disabled>
+      <i class="btn btn-primary material-icons" @click="removeLine(index)">remove</i>
+      <i class="btn btn-primary material-icons" @click="addLine">add</i>
       <div class="slidersSection">
         <span v-for="n in recommendedNumberSlots" :key="n">
           <vue-slider
@@ -26,7 +26,8 @@
             v-model="sliderValue[n-1]"
           ></vue-slider>
         </span>
-        <div v-for="(line, index) in lines.slice(0,maxNumberSlots)" v-bind:key="index">
+      </div>
+      <div v-for="(line, index) in lines.slice(0,maxNumberSlots)" v-bind:key="index">
           <vue-slider
             class="slidersSection"
             :min="minSizeSlot"
@@ -34,7 +35,6 @@
             :value="recommendedSizeSlot"
             v-model="sliderValues[index]"
           ></vue-slider>
-        </div>
       </div>
     </div>
     <div class="center-controls">
@@ -124,6 +124,37 @@ export default {
     activateCanvasControls(){store.dispatch(ACTIVATE_CAN_MOVE_SLOTS);},
   deactivateCanvasControls(){
     //TODO! Desenhar slots recommendados quando checado o recommended 
+
+/* store.dispatch(SET_SLOT_DIMENSIONS);
+
+
+     var widthCloset = 404.5;
+    var depthCloset = 100;
+    var heightCloset = 300;
+    var unitCloset = "cm";
+    var recommendedSlotWidth = store.getters.recommendedSlotWidth;
+    var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
+    var remainder = widthCloset % recommendedSlotWidth;
+    var remainderWidth =
+      widthCloset - recommendedNumberSlots * recommendedSlotWidth;
+    if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth) {
+         store.dispatch(SET_SLOT_DIMENSIONS, {
+        idSlot: recommendedNumberSlots,
+        width: remainderWidth,
+        height: heightCloset,
+        depth: depthCloset,
+        unit: unitCloset
+      });
+    }
+    for (let i = 0; i < recommendedNumberSlots; i++) {
+       store.dispatch(SET_SLOT_DIMENSIONS, {
+        idSlot: i,
+        width: recommendedSlotWidth,
+        height: heightCloset,
+        depth: depthCloset,
+        unit: unitCloset
+      }); 
+    }  */
     store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS)}
   },
   watch: {
@@ -177,5 +208,8 @@ export default {
   left: 15px;
   margin-left: 90px;
   position: absolute;
+}
+.allignButtons {
+  margin-left: 150px ;
 }
 </style>

@@ -1,8 +1,14 @@
-//@ts-check
+////@ts-check
+
+/**
+ * Requires BaseProduct for product base properties
+ */
+import BaseProduct from "./BaseProduct";
+
 /**
  * Represents the internal core of a Module
  */
-export default class Module{    
+export default class Module extends BaseProduct{    
     /**
      * Builds a new module with the dimensions and axes values for all faces
      * @param {Array} module_base_face_dimensions_axes Array with the base face dimensions and axes values
@@ -15,6 +21,7 @@ export default class Module{
                ,module_left_face_dimensions_axes
                ,module_right_face_dimensions_axes,
                slotId){
+        super(1,1);
         this.module_base_face_dimensions_axes=module_base_face_dimensions_axes.slice();
         this.module_top_face_dimensions_axes=module_top_face_dimensions_axes.slice();
         this.module_left_face_dimensions_axes=module_left_face_dimensions_axes.slice();
