@@ -28,7 +28,7 @@
   import CustomizerSideBarMaterialsPanel from "./CustomizerSideBarMaterialsPanel";
   import CustomizerSideBarSlotsPanel from "./CustomizerSideBarSlotsPanel";
   import CustomizerSideBarComponentsPanel from "./CustomizerSideBarComponentsPanel";
-  import CustomizerCheckOut from "./CustomizerCheckOut.vue";
+  import CustomizerCheckOut from "./payment/CustomizerCheckOut.vue";
   import Store from "./../store/index.js";
   
   export default {
