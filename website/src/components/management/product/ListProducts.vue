@@ -105,7 +105,7 @@ export default {
             if(productDetails.components!=null){
                 let newProductComponents=[];
                 for(let i=0;i<productDetails.components.length;i++){
-                    newProductComponents.push({id:productDetails.components[i]});
+                    newProductComponents.push({id:productDetails.components[i].id,mandatory:productDetails.components[i].required});
                 }
                 newProduct.components=newProductComponents.slice();
             }

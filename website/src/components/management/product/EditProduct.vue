@@ -53,6 +53,7 @@
                     :customized-label="componentsItems.customizedLabel"
                     :icon="componentsItems.icon"
                     :place-holder="componentsItems.placeholder"
+                    :allowRequire="true"
                     @emitItems="changeCurrentComponents"
                 />
             </div>
@@ -175,6 +176,9 @@ export default {
             },
             slotsItem:{
                 value:null
+            },
+            required:{
+                value:false
             },
             placeholders:{
                 reference:"#666",
@@ -344,7 +348,7 @@ export default {
         toCustomizedSelectedComponents(components){
             let customizedSelectedComponents=[];
             for(let i=0;i<components.length;i++){
-                customizedSelectedComponents.push({id:components[i].id,value:components[i].reference});
+                customizedSelectedComponents.push({id:components[i].id,value:components[i].reference,required:components[i].mandatory});
             }
             return customizedSelectedComponents;
         },

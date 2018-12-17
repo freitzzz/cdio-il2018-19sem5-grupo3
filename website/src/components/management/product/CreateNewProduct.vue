@@ -61,6 +61,7 @@
                 :customized-label="componentsItems.customizedLabel"
                 :icon="componentsItems.icon"
                 :place-holder="componentsItems.placeholder"
+                :allowRequire="true"
                 @emitItems="changeCurrentComponents"
             />
             </div>
