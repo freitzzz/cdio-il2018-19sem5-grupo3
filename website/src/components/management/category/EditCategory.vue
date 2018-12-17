@@ -6,16 +6,16 @@
     <section class="modal-card-body">
   
       <!--  <b-field label="Category">
-                                <b-select placeholder="Select a category" icon="tag" v-model="categoryData">
-                                      <option :value="null"></option>
-                                      <option v-for="category in availableCategories" 
-                                        :key="category.id" :value="category.id">{{category.name}} </option>
-                                </b-select>
-                                
-                            </b-field> -->
+                                  <b-select placeholder="Select a category" icon="tag" v-model="categoryData">
+                                        <option :value="null"></option>
+                                        <option v-for="category in availableCategories" 
+                                          :key="category.id" :value="category.id">{{category.name}} </option>
+                                  </b-select>
+                                  
+                              </b-field> -->
       <b-field label="Name">
-        <b-input type="String" :value="category.name" disabled="true" icon="pound" required>
-        </b-input>
+        <b-input type="String" :value="category.name" icon="pound" required>
+      </b-input>
   
       </b-field>
     </section>
@@ -25,7 +25,15 @@
   </div>
 </template>
 
+
 <script>
+  /**
+   * Requires App Configuration for accessing MYCM API URL
+   */
+  import Config, {
+    MYCM_API_URL
+  } from '../../../config.js';
+  
   import Axios from "axios";
   import {
     Dialog
@@ -49,7 +57,7 @@
         nameCat = this.nameCategory;
   
         Axios.put(
-            `http://localhost:5000/mycm/api/categories/${this.categoryData}`, {
+            `MYCM_API_URL/categories/${this.categoryData}`, {
               name: nameCat
             }
           )
