@@ -89,9 +89,9 @@
                         <b-icon icon="minus"/>
                     </button>
                 </b-field>
-                <product-dimensions dimension-label="Width" @getDimension="changeCurrentWidthDimension"/>
-                <product-dimensions dimension-label="Height" @getDimension="changeCurrentHeightDimension"/>
-                <product-dimensions dimension-label="Depth" @getDimension="changeCurrentDepthDimension"/>
+                <product-dimensions dimension-label="Width" :available-units="availableUnits" @getDimension="changeCurrentWidthDimension"/>
+                <product-dimensions dimension-label="Height" :available-units="availableUnits" @getDimension="changeCurrentHeightDimension"/>
+                <product-dimensions dimension-label="Depth" :available-units="availableUnits" @getDimension="changeCurrentDepthDimension"/>
             </div>
             <b-checkbox @input="enableSlots()">Slots</b-checkbox>
             <div v-if="slots">
@@ -181,6 +181,10 @@ export default {
             required:true
         },
         availableCategories:{
+            type:Array,
+            required:true
+        },
+        availableUnits:{
             type:Array,
             required:true
         },

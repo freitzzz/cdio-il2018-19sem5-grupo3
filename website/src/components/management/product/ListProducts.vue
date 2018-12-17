@@ -12,6 +12,7 @@
                         :available-materials="availableMaterials"
                         :available-categories="availableCategories"
                         :available-components="availableComponents"
+                        :available-units="availableUnits"
                         @emitProduct="postProduct"
                     />
                 </b-modal>
@@ -43,6 +44,7 @@ let components=[];
 let componentsIds=[];
 let materials=[];
 let materialsIds=[];
+let units=[];
 
 export default {
     components:{
@@ -66,6 +68,7 @@ export default {
             availableCategories:categories,
             availableComponents:components,
             availableMaterials:materials,
+            availableUnits:units,
             columns:[],
             data:Array,
             total:Number,
@@ -143,6 +146,7 @@ export default {
             this.fetchAvailableCategories();
             this.fetchAvailableComponents();
             this.fetchAvailableMaterials();
+            this.fetchAvailableUnits();
         },
         /**
          * Fetches the available categories
@@ -202,6 +206,23 @@ export default {
                         materialsIds.push(material.id);
                     }
                 });
+            })
+            .catch((error_message)=>{
+                this.$toast.open({message:error_message.response.data.message});
+            });
+        },
+        /**
+     * Fetches the available units
+     */
+    fetchAvailableUnits(){
+        Axios
+            .get(MYCM_API_URL+'/units')
+            .then((response)=>{
+                let availableUnits=response.data;
+                if(units.length!=availableUnits.length)
+                    availableUnits.forEach((unit)=>{
+                        units.push(unit);
+                    });
             })
             .catch((error_message)=>{
                 this.$toast.open({message:error_message.response.data.message});

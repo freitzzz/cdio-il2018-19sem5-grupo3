@@ -81,9 +81,9 @@
                         <b-icon icon="minus"/>
                     </button>
                 </b-field>
-                <product-dimensions dimension-label="Width" :current-dimension="product.dimensions[0].width" @getDimension="changeCurrentWidthDimension"/>
-                <product-dimensions dimension-label="Height" :current-dimension="product.dimensions[0].height" @getDimension="changeCurrentHeightDimension"/>
-                <product-dimensions dimension-label="Depth" :current-dimension="product.dimensions[0].depth" @getDimension="changeCurrentDepthDimension"/>
+                <product-dimensions dimension-label="Width" :available-units="availableUnits" :current-dimension="product.dimensions[0].width" @getDimension="changeCurrentWidthDimension"/>
+                <product-dimensions dimension-label="Height" :available-units="availableUnits" :current-dimension="product.dimensions[0].height" @getDimension="changeCurrentHeightDimension"/>
+                <product-dimensions dimension-label="Depth" :available-units="availableUnits" :current-dimension="product.dimensions[0].depth" @getDimension="changeCurrentDepthDimension"/>
             </div>
         </section>
         <footer class="modal-card-foot">
@@ -138,6 +138,10 @@ export default {
             required:true
         },
         availableCategories:{
+            type:Array,
+            required:true
+        },
+        availableUnits:{
             type:Array,
             required:true
         },
