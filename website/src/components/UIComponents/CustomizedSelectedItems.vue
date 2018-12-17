@@ -1,36 +1,44 @@
 <template>
     <b-field :label="customizedLabel">
         <b-field>
-            <b-select 
-                expanded 
-                v-model="currentSelectedAddedItem" 
-                :icon="icon"
-                @input="getAddedItems"
-                >
-                <option
-                    v-for="(item,index) in addedItems" 
-                    :value="item.id" 
-                    :key="index">
-                        {{item.value}}
-                </option>
-            </b-select>
-            <b-select 
-                :placeholder="placeHolder" 
-                :icon="icon" 
-                v-model="currentSelectedItem">
-                <option 
-                    v-for="(item,index) in availableItems" 
-                    :value="item.id" 
-                    :key="index">
-                        {{item.value}}
-                </option>
-            </b-select>
-            <button class="button is-info" @click="addSelectedItem()">
-                <b-icon icon="plus"/>
-            </button>
-            <button class="button is-info" @click="removeSelectedItem()">
-                <b-icon icon="minus"/>
-            </button>
+            <b-field label="Items" expanded>
+                <b-select 
+                    expanded 
+                    v-model="currentSelectedAddedItem" 
+                    :icon="icon"
+                    @input="getAddedItems"
+                    >
+                    <option
+                        v-for="(item,index) in addedItems" 
+                        :value="item.id" 
+                        :key="index">
+                            {{item.value}}
+                    </option>
+                </b-select>
+            </b-field>
+            <b-field label="Available Items">
+                <b-select 
+                    :placeholder="placeHolder" 
+                    :icon="icon" 
+                    v-model="currentSelectedItem">
+                    <option 
+                        v-for="(item,index) in availableItems" 
+                        :value="item.id" 
+                        :key="index">
+                            {{item.value}}
+                    </option>
+                </b-select>
+            </b-field>
+            <b-field label="Actions">
+                <b-field>
+                    <button class="button is-info" @click="addSelectedItem()">
+                        <b-icon icon="plus"/>
+                    </button>
+                    <button class="button is-info" @click="removeSelectedItem()">
+                        <b-icon icon="minus"/>
+                    </button>
+                </b-field>
+            </b-field>
         </b-field>
     </b-field>
 </template>
