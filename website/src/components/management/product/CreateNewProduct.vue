@@ -22,6 +22,15 @@
                     required>
                 </b-input>
             </b-field>
+            <b-field label="3D Model">
+                <b-input
+                    type="String"
+                    v-model="modelItem.value"
+                    :placeholder="placeholders.model"
+                    icon="video-3d"
+                    required>
+                </b-input>
+            </b-field>
             <b-field label="Category">
                 <b-select 
                     v-model="categoryItem.selected"
@@ -197,6 +206,9 @@ export default {
             materialsItem:{
                 value:null
             },
+            modelItem:{
+                value:null
+            },
             componentsItem:{
                 value:null
             },
@@ -209,7 +221,8 @@ export default {
             placeholders:{
                 reference:"#666",
                 designation:"Devil Wardrobe",
-                category:"Select a category"
+                category:"Select a category",
+                model:"jest.obj"
             },
             components:false,
             slots:false,
@@ -341,6 +354,7 @@ export default {
             let productDetails={
                 reference:this.referenceItem.value,
                 designation:this.designationItem.value,
+                model:this.modelItem.value,
                 category:this.categoryItem.value,
                 materials:this.materialsItem.value,
                 dimensions:this.dimensionsItems.values,

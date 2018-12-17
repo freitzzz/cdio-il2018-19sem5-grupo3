@@ -125,7 +125,7 @@ export default {
                     }
             }
 
-            newProduct.model="closet.glb";
+            newProduct.model=productDetails.model
 
             Axios
                 .post(MYCM_API_URL+'/products',newProduct)
