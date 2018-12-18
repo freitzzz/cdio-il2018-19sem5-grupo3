@@ -22,6 +22,15 @@
                     required>
                 </b-input>
             </b-field>
+            <b-field label="3D Model">
+                <b-input
+                    type="String"
+                    :value="product.model"
+                    disabled="true"
+                    icon="video-3d"
+                    required>
+                </b-input>
+            </b-field>
             <b-field label="Category">
                 <b-input
                     type="String"
@@ -33,19 +42,37 @@
             <b-checkbox @input="enableMaterials()">Materials</b-checkbox>
             <div v-if="showMaterials">
                 <b-field label="Materials">
-                    <simple-table
-                        :columns="simpleTablesColumns.materials"
-                        :data="product.materials"
-                    />
+                    <b-field>
+                        <simple-table
+                            :columns="simpleTablesColumns.materials"
+                            :data="product.materials"
+                            :allowActions="true"
+                            @emitShowDetails="showMaterialDetails"
+                        />
+                        <b-modal :active.sync="detailsModals.materials">
+                            <material-details
+                                :material="detailsData.material"
+                            />
+                        </b-modal>
+                    </b-field>
                 </b-field>
             </div>
             <b-checkbox v-if="product.components!=null" @input="enableComponents()">Components</b-checkbox>
             <div v-if="showComponents">
                 <b-field label="Components">
-                    <simple-table
-                        :columns="simpleTablesColumns.components"
-                        :data="product.components"
-                    />
+                    <b-field>
+                        <simple-table
+                            :columns="simpleTablesColumns.components"
+                            :data="product.components"
+                            :allowActions="true"
+                            @emitShowDetails="showComponentDetails"
+                        />
+                        <b-modal :active.sync="detailsModals.components">
+                            <product-details
+                                :product="detailsData.component"
+                            />
+                        </b-modal>
+                    </b-field>
                 </b-field>
             </div>
             <b-checkbox v-if="product.dimensions!=null" @input="enableDimensions()">Dimensions</b-checkbox>
@@ -73,7 +100,7 @@
             <div v-if="showSlots">
                 <b-field label="Slots"/>
                 <b-field>
-                    <b-field label="Minimum Size Width">
+                    <b-field label="Minimum Width">
                         <b-input
                             type="String"
                             :value="product.slotWidths.minWidth"
@@ -82,7 +109,7 @@
                             required
                         />
                     </b-field>
-                    <b-field label="Recommended Size Width">
+                    <b-field label="Recommended Width">
                         <b-input
                             type="String"
                             :value="product.slotWidths.recommendedWidth"
@@ -91,7 +118,7 @@
                             required
                         />
                     </b-field>
-                    <b-field label="Maxmimum Size Width">
+                    <b-field label="Maximum Width">
                         <b-input
                             type="String"
                             :value="product.slotWidths.maxWidth"
@@ -118,6 +145,26 @@
 <script>
 
 /**
+ * Requires Axios for HTTP requests
+ */
+import Axios from 'axios';
+
+/**
+ * Requires MYCM API URL
+ */
+import Config,{MYCM_API_URL} from '../../../config.js';
+
+/**
+ * Requires MaterialDetails component
+ */
+import MaterialDetails from '../material/MaterialDetails';
+
+/**
+ * Requires own recursive component for product components details
+ */
+import ProductDetails from './ProductDetails';
+
+/**
  * Requires SimpleTable component
  */
 import SimpleTable from './../../UIComponents/SimpleTable';
@@ -127,6 +174,8 @@ export default {
      * Exported used components
      */
     components:{
+        MaterialDetails,
+        ProductDetails,
         SimpleTable
     },
     /**
@@ -171,6 +220,11 @@ export default {
                     {
                         name: "designation",
                         title: "Designation"
+                    },
+                    {
+                        name: "mandatory",
+                        title: "Mandatory",
+                        callback: this.booleansAsIcons
                     },
                     {
                         name: "supportsSlots",
@@ -236,13 +290,24 @@ export default {
             showComponents:false,
             showDimensions:false,
             showMaterials:false,
-            showSlots:false
+            showSlots:false,
+            detailsModals:{
+                components:false,
+                materials:false
+            },
+            detailsData:{
+                component:null,
+                material:null
+            }
         }
     },
     /**
      * Component methods
      */
     methods:{
+        /**
+         * Deprecated ?
+         */
         addDimensions(){
             this.dimensionsItems.values.push({
                 width:this.addDimensionItems.width,
@@ -299,7 +364,63 @@ export default {
             this.productDimensions.width=widthDimensions;
             this.productDimensions.height=heightDimensions;
             this.productDimensions.depth=depthDimensions;
+        },
+        /**
+         * Shows the details of a material
+         */
+        showMaterialDetails(materialId){
+            let promise=new Promise((accept,reject)=>{
+                Axios
+                    .get(MYCM_API_URL+'/materials/'+materialId)
+                    .then((material)=>{
+                        accept(material.data);
+                    })
+                    .catch((error_message)=>{
+                        reject(error_message.response.data.message);
+                    });
+            });
+            promise
+                .then((material)=>{
+                    for(let i =0;i<material.colors.length;i++)
+                        material.colors[i].colors={
+                            red: material.colors[i].red,
+                            green: material.colors[i].green,
+                            blue: material.colors[i].blue,
+                        };
+                    this.detailsData.material=material;
+                    this.detailsModals.materials=true;
+                })
+                .catch((error_message)=>{
+                    this.$toast.open({message:error_message});
+                });
+        },
+        /**
+         * Shows the details of a component
+         */
+        showComponentDetails(componentId){
+            let promise=new Promise((accept,reject)=>{
+                Axios
+                    .get(MYCM_API_URL+'/products/'+this.product.id+'/components/'+componentId)
+                    .then((component)=>{
+                        accept(component.data);
+                    })
+                    .catch((error_message)=>{
+                        reject(error_message.response.data.message);
+                    });
+            });
+            promise
+                .then((component)=>{
+                    this.detailsData.component=component;
+                    this.detailsModals.components=true;
+                })
+                .catch((error_message)=>{
+                    this.$toast.open({message:error_message});
+                });
         }
-    }
+    },
+    /**
+     * Component name
+     */
+    name:"ProductDetails"
 }
 </script>

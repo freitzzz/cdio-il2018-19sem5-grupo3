@@ -22,6 +22,15 @@
                     required>
                 </b-input>
             </b-field>
+            <b-field label="3D Model">
+                <b-input
+                    type="String"
+                    v-model="modelItem.value"
+                    :placeholder="placeholders.model"
+                    icon="video-3d"
+                    required>
+                </b-input>
+            </b-field>
             <b-field label="Category">
                 <b-select 
                     v-model="categoryItem.selected"
@@ -52,6 +61,7 @@
                 :customized-label="componentsItems.customizedLabel"
                 :icon="componentsItems.icon"
                 :place-holder="componentsItems.placeholder"
+                :allowRequire="true"
                 @emitItems="changeCurrentComponents"
             />
             </div>
@@ -79,9 +89,9 @@
                         <b-icon icon="minus"/>
                     </button>
                 </b-field>
-                <product-dimensions dimension-label="Width" @getDimension="changeCurrentWidthDimension"/>
-                <product-dimensions dimension-label="Height" @getDimension="changeCurrentHeightDimension"/>
-                <product-dimensions dimension-label="Depth" @getDimension="changeCurrentDepthDimension"/>
+                <product-dimensions dimension-label="Width" :available-units="availableUnits" @getDimension="changeCurrentWidthDimension"/>
+                <product-dimensions dimension-label="Height" :available-units="availableUnits" @getDimension="changeCurrentHeightDimension"/>
+                <product-dimensions dimension-label="Depth" :available-units="availableUnits" @getDimension="changeCurrentDepthDimension"/>
             </div>
             <b-checkbox @input="enableSlots()">Slots</b-checkbox>
             <div v-if="slots">
@@ -174,6 +184,10 @@ export default {
             type:Array,
             required:true
         },
+        availableUnits:{
+            type:Array,
+            required:true
+        },
         active:{
             type: Boolean,
             default: false
@@ -197,6 +211,9 @@ export default {
             materialsItem:{
                 value:null
             },
+            modelItem:{
+                value:null
+            },
             componentsItem:{
                 value:null
             },
@@ -209,7 +226,8 @@ export default {
             placeholders:{
                 reference:"#666",
                 designation:"Devil Wardrobe",
-                category:"Select a category"
+                category:"Select a category",
+                model:"jest.obj"
             },
             components:false,
             slots:false,
@@ -341,6 +359,7 @@ export default {
             let productDetails={
                 reference:this.referenceItem.value,
                 designation:this.designationItem.value,
+                model:this.modelItem.value,
                 category:this.categoryItem.value,
                 materials:this.materialsItem.value,
                 dimensions:this.dimensionsItems.values,
