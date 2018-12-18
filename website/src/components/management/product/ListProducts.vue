@@ -12,6 +12,7 @@
                         :available-materials="availableMaterials"
                         :available-categories="availableCategories"
                         :available-components="availableComponents"
+                        :available-units="availableUnits"
                         @emitProduct="postProduct"
                     />
                 </b-modal>
@@ -23,7 +24,8 @@
             </button>
         </div>
         <products-table
-            :data="data"
+            :data.sync="data"
+            @refreshData="refreshProducts"
         />
     </div>
 </template>
@@ -37,8 +39,12 @@ import Config,{ MYCM_API_URL } from '../../../config.js';
 
 
 let categories=[];
+let categoriesIds=[];
 let components=[];
+let componentsIds=[];
 let materials=[];
+let materialsIds=[];
+let units=[];
 
 export default {
     components:{
@@ -62,6 +68,7 @@ export default {
             availableCategories:categories,
             availableComponents:components,
             availableMaterials:materials,
+            availableUnits:units,
             columns:[],
             data:Array,
             total:Number,
@@ -101,27 +108,27 @@ export default {
             if(productDetails.components!=null){
                 let newProductComponents=[];
                 for(let i=0;i<productDetails.components.length;i++){
-                    newProductComponents.push({id:productDetails.components[i]});
+                    newProductComponents.push({id:productDetails.components[i].id,mandatory:productDetails.components[i].required});
                 }
                 newProduct.components=newProductComponents.slice();
             }
             
             newProduct.dimensions=productDetails.dimensions;
             if(productDetails.slots!=null){
-                if(!(productDetails.slots.min==null 
-                    && productDetails.slots.recommended==null 
-                    && productDetails.slots.max==null
-                    && productDetails.slots.unit==null)){
-                        newProduct.slotsWidth={
-                            minWidth:productDetails.slots.min,
-                            recommendedWidth:productDetails.slots.recommended,
-                            maxWidth:productDetails.slots.max,
-                            unit:productDetails.slots.unit
+                console.log(Object.assign({},productDetails.slots));
+                if(!(productDetails.slots.minSize==null 
+                    && productDetails.slots.recommendedSize==null 
+                    && productDetails.slots.maxSize==null)){
+                        newProduct.slotWidths={
+                            minWidth:productDetails.slots.minSize,
+                            recommendedWidth:productDetails.slots.recommendedSize,
+                            maxWidth:productDetails.slots.maxSize
                         };
+                        if(productDetails.slots.unit)newProduct.slotWidths.unit=productDetails.slots.unit;
                     }
             }
 
-            newProduct.model="closet.glb";
+            newProduct.model=productDetails.model
 
             Axios
                 .post(MYCM_API_URL+'/products',newProduct)
@@ -139,60 +146,87 @@ export default {
             this.fetchAvailableCategories();
             this.fetchAvailableComponents();
             this.fetchAvailableMaterials();
+            this.fetchAvailableUnits();
         },
         /**
          * Fetches the available categories
          */
         fetchAvailableCategories(){
         Axios
-          .get(MYCM_API_URL+'/categories/leaves')
-          .then((response)=>{
-            let availableCategories=response.data;
-            availableCategories.forEach((category)=>{
-              categories.push(category);
+            .get(MYCM_API_URL+'/categories/leaves')
+            .then((response)=>{
+                let availableCategories=response.data;
+                availableCategories.forEach((category)=>{
+                    if(!categoriesIds.includes(category.id)){
+                        categories.push(category);
+                        categoriesIds.push(category.id);
+                    }
+                });
+            })
+            .catch((error_message)=>{
+                this.$toast.open({message:error_message.response.data.message});
             });
-          })
-          .catch((error_message)=>{
-              this.$toast.open({message:error_message.response.data.message});
-          });
     },
     /**
      * Fetches the available components
      */
     fetchAvailableComponents(){
         Axios
-          .get(MYCM_API_URL+'/products')
-          .then((response)=>{
-            let availableComponents=response.data;
-            availableComponents.forEach((component)=>{
-              components.push({
-                id:component.id,
-                value:component.designation
-              });
+            .get(MYCM_API_URL+'/products')
+            .then((response)=>{
+                let availableComponents=response.data;
+                availableComponents.forEach((component)=>{
+                    if(!componentsIds.includes(component.id)){
+                        components.push({
+                            id:component.id,
+                            value:component.designation
+                        });
+                        componentsIds.push(component.id);
+                    }
+                });
+            })
+            .catch((error_message)=>{
+                this.$toast.open({message:error_message.response.data.message});
             });
-          })
-          .catch((error_message)=>{
-              this.$toast.open({message:error_message.response.data.message});
-          });
     },
     /**
      * Fetches the available materials
      */
     fetchAvailableMaterials(){
         Axios
-          .get(MYCM_API_URL+'/materials')
-          .then((response)=>{
-            let availableMaterials=response.data;
-            availableMaterials.forEach((material)=>{
-              materials.push({
-                id:material.id,
-                value:material.designation
-              });
+            .get(MYCM_API_URL+'/materials')
+            .then((response)=>{
+                let availableMaterials=response.data;
+                availableMaterials.forEach((material)=>{
+                    if(!materialsIds.includes(material.id)){
+                        materials.push({
+                            id:material.id,
+                            value:material.designation
+                        });
+                        materialsIds.push(material.id);
+                    }
+                });
+            })
+            .catch((error_message)=>{
+                this.$toast.open({message:error_message.response.data.message});
             });
-          })
-          .catch((error_message)=>{
-              this.$toast.open({message:error_message.response.data.message});
-          });
+        },
+        /**
+     * Fetches the available units
+     */
+    fetchAvailableUnits(){
+        Axios
+            .get(MYCM_API_URL+'/units')
+            .then((response)=>{
+                let availableUnits=response.data;
+                if(units.length!=availableUnits.length)
+                    availableUnits.forEach((unit)=>{
+                        units.push(unit);
+                    });
+            })
+            .catch((error_message)=>{
+                this.$toast.open({message:error_message.response.data.message});
+            });
         },
         /**
          * Fetches all available products
@@ -244,7 +278,9 @@ export default {
                 productsTableData.push({
                     id:product.id,
                     reference:product.reference,
-                    designation:product.designation
+                    designation:product.designation,
+                    hasComponents:product.hasComponents,
+                    supportsSlots:product.supportsSlots
                 });
             });
             return productsTableData;

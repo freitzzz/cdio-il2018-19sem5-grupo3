@@ -41,6 +41,12 @@ export const actions = {
     [types.SET_SLOT_DIMENSIONS]: ({ commit }, payload) => {
         commit(types.SET_SLOT_DIMENSIONS, payload);
     },
+    /**
+     * Action used to commit the mutation SET_MATERIAL
+     */
+    [types.SET_CUSTOMIZED_PRODUCT_MATERIAL]: ({ commit }, payload) => {
+        commit(types.SET_CUSTOMIZED_PRODUCT_MATERIAL, payload);
+    },
 
     /**
      * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_DIMENSIONS
@@ -54,6 +60,13 @@ export const actions = {
      */
     [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS]: ({ commit }, payload) => {
         commit(types.SET_CUSTOMIZED_PRODUCT_COMPONENTS, payload);
+    },
+
+    /**
+     * Action used to commit the mutation REMOVE_CUSTOMIZED_PRODUCT_COMPONENT
+     */
+    [types.REMOVE_CUSTOMIZED_PRODUCT_COMPONENT]: ({ commit }, payload) => {
+        commit(types.REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, payload);
     },
 
     /**
@@ -96,5 +109,5 @@ export const actions = {
       */
     [types.DEACTIVATE_CAN_MOVE_COMPONENTS]: ({ commit }) => {
         commit(types.DEACTIVATE_CAN_MOVE_COMPONENTS);
-    }
+    },
 }

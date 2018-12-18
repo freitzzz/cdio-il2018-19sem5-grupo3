@@ -14,7 +14,7 @@ namespace core.modelview.product
     /// Class representing the ModelView used for retrieving Products' information.
     /// </summary>
     [DataContract]
-    public sealed class GetProductModelView
+    public class GetProductModelView
     {
         /// <summary>
         /// Product's persistence identifier.
@@ -61,7 +61,7 @@ namespace core.modelview.product
         /// </summary>
         /// <value>Gets/sets the ModelView.</value>
         [DataMember(EmitDefaultValue = false)]  //since this is optional, don't show null values
-        public GetAllComponentsModelView components { get; set; }
+        public GetAllComponentsListModelView components { get; set; }
 
         /// <summary>
         /// List of ModelViews containg the Product's measurements' information.

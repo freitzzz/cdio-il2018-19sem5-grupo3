@@ -1,13 +1,15 @@
-//@ts-check
+////@ts-check
 import 'three/examples/js/controls/OrbitControls'
 import * as THREE from 'three'
-import Closet from './Closet'
+import ThreeCloset from './threejeyass/domain/ThreeCloset';
 import Pole from './Pole'
 import Drawer from './Drawer'
 import Module from './Module'
 import SlidingDoor from './SlidingDoor'
+import ThreeFace from './threejeyass/domain/ThreeFace';
 import Shelf from './Shelf'
 import HingedDoor from './HingedDoor'
+import FaceOrientationEnum from './api/domain/FaceOrientation';
 
 export default class ProductRenderer {
 
@@ -54,7 +56,7 @@ export default class ProductRenderer {
   material;
 
   /**
-   * @type{Closet}
+   * @type{ThreeCloset}
    */
   closet;
 
@@ -282,8 +284,9 @@ export default class ProductRenderer {
     this.scene.add(dispPlane);
     this.scene.add(this.camera);
     this.scene.add(mesh);
-
+    alert("<<<<<<<<<<<")
     this.animate();
+    alert(">>>>>>>>>>>")
   }
 
   activateCanMoveSlots() { this.canMoveSlots = true; }
@@ -301,13 +304,13 @@ export default class ProductRenderer {
   initCloset() {
     var thickness = 4.20;
 
-    this.closet = new Closet([404.5, thickness, 100, 0, -210, -195], //Bottom
-      [404.5, thickness, 100, 0, 90, -195], //Top
-      [thickness, 300, 100, -200, -60, -195], //Left
-      [thickness, 300, 100, 200, -60, -195], //Right
-      [404.5, 300, 0, 0, -60, -245.8]); //Back
+    
+    /* this.closet = new Closet(, //Bottom
+      , //Top
+      , //Left
+      , //Right
+      ); //Back */
 
-    var faces = this.closet.closet_faces;
     this.textureLoader = new THREE.TextureLoader();
     //A MeshPhongMaterial allows for shiny surfaces
     //A soft white light is being as specular light
@@ -317,11 +320,45 @@ export default class ProductRenderer {
       shininess: 20
     });
 
-    for (var i = 0; i < faces.length; i++) {
-      this.closet_faces_ids.push(this.generateParellepiped(faces[i][0], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], this.material, this.group));
+    let closet_faces=new Map();
+    closet_faces.set(FaceOrientationEnum.BASE,new ThreeFace(null,this.material,FaceOrientationEnum.BASE,404.5, thickness, 100, 0, -210, -195));
+    closet_faces.set(FaceOrientationEnum.TOP,new ThreeFace(null,this.material,FaceOrientationEnum.TOP,404.5, thickness, 100, 0, 90, -195));
+    closet_faces.set(FaceOrientationEnum.LEFT,new ThreeFace(null,this.material,FaceOrientationEnum.LEFT,thickness, 300, 100, -200, -60, -195));
+    closet_faces.set(FaceOrientationEnum.RIGHT,new ThreeFace(null,this.material,FaceOrientationEnum.RIGHT,thickness, 300, 100, 200, -60, -195));
+    closet_faces.set(FaceOrientationEnum.BACK,new ThreeFace(null,this.material,FaceOrientationEnum.BACK,404.5, 300, 0, 0, -60, -245.8));
+
+    this.closet=new ThreeCloset(closet_faces,null,1,1);
+
+    this.group.add(this.closet.draw());
+    
+    this.addSlotNumbered([1]);
+
+    console.log(this.group)
+
+    
+    for(let closetFace of this.closet.getClosetFaces().entries()){
+      this.closet_faces_ids.push(closetFace["1"].id());
     }
+
+    /* for(let closetFace of faces){
+      console.log(">>>>>><<<")
+      console.log(closetFace);
+      let parellepiped=this.generateParellepiped(closetFace["1"].width(),closetFace["1"].height()
+                  ,closetFace["1"].depth(),closetFace["1"].X()
+                  ,closetFace["1"].Y(),closetFace["1"].Z(),
+                  this.material,this.group);
+      console.log(parellepiped);
+      this.closet_faces_ids.push(parellepiped);
+    } */
+    alert("!!!!!!!!!!!!!!!!!!!!!!")
+/*     for (var i = 0; i < faces.length; i++) {
+      this.closet_faces_ids.push(this.generateParellepiped(faces[i], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], this.material, this.group));
+    } */
+    alert("!!!")
     this.scene.add(this.group);
     this.group.visible = false;
+    this.showCloset();
+    console.log(this.group.children[0].children);
     this.renderer.setClearColor(0xFFFFFF, 1);
   }
 
@@ -348,24 +385,33 @@ export default class ProductRenderer {
    * Updates current closet graphical view
    */
   updateClosetGV() {
-    for (var i = 0; i < this.closet_faces_ids.length; i++) {
-      var closet_face = this.group.getObjectById(this.closet_faces_ids[i]);
-      closet_face.scale.x = this.getNewScaleValue(this.closet.getInitialClosetFaces()[i][0], this.closet.getClosetFaces()[i][0], closet_face.scale.x);
-      closet_face.scale.y = this.getNewScaleValue(this.closet.getInitialClosetFaces()[i][1], this.closet.getClosetFaces()[i][1], closet_face.scale.y);
-      closet_face.scale.z = this.getNewScaleValue(this.closet.getInitialClosetFaces()[i][2], this.closet.getClosetFaces()[i][2], closet_face.scale.z);
-      closet_face.position.x = this.closet.getClosetFaces()[i][3];
-      closet_face.position.y = this.closet.getClosetFaces()[i][4];
-      closet_face.position.z = this.closet.getClosetFaces()[i][5];
+    let closetFaces=this.closet.getClosetFaces().entries();
+    let closetInitialFaces=this.closet.getInitialClosetFaces().entries();
+    for (let closetFace of closetFaces) {
+      let closet_face=closetFace["1"].mesh();
+      let closet_initial_face=closetInitialFaces.next().value["1"];
+      closet_face.scale.x = this.getNewScaleValue(closet_initial_face.width(), closetFace["1"].width(), closet_face.scale.x);
+      closet_face.scale.y = this.getNewScaleValue(closet_initial_face.height(), closetFace["1"].height(), closet_face.scale.y);
+      closet_face.scale.z = this.getNewScaleValue(closet_initial_face.depth(), closetFace["1"].depth(), closet_face.scale.z);
+      closet_face.position.x = closetFace["1"].X();
+      closet_face.position.y = closetFace["1"].Y();
+      closet_face.position.z = closetFace["1"].Z();
     }
 
-    for (var i = 0; i < this.closet_slots_faces_ids.length; i++) {
-      var closet_face = this.group.getObjectById(this.closet_slots_faces_ids[i]);
-      closet_face.scale.x = this.getNewScaleValue(this.closet.getInitialClosetSlotFaces()[i][0], this.closet.getClosetSlotFaces()[i][0], closet_face.scale.x);
-      closet_face.scale.y = this.getNewScaleValue(this.closet.getInitialClosetSlotFaces()[i][1], this.closet.getClosetSlotFaces()[i][1], closet_face.scale.y);
-      closet_face.scale.z = this.getNewScaleValue(this.closet.getInitialClosetSlotFaces()[i][2], this.closet.getClosetSlotFaces()[i][2], closet_face.scale.z);
-      closet_face.position.x = this.closet.getClosetSlotFaces()[i][3];
-      closet_face.position.y = this.closet.getClosetSlotFaces()[i][4];
-      closet_face.position.z = this.closet.getClosetSlotFaces()[i][5];
+    let closetSlotFaces=this.closet.getClosetSlotFaces().entries();
+    for(let asd of closetSlotFaces)console.log(asd);
+    let closetInitialSlotFaces=this.closet.getInitialClosetSlotFaces().entries();
+
+    for (let closetSlotFace of closetSlotFaces) {
+      console.log("->>>>>>>>>>>>")
+      let closet_slot_face=closetSlotFace["1"].mesh();
+      let closet_initial_slot_face=closetInitialSlotFaces.next().value["1"];
+      closet_slot_face.scale.x = this.getNewScaleValue(closet_initial_slot_face.width(), closetFace["1"].width(), closet_slot_face.scale.x);
+      closet_slot_face.scale.y = this.getNewScaleValue(closet_initial_slot_face.height(), closetFace["1"].height(), closet_slot_face.scale.y);
+      closet_slot_face.scale.z = this.getNewScaleValue(closet_initial_slot_face.depth(), closetFace["1"].depth(), closet_slot_face.scale.z);
+      closet_slot_face.position.x = closetFace["1"].X();
+      closet_slot_face.position.y = closetFace["1"].Y();
+      closet_slot_face.position.z = closetFace["1"].Z();
     }
   }
   /**
@@ -575,8 +621,9 @@ export default class ProductRenderer {
    */
   addSlotNumbered(slotsToAdd) {
     for (var i = 0; i < slotsToAdd.length; i++) {
-      var slotFace = this.closet.addSlot(slotsToAdd[i]);
-      this.closet_slots_faces_ids.push(this.generateParellepiped(slotFace[0], slotFace[1], slotFace[2], slotFace[3], slotFace[4], slotFace[5], this.material, this.group));
+      let slot = this.closet.addClosetSlot();
+      this.closet_slots_faces_ids.push(slot.id());
+      console.log(slot);
     }
     this.updateClosetGV();
   }
@@ -616,13 +663,14 @@ export default class ProductRenderer {
       this.resizeVec[i] = this.initialDimensions[i] / this.websiteDimensions[i];
     }
   }
+
   /**
    * Applies the texture to the closet.
    * @param {string} texture - texture being applied.
    */
   applyTexture(texture) {
     this.textureLoader.load(texture, tex => {
-      this.material.map = tex
+      this.material.map = tex;
     })
   }
 
@@ -676,7 +724,7 @@ export default class ProductRenderer {
       closet_face.position.x = slotWidths[i];
     }
   }
-
+  
   /**
    * Generates a parellepiped with a certain dimensions (width, height, depth) and on a certain position relatively to axes (x,y,z)
    * @param {number} width Number with the parellepiped width

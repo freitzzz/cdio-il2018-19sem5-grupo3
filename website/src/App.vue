@@ -1,12 +1,13 @@
 <template>
   <div id="app">
-    <home></home>
+    <!--<home></home>-->
+    <management-top-bar></management-top-bar>
   </div>
 </template>
 
 <script>
 import Home from "./components/Home.vue";
-import SideBar from "./components/SideBar.vue";
+import ManagementTopBar from "./components/ManagementTopBar.vue"
 export default {
   name: "app",
   data() {
@@ -16,8 +17,7 @@ export default {
   },
   components: {
     Home,
-    SideBar
-
+    ManagementTopBar
   }
 };
 </script> 

@@ -91,7 +91,7 @@ namespace core.domain
         public CustomizedProductCollection(string name)
         {
             checkCustomizedProductCollectionName(name);
-            this.name = name;
+            this.name = name.Trim();
             this.collectionProducts = new List<CollectionProduct>();
         }
 
@@ -127,6 +127,7 @@ namespace core.domain
             if (Collections.isEnumerableNullOrEmpty(enumerableCustomizedProducts))
                 throw new ArgumentException(INVALID_COLLECTION_CUSTOMIZED_PRODUCTS);
             checkCustomizedProductsDuplicates(enumerableCustomizedProducts);
+            checkCustomizedProductsState(enumerableCustomizedProducts);
         }
 
         /// <summary>
@@ -139,6 +140,21 @@ namespace core.domain
             foreach (CustomizedProduct customizedProduct in customizedProducts)
                 if (!customizedProductsHashes.Add(customizedProduct.GetHashCode()))
                     throw new ArgumentException(INVALID_COLLECTION_CUSTOMIZED_PRODUCTS);
+        }
+
+        /// <summary>
+        /// Checks if any customized product from an enumerable have a PENDING State
+        /// </summary>
+        /// <param name="customizedProducts">IEnumerable with the customized products</param>
+        private void checkCustomizedProductsState(IEnumerable<CustomizedProduct> customizedProducts)
+        {
+            foreach (CustomizedProduct customizedProduct in customizedProducts)
+            {
+                if (customizedProduct.status == CustomizationStatus.PENDING)
+                {
+                    throw new ArgumentException(PENDING_CUSTOMIZED_PRODUCT);
+                }
+            }
         }
 
         /// <summary>

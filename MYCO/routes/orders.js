@@ -10,20 +10,20 @@ const Package = require('../models/Package');
 
 //Get all orders in the database
 //Handle errors by using the ones available in the mongoose schema
-ordersRoute.route('/orders').get(function (req, res, next) {
-    Order.find(function (err, orders) {
-        if (!orders) {
-            return next(res.status(404).json({
+ordersRoute.route('/orders').get(function (req, res) {
+    Order.find((orders) => {
+        if (orders == null || orders.length == 0) {
+            res.status(404).json({
                 Error: 'No orders found'
-            }));
-        } else if (err) {
-            return next(res.status(500).json({
-                Error: 'An unexpected error occurred. Please try again'
-            }));
+            });
         } else {
             res.status(200).json(orders); //return all orders
         }
-    })
+    }).catch(() => {
+        res.status(500).json({
+            Error: 'An unexpected error occurred. Please try again'
+        })
+    });
 })
 
 //Gets an order and its details by its id

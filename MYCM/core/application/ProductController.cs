@@ -147,6 +147,30 @@ namespace core.application
             return ProductModelViewService.fromEntity(product, fetchProductDTO.productDTOOptions.requiredUnit);
         }
 
+        public GetComponentModelView findProductComponent(FindComponentModelView findComponentModelView){
+            
+            ProductRepository productRepository = PersistenceContext.repositories().createProductRepository();
+
+            Product product = productRepository.find(findComponentModelView.fatherProductId);
+
+            if(product == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, findComponentModelView.fatherProductId));
+            }
+
+            //if no components are found, throw an exception so that a 404 code is sent
+            if(!product.components.Any()){
+                throw new ResourceNotFoundException(ERROR_UNABLE_TO_FIND_COMPONENTS);
+            }
+
+            Component component = product.components.Where(c => c.complementaryProductId == findComponentModelView.childProductId).SingleOrDefault();
+
+            if(component == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, findComponentModelView.childProductId));
+            }
+
+            return ComponentModelViewService.fromEntity(component, findComponentModelView.unit);
+        }
+
         /// <summary>
         /// Finds a Product's Collection of Measurement.
         /// </summary>
@@ -168,15 +192,15 @@ namespace core.application
         /// <summary>
         /// Finds a Product's collection of Component.
         /// </summary>
-        /// <param name="fetchProductDTO">DTO containing information used for querying.</param>
+        /// <param name="findComponentsModelView">DTO containing information used for querying.</param>
         /// <returns>GetAllComponentsModelView with all of the elements in the Product's Collection of Component.</returns>
         /// <exception cref="ResourceNotFoundException">Thrown when the Product could not be found.</exception>
-        public GetAllComponentsModelView findProductComponents(FetchProductDTO fetchProductDTO){
+        public GetAllComponentsModelView findProductComponents(FindComponentsModelView findComponentsModelView){
             
-            Product product = PersistenceContext.repositories().createProductRepository().find(fetchProductDTO.id);
+            Product product = PersistenceContext.repositories().createProductRepository().find(findComponentsModelView.fatherProductId);
 
             if(product == null){
-                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, fetchProductDTO.id));
+                throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, findComponentsModelView.fatherProductId));
             }
 
             //if no components are found, throw an exception so that a 404 code is sent
@@ -184,7 +208,11 @@ namespace core.application
                 throw new ResourceNotFoundException(ERROR_UNABLE_TO_FIND_COMPONENTS);
             }
 
-            return ComponentModelViewService.fromCollection(product.components);
+            if(findComponentsModelView.option == FindComponentsOptions.CATEGORY){
+                return ComponentModelViewService.fromCollectionGroupedByCategory(product.components);
+            }else{
+                return ComponentModelViewService.fromCollection(product.components);
+            }
         }
 
         /// <summary>
@@ -597,7 +625,8 @@ namespace core.application
         /// <param name="deleteMeasurementModelView">DeleteMeasurementFromProductModelView with the Product's and the Measurement's persistence identifiers.</param>
         /// <exception cref="ResourceNotFoundException">Throw when either the Product or the Measurement could not be found.</exception>
         public void deleteMeasurementFromProduct(DeleteMeasurementModelView deleteMeasurementModelView){
-            Product product = PersistenceContext.repositories().createProductRepository().find(deleteMeasurementModelView.productId);
+            ProductRepository productRepository=PersistenceContext.repositories().createProductRepository();
+            Product product = productRepository.find(deleteMeasurementModelView.productId);
     
             if(product == null){
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, deleteMeasurementModelView.productId));
@@ -611,6 +640,9 @@ namespace core.application
             }
 
             product.removeMeasurement(measurement);
+
+            productRepository.update(product);
+
         }
         
         /// <summary>

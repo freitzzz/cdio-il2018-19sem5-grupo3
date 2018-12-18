@@ -13,7 +13,8 @@ const state = {
     canvasControls: {
         canMoveCloset: "false",
         canMoveSlots: "false",
-        canMoveComponents: "false"
+        canMoveComponents: "false",
+        componentToRemove: {}
     },
 
     product: {},
@@ -26,37 +27,21 @@ const state = {
             id: ""
         },
         customizedMaterial: {
-            material: {
-                id: ""
-            },
-            color: {
-                name: "",
-                red: "",
-                green: "",
-                blue: "",
-                alpha: ""
-            },
-            finish: {
-                description: ""
-            }
+            id: "",
+            reference: "",
+            designation: "",
+            image: ""
         },
         slots: [
-            {
-                idSlot: "",
-                width: "",
-                height: "",
-                depth: "",
-                unit: "",
-                components: []
-            }, 
         ],
         customizedDimensions: {
             width: "",
             height: "",
             depth: "",
             unit: ""
-        }
-    }
+        },
+        components: []
+       }
 }
 
 export const getters = {
@@ -87,7 +72,7 @@ export const getters = {
     width: state => {
         return state.customizedProduct.dimensions.width;
     },
-    customizedProductDimensions: state=>{
+    customizedProductDimensions: state => {
         return state.customizedProduct.customizedDimensions;
     },
     depth: state => {
@@ -99,10 +84,13 @@ export const getters = {
     customizedProductSlotWidth: state => index => {
         return state.customizedProduct.slots[index];
     },
-    customizedProductComponents: state => index => {
-        return state.customizedProduct.slots[index].components;
+    customizedProductComponents: state => {
+        return state.customizedProduct.components;
     },
-    canMoveCloset: state => { 
+    customizedMaterial: state => {
+        return state.customizedProduct.customizedMaterial.image;
+    },
+    canMoveCloset: state => {
         return state.canvasControls.canMoveCloset;
     },
     canMoveSlots: state => {
@@ -110,7 +98,10 @@ export const getters = {
     },
     canMoveComponents: state => {
         return state.canvasControls.canMoveComponents;
-     }
+    },
+    componentToRemove: state => {
+        return state.canvasControls.componentToRemove;
+    }
 }
 
 export default new Vuex.Store({

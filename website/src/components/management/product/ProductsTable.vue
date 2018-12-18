@@ -40,7 +40,8 @@
                         :available-categories="availableCategories"
                         :available-components="availableComponents"
                         :available-materials="availableMaterials"
-                        :product="currentSelectedProduct2"
+                        :available-units="availableUnits"
+                        :product="currentSelectedProductClone"
                     />
                 </b-modal>
             </div>
@@ -86,11 +87,12 @@ export default {
             availableCategories:[],
             availableComponents:[],
             availableMaterials:[],
+            availableUnits:[],
             /**
              * Current Table Selected Product
              */
             currentSelectedProduct:null,
-            currentSelectedProduct2:null,
+            currentSelectedProductClone:null,
             /**
              * Products table columns
              */
@@ -149,6 +151,7 @@ export default {
             Axios
                 .delete(MYCM_API_URL+'/products/'+productId)
                 .then(()=>{
+                    this.$emit('refreshData');
                     this.$toast.open({message:"Product was deleted with success!"});
                 })
                 .catch((error_message)=>{
@@ -171,7 +174,11 @@ export default {
                                     this
                                         .getAllMaterials()
                                         .then(()=>{
-                                            this.showEditProductDetails=true;
+                                            this
+                                                .getAllUnits()
+                                                .then(()=>{
+                                                    this.showEditProductDetails=true;
+                                                })
                                         });
                                 });
                         });
@@ -229,6 +236,23 @@ export default {
             });
         },
         /**
+         * Fetches all units available in a promise way
+         */
+        getAllUnits(){
+            return new Promise((accept,reject)=>{
+                Axios
+                    .get(MYCM_API_URL+'/units/')
+                    .then((units)=>{
+                        this.availableUnits=units.data;
+                        accept();
+                    })
+                    .catch((error_message)=>{
+                        this.$toast.open({message:error_message});
+                        reject();
+                    });
+            });
+        },
+        /**
          * Fetches the details of a certain product in a promise way
          */
         getProductDetails(productId){
@@ -237,7 +261,7 @@ export default {
                     .get(MYCM_API_URL+'/products/'+productId)
                     .then((product)=>{
                         this.currentSelectedProduct=product.data;
-                        this.currentSelectedProduct2=Object.assign({},this.currentSelectedProduct);
+                        this.currentSelectedProductClone=Object.assign({},this.currentSelectedProduct);
                         accept(product);
                     })
                     .catch((error_message)=>{
@@ -273,6 +297,7 @@ export default {
                                         .updateProductDimensions(productDetails)
                                         .then(()=>{
                                             this.showEditProductDetails=false;
+                                            this.$emit('refreshData');
                                             this.$toast.open({message:"Product was updated with success!"});
                                         }).catch((error_message)=>{
                                             this.$toast.open({message:error_message});
@@ -338,18 +363,22 @@ export default {
             }
 
             let newProductComponents=productDetails.components!=null ? productDetails.components : [];
+            
+            let newProductComponentsIds=[];
+            for(let i=0;i<newProductComponents.length;i++)
+                newProductComponentsIds.push(newProductComponents[i].id);
 
             //Components to add
 
             for(let i=0;i<newProductComponents.length;i++){
-                if(!oldProductComponents.includes(newProductComponents[i]))
-                    addComponents.push(newProductComponents[i]);
+                if(!oldProductComponents.includes(newProductComponents[i].id))
+                    addComponents.push({id:newProductComponents[i].id,mandatory:newProductComponents[i].required});
             }
 
             //Components to delete
 
             for(let i=0;i<oldProductComponents.length;i++){
-                if(!newProductComponents.includes(oldProductComponents[i]))
+                if(!newProductComponentsIds.includes(oldProductComponents[i]))
                     deleteComponents.push(oldProductComponents[i]);
             }
 
@@ -359,7 +388,8 @@ export default {
                     for(let i=0;i<addComponents.length;i++){
                         Axios
                             .post(MYCM_API_URL+'/products/'+productDetails.id+'/components/',{
-                                id:addComponents[i]
+                                id:addComponents[i].id,
+                                mandatory:addComponents[i].mandatory
                             })
                             .catch((error_message)=>{
                                 reject(error_message.data.message);
@@ -383,30 +413,35 @@ export default {
          * Updates a given product dimensions (POST + DELETE) in a promise way
          */
         updateProductDimensions(productDetails){
-            let oldProductDimensions=[];
+            let oldProductDimensionsIds=[];
             let addDimensions=[];
             let deleteDimensions=[];
+            let newProductDimensionsIds=[];
+
             for(let i=0;i<this.currentSelectedProduct.dimensions.length;i++)
-                oldProductDimensions.push(this.currentSelectedProduct.dimensions[i].id);
+                oldProductDimensionsIds.push(this.currentSelectedProduct.dimensions[i].id)
+            
             let newProductDimensions=productDetails.dimensions!=null ? productDetails.dimensions : [];
             
+            for(let i=0;i<newProductDimensions.length;i++)
+                newProductDimensionsIds.push(newProductDimensions[i].id);
+
             for(let i=0;i<newProductDimensions.length;i++){
-                if(!oldProductDimensions.includes(newProductDimensions[i]))
+                if(newProductDimensions[i].id==0)
                     addDimensions.push(newProductDimensions[i]);
             }
             
-            for(let i=0;i<oldProductDimensions.length;i++){
-                if(!newProductDimensions.includes(oldProductDimensions[i]))
-                    deleteDimensions.push(oldProductDimensions[i]);
+            for(let i=0;i<oldProductDimensionsIds.length;i++){
+                if(!newProductDimensionsIds.includes(oldProductDimensionsIds[i]))
+                    deleteDimensions.push(oldProductDimensionsIds[i]);
             }
+
             return new Promise((accept,reject)=>{
                 if(newProductDimensions.length==0)accept();
                 if(addDimensions.length>0){
                     for(let i=0;i<addDimensions.length;i++){
                         Axios
-                            .post(MYCM_API_URL+'/products/'+productDetails.id+'/dimensions/',{
-                                id:addDimensions[i]
-                            })
+                            .post(MYCM_API_URL+'/products/'+productDetails.id+'/dimensions/',addDimensions[i])
                             .catch((error_message)=>{
                                 reject(error_message.data.message);
                             });

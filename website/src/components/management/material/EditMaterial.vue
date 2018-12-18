@@ -1,51 +1,63 @@
 <template>
     <b-modal :active.sync="activeFlag" has-modal-card scroll="keep">
-            <div v-if = "panelEditMaterial" class="modal-card" style="width: auto">
+            <div v-if = panelEditMaterial class="modal-card" style="width: auto">
                     <header class="modal-card-head">
                         <p class="modal-card-title">Edit Material</p>
                     </header>
                     <section class="modal-card-body">
-                        <b-field label="Select a material">
-                            <b-select icon="tag" v-model="selectedMaterial">
-                                  <option v-for="material in availableMaterials" 
-                                    :key="material.id" :value="material">{{material.designation}}</option>
-                            </b-select>
-                        </b-field>
-                        <b-field label="Reference" >
+                          <b-field label="Reference" >
                             <b-input 
-                                v-model="selectedMaterial.reference"
+                                v-model="material.reference"
                                 type="String"
-                                placeholder="Insert reference"
                                 icon="pound">
                             </b-input>
                         </b-field> 
                         <b-field label="Designation" >
                             <b-input 
-                                v-model="selectedMaterial.designation"
+                                v-model="material.designation"
                                 type="String"
-                                placeholder= "Insert designation"
                                 icon="pound">
                             </b-input>
                         </b-field> 
                         <b-field label="Edit Colors">
                             <b-select icon="tag" v-model="selectedColor">
-                                  <option v-for="color in selectedMaterial.colors" 
+                                  <option v-for="color in material.colors" 
                                     :key="color.id" :value="color">{{color.name}} </option>
                             </b-select>
-                        </b-field> 
-                            <button class="button is-primary" @click="createColor()">+</button>
-                            <button class="button is-primary" @click="deleteColor()">-</button>
+                        </b-field>
+                              <button class="btn-primary" @click="createColor()">+</button>
+                              <button class="btn-primary" @click="deleteColor()">-</button>
                         <b-field label="Edit Finishes">
                             <b-select icon="tag" v-model="selectedFinish">
-                                  <option v-for="finish in selectedMaterial.finishes" 
+                                  <option v-for="finish in material.finishes" 
                                     :key="finish.id" :value="finish">{{finish.description}} </option>
                             </b-select>
                         </b-field> 
-                            <button class="button is-primary" @click="createFinish()">+</button>
-                            <button class="button is-primary" @click="deleteFinish()">-</button>
+                            <button class="btn-primary" @click="createFinish()">+</button>
+                            <button class="btn-primary" @click="deleteFinish()">-</button>
+                            <div class="example-btn , image">
+                                <file-upload
+                                  class="btn-primary"
+                                  post-action="/files/"
+                                  :maximum="1"
+                                  :drop="true"
+                                  :drop-directory="true"
+                                  v-model="file"
+                                  @input-file="inputFile"
+                                  ref="upload">
+                                  Edit Image
+                                </file-upload>
+                                <b-input
+                                class="image"
+                                v-model="material.image"
+                                type="String"
+                                disabled="true"
+                                required>
+                            </b-input>
+                            </div>
                     </section>
                     <footer class="modal-card-foot">
-                        <button class="button is-primary" @click="updateBasicInformation()">Edit</button>                    
+                        <button class="btn-primary" @click="updateBasicInformation()">Edit</button>                    
                     </footer>
             </div>
             <div v-if = "createFinishPanelEnabled" class="modal-card" style="width: auto">
@@ -62,10 +74,21 @@
                                 required>
                             </b-input>
                         </b-field>
+                          <b-field label="Shininess:">
+                            <vue-slider
+                            class="slidersSection"
+                            :min="0"
+                            :max="100"
+                            v-model="inputFinishShininess"
+                            :interval="0.01"
+                          ></vue-slider>
+                         </b-field>
                     </section>
                     <footer class="modal-card-foot">
-                      <button class="button is-primary" @click="addFinish()">+</button>
-                      <button class="button is-primary" @click="disableFinishWindow()">Back</button>
+                      <small-padding-div>
+                        <button class="btn-primary" @click="addFinish()">+</button>
+                        <button class="btn-primary" @click="disableFinishWindow()">Back</button>
+                      </small-padding-div>
                     </footer>    
                  </div>
             <div v-if= "createColorPanelEnabled" class="modal-card" style="width: auto" >
@@ -86,8 +109,10 @@
                       <br> <br> <br> <br> <br><br> <br> <br>
                     </section>
                     <footer class="modal-card-foot">
-                      <button class="button is-primary" @click="addColor()">+</button>
-                      <button class="button is-primary" @click="disableColorWindow()">Back</button>
+                      <small-padding-div>
+                        <button class="btn-primary" @click="addColor()">+</button>
+                        <button class="btn-primary" @click="disableColorWindow()">Back</button>
+                      </small-padding-div>
                     </footer>
             </div>
         </b-modal>
@@ -97,25 +122,30 @@ import Axios from "axios";
 import Swatches from "vue-swatches";
 import "vue-swatches/dist/vue-swatches.min.css";
 import { Dialog } from "buefy/dist/components/dialog";
+import FileUpload from 'vue-upload-component';
+import vueSlider from "vue-slider-component";
 export default {
   name: "EditMaterial",
   data() {
     return {
-      selectedMaterial: {},
       selectedColor: {},
       selectedFinish: {},
       inputColorName: null, //this value needs to be null so that the placeholder can be rendered
       inputColorValues: "#000000",
-      inputFinishDesignation: null, //this value needs to be null so that the placeholder can be rendered
+      inputFinishDesignation: null,
+      inputFinishShininess: 0, //this value needs to be null so that the placeholder can be rendered
       availableMaterials: [],
       panelEditMaterial: true,
       createFinishPanelEnabled: false,
       createColorPanelEnabled: false,
-      activeFlag: true
+      activeFlag: true,
+      file: [],
     };
   },
   components: {
-    Swatches
+    Swatches,
+    FileUpload,
+    vueSlider
   },
   methods: {
     createColor() {
@@ -137,11 +167,11 @@ export default {
     deleteFinish() {
       Axios.delete(
         `http://localhost:5000/mycm/api/materials/${
-          this.selectedMaterial.id
+          this.material.id
         }/finishes/${this.selectedFinish.id}`
       )
         .then(
-          this.selectedMaterial.finishes.splice(this.selectedFinish, 1),
+          this.material.finishes.splice(this.selectedFinish, 1),
           this.$toast.open("Delete finish with success!")
         )
         .catch(function(error) {});
@@ -149,24 +179,25 @@ export default {
     deleteColor() {
       Axios.delete(
         `http://localhost:5000/mycm/api/materials/${
-          this.selectedMaterial.id
+          this.material.id
         }/colors/${this.selectedColor.id}`
       )
         .then(response => {
-          let selectedColorIndex = this.selectedMaterial.colors.indexOf(
+          let selectedColorIndex = this.material.colors.indexOf(
             this.selectedColor
           );
-          this.selectedMaterial.colors.splice(selectedColorIndex, 1);
+          this.material.colors.splice(selectedColorIndex, 1);
           this.selectedColor = null;
         }, this.$toast.open("Delete color with success!"))
         .catch(function(error) {});
     },
     updateBasicInformation() {
       Axios.put(
-        `http://localhost:5000/mycm/api/materials/${this.selectedMaterial.id}`,
+        `http://localhost:5000/mycm/api/materials/${this.material.id}`,
         {
-          reference: this.selectedMaterial.reference,
-          designation: this.selectedMaterial.designation
+          reference: this.material.reference,
+          designation: this.material.designation,
+          image: this.material.image
         }
       )
         .then(this.$toast.open("Update te basic information with success!"))
@@ -176,7 +207,7 @@ export default {
       if (
         this.inputColorName != null &&
         this.inputColorName.trim() != "" &&
-        this.selectedMaterial.colors.indexOf(this.inputColorName) < 0
+        this.material.colors.indexOf(this.inputColorName) < 0
       ) {
         let color = {
           name: this.inputColorName,
@@ -197,12 +228,12 @@ export default {
 
         Axios.post(
           `http://localhost:5000/mycm/api/materials/${
-            this.selectedMaterial.id
+            this.material.id
           }/colors`,
           color
         )
           .then(
-            this.selectedMaterial.colors.push(color),
+            this.material.colors.push(color),
             this.$toast.open("Create color with success!")
           )
           .catch(function(error) {});
@@ -213,27 +244,44 @@ export default {
       if (
         this.inputFinishDesignation != null &&
         this.inputFinishDesignation.trim() != "" &&
-        this.selectedMaterial.finishes.indexOf(
+        this.material.finishes.indexOf(
           this.inputFinishDesignation.trim()
         ) < 0
       ) {
         var finish = {
-          description: this.inputFinishDesignation
+          description: this.inputFinishDesignation,
+          shininess: this.inputFinishShininess
         };
 
         Axios.post(
           `http://localhost:5000/mycm/api/materials/${
-            this.selectedMaterial.id
+            this.material.id
           }/finishes`,
           finish
         )
           .then(
-            this.selectedMaterial.finishes.push(finish),
+            this.material.finishes.push(finish),
             this.$toast.open("Create finish with success!")
           )
           .catch(function(error) {});
       }
       this.inputFinishDesignation = "";
+      this.inputFinishShininess = 0;
+    },
+  inputFile(newFile, oldFile) {
+    this.material.image=this.file[0].name
+      if (newFile && !oldFile) {
+        // add
+        console.log('add', newFile)
+      }
+      if (newFile && oldFile) {
+        // update
+        console.log('update', newFile)
+      }
+      if (!newFile && oldFile) {
+        // remove
+        console.log('remove', oldFile)
+      }
     }
   },
   created() {
@@ -242,6 +290,25 @@ export default {
       .catch(error => {
         this.$toast.open(error.response.status + "Not found materials");
       });
-  }
+  },
+  props:{
+        /**
+         * Current Material details
+         */
+        material:{
+            type:Object,
+            required:true
+        }
+    },
 };
 </script>
+<style>
+.slidersSection {
+  margin-bottom: 13%;
+  width: 7px 30px;
+  margin-top: 15%;
+}
+.image{
+  margin-top: 5%;
+}
+</style>

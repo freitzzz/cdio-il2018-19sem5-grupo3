@@ -112,7 +112,6 @@ namespace backend.Controllers
         /// </summary>
         private const string LOG_GET_BY_ID_SUCCESS = "Product {@product} retrieved.";
 
-
         /// <summary>
         /// Constant that represents the log message for when a GET Product Measurements Request starts.
         /// </summary>
@@ -459,6 +458,18 @@ namespace backend.Controllers
         /// </summary>
         private const string LOG_DELETE_MATERIAL_RESTRICTION_SUCCESS = "DELETE Product {id} Material {id} Restriction {id} - Success.";
 
+        /// <summary>
+        /// Constant that represents the log message for when a GET Product Component Request starts
+        /// </summary>
+        private const string LOG_GET_PRODUCT_COMPONENT_STARTED = "GET Component {componentId} of Product {id} Request Started";
+        /// <summary>
+        /// Constant that represents the log message for when a GET Product Component Request returns Not Found
+        /// </summary>
+        private const string LOG_GET_PRODUCT_COMPONENT_NOT_FOUND = "Component {componentId} of Product {id} Not Found";
+        /// <summary>
+        /// Constant that represents the log message for when a GET Product Component Request is successful
+        /// </summary>
+        private const string LOG_GET_PRODUCT_COMPONENT_SUCCESS = "Component {componentId} of Product {id} retrieved {@modelView}";
 
 
         private readonly ProductRepository productRepository;
@@ -612,14 +623,14 @@ namespace backend.Controllers
         }
 
         [HttpGet("{productId}/components")]
-        public ActionResult findProductComponents(long productId){
+        public ActionResult findProductComponents(long productId, [FromQuery]FindComponentsOptions groupBy){
             logger.LogInformation(LOG_GET_PRODUCT_COMPONENTS_STARTED);
-            FetchProductDTO fetchProductDTO = new FetchProductDTO();
-            fetchProductDTO.id = productId;
             try{
-                GetAllComponentsModelView allComponentsModelView = new core.application.ProductController().findProductComponents(fetchProductDTO);
-                logger.LogInformation(LOG_GET_PRODUCT_COMPONENTS_SUCCESS, productId, allComponentsModelView);
-                return Ok(allComponentsModelView);
+                    FindComponentsModelView findComponentsModel = new FindComponentsModelView();
+                    findComponentsModel.fatherProductId = productId;
+                    findComponentsModel.option = groupBy;
+                    GetAllComponentsModelView allComponentsByCategory = new core.application.ProductController().findProductComponents(findComponentsModel);
+                    return Ok(allComponentsByCategory);
             }catch(ResourceNotFoundException e){
                 logger.LogWarning(e, LOG_GET_PRODUCT_COMPONENTS_NOT_FOUND, productId);
                 return NotFound(new SimpleJSONMessageService(e.Message));
@@ -643,6 +654,28 @@ namespace backend.Controllers
                 logger.LogWarning(e, LOG_GET_PRODUCT_MATERIALS_NOT_FOUND, productId);
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }catch(Exception e){
+                logger.LogWarning(e, UNEXPECTED_ERROR);
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+        [HttpGet("{productId}/components/{componentId}")]
+        public ActionResult findProductComponent(long productId, long componentId, [FromQuery]string unit){
+            logger.LogInformation(LOG_GET_PRODUCT_COMPONENT_STARTED);
+            try{
+                FindComponentModelView findComponentModelView = new FindComponentModelView();
+                findComponentModelView.fatherProductId = productId;
+                findComponentModelView.childProductId = componentId;
+                findComponentModelView.unit = unit;
+                GetComponentModelView componentModelView = new core.application.ProductController().findProductComponent(findComponentModelView);
+                logger.LogInformation(LOG_GET_PRODUCT_COMPONENT_SUCCESS,componentId, productId, componentModelView);
+                return Ok(componentModelView);
+            }
+            catch(ResourceNotFoundException e){
+                logger.LogWarning(e, LOG_GET_PRODUCT_COMPONENT_NOT_FOUND, componentId, productId);
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch(Exception e){
                 logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }

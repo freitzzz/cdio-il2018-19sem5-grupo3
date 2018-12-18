@@ -1,0 +1,621 @@
+{
+	"info": {
+		"_postman_id": "93be3827-6583-4a8d-a78e-7e0ca5efbd5a",
+		"name": "ARQSI Presentation IT3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Create All Products Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"All Products\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/categories/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"categories",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Drawers Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Drawers\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/categories/1/subcategories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"categories",
+								"1",
+								"subcategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Shelves Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Shelves\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/categories/1/subcategories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"categories",
+								"1",
+								"subcategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Poles Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Poles\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/categories/1/subcategories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"categories",
+								"1",
+								"subcategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Doors Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Doors\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/categories/1/subcategories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"categories",
+								"1",
+								"subcategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Closets Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Closets\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/categories/1/subcategories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"categories",
+								"1",
+								"subcategories"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Materials",
+			"item": [
+				{
+					"name": "Create Cherry Wood Material",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reference\": \"#666\",\n  \"designation\": \"Cherry Wood\",\n  \"image\": \"cherry-wood.png\",\n  \"colors\": [\n    {\n      \"name\": \"White\",\n      \"red\": \"255\",\n      \"green\": \"255\",\n      \"blue\": \"255\",\n      \"alpha\": \"0\"\n    },\n    {\n      \"name\": \"Black\",\n      \"red\": \"0\",\n      \"green\": \"0\",\n      \"blue\": \"0\",\n      \"alpha\": \"0\"\n    }\n  ],\n  \"finishes\": [\n    {\n      \"description\": \"varnish\",\n      \"shininess\": 70\n    },\n    {\n      \"description\": \"matte\",\n      \"shininess\": 20\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/materials/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"materials",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Worn Wood Material",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reference\": \"#667\",\n  \"designation\": \"Worn Wood\",\n  \"image\": \"worn-wood.jpg\",\n  \"colors\": [\n    {\n      \"name\": \"White\",\n      \"red\": \"255\",\n      \"green\": \"255\",\n      \"blue\": \"255\",\n      \"alpha\": \"0\"\n    },\n    {\n      \"name\": \"Black\",\n      \"red\": \"0\",\n      \"green\": \"0\",\n      \"blue\": \"0\",\n      \"alpha\": \"0\"\n    }\n  ],\n  \"finishes\": [\n    {\n      \"description\": \"varnish\",\n      \"shininess\": 70\n    },\n    {\n      \"description\": \"matte\",\n      \"shininess\": 20\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/materials/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"materials",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create MDF Material",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reference\": \"#668\",\n  \"designation\": \"MDF\",\n  \"image\": \"mdf.jpg\",\n  \"colors\": [\n    {\n      \"name\": \"White\",\n      \"red\": \"255\",\n      \"green\": \"255\",\n      \"blue\": \"255\",\n      \"alpha\": \"0\"\n    },\n    {\n      \"name\": \"Black\",\n      \"red\": \"0\",\n      \"green\": \"0\",\n      \"blue\": \"0\",\n      \"alpha\": \"0\"\n    }\n  ],\n  \"finishes\": [\n    {\n      \"description\": \"varnish\",\n      \"shininess\": 70\n    },\n    {\n      \"description\": \"matte\",\n      \"shininess\": 20\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/materials/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"materials",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create Drawer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reference\": \"GVS\",\n    \"designation\": \"Drawer\",\n    \"model\": \"drawer.fbx\",\n    \"categoryId\": 2,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        },\n        {\n            \"id\": \"2\"\n        },\n        {\n            \"id\": \"3\"\n        }\n    ],\n    \"dimensions\": [\n        {\n            \"height\": {\n                \"value\": 120,\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1200.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"200.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/products/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"products",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Shelf",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reference\": \"P01\",\n    \"designation\": \"Shelf\",\n    \"model\": \"shelf.fbx\",\n    \"categoryId\": 3,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        },\n        {\n        \t\"id\": \"2\"\n        },\n        {\n        \t\"id\": \"3\"\n        }\n    ],\n    \"dimensions\": [\n        {\n        \t\"height\": {\n                \"values\": [\n                    \"10.0\",\n                    \"15.0\",\n                    \"20.0\"\n                ],\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1200.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"200.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Pole",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reference\": \"V01\",\n    \"designation\": \"Pole\",\n    \"model\": \"pole.fbx\",\n    \"categoryId\": 4,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        },\n        {\n        \t\"id\": \"2\"\n        },\n        {\n        \t\"id\": \"3\"\n        }\n    ],\n    \"dimensions\": [\n        {\n        \t\"height\": {\n                \"values\": [\n                    \"15.0\",\n                    \"20.0\"\n                ],\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1200.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"values\": [\n                    \"15.0\",\n                    \"20.0\"\n                ],\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Door",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reference\": \"D01\",\n    \"designation\": \"Hinged Door\",\n    \"model\": \"hinged-door.fbx\",\n    \"categoryId\": 5,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        },\n        {\n        \t\"id\": \"2\"\n        },\n        {\n        \t\"id\": \"3\"\n        }\n    ],\n    \"dimensions\": [\n        {\n            \"height\": {\n                \"minValue\": \"500.0\",\n                \"maxValue\": \"3000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"900.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"value\": \"25.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Sliding Door",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reference\": \"D00\",\n    \"designation\": \"Sliding Door\",\n    \"model\": \"sliding-door.fbx\",\n    \"categoryId\": 5,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        },\n        {\n        \t\"id\": \"2\"\n        },\n        {\n        \t\"id\": \"3\"\n        }\n    ],\n    \"dimensions\": [\n        {\n            \"height\": {\n                \"minValue\": \"500.0\",\n                \"maxValue\": \"3000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"value\": \"50.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Doorless Structure",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reference\": \"E01\",\n    \"designation\": \"Doorless Closet\",\n    \"model\": \"doorless-closet.fbx\",\n    \"categoryId\": 6,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        },\n        {\n        \t\"id\": \"2\"\n        },\n        {\n        \t\"id\": \"3\"\n        }\n    ],\n    \"components\": [\n        {\n            \"id\": 1,\n            \"mandatory\": false\n        },\n        {\n            \"id\": 2,\n            \"mandatory\": false\n        },\n        {\n            \"id\": 3,\n            \"mandatory\": false\n        }\n    ],\n    \"dimensions\": [\n        {\n            \"height\": {\n                \"minValue\": \"500.0\",\n                \"maxValue\": \"3000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"400.0\",\n                \"maxValue\": \"4000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"200.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ],\n    \"slotWidths\": {\n        \"minWidth\": \"400\",\n        \"maxWidth\": \"1200\",\n        \"recommendedWidth\": \"900\",\n        \"unit\": \"cm\"\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Hinged Door Closet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reference\": \"E02\",\n    \"designation\": \"Hinged Door Closet\",\n    \"model\": \"hinged-door-closet.fbx\",\n    \"categoryId\": 6,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        },\n        {\n            \"id\": \"2\"\n        },\n        {\n            \"id\": \"3\"\n        }\n    ],\n    \"components\": [\n        {\n            \"id\": 1,\n            \"mandatory\": false\n        },\n        {\n            \"id\": 2,\n            \"mandatory\": false\n        },\n        {\n            \"id\": 3,\n            \"mandatory\": false\n        },\n        {\n        \t\"id\": \"4\",\n        \t\"mandatory\": true\n        }\n    ],\n    \"dimensions\": [\n        {\n            \"height\": {\n                \"minValue\": \"500.0\",\n                \"maxValue\": \"3000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"600.0\",\n                \"maxValue\": \"4000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"250.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ],\n    \"slotWidths\": {\n        \"minWidth\": \"600\",\n        \"maxWidth\": \"1200\",\n        \"recommendedWidth\": \"900\",\n        \"unit\": \"cm\"\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Sliding Door Closet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reference\": \"E03\",\n    \"designation\": \"Sliding Door Closet\",\n    \"model\": \"sliding-door-closet.fbx\",\n    \"categoryId\": 6,\n    \"materials\": [\n        {\n            \"id\": \"1\"\n        },\n        {\n            \"id\": \"2\"\n        },\n        {\n            \"id\": \"3\"\n        }\n    ],\n    \"components\": [\n        {\n            \"id\": 1,\n            \"mandatory\": false\n        },\n        {\n            \"id\": 2,\n            \"mandatory\": false\n        },\n        {\n            \"id\": 3,\n            \"mandatory\": false\n        },\n        {\n            \"id\": 5,\n            \"mandatory\": true\n        }\n    ],\n    \"dimensions\": [\n        {\n            \"height\": {\n                \"minValue\": \"500.0\",\n                \"maxValue\": \"3000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"width\": {\n                \"minValue\": \"800.0\",\n                \"maxValue\": \"4000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            },\n            \"depth\": {\n                \"minValue\": \"275.0\",\n                \"maxValue\": \"1000.0\",\n                \"increment\": \"1.0\",\n                \"unit\": \"cm\"\n            }\n        }\n    ],\n    \"slotWidths\": {\n        \"minWidth\": \"800\",\n        \"maxWidth\": \"1200\",\n        \"recommendedWidth\": \"1000\",\n        \"unit\": \"cm\"\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customized Products",
+			"item": [
+				{
+					"name": "Create Doorless Closet Customized Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productId\": 6,\n    \"customizedMaterial\": {\n        \"materialId\": 1,\n        \"color\": {\n            \"name\": \"White\",\n            \"red\": 255,\n            \"green\": 255,\n            \"blue\": 255,\n            \"alpha\": 0\n        },\n        \"finish\": {\n            \"description\": \"varnish\",\n            \"shininess\": 70\n        }\n    },\n    \"customizedDimensions\": {\n    \t\"height\": 20000,\n    \t\"width\": 4000,\n    \t\"depth\": 2000,\n    \t\"unit\": \"mm\"\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/mycm/api/customizedproducts/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mycm",
+								"api",
+								"customizedproducts",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

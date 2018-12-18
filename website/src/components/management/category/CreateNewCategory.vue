@@ -1,5 +1,4 @@
 <template>
-    <b-modal :active.sync="active" has-modal-card>
                 <div class="modal-card" style="width: auto">
                     <header class="modal-card-head">
                         <p class="modal-card-title">New Category</p>
@@ -24,12 +23,11 @@
                      
                     </section>
                     <footer class="modal-card-foot">
-                        <button class="button is-primary" @click="postCategory">Create</button>
+                        <button class="btn-primary" @click="postCategory">Create</button>
              
                     </footer>
                 </div>
-       
-    </b-modal>
+   
 </template> 
 
 <script>

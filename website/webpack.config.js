@@ -59,7 +59,13 @@ module.exports = {
   performance: {
     hints: false
   },
-  devtool: '#eval-source-map'
+  devtool: '#eval-source-map',
+  plugins: [
+    //https://vuejs.org/v2/guide/deployment.html
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production')
+    })
+  ]
 }
 
 if (process.env.NODE_ENV === 'production') {

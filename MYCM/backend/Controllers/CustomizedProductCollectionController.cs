@@ -56,6 +56,11 @@ namespace backend.Controllers
         private const string LOG_GET_BY_ID_START = "GET By ID Request started";
 
         /// <summary>
+        /// Constant that represents the log message for when a GET By Name Request starts
+        /// </summary>
+        private const string LOG_GET_BY_NAME_START = "GET By Name Request started";
+
+        /// <summary>
         /// Constant that represents the log message for when a POST Request starts
         /// </summary>
         private const string LOG_POST_START = "POST Request started";
@@ -86,9 +91,14 @@ namespace backend.Controllers
         private const string LOG_GET_ALL_BAD_REQUEST = "GET All BadRequest (No Customized Product Collections Found)";
 
         /// <summary>
-        /// Constant that represents the log message for when a GET By ID Request returns a BadRequest
+        /// Constant that represents the log message for when a GET By ID Request returns Not Found
         /// </summary>
-        private const string LOG_GET_BY_ID_BAD_REQUEST = "GETByID({id}) BadRequest";
+        private const string LOG_GET_BY_ID_NOT_FOUND = "GETByID({id}) Not Found";
+
+        /// <summary>
+        /// Constant that represents the log message for when a GET By Name Request returns Not Found
+        /// </summary>
+        private const string LOG_GET_BY_NAME_NOT_FOUND = "GETByName({name}) Not Found";
 
         /// <summary>
         /// Constant that represents the log message for when a POST Request returns a BadRequest
@@ -119,6 +129,11 @@ namespace backend.Controllers
         /// Constant that represents the log message for when a GET By ID Request is successful
         /// </summary>
         private const string LOG_GET_BY_ID_SUCCESS = "Customized Product Collection {@collection} retrieved";
+
+        /// <summary>
+        /// Constant that represents the log message for when a GET By Name Request is successful
+        /// </summary>
+        private const string LOG_GET_BY_NAME_SUCCESS = "Customized Product Collection {@collection} retrieved";
 
         /// <summary>
         /// Constant that represents the log message for when a POST Request is successful
@@ -203,7 +218,7 @@ namespace backend.Controllers
         {
             logger.LogInformation(LOG_GET_ALL_START);
             GetAllCustomizedProductCollectionsModelView modelView = new core.application.CustomizedProductCollectionController().findAllCollections();
-            if (!Collections.isEnumerableNullOrEmpty(modelView.customizedProductCollections))
+            if (!Collections.isEnumerableNullOrEmpty(modelView))
             {
                 logger.LogInformation(LOG_GET_ALL_SUCCESS, modelView);
                 return Ok(modelView);
@@ -212,33 +227,38 @@ namespace backend.Controllers
             return NotFound(new SimpleJSONMessageService(NO_COLLECTIONS_AVAILABLE));
         }
 
+        /// <summary>
+        /// Fetches a customized product collection by its name
+        /// </summary>
+        /// <param name="name">name of the customized product collection</param>
+        /// <returns>ActionResult with the requested customized product collection or an error message</returns>
         private ActionResult findByName(string name)
         {
             try
             {
-                logger.LogInformation(LOG_GET_BY_ID_START);
+                logger.LogInformation(LOG_GET_BY_NAME_START);
                 GetCustomizedProductCollectionModelView modelView = new GetCustomizedProductCollectionModelView();
                 modelView.name = name;
                 GetCustomizedProductCollectionModelView customizedProductCollectionModelView = new core.application.CustomizedProductCollectionController().findCollectionByEID(modelView);
                 if (customizedProductCollectionModelView != null)
                 {
-                    logger.LogInformation(LOG_GET_BY_ID_SUCCESS, customizedProductCollectionModelView);
+                    logger.LogInformation(LOG_GET_BY_NAME_SUCCESS, customizedProductCollectionModelView);
                     return Ok(customizedProductCollectionModelView);
                 }
                 else
                 {
-                    logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST, name);
+                    logger.LogWarning(LOG_GET_BY_NAME_NOT_FOUND, name);
                     return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
                 }
             }
             catch (NullReferenceException nullReferenceException)
             {
-                logger.LogWarning(nullReferenceException, LOG_GET_BY_ID_BAD_REQUEST, name);
+                logger.LogWarning(nullReferenceException, LOG_GET_BY_NAME_NOT_FOUND, name);
                 return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
             }
             catch (ArgumentException argumentException)
             {
-                logger.LogWarning(argumentException, LOG_GET_BY_ID_BAD_REQUEST, name);
+                logger.LogWarning(argumentException, LOG_GET_BY_NAME_NOT_FOUND, name);
                 return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
             }
         }
@@ -262,12 +282,12 @@ namespace backend.Controllers
                     logger.LogInformation(LOG_GET_BY_ID_SUCCESS, customizedProductCollectionModelView);
                     return Ok(customizedProductCollectionModelView);
                 }
-                logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST, id);
+                logger.LogWarning(LOG_GET_BY_ID_NOT_FOUND, id);
                 return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
             }
             catch (NullReferenceException nullReferenceException)
             {
-                logger.LogWarning(nullReferenceException, LOG_GET_BY_ID_BAD_REQUEST, id);
+                logger.LogWarning(nullReferenceException, LOG_GET_BY_ID_NOT_FOUND, id);
                 return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
             }
             catch (Exception exception)
@@ -280,7 +300,7 @@ namespace backend.Controllers
         /// <summary>
         /// Creates a new collection of customized products
         /// </summary>
-        /// <param name="addCustomizedProductCollectionModelView"></param>
+        /// <param name="addCustomizedProductCollectionModelView"> model view with the new customized product collection information</param>
         /// <returns>ActionResult with the created collection of customized products</returns>
         [HttpPost]
         public ActionResult addCustomizedProductCollection([FromBody]AddCustomizedProductCollectionModelView addCustomizedProductCollectionModelView)
@@ -337,7 +357,7 @@ namespace backend.Controllers
                 if (updatedCustomizedProductCollectionModelView != null)
                 {
                     logger.LogInformation(LOG_POST_SUCCESS);
-                    return Ok(VALID_UPDATE_MESSAGE);
+                    return Created(Request.Path,updatedCustomizedProductCollectionModelView);
                 }
                 return BadRequest(new SimpleJSONMessageService(INVALID_UPDATE_MESSAGE));
             }
@@ -432,6 +452,11 @@ namespace backend.Controllers
                 logger.LogWarning(argumentException, LOG_DELETE_CUSTOMIZED_PRODUCT_NOT_FOUND, customizedProductID);
                 return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
             }
+            catch (NullReferenceException nullReferenceException)
+            {
+                logger.LogWarning(nullReferenceException, LOG_DELETE_CUSTOMIZED_PRODUCT_NOT_FOUND, customizedProductID);
+                return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
+            }
             catch (Exception exception)
             {
                 logger.LogWarning(exception, UNEXPECTED_ERROR);
@@ -460,7 +485,7 @@ namespace backend.Controllers
             catch (NullReferenceException nullReferenceException)
             {
                 logger.LogWarning(nullReferenceException, LOG_DELETE_BAD_REQUEST, id);
-                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+                return NotFound(new SimpleJSONMessageService(RESOURCE_NOT_FOUND_MESSAGE));
             }
             catch (InvalidOperationException invalidOperationException)
             {

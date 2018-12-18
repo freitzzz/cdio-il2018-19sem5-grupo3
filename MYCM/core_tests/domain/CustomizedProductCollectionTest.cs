@@ -30,12 +30,26 @@ namespace core_tests.domain
         [Fact]
         public void ensureCustomizedProductsListWithDuplicatesIsNotValid()
         {
-            CustomizedProduct cp = buildCustomizedProductInstance();
+            CustomizedProduct cp = buildFinishedCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
             products.Add(cp);
 
             Assert.Throws<ArgumentException>(() => new CustomizedProductCollection("Mario", products));
+        }
+
+        [Fact]
+        public void ensureCollectionCantBeInstantiatedWithUnfinishedCustomizedProducts()
+        {
+            Assert.Throws<ArgumentException>(
+                () => new CustomizedProductCollection(
+                        "Mario",
+                        new List<CustomizedProduct>(){
+                            buildFinishedCustomizedProductInstance(),
+                            buildUnfinishedCustomizedProductInstance()
+                        }
+                    )
+            );
         }
 
         [Fact]
@@ -117,7 +131,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureAddCustomizedProductWorksForValidProduct()
         {
-            CustomizedProduct customizedProduct = buildCustomizedProductInstance();
+            CustomizedProduct customizedProduct = buildFinishedCustomizedProductInstance();
             CustomizedProductCollection instance = new CustomizedProductCollection("Mario");
 
             instance.addCustomizedProduct(customizedProduct);
@@ -129,7 +143,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureAddCustomizedProductFailsIfItAlreadyExists()
         {
-            CustomizedProduct customizedProduct = buildCustomizedProductInstance();
+            CustomizedProduct customizedProduct = buildFinishedCustomizedProductInstance();
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(customizedProduct);
 
@@ -154,15 +168,14 @@ namespace core_tests.domain
             CustomizedProductCollection instance = new CustomizedProductCollection("Mario");
 
             Assert.Throws<ArgumentException>(() => instance.addCustomizedProduct(
-                CustomizedProductBuilder.createAnonymousUserCustomizedProduct("123", product,
-                CustomizedDimensions.valueOf(21, 30, 17)).build()
+                buildUnfinishedCustomizedProductInstance()
             ));
         }
 
         [Fact]
         public void ensureRemovedCustomizedProductWorksForExistingProduct()
         {
-            CustomizedProduct cp = buildCustomizedProductInstance();
+            CustomizedProduct cp = buildFinishedCustomizedProductInstance();
             List<CustomizedProduct> list = new List<CustomizedProduct>();
             list.Add(cp);
 
@@ -239,6 +252,7 @@ namespace core_tests.domain
             CustomizedProduct cp = CustomizedProductBuilder
                 .createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions)
                 .withMaterial(mat).build();
+            cp.finalizeCustomization();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -248,7 +262,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureEqualCustomizedProductCollectionsAreEqual()
         {
-            CustomizedProduct cp = buildCustomizedProductInstance();
+            CustomizedProduct cp = buildFinishedCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -258,7 +272,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureDifferentTypeObjectIsNotEqualToCustomizedProductCollection()
         {
-            CustomizedProduct cp = buildCustomizedProductInstance();
+            CustomizedProduct cp = buildFinishedCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -268,7 +282,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureNullObjectIsNotEqualToCustomizedProductCollection()
         {
-            CustomizedProduct cp = buildCustomizedProductInstance();
+            CustomizedProduct cp = buildFinishedCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -278,7 +292,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureHashCodeWorks()
         {
-            CustomizedProduct cp = buildCustomizedProductInstance();
+            CustomizedProduct cp = buildFinishedCustomizedProductInstance();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
 
@@ -290,7 +304,7 @@ namespace core_tests.domain
         public void ensureToStringWorks()
         {
 
-            CustomizedProduct cp = buildCustomizedProductInstance();
+            CustomizedProduct cp = buildFinishedCustomizedProductInstance();
 
             List<CustomizedProduct> products = new List<CustomizedProduct>();
             products.Add(cp);
@@ -312,7 +326,7 @@ namespace core_tests.domain
         {
             CustomizedProductCollection collection = new CustomizedProductCollection("Collection");
 
-            CustomizedProduct customizedProduct = buildCustomizedProductInstance();
+            CustomizedProduct customizedProduct = buildFinishedCustomizedProductInstance();
 
             Assert.False(collection.hasCustomizedProduct(customizedProduct));
         }
@@ -322,7 +336,7 @@ namespace core_tests.domain
         {
             CustomizedProductCollection collection = new CustomizedProductCollection("Collection");
 
-            CustomizedProduct customizedProduct = buildCustomizedProductInstance();
+            CustomizedProduct customizedProduct = buildFinishedCustomizedProductInstance();
 
             collection.addCustomizedProduct(customizedProduct);
 
@@ -396,7 +410,7 @@ namespace core_tests.domain
             return CustomizedMaterial.valueOf(material, selectedColor, selectedFinish);
         }
 
-        private CustomizedProduct buildCustomizedProductInstance()
+        private CustomizedProduct buildFinishedCustomizedProductInstance()
         {
             string serialNumber = "123";
 
@@ -409,6 +423,21 @@ namespace core_tests.domain
             customizedProduct.changeCustomizedMaterial(customizedMaterial);
 
             customizedProduct.finalizeCustomization();
+
+            return customizedProduct;
+        }
+
+        private CustomizedProduct buildUnfinishedCustomizedProductInstance()
+        {
+            string serialNumber = "123";
+
+            CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
+
+            CustomizedDimensions selectedDimensions = buildCustomizedDimensions();
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, buildValidProduct(), selectedDimensions).build();
+
+            customizedProduct.changeCustomizedMaterial(customizedMaterial);
 
             return customizedProduct;
         }

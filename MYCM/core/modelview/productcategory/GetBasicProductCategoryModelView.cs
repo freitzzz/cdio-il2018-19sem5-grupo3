@@ -21,5 +21,19 @@ namespace core.modelview.productcategory
         /// <value>Gets/sets the name.</value>
         [DataMember]
         public string name { get; set; }
+
+        /// <summary>
+        /// ProductCategory's parent id.
+        /// </summary>
+        /// <value>Gets/sets the parent id.</value>
+        [DataMember(EmitDefaultValue = false)]
+        public long? parentId{get;set;}
+
+        /// <summary>
+        /// ProductCategory's parent name.
+        /// </summary>
+        /// <value>Gets/sets the parent name.</value>
+        [DataMember(EmitDefaultValue = false)]
+        public string parentName{get;set;}
     }
 }

@@ -80,9 +80,14 @@
   /* import { library } from '@fortawesome/fontawesome-svg-core';
   import { faCoffee } from '@fortawesome/free-solid-svg-icons';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'; */
-  
+  import store from "./../../store";
+  import { DEACTIVATE_CAN_MOVE_COMPONENTS } from "./../../store/mutation-types.js";
+
   export default {
-  
+    name: "CustomizerCheckOut",
+    created(){
+      store.dispatch(DEACTIVATE_CAN_MOVE_COMPONENTS);
+    }  
   }
 </script>
 

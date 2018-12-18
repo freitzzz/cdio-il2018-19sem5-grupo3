@@ -28,6 +28,7 @@ namespace core.modelview.customizedproductcollection
 
             basicModelView.id = customizedProductCollection.Id;
             basicModelView.name = customizedProductCollection.name;
+            basicModelView.hasCustomizedProducts = customizedProductCollection.collectionProducts.Count != 0;
 
             return basicModelView;
         }
@@ -73,11 +74,9 @@ namespace core.modelview.customizedproductcollection
             }
 
             GetAllCustomizedProductCollectionsModelView customizedProductCollectionsModelView = new GetAllCustomizedProductCollectionsModelView();
-            customizedProductCollectionsModelView.customizedProductCollections = new List<GetBasicCustomizedProductCollectionModelView>();
-
             foreach (CustomizedProductCollection customizedProductCollection in customizedProductCollections)
             {
-                customizedProductCollectionsModelView.customizedProductCollections.Add(fromEntityAsBasic(customizedProductCollection));
+                customizedProductCollectionsModelView.Add(fromEntityAsBasic(customizedProductCollection));
             }
 
             return customizedProductCollectionsModelView;

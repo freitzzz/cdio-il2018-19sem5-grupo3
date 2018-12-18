@@ -1,7 +1,6 @@
 <template>
-    <b-modal :active="active">
         <signup-form @emitSignup="signup"/>
-    </b-modal>
+   
 </template>
 
 <script>
@@ -37,7 +36,8 @@ export default {
         signup(details){
             let authenticationRequestData={
                 type:"credentials",
-                username:details.username,
+                mame:details.name,
+                email:details.email,
                 password:details.password,
             };
             let authenticationRequestHeaders={

@@ -11,7 +11,7 @@ namespace core.domain
     {
 
         //*Since this class represents a join table, its primary key is composed of 3 foreign keys: the CommercialCatalogue's ID, 
-        //*the CustomizedProductCollection's ID and the CustomizedProduct's ID.
+        //*the CustomizedProductCollection's ID (both are part of CatalogueCollection's primary key) and the CustomizedProduct's ID.
 
 
         private const string ERROR_NULL_CATALOGUE_COLLECTION = "The Catalogue Collection can not be null";
@@ -19,10 +19,16 @@ namespace core.domain
         private const string ERROR_NULL_CUSTOMIZED_PRODUCT = "The Customized Product can not be null";
 
         /// <summary>
-        /// CatalogueCollection's database identifier.
+        /// CommercialCatalogue's persistence identifier.
         /// </summary>
-        /// <value>Gets/sets the the CatalogueCollection database identifier.</value>
-        public long catalogueCollectionId { get; protected set; }
+        /// <value>Gets/Protected sets the CommercialCatalogue's persistence identifier.</value>
+        public long commercialCatalogueId { get; protected set; }
+
+        /// <summary>
+        /// CustomizedProductCollection's persistence identifier.
+        /// </summary>
+        /// <value>Gets/Protected sets the CustomizedProductCollection's persistence identifier.</value>
+        public long customizedProductCollectionId { get; protected set; }
 
         /// <summary>
         /// CatalogueCollection in which the CustomizedProduct is included.

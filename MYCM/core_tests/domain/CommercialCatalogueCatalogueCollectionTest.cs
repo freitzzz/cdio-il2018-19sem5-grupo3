@@ -49,6 +49,8 @@ namespace core_tests.domain
                 .createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions)
                 .withMaterial(customizedMaterial).build();
 
+            customizedProduct.finalizeCustomization();
+
             List<CustomizedProduct> customizedProductList = new List<CustomizedProduct>();
             customizedProductList.Add(customizedProduct);
 
@@ -101,6 +103,8 @@ namespace core_tests.domain
             CustomizedProduct customizedProduct = CustomizedProductBuilder
                 .createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions)
                 .withMaterial(customizedMaterial).build();
+
+            customizedProduct.finalizeCustomization();
 
             List<CustomizedProduct> customizedProductList = new List<CustomizedProduct>();
             customizedProductList.Add(customizedProduct);
@@ -157,6 +161,8 @@ namespace core_tests.domain
             CustomizedProduct customizedProduct =CustomizedProductBuilder
                 .createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions)
                 .withMaterial(customizedMaterial).build();
+
+            customizedProduct.finalizeCustomization();
 
             List<CustomizedProduct> customizedProductList = new List<CustomizedProduct>();
             customizedProductList.Add(customizedProduct);

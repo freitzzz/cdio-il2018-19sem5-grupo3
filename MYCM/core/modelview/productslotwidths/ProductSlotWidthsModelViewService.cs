@@ -50,18 +50,7 @@ namespace core.modelview.productslotwidths
         /// <exception cref="System.ArgumentNullException">Thrown when the provided instance of ProductSlotWidths is null.</exception>
         public static GetProductSlotWidthsModelView fromEntity(ProductSlotWidths productSlotWidths)
         {
-            if (productSlotWidths == null)
-            {
-                throw new ArgumentNullException(ERROR_NULL_PRODUCT_SLOT_WIDTHS);
-            }
-
-            GetProductSlotWidthsModelView productSlotWidthsModelView = new GetProductSlotWidthsModelView();
-            productSlotWidthsModelView.unit = MeasurementUnitService.getMinimumUnit();
-            productSlotWidthsModelView.minWidth = productSlotWidths.minWidth;
-            productSlotWidthsModelView.maxWidth = productSlotWidths.maxWidth;
-            productSlotWidthsModelView.recommendedWidth = productSlotWidths.recommendedWidth;
-
-            return productSlotWidthsModelView;
+            return fromEntity(productSlotWidths, MeasurementUnitService.getMinimumUnit());
         }
 
 
