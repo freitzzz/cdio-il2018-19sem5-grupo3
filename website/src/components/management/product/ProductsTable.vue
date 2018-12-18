@@ -40,6 +40,7 @@
                         :available-categories="availableCategories"
                         :available-components="availableComponents"
                         :available-materials="availableMaterials"
+                        :available-units="availableUnits"
                         :product="currentSelectedProductClone"
                     />
                 </b-modal>
@@ -86,6 +87,7 @@ export default {
             availableCategories:[],
             availableComponents:[],
             availableMaterials:[],
+            availableUnits:[],
             /**
              * Current Table Selected Product
              */
@@ -172,7 +174,11 @@ export default {
                                     this
                                         .getAllMaterials()
                                         .then(()=>{
-                                            this.showEditProductDetails=true;
+                                            this
+                                                .getAllUnits()
+                                                .then(()=>{
+                                                    this.showEditProductDetails=true;
+                                                })
                                         });
                                 });
                         });
@@ -221,6 +227,23 @@ export default {
                     .get(MYCM_API_URL+'/materials/')
                     .then((materials)=>{
                         this.availableMaterials=materials.data;
+                        accept();
+                    })
+                    .catch((error_message)=>{
+                        this.$toast.open({message:error_message});
+                        reject();
+                    });
+            });
+        },
+        /**
+         * Fetches all units available in a promise way
+         */
+        getAllUnits(){
+            return new Promise((accept,reject)=>{
+                Axios
+                    .get(MYCM_API_URL+'/units/')
+                    .then((units)=>{
+                        this.availableUnits=units.data;
                         accept();
                     })
                     .catch((error_message)=>{
@@ -340,18 +363,22 @@ export default {
             }
 
             let newProductComponents=productDetails.components!=null ? productDetails.components : [];
+            
+            let newProductComponentsIds=[];
+            for(let i=0;i<newProductComponents.length;i++)
+                newProductComponentsIds.push(newProductComponents[i].id);
 
             //Components to add
 
             for(let i=0;i<newProductComponents.length;i++){
-                if(!oldProductComponents.includes(newProductComponents[i]))
-                    addComponents.push(newProductComponents[i]);
+                if(!oldProductComponents.includes(newProductComponents[i].id))
+                    addComponents.push({id:newProductComponents[i].id,mandatory:newProductComponents[i].required});
             }
 
             //Components to delete
 
             for(let i=0;i<oldProductComponents.length;i++){
-                if(!newProductComponents.includes(oldProductComponents[i]))
+                if(!newProductComponentsIds.includes(oldProductComponents[i]))
                     deleteComponents.push(oldProductComponents[i]);
             }
 
@@ -361,7 +388,8 @@ export default {
                     for(let i=0;i<addComponents.length;i++){
                         Axios
                             .post(MYCM_API_URL+'/products/'+productDetails.id+'/components/',{
-                                id:addComponents[i]
+                                id:addComponents[i].id,
+                                mandatory:addComponents[i].mandatory
                             })
                             .catch((error_message)=>{
                                 reject(error_message.data.message);

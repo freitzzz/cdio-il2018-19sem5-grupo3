@@ -53,6 +53,7 @@
                     :customized-label="componentsItems.customizedLabel"
                     :icon="componentsItems.icon"
                     :place-holder="componentsItems.placeholder"
+                    :allowRequire="true"
                     @emitItems="changeCurrentComponents"
                 />
             </div>
@@ -80,9 +81,9 @@
                         <b-icon icon="minus"/>
                     </button>
                 </b-field>
-                <product-dimensions dimension-label="Width" :current-dimension="product.dimensions[0].width" @getDimension="changeCurrentWidthDimension"/>
-                <product-dimensions dimension-label="Height" :current-dimension="product.dimensions[0].height" @getDimension="changeCurrentHeightDimension"/>
-                <product-dimensions dimension-label="Depth" :current-dimension="product.dimensions[0].depth" @getDimension="changeCurrentDepthDimension"/>
+                <product-dimensions dimension-label="Width" :available-units="availableUnits" :current-dimension="product.dimensions[0].width" @getDimension="changeCurrentWidthDimension"/>
+                <product-dimensions dimension-label="Height" :available-units="availableUnits" :current-dimension="product.dimensions[0].height" @getDimension="changeCurrentHeightDimension"/>
+                <product-dimensions dimension-label="Depth" :available-units="availableUnits" :current-dimension="product.dimensions[0].depth" @getDimension="changeCurrentDepthDimension"/>
             </div>
         </section>
         <footer class="modal-card-foot">
@@ -140,6 +141,10 @@ export default {
             type:Array,
             required:true
         },
+        availableUnits:{
+            type:Array,
+            required:true
+        },
         active:{
             type: Boolean,
             default: false
@@ -175,6 +180,9 @@ export default {
             },
             slotsItem:{
                 value:null
+            },
+            required:{
+                value:false
             },
             placeholders:{
                 reference:"#666",
@@ -344,7 +352,7 @@ export default {
         toCustomizedSelectedComponents(components){
             let customizedSelectedComponents=[];
             for(let i=0;i<components.length;i++){
-                customizedSelectedComponents.push({id:components[i].id,value:components[i].reference});
+                customizedSelectedComponents.push({id:components[i].id,value:components[i].reference,required:components[i].mandatory});
             }
             return customizedSelectedComponents;
         },
