@@ -66,7 +66,7 @@
                         icon="wrench"
                         expanded
                     >
-                        <option 
+                        <option
                             v-for="(dimension,index) in dimensionsItems.values" 
                             :key="index"
                             :value="dimension"
@@ -74,12 +74,14 @@
                             {{dimension}}
                         </option>
                     </b-select>
+                     <small-padding-div>
                     <button class="btn-primary" @click="addDimensions()">
                         <b-icon icon="plus"/>
                     </button>
                     <button class="btn-primary" @click="removeDimensions()">
                         <b-icon icon="minus"/>
                     </button>
+                     </small-padding-div>
                 </b-field>
                 <product-dimensions dimension-label="Width" :available-units="availableUnits" :current-dimension="product.dimensions[0].width" @getDimension="changeCurrentWidthDimension"/>
                 <product-dimensions dimension-label="Height" :available-units="availableUnits" :current-dimension="product.dimensions[0].height" @getDimension="changeCurrentHeightDimension"/>
@@ -369,3 +371,4 @@ export default {
     }
 }
 </script>
+

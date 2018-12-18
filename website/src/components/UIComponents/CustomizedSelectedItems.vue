@@ -40,12 +40,14 @@
             </div>
             <b-field label="Actions">
                 <b-field>
-                    <button class="button is-info" @click="addSelectedItem()">
+                     <small-padding-div>
+                    <button class="btn-primary" @click="addSelectedItem()">
                         <b-icon icon="plus"/>
                     </button>
-                    <button class="button is-info" @click="removeSelectedItem()">
+                    <button class="btn-primary" @click="removeSelectedItem()">
                         <b-icon icon="minus"/>
                     </button>
+                     </small-padding-div>
                 </b-field>
             </b-field>
         </b-field>
