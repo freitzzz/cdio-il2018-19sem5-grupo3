@@ -2,7 +2,7 @@
     <div>
         <!-- CUD BUTTONS -->
         <div>
-            <button class="button is-danger" @click="createNewProduct()">
+            <button class="btn-primary" @click="createNewProduct()">
                 <b-icon icon="plus"/>
             </button>
             <div v-if="createNewProductModal">
@@ -17,7 +17,7 @@
                     />
                 </b-modal>
             </div>
-            <button class="button is-danger" @click="fetchRequests()">
+            <button class="btn-primary" @click="fetchRequests()">
                 <b-icon 
                     icon="refresh"
                     custom-class="fa-spin"/>

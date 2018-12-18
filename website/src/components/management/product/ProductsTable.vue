@@ -8,19 +8,19 @@
             <!-- Table Actions -->
             <div class="custom-actions">
                 <button
-                    class="button is-danger"
+                    class="btn-primary"
                     @click="openProductDetails(props.rowData.id)"
                 >
                     <b-icon icon="magnify"/>
                 </button>
                 <button
-                    class="button is-danger"
+                    class="btn-primary"
                     @click="editProductDetails(props.rowData.id)"
                 >
                     <b-icon icon="pencil"/>
                 </button>
                 <button
-                    class="button is-danger"
+                    class="btn-primary"
                     @click="deleteProduct(props.rowData.id)"
                 >
                     <b-icon icon="minus"/>

@@ -82,10 +82,10 @@
                             {{dimension}}
                         </option>
                     </b-select>
-                    <button class="button is-danger" @click="addDimensions()">
+                    <button class="btn-primary" @click="addDimensions()">
                         <b-icon icon="plus"/>
                     </button>
-                    <button class="button is-danger" @click="removeDimensions()">
+                    <button class="btn-primary" @click="removeDimensions()">
                         <b-icon icon="minus"/>
                     </button>
                 </b-field>
@@ -138,7 +138,7 @@
         </section>
         <footer class="modal-card-foot">
             <div class="has-text-centered">
-                <button class="button is-primary" @click="emitProduct($parent)">Create</button>
+                <button class="btn-primary" @click="emitProduct($parent)">Create</button>
             </div>
         </footer>
     </div>
