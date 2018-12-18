@@ -6,12 +6,12 @@
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
     <select class="dropdown" v-model="dimensionOp" @change="populateDimensions">
-                  <option
-                    v-for="option in availableOptionsDimensions"
-                    :key="option.id"
-                    :value="option"
-                  >{{"Option: "+option.id}}</option>
-                </select>
+                        <option
+                          v-for="option in availableOptionsDimensions"
+                          :key="option.id"
+                          :value="option"
+                        >{{"Option: "+option.id}}</option>
+                      </select>
   
     <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
@@ -33,12 +33,12 @@
   
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="this.updateDimensions">
-                  <option
-                    v-for="optionUnit in availableOptionsUnits"
-                    :key="optionUnit.id"
-                    :value="optionUnit.unit"
-                  >{{optionUnit.unit}}</option>
-                </select>
+                        <option
+                          v-for="optionUnit in availableOptionsUnits"
+                          :key="optionUnit.id"
+                          :value="optionUnit.unit"
+                        >{{optionUnit.unit}}</option>
+                      </select>
     <div class="center-controls">
       <i class="btn btn-primary material-icons" @click="previousPanel()">arrow_back</i>
       <i class="btn btn-primary material-icons" @click="nextPanel()">arrow_forward</i>
@@ -329,56 +329,59 @@
       nextPanel() {
         //!TODO POST product
         //Post of product
-        if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
-          Axios.post(MYCM_API_URL + '/customizedproducts', {
-            productId: store.state.product.id,
-            customizedDimensions: {
-              height: this.height,
-              width: this.width,
-              depth: this.depth,
-              unit: this.unit
-            }
-          }).catch((error_message) => {
-            this.$toast.open({
-              message: error_message.response.data.message
-  
+        var flag = false;
+        return new Promise((accept, reject) => {
+          if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
+            Axios.post(MYCM_API_URL + '/customizedproducts', {
+              productId: store.state.product.id,
+              customizedDimensions: {
+                height: this.height,
+                width: this.width,
+                depth: this.depth,
+                unit: this.unit
+              }
+            }).catch((error_message) => {
+              this.$toast.open({
+                message: error_message.response.data.message
+              });
+              flag = true;
             });
-            console.log(
-              error_message.response.data
-            );
-          });
-          this.$emit("advance");
-        } else {
-          this.$toast.open("Please select an option!");
-        }
-  
-        var widthCloset = 404.5;
-        var depthCloset = 100;
-        var heightCloset = 300;
-        var unitCloset = "cm";
-        var recommendedSlotWidth = store.getters.recommendedSlotWidth;
-        var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
-        var remainder = widthCloset % recommendedSlotWidth;
-        var remainderWidth =
-          widthCloset - recommendedNumberSlots * recommendedSlotWidth;
-        if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth*/ ) {
-          store.dispatch(SET_SLOT_DIMENSIONS, {
-            idSlot: recommendedNumberSlots,
-            width: remainderWidth,
-            height: heightCloset,
-            depth: depthCloset,
-            unit: unitCloset
-          });
-        }
-        for (let i = 0; i < recommendedNumberSlots; i++) {
-          store.dispatch(SET_SLOT_DIMENSIONS, {
-            idSlot: i,
-            width: recommendedSlotWidth,
-            height: heightCloset,
-            depth: depthCloset,
-            unit: unitCloset
-          });
-        }
+            if (!flag) {
+              var widthCloset = 404.5;
+              var depthCloset = 100;
+              var heightCloset = 300;
+              var unitCloset = "cm";
+              var recommendedSlotWidth = store.getters.recommendedSlotWidth;
+              var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
+              var remainder = widthCloset % recommendedSlotWidth;
+              var remainderWidth =
+                widthCloset - recommendedNumberSlots * recommendedSlotWidth;
+              if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth*/ ) {
+                store.dispatch(SET_SLOT_DIMENSIONS, {
+                  idSlot: recommendedNumberSlots,
+                  width: remainderWidth,
+                  height: heightCloset,
+                  depth: depthCloset,
+                  unit: unitCloset
+                });
+              }
+              for (let i = 0; i < recommendedNumberSlots; i++) {
+                store.dispatch(SET_SLOT_DIMENSIONS, {
+                  idSlot: i,
+                  width: recommendedSlotWidth,
+                  height: heightCloset,
+                  depth: depthCloset,
+                  unit: unitCloset
+                });
+              }
+              this.$emit("advance");
+            }else{
+              this.$toast.open("There was an error please try again!");
+            }
+          } else {
+            this.$toast.open("Please select an option!");
+          }
+        });
   
   
   
