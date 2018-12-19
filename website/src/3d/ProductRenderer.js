@@ -284,9 +284,8 @@ export default class ProductRenderer {
     this.scene.add(dispPlane);
     this.scene.add(this.camera);
     this.scene.add(mesh);
-    alert("<<<<<<<<<<<")
     this.animate();
-    alert(">>>>>>>>>>>")
+    this.showCloset();
   }
 
   activateCanMoveSlots() { this.canMoveSlots = true; }
@@ -350,11 +349,9 @@ export default class ProductRenderer {
       console.log(parellepiped);
       this.closet_faces_ids.push(parellepiped);
     } */
-    alert("!!!!!!!!!!!!!!!!!!!!!!")
 /*     for (var i = 0; i < faces.length; i++) {
       this.closet_faces_ids.push(this.generateParellepiped(faces[i], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], this.material, this.group));
     } */
-    alert("!!!")
     this.scene.add(this.group);
     this.group.visible = false;
     this.showCloset();
@@ -841,8 +838,11 @@ export default class ProductRenderer {
     this.raycaster.setFromCamera(this.mouse, this.camera);
 
     //Finds all intersected objects (closet faces)
-    var intersects = this.raycaster.intersectObjects(this.scene.children[0].children);
-
+    var intersects = this.raycaster.intersectObjects(this.group.children[0].children);
+    console.log(intersects)
+    console.log(this.scene.children)
+    console.log(this.group.children[0].children)
+    //alert("!==!=!=!=!=!=!")
     //Checks if any closet face was intersected
     if (intersects.length > 0) {
 
@@ -886,7 +886,6 @@ export default class ProductRenderer {
           }
         }
       }
-
       //Checks if the selected closet face is a face
       if (this.group.getObjectById(this.closet_faces_ids[3]) == face ||
         this.group.getObjectById(this.closet_faces_ids[2]) == face) {
@@ -905,7 +904,6 @@ export default class ProductRenderer {
         var j = 0;
 
         //Checks if the selected object is a sliding door
-
         while (!flagOpen && !flagClose && j < this.closet_sliding_doors_ids.length) {
           this.slidingDoor = this.group.getObjectById(this.closet_sliding_doors_ids[j]);
           if (this.slidingDoor == face) {
@@ -1491,6 +1489,7 @@ export default class ProductRenderer {
    * Moves the face across the defined plan that intersects the closet, without overlapping the closet's slots
    */
   moveFace() {
+    alert("")
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
       if (this.selected_face == this.group.getObjectById(this.closet_faces_ids[3])) { //If the selected face is the right one
 
