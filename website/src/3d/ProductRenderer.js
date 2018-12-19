@@ -86,12 +86,6 @@ export default class ProductRenderer {
   isHingedDoorClosed;
 
   /**
-   * Instance variable with the current closet faces ids (Mesh IDS from Three.js)
-   * @type {number[]}
-   */
-  closet_faces_ids;
-
-  /**
    * Instance variable with the current closet slots faces ids (Mesh IDS from Three.js)
    * @type {number[]}
    */
@@ -221,7 +215,6 @@ export default class ProductRenderer {
     this.closet_hinged_doors_ids = [];
     this.closet_sliding_doors_ids = [];
     this.isHingedDoorClosed = false;
-    this.closet_faces_ids = [];
     this.closet_slots_faces_ids = [];
     this.closet_poles_ids = [];
     this.closet_shelves_ids = [];
@@ -332,26 +325,6 @@ export default class ProductRenderer {
     
     this.addSlotNumbered([{width:50}]);
 
-    console.log(this.group)
-
-    
-    for(let closetFace of this.closet.getClosetFaces().entries()){
-      this.closet_faces_ids.push(closetFace["1"].id());
-    }
-
-    /* for(let closetFace of faces){
-      console.log(">>>>>><<<")
-      console.log(closetFace);
-      let parellepiped=this.generateParellepiped(closetFace["1"].width(),closetFace["1"].height()
-                  ,closetFace["1"].depth(),closetFace["1"].X()
-                  ,closetFace["1"].Y(),closetFace["1"].Z(),
-                  this.material,this.group);
-      console.log(parellepiped);
-      this.closet_faces_ids.push(parellepiped);
-    } */
-/*     for (var i = 0; i < faces.length; i++) {
-      this.closet_faces_ids.push(this.generateParellepiped(faces[i], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], this.material, this.group));
-    } */
     this.scene.add(this.group);
     this.group.visible = false;
     this.showCloset();
@@ -438,8 +411,8 @@ export default class ProductRenderer {
    * Generates a cylinder with given properties on a certain position relative to axis x,y and z
    */
   generatePole(slot) {
-    var leftFace = this.group.getObjectById(this.closet_faces_ids[2]),
-      rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
+    var leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
+    let rightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
     var radiusTop = 3,
       radiusBottom = 3,
       radialSegments = 20,
@@ -499,8 +472,8 @@ export default class ProductRenderer {
   }
 
   generateShelf(slot) {
-    var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
-    var rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
+    let leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
+    let rightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
     var width, x, y, z;
 
     if (slot == 0) { //If there are no slots, the width of the shelf is the same as the closet's structure
@@ -537,8 +510,8 @@ export default class ProductRenderer {
 
 
   generateDrawer(slot) {
-    var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
-    var rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
+    let leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
+    let rightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
     var depthDrawer = 3;
     var heightDrawer = 40;
     var depthCloset = this.closet.getClosetDepth();
@@ -885,8 +858,10 @@ export default class ProductRenderer {
         }
       }
       //Checks if the selected closet face is a face
-      if (this.group.getObjectById(this.closet_faces_ids[3]) == face ||
-        this.group.getObjectById(this.closet_faces_ids[2]) == face) {
+      let leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
+      let rightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
+      if (rightFace == face ||
+        leftFace == face) {
         //Disables rotation while moving the face
         this.controls.enabled = false;
         //Sets the selection to the current face
@@ -963,7 +938,8 @@ export default class ProductRenderer {
         flagClose = false;
         while (!flagOpen && !flagClose && j < this.closet_hinged_doors_ids.length) {
           this.hingedDoor = this.group.getObjectById(this.closet_hinged_doors_ids[j]);
-          var closet_face = this.group.getObjectById(this.closet_faces_ids[0]);
+          //TODO: REMOVE closet_face ???? Not currently used!!!!
+          let closet_face = this.closet.getClosetFaces().get(FaceOrientationEnum.BASE).mesh();
           if (this.hingedDoor == face) {
             this.controls.enabled = false;
             if (this.hingedDoor.rotation.y < 0) {
@@ -999,7 +975,7 @@ export default class ProductRenderer {
   }
 
   slideDoorToLeftAnimation() {
-    let closet_left = this.group.getObjectById(this.closet_faces_ids[2]);
+    let closet_left = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
     let distanceFromDoorToLeftFace = Math.abs(this.slidingDoor.position.x - closet_left.position.x);
     let position = (Math.abs(closet_left.position.x - closet_left.geometry.parameters.width) / 2) - 2;
     if (position < distanceFromDoorToLeftFace) {
@@ -1023,7 +999,7 @@ export default class ProductRenderer {
   }
 
   slideDoorToRightAnimation() {
-    let closet_right = this.group.getObjectById(this.closet_faces_ids[3]);
+    let closet_right = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
     let distanceFromDoorToRightFace = Math.abs(this.slidingDoor.position.x - closet_right.position.x);
     let position = (Math.abs(closet_right.position.x + closet_right.geometry.parameters.width) / 2) - 2;
     if (position < distanceFromDoorToRightFace) {
@@ -1148,8 +1124,8 @@ export default class ProductRenderer {
   }
 
   generateHingedDoor(slot) {
-    var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
-    var rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
+    let leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
+    let rightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
     var depth = 3;
     var height = this.closet.getClosetHeight();
     var depth_closet = this.closet.getClosetDepth();
@@ -1190,13 +1166,14 @@ export default class ProductRenderer {
   }
 
   generateSlidingDoor() {
-    var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
-    var rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
-    var topFace = this.group.getObjectById(this.closet_faces_ids[1]);
-    var bottomFace = this.group.getObjectById(this.closet_faces_ids[0]);
+    var leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
+    var rightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
+    var topFace = this.closet.getClosetFaces().get(FaceOrientationEnum.TOP).mesh();
+    var bottomFace = this.closet.getClosetFaces().get(FaceOrientationEnum.BASE).mesh();
     var height = this.closet.getClosetHeight();
     var width = this.closet.getClosetWidth();
-    var z = this.group.getObjectById(this.closet_faces_ids[4]).position.z + this.closet.getClosetDepth();
+    let backFace=this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
+    var z = backFace.position.z + this.closet.getClosetDepth();
 
     var thickness = 4.20;
 
@@ -1261,7 +1238,8 @@ export default class ProductRenderer {
   closeSlotOpenDrawers(slot) {
     var i = 0;
     var index = 0;
-    var closet_front = Math.abs(this.group.getObjectById(this.closet_faces_ids[4]).position.z);
+    let closet_back=this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
+    let closet_front = Math.abs(closet_back.position.z);
     while (i < this.closet_drawers_ids.length) {
       if (this.closet.drawers[index].slotId == slot) {
         console.log(this.closet.drawers[index]);
@@ -1282,7 +1260,8 @@ export default class ProductRenderer {
   closeAllOpenDrawers() {
     var i = 0;
     var index = 0;
-    var closet_front = Math.abs(this.group.getObjectById(this.closet_faces_ids[4]).position.z);
+    let closet_back=this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
+    var closet_front = Math.abs(closet_back.position.z);
     while (i < this.closet_drawers_ids.length) {
       var drawer_front_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 1]);
       if (drawer_front_face.position.z > closet_front) {
@@ -1308,7 +1287,8 @@ export default class ProductRenderer {
   }
 
   doesSlotHaveOpenDrawers(slot) {
-    var closet_front = Math.abs(this.group.getObjectById(this.closet_faces_ids[4]).position.z);
+    let closet_back=this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
+    var closet_front = Math.abs(closet_back.position.z);
     var index = 0;
     for (let i = 0; i < this.closet_drawers_ids.length; i += 6) {
       if (this.closet.drawers[index].slotId == slot) {
@@ -1321,8 +1301,9 @@ export default class ProductRenderer {
   }
 
   doesClosetHaveOpenDrawers() {
-    var closet_front = Math.abs(this.group.getObjectById(this.closet_faces_ids[4]).position.z);
-    var index = 0;
+    let closet_back=this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
+    let closet_front = Math.abs(closet_back.position.z);
+    let index = 0;
     for (let i = 0; i < this.closet_drawers_ids.length; i += 6) {
       if (i > 0) index = i - 5;
       return this.group.getObjectById(this.closet_drawers_ids[5 * index + 1]).position.z
@@ -1385,7 +1366,8 @@ export default class ProductRenderer {
   }
 
   closeDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face) {
-    var closet_front = this.group.getObjectById(this.closet_faces_ids[4]).position.z;
+    let closet_back=this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
+    let closet_front = closet_back.position.z;
     if (drawer_back_face.position.z > closet_front + 3) {
       drawer_front_face.translateZ(-1);
       drawer_back_face.translateZ(-1);
@@ -1475,8 +1457,9 @@ export default class ProductRenderer {
    */
   moveSlot() {
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
-      var newPosition = this.intersection.x - this.offset; //Subtracts the offset to the x coordinate of the intersection point
-      var valueCloset = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
+      let newPosition = this.intersection.x - this.offset; //Subtracts the offset to the x coordinate of the intersection point
+      let leftFace=this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
+      let valueCloset = leftFace.position.x;
       if (Math.abs(newPosition) < Math.abs(valueCloset)) { //Doesn't allow the slot to overlap the faces of the closet
         this.selected_slot.position.x = newPosition;
       }
@@ -1489,9 +1472,11 @@ export default class ProductRenderer {
   moveFace() {
     alert("")
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
-      if (this.selected_face == this.group.getObjectById(this.closet_faces_ids[3])) { //If the selected face is the right one
+      let closetLeftFace=this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
+      let closetRightFace=this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
+      if (this.selected_face == closetRightFace) { //If the selected face is the right one
 
-        var rightFacePosition = this.intersection.x - this.offset + this.selected_face.position.x; //Position of the right closet face
+        let rightFacePosition = this.intersection.x - this.offset + this.selected_face.position.x; //Position of the right closet face
 
         if (this.closet_slots_faces_ids.length == 0) { //If there are no slots
           this.selected_face.position.x = rightFacePosition;
@@ -1499,7 +1484,7 @@ export default class ProductRenderer {
           this.updateClosetGV();
 
         } else {
-          var rightSlotPosition = this.group.getObjectById(this.closet_slots_faces_ids[this.closet_slots_faces_ids.length - 1]).position.x; //Position of the last (more to the right) slot 
+          let rightSlotPosition = this.group.getObjectById(this.closet_slots_faces_ids[this.closet_slots_faces_ids.length - 1]).position.x; //Position of the last (more to the right) slot 
 
           if (rightFacePosition - rightSlotPosition > rightSlotPosition) { //Checks if right face doesn't intersect the slot
             this.selected_face.position.x = rightFacePosition;
@@ -1507,7 +1492,7 @@ export default class ProductRenderer {
             this.updateClosetGV();
           }
         }
-      } else if (this.selected_face == this.group.getObjectById(this.closet_faces_ids[2])) { //If the selected face is the left one
+      } else if (this.selected_face == closetLeftFace) { //If the selected face is the left one
 
         var leftFacePosition = -this.intersection.x - this.offset - this.selected_face.position.x; //Position of the left closet face
 
@@ -1534,9 +1519,10 @@ export default class ProductRenderer {
   moveComponent() {
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
       var computedPosition = this.intersection.y - this.offset; //The component's new computed position on the yy axis
-
-      if (computedPosition < this.group.getObjectById(this.closet_faces_ids[1]).position.y &&
-        computedPosition >= this.group.getObjectById(this.closet_faces_ids[0]).position.y) {
+      let closetTopFace=this.closet.getClosetFaces().get(FaceOrientationEnum.TOP).mesh();
+      let closetBaseFace=this.closet.getClosetFaces().get(FaceOrientationEnum.BASE).mesh();
+      if (computedPosition < closetTopFace.position.y &&
+        computedPosition >= closetBaseFace.position.y) {
         this.selected_component.position.y = computedPosition; //Sets the new position as long as the component stays within the closet boundaries
       }
     }
