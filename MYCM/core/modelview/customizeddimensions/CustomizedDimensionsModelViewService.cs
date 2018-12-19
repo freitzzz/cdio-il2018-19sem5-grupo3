@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using core.domain;
 using core.services;
 using support.utils;
@@ -68,6 +69,24 @@ namespace core.modelview.customizeddimensions {
             modelView.depth = MeasurementUnitService.convertToUnit(customizedDimensions.depth, unit);
 
             return modelView;
+        }
+
+        /// <summary>
+        /// Converts an IEnumerable of CustomizedDimensions into an instance of GetAllCustomizedDimensionsModelView.
+        /// </summary>
+        /// <param name="customizedDimensions">IEnumerable of CustomizedDimensions</param>
+        /// <returns>instance of GetAllCustomizedDimensionsModelView</returns>
+        public static GetAllCustomizedDimensionsModelView fromCollection(IEnumerable<CustomizedDimensions> customizedDimensions) {
+            if (customizedDimensions == null) {
+                throw new ArgumentNullException();
+            }
+
+            GetAllCustomizedDimensionsModelView allCustomDimensionsMV = new GetAllCustomizedDimensionsModelView();
+            foreach (CustomizedDimensions customizedDimension in customizedDimensions) {
+                allCustomDimensionsMV.Add(fromEntity(customizedDimension));
+            }
+
+            return allCustomDimensionsMV;
         }
     }
 }
