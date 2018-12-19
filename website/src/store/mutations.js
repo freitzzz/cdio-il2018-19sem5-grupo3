@@ -11,6 +11,14 @@ export const mutations = {
   [types.INIT_PRODUCT](state, payload) {
     state.product = payload.product;
   },
+  /**
+   * Saves the id of customized product 
+   * @param {*} state The store's state
+   * @param {*} payload Received payload with the id
+   */
+  [types.SET_ID_CUSTOMIZED_PRODUCT](state, payload) {
+    state.customizedProduct.id = payload;
+  },
 
   /**
    * Changes the states's customized product's dimension

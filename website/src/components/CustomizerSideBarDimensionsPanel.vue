@@ -65,7 +65,8 @@
     SET_CUSTOMIZED_PRODUCT_DIMENSIONS,
     SET_SLOT_DIMENSIONS,
     ACTIVATE_CAN_MOVE_CLOSET,
-    DEACTIVATE_CAN_MOVE_SLOTS
+    DEACTIVATE_CAN_MOVE_SLOTS,
+    SET_ID_CUSTOMIZED_PRODUCT
   } from "./../store/mutation-types.js";
   
   import {
@@ -131,7 +132,8 @@
         discreteIntervalDepth: [],
 
         //Convert the recommended width to a unit of the closet
-        valueConvertedRecommededSlotsWidth: 0
+        valueConvertedRecommededSlotsWidth: 0,
+        idCustomizedProduct: 0
       };
     },
     components: {
@@ -332,8 +334,34 @@
       nextPanel() {
         //!TODO POST product
         //Post of product
-        var flag = false;
-        return new Promise((accept, reject) => {
+
+        if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
+            Axios.post(MYCM_API_URL + '/customizedproducts', {
+              productId: store.state.product.id,
+              customizedDimensions: {
+                height: this.height,
+                width: this.width,
+                depth: this.depth,
+                unit: this.unit
+              }
+            })
+            .then(response => {
+              this.idCustomizedProduct=response.data.id;
+              store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
+              alert(store.state.customizedProduct.id);
+              this.drawRecommendedSlots();
+              this.$emit("advance");
+            })
+            .catch((error_message) => {
+              this.$toast.open({
+                message: error_message.response.data.message
+              });
+            });
+          } else {
+            this.$toast.open("Please select an option!");
+          }
+
+/*         return new Promise((accept, reject) => {
           if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
             Axios.post(MYCM_API_URL + '/customizedproducts', {
               productId: store.state.product.id,
@@ -343,13 +371,21 @@
                 depth: this.depth,
                 unit: this.unit
               }
-            }).catch((error_message) => {
+            })
+            .then(response => {
+              this.idCustomizedProduct=response.data.id
+              accept
+            })
+            .catch((error_message) => {
               this.$toast.open({
                 message: error_message.response.data.message
               });
               flag = true;
             });
             if (!flag) {
+              alert(this.idCustomizedProduct);
+
+              store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
               this.drawRecommendedSlots();
               this.$emit("advance");
             }else{
@@ -358,7 +394,7 @@
           } else {
             this.$toast.open("Please select an option!");
           }
-        });
+        }); */
       },
       previousPanel() {
         //!TODO DELETE product
@@ -372,7 +408,7 @@
               var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
               var unitSlots = store.getters.productSlotWidths.unit;
 
-              var recommendedSlotWidth = 250;//store.getters.recommendedSlotWidth;
+              var recommendedSlotWidth = 100;//store.getters.recommendedSlotWidth;
               var minSlotWidth = store.getters.minSlotWidth;
 
               if(unitCloset != unitSlots){
