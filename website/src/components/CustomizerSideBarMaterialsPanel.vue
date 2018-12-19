@@ -10,19 +10,19 @@
         <div class="scrollable-div" style="height: 400px; width: 100%;">
            <a v-if="getMaterialInformationOK" class="sidepanel">
               <a v-if="hasFinishes" class="sidepanel-entry" @click="changeShowFinishes">
-                <p><b>Finishes <i class="fa fa-caret-down"></i></b></p>
+                <p><i class="material-icons md-12 md-blue">brush</i> <b>Finishes <i class="fa fa-caret-down"></i></b></p>
               </a>
               <div class="dropdown-container" v-if="showFinishes">
-                <a class="sidepanel-subentry" @click="removeFinish()">None</a>   
+                <a class="sidepanel-subentry" @click="removeFinish()"><i class="material-icons md-12">not_interested</i> None</a>   
                 <div v-for="finish in finishes" :key="finish.description">
                   <a class="sidepanel-subentry" @click="applyFinish(finish)">{{finish.description}}</a>   
                 </div>           
               </div>
               <a v-if="hasColors" class="sidepanel-entry" @click="changeShowColors">
-                <p><b>Colors <i class="fa fa-caret-down"></i></b></p>
+                <p><i class="material-icons md-12 md-blue">color_lens</i> <b>Colors <i class="fa fa-caret-down"></i></b></p>
               </a>
               <div class="dropdown-container" v-if="showColors">
-                <a class="sidepanel-subentry" @click="removeColor()">None</a>
+                <a class="sidepanel-subentry" @click="removeColor()"><i class="material-icons md-12">not_interested</i> None</a>
                 <div v-for="color in colors" :key="color.name">
                   <a class="sidepanel-subentry" @click="applyColor(color)">{{color.name}}</a>   
                 </div>                       
@@ -58,11 +58,14 @@ import Vue from "vue";
 import Axios from "axios";
 import { error } from "three";
 import store from "./../store";
+import Toasted from "vue-toasted";
 import { MYCM_API_URL } from "./../config.js";
 import { SET_CUSTOMIZED_PRODUCT_MATERIAL, SET_CUSTOMIZED_PRODUCT_FINISH,
          SET_CUSTOMIZED_PRODUCT_COLOR, DEACTIVATE_CAN_MOVE_CLOSET,
          DEACTIVATE_CAN_MOVE_SLOTS
         } from "./../store/mutation-types.js";
+
+Vue.use(Toasted);
 
 export default {
   name: "CustomizerSideBarMaterialsPanel",
@@ -71,8 +74,8 @@ export default {
       materials: [],
       finishes: [],
       colors: [],
-      showColors:false,
-      showFinishes:false,
+      showColors: false,
+      showFinishes: false,
       httpCode: null
     };
   },
@@ -176,8 +179,34 @@ export default {
       else this.showFinishes = true;
     },
     nextPanel() {
-      this.$emit("advance");
-      //TODO! POST product w/ material
+      if(store.getters.customizedMaterialColorName == "None" &&
+      store.getters.customizedMaterialFinishDescription == "None"){
+        this.$toast.open("You must choose at least one finish or color!");
+      } else {
+         Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
+            {
+	            customizedMaterial: {
+		            materialId: store.state.customizedProduct.customizedMaterial.id,
+		            color: {
+			            name: store.state.customizedProduct.customizedMaterial.color.name,
+                  red: store.state.customizedProduct.customizedMaterial.color.red,
+                  green: store.state.customizedProduct.customizedMaterial.color.green,
+                  blue: store.state.customizedProduct.customizedMaterial.color.blue,
+                  alpha: store.state.customizedProduct.customizedMaterial.color.alpha
+		            },
+		            finish: {
+		          	  description: store.state.customizedProduct.customizedMaterial.finish.description,
+                  shininess: store.state.customizedProduct.customizedMaterial.finish.shininess,
+		            }
+	            },
+            })
+            .then(response => {this.$emit("advance")})
+            .catch((error_message) => {
+                    this.$toast.open({
+                        message: error_message.response.data.message
+                    });
+                  });
+      } 
     },
     previousPanel() {
       this.$emit("back");

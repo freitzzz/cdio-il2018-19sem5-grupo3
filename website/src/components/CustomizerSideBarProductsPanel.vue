@@ -67,15 +67,16 @@ export default {
         .then(response => {
           store.dispatch(INIT_PRODUCT, { product: response.data }); //Dispatches the action INIT_PRODUCT
 
+          //Applies initial material by dispatching the actions SET_CUSTOMIZED_PRODUCT_MATERIAL, SET_CUSTOMIZED_PRODUCT_COLOR and SET_CUSTOMIZED_PRODUCT_FINISH
           store.dispatch(SET_CUSTOMIZED_PRODUCT_MATERIAL, {
-            id : response.data.materials[0].id, //Applies initial material 
+            id : response.data.materials[0].id, 
             reference : response.data.materials[0].reference,
             designation : response.data.materials[0].designation,
             image : response.data.materials[0].image
           });
 
           store.dispatch(SET_CUSTOMIZED_PRODUCT_COLOR, {
-            name: 0,
+            name: "None",
             red: 0,
             green: 0,
             blue: 0,

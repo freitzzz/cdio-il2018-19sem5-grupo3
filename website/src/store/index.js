@@ -99,8 +99,14 @@ export const getters = {
         return state.customizedProduct.customizedMaterial.color.red + "-" + state.customizedProduct.customizedMaterial.color.green +
         "-" + state.customizedProduct.customizedMaterial.color.blue + "-" + state.customizedProduct.customizedMaterial.color.alpha;
     },
+    customizedMaterialColorName: state => {
+        return state.customizedProduct.customizedMaterial.color.name;
+    },
     customizedMaterialFinish: state => {
         return state.customizedProduct.customizedMaterial.finish.shininess;
+    },
+    customizedMaterialFinishDescription: state => {
+        return state.customizedProduct.customizedMaterial.finish.description;
     },
     canMoveCloset: state => {
         return state.canvasControls.canMoveCloset;
