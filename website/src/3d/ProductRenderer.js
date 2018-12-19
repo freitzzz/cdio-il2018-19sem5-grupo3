@@ -94,8 +94,6 @@ export default class ProductRenderer {
 
   closet_poles_ids;
 
-  closet_modules_ids;
-
   closet_drawers_ids;
 
   closet_hinged_doors_ids;
@@ -212,7 +210,6 @@ export default class ProductRenderer {
     this.isHingedDoorClosed = false;
     this.closet_poles_ids = [];
     this.closet_shelves_ids = [];
-    this.closet_modules_ids = [];
     this.closet_drawers_ids = [];
     this.selected_slot = null;
     this.selected_face = null;
