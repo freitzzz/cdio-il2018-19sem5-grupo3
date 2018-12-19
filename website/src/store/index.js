@@ -69,17 +69,8 @@ export const getters = {
     productComponents: state => {
         return state.product.components;
     },
-    width: state => {
-        return state.customizedProduct.dimensions.width;
-    },
     customizedProductDimensions: state => {
         return state.customizedProduct.customizedDimensions;
-    },
-    depth: state => {
-        return state.customizedProduct.dimensions.depth;
-    },
-    unit: state => {
-        return state.customizedProduct.dimensions.unit;
     },
     customizedProductSlotWidth: state => index => {
         return state.customizedProduct.slots[index];
