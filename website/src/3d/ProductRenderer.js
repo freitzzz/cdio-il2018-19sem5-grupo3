@@ -4,12 +4,13 @@ import * as THREE from 'three'
 import ThreeCloset from './threejeyass/domain/ThreeCloset';
 import Pole from './Pole'
 import Drawer from './Drawer'
-import Module from './Module'
+import ThreeModule from './threejeyass/domain/ThreeModule';
 import SlidingDoor from './SlidingDoor'
 import ThreeFace from './threejeyass/domain/ThreeFace';
 import Shelf from './Shelf'
 import HingedDoor from './HingedDoor'
 import FaceOrientationEnum from './api/domain/FaceOrientation';
+import ThreeDrawer from './threejeyass/domain/ThreeDrawer';
 
 export default class ProductRenderer {
 
@@ -321,7 +322,8 @@ export default class ProductRenderer {
     this.scene.add(this.group);
     this.group.visible = false;
     this.showCloset();
-    console.log(this.group.children[0].children);
+    this.generatePole(1);
+    this.generateDrawer(1);
     this.renderer.setClearColor(0xFFFFFF, 1);
   }
 
@@ -404,6 +406,7 @@ export default class ProductRenderer {
    * Generates a cylinder with given properties on a certain position relative to axis x,y and z
    */
   generatePole(slot) {
+    if(slot==0)return;
     var leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
     let rightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
     var radiusTop = 3,
@@ -505,9 +508,11 @@ export default class ProductRenderer {
 
 
   generateDrawer(slot) {
-    let closetSlotsFaces=this.closet.getClosetFaces();
-    let leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
-    let rightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
+    let closetSlotsFaces=this.closet.getClosetSlotFaces();
+    let leftFace=this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT);
+    let rightFace=this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT);
+    let leftThreeFace = leftFace.mesh();
+    let rightThreeFace = rightFace.mesh();
     var depthDrawer = 3;
     var heightDrawer = 40;
     var depthCloset = this.closet.getClosetDepth();
@@ -518,15 +523,15 @@ export default class ProductRenderer {
     //For now this follows the same logic as the pole, it should be changed to whatever dimensions the shelf is allowed to have
     if (closetSlotsFaces.length == 0) {
       width = this.getCurrentClosetWidth() - 4.20;
-      x = this.calculateComponentPosition(rightFace.position.x, leftFace.position.x);
-      y = this.calculateComponentPosition(rightFace.position.y, leftFace.position.y);
-      z = this.calculateComponentPosition(rightFace.position.z, leftFace.position.z);
+      x = this.calculateComponentPosition(rightThreeFace.position.x, leftThreeFace.position.x);
+      y = this.calculateComponentPosition(rightThreeFace.position.y, leftThreeFace.position.y);
+      z = this.calculateComponentPosition(rightThreeFace.position.z, leftThreeFace.position.z);
     } else if (slot == 1) {
       let firstSlot = closetSlotsFaces[0].mesh();
-      width = this.calculateDistance(leftFace.position.x, firstSlot.position.x) - 4.20;
-      x = this.calculateComponentPosition(leftFace.position.x, firstSlot.position.x);
-      y = this.calculateComponentPosition(leftFace.position.y, firstSlot.position.y);
-      z = this.calculateComponentPosition(leftFace.position.z, firstSlot.position.z);
+      width = this.calculateDistance(leftThreeFace.position.x, firstSlot.position.x) - 4.20;
+      x = this.calculateComponentPosition(leftThreeFace.position.x, firstSlot.position.x);
+      y = this.calculateComponentPosition(leftThreeFace.position.y, firstSlot.position.y);
+      z = this.calculateComponentPosition(leftThreeFace.position.z, firstSlot.position.z);
     } else if (slot > 1 && slot <= closetSlotsFaces.length) {
       let slotToTheLeft = closetSlotsFaces[slot-2].mesh();
       let slotToTheRight = closetSlotsFaces[slot-1].mesh();
@@ -536,36 +541,33 @@ export default class ProductRenderer {
       z = this.calculateComponentPosition(slotToTheLeft.position.z, slotToTheRight.position.z);
     } else {
       let lastSlot = closetSlotsFaces[slot-2].mesh();
-      width = this.calculateDistance(lastSlot.position.x, rightFace.position.x) - 4.20;
-      x = this.calculateComponentPosition(lastSlot.position.x, rightFace.position.x);
-      y = this.calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
-      z = this.calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
-    }
-    var module = new Module([width, depthDrawer, depthCloset, x, y - (spaceDrawerModule / 4), z], ///Base
-      [width, depthDrawer, depthCloset, x, y + heightDrawer + (spaceDrawerModule / 4), z], ///Cima
-      [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x - (width / 2), y + (heightDrawer / 2), z], ///Left
-      [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x + (width / 2), y + (heightDrawer / 2), z]); ///Rigtht
-    var borders = module.module_faces;
-    for (var i = 0; i < borders.length; i++) {
-      this.closet_modules_ids.push(this.generateParellepiped(borders[i][0],
-        borders[i][1], borders[i][2], borders[i][3],
-        borders[i][4], borders[i][5], this.material, this.group));
-    }
-    var drawer = new Drawer([width - spaceDrawerModule, depthDrawer, depthCloset, x, y + (depthDrawer / 2), z], ///Base
-      [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z + (depthCloset / 2) - (depthDrawer / 2)], ///Frent
-      [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x - (width / 2) + (spaceDrawerModule / 2), y + (heightDrawer / 2), z], ///Left
-      [depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x + (width / 2) - (spaceDrawerModule / 2), y + (heightDrawer / 2), z], ///Right
-      [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z - (depthCloset / 2) + (depthDrawer / 2)]); ///Back
-    var borders_drawer = drawer.drawer_faces;
-
-    for (var i = 0; i < borders_drawer.length; i++) {
-      this.closet_drawers_ids.push(this.generateParellepiped(borders_drawer[i][0],
-        borders_drawer[i][1], borders_drawer[i][2], borders_drawer[i][3],
-        borders_drawer[i][4], borders_drawer[i][5], this.material, this.group));
+      width = this.calculateDistance(lastSlot.position.x, rightThreeFace.position.x) - 4.20;
+      x = this.calculateComponentPosition(lastSlot.position.x, rightThreeFace.position.x);
+      y = this.calculateComponentPosition(lastSlot.position.y, rightThreeFace.position.y);
+      z = this.calculateComponentPosition(lastSlot.position.z, rightThreeFace.position.z);
     }
 
-    this.closet.addModule(module);
-    this.closet.addDrawer(drawer);
+    let moduleFaces=new Map();
+    moduleFaces.set(FaceOrientationEnum.BASE,new ThreeFace(null,this.material,FaceOrientationEnum.BASE,width,depthDrawer,depthCloset,x,y-(spaceDrawerModule/4),z));
+    moduleFaces.set(FaceOrientationEnum.TOP,new ThreeFace(null,this.material,FaceOrientationEnum.TOP,width,depthDrawer,depthCloset,x,y+heightDrawer+(spaceDrawerModule/4),z));
+    moduleFaces.set(FaceOrientationEnum.LEFT,new ThreeFace(null,this.material,FaceOrientationEnum.LEFT,depthDrawer,heightDrawer+(spaceDrawerModule/4),depthCloset,x-(width/2),y+(heightDrawer/2),z));
+    moduleFaces.set(FaceOrientationEnum.RIGHT,new ThreeFace(null,this.material,FaceOrientationEnum.RIGHT,depthDrawer,heightDrawer+(spaceDrawerModule/4),depthCloset,x+(width/2),y+(heightDrawer/2),z));
+
+    let module=new ThreeModule(moduleFaces);
+
+    let drawerFaces=new Map();
+    drawerFaces.set(FaceOrientationEnum.BASE,new ThreeFace(null,this.material,FaceOrientationEnum.BASE,width-spaceDrawerModule,depthDrawer,depthCloset,x,y+(depthDrawer/2),z));
+    drawerFaces.set(FaceOrientationEnum.TOP,new ThreeFace(null,this.material,FaceOrientationEnum.TOP,width-spaceDrawerModule,heightDrawer,depthDrawer,x,y+(heightDrawer/2),z+(depthCloset /2)-(depthDrawer/2)));
+    drawerFaces.set(FaceOrientationEnum.LEFT,new ThreeFace(null,this.material,FaceOrientationEnum.LEFT,depthDrawer,heightDrawer,depthCloset-(depthDrawer/2),x-(width/2)+(spaceDrawerModule/2),y+(heightDrawer/2),z));
+    drawerFaces.set(FaceOrientationEnum.RIGHT,new ThreeFace(null,this.material,FaceOrientationEnum.RIGHT,depthDrawer,heightDrawer,depthCloset-(depthDrawer/2),x+(width/2)-(spaceDrawerModule/2),y+(heightDrawer/2),z));
+    drawerFaces.set(FaceOrientationEnum.BACK,new ThreeFace(null,this.material,FaceOrientationEnum.BACK,width-spaceDrawerModule,heightDrawer,depthDrawer,x,y+(heightDrawer/2),z-(depthCloset/2)+(depthDrawer/2)));
+    
+    let drawer=new ThreeDrawer(drawerFaces);
+    
+    this.closet.getThreeGroup().add(module.draw(),drawer.draw());
+
+    this.closet.addProduct(leftFace.id(),module);
+    this.closet.addProduct(leftFace.id(),drawer);
   }
 
   /**
