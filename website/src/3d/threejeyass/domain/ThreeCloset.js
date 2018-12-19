@@ -43,6 +43,11 @@ export default class ThreeCloset extends Closet{
     }
     
     /**
+     * Returns the current closet Three.js group
+     */
+    getThreeGroup(){return this.faceGroup;}
+
+    /**
      * Draws the current Three.js closet
      * @returns {Group} Group with the created closet
      */
