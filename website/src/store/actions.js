@@ -2,6 +2,13 @@ import * as types from './mutation-types'
 
 export const actions = {
     /**
+     * Action used to commit the mutation SET_RESIZE_FACTOR_DIMENSIONS
+     */
+    [types.SET_RESIZE_FACTOR_DIMENSIONS]: ({ commit }, payload) => {
+        commit(types.SET_RESIZE_FACTOR_DIMENSIONS, payload)
+    },
+
+    /**
      * Action used to commit the mutation INIT_PRODUCT
      */
     [types.INIT_PRODUCT]: ({ commit }, payload) => {

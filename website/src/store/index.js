@@ -42,10 +42,19 @@ const state = {
             unit: ""
         },
         components: []
+       },
+
+       resizeFactorDimensions:{
+        width: "",
+        height: "",
+        depth: "",
        }
 }
 
 export const getters = {
+    resizeFactorDimensions:state =>{
+        return state.resizeFactorDimensions;
+    },
     productId: state => {
         return state.product.id;
     },

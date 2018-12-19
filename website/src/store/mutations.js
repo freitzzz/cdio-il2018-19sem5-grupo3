@@ -3,6 +3,14 @@ import store from '.';
 
 export const mutations = {
 
+  [types.SET_RESIZE_FACTOR_DIMENSIONS](state,payload){
+    state.resizeFactorDimensions={
+      width: payload.width,
+      height: payload.height,
+      depth: payload.depth,
+    }
+  },
+
   /**
    * Saves the retrieved product from MYCM into the state's product
    * @param {*} state The store's state
