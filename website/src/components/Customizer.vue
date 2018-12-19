@@ -65,6 +65,9 @@ export default {
     },
     canMoveComponents(){
       return Store.getters.canMoveComponents;
+    },
+    populateWebsiteDimensions(){
+      return Store.getters.populateWebsiteDimensions;
     }
   },
   components: {
@@ -72,6 +75,13 @@ export default {
     CustomizerProgressBar
   },
   watch: {
+    populateWebsiteDimensions : function(){
+      this.productRenderer.populateWebsiteDimensions(
+        store.getters.resizeFactorDimensions.width,
+        store.getters.resizeFactorDimensions.height,
+        store.getters.resizeFactorDimensions.depth
+      );
+    },
     slots: function(newValue, oldValue) {
       if(newValue.length > 0){
         this.productRenderer.removeAllSlots();
