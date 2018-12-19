@@ -330,7 +330,7 @@ export default class ProductRenderer {
 
     this.group.add(this.closet.draw());
     
-    this.addSlotNumbered([1]);
+    this.addSlotNumbered([{width:50}]);
 
     console.log(this.group)
 
@@ -395,20 +395,20 @@ export default class ProductRenderer {
       closet_face.position.z = closetFace["1"].Z();
     }
 
-    let closetSlotFaces=this.closet.getClosetSlotFaces().entries();
-    for(let asd of closetSlotFaces)console.log(asd);
-    let closetInitialSlotFaces=this.closet.getInitialClosetSlotFaces().entries();
+    let closetSlotFaces=this.closet.getClosetSlotFaces();
+    let closetInitialSlotFaces=this.closet.getInitialClosetSlotFaces();
 
-    for (let closetSlotFace of closetSlotFaces) {
-      console.log("->>>>>>>>>>>>")
-      let closet_slot_face=closetSlotFace["1"].mesh();
-      let closet_initial_slot_face=closetInitialSlotFaces.next().value["1"];
-      closet_slot_face.scale.x = this.getNewScaleValue(closet_initial_slot_face.width(), closetFace["1"].width(), closet_slot_face.scale.x);
-      closet_slot_face.scale.y = this.getNewScaleValue(closet_initial_slot_face.height(), closetFace["1"].height(), closet_slot_face.scale.y);
-      closet_slot_face.scale.z = this.getNewScaleValue(closet_initial_slot_face.depth(), closetFace["1"].depth(), closet_slot_face.scale.z);
-      closet_slot_face.position.x = closetFace["1"].X();
-      closet_slot_face.position.y = closetFace["1"].Y();
-      closet_slot_face.position.z = closetFace["1"].Z();
+    for(let i=0;i<closetSlotFaces.length;i++){
+      let closetSlotFace=closetSlotFaces[i];
+      let closet_slot_face=closetSlotFace.mesh();
+      let closet_initial_slot_face=closetInitialSlotFaces[i];
+      closet_slot_face.scale.x = this.getNewScaleValue(closet_initial_slot_face.width(), closetSlotFace.width(), closet_slot_face.scale.x);
+      closet_slot_face.scale.y = this.getNewScaleValue(closet_initial_slot_face.height(), closetSlotFace.height(), closet_slot_face.scale.y);
+      closet_slot_face.scale.z = this.getNewScaleValue(closet_initial_slot_face.depth(), closetSlotFace.depth(), closet_slot_face.scale.z);
+      closet_slot_face.position.x = closetSlotFace.X();
+      closet_slot_face.position.y = closetSlotFace.Y();
+      closet_slot_face.position.z = closetSlotFace.Z();
+      console.log(closetSlotFace);
     }
   }
   /**
@@ -618,9 +618,8 @@ export default class ProductRenderer {
    */
   addSlotNumbered(slotsToAdd) {
     for (var i = 0; i < slotsToAdd.length; i++) {
-      let slot = this.closet.addClosetSlot();
+      let slot = this.closet.addClosetSlot(slotsToAdd[i]);
       this.closet_slots_faces_ids.push(slot.id());
-      console.log(slot);
     }
     this.updateClosetGV();
   }
@@ -842,7 +841,6 @@ export default class ProductRenderer {
     console.log(intersects)
     console.log(this.scene.children)
     console.log(this.group.children[0].children)
-    //alert("!==!=!=!=!=!=!")
     //Checks if any closet face was intersected
     if (intersects.length > 0) {
 

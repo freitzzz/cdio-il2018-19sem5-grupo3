@@ -32,7 +32,7 @@ export default class SlotableProduct extends BaseProduct{
         this.slot_faces=[];
         this.initial_slot_faces=[];
         this.currentSlots=0;
-        if(face!=null)this.addSlot(face);
+        /* if(face!=null)this.addSlot(face); */ //TODO: ????????
     }
 
     /**
