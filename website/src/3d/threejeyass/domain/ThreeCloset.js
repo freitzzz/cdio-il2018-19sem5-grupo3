@@ -43,6 +43,14 @@ export default class ThreeCloset extends Closet{
     }
     
     /**
+     * Removes a slot from the closet
+     */
+    removeClosetSlot(slotFace) {
+        super.removeClosetSlot(slotFace);
+        this.faceGroup.remove(slotFace.id());
+    }
+
+    /**
      * Returns the current closet Three.js group
      */
     getThreeGroup(){return this.faceGroup;}
