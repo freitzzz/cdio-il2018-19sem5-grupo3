@@ -11,9 +11,9 @@ import Drawer from '../../api/domain/Drawer';
 import Face from '../../api/domain/Face';
 
 /**
- * Requires Three.js Object3D for representing Three.js drawer faces
+ * Requires Three.js Group and Object3D for representing Three.js drawer and drawer faces
  */
-import {Object3D} from 'three';
+import {Group,Object3D} from 'three';
 
 /**
  * Represents a Drawer built with Three.js properties
@@ -30,10 +30,30 @@ export default class ThreeDrawer extends Drawer{
     constructor(drawer_faces,three_drawer_faces,productId,slotId=null){
         super(drawer_faces,productId,slotId);
         this.three_drawer_faces=three_drawer_faces;
+        this.drawerGroup=null;
     }
 
     /**
      * Returns the current drawer Three.js faces
      */
     getThreeFaces(){return this.three_drawer_faces};
+
+    /**
+     * Returns the current drawer Three.js group
+     */
+    getThreeGroup(){return this.drawerGroup;}
+
+    /**
+     * Draws the current Three.js drawer
+     * @returns {Group} Group with the created drawer
+     */
+    draw(){
+        let drawerGroup=new Group();
+        let drawerFaces=this.getDrawerFaces().entries();
+        for(let drawerFace of drawerFaces)
+            drawerGroup.add(drawerFace["1"].draw());
+        this.drawerGroup=drawerGroup;
+        this.baseId=drawerGroup.id;
+        return drawerGroup;
+    }
 }
