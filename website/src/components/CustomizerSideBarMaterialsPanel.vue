@@ -8,27 +8,28 @@
       <div class="text-entry">Choose material to add:</div>
       <div class="padding-div">
         <div class="scrollable-div" style="height: 400px; width: 100%;">
-          <a v-if="getMaterialInformationOK" class="sidepanel">
-            <a class="closebtn">×</a>
+           <a v-if="getMaterialInformationOK" class="sidepanel">
               <a v-if="hasFinishes" class="sidepanel-entry" @click="changeShowFinishes">
-                <p>Finishes <i class="fa fa-caret-down"></i></p>
+                <p><b>Finishes <i class="fa fa-caret-down"></i></b></p>
               </a>
-              <div class="dropdown-container">
-                <ul v-if="showFinishes" v-for="finish in colors" :key="finish.description">
-                  <li class="sidepanel-subentry" @click="applyFinish(finish)">{{finish.description}}</li>   
-                </ul>           
+              <div class="dropdown-container" v-if="showFinishes">
+                <a class="sidepanel-subentry" @click="removeFinish()">None</a>   
+                <div v-for="finish in finishes" :key="finish.description">
+                  <a class="sidepanel-subentry" @click="applyFinish(finish)">{{finish.description}}</a>   
+                </div>           
               </div>
               <a v-if="hasColors" class="sidepanel-entry" @click="changeShowColors">
-                <p>Colors <i class="fa fa-caret-down"></i></p>
+                <p><b>Colors <i class="fa fa-caret-down"></i></b></p>
               </a>
-              <div class="dropdown-container">
-                <ul v-if="showColors" v-for="color in colors" :key="color.name">
-                  <li class="sidepanel-subentry" @click="applyColor(color)">{{color.name}}</li>   
-                </ul>                       
+              <div class="dropdown-container" v-if="showColors">
+                <a class="sidepanel-subentry" @click="removeColor()">None</a>
+                <div v-for="color in colors" :key="color.name">
+                  <a class="sidepanel-subentry" @click="applyColor(color)">{{color.name}}</a>   
+                </div>                       
               </div>
           </a>
           <ul class="image-list" v-for="material in materials" :key="material.id">
-            <li class="image-btn" @click="applyMaterial(material), getMaterialInformation(material.id)">
+            <li class="image-btn" @click="applyMaterial(material), removeFinish(), removeColor(), getMaterialInformation(material.id)">
               <img :src="findMaterialImage(material.image)" width="100%">
               <p>{{material.designation}}</p>
             </li>
@@ -57,14 +58,12 @@ import Vue from "vue";
 import Axios from "axios";
 import { error } from "three";
 import store from "./../store";
-import Toasted from "vue-toasted";
 import { MYCM_API_URL } from "./../config.js";
-import {
-  SET_CUSTOMIZED_PRODUCT_MATERIAL,
-  DEACTIVATE_CAN_MOVE_CLOSET,
-  DEACTIVATE_CAN_MOVE_SLOTS
-} from "./../store/mutation-types.js";
-Vue.use(Toasted);
+import { SET_CUSTOMIZED_PRODUCT_MATERIAL, SET_CUSTOMIZED_PRODUCT_FINISH,
+         SET_CUSTOMIZED_PRODUCT_COLOR, DEACTIVATE_CAN_MOVE_CLOSET,
+         DEACTIVATE_CAN_MOVE_SLOTS
+        } from "./../store/mutation-types.js";
+
 export default {
   name: "CustomizerSideBarMaterialsPanel",
   data() {
@@ -140,15 +139,32 @@ export default {
     },
     applyFinish(finish){
       store.dispatch(SET_CUSTOMIZED_PRODUCT_FINISH, {
-        shininess : finish.shininess
+        description: finish.description,
+        shininess: finish.shininess
       })
     },
+    removeFinish(){
+      store.dispatch(SET_CUSTOMIZED_PRODUCT_FINISH, {
+        description: "None",
+        shininess: 20
+      })
+    },     
     applyColor(color){
       store.dispatch(SET_CUSTOMIZED_PRODUCT_COLOR, {
+        name: color.name,
         red: color.red,
-        gree: color.green,
+        green: color.green,
         blue: color.blue,
         alpha: color.alpha
+      })
+    },
+    removeColor(){
+      store.dispatch(SET_CUSTOMIZED_PRODUCT_COLOR, {
+        name: "None",
+        red: 0,
+        green: 0,
+        blue: 0,
+        alpha: 0
       })
     },
     changeShowColors(){
