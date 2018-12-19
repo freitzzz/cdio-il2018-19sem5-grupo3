@@ -183,9 +183,30 @@ export default {
       store.getters.customizedMaterialFinishDescription == "None"){
         this.$toast.open("You must choose at least one finish or color!");
       } else {
-        this.$emit("advance");
-        //TODO! POST product w/ material
-      }
+         Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
+            {
+	            customizedMaterial: {
+		            materialId: store.state.customizedProduct.customizedMaterial.id,
+		            color: {
+			            name: store.state.customizedProduct.customizedMaterial.color.name,
+                  red: store.state.customizedProduct.customizedMaterial.color.red,
+                  green: store.state.customizedProduct.customizedMaterial.color.green,
+                  blue: store.state.customizedProduct.customizedMaterial.color.blue,
+                  alpha: store.state.customizedProduct.customizedMaterial.color.alpha
+		            },
+		            finish: {
+		          	  description: store.state.customizedProduct.customizedMaterial.finish.description,
+                  shininess: store.state.customizedProduct.customizedMaterial.finish.shininess,
+		            }
+	            },
+            })
+            .then(response => {this.$emit("advance")})
+            .catch((error_message) => {
+                    this.$toast.open({
+                        message: error_message.response.data.message
+                    });
+                  });
+      } 
     },
     previousPanel() {
       this.$emit("back");
