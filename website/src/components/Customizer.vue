@@ -57,6 +57,12 @@ export default {
     applyMaterial(){
       return Store.getters.customizedMaterial;
     },
+    applyColor(){
+      return Store.getters.customizedMaterialColor;
+    },
+    applyFinish(){
+      return Store.getters.customizedMaterialFinish;
+    },
     canMoveCloset(){
       return Store.getters.canMoveCloset;
     },
@@ -101,6 +107,12 @@ export default {
     },
     applyMaterial: function(newValue) {
       this.productRenderer.applyTexture("./src/assets/materials/" + newValue);
+    },
+    applyColor: function(newValue){ 
+      this.productRenderer.applyColor(newValue);
+    },
+    applyFinish: function(newValue){
+      this.productRenderer.applyFinish(newValue);
     },
     canMoveCloset(newValue){
       this.productRenderer.canMoveCloset = newValue;

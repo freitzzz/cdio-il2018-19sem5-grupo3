@@ -137,14 +137,12 @@ export default {
       if (this.hasSlots() && this.canAddComponentToSlot(component.model)){
         if(this.div_inputs[index] == undefined) {
           this.$toast.open("You must choose a slot to apply the component!");
-      } else if(this.div_inputs[index] < 1 || this.div_inputs[index] > store.state.customizedProduct.slots.length + 1){
-          this.$toast.open("You must choose a valid slot to apply the component!");
+        } else if(this.div_inputs[index] < 1 || this.div_inputs[index] > store.state.customizedProduct.slots.length + 1){
+            this.$toast.open("You must choose a valid slot to apply the component!");
         } else {
-          // for(let i = 0; i < this.div_inputs.length;i++){console.log(this.div_inputs[i]);console.log(this.div_elements[i])}
-
-          component.slot = this.div_inputs[index];
-          store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
-          //TODO! DISABLE apply button
+            component.slot = this.div_inputs[index];
+            store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
+            //TODO! DISABLE apply button
         }
       } else if(!this.hasSlots() || !this.canAddComponentToSlot(component.model)){
         component.slot = 0;

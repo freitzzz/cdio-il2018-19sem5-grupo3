@@ -30,7 +30,18 @@ const state = {
             id: "",
             reference: "",
             designation: "",
-            image: ""
+            image: "",
+            finish: {
+                description: "",
+                shininess: ""
+            },
+            color: {
+                name:"",
+                red:"",
+                green:"",
+                blue:"",
+                alpha:"",
+            }
         },
         slots: [
         ],
@@ -40,8 +51,7 @@ const state = {
             depth: "",
             unit: ""
         },
-        components: []
-       }
+    }
 }
 
 export const getters = {
@@ -89,6 +99,13 @@ export const getters = {
     },
     customizedMaterial: state => {
         return state.customizedProduct.customizedMaterial.image;
+    },
+    customizedMaterialColor: state => {
+        return state.customizedProduct.customizedMaterial.color.red + "-" + state.customizedProduct.customizedMaterial.color.green +
+        "-" + state.customizedProduct.customizedMaterial.color.blue + "-" + state.customizedProduct.customizedMaterial.color.alpha;
+    },
+    customizedMaterialFinish: state => {
+        return state.customizedProduct.customizedMaterial.finish.shininess;
     },
     canMoveCloset: state => {
         return state.canvasControls.canMoveCloset;

@@ -431,6 +431,10 @@ export default class ProductRenderer {
     if (component.designation == "Sliding Door") this.removeSlidingDoor();
   }
 
+  /**
+   * Removes a shelf in the given slot from the current closet
+   * @param {*} slot 
+   */
   removeShelf(slot) {
     for (let i = 0; i < this.closet.shelves.length; i++) {
       if (this.closet.shelves[i].slotId == slot) {
@@ -443,18 +447,10 @@ export default class ProductRenderer {
     }
   }
 
-  removeHingedDoor(slot) {
-    for (let i = 0; i < this.closet.hingedDoors.length; i++) {
-      if (this.closet.hingedDoors[i].slotId == slot) {
-        this.closet.hingedDoors.splice(i, 1);
-        var closet_door_face_id = this.closet_hinged_doors_ids.splice(i, 1);
-        this.group.remove(this.group.getObjectById(closet_door_face_id[0]));
-        this.updateClosetGV();
-        return;
-      }
-    }
-  }
-
+  /**
+ * Removes a pole in the given slot from the current closet
+ * @param {*} slot 
+ */
   removePole(slot) {
     for (let i = 0; i < this.closet.poles.length; i++) {
       if (this.closet.poles[i].slotId == slot) {
@@ -467,13 +463,10 @@ export default class ProductRenderer {
     }
   }
 
-  removeSlidingDoor(){
-    this.closet.removeSlidingDoor();
-    var closet_sliding_door_face_id = this.closet_sliding_doors_ids.pop();
-    this.group.remove(this.group.getObjectById(closet_sliding_door_face_id));
-  }
-
-  //TODO! Remove all drawer faces
+  /**
+   * Removes a drawer in the given slot from the current closet
+   * @param {*} slot 
+   */
   removeDrawer(slot) {
     for (let i = 0; i < this.closet.drawers.length; i++) {
       if (this.closet.drawers[i].slotId == slot) {
@@ -488,6 +481,31 @@ export default class ProductRenderer {
         return;
       }
     }
+  }
+
+  /**
+* Removes a hinged door in the given slot from the current closet
+* @param {*} slot 
+*/
+  removeHingedDoor(slot) {
+    for (let i = 0; i < this.closet.hingedDoors.length; i++) {
+      if (this.closet.hingedDoors[i].slotId == slot) {
+        this.closet.hingedDoors.splice(i, 1);
+        var closet_door_face_id = this.closet_hinged_doors_ids.splice(i, 1);
+        this.group.remove(this.group.getObjectById(closet_door_face_id[0]));
+        this.updateClosetGV();
+        return;
+      }
+    }
+  }
+
+  /**
+   * Removes the sliding door from the current closet
+   */
+  removeSlidingDoor() {
+    this.closet.removeSlidingDoor();
+    var closet_sliding_door_face_id = this.closet_sliding_doors_ids.pop();
+    this.group.remove(this.group.getObjectById(closet_sliding_door_face_id));
   }
 
   /**
@@ -775,19 +793,25 @@ export default class ProductRenderer {
   }
 
   /**
-   * Changes the closet's material's shininess.
-   * @param {number} shininess - new shininess value
+   * Changes the closet's material's finish.
+   * @param {*} shininess The new shininess value
    */
-  changeShininess(shininess) {
+  applyFinish(shininess) {
     this.material.shininess = shininess;
   }
 
   /**
    * Changes the closet's material's color.
-   * @param {number} color 
+   * @param {*} color The new color in RGB format
    */
-  changeColor(color) {
-    this.material.color.setHex(color);
+  applyColor(color) {
+    var values = color.split("-");
+    var red = values[0];
+    var green = values[1];
+    var blue = values[2];
+    var alpha = values[3];
+    if(alpha == 0) this.material.color.setHex(0xffffff);
+    else this.material.color.setRGB(red, green, blue);
   }
 
   /**
@@ -1361,14 +1385,12 @@ export default class ProductRenderer {
     }
   }
 
-
   closeSlotOpenDrawers(slot) {
     var i = 0;
     var index = 0;
     var closet_front = Math.abs(this.group.getObjectById(this.closet_faces_ids[4]).position.z);
     while (i < this.closet_drawers_ids.length) {
       if (this.closet.drawers[index].slotId == slot) {
-        console.log(this.closet.drawers[index]);
         var drawer_front_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 1]);
         if (drawer_front_face.position.z > closet_front) {
           var drawer_base_face = this.group.getObjectById(this.closet_drawers_ids[5 * index]);

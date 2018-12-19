@@ -413,54 +413,64 @@
   .scrollable-div {
     overflow-y: scroll;
     border: thin solid #0ba2db;
-    background-color: rgb(255, 255, 255)
+    background-color: #fff;
+    opacity: .9 !important;
+    position: relative; 
   }
 
   .sidepanel {
-    position: relative; /* Stay in place */
-    z-index: 1; /* Stay on top */
+    width: 100%;
+    height: 100%;
     top: 0;
     left: 0;
-    background-color: #0ba2db;
     text-align: left !important;
-    color: white !important;
-    opacity: .9;
+    color: #000 !important;
+    opacity: .9 !important;
     overflow-x: hidden; /* Disable horizontal scroll */
     transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
+    position: relative !important;
+    z-index: 1 !important;
   }
 
   /* The sidepanel links */
   .sidepanel-entry {
-      padding: 8px 8px 8px 32px;
-      background-color: #0ba2db;
-      font-size: 25px;
-      display: block;
-      transition: 0.3s;
-      opacity: .9;
+    border: thin solid #0ba2db;
+    border-width: 1.1px;
+    padding: 8px 8px 8px 32px;
+    background-color: #fff !important;
+    color: #000;
+    font-size: 25px;
+    display: block;
+    transition: 0.3s;
   }
   
   /* When you mouse over the navigation links, change their color */
   .sidepanel-entry:hover {
-    color: #f1f1f1;
-    background-color: #67c8eb;
-    opacity: .9 !important;
-    cursor: pointer;
+    color: #0ba2db !important;
+    cursor: pointer;    
   }
 
   /* The sidepanel links */
   .sidepanel-subentry {
-      padding: 8px 8px 8px 32px;
-      text-decoration: none;
-      font-size: 15px;
-      display: block;
-      transition: 0.3s;
+    border-left: thin solid #0ba2db;
+    border-left-width: 1.1px;
+    border-right: thin solid #0ba2db;
+    border-right-width: 1.1px;
+    border-bottom: thin solid #0ba2db;
+    color: #000 !important;
+    background-color: #fff !important;
+    height: 100%;
+    width:100%;
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 15px;
+    display: block;
+    transition: 0.3s;
   }
   
   /* When you mouse over the navigation links, change their color */
   .sidepanel-subentry:hover {
-    color: #f1f1f1;
-    background-color: #67c8eb;
-    opacity: .9;
+    color: #0ba2db !important;
     cursor: pointer;
   }
   
@@ -503,14 +513,11 @@
   ul.image-list>li>img{
     padding-bottom:0.5em;
   }
-  
-  .dropdown-active {
-      background-color: rgb(66, 66, 240);
-    color: white;
-  }
+
   .dropdown-container {
-      display: none;
-      background-color: #0ba2db;
+      background-color: #fff;
+      color: #0ba2db !important;
+      opacity: .9 !important;
   }
   
   .checkboxcontainer{
