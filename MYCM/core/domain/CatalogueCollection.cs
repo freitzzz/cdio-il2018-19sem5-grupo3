@@ -121,7 +121,7 @@ namespace core.domain
             //*Replicating the Collection's name may seem redundant, but it prevents StackOverflows from occuring */
             //*It's not perfect however, because the name is not updated if the CustomizedProductCollection's name is updated */
             //TODO: find a better solution
-            this.collectionName = this.customizedProductCollection.name;
+            this.collectionName = customizedProductCollection.name;
 
             //*If no list of CustomizedProduct is specified, then assume all instances of CustomizedProduct that belong to the collection are to be added */
 
@@ -145,6 +145,12 @@ namespace core.domain
             //Please note that this constructor does not chain with the other constructor in order to avoid filling the product list and then dereferencing it
             checkAttributes(customizedProductCollection, customizedProducts);
             checkCustomizedProductsOwnership(customizedProductCollection, customizedProducts);
+
+            //*Replicating the Collection's name may seem redundant, but it prevents StackOverflows from occuring */
+            //*It's not perfect however, because the name is not updated if the CustomizedProductCollection's name is updated */
+            //TODO: find a better solution
+            this.collectionName = customizedProductCollection.name;
+
             this.customizedProductCollection = customizedProductCollection;
             this.catalogueCollectionProducts = new List<CatalogueCollectionProduct>();
 

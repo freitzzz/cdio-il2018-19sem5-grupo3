@@ -38,6 +38,7 @@ namespace core.modelview.cataloguecollection
             GetBasicCatalogueCollectionModelView basicCatalogueCollectionModelView = new GetBasicCatalogueCollectionModelView();
             basicCatalogueCollectionModelView.id = catalogueCollection.customizedProductCollectionId;
             basicCatalogueCollectionModelView.name = catalogueCollection.customizedProductCollection.name;
+            basicCatalogueCollectionModelView.hasCustomizedProducts = catalogueCollection.catalogueCollectionProducts.Any();
 
             return basicCatalogueCollectionModelView;
         }
@@ -56,7 +57,7 @@ namespace core.modelview.cataloguecollection
             }
 
             GetCatalogueCollectionModelView catalogueCollectionModelView = new GetCatalogueCollectionModelView();
-            catalogueCollectionModelView.id = catalogueCollection.customizedProductCollectionId;
+            catalogueCollectionModelView.customizedProductCollectionId = catalogueCollection.customizedProductCollectionId;
             catalogueCollectionModelView.name = catalogueCollection.customizedProductCollection.name;
 
             if (catalogueCollection.catalogueCollectionProducts.Any())

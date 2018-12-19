@@ -1,6 +1,6 @@
 <template>
-    <div>
-                <div v-if="panelCreateMaterial" class="modal-card" style="width: auto">
+    <div class="modal-card" style="width: auto">
+                <div v-if="panelCreateMaterial" >
                     <header class="modal-card-head">
                         <p class="modal-card-title">Create Material</p>
                     </header>

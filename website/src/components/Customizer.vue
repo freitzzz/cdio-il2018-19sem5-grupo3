@@ -80,6 +80,7 @@ export default {
   watch: {
     slots: function(newValue, oldValue) {
       if(newValue.length > 0){
+        this.productRenderer.removeAllSlots();
         this.productRenderer.addSlotNumbered(newValue);
       } else {
         this.productRenderer.removeAllSlots();

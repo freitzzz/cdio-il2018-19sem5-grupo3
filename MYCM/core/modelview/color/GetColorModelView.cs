@@ -16,6 +16,13 @@ namespace core.modelview.color
         public long colorId { get; set; }
 
         /// <summary>
+        /// Color's name.
+        /// </summary>
+        /// <value>Gets/Sets the name.</value>
+        [DataMember]
+        public string name { get; set; }
+
+        /// <summary>
         /// Color's red value.
         /// </summary>
         /// <value>Gets/Sets the red value.</value>

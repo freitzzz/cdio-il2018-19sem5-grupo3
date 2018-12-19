@@ -5,9 +5,12 @@ module.exports = {
         "es6": true,
         "node": true
     },
-    "parser": "babel-eslint",
-    "extends": "eslint:recommended",
+    "extends": [
+        "eslint:recommended",
+        "plugin:vue/essential"
+    ],
     "parserOptions": {
+        "parser": "babel-eslint",
         "ecmaVersion": 2015,
         "sourceType": "module"
     },

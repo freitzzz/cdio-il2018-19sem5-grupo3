@@ -24,6 +24,7 @@ namespace core.modelview.color
 
             GetColorModelView colorModelView = new GetColorModelView();
             colorModelView.colorId = color.Id;
+            colorModelView.name = color.Name;
             colorModelView.red = color.Red;
             colorModelView.green = color.Green;
             colorModelView.blue = color.Blue;
