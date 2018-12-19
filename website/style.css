@@ -414,8 +414,6 @@
     overflow-y: scroll;
     border: thin solid #0ba2db;
     background-color: #fff;
-    opacity: .9 !important;
-    position: relative; 
   }
 
   .sidepanel {
@@ -438,7 +436,7 @@
     border-width: 1.1px;
     padding: 8px 8px 8px 32px;
     background-color: #fff !important;
-    color: #000;
+    color: #0ba2db !important;
     font-size: 25px;
     display: block;
     transition: 0.3s;
@@ -446,7 +444,7 @@
   
   /* When you mouse over the navigation links, change their color */
   .sidepanel-entry:hover {
-    color: #0ba2db !important;
+    color: #67c8eb !important;
     cursor: pointer;    
   }
 
