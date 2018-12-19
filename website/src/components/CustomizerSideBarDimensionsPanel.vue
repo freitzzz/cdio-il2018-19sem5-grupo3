@@ -6,12 +6,12 @@
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
     <select class="dropdown" v-model="dimensionOp" @change="populateDimensions">
-                        <option
-                          v-for="option in availableOptionsDimensions"
-                          :key="option.id"
-                          :value="option"
-                        >{{"Option: "+option.id}}</option>
-                      </select>
+                          <option
+                            v-for="option in availableOptionsDimensions"
+                            :key="option.id"
+                            :value="option"
+                          >{{"Option: "+option.id}}</option>
+                        </select>
   
     <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
@@ -33,12 +33,12 @@
   
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="this.updateDimensions">
-                        <option
-                          v-for="optionUnit in availableOptionsUnits"
-                          :key="optionUnit.id"
-                          :value="optionUnit.unit"
-                        >{{optionUnit.unit}}</option>
-                      </select>
+                          <option
+                            v-for="optionUnit in availableOptionsUnits"
+                            :key="optionUnit.id"
+                            :value="optionUnit.unit"
+                          >{{optionUnit.unit}}</option>
+                        </select>
     <div class="center-controls">
       <i class="btn btn-primary material-icons" @click="previousPanel()">arrow_back</i>
       <i class="btn btn-primary material-icons" @click="nextPanel()">arrow_forward</i>
@@ -66,7 +66,8 @@
     SET_SLOT_DIMENSIONS,
     ACTIVATE_CAN_MOVE_CLOSET,
     DEACTIVATE_CAN_MOVE_SLOTS,
-    SET_ID_CUSTOMIZED_PRODUCT
+    SET_ID_CUSTOMIZED_PRODUCT,
+    SET_RESIZE_FACTOR_DIMENSIONS
   } from "./../store/mutation-types.js";
   
   import {
@@ -84,10 +85,12 @@
   const NO_OPTION = -1;
   const N_DIMENSIONS = 3;
   
+  const DEFAULT_UNIT = "mm";
   export default {
     name: "CustomizerSideBarDimensionsPanel",
     data() {
       return {
+        controlIndex:0,
         i: 0,
   
         heightMin: MIN_DEFAULT,
@@ -130,7 +133,7 @@
         discreteIntervalHeight: [],
         discreteIntervalWidth: [],
         discreteIntervalDepth: [],
-
+  
         //Convert the recommended width to a unit of the closet
         valueConvertedRecommededSlotsWidth: 0,
         idCustomizedProduct: 0
@@ -161,6 +164,8 @@
           this.$toast.open(error.response.status + "An error occurred");
         });
       this.initialPopulate();
+  
+  
     },
   
     methods: {
@@ -173,6 +178,7 @@
       },
   
       updateDimensions() {
+        //Transform 
         store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS, {
           width: this.width,
           height: this.height,
@@ -203,9 +209,21 @@
       initialPopulate() {
         this.dimensionOp = this.availableOptionsDimensions[0];
         this.populateDimensions();
+        this.createFirstReason();
+  
+      },
+      //sends to product renderer the resize factor
+      createFirstReason: function() {
+        store.dispatch(SET_RESIZE_FACTOR_DIMENSIONS, {
+          width: this.width,
+          height: this.height,
+          depth: this.depth,
+        });
       },
       //Populate
       populateDimensions: function() {
+  
+        
         this.resetFlags();
         //Get information of the chosed option
         var op = this.dimensionOp;
@@ -240,6 +258,7 @@
           this.discreteIntervalFlags[this.HEIGHT] = false;
           this.discreteValueFlags[this.HEIGHT] = false;
         }
+  
   
         //Populate Width
         this.widthType = this.identifyTypeDimensions(op.width);
@@ -291,8 +310,13 @@
           this.discreteValueFlags[this.DEPTH] = false;
           this.discreteIntervalFlags[this.DEPTH] = false;
         }
+        if(this.controlIndex == 0){ //First dimension
+          this.createFirstReason;
+          this.controlIndex++;
+        }
   
       },
+  
       //The following methods determine the min,max and increment to populate the height,width and depth slider
       determineMinOfInterval: function(typeOfInterval, dimensionJson) {
         if (typeOfInterval == CONTINUOUS_INTERVAL) {
@@ -334,9 +358,9 @@
       nextPanel() {
         //!TODO POST product
         //Post of product
-
+  
         if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
-            Axios.post(MYCM_API_URL + '/customizedproducts', {
+          Axios.post(MYCM_API_URL + '/customizedproducts', {
               productId: store.state.product.id,
               customizedDimensions: {
                 height: this.height,
@@ -346,7 +370,7 @@
               }
             })
             .then(response => {
-              this.idCustomizedProduct=response.data.id;
+              this.idCustomizedProduct = response.data.id;
               store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
               alert(store.state.customizedProduct.id);
               this.drawRecommendedSlots();
@@ -357,103 +381,103 @@
                 message: error_message.response.data.message
               });
             });
-          } else {
-            this.$toast.open("Please select an option!");
-          }
-
-/*         return new Promise((accept, reject) => {
-          if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
-            Axios.post(MYCM_API_URL + '/customizedproducts', {
-              productId: store.state.product.id,
-              customizedDimensions: {
-                height: this.height,
-                width: this.width,
-                depth: this.depth,
-                unit: this.unit
-              }
-            })
-            .then(response => {
-              this.idCustomizedProduct=response.data.id
-              accept
-            })
-            .catch((error_message) => {
-              this.$toast.open({
-                message: error_message.response.data.message
-              });
-              flag = true;
-            });
-            if (!flag) {
-              alert(this.idCustomizedProduct);
-
-              store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
-              this.drawRecommendedSlots();
-              this.$emit("advance");
-            }else{
-              this.$toast.open("There was an error please try again!");
-            }
-          } else {
-            this.$toast.open("Please select an option!");
-          }
-        }); */
+        } else {
+          this.$toast.open("Please select an option!");
+        }
+  
+        /*         return new Promise((accept, reject) => {
+                  if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
+                    Axios.post(MYCM_API_URL + '/customizedproducts', {
+                      productId: store.state.product.id,
+                      customizedDimensions: {
+                        height: this.height,
+                        width: this.width,
+                        depth: this.depth,
+                        unit: this.unit
+                      }
+                    })
+                    .then(response => {
+                      this.idCustomizedProduct=response.data.id
+                      accept
+                    })
+                    .catch((error_message) => {
+                      this.$toast.open({
+                        message: error_message.response.data.message
+                      });
+                      flag = true;
+                    });
+                    if (!flag) {
+                      alert(this.idCustomizedProduct);
+  
+                      store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
+                      this.drawRecommendedSlots();
+                      this.$emit("advance");
+                    }else{
+                      this.$toast.open("There was an error please try again!");
+                    }
+                  } else {
+                    this.$toast.open("Please select an option!");
+                  }
+                }); */
       },
       previousPanel() {
         //!TODO DELETE product
         this.$emit("back");
       },
-      drawRecommendedSlots(){
-              var widthCloset = /*store.state.customizedProduct.customizedDimensions.width;*/ 404.5;
-              var depthCloset = /*store.state.customizedProduct.customizedDimensions.depth;*/ 100;
-              var heightCloset = /*store.state.customizedProduct.customizedDimensions.height;*/ 300;
-
-              var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
-              var unitSlots = store.getters.productSlotWidths.unit;
-
-              var recommendedSlotWidth = 100;//store.getters.recommendedSlotWidth;
-              var minSlotWidth = store.getters.minSlotWidth;
-
-              if(unitCloset != unitSlots){
-                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
-                recommendedSlotWidth = this.valueConvertedSlotsWidth;
-                this.convert(unitSlots,unitCloset,minSlotWidth);
-                minSlotWidth = this.valueConvertedSlotsWidth;
-              }
-
-
-              ///var reason = store.state.reason;
-              
-              var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
-              var remainder = widthCloset % recommendedSlotWidth;
-              var remainderWidth =
-                widthCloset - recommendedNumberSlots * recommendedSlotWidth;
-              
-              for (let i = 0; i < recommendedNumberSlots; i++) {
-                
-                store.dispatch(SET_SLOT_DIMENSIONS, {
-                  idSlot: i,
-                  width: recommendedSlotWidth,
-                  height: heightCloset,
-                  depth: depthCloset,
-                  unit: unitCloset
-                });
-              }
-              if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth*/ ) {
-               
-                store.dispatch(SET_SLOT_DIMENSIONS, {
-                  idSlot: recommendedNumberSlots,
-                  width: remainderWidth,
-                  height: heightCloset,
-                  depth: depthCloset,
-                  unit: unitCloset
-                });
-              }
+      drawRecommendedSlots() {
+        var widthCloset = /*store.state.customizedProduct.customizedDimensions.width;*/ 404.5;
+        var depthCloset = /*store.state.customizedProduct.customizedDimensions.depth;*/ 100;
+        var heightCloset = /*store.state.customizedProduct.customizedDimensions.height;*/ 300;
+  
+        var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
+        var unitSlots = store.getters.productSlotWidths.unit;
+  
+        var recommendedSlotWidth = 100; //store.getters.recommendedSlotWidth;
+        var minSlotWidth = store.getters.minSlotWidth;
+  
+        if (unitCloset != unitSlots) {
+          this.convert(unitSlots, unitCloset, recommendedSlotWidth);
+          recommendedSlotWidth = this.valueConvertedSlotsWidth;
+          this.convert(unitSlots, unitCloset, minSlotWidth);
+          minSlotWidth = this.valueConvertedSlotsWidth;
+        }
+  
+  
+        ///var reason = store.state.reason;
+  
+        var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
+        var remainder = widthCloset % recommendedSlotWidth;
+        var remainderWidth =
+          widthCloset - recommendedNumberSlots * recommendedSlotWidth;
+  
+        for (let i = 0; i < recommendedNumberSlots; i++) {
+  
+          store.dispatch(SET_SLOT_DIMENSIONS, {
+            idSlot: i,
+            width: recommendedSlotWidth,
+            height: heightCloset,
+            depth: depthCloset,
+            unit: unitCloset
+          });
+        }
+        if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth*/ ) {
+  
+          store.dispatch(SET_SLOT_DIMENSIONS, {
+            idSlot: recommendedNumberSlots,
+            width: remainderWidth,
+            height: heightCloset,
+            depth: depthCloset,
+            unit: unitCloset
+          });
+        }
       },
       convert(from, to, value) {
-      Axios.get(
-        `http://localhost:5000/mycm/api/units/convert/?from=${from}&to=${to}&value=${value}`
-      )
-        .then(response => (this.valueConvertedSlotsWidth = response.data))
-        .catch(error => {});
-    },
+        Axios.get(
+            `http://localhost:5000/mycm/api/units/convert/?from=${from}&to=${to}&value=${value}`
+          )
+          .then(response => (this.valueConvertedSlotsWidth = response.data))
+          .catch(error => {});
+      },
     }
   };
 </script>
