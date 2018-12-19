@@ -11,6 +11,7 @@ import Shelf from './Shelf'
 import HingedDoor from './HingedDoor'
 import FaceOrientationEnum from './api/domain/FaceOrientation';
 import ThreeDrawer from './threejeyass/domain/ThreeDrawer';
+import ProductTypeEnum from './api/domain/ProductType';
 
 export default class ProductRenderer {
 
@@ -461,7 +462,11 @@ export default class ProductRenderer {
     poleMesh.position.z = z;
     poleMesh.rotation.z = Math.PI / 2;
     //this.closet.addPole(pole);
-    this.group.add(poleMesh);
+    let poleGroup=new THREE.Group();
+    poleGroup.add(poleMesh);
+    this.group.add(poleGroup);
+    console.log("Pole Group ID =>"+poleGroup.id);
+    console.log("Pole ID => "+poleMesh.id);
     this.closet_poles_ids.push(poleMesh.id);
   }
 
@@ -554,17 +559,26 @@ export default class ProductRenderer {
 
     let drawerFaces=new Map();
     drawerFaces.set(FaceOrientationEnum.BASE,new ThreeFace(null,this.material,FaceOrientationEnum.BASE,width-spaceDrawerModule,depthDrawer,depthCloset,x,y+(depthDrawer/2),z));
-    drawerFaces.set(FaceOrientationEnum.TOP,new ThreeFace(null,this.material,FaceOrientationEnum.TOP,width-spaceDrawerModule,heightDrawer,depthDrawer,x,y+(heightDrawer/2),z+(depthCloset /2)-(depthDrawer/2)));
+    drawerFaces.set(FaceOrientationEnum.FRONT,new ThreeFace(null,this.material,FaceOrientationEnum.FRONT,width-spaceDrawerModule,heightDrawer,depthDrawer,x,y+(heightDrawer/2),z+(depthCloset /2)-(depthDrawer/2)));
     drawerFaces.set(FaceOrientationEnum.LEFT,new ThreeFace(null,this.material,FaceOrientationEnum.LEFT,depthDrawer,heightDrawer,depthCloset-(depthDrawer/2),x-(width/2)+(spaceDrawerModule/2),y+(heightDrawer/2),z));
     drawerFaces.set(FaceOrientationEnum.RIGHT,new ThreeFace(null,this.material,FaceOrientationEnum.RIGHT,depthDrawer,heightDrawer,depthCloset-(depthDrawer/2),x+(width/2)-(spaceDrawerModule/2),y+(heightDrawer/2),z));
     drawerFaces.set(FaceOrientationEnum.BACK,new ThreeFace(null,this.material,FaceOrientationEnum.BACK,width-spaceDrawerModule,heightDrawer,depthDrawer,x,y+(heightDrawer/2),z-(depthCloset/2)+(depthDrawer/2)));
     
     let drawer=new ThreeDrawer(drawerFaces);
     
-    this.closet.getThreeGroup().add(module.draw(),drawer.draw());
+    let drawnModule=module.draw();
+    let drawnDrawer=drawer.draw();
+
+    this.closet.getThreeGroup().add(drawnModule,drawnDrawer);
 
     this.closet.addProduct(leftFace.id(),module);
     this.closet.addProduct(leftFace.id(),drawer);
+
+    console.log("Module Group ID => "+module.id());
+    console.log("Drawer Group ID => "+drawer.id());
+    
+    this.group.add(drawnModule);
+    this.group.add(drawnDrawer);
   }
 
   /**
@@ -803,15 +817,16 @@ export default class ProductRenderer {
     this.raycaster.setFromCamera(this.mouse, this.camera);
 
     //Finds all intersected objects (closet faces)
-    var intersects = this.raycaster.intersectObjects(this.group.children[0].children);
-    console.log(intersects)
-    console.log(this.scene.children)
-    console.log(this.group.children[0].children)
+    //this.group.children[0] => Closet Group
+    var intersects = this.raycaster.intersectObjects(this.group.children,true);
+    //Intersects must be 
     //Checks if any closet face was intersected
     if (intersects.length > 0) {
 
       //Gets the closest (clicked) object
       var face = intersects[0].object;
+      console.log("Face ID => "+face.id);
+      console.log("Closet ID => "+this.closet.id());
       let closetSlotsFaces=this.closet.getClosetSlotFaces();
       //Checks if the selected closet face is a slot 
       for (var i = 0; i < closetSlotsFaces.length; i++) {
@@ -897,16 +912,26 @@ export default class ProductRenderer {
         flagClose = false;
         j = 0;
 
-        while (!flagOpen && !flagClose && j < this.closet_drawers_ids.length) {
+        alert("<<<<<<<<<");
+        let closetDrawers=this.closet.getProducts(ProductTypeEnum.DRAWER);
+        alert(closetDrawers);
+        alert(">>>>>>>>>");
+        while (!flagOpen && !flagClose && j < closetDrawers.length) {
+          alert("????????????");
+          let closetDrawerFaces=closetDrawers[j].getDrawerFaces();
           //Always get the front face of any drawer at index 5*j+1
-          var drawer_front_face = this.group.getObjectById(this.closet_drawers_ids[5 * j + 1]);
+          var drawer_front_face = closetDrawerFaces.get(FaceOrientationEnum.FRONT).mesh();
+          console.log(face);
+          console.log(drawer_front_face);
           //Check if the selected object is a drawer's front face
+          alert("?")
           if (drawer_front_face == face) {
+            alert("!")
             this.controls.enabled = false;
-            var drawer_base_face = this.group.getObjectById(this.closet_drawers_ids[5 * j]);
-            var drawer_left_face = this.group.getObjectById(this.closet_drawers_ids[5 * j + 2]);
-            var drawer_right_face = this.group.getObjectById(this.closet_drawers_ids[5 * j + 3]);
-            var drawer_back_face = this.group.getObjectById(this.closet_drawers_ids[5 * j + 4]);
+            var drawer_base_face = closetDrawerFaces.get(FaceOrientationEnum.BASE).mesh();
+            var drawer_left_face = closetDrawerFaces.get(FaceOrientationEnum.LEFT).mesh();
+            var drawer_right_face = closetDrawerFaces.get(FaceOrientationEnum.RIGHT).mesh();
+            var drawer_back_face = closetDrawerFaces.get(FaceOrientationEnum.BACK).mesh();
             if (drawer_front_face.position.z >= -50) {
               flagClose = true;
             } else {
@@ -1343,6 +1368,7 @@ export default class ProductRenderer {
 
   openDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face) {
     if (drawer_front_face.position.z <= -50) {
+      console.log(">>>>>")
       drawer_front_face.translateZ(1);
       drawer_back_face.translateZ(1);
       drawer_base_face.translateZ(1);
