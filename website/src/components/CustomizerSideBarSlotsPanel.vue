@@ -47,6 +47,7 @@
 import vueSlider from "vue-slider-component";
 import store from "./../store";
 import Axios from "axios";
+ import {MYCM_API_URL} from "./../config.js";
 import { SET_SLOT_DIMENSIONS, DEACTIVATE_CAN_MOVE_CLOSET, ACTIVATE_CAN_MOVE_SLOTS, DEACTIVATE_CAN_MOVE_SLOTS } from "./../store/mutation-types.js";
 
 export default {
@@ -61,7 +62,8 @@ export default {
       freeSpace: "",
       createNewSlider: false,
       valueConverted: "",
-      blockRemoval: true
+      blockRemoval: true,
+      slotsToPost:[]
     };
   },
   components: {
@@ -69,9 +71,6 @@ export default {
   },
   computed: {
     freeSpaceValue() {
-      ///for (n in this.sliderValue) {
-      /// return parseInt(store.getters.width - this.sliderValue[n]);
-      ///}
       return 200;
     },
     minNumberSlots() {
@@ -80,7 +79,7 @@ export default {
     },
     maxNumberSlots() {
       ///return store.getters.width / minSizeSlot;
-      return 7;
+      return 3;
     },
     displaySliders() {
       return this.picked === "customizedSlots";
@@ -113,6 +112,18 @@ export default {
     },
     nextPanel(){
       //TODO! POST slots
+
+      for(let i=0; i<this.slotsToPost.length; i++){
+        return new Promise((accept, reject) => {
+           Axios.post(MYCM_API_URL + `/customizedproducts/${store.state.product.id}/slots`,
+          this.slotsToPost[i]
+          ).catch((error_message) => {
+              this.$toast.open({
+                message: error_message.response.data.message
+              });
+            });
+    });
+      }
       this.$emit("advance");
     },
     previousPanel(){
@@ -123,39 +134,68 @@ export default {
     },
     activateCanvasControls(){store.dispatch(ACTIVATE_CAN_MOVE_SLOTS);},
   deactivateCanvasControls(){
+
     //TODO! Desenhar slots recommendados quando checado o recommended 
 
-/* store.dispatch(SET_SLOT_DIMENSIONS);
+    store.dispatch(SET_SLOT_DIMENSIONS);
+    this.drawRecommendedSlots()
+    store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS)
+    },
+    drawRecommendedSlots(){
+              var widthCloset = /*store.state.customizedProduct.customizedDimensions.width;*/ 404.5;
+              var depthCloset = /*store.state.customizedProduct.customizedDimensions.depth;*/ 100;
+              var heightCloset = /*store.state.customizedProduct.customizedDimensions.height;*/ 300;
+
+              var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
+              var unitSlots = store.getters.productSlotWidths.unit;
+
+              var recommendedSlotWidth = 250;//store.getters.recommendedSlotWidth;
+              var minSlotWidth = store.getters.minSlotWidth;
+
+             /*  if(unitCloset != unitSlots){
+                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
+                recommendedSlotWidth = this.valueConvertedSlotsWidth;
+                this.convert(unitSlots,unitCloset,minSlotWidth);
+                minSlotWidth = this.valueConvertedSlotsWidth;
+              } */
 
 
-     var widthCloset = 404.5;
-    var depthCloset = 100;
-    var heightCloset = 300;
-    var unitCloset = "cm";
-    var recommendedSlotWidth = store.getters.recommendedSlotWidth;
-    var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
-    var remainder = widthCloset % recommendedSlotWidth;
-    var remainderWidth =
-      widthCloset - recommendedNumberSlots * recommendedSlotWidth;
-    if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth) {
-         store.dispatch(SET_SLOT_DIMENSIONS, {
-        idSlot: recommendedNumberSlots,
-        width: remainderWidth,
-        height: heightCloset,
-        depth: depthCloset,
-        unit: unitCloset
-      });
-    }
-    for (let i = 0; i < recommendedNumberSlots; i++) {
-       store.dispatch(SET_SLOT_DIMENSIONS, {
-        idSlot: i,
-        width: recommendedSlotWidth,
-        height: heightCloset,
-        depth: depthCloset,
-        unit: unitCloset
-      }); 
-    }  */
-    store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS)}
+              ///var reason = store.state.reason;
+              
+              var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
+              var remainder = widthCloset % recommendedSlotWidth;
+              var remainderWidth =
+                widthCloset - recommendedNumberSlots * recommendedSlotWidth;
+              
+              for (let i = 0; i < recommendedNumberSlots; i++) {
+                store.dispatch(SET_SLOT_DIMENSIONS, {
+                  idSlot: i,
+                  width: recommendedSlotWidth,
+                  height: heightCloset,
+                  depth: depthCloset,
+                  unit: unitCloset
+                });
+                this.slotsToPost.push({
+                  height: heightCloset,
+                  depth: depthCloset,
+                  width: recommendedSlotWidth,
+                  unit: unitCloset});
+              }
+              if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth*/ ) {
+                store.dispatch(SET_SLOT_DIMENSIONS, {
+                  idSlot: recommendedNumberSlots,
+                  width: remainderWidth,
+                  height: heightCloset,
+                  depth: depthCloset,
+                  unit: unitCloset
+                });
+                 this.slotsToPost.push({
+                  height: heightCloset,
+                  depth: depthCloset,
+                  width: remainderWidth,
+                  unit: unitCloset});
+              }
+      },
   },
   watch: {
     lines() {

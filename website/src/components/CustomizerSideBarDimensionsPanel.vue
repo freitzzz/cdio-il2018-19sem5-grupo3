@@ -128,7 +128,10 @@
         /*If exists discrete interval, there's  a vector associated to it*/
         discreteIntervalHeight: [],
         discreteIntervalWidth: [],
-        discreteIntervalDepth: []
+        discreteIntervalDepth: [],
+
+        //Convert the recommended width to a unit of the closet
+        valueConvertedRecommededSlotsWidth: 0
       };
     },
     components: {
@@ -347,33 +350,7 @@
               flag = true;
             });
             if (!flag) {
-              var widthCloset = 404.5;
-              var depthCloset = 100;
-              var heightCloset = 300;
-              var unitCloset = "cm";
-              var recommendedSlotWidth = store.getters.recommendedSlotWidth;
-              var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
-              var remainder = widthCloset % recommendedSlotWidth;
-              var remainderWidth =
-                widthCloset - recommendedNumberSlots * recommendedSlotWidth;
-              if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth*/ ) {
-                store.dispatch(SET_SLOT_DIMENSIONS, {
-                  idSlot: recommendedNumberSlots,
-                  width: remainderWidth,
-                  height: heightCloset,
-                  depth: depthCloset,
-                  unit: unitCloset
-                });
-              }
-              for (let i = 0; i < recommendedNumberSlots; i++) {
-                store.dispatch(SET_SLOT_DIMENSIONS, {
-                  idSlot: i,
-                  width: recommendedSlotWidth,
-                  height: heightCloset,
-                  depth: depthCloset,
-                  unit: unitCloset
-                });
-              }
+              this.drawRecommendedSlots();
               this.$emit("advance");
             }else{
               this.$toast.open("There was an error please try again!");
@@ -382,14 +359,65 @@
             this.$toast.open("Please select an option!");
           }
         });
-  
-  
-  
       },
       previousPanel() {
         //!TODO DELETE product
         this.$emit("back");
-      }
+      },
+      drawRecommendedSlots(){
+              var widthCloset = /*store.state.customizedProduct.customizedDimensions.width;*/ 404.5;
+              var depthCloset = /*store.state.customizedProduct.customizedDimensions.depth;*/ 100;
+              var heightCloset = /*store.state.customizedProduct.customizedDimensions.height;*/ 300;
+
+              var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
+              var unitSlots = store.getters.productSlotWidths.unit;
+
+              var recommendedSlotWidth = 250;//store.getters.recommendedSlotWidth;
+              var minSlotWidth = store.getters.minSlotWidth;
+
+              if(unitCloset != unitSlots){
+                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
+                recommendedSlotWidth = this.valueConvertedSlotsWidth;
+                this.convert(unitSlots,unitCloset,minSlotWidth);
+                minSlotWidth = this.valueConvertedSlotsWidth;
+              }
+
+
+              ///var reason = store.state.reason;
+              
+              var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
+              var remainder = widthCloset % recommendedSlotWidth;
+              var remainderWidth =
+                widthCloset - recommendedNumberSlots * recommendedSlotWidth;
+              
+              for (let i = 0; i < recommendedNumberSlots; i++) {
+                
+                store.dispatch(SET_SLOT_DIMENSIONS, {
+                  idSlot: i,
+                  width: recommendedSlotWidth,
+                  height: heightCloset,
+                  depth: depthCloset,
+                  unit: unitCloset
+                });
+              }
+              if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth*/ ) {
+               
+                store.dispatch(SET_SLOT_DIMENSIONS, {
+                  idSlot: recommendedNumberSlots,
+                  width: remainderWidth,
+                  height: heightCloset,
+                  depth: depthCloset,
+                  unit: unitCloset
+                });
+              }
+      },
+      convert(from, to, value) {
+      Axios.get(
+        `http://localhost:5000/mycm/api/units/convert/?from=${from}&to=${to}&value=${value}`
+      )
+        .then(response => (this.valueConvertedSlotsWidth = response.data))
+        .catch(error => {});
+    },
     }
   };
 </script>
