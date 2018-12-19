@@ -40,6 +40,11 @@ describe('product getters', () => {
 })
 
 describe('customized product getters', () => {
+    describe('customized product id', () =>{
+        test('customized product id returns correct value',
+            ensureGetCustomizedProductIdReturnsCorrectValue
+        );
+    });
     describe('customized product dimensions', () => {
         test('customized product dimensions returns correct values',
             ensureGetCustomizedProductDimensionsReturnsCorrectValues
@@ -323,5 +328,16 @@ function ensureGetCanMoveComponentsReturnsCorrectValue(){
 
 function ensureGetComponentToRemoveReturnsCorrectValue(){
     //TODO Implement test after duplicate components array is fixed
+}
+
+function ensureGetCustomizedProductIdReturnsCorrectValue(){
+    const expectedId = 1;
+    VuexStore.default.replaceState({
+        customizedProduct:{
+            id: expectedId
+        }
+    });
+    const actualId = VuexStore.getters.idCustomizedProduct(VuexStore.default.state);
+    expect(actualId).toBe(expectedId);
 }
 
