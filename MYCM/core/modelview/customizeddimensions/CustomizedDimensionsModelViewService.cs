@@ -3,13 +3,11 @@ using core.domain;
 using core.services;
 using support.utils;
 
-namespace core.modelview.customizeddimensions
-{
+namespace core.modelview.customizeddimensions {
     /// <summary>
     /// Class representing a service used for converting CustomizedDimensions into ModelViews and vice-versa.
     /// </summary>
-    public static class CustomizedDimensionsModelViewService
-    {
+    public static class CustomizedDimensionsModelViewService {
         /// <summary>
         /// Constant representing the error message presented when a null AddCustomizedDimensionsModelView is provided.
         /// </summary>
@@ -26,10 +24,8 @@ namespace core.modelview.customizeddimensions
         /// <param name="modelView">Instance of AddCustomizedDimensionsModelView.</param>
         /// <returns>The created instance of CustomizedDimensions</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the provided AddCustomizedDimensionsModelView is null.</exception>
-        public static CustomizedDimensions fromModelView(AddCustomizedDimensionsModelView modelView)
-        {
-            if (modelView == null)
-            {
+        public static CustomizedDimensions fromModelView(AddCustomizedDimensionsModelView modelView) {
+            if (modelView == null) {
                 throw new ArgumentNullException(ERROR_NULL_MODEL_VIEW);
             }
 
@@ -46,8 +42,7 @@ namespace core.modelview.customizeddimensions
         /// <param name="customizedDimensions">Instance of CustomizedDimensions.</param>
         /// <returns>The created instance of GetCustomizedDimensionsModelView.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the provided CustomizedDimensions is null.</exception>
-        public static GetCustomizedDimensionsModelView fromEntity(CustomizedDimensions customizedDimensions)
-        {
+        public static GetCustomizedDimensionsModelView fromEntity(CustomizedDimensions customizedDimensions) {
             return fromEntity(customizedDimensions, MeasurementUnitService.getMinimumUnit());
         }
 
@@ -58,19 +53,15 @@ namespace core.modelview.customizeddimensions
         /// <param name="unit">Unit to which the values will be converted.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the provided CustomizedDimensions is null.</exception>
-        public static GetCustomizedDimensionsModelView fromEntity(CustomizedDimensions customizedDimensions, string unit)
-        {
-            if (customizedDimensions == null)
-            {
+        public static GetCustomizedDimensionsModelView fromEntity(CustomizedDimensions customizedDimensions, string unit) {
+            if (customizedDimensions == null) {
                 throw new ArgumentNullException(ERROR_NULL_CUSTOMIZED_DIMENSIONS);
             }
             //if no unit is provided resort to the default implementation
-            if (Strings.isNullOrEmpty(unit))
-            {
+            if (Strings.isNullOrEmpty(unit)) {
                 return fromEntity(customizedDimensions);
             }
             GetCustomizedDimensionsModelView modelView = new GetCustomizedDimensionsModelView();
-            modelView.customizedDimensionsId = customizedDimensions.Id;
             modelView.unit = unit;
             modelView.height = MeasurementUnitService.convertToUnit(customizedDimensions.height, unit);
             modelView.width = MeasurementUnitService.convertToUnit(customizedDimensions.width, unit);
