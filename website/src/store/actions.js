@@ -7,6 +7,12 @@ export const actions = {
     [types.INIT_PRODUCT]: ({ commit }, payload) => {
         commit(types.INIT_PRODUCT, payload)
     },
+    /**
+     * Action used to commit the mutation SET_ID_CUSTOMIZED_PRODUCT
+     */
+    [types.SET_ID_CUSTOMIZED_PRODUCT]: ({ commit }, payload) => {
+        commit(types.SET_ID_CUSTOMIZED_PRODUCT, payload)
+    },
 
     // /**
     //  * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_WIDTH

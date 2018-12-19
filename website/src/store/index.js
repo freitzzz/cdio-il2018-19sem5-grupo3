@@ -20,6 +20,7 @@ const state = {
     product: {},
 
     customizedProduct: {
+        id: "",
         designation: "",
         reference: "",
         components: [],
@@ -68,6 +69,9 @@ export const getters = {
     },
     productComponents: state => {
         return state.product.components;
+    },
+    idCustomizedProduct: state => {
+        return state.customizedProduct.id
     },
     customizedProductDimensions: state => {
         return state.customizedProduct.customizedDimensions;
