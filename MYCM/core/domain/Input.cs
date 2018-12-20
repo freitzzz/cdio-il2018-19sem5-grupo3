@@ -5,13 +5,11 @@ using support.dto;
 using support.utils;
 using System;
 
-namespace core.domain
-{
+namespace core.domain {
     /// <summary>
     /// Class that represents an input for an algorithm
     /// </summary>
-    public class Input : ValueObject, DTOAble<InputDTO>
-    {
+    public class Input : ValueObject, DTOAble<InputDTO> {
         /// <summary>
         /// Message when input name is not valid
         /// </summary>
@@ -45,8 +43,7 @@ namespace core.domain
         /// Constructor used for injecting an instance of ILazyLoader.
         /// </summary>
         /// <param name="lazyLoader">Instance of ILazyLoader being injected.</param>
-        private Input(ILazyLoader lazyLoader)
-        {
+        private Input(ILazyLoader lazyLoader) {
             this.lazyLoader = lazyLoader;
         }
 
@@ -60,9 +57,9 @@ namespace core.domain
         /// </summary>
         /// <param name="name">Input's name.</param>
         /// <param name="range">Input's allowed value range.</param>
-        private Input(string name, string range)
-        {
+        private Input(string name, string range) {
             checkName(name);
+            checkRange(range);
             this.name = name;
             this.range = range;
         }
@@ -73,8 +70,7 @@ namespace core.domain
         /// <param name="name">Input's name.</param>
         /// <param name="range">Input's allowed value range.</param>
         /// <returns>Created instance of Input.</returns>
-        public static Input valueOf(string name, string range)
-        {
+        public static Input valueOf(string name, string range) {
             return new Input(name, range);
         }
 
@@ -82,8 +78,7 @@ namespace core.domain
         /// Checks if the name is not null nor empty.
         /// </summary>
         /// <param name="name">Name being checked.</param>
-        private void checkName(string name)
-        {
+        private void checkName(string name) {
             if (Strings.isNullOrEmpty(name)) throw new ArgumentException(INVALID_INPUT_NAME);
         }
 
@@ -91,19 +86,15 @@ namespace core.domain
         /// Checks if the range is not null nor empty.
         /// </summary>
         /// <param name="range">Range being checked.</param>
-        private void checkRange(string range)
-        {
+        private void checkRange(string range) {
             if (Strings.isNullOrEmpty(range)) throw new ArgumentException();
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj == this)
-            {
+        public override bool Equals(object obj) {
+            if (obj == this) {
                 return true;
             }
-            if (obj == null || !obj.GetType().Equals(this.GetType()))
-            {
+            if (obj == null || !obj.GetType().Equals(this.GetType())) {
                 return false;
             }
 
@@ -112,15 +103,13 @@ namespace core.domain
             return this.name.Equals(other.name);
         }
 
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             int hash = 21;
             hash = hash * 37 + this.name.GetHashCode();
             return hash;
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return string.Format("Name: {0}; Range: {1}", this.name, this.range);
         }
 
@@ -128,11 +117,11 @@ namespace core.domain
         /// Returns DTO equivalent of the Entity
         /// </summary>
         /// <returns>DTO equivalent of the Entity</returns>
-        public InputDTO toDTO()
-        {
+        public InputDTO toDTO() {
             InputDTO dto = new InputDTO();
             dto.id = Id;
             dto.name = name;
+            dto.range = range;
             return dto;
         }
     }
