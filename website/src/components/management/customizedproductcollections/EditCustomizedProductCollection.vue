@@ -21,7 +21,7 @@
     </section>
     <footer class="modal-card-foot">
       <div class="has-text-centered">
-        <button class="button is-info" @click="emitCollection($parent)">Save</button>
+        <button class="btn-primary" @click="emitCollection($parent)">Save</button>
       </div>
     </footer>
   </div>
