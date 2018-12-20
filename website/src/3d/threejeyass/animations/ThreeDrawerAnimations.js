@@ -1,14 +1,29 @@
 //@ts-check
 
 /**
- * Requires ThreeDrawer properties
+ * Requires Action for registering animation actions
  */
-import ThreeDrawer from '../domain/ThreeDrawer';
+import Action from '../../api/domain/Action';
 
 /**
  * Requires FaceOrientation for identifying drawer faces orientation
  */
 import FaceOrientation from '../../api/domain/FaceOrientation';
+
+/**
+ * Requires ThreeDrawer properties
+ */
+import ThreeDrawer from '../domain/ThreeDrawer';
+
+/**
+ * Requires Actions Watcher
+ */
+import Watcher from '../../api/domain/Watcher';
+
+/**
+ * Requires Actions Watcher events types
+ */
+import WatcherEventTypes from '../../api/domain/WatcherEventsTypes';
 
 /**
  * Service class that holds all three.js drawer animations functionalities
@@ -31,9 +46,10 @@ export default class ThreeDrawerAnimations{
             for(let threeDrawerFace of drawerThreeFacesValues){
                 threeDrawerFace.translateZ(1);
             }
-            this.open(drawer);
+            let watchOpen=function(context,drawer){return function(){context.open(drawer);}}
+            Watcher.currentWatcher().queueAction(WatcherEventTypes.RENDER,new Action(watchOpen(this,drawer)));
+            Watcher.currentWatcher().trigger(WatcherEventTypes.RENDER);
         }
-        //TODO: Notify Render
         //TODO: Notify Controls
     }
 
@@ -50,16 +66,16 @@ export default class ThreeDrawerAnimations{
     //3 is the value for drawer thickness
     static close(drawer){
         let drawerThreeFaces=drawer.getThreeFaces();
-        let drawerFrontThreeFace=drawerThreeFaces.get(FaceOrientation.FRONT);
         let drawerBackThreeFace=drawerThreeFaces.get(FaceOrientation.BACK);
-        let drawerFrontThreeFaceZAxis=drawerFrontThreeFace.position.z;
-        if(drawerBackThreeFace.position.z>drawerFrontThreeFaceZAxis+3){
+        let oldDrawerBackZAxis=drawer.getInitialDrawerFaces().get(FaceOrientation.BACK).Z();
+        if(drawerBackThreeFace.position.z>oldDrawerBackZAxis){
             for(let drawerThreeFace of drawerThreeFaces.values()){
                 drawerThreeFace.translateZ(-1);
             }
-            this.close(drawer);
+            let watchClose=function(context,drawer){return function(){context.close(drawer);}}
+            Watcher.currentWatcher().queueAction(WatcherEventTypes.RENDER,new Action(watchClose(this,drawer)));
+            Watcher.currentWatcher().trigger(WatcherEventTypes.RENDER);
         }
-        //TODO: Notify Render
         //TODO: Notify Controls
     }
 }
