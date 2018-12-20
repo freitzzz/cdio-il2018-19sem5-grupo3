@@ -32,8 +32,14 @@ describe('customized product mutations', () => {
         });
     });
     describe('customized product material', () => {
-        test('set customized product material',
+        test('set customized material',
             ensureSetCustomizedProductMaterialUpdatesStateCorrectly
+        );
+        test('set customized material color',
+            ensureSetCstomizedProductMaterialColorUpdatesStateCorrectly
+        );
+        test('set customized material finish',
+            ensureSetCustomizedProductMaterialFinishUpdatesStateCorrectly
         );
     });
     describe('customized product components', () => {
@@ -42,6 +48,9 @@ describe('customized product mutations', () => {
         );
         test('don\'t add a component to a customized product if it has no slots',
             ensureSetCustomizedProductComponentDoesntAddComponentIfCustomizedProductDoesntHaveSlots
+        );
+        test('initialize empty array if payload is null',
+            ensureSetCustomizedProductComponentInitializesEmptyArrayIfPayloadIsNull
         );
         test('remove a component from a customized product',
             ensureRemoveCustomizedProductComponentUpdatesStateCorrectly
@@ -73,6 +82,12 @@ describe('canvas controls mutations', () => {
         test('deactivate components movement',
             ensureDeactivatingComponentsMovementFlagUpdatesStateCorrectly
         );
+    });
+})
+
+describe('resize factor dimensions mutations', () => {
+    test('set resize factor dimensions values', () => {
+        ensureSetResizeFactorDimensionsUpdatesStateCorrectly
     });
 })
 
@@ -254,6 +269,41 @@ function ensureSetCustomizedProductMaterialUpdatesStateCorrectly() {
     expect(state.customizedProduct.customizedMaterial).toEqual(payload);
 }
 
+function ensureSetCstomizedProductMaterialColorUpdatesStateCorrectly() {
+    const state = {
+        customizedProduct: {
+            customizedMaterial: {
+                color: {}
+            }
+        }
+    };
+    const payload = {
+        name: "blue",
+        red: 100,
+        green: 100,
+        blue: 100,
+        alpha: 1
+    };
+    mutations.set_customized_product_color(state, payload);
+    expect(state.customizedProduct.customizedMaterial.color).toEqual(payload);
+}
+
+function ensureSetCustomizedProductMaterialFinishUpdatesStateCorrectly() {
+    const state = {
+        customizedProduct: {
+            customizedMaterial: {
+                finish: {}
+            }
+        }
+    };
+    const payload = {
+        description: "varnish",
+        shininess: 100
+    };
+    mutations.set_customized_product_finish(state, payload);
+    expect(state.customizedProduct.customizedMaterial.finish).toEqual(payload);
+}
+
 function ensureSetCustomizedProductComponentsUpdatesStateCorrectly() {
     const state = {
         customizedProduct: {
@@ -307,10 +357,29 @@ function ensureSetCustomizedProductComponentDoesntAddComponentIfCustomizedProduc
     expect(state.customizedProduct.components).toHaveLength(0);
 }
 
+function ensureSetCustomizedProductComponentInitializesEmptyArrayIfPayloadIsNull() {
+    const state = {
+        customizedProduct: {
+            components: [],
+            slots: [{
+                components: [],
+                idSlot: 1,
+                width: 100,
+                height: 100,
+                depth: 100,
+                unit: "dm"
+            }]
+        }
+    }
+    const payload = null;
+    mutations.set_slot_components(state, payload);
+    expect(state.customizedProduct.components).toHaveLength(0);
+}
+
 function ensureRemoveCustomizedProductComponentUpdatesStateCorrectly() {
     const state = {
-        canvasControls:{
-            componentToRemove:{}
+        canvasControls: {
+            componentToRemove: {}
         },
         customizedProduct: {
             components: [],
@@ -399,4 +468,21 @@ function ensureDeactivatingComponentsMovementFlagUpdatesStateCorrectly() {
     };
     mutations.deactivate_can_move_components(state);
     expect(state.canvasControls.canMoveComponents).toBeFalsy();
+}
+
+function ensureSetResizeFactorDimensionsUpdatesStateCorrectly() {
+    const state = {
+        resizeFactorDimensions: {
+            width: "",
+            height: "",
+            depth: ""
+        }
+    };
+    const payload = {
+        width: "2",
+        height: "2",
+        depth: "2"
+    };
+    mutations.set_resize_factor_dimensions(state, payload);
+    expect(state.resizeFactorDimensions).toEqual(payload);
 }
