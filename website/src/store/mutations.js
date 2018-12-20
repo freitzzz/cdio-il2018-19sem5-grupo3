@@ -2,6 +2,13 @@ import * as types from './mutation-types'
 import store from '.';
 
 export const mutations = {
+  [types.SET_RESIZE_VECTOR_GLOBAL](state,payload){
+    if(payload){
+      state.resizeVectorGlobal = payload;
+    }else{
+      state.resizeVectorGlobal =[];
+    }
+  },
 
   [types.SET_RESIZE_FACTOR_DIMENSIONS](state,payload){
     if (payload) {
