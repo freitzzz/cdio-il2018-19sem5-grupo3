@@ -6,12 +6,12 @@
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
     <select class="dropdown" v-model="dimensionOp" @change="populateDimensions">
-                              <option
-                                v-for="option in availableOptionsDimensions"
-                                :key="option.id"
-                                :value="option"
-                              >{{"Option: "+option.id}}</option>
-                            </select>
+                                <option
+                                  v-for="option in availableOptionsDimensions"
+                                  :key="option.id"
+                                  :value="option"
+                                >{{"Option: "+option.id}}</option>
+                              </select>
   
     <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
@@ -33,12 +33,12 @@
   
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="this.updateDimensions">
-                              <option
-                                v-for="optionUnit in availableOptionsUnits"
-                                :key="optionUnit.id"
-                                :value="optionUnit.unit"
-                              >{{optionUnit.unit}}</option>
-                            </select>
+                                <option
+                                  v-for="optionUnit in availableOptionsUnits"
+                                  :key="optionUnit.id"
+                                  :value="optionUnit.unit"
+                                >{{optionUnit.unit}}</option>
+                              </select>
     <div class="center-controls">
       <i class="btn btn-primary material-icons" @click="previousPanel()">arrow_back</i>
       <i class="btn btn-primary material-icons" @click="nextPanel()">arrow_forward</i>
@@ -430,85 +430,105 @@
         }
   
         /*         return new Promise((accept, reject) => {
-                      if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
-                        Axios.post(MYCM_API_URL + '/customizedproducts', {
-                          productId: store.state.product.id,
-                          customizedDimensions: {
-                            height: this.height,
-                            width: this.width,
-                            depth: this.depth,
-                            unit: this.unit
-                          }
-                        })
-                        .then(response => {
-                          this.idCustomizedProduct=response.data.id
-                          accept
-                        })
-                        .catch((error_message) => {
-                          this.$toast.open({
-                            message: error_message.response.data.message
+                        if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
+                          Axios.post(MYCM_API_URL + '/customizedproducts', {
+                            productId: store.state.product.id,
+                            customizedDimensions: {
+                              height: this.height,
+                              width: this.width,
+                              depth: this.depth,
+                              unit: this.unit
+                            }
+                          })
+                          .then(response => {
+                            this.idCustomizedProduct=response.data.id
+                            accept
+                          })
+                          .catch((error_message) => {
+                            this.$toast.open({
+                              message: error_message.response.data.message
+                            });
+                            flag = true;
                           });
-                          flag = true;
-                        });
-                        if (!flag) {
-                          alert(this.idCustomizedProduct);
-      
-                          store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
-                          this.drawRecommendedSlots();
-                          this.$emit("advance");
-                        }else{
-                          this.$toast.open("There was an error please try again!");
+                          if (!flag) {
+                            alert(this.idCustomizedProduct);
+        
+                            store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
+                            this.drawRecommendedSlots();
+                            this.$emit("advance");
+                          }else{
+                            this.$toast.open("There was an error please try again!");
+                          }
+                        } else {
+                          this.$toast.open("Please select an option!");
                         }
-                      } else {
-                        this.$toast.open("Please select an option!");
-                      }
-                    }); */
+                      }); */
       },
       previousPanel() {
+        
         //!TODO DELETE product
-        this.$emit("back");
+        this.$dialog.confirm({
+          title:'Important Information',
+          hasIcon: true,
+          type: 'is-info',
+          icon: 'fas fa-exclamation-circle size:5px',
+          iconPack: 'fa',
+          message: 'Do you want to go back? This will remove all selected dimensions!',
+          onConfirm: () => {
+            if(this.height == undefined || this.width == undefined || this.depth == undefined || this.unit == undefined){
+              this.$emit("back")
+            }else{
+                Axios.delete(`${MYCM_API_URL}/customizedproducts/${store.state.product.id}`)
+              .then(this.$emit("back"))
+              .catch(this.$toast.open("There was an error, please try again."));
+  
+            }
+          
+          }
+        })
+  
       },
-      getRecommendedSlots(){
-
+      getRecommendedSlots() {
+  
         Axios.get(MYCM_API_URL + `/customizedproducts/${this.idCustomizedProduct}/recommendedSlots`)
-            .then(response => {
-              this.listRecommendedSlots = response.data;
-              this.drawRecommendedSlots();
-            })
-            .catch((error_message) => {
-              this.$toast.open({
-                message: error_message.response.data.message
-              });
+          .then(response => {
+            this.listRecommendedSlots = response.data;
+            this.drawRecommendedSlots();
+          })
+          .catch((error_message) => {
+            this.$toast.open({
+              message: error_message.response.data.message
             });
+          });
       },
-      drawRecommendedSlots(){
-              var widthCloset = 6000;/*store.state.customizedProduct.customizedDimensions.width;*/ ///404.5;
-              var depthCloset = 2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
-              var heightCloset = 5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;
-              
-              var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
-              var unitSlots = store.getters.productSlotWidths.unit;
-
-             /*  if(unitCloset != unitSlots){
-                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
-                recommendedSlotWidth = this.valueConvertedSlotsWidth;
-                this.convert(unitSlots,unitCloset,minSlotWidth);
-                minSlotWidth = this.valueConvertedSlotsWidth;
-              }  */
-
-              var reasonW = 404.5 / widthCloset;
-              var reasonD = 100 / depthCloset;
-              var reasonH = 300 / heightCloset;
-
-              for (let i = 0; i < this.listRecommendedSlots.length; i++) {
-                store.dispatch(SET_SLOT_DIMENSIONS, {
-                  idSlot: i,
-                  width: this.listRecommendedSlots[i].width * reasonW,
-                  height: heightCloset,
-                  depth: depthCloset,
-                  unit: unitCloset
-                });
-              } 
+      drawRecommendedSlots() {
+        var widthCloset = 6000; /*store.state.customizedProduct.customizedDimensions.width;*/ ///404.5;
+        var depthCloset = 2500; /*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
+        var heightCloset = 5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;
+  
+        var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
+        var unitSlots = store.getters.productSlotWidths.unit;
+  
+        /*  if(unitCloset != unitSlots){
+           this.convert(unitSlots,unitCloset,recommendedSlotWidth);
+           recommendedSlotWidth = this.valueConvertedSlotsWidth;
+           this.convert(unitSlots,unitCloset,minSlotWidth);
+           minSlotWidth = this.valueConvertedSlotsWidth;
+         }  */
+  
+        var reasonW = 404.5 / widthCloset;
+        var reasonD = 100 / depthCloset;
+        var reasonH = 300 / heightCloset;
+  
+        for (let i = 0; i < this.listRecommendedSlots.length; i++) {
+          store.dispatch(SET_SLOT_DIMENSIONS, {
+            idSlot: i,
+            width: this.listRecommendedSlots[i].width * reasonW,
+            height: heightCloset,
+            depth: depthCloset,
+            unit: unitCloset
+          });
+        }
       },
       convert(from, to, value) {
         Axios.get(
