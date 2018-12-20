@@ -183,7 +183,7 @@ namespace core.domain {
         /// <summary>
         /// Checks if an algorithm is ready to be applied (if all inputs have values)
         /// </summary>
-        protected void ready() {
+        public void ready() {
             foreach (InputValue inputValue in inputValues) {
                 if (inputValue.value == null) {
                     throw new ArgumentNullException(string.Format(INPUT_NOT_SET, inputValue.input.name));
