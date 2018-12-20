@@ -60,7 +60,7 @@ const state = {
         depth: "",
     },
 
-    resizeVector:{
+    resizeVectorGlobal:{
         width: "",
         height: "",
         depth: "",
@@ -68,8 +68,8 @@ const state = {
 }
 
 export const getters = {
-    resizeVector: state =>{
-        return state.resizeVector;
+    resizeVectorGlobal: state =>{
+        return state.resizeVectorGlobal;
     },
     resizeFactorDimensions: state =>{
         return state.resizeFactorDimensions;
