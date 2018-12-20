@@ -58,10 +58,19 @@ const state = {
         width: "",
         height: "",
         depth: "",
+    },
+
+    resizeVector:{
+        width: "",
+        height: "",
+        depth: "",
     }
 }
 
 export const getters = {
+    resizeVector: state =>{
+        return state.resizeVector;
+    },
     resizeFactorDimensions: state =>{
         return state.resizeFactorDimensions;
     },
