@@ -18,6 +18,7 @@ import Watcher from './api/domain/Watcher';
 import ThreeAction from './threejeyass/animations/ThreeAction';
 import WatcherEventsTypes from './api/domain/WatcherEventsTypes';
 import ThreeHingeedDoor from './threejeyass/domain/ThreeHingedDoor';
+import ThreeSlidingDoor from './threejeyass/domain/ThreeSlidingDoor';
 
 export default class ProductRenderer {
 
@@ -334,6 +335,8 @@ export default class ProductRenderer {
     this.showCloset();
     this.generatePole(1);
     this.generateDrawer(1);
+    this.generateHingedDoor(1);
+    //this.generateSlidingDoor();
     this.renderer.setClearColor(0xFFFFFF, 1);
   }
 
@@ -578,19 +581,9 @@ export default class ProductRenderer {
 
     let drawer = new ThreeDrawer(drawerFaces);
 
-    let drawnModule = module.draw();
-    let drawnDrawer = drawer.draw();
-
-    this.closet.getThreeGroup().add(drawnModule, drawnDrawer);
-
     this.closet.addProduct(leftFace.id(), module);
     this.closet.addProduct(leftFace.id(), drawer);
 
-    console.log("Module Group ID => " + module.id());
-    console.log("Drawer Group ID => " + drawer.id());
-
-    this.group.add(drawnModule);
-    this.group.add(drawnDrawer);
   }
 
   /**
@@ -1197,77 +1190,71 @@ export default class ProductRenderer {
 
     let hingedDoorFace=new ThreeFace(null,this.material,null,width,height,depth,x,y,z+(depth_closet/2));
     let hingedDoor=new ThreeHingeedDoor(hingedDoorFace);
-    /* var hingedDoor = new HingedDoor([width, height, depth, x, y, z + (depth_closet / 2)], slot, meshID); */
+
     this.closet.addProduct(slot,hingedDoor);
   }
 
   generateSlidingDoor() {
-    var leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
-    var rightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
-    var topFace = this.closet.getClosetFaces().get(FaceOrientationEnum.TOP).mesh();
-    var bottomFace = this.closet.getClosetFaces().get(FaceOrientationEnum.BASE).mesh();
-    var height = this.closet.getClosetHeight();
-    var width = this.closet.getClosetWidth();
+    let leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
+    let rightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
+    let topFace = this.closet.getClosetFaces().get(FaceOrientationEnum.TOP).mesh();
+    let bottomFace = this.closet.getClosetFaces().get(FaceOrientationEnum.BASE).mesh();
+    let height = this.closet.getClosetHeight();
+    let width = this.closet.getClosetWidth();
     let backFace = this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
-    var z = backFace.position.z + this.closet.getClosetDepth();
+    let z = backFace.position.z + this.closet.getClosetDepth();
 
-    var thickness = 4.20;
+    let thickness = 4.20;
 
-    var front_door = new SlidingDoor([width / 2, (height - thickness), 5, leftFace.position.x / 2, leftFace.position.y, z + 7]);
+    //var front_door = new SlidingDoor([width / 2, (height - thickness), 5, leftFace.position.x / 2, leftFace.position.y, z + 7]);
 
-    var front_frame = new Module([width, thickness, 5, bottomFace.position.x, bottomFace.position.y, z + 7],
+    let front_door_face=new ThreeFace(null,this.material,null,(width/2),(height-thickness),5,(leftFace.position.x/2),(leftFace.position.y),z+7);
+
+    let front_door=new ThreeSlidingDoor(front_door_face,null,0);
+
+    let front_frame_faces=new Map();
+    front_frame_faces.set(FaceOrientationEnum.BASE,new ThreeFace(null,this.material,FaceOrientationEnum.BASE,width, thickness, 5, bottomFace.position.x, bottomFace.position.y, z + 7));
+    front_frame_faces.set(FaceOrientationEnum.TOP,new ThreeFace(null,this.material,FaceOrientationEnum.TOP,width, thickness, 5, topFace.position.x, topFace.position.y, z + 7));
+    front_frame_faces.set(FaceOrientationEnum.LEFT,new ThreeFace(null,this.material,FaceOrientationEnum.LEFT,thickness, height, 5, leftFace.position.x, leftFace.position.y, z + 7));
+    front_frame_faces.set(FaceOrientationEnum.RIGHT,new ThreeFace(null,this.material,FaceOrientationEnum.RIGHT,thickness, height, 5, rightFace.position.x, rightFace.position.y, z + 7));
+
+    let front_frame=new ThreeModule(front_frame_faces,0,0);
+
+    /* let front_frame = new ThreeModule([width, thickness, 5, bottomFace.position.x, bottomFace.position.y, z + 7],
       [width, thickness, 5, topFace.position.x, topFace.position.y, z + 7],
       [thickness, height, 5, leftFace.position.x, leftFace.position.y, z + 7],
-      [thickness, height, 5, rightFace.position.x, rightFace.position.y, z + 7]);
+      [thickness, height, 5, rightFace.position.x, rightFace.position.y, z + 7]); */
 
-    var back_door = new SlidingDoor([width / 2, (height - thickness), 5, rightFace.position.x / 2, rightFace.position.y, z + 2]);
 
-    var back_frame = new Module([width, thickness, 5, bottomFace.position.x, bottomFace.position.y, z + 2],
-      [width, thickness, 5, topFace.position.x, topFace.position.y, z + 2],
-      [thickness, height, 5, leftFace.position.x, leftFace.position.y, z + 2],
-      [thickness, height, 5, rightFace.position.x, rightFace.position.y, z + 2]);
+      
 
-    //Adds front frame
-    var borders = front_frame.module_faces;
-    for (var i = 0; i < borders.length; i++) {
-      this.generateParellepiped(borders[i][0],
-        borders[i][1], borders[i][2], borders[i][3],
-        borders[i][4], borders[i][5], this.material, this.group);
-    }
+    //var back_door = new SlidingDoor([width / 2, (height - thickness), 5, rightFace.position.x / 2, rightFace.position.y, z + 2]);
 
-    //Adds front door
-    var front_door_mesh_id = this.generateParellepiped(
-      front_door.sliding_door_axes[0],
-      front_door.sliding_door_axes[1],
-      front_door.sliding_door_axes[2],
-      front_door.sliding_door_axes[3],
-      front_door.sliding_door_axes[4],
-      front_door.sliding_door_axes[5],
-      this.material, this.group);
+    alert("Height => "+height)
+    alert("Thickness => "+thickness)
+    let back_door_face=new ThreeFace(null,this.material,null,(width/2),(height-thickness),5,(rightFace.position.x/2),(rightFace.position.y),z+2);
 
-    //Adds back door
-    var back_door_mesh_id = this.generateParellepiped(
-      back_door.sliding_door_axes[0],
-      back_door.sliding_door_axes[1],
-      back_door.sliding_door_axes[2],
-      back_door.sliding_door_axes[3],
-      back_door.sliding_door_axes[4],
-      back_door.sliding_door_axes[5],
-      this.material, this.group);
+    let back_door=new ThreeSlidingDoor(back_door_face,null,0);
 
-    this.closet.addSlidingDoor(front_door);
-    this.closet.addSlidingDoor(back_door);
+    let back_frame_faces=new Map();
+    back_frame_faces.set(FaceOrientationEnum.BASE,new ThreeFace(null,this.material,FaceOrientationEnum.BASE,width, thickness, 5, bottomFace.position.x, bottomFace.position.y, z + 2));
+    back_frame_faces.set(FaceOrientationEnum.TOP,new ThreeFace(null,this.material,FaceOrientationEnum.TOP,width, thickness, 5, topFace.position.x, topFace.position.y, z + 2));
+    back_frame_faces.set(FaceOrientationEnum.LEFT,new ThreeFace(null,this.material,FaceOrientationEnum.LEFT,thickness, height, 5, leftFace.position.x, leftFace.position.y, z + 2));
+    back_frame_faces.set(FaceOrientationEnum.RIGHT,new ThreeFace(null,this.material,FaceOrientationEnum.RIGHT,thickness, height, 5, rightFace.position.x, rightFace.position.y, z + 2));
 
-    this.closet_sliding_doors_ids.push(front_door_mesh_id);
-    this.closet_sliding_doors_ids.push(back_door_mesh_id);
+    let back_frame=new ThreeModule(back_frame_faces,0,0);
 
-    //Adds back frame
-    var borders = back_frame.module_faces;
-    for (var i = 0; i < borders.length; i++) {
-      this.generateParellepiped(borders[i][0],
-        borders[i][1], borders[i][2], borders[i][3],
-        borders[i][4], borders[i][5], this.material, this.group);
-    }
+    let drawnFrontModule=front_frame.draw();
+    let drawnFrontDoor=front_door.draw();
+      
+    let drawnBackModule=back_frame.draw();
+    let drawnBackDoor=back_door.draw();
+    
+    this.group.add(drawnBackModule,drawnFrontModule);
+    this.group.add(drawnBackDoor,drawnFrontDoor);
+
+    console.log(back_door.face);
+    alert("!!!!")
   }
 
 
