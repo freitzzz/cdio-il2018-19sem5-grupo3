@@ -20,6 +20,7 @@ const state = {
     product: {},
 
     customizedProduct: {
+        id: "",
         designation: "",
         reference: "",
         components: [],
@@ -50,8 +51,7 @@ const state = {
             height: "",
             depth: "",
             unit: ""
-        },
-        components: []
+        }
        },
        resizeFactorDimensions:{
         width: "",
@@ -84,6 +84,9 @@ export const getters = {
     },
     productComponents: state => {
         return state.product.components;
+    },
+    customizedProductId: state => {
+        return state.customizedProduct.id;
     },
     width: state => {
         return state.customizedProduct.dimensions.width;
