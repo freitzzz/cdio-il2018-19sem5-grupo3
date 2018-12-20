@@ -413,7 +413,7 @@ namespace backend.Controllers {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
-        [HttpGet("{customizedProductId}/recommendedSlots")]
+        [HttpGet("{customizedProductId}/recommendedslots")]
         public ActionResult getRecommendedSlots(long customizedProductId) {
             try {
                 GetAllCustomizedDimensionsModelView allCustomDimensionsMV = new core.application.CustomizedProductController().getRecommendedSlots(customizedProductId);
@@ -425,7 +425,7 @@ namespace backend.Controllers {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
-        [HttpGet("{customizedProductId}/minSlots")]
+        [HttpGet("{customizedProductId}/minslots")]
         public ActionResult getMinSlots(long customizedProductId) {
             try {
                 GetAllCustomizedDimensionsModelView allCustomDimensionsMV = new core.application.CustomizedProductController().getMinSlots(customizedProductId);

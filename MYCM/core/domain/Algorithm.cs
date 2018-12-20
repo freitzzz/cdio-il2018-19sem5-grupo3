@@ -5,13 +5,11 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using support.utils;
 
-namespace core.domain
-{
+namespace core.domain {
     /// <summary>
     /// Abstract class representing an Algorithm.
     /// </summary>
-    public abstract class Algorithm
-    {
+    public abstract class Algorithm {
         /// <summary>
         /// Constant representing the message presented when an instance of Algorithm is attempted to be created without a valid name.
         /// </summary>
@@ -89,8 +87,7 @@ namespace core.domain
         /// Constructor used for injecting an instance of ILazyLoader.
         /// </summary>
         /// <param name="lazyLoader">Instance of ILazyLoader being injected.</param>
-        protected Algorithm(ILazyLoader lazyLoader)
-        {
+        protected Algorithm(ILazyLoader lazyLoader) {
             this.LazyLoader = lazyLoader;
         }
 
@@ -104,8 +101,7 @@ namespace core.domain
         /// </summary>
         /// <param name="name">String representing the Algorithm's name.</param>
         /// <exception cref="System.ArgumentException">Thrown when the provided name is null or empty.</exception>
-        protected void checkName(string name)
-        {
+        protected void checkName(string name) {
             if (Strings.isNullOrEmpty(name)) throw new ArgumentException(INVALID_ALGORITHM_NAME);
         }
 
@@ -114,8 +110,7 @@ namespace core.domain
         /// </summary>
         /// <param name="description">String representing the Algorithm's description.</param>
         /// <exception cref="System.ArgumentException">Thrown when the provided description is null or empty.</exception>
-        protected void checkDescription(string description)
-        {
+        protected void checkDescription(string description) {
             if (Strings.isNullOrEmpty(description)) throw new ArgumentException(INVALID_ALGORITHM_DESCRIPTION);
         }
 
@@ -125,18 +120,14 @@ namespace core.domain
         /// <param name="inputs">IEnumerable of Input being checked.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when the provided IEnumerable of Input is null.</exception>
         /// <exception cref="System.ArgumentException">Thrown when any of the istances of Input in the IEnumerable is a duplicate.</exception>
-        protected void checkInputs(IEnumerable<Input> inputs)
-        {
-            if (inputs == null)
-            {
+        protected void checkInputs(IEnumerable<Input> inputs) {
+            if (inputs == null) {
                 throw new ArgumentNullException(INVALID_INPUT_LIST);
             }
 
             HashSet<Input> inputHashSet = new HashSet<Input>();
-            foreach (Input input in inputs)
-            {
-                if (!inputHashSet.Add(input))
-                {
+            foreach (Input input in inputs) {
+                if (!inputHashSet.Add(input)) {
                     throw new ArgumentException(string.Format(DUPLICATE_INPUT, input.name));
                 }
             }
@@ -146,8 +137,7 @@ namespace core.domain
         /// Returns a list of the required inputs to apply the algorithm
         /// </summary>
         /// <returns>list of the required inputs</returns>
-        public List<Input> getRequiredInputs()
-        {
+        public List<Input> getRequiredInputs() {
             return this.inputValues.Select(iv => iv.input).ToList();
         }
 
@@ -159,11 +149,10 @@ namespace core.domain
         /// <exception cref="System.ArgumentException">
         /// Thrown when either the provided Input is null, the value is null or empty or the Input is not one of the Algorithm's inputs.
         /// </exception>
-        public void setInputValue(Input input, string value)
-        {
+        public void setInputValue(Input input, string value) {
             if (input == null) throw new ArgumentNullException(SET_INVALID_INPUT);
 
-            InputValue inputValue = this.inputValues.Where(iv => iv.Equals(input)).SingleOrDefault();
+            InputValue inputValue = this.inputValues.Where(iv => iv.input.Equals(input)).SingleOrDefault();
 
             if (inputValue == null) throw new ArgumentException(INPUT_NOT_FOUND);
 
@@ -178,12 +167,10 @@ namespace core.domain
         /// </summary>
         /// <param name="inputValues">Dictionary containing the Inputs and their new values.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when the provided Dictionary is null.</exception>
-        public void setInputValues(Dictionary<Input, string> inputValues)
-        {
+        public void setInputValues(Dictionary<Input, string> inputValues) {
             if (inputValues == null) throw new ArgumentNullException(SET_INVALID_INPUTS);
 
-            foreach (KeyValuePair<Input, string> inputValue in inputValues)
-            {
+            foreach (KeyValuePair<Input, string> inputValue in inputValues) {
                 setInputValue(inputValue.Key, inputValue.Value);
             }
         }
