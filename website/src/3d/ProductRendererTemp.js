@@ -8,6 +8,7 @@ import Module from './Module'
 import SlidingDoor from './SlidingDoor'
 import Shelf from './Shelf'
 import HingedDoor from './HingedDoor'
+import { LoopRepeat } from 'three';
 
 export default class ProductRenderer {
 
@@ -768,10 +769,21 @@ export default class ProductRenderer {
   /** 
    * Populate vector website dimensions
   */
-  populateWebsiteDimensions(width, height, depth){
-    this.websiteDimensions=[width,height,depth];
+  populateWebsiteDimensions(websiteDimensions){
+    let asd = new Promise((accept,reject)=>{
+      if(websiteDimensions.width == undefined || websiteDimensions.height == undefined || websiteDimensions.depth == undefined ){
+        reject();
+      }else{
+        this.websiteDimensions=[websiteDimensions.width,websiteDimensions.height,websiteDimensions.depth];
+        accept();
+      }
+
+    }
+    );
+
   }
   /**  END   */
+
   /**
    * Changes the dimensions of the closet
    * @param {number} width Number with the closet width
@@ -783,7 +795,7 @@ export default class ProductRenderer {
 
     this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
     this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
-    this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth) - 195.8);
+    this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth) - 250.8);
 
     this.updateClosetGV();
   }
@@ -795,6 +807,7 @@ export default class ProductRenderer {
     var i;
     for (i = 0; i < this.NUMBER_DIMENSIONS; i++) {
       this.resizeVec[i] = this.initialDimensions[i] / this.websiteDimensions[i];
+     
     }
   }
   /**
