@@ -54,4 +54,15 @@ export default class HingedDoor extends OpenableProduct{
      * Returns the width of the hingedDoor
      */
     getWidth() { return this.face.width(); }
+
+    /**
+     * Returns the face of the hinged door
+     */
+    getFace(){return this.face;}
+
+    /**
+     * Draws the current hinged door
+     * @returns {Object} Object with the drawn hinged door
+     */
+    draw(){}
 }

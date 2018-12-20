@@ -62,4 +62,15 @@ export default class SlidingDoor extends OpenableProduct{
     getWidth() {
         return this.face.width();
     }
+
+    /**
+     * Returns the face of the sliding door
+     */
+    getFace(){return this.face;}
+
+    /**
+     * Draws the current sliding door
+     * @returns {Object} Object with the drawn sliding door
+     */
+    draw(){}
 }
