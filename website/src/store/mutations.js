@@ -27,6 +27,14 @@ export const mutations = {
   [types.SET_ID_CUSTOMIZED_PRODUCT](state, payload) {
     state.customizedProduct.id = payload;
   },
+  /**
+   * Saves the id of slot 
+   * @param {*} state The store's state
+   * @param {*} payload Received payload with the id
+   */
+  [types.SET_ID_SLOT](state, payload) {
+    state.customizedProduct.slots[payload.position].idSlot = payload.idSlot;
+  },
 
   /**
    * Changes the states's customized product's dimension
@@ -47,7 +55,7 @@ export const mutations = {
    * @param {*} state The store's state
    * @param {*} payload Payload with the new slot width 
    */
-  [types.SET_SLOT_DIMENSIONS](state, payload) {
+  [types.ADD_SLOT_DIMENSIONS](state, payload) {
     if (payload) {
       state.customizedProduct.slots.push({
         idSlot: payload.idSlot,
@@ -58,7 +66,6 @@ export const mutations = {
       })
     } else { state.customizedProduct.slots = []; }
   },
-
   /**
    * Changes the states's customized product's material 
    * @param {*} state The store's state

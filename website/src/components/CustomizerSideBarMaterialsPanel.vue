@@ -208,9 +208,50 @@ export default {
                   });
       } 
     },
-    previousPanel() {
-      this.$emit("back");
-    }
+    previousPanel(){
+      this.deleteSlots().then(() => {
+        this.$emit("back");
+      }).catch((error_message)=>{
+           this.$toast.open({
+              message: error_message
+          }); 
+      });
+    },
+    deleteSlots(){
+      let slotsToDelete1 = [];
+      var size = store.state.customizedProduct.slots.length;
+      for(let i = 0; i< size-1; i++){
+        slotsToDelete1.unshift(store.state.customizedProduct.slots[i].idSlot);
+      }
+      return new Promise((accept,reject)=>{
+        this.deleteSlot(slotsToDelete1)
+        .then(() => {
+          accept()})
+        .catch((error_message) => { 
+                reject(error_message)
+      });
+      })
+    },
+    deleteSlot(slotsToDelete1){
+      return new Promise((accept, reject) => {
+        let slotToDelete = slotsToDelete1.pop();
+        Axios.delete(MYCM_API_URL + 
+        `/customizedproducts/${store.state.customizedProduct.id}/slots/${slotToDelete}`)
+        .then(() => {
+                if(slotsToDelete1.length > 0 ){
+                  return this.deleteSlot(slotsToDelete1)
+                  .then(()=>{
+                    accept()})
+                  .catch((error_message) => { reject(error_message)});
+                }else{
+                  accept();
+                }
+              })
+              .catch((error_message) => {
+                  reject(error_message.response.data.message);
+              });
+      })
+    },
   },
   created() {
     this.getProductMaterials();

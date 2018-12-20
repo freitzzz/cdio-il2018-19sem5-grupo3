@@ -19,22 +19,25 @@
       <div class="slidersSection">
         <span v-for="n in 1" :key="n">
           <vue-slider
-            class="slidersSection"
+            class="slidersSection" 
             :min="minSizeSlot"
             :max="maxSizeSlot"
-            :value="recommendedSizeSlot"
-            v-model="sliderValue[n-1]"
+            :value="slotWidthChange"
+            v-model="sliderValue"
+            @change="updateWidthSlot"
           ></vue-slider>
         </span>
       </div>
-      <div v-for="(line, index) in lines.slice(0,maxNumberSlots)" v-bind:key="index">
+      <div v-for="(line, index) in lines.slice(0,5)" v-bind:key="index">
           <vue-slider
             class="slidersSection"
             :min="minSizeSlot"
             :max="maxSizeSlot"
-            :value="recommendedSizeSlot"
-            v-model="sliderValues[index]"
+            :value="slotWidthChange"
+            
           ></vue-slider>
+
+          <!--v-model="sliderValues[index]"-->
       </div>
     </div>
     <div class="center-controls">
@@ -48,7 +51,7 @@ import vueSlider from "vue-slider-component";
 import store from "./../store";
 import Axios from "axios";
  import {MYCM_API_URL} from "./../config.js";
-import { SET_SLOT_DIMENSIONS, DEACTIVATE_CAN_MOVE_CLOSET, ACTIVATE_CAN_MOVE_SLOTS, DEACTIVATE_CAN_MOVE_SLOTS } from "./../store/mutation-types.js";
+import { ADD_SLOT_DIMENSIONS,SET_ID_SLOT, DEACTIVATE_CAN_MOVE_CLOSET, ACTIVATE_CAN_MOVE_SLOTS, DEACTIVATE_CAN_MOVE_SLOTS } from "./../store/mutation-types.js";
 
 export default {
   name: "CustomizerSideBarSlotsPanel",
@@ -56,7 +59,7 @@ export default {
     return {
       picked: "recommendedSlots",
       numberSlots: 0,
-      sliderValue: [],
+      sliderValue: this.minSizeSlot,
       sliderValues: [],
       lines: [],
       freeSpace: "",
@@ -68,7 +71,8 @@ export default {
       listRecommendedSlots: [],
       listMinSlots: [],
       drawCustomizedSlots: [],
-      slotsID: []
+      slotsID: [],
+      slotWidthChange: 0
     };
   },
   components: {
@@ -124,8 +128,6 @@ export default {
       });
     },
     postSlots(){
-
-      var customizedProduct = {};
       var widthCloset = 6000; //store.state.customizedProduct.customizedDimensions.width;
       var reasonW = 404.5 / widthCloset;
       if(this.slotsToPost.length==0){
@@ -142,13 +144,18 @@ export default {
         slotsToPost1.unshift(this.slotsToPost[i]);
       }
       return new Promise((accept,reject)=>{
-        this.postSlot(slotsToPost1)
+        this.postSlot(slotsToPost1.slice())
         .then((customizedProduct) => {
+          for(let i = 0; i< this.slotsToPost.length; i++){
+              store.dispatch(SET_ID_SLOT, {
+                idSlot: customizedProduct.slots[i].id,
+                position: i});
+          }
           accept(customizedProduct)
-          alert(customizedProduct)})
+        })
         .catch((error_message) => { 
                 reject(error_message)
-      });
+        });
       })
     },
     postSlot(slotsToPost1){
@@ -164,7 +171,7 @@ export default {
                 if(slotsToPost1.length > 0 ){
                   return this.postSlot(slotsToPost1)
                   .then((customizedProduct)=>{
-                    accept(customizedProduct.data)})
+                    accept(customizedProduct)})
                   .catch((error_message) => { reject(error_message)});
                 }else{
                   accept(customizedProduct.data);
@@ -184,47 +191,14 @@ export default {
           }); 
       });
     },
-    deleteSlots(){
-      let slotsToDelete1 = [];
-      for(let i = 0; i< this.slostID.length - 1; i++){
-        slotsToDelete1.unshift(this.slostID[i]);
-      }
-      return new Promise((accept,reject)=>{
-        this.postSlot(slotsToDelete1)
-        .then(() => {
-          accept()})
-        .catch((error_message) => { 
-                reject(error_message)
-      });
-      })
-    },
-    deleteSlot(slotsToDelete1){
-      return new Promise((accept, reject) => {
-        let slotToDelete = slotsToDelete1.pop();
-        Axios.delete(MYCM_API_URL + 
-        `/customizedproducts/${store.state.customizedProduct.id}/slots/${slotToDelete}`)
-        .then(() => {
-                if(slotsToDelete1.length > 0 ){
-                  return this.postSlot(slotsToDelete1)
-                  .then(()=>{
-                    accept()})
-                  .catch((error_message) => { reject(error_message)});
-                }else{
-                  accept();
-                }
-              })
-              .catch((error_message) => {
-                  reject(error_message.response.data.message);
-              });
-      })
-    },
+   
     activateCanvasControls(){
-      store.dispatch(SET_SLOT_DIMENSIONS);
+      store.dispatch(ADD_SLOT_DIMENSIONS);
       this.getMinSlots();
       store.dispatch(ACTIVATE_CAN_MOVE_SLOTS);
     },
     deactivateCanvasControls(){
-      store.dispatch(SET_SLOT_DIMENSIONS);
+      store.dispatch(ADD_SLOT_DIMENSIONS);
       this.getRecommendedSlots()
       store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS)
     },
@@ -260,7 +234,7 @@ export default {
               var reasonH = 300 / heightCloset;
 
               for (let i = 0; i < this.listRecommendedSlots.length; i++) {
-                store.dispatch(SET_SLOT_DIMENSIONS, {
+                store.dispatch(ADD_SLOT_DIMENSIONS, {
                   idSlot: i,
                   width: this.listRecommendedSlots[i].width * reasonW,
                   height: heightCloset,
@@ -309,7 +283,7 @@ export default {
               var reasonH = 300 / heightCloset;
 
               for (let i = 0; i < this.listMinSlots.length; i++) {
-                store.dispatch(SET_SLOT_DIMENSIONS, {
+                store.dispatch(ADD_SLOT_DIMENSIONS, {
                   idSlot: i,
                   width: this.listMinSlots[i].width * reasonW,
                   height: heightCloset,
@@ -361,7 +335,7 @@ export default {
               var reasonH = 300 / heightCloset;
 
               
-                store.dispatch(SET_SLOT_DIMENSIONS, {
+                store.dispatch(ADD_SLOT_DIMENSIONS, {
                   idSlot: this.slotsToPost.length + 1,
                   width: min * reasonW,
                   height: heightCloset,
@@ -375,7 +349,28 @@ export default {
                     unit: unitCloset});
               
     },
-    
+    updateWidthSlot(){
+       var widthCloset = 6000; //store.state.customizedProduct.customizedDimensions.width;
+              var depthCloset = 2500; //store.state.customizedProduct.customizedDimensions.depth;
+              var heightCloset = 5000; //store.state.customizedProduct.customizedDimensions.height;
+              
+              var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
+              
+              var reasonW = 404.5 / widthCloset;
+      store.dispatch(ADD_SLOT_DIMENSIONS, {
+                  idSlot: 1,
+                  width: this.sliderValue * reasonW,
+                  height: heightCloset,
+                  depth: depthCloset,
+                  unit: unitCloset
+                });
+              /* this.slotsToPost.push({
+                    height: heightCloset,
+                    depth: depthCloset,
+                    width: this.sliderValue * reasonW,
+                    unit: unitCloset}); */
+              
+    }
   },
   watch: {
     lines() {
