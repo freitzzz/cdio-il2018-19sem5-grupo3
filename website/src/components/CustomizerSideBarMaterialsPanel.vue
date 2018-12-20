@@ -99,7 +99,6 @@ export default {
         .then(response => {
           this.materials = [];
           this.materials.push(...response.data);
-
           this.httpCode = response.status;
         })
         .catch(error => {
@@ -179,10 +178,12 @@ export default {
       else this.showFinishes = true;
     },
     nextPanel() {
-      if(store.getters.customizedMaterialColorName == "None" &&
-      store.getters.customizedMaterialFinishDescription == "None"){
+      var hasColor = store.getters.customizedMaterialColorName != "None";
+      var hasFinish = store.getters.customizedMaterialFinishDescription != "None";
+
+      if(!hasColor && !hasFinish){
         this.$toast.open("You must choose at least one finish or color!");
-      } else {
+      } else if(hasColor && !hasFinish){
          Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
             {
 	            customizedMaterial: {
@@ -193,23 +194,77 @@ export default {
                   green: store.state.customizedProduct.customizedMaterial.color.green,
                   blue: store.state.customizedProduct.customizedMaterial.color.blue,
                   alpha: store.state.customizedProduct.customizedMaterial.color.alpha
-		            },
-		            finish: {
-		          	  description: store.state.customizedProduct.customizedMaterial.finish.description,
-                  shininess: store.state.customizedProduct.customizedMaterial.finish.shininess,
-		            }
+		            } 
 	            },
             })
-            .then(response => {this.$emit("advance")})
-            .catch((error_message) => {
-                    this.$toast.open({
-                        message: error_message.response.data.message
-                    });
-                  });
-      } 
+          .then(response => {
+            this.$emit("advance");
+          })
+          .catch(error_message => {
+            this.$toast.open("Unable to upload color.");
+          });
+      } else if(hasFinish && !hasColor){
+        Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
+          {
+	          customizedMaterial: {
+		          materialId: store.state.customizedProduct.customizedMaterial.id,
+              finish: {
+                description: store.state.customizedProduct.customizedMaterial.finish.description,
+                shininess: store.state.customizedProduct.customizedMaterial.finish.shininess,
+              }
+            }
+          })
+        .then(response => {
+          this.$emit("advance");
+        })
+        .catch(error_message => {
+          this.$toast.open("Unable to upload finish.");
+        });
+      } else if(hasFinish && hasColor){
+        Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
+          {
+	          customizedMaterial: {
+              materialId: store.state.customizedProduct.customizedMaterial.id,
+              color: {
+			          name: store.state.customizedProduct.customizedMaterial.color.name,
+                red: store.state.customizedProduct.customizedMaterial.color.red,
+                green: store.state.customizedProduct.customizedMaterial.color.green,
+                blue: store.state.customizedProduct.customizedMaterial.color.blue,
+                alpha: store.state.customizedProduct.customizedMaterial.color.alpha
+		          },
+              finish: {
+                description: store.state.customizedProduct.customizedMaterial.finish.description,
+                shininess: store.state.customizedProduct.customizedMaterial.finish.shininess,
+              }
+            }
+          })
+        .then(response => {
+          this.$emit("advance")
+        })
+        .catch(error_message => {
+          this.$toast.open("Unable to upload color or finish.");
+        });
+      }
     },
     previousPanel() {
-      this.$emit("back");
+      Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
+      {
+        customizedMaterial: {
+		      materialId: store.state.customizedProduct.customizedMaterial.id,
+          finish: {
+              description: store.state.customizedProduct.customizedMaterial.finish.description,
+              shininess: store.state.customizedProduct.customizedMaterial.finish.shininess,
+          }
+        }
+      })
+      .then(response => {
+        this.removeFinish();
+        this.removeColor();
+        this.$emit("back");
+      })
+      .catch(error_message => {
+        this.$toast.open("Unable to remove the material.");
+      })
     }
   },
   created() {
