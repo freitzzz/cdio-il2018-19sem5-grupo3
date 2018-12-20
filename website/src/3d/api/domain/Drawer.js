@@ -33,8 +33,8 @@ export default class Drawer extends BaseProduct{
      */
     constructor(drawer_faces,productId,slotId=null){
         super(ProductType.DRAWER,productId,slotId);
-        this.drawer_faces=Object.assign({},drawer_faces);
-        this.initial_drawer_faces=Object.assign({},drawer_faces);
+        this.drawer_faces=new Map(drawer_faces);
+        this.initial_drawer_faces=new Map(drawer_faces);
     }
 
     //Drawer Logic
@@ -109,4 +109,10 @@ export default class Drawer extends BaseProduct{
      * Returns all current drawer drawer
      */
     getDrawerFaces(){return this.drawer_faces;}
+
+    /**
+     * Draws the current drawer
+     * @returns {Object} Object with the drawn drawer
+     */
+    draw(){}
 }

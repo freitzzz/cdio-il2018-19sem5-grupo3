@@ -9,13 +9,6 @@ namespace core.modelview.customizeddimensions
     public class GetCustomizedDimensionsModelView
     {
         /// <summary>
-        /// CustomizedDimensions' database identifier.
-        /// </summary>
-        /// <value>Gets/sets the database identifier.</value>
-        [DataMember(Name = "id")]
-        public long customizedDimensionsId { get; set; }
-
-        /// <summary>
         /// CustomizedDimensions' height value.
         /// </summary>
         /// <value>Gets/sets the height value.</value>

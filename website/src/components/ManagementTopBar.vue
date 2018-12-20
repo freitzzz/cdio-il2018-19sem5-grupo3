@@ -3,41 +3,24 @@
   
     <div id="navBarManagement" class="navbar-menu">
       <div class="navbar-start">
-  
-        <a class="navbar-item " @click="enableListCategories">
-                                  Category
-                                </a>
-  
-        <a class="navbar-item" @click="enableListMaterials">
-                                  Material
-                                </a>
-        <a class="navbar-item " @click="enableListProducts">
-                                  Product
-                                </a>
-        <a class="navbar-item" @click="enableCustomizedProduct">
-                                    Create Customized Product
-                                </a>
-        <!-- <a class = "navbar-item" @click="enableListCollections">
-                                    Customized Product Collections
-                                </a> -->
+        <a class="navbar-item" @click="enableListCategories">Category</a>
+        <a class="navbar-item" @click="enableListMaterials"> Material</a>
+        <a class="navbar-item" @click="enableListProducts">Product</a>
+        <a class="navbar-item" @click="enableListCollections">Customized Product Collections</a>
+        <a class="navbar-item" @click="enableCustomizedProduct">Create Customized Product</a>
       </div>
-  
     </div>
   
     <div class="navbar-end">
-      <div class="navbar-item">
-        <a class="navbar-item">
-                                    Welcome, Content Manager
-                                </a>
-        <i class="far fa-user-circle" style="font-size:30px"></i>
-      </div>
+        <a class="navbar-text">
+          Welcome, Content Manager
+        </a>
+        <a class="navbar-icon">
+          <i class="far fa-user-circle" style="font-size:30px"/>
+        </a>
     </div>
   
     <div id="management">
-      <!--       <b-message title="Information">
-            Feature is not implemented yet.
-          </b-message>
-       -->
     </div>
     <section v-if="CustomListCategories" style="width:100%">
       <list-categories/>
@@ -48,10 +31,10 @@
     <section v-if="CustomListMaterials" style="width:100%">
       <list-materials />
     </section>
-    <customizer v-if="CustomCustomizedProduct" ></customizer>
-    <!-- <section v-if="CustomListCollections" style="width:100%">
-          <list-customized-product-collections/>
-        </section> -->
+    <section v-if="CustomListCollections" style="width:100%">
+      <list-customized-product-collections/>
+    </section>
+    <customizer v-if="CustomCustomizedProduct"></customizer>
   </nav>
 </template>
 
@@ -60,14 +43,30 @@
   .tag {
     cursor: pointer;
   }
+
+  .navbar-item:hover{
+    color: #0ba2db !important;
+    background-color: #0ba4db47;
+    border-radius: 10px;
+  }
+
+  .navbar-text{
+    color: #000;
+    text-align: center !important;
+  }
+
+  .navbar-icon{
+    color: #0ba2db !important;
+    margin-left: 10px;
+  }
 </style>
 
 <script>
+  import ListCustomizedProductCollections from './management/customizedproductcollections/ListCustomizedProductCollections.vue';
   import ListMaterials from './management/material/ListMaterials.vue'
   import ListCategories from './management/category/ListCategories.vue'
   import ListProducts from './management/product/ListProducts.vue';
   import Customizer from './Customizer.vue';
-  /*  import ListCustomizedProductCollections from './management/customizedproductcollections/ListCustomizedProductCollections.vue'; */
   export default {
     name: 'ManagementTopBar',
     data() {
@@ -123,8 +122,8 @@
       ListCategories,
       ListMaterials,
       ListProducts,
+      ListCustomizedProductCollections,
       Customizer
-      /*       ListCustomizedProductCollections */
     }
   };
 </script>

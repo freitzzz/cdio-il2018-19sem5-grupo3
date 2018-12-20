@@ -32,7 +32,7 @@ export default class SlotableProduct extends BaseProduct{
         this.slot_faces=[];
         this.initial_slot_faces=[];
         this.currentSlots=0;
-        if(face!=null)this.addSlot(face);
+        /* if(face!=null)this.addSlot(face); */ //TODO: ????????
     }
 
     /**
@@ -66,7 +66,12 @@ export default class SlotableProduct extends BaseProduct{
      * @param {BaseProduct} product BaseProduct with the product which will be placed on the desired slot
      */
     addProduct(slotId,product){
-        this.slots.get(slotId).push(product);
+        //for(let asd of this.slots.keys())console.log(asd)
+        if(!this.slots.get(slotId)){
+            this.slots.set(slotId,[]);
+        }else{
+            this.slots.get(slotId).push(product);
+        }
     }
 
     /**
@@ -79,6 +84,26 @@ export default class SlotableProduct extends BaseProduct{
                 if(product.id()==productId)
                     return product;
         return null;
+    }
+
+    /**
+     * Returns all product inserted products
+     * @param {String} productType String with the product type being queried
+     */
+    getProducts(productType=null){
+        let products=[];
+        let insertedProductsInSlots=this.slots.values();
+        for(let insertedProductsInSlot of insertedProductsInSlots){
+            let insertedProducts=insertedProductsInSlot;
+            for(let insertedProduct of insertedProducts){
+                if(productType==null){
+                    products.push(insertedProduct);
+                }else if(insertedProduct.getProductType()==productType){
+                    products.push(insertedProduct);
+                }
+            }
+        }
+        return products;
     }
 
     /**

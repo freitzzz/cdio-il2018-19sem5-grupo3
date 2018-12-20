@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <button class="button is-info" @click="createNewCollection()">
+      <button class="btn-primary" @click="createNewCollection()">
         <b-icon icon="plus"/>
       </button>
       <div v-if="createNewCollectionModal">
@@ -13,7 +13,7 @@
           />
         </b-modal>
       </div>
-      <button class="button is-info" @click="fetchRequests()">
+      <button class="btn-primary" @click="fetchRequests()">
         <b-icon icon="refresh" custom-class="fa-spin"/>
       </button>
     </div>

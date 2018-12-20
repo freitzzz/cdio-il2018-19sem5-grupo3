@@ -57,6 +57,12 @@ export default {
     applyMaterial(){
       return Store.getters.customizedMaterial;
     },
+    applyColor(){
+      return Store.getters.customizedMaterialColor;
+    },
+    applyFinish(){
+      return Store.getters.customizedMaterialFinish;
+    },
     canMoveCloset(){
       return Store.getters.canMoveCloset;
     },
@@ -65,6 +71,9 @@ export default {
     },
     canMoveComponents(){
       return Store.getters.canMoveComponents;
+    },
+    populateWebsiteDimensions(){
+      return Store.getters.populateWebsiteDimensions;
     }
   },
   components: {
@@ -72,6 +81,13 @@ export default {
     CustomizerProgressBar
   },
   watch: {
+    populateWebsiteDimensions : function(){
+      this.productRenderer.populateWebsiteDimensions(
+        store.getters.resizeFactorDimensions.width,
+        store.getters.resizeFactorDimensions.height,
+        store.getters.resizeFactorDimensions.depth
+      );
+    },
     slots: function(newValue, oldValue) {
       if(newValue.length > 0){
         this.productRenderer.removeAllSlots();
@@ -102,6 +118,12 @@ export default {
     },
     applyMaterial: function(newValue) {
       this.productRenderer.applyTexture("./src/assets/materials/" + newValue);
+    },
+    applyColor: function(newValue){ 
+      this.productRenderer.applyColor(newValue);
+    },
+    applyFinish: function(newValue){
+      this.productRenderer.applyFinish(newValue);
     },
     canMoveCloset(newValue){
       this.productRenderer.canMoveCloset = newValue;

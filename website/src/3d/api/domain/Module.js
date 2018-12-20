@@ -102,4 +102,10 @@ export default class Module extends BaseProduct{
      * Returns all current module faces
      */
     getModuleFaces(){return this.faces;}
+
+    /**
+     * Draws the current module
+     * @returns {Object} Object with the drawn module
+     */
+    draw(){}
 }

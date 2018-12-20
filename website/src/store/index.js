@@ -20,7 +20,6 @@ const state = {
     product: {},
 
     customizedProduct: {
-        id: "",
         designation: "",
         reference: "",
         components: [],
@@ -31,7 +30,18 @@ const state = {
             id: "",
             reference: "",
             designation: "",
-            image: ""
+            image: "",
+            finish: {
+                description: "",
+                shininess: ""
+            },
+            color: {
+                name: "",
+                red: "",
+                green: "",
+                blue: "",
+                alpha: ""
+            }
         },
         slots: [
         ],
@@ -42,6 +52,11 @@ const state = {
             unit: ""
         },
         components: []
+       },
+       resizeFactorDimensions:{
+        width: "",
+        height: "",
+        depth: "",
        }
 }
 
@@ -70,11 +85,17 @@ export const getters = {
     productComponents: state => {
         return state.product.components;
     },
-    idCustomizedProduct: state => {
-        return state.customizedProduct.id
+    width: state => {
+        return state.customizedProduct.dimensions.width;
     },
     customizedProductDimensions: state => {
         return state.customizedProduct.customizedDimensions;
+    },
+    depth: state => {
+        return state.customizedProduct.dimensions.depth;
+    },
+    unit: state => {
+        return state.customizedProduct.dimensions.unit;
     },
     customizedProductSlotWidth: state => index => {
         return state.customizedProduct.slots[index];
@@ -84,6 +105,21 @@ export const getters = {
     },
     customizedMaterial: state => {
         return state.customizedProduct.customizedMaterial.image;
+    },
+    customizedMaterialColor: state => {
+        return state.customizedProduct.customizedMaterial.color.red + "-" +
+        state.customizedProduct.customizedMaterial.color.green + "-" +
+        state.customizedProduct.customizedMaterial.color.blue + "-" +
+        state.customizedProduct.customizedMaterial.color.alpha;
+    },
+    customizedMaterialColorName: state => {
+        return state.customizedProduct.customizedMaterial.color.name;
+    },
+    customizedMaterialFinish: state => {
+        return state.customizedProduct.customizedMaterial.finish.shininess;
+    },
+    customizedMaterialFinishDescription: state => {
+        return state.customizedProduct.customizedMaterial.finish.description;
     },
     canMoveCloset: state => {
         return state.canvasControls.canMoveCloset;

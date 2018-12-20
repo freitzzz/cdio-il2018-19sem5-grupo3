@@ -2,6 +2,13 @@ import * as types from './mutation-types'
 
 export const actions = {
     /**
+     * Action used to commit the mutation SET_RESIZE_FACTOR_DIMENSIONS
+     */
+    [types.SET_RESIZE_FACTOR_DIMENSIONS]: ({ commit }, payload) => {
+        commit(types.SET_RESIZE_FACTOR_DIMENSIONS, payload)
+    },
+
+    /**
      * Action used to commit the mutation INIT_PRODUCT
      */
     [types.INIT_PRODUCT]: ({ commit }, payload) => {
@@ -14,44 +21,32 @@ export const actions = {
         commit(types.SET_ID_CUSTOMIZED_PRODUCT, payload)
     },
 
-    // /**
-    //  * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_WIDTH
-    //  */
-    // [types.SET_CUSTOMIZED_PRODUCT_WIDTH]: ({ commit }, payload) => {
-    //     commit(types.SET_CUSTOMIZED_PRODUCT_WIDTH, payload);
-    // },
-
-    // /**
-    //  * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_HEIGHT
-    //  */
-    // [types.SET_CUSTOMIZED_PRODUCT_HEIGHT]: ({ commit }, payload) => {
-    //     commit(types.SET_CUSTOMIZED_PRODUCT_HEIGHT, payload);
-    // },
-
-    // /**
-    //  * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_DEPTH
-    //  */
-    // [types.SET_CUSTOMIZED_PRODUCT_DEPTH]: ({ commit }, payload) => {
-    //     commit(types.SET_CUSTOMIZED_PRODUCT_DEPTH, payload);
-    // },
-
-    // /**
-    //  * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_UNIT
-    //  */
-    // [types.SET_CUSTOMIZED_PRODUCT_UNIT]: ({ commit }, payload) => {
-    //     commit(types.SET_CUSTOMIZED_PRODUCT_UNIT, payload);
-    // },
     /**
      * Action used to commit the mutation SET_SLOT_WIDTH
      */
     [types.SET_SLOT_DIMENSIONS]: ({ commit }, payload) => {
         commit(types.SET_SLOT_DIMENSIONS, payload);
     },
+
     /**
-     * Action used to commit the mutation SET_MATERIAL
+     * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_MATERIAL
      */
     [types.SET_CUSTOMIZED_PRODUCT_MATERIAL]: ({ commit }, payload) => {
         commit(types.SET_CUSTOMIZED_PRODUCT_MATERIAL, payload);
+    },
+
+    /**
+     * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_FINISH
+     */
+    [types.SET_CUSTOMIZED_PRODUCT_FINISH]: ({commit}, payload) => {
+        commit(types.SET_CUSTOMIZED_PRODUCT_FINISH, payload);
+    },
+
+    /**
+     * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_COLOR
+     */
+    [types.SET_CUSTOMIZED_PRODUCT_COLOR]: ({commit}, payload) => {
+        commit(types.SET_CUSTOMIZED_PRODUCT_COLOR, payload);
     },
 
     /**
