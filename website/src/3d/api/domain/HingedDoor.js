@@ -1,9 +1,9 @@
 //@ts-check
 
 /**
- * Requires BaseProduct for product base properties
+ * Requires OpenableProduct for openable product base properties
  */
-import BaseProduct from "./BaseProduct";
+import OpenableProduct from "./OpenableProduct";
 
 /**
  * Requires Face for hinged door face properties
@@ -18,7 +18,7 @@ import ProductType from "./ProductType";
 /**
  * Represents a hinged door using box geometry
  */
-export default class HingedDoor extends BaseProduct{
+export default class HingedDoor extends OpenableProduct{
 
     /**
      * Builds a new HingedDoor
