@@ -102,8 +102,6 @@ export default class ProductRenderer {
 
   closet_poles_ids;
 
-  closet_sliding_doors_ids;
-
   /**
    * Instance variable with the WebGL canvas
    * @type {HTMLCanvasElement}
@@ -209,7 +207,6 @@ export default class ProductRenderer {
     this.slidingDoor = null;
     this.waitingDoors = [];
     this.openDrawers = [];
-    this.closet_sliding_doors_ids = [];
     this.isHingedDoorClosed = false;
     this.closet_poles_ids = [];
     this.closet_shelves_ids = [];
@@ -890,9 +887,12 @@ export default class ProductRenderer {
         var j = 0;
 
         //Checks if the selected object is a sliding door
-        while (!flagOpen && !flagClose && j < this.closet_sliding_doors_ids.length) {
-          this.slidingDoor = this.group.getObjectById(this.closet_sliding_doors_ids[j]);
-          if (this.slidingDoor == face) {
+
+        let closetSlidingDoors=this.closet.getProducts(ProductTypeEnum.SLIDING_DOOR);
+
+        while (!flagOpen && !flagClose && j < closetSlidingDoors.length) {
+          let closetSlidingDoor=closetSlidingDoors[j].getFace().mesh(); //TODO: ??? Are you sure about that
+          if (closetSlidingDoor == face) {
             this.controls.enabled = false;
             if (this.slidingDoor.position.x < 0) {
               flagClose = true; //"Closing" ==> slide door to the right
@@ -1074,8 +1074,9 @@ export default class ProductRenderer {
       }
     }
     if (this.doesClosetHaveSlidingDoors()) {
-      var front_door = this.group.getObjectById(this.closet_sliding_doors_ids[0]);
-      var back_door = this.group.getObjectById(this.closet_sliding_doors_ids[1]);
+      let closetSlidingDoors=this.closet.getProducts(ProductTypeEnum.SLIDING_DOOR);
+      var front_door = closetSlidingDoors[1].mesh();
+      var back_door = closetSlidingDoors[0].mesh();
       //Front face of the last added drawer is always at index length - 4
       let addedDrawers=this.closet.getProducts(ProductTypeEnum.DRAWER);
       let lastDrawerAddedFrontFace=addedDrawers[addedDrawers.length-1].mesh();
