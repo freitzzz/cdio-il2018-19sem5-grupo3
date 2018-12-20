@@ -26,7 +26,7 @@ namespace core.modelview.cataloguecollectionproduct
         /// CustomizedProduct's persistence identifier.
         /// </summary>
         /// <value>Gets/Sets the persistence identifier.</value>
-        [DataMember]
+        [DataMember(Name = "id")]
         public long customizedProductId { get; set; }
     }
 }

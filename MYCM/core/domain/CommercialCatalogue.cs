@@ -207,7 +207,7 @@ namespace core.domain
         /// <returns>true if the CommercialCatalogue has the CatalogueCollection; false, otherwise</returns>
         public bool hasCollection(CatalogueCollection catalogueCollection)
         {
-            return this.catalogueCollectionList.Where(cc => cc.Equals(catalogueCollection)).Any();
+            return this.catalogueCollectionList.Contains(catalogueCollection);
         }
 
 

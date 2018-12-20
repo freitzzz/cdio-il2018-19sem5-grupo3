@@ -137,12 +137,12 @@ export default {
       if (this.hasSlots() && this.canAddComponentToSlot(component.model)){
         if(this.div_inputs[index] == undefined) {
           this.$toast.open("You must choose a slot to apply the component!");
-      } else if(this.div_inputs[index] < 1 || this.div_inputs[index] > store.state.customizedProduct.slots.length + 1){
-          this.$toast.open("You must choose a valid slot to apply the component!");
+        } else if(this.div_inputs[index] < 1 || this.div_inputs[index] > store.state.customizedProduct.slots.length + 1){
+            this.$toast.open("You must choose a valid slot to apply the component!");
         } else {
-          component.slot = this.div_inputs[index];
-          store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
-          //TODO! DISABLE apply button
+            component.slot = this.div_inputs[index];
+            store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
+            //TODO! DISABLE apply button
         }
       } else if(!this.hasSlots() || !this.canAddComponentToSlot(component.model)){
         component.slot = 0;
@@ -151,17 +151,12 @@ export default {
       }
     },
     removeDivElement(component, index) {
+      component.slot = this.div_inputs[index];
+
+      //TODO! only remove from graphical representation and store if DELETE request returns 204
       store.dispatch(REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, { component: component });
-
-      var aux;
-      for (let i = index + 1; i < this.div_inputs.length; i++) {
-        aux = this.div_inputs[i];
-        this.div_inputs[i - 1] = aux;
-      }
-
-      this.div_elements.splice(component, 1);
-      this.div_inputs.splice(this.div_inputs.length);
-
+      this.div_inputs.splice(index, 1);
+      this.div_elements.splice(index, 1);
       this.$toast.open("The component was sucessfully removed!");
     },
     nextPanel(){
@@ -169,7 +164,7 @@ export default {
       this.$emit("advance");
     },
     previousPanel(){
-      //TODO! DELETE components
+      //TODO! DELETE ALL components
       store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS);
       this.$emit("back");
     }
@@ -215,6 +210,7 @@ export default {
 }
 
 .image-icon-div:hover .tooltiptext  {
+  opacity: .8 !important;
   visibility: visible;
 }
 

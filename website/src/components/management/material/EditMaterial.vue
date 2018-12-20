@@ -1,128 +1,122 @@
 <template>
-    <b-modal :active.sync="activeFlag" has-modal-card scroll="keep">
-            <div v-if = panelEditMaterial class="modal-card" style="width: auto">
-                    <header class="modal-card-head">
-                        <p class="modal-card-title">Edit Material</p>
-                    </header>
-                    <section class="modal-card-body">
-                          <b-field label="Reference" >
-                            <b-input 
-                                v-model="material.reference"
-                                type="String"
-                                icon="pound">
-                            </b-input>
-                        </b-field> 
-                        <b-field label="Designation" >
-                            <b-input 
-                                v-model="material.designation"
-                                type="String"
-                                icon="pound">
-                            </b-input>
-                        </b-field> 
-                        <b-field label="Edit Colors">
-                            <b-select icon="tag" v-model="selectedColor">
-                                  <option v-for="color in material.colors" 
-                                    :key="color.id" :value="color">{{color.name}} </option>
-                            </b-select>
-                        </b-field>
-                              <button class="btn-primary" @click="createColor()">+</button>
-                              <button class="btn-primary" @click="deleteColor()">-</button>
-                        <b-field label="Edit Finishes">
-                            <b-select icon="tag" v-model="selectedFinish">
-                                  <option v-for="finish in material.finishes" 
-                                    :key="finish.id" :value="finish">{{finish.description}} </option>
-                            </b-select>
-                        </b-field> 
-                            <button class="btn-primary" @click="createFinish()">+</button>
-                            <button class="btn-primary" @click="deleteFinish()">-</button>
-                            <div class="example-btn , image">
-                                <file-upload
-                                  class="btn-primary"
-                                  post-action="/files/"
-                                  :maximum="1"
-                                  :drop="true"
-                                  :drop-directory="true"
-                                  v-model="file"
-                                  @input-file="inputFile"
-                                  ref="upload">
-                                  Edit Image
-                                </file-upload>
-                                <b-input
-                                class="image"
-                                v-model="material.image"
-                                type="String"
-                                disabled="true"
-                                required>
-                            </b-input>
-                            </div>
-                    </section>
-                    <footer class="modal-card-foot">
-                        <button class="btn-primary" @click="updateBasicInformation()">Edit</button>                    
-                    </footer>
-            </div>
-            <div v-if = "createFinishPanelEnabled" class="modal-card" style="width: auto">
-                    <header class="modal-card-head">
-                        <p class="modal-card-title">Create Finish</p>
-                    </header>
-                    <section class="modal-card-body">
-                        <b-field label="Designation: ">
-                            <b-input
-                                v-model="inputFinishDesignation" 
-                                type="String"
-                                placeholder="Insert reference"
-                                icon="pound"
-                                required>
-                            </b-input>
-                        </b-field>
-                          <b-field label="Shininess:">
-                            <vue-slider
-                            class="slidersSection"
-                            :min="0"
-                            :max="100"
-                            v-model="inputFinishShininess"
-                            :interval="0.01"
-                          ></vue-slider>
-                         </b-field>
-                    </section>
-                    <footer class="modal-card-foot">
-                      <small-padding-div>
-                        <button class="btn-primary" @click="addFinish()">+</button>
-                        <button class="btn-primary" @click="disableFinishWindow()">Back</button>
-                      </small-padding-div>
-                    </footer>    
-                 </div>
-            <div v-if= "createColorPanelEnabled" class="modal-card" style="width: auto" >
-                    <header class="modal-card-head">
-                        <p class="modal-card-title">Create Color</p>
-                    </header>
-                    <section class="modal-card-body">
-                      <b-field label="Name">
-                            <b-input
-                                v-model="inputColorName"
-                                type="String"
-                                placeholder="Insert name"
-                                icon="pound"
-                                required>
-                            </b-input>
-                        </b-field>
-                      <swatches v-model="inputColorValues" colors="text-advanced"></swatches>
-                      <br> <br> <br> <br> <br><br> <br> <br>
-                    </section>
-                    <footer class="modal-card-foot">
-                      <small-padding-div>
-                        <button class="btn-primary" @click="addColor()">+</button>
-                        <button class="btn-primary" @click="disableColorWindow()">Back</button>
-                      </small-padding-div>
-                    </footer>
-            </div>
-        </b-modal>
+  <div>
+    <div v-if="panelEditMaterial" class="modal-card" style="width: auto">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Edit Material</p>
+      </header>
+      <section class="modal-card-body">
+        <b-field label="Reference">
+          <b-input v-model="material.reference" type="String" icon="pound"></b-input>
+        </b-field>
+        <b-field label="Designation">
+          <b-input v-model="material.designation" type="String" icon="pound"></b-input>
+        </b-field>
+        <b-field label="Edit Colors">
+          <b-select icon="tag" v-model="selectedColor">
+            <option v-for="color in material.colors" :key="color.id" :value="color">{{color.name}}</option>
+          </b-select>
+        </b-field>
+        <button class="btn-primary" @click="createColor()">+</button>
+        <button class="btn-primary" @click="deleteColor()">-</button>
+        <b-field label="Edit Finishes">
+          <b-select icon="tag" v-model="selectedFinish">
+            <option
+              v-for="finish in material.finishes"
+              :key="finish.id"
+              :value="finish"
+            >{{finish.description}}</option>
+          </b-select>
+        </b-field>
+        <button class="btn-primary" @click="createFinish()">+</button>
+        <button class="btn-primary" @click="deleteFinish()">-</button>
+        <div class="example-btn , image">
+          <file-upload
+            class="btn-primary"
+            post-action="/files/"
+            :maximum="1"
+            :drop="true"
+            :drop-directory="true"
+            v-model="file"
+            @input-file="inputFile"
+            ref="upload"
+          >Edit Image</file-upload>
+          <b-input class="image" v-model="material.image" type="String" disabled="true" required></b-input>
+        </div>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="btn-primary" @click="updateBasicInformation()">Edit</button>
+      </footer>
+    </div>
+    <div v-if="createFinishPanelEnabled" class="modal-card" style="width: auto">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Create Finish</p>
+      </header>
+      <section class="modal-card-body">
+        <b-field label="Designation: ">
+          <b-input
+            v-model="inputFinishDesignation"
+            type="String"
+            placeholder="Insert reference"
+            icon="pound"
+            required
+          ></b-input>
+        </b-field>
+        <b-field label="Shininess:">
+          <vue-slider
+            class="slidersSection"
+            :min="0"
+            :max="100"
+            v-model="inputFinishShininess"
+            :interval="0.01"
+          ></vue-slider>
+        </b-field>
+      </section>
+      <footer class="modal-card-foot">
+        <small-padding-div>
+          <button class="btn-primary" @click="addFinish()">+</button>
+          <button class="btn-primary" @click="disableFinishWindow()">Back</button>
+        </small-padding-div>
+      </footer>
+    </div>
+    <div v-if="createColorPanelEnabled" class="modal-card" style="width: auto">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Create Color</p>
+      </header>
+      <section class="modal-card-body">
+        <b-field label="Name">
+          <b-input
+            v-model="inputColorName"
+            type="String"
+            placeholder="Insert name"
+            icon="pound"
+            required
+          ></b-input>
+        </b-field>
+        <swatches v-model="inputColorValues" colors="text-advanced"></swatches>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+      </section>
+      <footer class="modal-card-foot">
+        <small-padding-div>
+          <button class="btn-primary" @click="addColor()">+</button>
+          <button class="btn-primary" @click="disableColorWindow()">Back</button>
+        </small-padding-div>
+      </footer>
+    </div>
+  </div>
 </template> 
 <script>
 import Axios from "axios";
 import Swatches from "vue-swatches";
 import "vue-swatches/dist/vue-swatches.min.css";
 import { Dialog } from "buefy/dist/components/dialog";
-import FileUpload from 'vue-upload-component';
+import FileUpload from "vue-upload-component";
 import vueSlider from "vue-slider-component";
 export default {
   name: "EditMaterial",
@@ -139,7 +133,7 @@ export default {
       createFinishPanelEnabled: false,
       createColorPanelEnabled: false,
       activeFlag: true,
-      file: [],
+      file: []
     };
   },
   components: {
@@ -178,9 +172,9 @@ export default {
     },
     deleteColor() {
       Axios.delete(
-        `http://localhost:5000/mycm/api/materials/${
-          this.material.id
-        }/colors/${this.selectedColor.id}`
+        `http://localhost:5000/mycm/api/materials/${this.material.id}/colors/${
+          this.selectedColor.id
+        }`
       )
         .then(response => {
           let selectedColorIndex = this.material.colors.indexOf(
@@ -227,9 +221,7 @@ export default {
         };
 
         Axios.post(
-          `http://localhost:5000/mycm/api/materials/${
-            this.material.id
-          }/colors`,
+          `http://localhost:5000/mycm/api/materials/${this.material.id}/colors`,
           color
         )
           .then(
@@ -244,9 +236,7 @@ export default {
       if (
         this.inputFinishDesignation != null &&
         this.inputFinishDesignation.trim() != "" &&
-        this.material.finishes.indexOf(
-          this.inputFinishDesignation.trim()
-        ) < 0
+        this.material.finishes.indexOf(this.inputFinishDesignation.trim()) < 0
       ) {
         var finish = {
           description: this.inputFinishDesignation,
@@ -268,19 +258,19 @@ export default {
       this.inputFinishDesignation = "";
       this.inputFinishShininess = 0;
     },
-  inputFile(newFile, oldFile) {
-    this.material.image=this.file[0].name
+    inputFile(newFile, oldFile) {
+      this.material.image = this.file[0].name;
       if (newFile && !oldFile) {
         // add
-        console.log('add', newFile)
+        console.log("add", newFile);
       }
       if (newFile && oldFile) {
         // update
-        console.log('update', newFile)
+        console.log("update", newFile);
       }
       if (!newFile && oldFile) {
         // remove
-        console.log('remove', oldFile)
+        console.log("remove", oldFile);
       }
     }
   },
@@ -291,15 +281,15 @@ export default {
         this.$toast.open(error.response.status + "Not found materials");
       });
   },
-  props:{
-        /**
-         * Current Material details
-         */
-        material:{
-            type:Object,
-            required:true
-        }
-    },
+  props: {
+    /**
+     * Current Material details
+     */
+    material: {
+      type: Object,
+      required: true
+    }
+  }
 };
 </script>
 <style>
@@ -308,7 +298,7 @@ export default {
   width: 7px 30px;
   margin-top: 15%;
 }
-.image{
+.image {
   margin-top: 5%;
 }
 </style>

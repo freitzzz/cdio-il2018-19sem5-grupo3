@@ -41,6 +41,11 @@ const state = {
             unit: ""
         },
         components: []
+       },
+       resizeFactorDimensions:{
+        width: "",
+        height: "",
+        depth: "",
        }
 }
 
