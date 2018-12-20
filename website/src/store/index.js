@@ -51,13 +51,14 @@ const state = {
             height: "",
             depth: "",
             unit: ""
-        }
-       },
-       resizeFactorDimensions:{
+        },
+    },
+
+    resizeFactorDimensions: {
         width: "",
         height: "",
         depth: "",
-       }
+    }
 }
 
 export const getters = {

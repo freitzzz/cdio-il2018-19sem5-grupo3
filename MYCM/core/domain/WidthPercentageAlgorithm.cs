@@ -5,13 +5,11 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace core.domain
-{
+namespace core.domain {
     /// <summary>
     /// Class that represents the algorithm that checks if complement occupies a certain percentage of the parent product
     /// </summary>
-    public class WidthPercentageAlgorithm : Algorithm
-    {
+    public class WidthPercentageAlgorithm : Algorithm {
         /// <summary>
         /// Constant representing the WidthPercentageAlgorithm's name.
         /// </summary>
@@ -40,12 +38,22 @@ namespace core.domain
         /// <summary>
         /// Constant representing the message describing the available value range.
         /// </summary>
-        private const string VALUE_RANGE = "From 0 to 100";
+        private const string VALUE_RANGE = "From 0 to 1";
 
         /// <summary>
         /// Input value invalid message
         /// </summary>
         private const string INPUT_OUTSIDE_RANGE = "Input is not within the established range!";
+
+        /// <summary>
+        /// Max Percentage invalid message
+        /// </summary>
+        private const string MAX_PERCENTAGE_INVALID = "Maximum Percentage value is not within the established range!";
+
+        /// <summary>
+        /// Min Percentage invalid message
+        /// </summary>
+        private const string MIN_PERCENTAGE_INVALID = "Minimum Percentage value is not within the established range!";
 
         /// <summary>
         /// Constructor used for injecting an instance of ILazyLoader.
@@ -56,8 +64,7 @@ namespace core.domain
         /// <summary>
         /// Empty constructor
         /// </summary>
-        public WidthPercentageAlgorithm()
-        {
+        public WidthPercentageAlgorithm() {
             Input input1 = Input.valueOf(MINIMUM_PERCENTAGE_INPUT_NAME, VALUE_RANGE);
             InputValue minPercentage = new InputValue(input1);
             Input input2 = Input.valueOf(MAXIMUM_PERCENTAGE_INPUT_NAME, VALUE_RANGE);
@@ -79,8 +86,7 @@ namespace core.domain
         /// Retrieves the minimum percentage value.
         /// </summary>
         /// <returns>Minimum percentage value.</returns>
-        private double getMinPercentage()
-        {
+        private double getMinPercentage() {
             string minPercentageValue = this.inputValues
                     .Where(iv => iv.input.name.Equals(MINIMUM_PERCENTAGE_INPUT_NAME))
                     .Select(iv => iv.value).SingleOrDefault();
@@ -88,17 +94,14 @@ namespace core.domain
             double valueAsDouble;
 
             bool parsed = double.TryParse(minPercentageValue, NumberStyles.Float, CultureInfo.InvariantCulture, out valueAsDouble);
-
-            //the default value is 0
-            return parsed ? valueAsDouble : 0;
+            return parsed ? valueAsDouble : -1;
         }
 
         /// <summary>
         /// Retrieves the maximum percentage value.
         /// </summary>
         /// <returns>Maximum percentage value.</returns>
-        private double getMaxPercentage()
-        {
+        private double getMaxPercentage() {
             string maxPercentageValue = this.inputValues
                     .Where(iv => iv.input.name.Equals(MAXIMUM_PERCENTAGE_INPUT_NAME))
                     .Select(iv => iv.value).SingleOrDefault();
@@ -106,13 +109,10 @@ namespace core.domain
             double valueAsDouble;
 
             bool parsed = double.TryParse(maxPercentageValue, NumberStyles.Float, CultureInfo.InvariantCulture, out valueAsDouble);
-
-            //the default value is 100
-            return parsed ? valueAsDouble : 100;
+            return parsed ? valueAsDouble : -1;
         }
 
-        protected override void checkValue(Input input, string value)
-        {
+        protected override void checkValue(Input input, string value) {
             if (input == null) throw new ArgumentException(INVALID_INPUT);
 
             Input algorithmInput = this.inputValues.Where(iv => iv.input.Equals(input)).Select(iv => iv.input).SingleOrDefault();
@@ -122,66 +122,30 @@ namespace core.domain
             double valueAsDouble;
             bool parsed = double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out valueAsDouble);
 
-            if (!parsed) throw new ArgumentException();
+            if (!parsed) throw new ArgumentException(INPUT_OUTSIDE_RANGE);
 
 
             //check if value is within the range
-            if (valueAsDouble < 0 || valueAsDouble > 100) throw new ArgumentException();
+            if (valueAsDouble <= 0 || valueAsDouble > 1) throw new ArgumentException(INPUT_OUTSIDE_RANGE);
 
-            switch (input.name)
-            {
-                case MINIMUM_PERCENTAGE_INPUT_NAME:
-                    {
+            switch (input.name) {
+                case MINIMUM_PERCENTAGE_INPUT_NAME: {
+                        double max = getMaxPercentage();
+
                         //only allow to set a minimum percentage under the max percentage
-                        if (valueAsDouble > getMaxPercentage()) throw new ArgumentException();
+                        if (max > 0 && valueAsDouble > max) throw new ArgumentException(MIN_PERCENTAGE_INVALID);
+
                     }
                     break;
+                case MAXIMUM_PERCENTAGE_INPUT_NAME: {
+                        double min = getMinPercentage();
 
-                case MAXIMUM_PERCENTAGE_INPUT_NAME:
-                    {
                         //only allow to set a maximum percentage above the min percentage
-                        if (valueAsDouble < getMinPercentage()) throw new ArgumentException();
+                        if (min > 0 && valueAsDouble < min) throw new ArgumentException(MAX_PERCENTAGE_INVALID);
                     }
                     break;
             }
-
         }
-
-        /*         /// <summary>
-                /// Checks if input values are within the allowed range
-                /// </summary>
-                /// <param name="inputs">list of inputs with values to check</param>
-                /// <returns>true if values are within allowed range, throws ArgumentException if any value was not within the allowed range, throws FormatException if any input value is not a double</returns>
-                public override bool isWithinDataRange(List<Input> inputs)
-                {
-                    if (inputs == null || inputs.Count == 0 || inputs.Count != 2)
-                    {
-                        throw new ArgumentException(INVALID_INPUT);
-                    }
-                    double minPercentage = -1;
-                    double maxPercentage = -1;
-                    foreach (Input input in inputs)
-                    {
-                        if (String.IsNullOrEmpty(input.name))
-                        {
-                            throw new ArgumentException(INVALID_INPUT);
-                        }
-                        switch (input.name)
-                        {
-                            case MINIMUM_PERCENTAGE_INPUT_NAME:
-                                //minPercentage = Convert.ToDouble(input.value, CultureInfo.InvariantCulture);
-                                break;
-                            case MAXIMUM_PERCENTAGE_INPUT_NAME:
-                                //maxPercentage = Convert.ToDouble(input.value, CultureInfo.InvariantCulture);
-                                break;
-                            default:
-                                throw new ArgumentException(INVALID_INPUT);
-                        }
-                    }
-                    return minPercentage >= 0 && minPercentage <= 1 && maxPercentage >= minPercentage && maxPercentage <= 1 ? true : throw new ArgumentOutOfRangeException(INPUT_OUTSIDE_RANGE);
-                } */
-
-        //TODO: refactor this method
 
         /// <summary>
         /// Applies the algorithm that restricts a component's width to a certain percentage of the customized father product's width
@@ -189,35 +153,37 @@ namespace core.domain
         /// <param name="customProduct">customized product</param>
         /// <param name="product">component product</param>
         /// <returns>component with restricted dimensions, null if the component is not compatible with any of the allowed dimensions</returns>
-        public override Product apply(CustomizedProduct customProduct, Product originalProduct)
-        {
+        public override Product apply(CustomizedProduct customProduct, Product originalProduct) {
+            ready();
             List<Material> materials = new List<Material>();
-            foreach (ProductMaterial productMaterial in originalProduct.productMaterials)
-            {
+            foreach (ProductMaterial productMaterial in originalProduct.productMaterials) {
                 materials.Add(productMaterial.material);
             }
             List<Measurement> measurements = new List<Measurement>();
-            foreach (ProductMeasurement productMeasurement in originalProduct.productMeasurements)
-            {
+            foreach (ProductMeasurement productMeasurement in originalProduct.productMeasurements) {
                 measurements.Add(productMeasurement.measurement);
             }
 
             Product copyProduct = null;
 
-            if (originalProduct.components.Any())
-            {
+            if (originalProduct.components.Any()) {
                 List<Product> components = new List<Product>();
-                foreach (Component component in originalProduct.components)
-                {
+                foreach (Component component in originalProduct.components) {
                     components.Add(component.complementaryProduct);
                 }
                 copyProduct = new Product(originalProduct.reference, originalProduct.designation, originalProduct.modelFilename, originalProduct.productCategory, materials, measurements, components, originalProduct.slotWidths);
-            }
-            else
-            {
+            } else {
                 copyProduct = new Product(originalProduct.reference, originalProduct.designation, originalProduct.modelFilename, originalProduct.productCategory, materials, measurements, originalProduct.slotWidths);
             }
             double width = customProduct.customizedDimensions.width;
+            double min = getMinPercentage();
+            if (min < 0) {
+                throw new ArgumentException(MIN_PERCENTAGE_INVALID);
+            }
+            double max = getMaxPercentage();
+            if (max < 0) {
+                throw new ArgumentException(MAX_PERCENTAGE_INVALID);
+            }
             double minWidth = width * getMinPercentage();
             double maxWidth = width * getMaxPercentage();
 
@@ -225,70 +191,48 @@ namespace core.domain
 
             List<Measurement> productMeasurements = copyProduct.productMeasurements.Select(m => m.measurement).ToList();
 
-            foreach (Measurement measurement in productMeasurements)
-            {
+            foreach (Measurement measurement in productMeasurements) {
                 Dimension dimension = measurement.width;
 
-                if (dimension.GetType() == typeof(SingleValueDimension))
-                {
+                if (dimension.GetType() == typeof(SingleValueDimension)) {
                     SingleValueDimension single = (SingleValueDimension)dimension;
-                    if (single.value < minWidth || single.value > maxWidth)
-                    {
+                    if (single.value < minWidth || single.value > maxWidth) {
                         measurementsToRemove.Add(measurement);
                     }
-                }
-                else if (dimension.GetType() == typeof(DiscreteDimensionInterval))
-                {
+                } else if (dimension.GetType() == typeof(DiscreteDimensionInterval)) {
                     DiscreteDimensionInterval discrete = (DiscreteDimensionInterval)dimension;
                     List<DoubleValue> valToRemove = new List<DoubleValue>();
-                    foreach (double value in discrete.values)
-                    {
-                        if (value < minWidth || value > maxWidth)
-                        {
+                    foreach (double value in discrete.values) {
+                        if (value < minWidth || value > maxWidth) {
                             valToRemove.Add(value);
                         }
                     }
-                    foreach (double val in valToRemove)
-                    {
+                    foreach (double val in valToRemove) {
                         discrete.values.Remove(val);
                     }
-                    if (discrete.values.Count == 0)
-                    {
+                    if (discrete.values.Count == 0) {
                         measurementsToRemove.Add(measurement);
-                    }
-                    else if (discrete.values.Count == 1)
-                    {
+                    } else if (discrete.values.Count == 1) {
                         measurement.changeWidthDimension(new SingleValueDimension(discrete.values[0]));
                     }
-                }
-                else if (dimension.GetType() == typeof(ContinuousDimensionInterval))
-                {
+                } else if (dimension.GetType() == typeof(ContinuousDimensionInterval)) {
                     ContinuousDimensionInterval continuous = (ContinuousDimensionInterval)dimension;
-                    if (continuous.minValue > maxWidth || continuous.maxValue < minWidth)
-                    {
+                    if (continuous.minValue > maxWidth || continuous.maxValue < minWidth) {
                         measurementsToRemove.Add(measurement);
-                    }
-                    else
-                    {
+                    } else {
                         double currentMin = continuous.minValue, currentMax = continuous.maxValue;
-                        if (continuous.minValue < minWidth)
-                        {
+                        if (continuous.minValue < minWidth) {
                             currentMin = minWidth;
                         }
-                        if (continuous.maxValue > maxWidth)
-                        {
+                        if (continuous.maxValue > maxWidth) {
                             currentMax = maxWidth;
                         }
-                        if (currentMin == currentMax)
-                        {
+                        if (currentMin == currentMax) {
                             SingleValueDimension single = new SingleValueDimension(currentMax);
                             measurement.changeWidthDimension(single);
-                        }
-                        else
-                        {
+                        } else {
                             double newIncrement = continuous.increment;
-                            if (currentMax - currentMin < continuous.increment)
-                            {
+                            if (currentMax - currentMin < continuous.increment) {
                                 newIncrement = currentMax - currentMin;
                             }
                             ContinuousDimensionInterval newContinuous = new ContinuousDimensionInterval(currentMin, currentMax, newIncrement);
@@ -298,28 +242,13 @@ namespace core.domain
                     }
                 }
             }
-            foreach (Measurement measurement in measurementsToRemove)
-            {
+            foreach (Measurement measurement in measurementsToRemove) {
 
-                //TODO: find a better solution than catching exception
-                //?Should this be handled like this?
-
-                bool caught = false;
-
-                try
-                {
+                try {
                     copyProduct.removeMeasurement(measurement);
-                }
-                catch (InvalidOperationException)
-                {
-                    caught = true;
-                }
-                catch (ArgumentException)
-                {
-                    caught = true;
-                }
-                if (caught)
-                {
+                } catch (InvalidOperationException) {
+                    return null;
+                } catch (ArgumentException) {
                     return null;
                 }
             }

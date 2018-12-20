@@ -10,13 +10,11 @@ using core.dto;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace core.domain
-{
+namespace core.domain {
     /// <summary>
     /// Represents a Product Restriction
     /// </summary>
-    public class Restriction : DTOAble<RestrictionDTO>
-    {
+    public class Restriction : DTOAble<RestrictionDTO> {
 
         /// <summary>
         /// Constant with the message that is presented when the restriction being instantiated has an invalid description
@@ -54,8 +52,7 @@ namespace core.domain
         /// Constructor used for injecting the LazyLoader.
         /// </summary>
         /// <param name="lazyLoader">LazyLoader being injected.</param>
-        private Restriction(ILazyLoader lazyLoader)
-        {
+        private Restriction(ILazyLoader lazyLoader) {
             this.LazyLoader = lazyLoader;
         }
 
@@ -69,8 +66,7 @@ namespace core.domain
         /// </summary>
         /// <param name="description">Restriction's description</param>
         /// <param name="algorithm">Restriction's Algorithm</param>
-        public Restriction(string description, Algorithm algorithm)
-        {
+        public Restriction(string description, Algorithm algorithm) {
             checkDescription(description);
             checkAlgorithm(algorithm);
             this.description = description;
@@ -82,10 +78,8 @@ namespace core.domain
         /// </summary>
         /// <param name="description">String being checked.</param>
         /// <exception cref="System.ArgumentException"></exception>
-        private void checkDescription(string description)
-        {
-            if (String.IsNullOrEmpty(description) || description.Trim().Length == 0)
-            {
+        private void checkDescription(string description) {
+            if (String.IsNullOrEmpty(description) || description.Trim().Length == 0) {
                 throw new ArgumentException(INVALID_DESCRIPTION);
             }
         }
@@ -95,20 +89,27 @@ namespace core.domain
         /// </summary>
         /// <param name="algorithm">Instance of Algorithm being checked.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when the provided instance of Algorithm is null.</exception>
-        private void checkAlgorithm(Algorithm algorithm)
-        {
+        private void checkAlgorithm(Algorithm algorithm) {
             if (algorithm == null) throw new ArgumentNullException(INVALID_ALGORITHM);
+            algorithm.ready();
         }
 
-        public override bool Equals(object obj)
-        {
-            if (this == obj)
-            {
+        /// <summary>
+        /// Applies an algorithm
+        /// </summary>
+        /// <param name="custom">customized product that serves as a base for the algorithm</param>
+        /// <param name="product">product to be worked on by the algorithm</param>
+        /// <returns>copy of the product with restricted elements</returns>
+        public Product applyAlgorithm(CustomizedProduct custom, Product product) {
+            return algorithm.apply(custom, product);
+        }
+
+        public override bool Equals(object obj) {
+            if (this == obj) {
                 return true;
             }
 
-            if (obj == null || !obj.GetType().Equals(this.GetType()))
-            {
+            if (obj == null || !obj.GetType().Equals(this.GetType())) {
                 return false;
             }
 
@@ -117,13 +118,11 @@ namespace core.domain
             return this.description.Equals(other.description);
         }
 
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             return description.GetHashCode();
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return String.Format("Description: {0}", description);
         }
 
@@ -131,8 +130,7 @@ namespace core.domain
         /// Returns DTO equivalent of the Entity
         /// </summary>
         /// <returns>DTO equivalent of the Entity</returns>
-        public RestrictionDTO toDTO()
-        {
+        public RestrictionDTO toDTO() {
             RestrictionDTO dto = new RestrictionDTO();
             dto.id = Id;
             dto.description = description;

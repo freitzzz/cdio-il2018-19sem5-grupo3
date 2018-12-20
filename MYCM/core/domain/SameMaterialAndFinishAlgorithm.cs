@@ -48,6 +48,7 @@ namespace core.domain
         /// <returns>Product with only one material and one finish, null if Product did not contain the material or the finish</returns>
         public override Product apply(CustomizedProduct customProduct, Product product)
         {
+            ready();
             Finish restrictedFinish = customProduct.customizedMaterial.finish;
             Material restrictedMaterial = customProduct.customizedMaterial.material;
             List<ProductMaterial> productMaterialsToRemove = new List<ProductMaterial>();
