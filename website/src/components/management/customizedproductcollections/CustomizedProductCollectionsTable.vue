@@ -2,13 +2,13 @@
   <vuetable :api-mode="false" :data="data" :fields="columns">
     <template slot="actions" slot-scope="props">
       <div class="custom-actions">
-        <button class="button is-info" @click="openCollectionDetails(props.rowData.id)">
+        <button class="btn-primary" @click="openCollectionDetails(props.rowData.id)">
           <b-icon icon="magnify"/>
         </button>
-        <button class="button is-info" @click="editCollectionDetails(props.rowData.id)">
+        <button class="btn-primary" @click="editCollectionDetails(props.rowData.id)">
           <b-icon icon="pencil"/>
         </button>
-        <button class="button is-info" @click="deleteCustomizedProductCollection(props.rowData.id)">
+        <button class="btn-primary" @click="deleteCustomizedProductCollection(props.rowData.id)">
           <b-icon icon="minus"/>
         </button>
       </div>

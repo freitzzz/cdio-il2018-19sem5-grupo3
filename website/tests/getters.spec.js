@@ -2,63 +2,107 @@
 /* eslint-disable no-undef */
 import * as VuexStore from '../src/store/index'
 
-//TODO Refactor these tests after Store structure changes are made
-
 describe('product getters', () => {
-    describe('product-id', () => {
-        test('productId-returns-correct-value',
+    describe('product id', () => {
+        test('product id returns correct value',
             ensureGetProductIdReturnsCorrectValue
         );
     });
-    describe('product-dimensions', () => {
-        test('productDimensions-returns-correct-dimensions',
+    describe('product dimensions', () => {
+        test('product dimensions returns correct dimensions',
             ensureGetProductDimensionsReturnsCorrectValues
         );
     });
-    describe('product-slots', () => {
-        test('productSlotWidths-returns-correct-slot-widths',
+    describe('product slots', () => {
+        test('product slot widths returns correct slot widths',
             ensureGetProductSlotWidthsReturnsCorrectValues
         );
-        test('productRecommendedSlotWidth-returns-correct-value',
+        test('product recommended slot width returns correct value',
             ensureGetProductRecommendedSlotWidthReturnsCorrectValue
         );
-        test('productMaximumSlotWidth-returns-correct-value',
+        test('product maximum slot width returns correct value',
             ensureGetProductMaximumSlotWidthReturnsCorrectValue
         );
-        test('productMinimumSlotWidth-returns-correct-value',
+        test('product minimum slot width returns correct value',
             ensureGetProductMinimumSlotWidthReturnsCorrectValue
         );
     });
-    describe('product-materials', () => {
-        test('productMaterials-returns-correct-materials',
+    describe('product materials', () => {
+        test('product materials returns correct materials',
             ensureGetProductMaterialsReturnsCorrectValues
         );
     });
-    describe('product-components', () => {
-        test('productComponents-returns-correct-components',
+    describe('product components', () => {
+        test('product components returns correct components',
             ensureGetProductComponentsReturnsCorrectValues
         );
     });
 })
 
 describe('customized product getters', () => {
-    describe('customized-product-dimensions', () => {
-        test('customizedProductWidth-returns-correct-value',
-            ensureGetCustomizedProductWidthReturnsCorrectValue
-        );
-        //TODO Fix failing test
-        /* test('customizedProductHeight-returns-correct-value',
-            ensureGetCustomizedProductHeightReturnsCorrectValue
-        ); */
-        test('customizedProductDepth-returns-correct-value',
-            ensureGetCustomizedProductDepthReturnsCorrectValue
-        );
-        test('customizedProductUnit-returns-correct-value',
-            ensureGetCustomizedProductUnitReturnsCorrectValue
+    describe('customized product id', () => {
+        test('customized product id returns correct value',
+            ensureGetCustomizedProductIdReturnsCorrectValue
         );
     });
-    describe('customized-product-slots', () => {
-        //!Implement tests related to slot widths once getters are corrected
+    describe('customized product dimensions', () => {
+        test('customized product dimensions returns correct values',
+            ensureGetCustomizedProductDimensionsReturnsCorrectValues
+        );
+    });
+    describe('customized product slots', () => {
+        test('customized products slot width returns correct values',
+            ensureGetCustomizedProductSlotWidthReturnsCorrectValues
+        );
+    });
+    describe('customized product components', () => {
+        test('customized products components returns correct values',
+            ensureGetCustomizedProductComponentsReturnsCorrectValues
+        );
+    })
+    describe('customized products customized material', () => {
+        test('customized material image returns correct value',
+            ensureGetCustomizedProductCustomizedMaterialImageReturnsCorrectValue
+        );
+        test('customized material color rgba returns correct values',
+            ensureGetCustomizedProductCustomizedMaterialColorReturnsCorrectValues
+        );
+        test('customized material color name returns correct value',
+            ensureGetCustomizedProductCustomizedMaterialColorNameReturnsCorrectValue
+        );
+        test('customized material finish shininess returns correct value',
+            ensureGetCustomizedProductCustomizedMaterialFinishReturnsCorrectValue
+        );
+        test('customized material finish name returns correct value',
+            ensureGetCustomizedProductCustomizedMaterialFinishDescriptionReturnsCorrectValue
+        );
+    })
+})
+
+describe('canvas controls getters', () => {
+    describe('movement controls', () => {
+        describe('closet movement controls', () => {
+            test('can move closet returns correct value',
+                ensureGetCanMoveClosetReturnsCorrectValue
+            );
+        });
+        describe('slots movement controls', () => {
+            test('can move slots returns correct value',
+                ensureGetCanMoveSlotsReturnsCorrectValue
+            );
+        });
+        describe('components movement controls', () => {
+            test('can move components returns correct value',
+                ensureGetCanMoveComponentsReturnsCorrectValue
+            );
+        });
+    });
+    describe('removal controls', () => {
+        describe('component removal controls', () => {
+            test('component to remove returns correct value',
+                ensureGetComponentToRemoveReturnsCorrectValue
+            );
+        });
     });
 })
 
@@ -207,59 +251,223 @@ function ensureGetProductComponentsReturnsCorrectValues() {
     expect(actualComponents).toBe(expectedComponents);
 }
 
-function ensureGetCustomizedProductWidthReturnsCorrectValue() {
-    const expectedWidth = 200;
+function ensureGetCustomizedProductDimensionsReturnsCorrectValues() {
+    const expectedDimensions = {
+        dimensions: {
+            height: 200,
+            width: 200,
+            depth: 200,
+            unit: "cm"
+        }
+    };
     VuexStore.default.replaceState({
         customizedProduct: {
-            //TODO Why is this named dimensions?
-            dimensions: {
-                "width": expectedWidth
-            }
+            customizedDimensions: expectedDimensions
         }
     });
-    const actualWidth = VuexStore.getters.width(VuexStore.default.state);
-    expect(actualWidth).toBe(expectedWidth);
+    const actualDimensions = VuexStore.getters.customizedProductDimensions(VuexStore.default.state);
+    expect(actualDimensions).toBe(expectedDimensions);
 }
 
-function ensureGetCustomizedProductHeightReturnsCorrectValue() {
-    const expectedHeight = 200;
+function ensureGetCustomizedProductSlotWidthReturnsCorrectValues() {
+    const expectedFirstSlotWidth = 100;
+    const expectedSlots =
+        [
+            {
+                width: expectedFirstSlotWidth
+            }
+        ];
     VuexStore.default.replaceState({
         customizedProduct: {
-            //TODO Why is this named dimensions
-            dimensions: {
-                "height": expectedHeight
-            }
+            slots: expectedSlots
         }
     });
-    const actualHeight = VuexStore.getters.height(VuexStore.default.state);
-    expect(actualHeight).toBe(expectedHeight);
+    const actualFirstSlotWidth = VuexStore.getters.customizedProductSlotWidth(VuexStore.default.state)(0).width;
+    expect(actualFirstSlotWidth).toBe(expectedFirstSlotWidth);
 }
 
-function ensureGetCustomizedProductDepthReturnsCorrectValue() {
-    const expectedDepth = 200;
+function ensureGetCustomizedProductComponentsReturnsCorrectValues() {
+    const expectedComponent = {
+        designation: "Drawer",
+        hasComponents: false,
+        id: 1,
+        mandatory: true,
+        model: "drawer.fbx",
+        reference: "#666",
+        slot: "1",
+        supportsSlots: true
+    };
     VuexStore.default.replaceState({
         customizedProduct: {
-            //TODO Why is this named dimensions
-            dimensions: {
-                "depth": expectedDepth
-            }
+            components: [expectedComponent],
+            slots: [{
+                components: [],
+                idSlot: 1,
+                width: 100,
+                height: 100,
+                depth: 100,
+                unit: "dm"
+            }]
         }
     });
-    const actualDepth = VuexStore.getters.depth(VuexStore.default.state);
-    expect(actualDepth).toBe(expectedDepth);
+    const actualComponent = VuexStore.getters.customizedProductComponents(VuexStore.default.state)[0];
+    expect(actualComponent).toEqual(expectedComponent);
 }
 
-function ensureGetCustomizedProductUnitReturnsCorrectValue() {
-    const expectedUnit = "cm";
+function ensureGetCustomizedProductCustomizedMaterialImageReturnsCorrectValue() {
+    const expectedImage = "material.jpg";
+    const expectedMaterial = {
+        image: expectedImage
+    };
     VuexStore.default.replaceState({
         customizedProduct: {
-            //TODO Why is this named dimensions
-            dimensions: {
-                "unit": expectedUnit
-            }
+            customizedMaterial: expectedMaterial
         }
     });
-    const actualUnit = VuexStore.getters.unit(VuexStore.default.state);
-    expect(actualUnit).toBe(expectedUnit);
+    const actualMaterialImage = VuexStore.getters.customizedMaterial(VuexStore.default.state);
+    expect(actualMaterialImage).toBe(expectedImage);
 }
 
+function ensureGetCustomizedProductCustomizedMaterialColorReturnsCorrectValues() {
+    const expectedColor = {
+        red: 100,
+        green: 100,
+        blue: 100,
+        alpha: 1
+    };
+    const expectedMaterial = {
+        color: expectedColor
+    };
+    const expectedResult = expectedColor.red + '-' + expectedColor.green +
+        '-' + expectedColor.blue + "-" + expectedColor.alpha;
+    VuexStore.default.replaceState({
+        customizedProduct: {
+            customizedMaterial: expectedMaterial
+        }
+    });
+    const actualResult = VuexStore.getters.customizedMaterialColor(VuexStore.default.state);
+    expect(actualResult).toEqual(expectedResult);
+}
+
+function ensureGetCustomizedProductCustomizedMaterialColorNameReturnsCorrectValue() {
+    const expectedColor = {
+        name: "blue"
+    };
+    const expectedMaterial = {
+        color: expectedColor
+    };
+    VuexStore.default.replaceState({
+        customizedProduct: {
+            customizedMaterial: expectedMaterial
+        }
+    });
+    const actualColorName = VuexStore.getters.customizedMaterialColorName(VuexStore.default.state);
+    expect(actualColorName).toEqual(expectedColor.name);
+}
+
+function ensureGetCustomizedProductCustomizedMaterialFinishReturnsCorrectValue() {
+    const expectedFinish = {
+        shininess: 4
+    };
+    const expectedMaterial = {
+        finish: expectedFinish
+    };
+    VuexStore.default.replaceState({
+        customizedProduct: {
+            customizedMaterial: expectedMaterial
+        }
+    });
+    const actualFinishShininess = VuexStore.getters.customizedMaterialFinish(VuexStore.default.state);
+    expect(actualFinishShininess).toEqual(expectedFinish.shininess);
+}
+
+function ensureGetCustomizedProductCustomizedMaterialFinishDescriptionReturnsCorrectValue() {
+    const expectedFinish = {
+        description: "varnish"
+    };
+    const expectedMaterial = {
+        finish: expectedFinish
+    };
+    VuexStore.default.replaceState({
+        customizedProduct: {
+            customizedMaterial: expectedMaterial
+        }
+    });
+    const actualFinishDescription = VuexStore.getters.customizedMaterialFinishDescription(VuexStore.default.state);
+    expect(actualFinishDescription).toEqual(expectedFinish.description);
+}
+
+function ensureGetCanMoveClosetReturnsCorrectValue() {
+    const expectedFlag = true;
+    VuexStore.default.replaceState({
+        canvasControls: {
+            canMoveCloset: expectedFlag
+        }
+    });
+    const actualFlag = VuexStore.getters.canMoveCloset(VuexStore.default.state);
+    expect(actualFlag).toBe(expectedFlag);
+}
+
+function ensureGetCanMoveSlotsReturnsCorrectValue() {
+    const expectedFlag = true;
+    VuexStore.default.replaceState({
+        canvasControls: {
+            canMoveSlots: expectedFlag
+        }
+    });
+    const actualFlag = VuexStore.getters.canMoveSlots(VuexStore.default.state);
+    expect(actualFlag).toBe(expectedFlag);
+}
+
+function ensureGetCanMoveComponentsReturnsCorrectValue() {
+    const expectedFlag = true;
+    VuexStore.default.replaceState({
+        canvasControls: {
+            canMoveComponents: expectedFlag
+        }
+    });
+    const actualFlag = VuexStore.getters.canMoveComponents(VuexStore.default.state);
+    expect(actualFlag).toBe(expectedFlag);
+}
+
+function ensureGetComponentToRemoveReturnsCorrectValue() {
+    const expectedComponent = {
+        designation: "Drawer",
+        hasComponents: false,
+        id: 1,
+        mandatory: true,
+        model: "drawer.fbx",
+        reference: "#666",
+        slot: "1",
+        supportsSlots: true
+    };
+    VuexStore.default.replaceState({
+        canvasControls: {
+            componentToRemove: expectedComponent
+        },
+        customizedProduct: {
+            components: [expectedComponent],
+            slots: [{
+                components: [],
+                idSlot: 1,
+                width: 100,
+                height: 100,
+                depth: 100,
+                unit: "dm"
+            }]
+        }
+    });
+    const actualComponent = VuexStore.getters.componentToRemove(VuexStore.default.state);
+    expect(actualComponent).toEqual(expectedComponent);
+}
+
+function ensureGetCustomizedProductIdReturnsCorrectValue() {
+    const expectedId = 1;
+    VuexStore.default.replaceState({
+        customizedProduct: {
+            id: expectedId
+        }
+    });
+    const actualId = VuexStore.getters.customizedProductId(VuexStore.default.state);
+    expect(actualId).toBe(expectedId);
+}

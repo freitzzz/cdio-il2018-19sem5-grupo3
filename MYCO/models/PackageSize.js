@@ -1,17 +1,38 @@
 /**
  * Constant that represents the small package size
  */
-const SMALL="S";
+const SMALL={
+"name":"S",
+"dimensions":{
+    "height":100,
+    "width":100,
+    "depth":100
+}
+};
 
 /**
  * Constant that represents the medium package size
  */
-const MEDIUM="M";
+const MEDIUM={
+"name":"M",
+"dimensions":{
+    "height":150,
+    "width":150,
+    "depth":150
+}
+};
 
 /**
  * Constant that represents the large package size
  */
-const LARGE="L";
+const LARGE={
+"name":"L",
+"dimensions":{
+    "height":200,
+    "width":200,
+    "depth":200
+}
+};
 
 /**
  * Constant that represents the enum representation of the packages size

@@ -103,10 +103,11 @@ export default class Closet extends SlotableProduct{
 
     /**
      * Adds a slot to the closet
+     * @param {Object} slotValues Object with the slot values (spacing) #TODO: REVIEW THIS!!!
      */
-    addClosetSlot() {
+    addClosetSlot(slotValues) {
         let slotFace=this.getClosetFaces().get(FaceOrientation.LEFT).clone();
-        let slotWidth = slotFace.width();
+        let slotWidth = slotValues.width
         this.addSlot(slotFace);
         this._updateClosetSlots(slotWidth);
         return this.getSlotFaces()[this.currentSlots-1];
