@@ -3965,474 +3965,483 @@ namespace backend_tests.Controllers
             //TODO Compare Messages
         }
 
-        [Fact, TestPriority(131)]
-        public async void ensureAddingRestrictionToMeasurementReturnsBadRequestIfRestrictionDescriptionIsNull()
-        {
-            AddProductCategoryModelView categoryModelView = createCategoryModelView("131");
-            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
-            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+        //TODO: redo test after restriction refactor
+        /*         [Fact, TestPriority(131)]
+                public async void ensureAddingRestrictionToMeasurementReturnsBadRequestIfRestrictionDescriptionIsNull()
+                {
+                    AddProductCategoryModelView categoryModelView = createCategoryModelView("131");
+                    var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+                    GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
 
-            //!Update this when MaterialDTOs are replaced with Model Views
-            MaterialDTO materialDTO = createMaterialDTO("131");
-            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
-            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+                    //!Update this when MaterialDTOs are replaced with Model Views
+                    MaterialDTO materialDTO = createMaterialDTO("131");
+                    var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+                    AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
 
-            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "131");
+                    var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "131");
 
-            productModelView.measurements.Add(createNewMeasurementModelView());
+                    productModelView.measurements.Add(createNewMeasurementModelView());
 
-            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+                    var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
-            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
 
-            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelView, productModelViewFromPost);
+                    assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
+                    var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
-            Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
-            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+                    assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            RestrictionDTO restrictionDTO = createRestrictionWithNullDescription("131");
+                    RestrictionDTO restrictionDTO = createRestrictionWithNullDescription("131");
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+                    var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
-            Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
 
-            //TODO Compare Messages
-        }
+                    //TODO Compare Messages
+                } */
 
-        [Fact, TestPriority(132)]
-        public async void ensureAddingRestrictionToMeasurementReturnsBadRequestIfRestrictionInputsAreNull()
-        {
-            AddProductCategoryModelView categoryModelView = createCategoryModelView("132");
-            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
-            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+        //TODO: redo test after restriction refactor
+        /*         [Fact, TestPriority(132)]
+                public async void ensureAddingRestrictionToMeasurementReturnsBadRequestIfRestrictionInputsAreNull()
+                {
+                    AddProductCategoryModelView categoryModelView = createCategoryModelView("132");
+                    var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+                    GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
 
-            //!Update this when MaterialDTOs are replaced with Model Views
-            MaterialDTO materialDTO = createMaterialDTO("132");
-            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
-            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+                    //!Update this when MaterialDTOs are replaced with Model Views
+                    MaterialDTO materialDTO = createMaterialDTO("132");
+                    var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+                    AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
 
-            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "132");
+                    var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "132");
 
-            productModelView.measurements.Add(createNewMeasurementModelView());
+                    productModelView.measurements.Add(createNewMeasurementModelView());
 
-            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+                    var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
-            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
 
-            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelView, productModelViewFromPost);
+                    assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
+                    var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
-            Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
-            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+                    assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            RestrictionDTO restrictionDTO = createRestrictionWithNullInputs("132");
+                    RestrictionDTO restrictionDTO = createRestrictionWithNullInputs("132");
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+                    var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
-            Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
 
-            //TODO Compare Messages
-        }
+                    //TODO Compare Messages
+                } */
 
-        [Fact, TestPriority(134)]
-        public async void ensureAddingRestrictionToMeasurementReturnsBadRequestIfRestrictionDescriptionIsInvalid()
-        {
-            AddProductCategoryModelView categoryModelView = createCategoryModelView("134");
-            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
-            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+        //TODO: redo test after restriction refactor
+        /*         [Fact, TestPriority(134)]
+                public async void ensureAddingRestrictionToMeasurementReturnsBadRequestIfRestrictionDescriptionIsInvalid()
+                {
+                    AddProductCategoryModelView categoryModelView = createCategoryModelView("134");
+                    var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+                    GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
 
-            //!Update this when MaterialDTOs are replaced with Model Views
-            MaterialDTO materialDTO = createMaterialDTO("134");
-            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
-            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+                    //!Update this when MaterialDTOs are replaced with Model Views
+                    MaterialDTO materialDTO = createMaterialDTO("134");
+                    var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+                    AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
 
-            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "134");
+                    var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "134");
 
-            productModelView.measurements.Add(createNewMeasurementModelView());
+                    productModelView.measurements.Add(createNewMeasurementModelView());
 
-            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+                    var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
-            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
 
-            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelView, productModelViewFromPost);
+                    assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
+                    var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
-            Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
-            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+                    assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            RestrictionDTO restrictionDTO = createRestrictionWithInvalidDescription("134");
+                    RestrictionDTO restrictionDTO = createRestrictionWithInvalidDescription("134");
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+                    var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
-            Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
 
-            //TODO Compare Messages
-        }
+                    //TODO Compare Messages
+                } */
 
-        [Fact, TestPriority(135)]
-        public async void ensureAddingRestrictionToMeasurementReturnsBadRequestIfRestrictionInputNamesAreInvalid()
-        {
-            AddProductCategoryModelView categoryModelView = createCategoryModelView("135");
-            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
-            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+        //TODO: redo test after restriction refactor
+        /*         [Fact, TestPriority(135)]
+                public async void ensureAddingRestrictionToMeasurementReturnsBadRequestIfRestrictionInputNamesAreInvalid()
+                {
+                    AddProductCategoryModelView categoryModelView = createCategoryModelView("135");
+                    var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+                    GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
 
-            //!Update this when MaterialDTOs are replaced with Model Views
-            MaterialDTO materialDTO = createMaterialDTO("135");
-            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
-            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+                    //!Update this when MaterialDTOs are replaced with Model Views
+                    MaterialDTO materialDTO = createMaterialDTO("135");
+                    var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+                    AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
 
-            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "135");
+                    var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "135");
 
-            productModelView.measurements.Add(createNewMeasurementModelView());
+                    productModelView.measurements.Add(createNewMeasurementModelView());
 
-            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+                    var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
-            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
 
-            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelView, productModelViewFromPost);
+                    assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
+                    var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
-            Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
-            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+                    assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            RestrictionDTO restrictionDTO = createRestrictionWithInvalidInputNames("135");
+                    RestrictionDTO restrictionDTO = createRestrictionWithInvalidInputNames("135");
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+                    var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
-            Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
 
-            //TODO Compare Messages
-        }
+                    //TODO Compare Messages
+                } */
 
-        [Fact, TestPriority(136)]
-        public async void ensureAddingRestrictionToMeasurementReturnsBadRequestIfRestrictionInputValuesAreInvalid()
-        {
-            AddProductCategoryModelView categoryModelView = createCategoryModelView("136");
-            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
-            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+        //TODO: redo test after restriction refactor
+        /*         [Fact, TestPriority(136)]
+                public async void ensureAddingRestrictionToMeasurementReturnsBadRequestIfRestrictionInputValuesAreInvalid()
+                {
+                    AddProductCategoryModelView categoryModelView = createCategoryModelView("136");
+                    var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+                    GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
 
-            //!Update this when MaterialDTOs are replaced with Model Views
-            MaterialDTO materialDTO = createMaterialDTO("136");
-            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
-            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+                    //!Update this when MaterialDTOs are replaced with Model Views
+                    MaterialDTO materialDTO = createMaterialDTO("136");
+                    var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+                    AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
 
-            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "136");
+                    var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "136");
 
-            productModelView.measurements.Add(createNewMeasurementModelView());
+                    productModelView.measurements.Add(createNewMeasurementModelView());
 
-            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+                    var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
-            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
 
-            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelView, productModelViewFromPost);
+                    assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
+                    var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
-            Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
-            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+                    assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            RestrictionDTO restrictionDTO = createRestrictionWithInvalidInputValues("136");
+                    RestrictionDTO restrictionDTO = createRestrictionWithInvalidInputValues("136");
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+                    var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
-            Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
 
-            //TODO Compare Messages
-        }
+                    //TODO Compare Messages
+                } */
 
-/*         [Fact, TestPriority(137)]
-        public async void ensureAddingRestrictionToMeasurementReturnsBadRequestIfRestrictionAlgorithmIsNull()
-        {
-            AddProductCategoryModelView categoryModelView = createCategoryModelView("137");
-            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
-            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+        //TODO: redo test after restriction refactor
+        /*         [Fact, TestPriority(137)]
+                public async void ensureAddingRestrictionToMeasurementReturnsBadRequestIfRestrictionAlgorithmIsNull()
+                {
+                    AddProductCategoryModelView categoryModelView = createCategoryModelView("137");
+                    var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+                    GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
 
-            //!Update this when MaterialDTOs are replaced with Model Views
-            MaterialDTO materialDTO = createMaterialDTO("137");
-            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
-            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+                    //!Update this when MaterialDTOs are replaced with Model Views
+                    MaterialDTO materialDTO = createMaterialDTO("137");
+                    var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+                    AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
 
-            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "137");
+                    var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "137");
 
-            productModelView.measurements.Add(createNewMeasurementModelView());
+                    productModelView.measurements.Add(createNewMeasurementModelView());
 
-            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+                    var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
-            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
 
-            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelView, productModelViewFromPost);
+                    assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+                    var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
 
-            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
 
-            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+                    assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            RestrictionDTO restrictionDTO = createRestrictionWithNullAlgorithm("137");
+                    RestrictionDTO restrictionDTO = createRestrictionWithNullAlgorithm("137");
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+                    var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
-            //!BadRequest or NotFound?
-            Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
+                    //!BadRequest or NotFound?
+                    Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
 
-            //TODO Compare Messages
-        } */
+                    //TODO Compare Messages
+                } */
 
-/*         [Fact, TestPriority(138)]
-        public async void ensureAddingRestrictionToMeasurementReturnsBadRequestIfRestrictionAlgorithmIsInvalid()
-        {
-            AddProductCategoryModelView categoryModelView = createCategoryModelView("138");
-            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
-            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+        /*         [Fact, TestPriority(138)]
+                public async void ensureAddingRestrictionToMeasurementReturnsBadRequestIfRestrictionAlgorithmIsInvalid()
+                {
+                    AddProductCategoryModelView categoryModelView = createCategoryModelView("138");
+                    var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+                    GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
 
-            //!Update this when MaterialDTOs are replaced with Model Views
-            MaterialDTO materialDTO = createMaterialDTO("138");
-            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
-            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+                    //!Update this when MaterialDTOs are replaced with Model Views
+                    MaterialDTO materialDTO = createMaterialDTO("138");
+                    var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+                    AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
 
-            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "138");
+                    var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "138");
 
-            productModelView.measurements.Add(createNewMeasurementModelView());
+                    productModelView.measurements.Add(createNewMeasurementModelView());
 
-            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+                    var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
-            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
 
-            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelView, productModelViewFromPost);
+                    assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
+                    var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.id);
 
-            Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.Created, getResponse.StatusCode);
 
-            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+                    assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            RestrictionDTO restrictionDTO = createRestrictionWithInvalidAlgorithm("138");
+                    RestrictionDTO restrictionDTO = createRestrictionWithInvalidAlgorithm("138");
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+                    var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.id + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
-            //!BadRequest or NotFound?
-            Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
+                    //!BadRequest or NotFound?
+                    Assert.Equal(HttpStatusCode.BadRequest, postRestrictionResponse.StatusCode);
 
-            //TODO Compare Messages
-        } */
+                    //TODO Compare Messages
+                } */
 
-        [Fact, TestPriority(141)]
-        public async void ensureAddingComponentToProductReturnsCreatedAndThatTheRestrictionIsAdded()
-        {
-            AddProductCategoryModelView categoryModelView = createCategoryModelView("141");
-            var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
-            GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
+        //TODO: redo test after restriction refactor
+        /*         [Fact, TestPriority(141)]
+                public async void ensureAddingComponentToProductReturnsCreatedAndThatTheRestrictionIsAdded()
+                {
+                    AddProductCategoryModelView categoryModelView = createCategoryModelView("141");
+                    var categoryResponse = await httpClient.PostAsJsonAsync("mycm/api/categories", categoryModelView);
+                    GetProductCategoryModelView categoryModelViewFromPost = await categoryResponse.Content.ReadAsAsync<GetProductCategoryModelView>();
 
-            //!Update this when MaterialDTOs are replaced with Model Views
-            MaterialDTO materialDTO = createMaterialDTO("141");
-            var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
-            AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
+                    //!Update this when MaterialDTOs are replaced with Model Views
+                    MaterialDTO materialDTO = createMaterialDTO("141");
+                    var materialResponse = await httpClient.PostAsJsonAsync("mycm/api/materials", materialDTO);
+                    AddProductMaterialModelView materialModelViewFromPost = await materialResponse.Content.ReadAsAsync<AddProductMaterialModelView>();
 
-            var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "141");
+                    var productModelView = createProductWithSlots(categoryModelViewFromPost, materialModelViewFromPost, "141");
 
-            productModelView.measurements.Add(createNewMeasurementModelView());
+                    productModelView.measurements.Add(createNewMeasurementModelView());
 
-            var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
+                    var postResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, productModelView);
 
-            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
 
-            GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromPost = await postResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelView, productModelViewFromPost);
+                    assertProductModelView(productModelView, productModelViewFromPost);
 
-            var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
+                    var getResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromPost.productId);
 
-            Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
-            GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
+                    GetProductModelView productModelViewFromGet = await getResponse.Content.ReadAsAsync<GetProductModelView>();
 
-            assertProductModelView(productModelViewFromPost, productModelViewFromGet);
+                    assertProductModelView(productModelViewFromPost, productModelViewFromGet);
 
-            RestrictionDTO restrictionDTO = createValidRestriction("141");
+                    RestrictionDTO restrictionDTO = createValidRestriction("141");
 
-            var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
+                    var postRestrictionResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions", restrictionDTO);
 
-            Assert.Equal(HttpStatusCode.Created, postRestrictionResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.Created, postRestrictionResponse.StatusCode);
 
-            var getAfterPostResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions");
+                    var getAfterPostResponse = await httpClient.GetAsync(PRODUCTS_URI + "/" + productModelViewFromGet.productId + "/dimensions/" + productModelViewFromGet.measurements[0].measurementId + "/restrictions");
 
-            Assert.Equal(HttpStatusCode.OK, getAfterPostResponse.StatusCode);
+                    Assert.Equal(HttpStatusCode.OK, getAfterPostResponse.StatusCode);
 
-            GetAllRestrictionsModelView allRestrictions = await getAfterPostResponse.Content.ReadAsAsync<GetAllRestrictionsModelView>();
+                    GetAllRestrictionsModelView allRestrictions = await getAfterPostResponse.Content.ReadAsAsync<GetAllRestrictionsModelView>();
 
 
-            Assert.Equal(restrictionDTO.description, allRestrictions[0].description);
-            //TODO: fix this
-            //Assert.Equal(restrictionDTO.algorithm, allRestrictions[0].algorithm);
-        }
+                    Assert.Equal(restrictionDTO.description, allRestrictions[0].description);
+                    //TODO: fix this
+                    //Assert.Equal(restrictionDTO.algorithm, allRestrictions[0].algorithm);
+                } */
 
-        private RestrictionDTO createValidRestriction(string testNumber)
-        {
-            RestrictionDTO restrictionDTO = new RestrictionDTO();
-            restrictionDTO.description = "description" + testNumber;
-            restrictionDTO.algorithm = RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM;
-            InputDTO minInput = new InputDTO();
-            minInput.name = "Minimum Percentage" + testNumber;
-            minInput.value = "0.3";
-            InputDTO maxInput = new InputDTO();
-            maxInput.name = "Maximum Percentage" + testNumber;
-            maxInput.value = "0.8";
-            restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
-            return restrictionDTO;
-        }
 
-        private RestrictionDTO createRestrictionWithInvalidDescription(string testNumber)
-        {
-            RestrictionDTO restrictionDTO = new RestrictionDTO();
-            restrictionDTO.description = "";
-            restrictionDTO.algorithm = RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM;
-            InputDTO minInput = new InputDTO();
-            minInput.name = "Minimum Percentage" + testNumber;
-            minInput.value = "0.3";
-            InputDTO maxInput = new InputDTO();
-            maxInput.name = "Maximum Percentage" + testNumber;
-            maxInput.value = "0.8";
-            restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
-            return restrictionDTO;
-        }
+        //TODO: change methods to model views
+        /*         private RestrictionDTO createValidRestriction(string testNumber)
+                {
+                    RestrictionDTO restrictionDTO = new RestrictionDTO();
+                    restrictionDTO.description = "description" + testNumber;
+                    restrictionDTO.algorithm = RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM;
+                    InputDTO minInput = new InputDTO();
+                    minInput.name = "Minimum Percentage" + testNumber;
+                    minInput.value = "0.3";
+                    InputDTO maxInput = new InputDTO();
+                    maxInput.name = "Maximum Percentage" + testNumber;
+                    maxInput.value = "0.8";
+                    restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
+                    return restrictionDTO;
+                }
 
-        private RestrictionDTO createRestrictionWithNullDescription(string testNumber)
-        {
-            RestrictionDTO restrictionDTO = new RestrictionDTO();
-            restrictionDTO.description = null;
-            restrictionDTO.algorithm = RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM;
-            InputDTO minInput = new InputDTO();
-            minInput.name = "Minimum Percentage" + testNumber;
-            minInput.value = "0.3";
-            InputDTO maxInput = new InputDTO();
-            maxInput.name = "Maximum Percentage" + testNumber;
-            maxInput.value = "0.8";
-            restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
-            return restrictionDTO;
-        }
+                private RestrictionDTO createRestrictionWithInvalidDescription(string testNumber)
+                {
+                    RestrictionDTO restrictionDTO = new RestrictionDTO();
+                    restrictionDTO.description = "";
+                    restrictionDTO.algorithm = RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM;
+                    InputDTO minInput = new InputDTO();
+                    minInput.name = "Minimum Percentage" + testNumber;
+                    minInput.value = "0.3";
+                    InputDTO maxInput = new InputDTO();
+                    maxInput.name = "Maximum Percentage" + testNumber;
+                    maxInput.value = "0.8";
+                    restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
+                    return restrictionDTO;
+                }
 
-        private RestrictionDTO createRestrictionWithNullInputs(string testNumber)
-        {
-            RestrictionDTO restrictionDTO = new RestrictionDTO();
-            restrictionDTO.description = "description" + testNumber;
-            restrictionDTO.algorithm = RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM;
-            restrictionDTO.inputs = null;
-            return restrictionDTO;
-        }
+                private RestrictionDTO createRestrictionWithNullDescription(string testNumber)
+                {
+                    RestrictionDTO restrictionDTO = new RestrictionDTO();
+                    restrictionDTO.description = null;
+                    restrictionDTO.algorithm = RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM;
+                    InputDTO minInput = new InputDTO();
+                    minInput.name = "Minimum Percentage" + testNumber;
+                    minInput.value = "0.3";
+                    InputDTO maxInput = new InputDTO();
+                    maxInput.name = "Maximum Percentage" + testNumber;
+                    maxInput.value = "0.8";
+                    restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
+                    return restrictionDTO;
+                }
 
-        private RestrictionDTO createRestrictionWithNullInputNames(string testNumber)
-        {
-            RestrictionDTO restrictionDTO = new RestrictionDTO();
-            restrictionDTO.description = "description" + testNumber;
-            restrictionDTO.algorithm = RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM;
-            InputDTO minInput = new InputDTO();
-            minInput.name = null;
-            minInput.value = "0.3";
-            InputDTO maxInput = new InputDTO();
-            maxInput.name = null;
-            maxInput.value = "0.8";
-            restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
-            return restrictionDTO;
-        }
+                private RestrictionDTO createRestrictionWithNullInputs(string testNumber)
+                {
+                    RestrictionDTO restrictionDTO = new RestrictionDTO();
+                    restrictionDTO.description = "description" + testNumber;
+                    restrictionDTO.algorithm = RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM;
+                    restrictionDTO.inputs = null;
+                    return restrictionDTO;
+                }
 
-        private RestrictionDTO createRestrictionWithInvalidInputNames(string testNumber)
-        {
-            RestrictionDTO restrictionDTO = new RestrictionDTO();
-            restrictionDTO.description = "description" + testNumber;
-            restrictionDTO.algorithm = RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM;
-            InputDTO minInput = new InputDTO();
-            minInput.name = "";
-            minInput.value = "0.3";
-            InputDTO maxInput = new InputDTO();
-            maxInput.name = "";
-            maxInput.value = "0.8";
-            restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
-            return restrictionDTO;
-        }
+                private RestrictionDTO createRestrictionWithNullInputNames(string testNumber)
+                {
+                    RestrictionDTO restrictionDTO = new RestrictionDTO();
+                    restrictionDTO.description = "description" + testNumber;
+                    restrictionDTO.algorithm = RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM;
+                    InputDTO minInput = new InputDTO();
+                    minInput.name = null;
+                    minInput.value = "0.3";
+                    InputDTO maxInput = new InputDTO();
+                    maxInput.name = null;
+                    maxInput.value = "0.8";
+                    restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
+                    return restrictionDTO;
+                }
 
-        private RestrictionDTO createRestrictionWithInvalidInputValues(string testNumber)
-        {
-            RestrictionDTO restrictionDTO = new RestrictionDTO();
-            restrictionDTO.description = null;
-            restrictionDTO.algorithm = RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM;
-            InputDTO minInput = new InputDTO();
-            minInput.name = "Minimum Percentage" + testNumber;
-            minInput.value = "2";
-            InputDTO maxInput = new InputDTO();
-            maxInput.name = "Maximum Percentage" + testNumber;
-            maxInput.value = "-0.8";
-            restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
-            return restrictionDTO;
-        }
+                private RestrictionDTO createRestrictionWithInvalidInputNames(string testNumber)
+                {
+                    RestrictionDTO restrictionDTO = new RestrictionDTO();
+                    restrictionDTO.description = "description" + testNumber;
+                    restrictionDTO.algorithm = RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM;
+                    InputDTO minInput = new InputDTO();
+                    minInput.name = "";
+                    minInput.value = "0.3";
+                    InputDTO maxInput = new InputDTO();
+                    maxInput.name = "";
+                    maxInput.value = "0.8";
+                    restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
+                    return restrictionDTO;
+                }
 
-/*         private RestrictionDTO createRestrictionWithNullAlgorithm(string testNumber)
-        {
-            RestrictionDTO restrictionDTO = new RestrictionDTO();
-            restrictionDTO.description = "description" + testNumber;
-            
-            InputDTO minInput = new InputDTO();
-            minInput.name = "Minimum Percentage" + testNumber;
-            minInput.value = "0.3";
-            InputDTO maxInput = new InputDTO();
-            maxInput.name = "Maximum Percentage" + testNumber;
-            maxInput.value = "0.8";
-            restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
-            return restrictionDTO;
-        }
+                private RestrictionDTO createRestrictionWithInvalidInputValues(string testNumber)
+                {
+                    RestrictionDTO restrictionDTO = new RestrictionDTO();
+                    restrictionDTO.description = null;
+                    restrictionDTO.algorithm = RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM;
+                    InputDTO minInput = new InputDTO();
+                    minInput.name = "Minimum Percentage" + testNumber;
+                    minInput.value = "2";
+                    InputDTO maxInput = new InputDTO();
+                    maxInput.name = "Maximum Percentage" + testNumber;
+                    maxInput.value = "-0.8";
+                    restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
+                    return restrictionDTO;
+                } */
 
-        private RestrictionDTO createRestrictionWithInvalidAlgorithm(string testNumber)
-        {
-            RestrictionDTO restrictionDTO = new RestrictionDTO();
-            restrictionDTO.description = "description" + testNumber;
-            restrictionDTO.algorithm = "-1";
-            InputDTO minInput = new InputDTO();
-            minInput.name = "Minimum Percentage" + testNumber;
-            minInput.value = "0.3";
-            InputDTO maxInput = new InputDTO();
-            maxInput.name = "Maximum Percentage" + testNumber;
-            maxInput.value = "0.8";
-            restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
-            return restrictionDTO;
-        } */
-        
+        /*         private RestrictionDTO createRestrictionWithNullAlgorithm(string testNumber)
+                {
+                    RestrictionDTO restrictionDTO = new RestrictionDTO();
+                    restrictionDTO.description = "description" + testNumber;
+
+                    InputDTO minInput = new InputDTO();
+                    minInput.name = "Minimum Percentage" + testNumber;
+                    minInput.value = "0.3";
+                    InputDTO maxInput = new InputDTO();
+                    maxInput.name = "Maximum Percentage" + testNumber;
+                    maxInput.value = "0.8";
+                    restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
+                    return restrictionDTO;
+                }
+
+                private RestrictionDTO createRestrictionWithInvalidAlgorithm(string testNumber)
+                {
+                    RestrictionDTO restrictionDTO = new RestrictionDTO();
+                    restrictionDTO.description = "description" + testNumber;
+                    restrictionDTO.algorithm = "-1";
+                    InputDTO minInput = new InputDTO();
+                    minInput.name = "Minimum Percentage" + testNumber;
+                    minInput.value = "0.3";
+                    InputDTO maxInput = new InputDTO();
+                    maxInput.name = "Maximum Percentage" + testNumber;
+                    maxInput.value = "0.8";
+                    restrictionDTO.inputs = new List<InputDTO>() { minInput, maxInput };
+                    return restrictionDTO;
+                } */
+
         private void assertProductModelView(GetProductModelView modelViewFromPost, GetProductModelView modelViewFromGet)
         {
 
