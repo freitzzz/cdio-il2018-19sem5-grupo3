@@ -9,6 +9,10 @@ import SlidingDoor from './SlidingDoor'
 import Shelf from './Shelf'
 import HingedDoor from './HingedDoor'
 import { LoopRepeat } from 'three';
+import store from "./../store";
+import {
+  SET_RESIZE_VECTOR_GLOBAL
+} from "./../store/mutation-types.js";
 
 export default class ProductRenderer {
 
@@ -809,17 +813,10 @@ export default class ProductRenderer {
    * Populate vector website dimensions
   */
   populateWebsiteDimensions(websiteDimensions){
-    let asd = new Promise((accept,reject)=>{
-      if(websiteDimensions.width == undefined || websiteDimensions.height == undefined || websiteDimensions.depth == undefined ){
-        reject();
-      }else{
-        this.websiteDimensions=[websiteDimensions.width,websiteDimensions.height,websiteDimensions.depth];
-        accept();
+      if(websiteDimensions.width != undefined || websiteDimensions.height != undefined || websiteDimensions.depth != undefined ){
+      
+        this.websiteDimensions=[websiteDimensions.width,websiteDimensions.height,websiteDimensions.depth];  
       }
-
-    }
-    );
-
   }
   /**  END   */
 
@@ -831,7 +828,6 @@ export default class ProductRenderer {
    */
   changeClosetDimensions(width, height, depth) {
     this.resizeFactor();
-
     this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
     this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
     this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth) - 250.8);
@@ -848,6 +844,12 @@ export default class ProductRenderer {
       this.resizeVec[i] = this.initialDimensions[i] / this.websiteDimensions[i];
      
     }
+    store.dispatch(SET_RESIZE_VECTOR_GLOBAL, {
+      width: this.resizeVec[this.WIDTH],
+      height:this.resizeVec[this.HEIGHT],
+      depth: this.resizeVec[this.DEPTH],    
+    });
+
   }
   /**
    * Applies the texture to the closet.
