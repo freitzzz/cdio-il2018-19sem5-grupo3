@@ -10,13 +10,11 @@ using System.Collections.Generic;
 using System.Linq;
 using static core.domain.CustomizedProduct;
 
-namespace core.application
-{
+namespace core.application {
     /// <summary>
     /// Application controller for customized products
     /// </summary>
-    public sealed class CustomizedProductController
-    {
+    public sealed class CustomizedProductController {
         /// <summary>
         /// Constant that represents the message presented when no instance of CustomizedProduct was found.
         /// </summary>
@@ -52,13 +50,11 @@ namespace core.application
         /// </summary>
         /// <returns>List with all available customized products</returns>
         /// <exception cref="ResourceNotFoundException">Thrown when no instance of CustomizedProduct was found.</exception>
-        public GetAllCustomizedProductsModelView findAllCustomizedProducts()
-        {
+        public GetAllCustomizedProductsModelView findAllCustomizedProducts() {
             IEnumerable<CustomizedProduct> customizedProducts = PersistenceContext.repositories().
                 createCustomizedProductRepository().findAll();
 
-            if (!customizedProducts.Any())
-            {
+            if (!customizedProducts.Any()) {
                 throw new ResourceNotFoundException(ERROR_NO_CUSTOMIZED_PRODUCTS_FOUND);
             }
 
@@ -70,13 +66,11 @@ namespace core.application
         /// </summary>
         /// <returns>List with all available customized products</returns>
         /// <exception cref="ResourceNotFoundException">Thrown when no instance of CustomizedProduct was found.</exception>
-        public GetAllCustomizedProductsModelView findAllBaseCustomizedProducts()
-        {
+        public GetAllCustomizedProductsModelView findAllBaseCustomizedProducts() {
             IEnumerable<CustomizedProduct> baseCustomizedProducts = PersistenceContext.repositories().
                 createCustomizedProductRepository().findBaseCustomizedProducts();
 
-            if (!baseCustomizedProducts.Any())
-            {
+            if (!baseCustomizedProducts.Any()) {
                 throw new ResourceNotFoundException(ERROR_NO_CUSTOMIZED_PRODUCTS_FOUND);
             }
 
@@ -90,14 +84,12 @@ namespace core.application
         /// <param name="findCustomizedProductModelView">Instance of FindCustomizedProductModelView containing the CustomizedProduct's identifier.</param>
         /// <returns>Instance of GetCustomizedProductModelView containing CustomizedProduct information.</returns>
         /// <exception cref="ResourceNotFoundException">Thrown when no CustomizedProduct could be found with the given identifier.</exception>
-        public GetCustomizedProductModelView findCustomizedProduct(FindCustomizedProductModelView findCustomizedProductModelView)
-        {
+        public GetCustomizedProductModelView findCustomizedProduct(FindCustomizedProductModelView findCustomizedProductModelView) {
             CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
 
             CustomizedProduct customizedProduct = customizedProductRepository.find(findCustomizedProductModelView.customizedProductId);
 
-            if (customizedProduct == null)
-            {
+            if (customizedProduct == null) {
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, findCustomizedProductModelView.customizedProductId));
             }
 
@@ -110,21 +102,18 @@ namespace core.application
         /// <param name="findSlotModelView">Instance of FindSlotModelView containing the CustomizedProduct's and the Slot's persistence identifiers.</param>
         /// <returns>Instance of GetSlotModelView containing Slot information.</returns>
         /// <exception cref="ResourceNotFoundException">Thrown when the either the CustomizedProduct or the Slot could not be found.</exception>
-        public GetSlotModelView findSlot(FindSlotModelView findSlotModelView)
-        {
+        public GetSlotModelView findSlot(FindSlotModelView findSlotModelView) {
             CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
 
             CustomizedProduct customizedProduct = customizedProductRepository.find(findSlotModelView.customizedProductId);
 
-            if (customizedProduct == null)
-            {
+            if (customizedProduct == null) {
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, findSlotModelView.customizedProductId));
             }
 
             Slot slot = customizedProduct.slots.Where(s => s.Id == findSlotModelView.slotId).SingleOrDefault();
 
-            if (slot == null)
-            {
+            if (slot == null) {
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_SLOT, findSlotModelView.slotId));
             }
 
@@ -136,8 +125,7 @@ namespace core.application
         /// </summary>
         /// <param name="addCustomizedProductModelView">AddCustomizedProductModelView containing the CustomizedProduct's information.</param>
         /// <returns>GetCustomizedProductModelView with the added CustomizedProduct's information.</returns>
-        public GetCustomizedProductModelView addCustomizedProduct(AddCustomizedProductModelView addCustomizedProductModelView)
-        {
+        public GetCustomizedProductModelView addCustomizedProduct(AddCustomizedProductModelView addCustomizedProductModelView) {
             CustomizedProduct customizedProduct = CreateCustomizedProductService.create(addCustomizedProductModelView);
 
             return CustomizedProductModelViewService.fromEntity(customizedProduct);
@@ -149,14 +137,12 @@ namespace core.application
         /// <param name="addSlotModelView">AddSlotModelView with the Slot's information</param>
         /// <returns>An instance of GetCustomizedProductModelView containing updated CustomizedProduct information.</returns>
         /// <exception cref="ResourceNotFoundException">Thrown when the CustomizedProduct could not be found.</exception>
-        public GetCustomizedProductModelView addSlotToCustomizedProduct(AddSlotModelView addSlotModelView)
-        {
+        public GetCustomizedProductModelView addSlotToCustomizedProduct(AddSlotModelView addSlotModelView) {
             CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
 
             CustomizedProduct customizedProduct = customizedProductRepository.find(addSlotModelView.customizedProductId);
 
-            if (customizedProduct == null)
-            {
+            if (customizedProduct == null) {
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, addSlotModelView.customizedProductId));
             }
 
@@ -176,33 +162,28 @@ namespace core.application
         /// <returns>An instance of GetCustomizedProductModelView with the updated CustomizedProduct information.</returns>
         /// <exception cref="ResourceNotFoundException">Thrown when the CustomizedProduct could not be found.</exception>
         /// <exception cref="System.ArgumentException">Thrown when none of the CustomizedProduct's properties are updated.</exception>
-        public GetCustomizedProductModelView updateCustomizedProduct(UpdateCustomizedProductModelView updateCustomizedProductModelView)
-        {
+        public GetCustomizedProductModelView updateCustomizedProduct(UpdateCustomizedProductModelView updateCustomizedProductModelView) {
             CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
 
             CustomizedProduct customizedProduct = customizedProductRepository.find(updateCustomizedProductModelView.customizedProductId);
 
-            if (customizedProduct == null)
-            {
+            if (customizedProduct == null) {
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, updateCustomizedProductModelView.customizedProductId));
             }
 
             bool performedAtLeastOneUpdate = false;
 
-            if (updateCustomizedProductModelView.reference != null)
-            {
+            if (updateCustomizedProductModelView.reference != null) {
                 customizedProduct.changeReference(updateCustomizedProductModelView.reference);
                 performedAtLeastOneUpdate = true;
             }
 
-            if (updateCustomizedProductModelView.designation != null)
-            {
+            if (updateCustomizedProductModelView.designation != null) {
                 customizedProduct.changeDesignation(updateCustomizedProductModelView.designation);
                 performedAtLeastOneUpdate = true;
             }
 
-            if (updateCustomizedProductModelView.customizedMaterial != null)
-            {
+            if (updateCustomizedProductModelView.customizedMaterial != null) {
                 //TODO: check if only the finish or the color are being updated
                 CustomizedMaterial customizedMaterial = CreateCustomizedMaterialService.create(updateCustomizedProductModelView.customizedMaterial);
 
@@ -210,20 +191,17 @@ namespace core.application
                 performedAtLeastOneUpdate = true;
             }
 
-            if (updateCustomizedProductModelView.customizedDimensions != null)
-            {
+            if (updateCustomizedProductModelView.customizedDimensions != null) {
                 customizedProduct.changeDimensions(CustomizedDimensionsModelViewService.fromModelView(updateCustomizedProductModelView.customizedDimensions));
                 performedAtLeastOneUpdate = true;
             }
 
-            if (updateCustomizedProductModelView.customizationStatus == CustomizationStatus.FINISHED)
-            {
+            if (updateCustomizedProductModelView.customizationStatus == CustomizationStatus.FINISHED) {
                 customizedProduct.finalizeCustomization();
                 performedAtLeastOneUpdate = true;
             }
 
-            if (!performedAtLeastOneUpdate)
-            {
+            if (!performedAtLeastOneUpdate) {
                 throw new ArgumentException(ERROR_NO_UPDATE_PERFORMED);
             }
 
@@ -239,28 +217,24 @@ namespace core.application
         /// <returns>Instance of GetCustomizedProductModelView with updated CustomizedProduct information.</returns>
         /// <exception cref="ResourceNotFoundException">Thrown when the CustomizedProduct or the Slot could not be found.</exception>
         /// <exception cref="System.ArgumentException">Thrown when none of the CustomizedProduct's properties are updated.</exception> 
-        public GetCustomizedProductModelView updateSlot(UpdateSlotModelView updateSlotModelView)
-        {
+        public GetCustomizedProductModelView updateSlot(UpdateSlotModelView updateSlotModelView) {
             CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
 
             CustomizedProduct customizedProduct = customizedProductRepository.find(updateSlotModelView.customizedProductId);
 
-            if (customizedProduct == null)
-            {
+            if (customizedProduct == null) {
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, updateSlotModelView.customizedProductId));
             }
 
             Slot slot = customizedProduct.slots.Where(s => s.Id == updateSlotModelView.slotId).SingleOrDefault();
 
-            if (slot == null)
-            {
+            if (slot == null) {
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_SLOT, updateSlotModelView.slotId));
             }
 
             bool performedAtLeastOneUpdate = false;
 
-            if (updateSlotModelView.dimensions != null)
-            {
+            if (updateSlotModelView.dimensions != null) {
                 CustomizedDimensions updatedDimensions = CustomizedDimensionsModelViewService.fromModelView(updateSlotModelView.dimensions);
 
                 customizedProduct.resizeSlot(slot, updatedDimensions);
@@ -268,8 +242,7 @@ namespace core.application
                 performedAtLeastOneUpdate = true;
             }
 
-            if (!performedAtLeastOneUpdate)
-            {
+            if (!performedAtLeastOneUpdate) {
                 throw new ArgumentException(ERROR_NO_UPDATE_PERFORMED);
             }
 
@@ -283,31 +256,26 @@ namespace core.application
         /// </summary>
         /// <param name="deleteCustomizedProductModelView">Instance of DeleteCustomizedProductModelView containing the CustomizedProduct's identifier.</param>
         /// <exception cref="ResourceNotFoundException">Thrown when no CustomizedProduct could be found with the given identifier.</exception>
-        public void deleteCustomizedProduct(DeleteCustomizedProductModelView deleteCustomizedProductModelView)
-        {
+        public void deleteCustomizedProduct(DeleteCustomizedProductModelView deleteCustomizedProductModelView) {
             CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
 
             CustomizedProduct customizedProduct = customizedProductRepository.find(deleteCustomizedProductModelView.customizedProductId);
 
-            if (customizedProduct == null)
-            {
+            if (customizedProduct == null) {
                 throw new ResourceNotFoundException(
                     string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, deleteCustomizedProductModelView.customizedProductId)
                 );
             }
 
             //check if it's a sub customized product
-            if (customizedProduct.insertedInSlotId.HasValue)
-            {
+            if (customizedProduct.insertedInSlotId.HasValue) {
                 CustomizedProduct parent = customizedProductRepository.findCustomizedProductBySlot(customizedProduct.insertedInSlot);
                 Slot insertedInSlot = customizedProduct.insertedInSlot;
 
                 //remove the sub customized product and update parent
                 parent.removeCustomizedProduct(customizedProduct, insertedInSlot);
                 customizedProductRepository.update(parent);
-            }
-            else
-            {
+            } else {
                 //if it's a base product, just deactivate it
                 customizedProductRepository.remove(customizedProduct);
             }
@@ -318,14 +286,12 @@ namespace core.application
         /// </summary>
         /// <param name="deleteSlotModelView">Instance of DeleteSlotModelView containing both the CustomizedProduct's and Slot's identifiers.</param>
         /// <exception cref="ResourceNotFoundException">Thrown when either no CustomizedProduct or Slot could be found with the given identifiers.</exception>
-        public void deleteSlot(DeleteSlotModelView deleteSlotModelView)
-        {
+        public void deleteSlot(DeleteSlotModelView deleteSlotModelView) {
             CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
 
             CustomizedProduct customizedProduct = customizedProductRepository.find(deleteSlotModelView.customizedProductId);
 
-            if (customizedProduct == null)
-            {
+            if (customizedProduct == null) {
                 throw new ResourceNotFoundException(
                     string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, deleteSlotModelView.customizedProductId)
                 );
@@ -333,14 +299,31 @@ namespace core.application
 
             Slot slot = customizedProduct.slots.Where(s => s.Id == deleteSlotModelView.slotId).SingleOrDefault();
 
-            if (slot == null)
-            {
+            if (slot == null) {
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_SLOT, deleteSlotModelView.slotId));
             }
 
             customizedProduct.removeSlot(slot);
 
             customizedProductRepository.update(customizedProduct);
+        }
+        /// <summary>
+        /// Gets recommended slots from a certain customized product
+        /// </summary>
+        /// <param name="customizedProductID">id of the customized product to get the information from</param>
+        /// <returns>list of recommended slots</returns>
+        public GetAllCustomizedDimensionsModelView getRecommendedSlots(long customizedProductID) {
+            CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
+            CustomizedProduct customizedProduct = customizedProductRepository.find(customizedProductID);
+
+            if (customizedProduct == null) {
+                throw new ResourceNotFoundException(
+                    string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, customizedProductID)
+                );
+            }
+
+            List<CustomizedDimensions> customizedDimensions = customizedProduct.recommendedSlots();
+            return CustomizedDimensionsModelViewService.fromCollection(customizedDimensions);
         }
     }
 }

@@ -64,7 +64,8 @@ export default {
       valueConverted: "",
       blockRemoval: true,
       slotsToPost:[],
-      slotsToAdd: []
+      slotsToAdd: [],
+      listRecommendedSlots: []
     };
   },
   components: {
@@ -113,20 +114,34 @@ export default {
       if (!this.blockRemoval) this.lines.splice(lineId, 1);
     },
     nextPanel(){
-      //TODO! POST slots
-
-      for(let i=0; i<this.slotsToPost.length; i++){
-        return new Promise((accept, reject) => {
-           Axios.post(MYCM_API_URL + `/customizedproducts/${store.state.product.id}/slots`,
-          this.slotsToPost[i]
-          ).catch((error_message) => {
-              this.$toast.open({
-                message: error_message.response.data.message
-              });
+      this.postSlots().then(() => {
+        this.$emit("advance")
+      }).catch((error_message)=>{
+           this.$toast.open({
+              message: error_message
+          }); 
+      });
+    },
+    postSlots(){
+      let postedSlots=0;
+      let slotPosts = new Promise((accept, reject) => {
+          for(let i=0; i<this.slotsToPost.length; i++){
+          Axios.post(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}/slots`,
+            {
+              height: this.slotsToPost[i].height,
+              depth: this.slotsToPost[i].depth,
+              width: this.slotsToPost[i].width,
+              unit: this.slotsToPost[i].unit
+            }).then(() => {
+               postedSlots++;
+              if(postedSlots == this.slotsToPost.length)  accept();
+            })
+            .catch((error_message) => {
+                reject(error_message.response.data.message);
             });
-    });
-      }
-      this.$emit("advance");
+        }
+      })
+      return slotPosts;
     },
     previousPanel(){
       //TODO! DELETE slots
@@ -140,183 +155,161 @@ export default {
       store.dispatch(ACTIVATE_CAN_MOVE_SLOTS);
     },
     deactivateCanvasControls(){
-      //TODO! Desenhar slots recommendados quando checado o recommended 
-
       store.dispatch(SET_SLOT_DIMENSIONS);
-      this.drawRecommendedSlots()
+      this.getRecommendedSlots()
       store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS)
       },
+      getRecommendedSlots(){
+        Axios.get(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}/recommendedSlots`)
+            .then(response => {
+              
+              this.listRecommendedSlots = response.data;
+              this.drawRecommendedSlots();
+            })
+            .catch((error_message) => {
+            
+              this.$toast.open({
+                message: error_message.response.data.message
+              });
+            });
+      },
       drawRecommendedSlots(){
-              var widthCloset = /*store.state.customizedProduct.customizedDimensions.width;*/ 404.5;
-              var depthCloset = /*store.state.customizedProduct.customizedDimensions.depth;*/ 100;
-              var heightCloset = /*store.state.customizedProduct.customizedDimensions.height;*/ 300;
-
+              var widthCloset = 6000;/*store.state.customizedProduct.customizedDimensions.width;*/ ///404.5;
+              var depthCloset = 2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
+              var heightCloset = 5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;
+              
               var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
               var unitSlots = store.getters.productSlotWidths.unit;
-
-              var recommendedSlotWidth = 100;//store.getters.recommendedSlotWidth;
-              var minSlotWidth = store.getters.minSlotWidth;
 
              /*  if(unitCloset != unitSlots){
                 this.convert(unitSlots,unitCloset,recommendedSlotWidth);
                 recommendedSlotWidth = this.valueConvertedSlotsWidth;
                 this.convert(unitSlots,unitCloset,minSlotWidth);
                 minSlotWidth = this.valueConvertedSlotsWidth;
-              } */
+              }  */
 
+              var reasonW = 404.5 / widthCloset;
+              var reasonD = 100 / depthCloset;
+              var reasonH = 300 / heightCloset;
 
-              ///var reason = store.state.reason;
-              
-              var recommendedNumberSlots = parseInt(widthCloset / recommendedSlotWidth);
-              var remainder = widthCloset % recommendedSlotWidth;
-              var remainderWidth =
-                widthCloset - recommendedNumberSlots * recommendedSlotWidth;
-              
-              for (let i = 0; i < recommendedNumberSlots; i++) {
+              for (let i = 0; i < this.listRecommendedSlots.length; i++) {
                 store.dispatch(SET_SLOT_DIMENSIONS, {
                   idSlot: i,
-                  width: recommendedSlotWidth,
+                  width: this.listRecommendedSlots[i].width * reasonW,
                   height: heightCloset,
                   depth: depthCloset,
                   unit: unitCloset
                 });
+
                 this.slotsToPost.push({
-                  height: heightCloset,
-                  depth: depthCloset,
-                  width: recommendedSlotWidth,
-                  unit: unitCloset});
-              }
-              if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth*/ ) {
-                store.dispatch(SET_SLOT_DIMENSIONS, {
-                  idSlot: recommendedNumberSlots,
-                  width: remainderWidth,
-                  height: heightCloset,
-                  depth: depthCloset,
-                  unit: unitCloset
-                });
-                 this.slotsToPost.push({
-                  height: heightCloset,
-                  depth: depthCloset,
-                  width: remainderWidth,
-                  unit: unitCloset});
-              }
+                    height: heightCloset,
+                    depth: depthCloset,
+                    width: this.listRecommendedSlots[i].width,
+                    unit: unitCloset});
+              } 
       },
-      drawMinSlots(){
-     
-              var widthCloset = /*store.state.customizedProduct.customizedDimensions.width;*/ 404.5;
-              var depthCloset = /*store.state.customizedProduct.customizedDimensions.depth;*/ 100;
-              var heightCloset = /*store.state.customizedProduct.customizedDimensions.height;*/ 300;
-
-              var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
-              var unitSlots = store.getters.productSlotWidths.unit;
-
-              var recommendedSlotWidth = 250;//store.getters.recommendedSlotWidth;
-              var minSlotWidth = store.getters.minSlotWidth;
-              var maxSlotWidth = 202.25; //store.getters.maxSlotWidth;
-             /*  if(unitCloset != unitSlots){
-                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
-                recommendedSlotWidth = this.valueConvertedSlotsWidth;
-                this.convert(unitSlots,unitCloset,minSlotWidth);
-                minSlotWidth = this.valueConvertedSlotsWidth;
-              } */
-
-              ///var reason = store.state.reason;
-              
-              var minNumberSlots = parseInt(widthCloset / maxSlotWidth);
-              var remainder = widthCloset % maxSlotWidth;
-              var remainderWidth =
-                widthCloset - minNumberSlots * maxSlotWidth;
+      // drawMinSlots(){
+       
+      //         var widthCloset = 6000;/*store.state.customizedProduct.customizedDimensions.width;*/ ///404.5;
+      //         var depthCloset = 2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
+      //         var heightCloset = 5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;
               
 
-              for (let i = 0; i < minNumberSlots; i++) {
-                store.dispatch(SET_SLOT_DIMENSIONS, {
-                  idSlot: i,
-                  width: maxSlotWidth,
-                  height: heightCloset,
-                  depth: depthCloset,
-                  unit: unitCloset
-                });
-               /*  this.slotsToPost.push({
-                  height: heightCloset,
-                  depth: depthCloset,
-                  width: recommendedSlotWidth,
-                  unit: unitCloset});
-              } */
-              /* if (remainder > 0 && remainderWidth >= 150 /*store.getters.minSlotWidth ) {
-                store.dispatch(SET_SLOT_DIMENSIONS, {
-                  idSlot: recommendedNumberSlots,
-                  width: remainderWidth,
-                  height: heightCloset,
-                  depth: depthCloset,
-                  unit: unitCloset
-                });
-                /* this.slotsToPost.push({
-                  height: heightCloset,
-                  depth: depthCloset,
-                  width: remainderWidth,
-                  unit: unitCloset});
-              } */
-              }
-      },
-      drawOneSlot(){
+      //         var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
+      //         var unitSlots = store.getters.productSlotWidths.unit;
 
-       var minSlotWidth = 150;//store.getters.minSlotWidth;
-      Axios.post(
-        MYCM_API_URL +`/customizedproducts/1/slots`, 
-        {
-            height: heightCloset,
-            depth: depthCloset,
-            width: minSlotWidth,
-            unit: unitCloset
-        }
-      )
-      
-        .then(response => (this.slotsToAdd = response.data))
-        .catch(error => {});
+      //         var recommendedSlotWidth = store.getters.recommendedSlotWidth;
+      //         var maxSlotWidth = 3000;//store.getters.maxSlotWidth;
+      //         var minSlotWidth = store.getters.minSlotWidth;
 
-         for (let i = 0; i < this.slotsToAdd.length; i++) {
-                 store.dispatch(SET_SLOT_DIMENSIONS, {
-                   idSlot: i,
-                   width: this.slotsToAdd[i].width,
-                   height: heightCloset,
-                   depth: depthCloset,
-                   unit: unitCloset
-                 });
-         }
-      } 
+      //         if(unitCloset != unitSlots){
+      //           this.convert(unitSlots,unitCloset,recommendedSlotWidth);
+      //           recommendedSlotWidth = this.valueConvertedSlotsWidth;
+      //           this.convert(unitSlots,unitCloset,minSlotWidth);
+      //           minSlotWidth = this.valueConvertedSlotsWidth;
+      //         } 
+      //         var reasonW = 404.5 / widthCloset;
+      //         var reasonD = 100 / depthCloset;
+      //         var reasonH = 300 / heightCloset;
 
-
- 
-      //  var widthCloset = /*store.state.customizedProduct.customizedDimensions.width;*/ 404.5;
-      //   var depthCloset = /*store.state.customizedProduct.customizedDimensions.depth;*/ 100;
-      //   var heightCloset = /*store.state.customizedProduct.customizedDimensions.height;*/ 300;
-      //   var numberSlots = store.state.customizedProduct.slots.length;
-      //   var numberSlotsToDraw = numberSlots + 1
-
-      //   var recommendedSlotWidth = 100;//store.getters.recommendedSlotWidth;
-      //   var minSlotWidth = store.getters.minSlotWidth;
-      //   var maxSlotWidth = 202.25; //store.getters.maxSlotWidth;
-
-              
-      //   var minNumberSlots = parseInt(widthCloset / numberSlotsToDraw);
-      //   var remainder = widthCloset % numberSlotsToDraw;
-      //   var remainderWidth =
-      //           widthCloset - numberSlotsToDraw * maxSlotWidth;
-
-      //   var nha = numberSlots + 1;
-      //   var nhanhanha = 100;
-      //    for (let i = 0; i < nha; i++) {
-      //      alert("peido");
+      //         var minNumberSlots = parseInt(widthCloset / maxSlotWidth);
+      //          var remainder = widthCloset % maxSlotWidth;
+      //         var remainderWidth =
+      //           widthCloset - minNumberSlots * maxSlotWidth;
+                
+      //         for (let i = 0; i < minNumberSlots; i++) {
+      //           alert()
       //           store.dispatch(SET_SLOT_DIMENSIONS, {
       //             idSlot: i,
-      //             width: nhanhanha,
+      //             width: maxSlotWidth * reasonW,
       //             height: heightCloset,
       //             depth: depthCloset,
       //             unit: unitCloset
       //           });
-      // }
-      // } 
-  
+
+
+      //            this.slotsToPost.push({
+      //             height: heightCloset,
+      //             depth: depthCloset,
+      //             width: maxSlotWidth,
+      //             unit: unitCloset});
+      //         } 
+      //     if(remainder>0){
+      //         store.dispatch(SET_SLOT_DIMENSIONS, {
+      //             idSlot: minNumberSlots,
+      //             width: remainderWidth * reasonW,
+      //             height: heightCloset,
+      //             depth: depthCloset,
+      //             unit: unitCloset
+      //           });
+      //           this.slotsToPost.push({
+      //             height: heightCloset,
+      //             depth: depthCloset,
+      //             width: remainderWidth,
+      //             unit: unitCloset});
+      //     }
+      // },
+      //  drawOneSlot(){
+       
+      //         var widthCloset = 6000;/*store.state.customizedProduct.customizedDimensions.width;*/ ///404.5;
+      //         var depthCloset = 2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
+      //         var heightCloset = 5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;
+              
+
+      //         var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
+      //         var minSlotWidth = store.getters.minSlotWidth;
+             
+      //         var reasonW = 404.5 / widthCloset;
+      //         var size = this.slotsToPost.length;
+
+      //         for(let i = 0; i < size; i++){
+                
+      //           store.dispatch(SET_SLOT_DIMENSIONS, {
+      //             idSlot: i,
+      //             width: this.slotsToPost[i].width * reasonW,
+      //             height: heightCloset,
+      //             depth: depthCloset,
+      //             unit: unitCloset
+      //           });
+      //            this.slotsToPost.push({
+      //             height: heightCloset,
+      //             depth: depthCloset,
+      //             width: minSlotWidth,
+      //             unit: unitCloset});
+      //         }
+      //       store.dispatch(SET_SLOT_DIMENSIONS, {
+      //             idSlot: i,
+      //             width: minSlotWidth * reasonW,
+      //             height: heightCloset,
+      //             depth: depthCloset,
+      //             unit: unitCloset
+      //           });
+      //            this.slotsToPost.push({
+      //             height: heightCloset,
+      //             depth: depthCloset,
+      //             width: minSlotWidth,
+      //             unit: unitCloset});
+      // },
   },
   watch: {
     lines() {

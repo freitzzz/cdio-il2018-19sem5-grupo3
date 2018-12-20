@@ -909,6 +909,84 @@ namespace core.domain
         {
             return slots.Count;
         }
+        /// <summary>
+        /// Returns the recommended slots
+        /// </summary>
+        /// <returns>List with the recommended slots</returns>
+        public List<CustomizedDimensions> recommendedSlots(){
+            
+            List<CustomizedDimensions> recommendedSlots = new List<CustomizedDimensions>();
+
+            var widthCloset = //customizedDimensions.width; 
+            6000;
+            /*store.state.customizedProduct.customizedDimensions.width;*/ ///404.5;
+              var depthCloset = //customizedDimensions.depth; 
+              2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
+              var heightCloset = //customizedDimensions.height; 
+              5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;   
+              var unitCloset = "mm";//customizedDimensions.unit;
+              //store.state.customizedProduct.customizedDimensions.unit;
+              var unitSlots = "mm"; 
+              //store.getters.productSlotWidths.unit;
+              var recommendedSlotWidth = product.slotWidths.recommendedWidth;
+              ///store.getters.recommendedSlotWidth;
+              var minSlotWidth = product.slotWidths.minWidth;
+              ///store.getters.minSlotWidth;
+
+              /* if(unitCloset != unitSlots){
+                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
+                recommendedSlotWidth = this.valueConvertedSlotsWidth;
+                this.convert(unitSlots,unitCloset,minSlotWidth);
+                minSlotWidth = this.valueConvertedSlotsWidth;
+              }  */
+
+              var reasonW = 404.5 / widthCloset;
+              var reasonD = 100 / depthCloset;
+              var reasonH = 300 / heightCloset;
+
+              var recommendedNumberSlots = (int) (widthCloset / recommendedSlotWidth);
+              var remainder = widthCloset % recommendedSlotWidth;
+              var remainderWidth =
+                widthCloset - recommendedNumberSlots * recommendedSlotWidth;
+            for (var i = 0; i < recommendedNumberSlots; i++) {
+                recommendedSlots.Add( 
+                    CustomizedDimensions.valueOf(
+                        heightCloset,
+                        recommendedSlotWidth,  
+                        depthCloset));
+            }
+            if(remainderWidth>0){
+                if(remainder>minSlotWidth){
+                    recommendedSlots.Add( 
+                        CustomizedDimensions.valueOf(
+                            heightCloset,
+                            remainderWidth ,  
+                            depthCloset));
+                }else{
+                    var lackToMin = minSlotWidth - remainderWidth;
+                    var takeRecommended = lackToMin / recommendedNumberSlots;
+                    
+                    if((recommendedSlotWidth - takeRecommended) > minSlotWidth){
+                        recommendedSlots = new List<CustomizedDimensions>();
+                        
+                        for (var i = 0; i < recommendedNumberSlots ; i++) {
+                            recommendedSlots.Add( 
+                        CustomizedDimensions.valueOf(
+                            heightCloset,
+                            (recommendedSlotWidth - takeRecommended),  
+                            depthCloset));
+                        }
+                         recommendedSlots.Add( 
+                        CustomizedDimensions.valueOf(
+                            heightCloset,
+                            (minSlotWidth),  
+                            depthCloset));
+
+                    }
+                }
+            }
+            return recommendedSlots;
+        }
 
         /// <summary>
         /// Checks if the Product is valid (not null)

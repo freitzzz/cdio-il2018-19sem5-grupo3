@@ -54,22 +54,44 @@ export const mutations = {
         depth: payload.depth,
         width: payload.width,
         height: payload.height,
-        unit: payload.unit,
-        components: []
+        unit: payload.unit
       })
     } else { state.customizedProduct.slots = []; }
   },
 
   /**
-     * Changes the states's customized product's material 
-     * @param {*} state The store's state
-     * @param {*} payload Payload with the new material 
-     */
+   * Changes the states's customized product's material 
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the new material 
+  */
   [types.SET_CUSTOMIZED_PRODUCT_MATERIAL](state, payload) {
-    state.customizedProduct.customizedMaterial.id = payload.id,
-      state.customizedProduct.customizedMaterial.reference = payload.reference,
-      state.customizedProduct.customizedMaterial.designation = payload.designation,
-      state.customizedProduct.customizedMaterial.image = payload.image
+    state.customizedProduct.customizedMaterial.id = payload.id;
+    state.customizedProduct.customizedMaterial.reference = payload.reference;
+    state.customizedProduct.customizedMaterial.designation = payload.designation;
+    state.customizedProduct.customizedMaterial.image = payload.image;
+  },
+
+  /**
+   * Changes the states's customized product's color 
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the new color 
+   */
+  [types.SET_CUSTOMIZED_PRODUCT_COLOR](state, payload){
+    state.customizedProduct.customizedMaterial.color.name = payload.name;
+    state.customizedProduct.customizedMaterial.color.red = payload.red;
+    state.customizedProduct.customizedMaterial.color.green = payload.green;
+    state.customizedProduct.customizedMaterial.color.blue = payload.blue;
+    state.customizedProduct.customizedMaterial.color.alpha = payload.alpha;
+  },
+
+  /**
+   * Changes the states's customized product's finish 
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the new finish 
+   */
+  [types.SET_CUSTOMIZED_PRODUCT_FINISH](state, payload){
+    state.customizedProduct.customizedMaterial.finish.description = payload.description;
+    state.customizedProduct.customizedMaterial.finish.shininess = payload.shininess;
   },
 
   /**
