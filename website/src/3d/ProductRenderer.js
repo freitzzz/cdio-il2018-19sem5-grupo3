@@ -13,9 +13,11 @@ import FaceOrientationEnum from './api/domain/FaceOrientation';
 import ThreeDrawer from './threejeyass/domain/ThreeDrawer';
 import ProductTypeEnum from './api/domain/ProductType';
 import ThreeDrawerAnimations from './threejeyass/animations/ThreeDrawerAnimations';
+import ThreeHingedDoorAnimations from './threejeyass/animations/ThreeHingedDoorAnimations';
 import Watcher from './api/domain/Watcher';
 import ThreeAction from './threejeyass/animations/ThreeAction';
 import WatcherEventsTypes from './api/domain/WatcherEventsTypes';
+import ThreeHingeedDoor from './threejeyass/domain/ThreeHingedDoor';
 
 export default class ProductRenderer {
 
@@ -98,10 +100,6 @@ export default class ProductRenderer {
   closet_shelves_ids;
 
   closet_poles_ids;
-
-
-
-  closet_hinged_doors_ids;
 
   closet_sliding_doors_ids;
 
@@ -210,7 +208,6 @@ export default class ProductRenderer {
     this.slidingDoor = null;
     this.waitingDoors = [];
     this.openDrawers = [];
-    this.closet_hinged_doors_ids = [];
     this.closet_sliding_doors_ids = [];
     this.isHingedDoorClosed = false;
     this.closet_poles_ids = [];
@@ -970,11 +967,13 @@ export default class ProductRenderer {
         j = 0;
         flagOpen = false;
         flagClose = false;
-        while (!flagOpen && !flagClose && j < this.closet_hinged_doors_ids.length) {
-          this.hingedDoor = this.group.getObjectById(this.closet_hinged_doors_ids[j]);
+
+        let closetHingedDoors=this.closet.getProducts(ProductTypeEnum.HINGED_DOOR);
+
+        while (!flagOpen && !flagClose && j < closetHingedDoors.length) {
+          let hingedDoor=closetHingedDoors[j]; //TODO: Maybe wrong ?
           //TODO: REMOVE closet_face ???? Not currently used!!!!
-          let closet_face = this.closet.getClosetFaces().get(FaceOrientationEnum.BASE).mesh();
-          if (this.hingedDoor == face) {
+          if (hingedDoor.getFace().mesh() == face) {
             this.controls.enabled = false;
             if (this.hingedDoor.rotation.y < 0) {
               flagClose = true;
@@ -1076,8 +1075,9 @@ export default class ProductRenderer {
     this.generateDrawer(slot);
     if (this.doesSlotHaveHingedDoor(slot)) {
       if (!this.isHingedDoorClosed) {
-        this.hingedDoor = this.group.getObjectById(this.closet_hinged_doors_ids[slot - 1]);
-        requestAnimationFrame(this.openHingedDoor);
+        let hingedDoor=this.closet.getProducts(ProductTypeEnum.HINGED_DOOR)[slot-1].face().mesh();
+        ThreeHingedDoorAnimations.open(hingedDoor);
+        /* requestAnimationFrame(this.openHingedDoor); */
       }
     }
     if (this.doesClosetHaveSlidingDoors()) {
@@ -1195,10 +1195,10 @@ export default class ProductRenderer {
       z = this.calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
     }
 
-    var meshID = this.generateParellepiped(width, height, depth, x, y, z + (depth_closet / 2), this.material, this.group);
-    var hingedDoor = new HingedDoor([width, height, depth, x, y, z + (depth_closet / 2)], slot, meshID);
-    this.closet.addHingedDoor(hingedDoor);
-    this.closet_hinged_doors_ids.push(meshID);
+    let hingedDoorFace=new ThreeFace(null,this.material,null,width,height,depth,x,y,z+(depth_closet/2));
+    let hingedDoor=new ThreeHingeedDoor(hingedDoorFace);
+    /* var hingedDoor = new HingedDoor([width, height, depth, x, y, z + (depth_closet / 2)], slot, meshID); */
+    this.closet.addProduct(slot,hingedDoor);
   }
 
   generateSlidingDoor() {
