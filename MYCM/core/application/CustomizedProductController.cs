@@ -322,7 +322,7 @@ namespace core.application {
                 );
             }
 
-            List<CustomizedDimensions> customizedDimensions = null; //ir buscar ao customized product
+            List<CustomizedDimensions> customizedDimensions = customizedProduct.recommendedSlots();
             return CustomizedDimensionsModelViewService.fromCollection(customizedDimensions);
         }
     }
