@@ -15,9 +15,15 @@
           <b-input type="password" v-model="password" :placeholder="placeholder.password" icon="key" password-reveal required></b-input>
         </b-field>
   
-        <b-checkbox type="is-info" @input="iHaveReadThePolicy">  <a @click="activateModalPrivacy">I have read the <u>Privacy Policy</u></a></b-checkbox>
-       
+        <b-checkbox type="is-info" @input="iHaveReadThePolicy"> </b-checkbox>
+        <a @click="activateModalPrivacy">I have read the <u>Privacy Policy</u></a>
       </div>
+    <div v-if="activateModal">  
+      <b-modal :active.sync="activateModal" has-modal-card scroll="keep">
+        <privacy-policy-modal></privacy-policy-modal>
+      </b-modal>
+    
+    </div>
       <!-- Create check box + form  -->
     </section>
     <footer class="modal-card-foot">
@@ -25,12 +31,8 @@
         <button class="btn-primary" @click="emitSignup()">Sign Up</button>
       </div>
     </footer>
-    <div v-if="activateModal">
-      <b-modal :active.sync = "activateModal"  has-modal-card scroll="keep">
-        <privacy-policy-modal></privacy-policy-modal>
-      </b-modal>
-    </div>
-
+ 
+  
   </div>
 </template>
 
@@ -52,7 +54,7 @@
         name: "",
         privacyCheckBox: false,
         checkBox: "",
-        activateModal:false
+        activateModal: false
   
       };
     },
@@ -60,8 +62,12 @@
      * Component methods
      */
     methods: {
-      activateModalPrivacy(){
-        activateModal = true;
+      activateModalPrivacy() {
+        if (this.activateModal) {
+          this.activateModal = false;
+        }else{
+          this.activateModal = true;
+        }
       },
   
       iHaveReadThePolicy: function() {
@@ -116,7 +122,7 @@
         }
       }
     },
-    components:{
+    components: {
       PrivacyPolicyModal
     }
   
@@ -126,6 +132,6 @@
 <style>
   u {
     text-decoration: underline;
-    color:#0ba2db;
+    color: #0ba2db;
   }
 </style>
