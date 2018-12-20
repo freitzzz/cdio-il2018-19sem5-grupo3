@@ -6,12 +6,12 @@
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
     <select class="dropdown" v-model="dimensionOp" @change="populateDimensions">
-                          <option
-                            v-for="option in availableOptionsDimensions"
-                            :key="option.id"
-                            :value="option"
-                          >{{"Option: "+option.id}}</option>
-                        </select>
+                              <option
+                                v-for="option in availableOptionsDimensions"
+                                :key="option.id"
+                                :value="option"
+                              >{{"Option: "+option.id}}</option>
+                            </select>
   
     <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
@@ -33,12 +33,12 @@
   
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="this.updateDimensions">
-                          <option
-                            v-for="optionUnit in availableOptionsUnits"
-                            :key="optionUnit.id"
-                            :value="optionUnit.unit"
-                          >{{optionUnit.unit}}</option>
-                        </select>
+                              <option
+                                v-for="optionUnit in availableOptionsUnits"
+                                :key="optionUnit.id"
+                                :value="optionUnit.unit"
+                              >{{optionUnit.unit}}</option>
+                            </select>
     <div class="center-controls">
       <i class="btn btn-primary material-icons" @click="previousPanel()">arrow_back</i>
       <i class="btn btn-primary material-icons" @click="nextPanel()">arrow_forward</i>
@@ -84,13 +84,13 @@
     "No available dimension please try the other option.";
   const NO_OPTION = -1;
   const N_DIMENSIONS = 3;
-
-  const WIDTH_INDEX = 0;
-  const HEIGHT_INDEX = 1;
-  const DEPTH_INDEX = 2;
-
-
-
+  
+  const WIDTH = 0;
+  const HEIGHT = 1;
+  const DEPTH = 2;
+  
+  
+  
   
   const DEFAULT_UNIT = "mm";
   export default {
@@ -98,8 +98,8 @@
     data() {
       return {
         storeDispatchVec: [],
-        dimensionVec : [],
-        controlIndex:0,
+        dimensionVec: [],
+        controlIndex: 0,
         i: 0,
   
         heightMin: MIN_DEFAULT,
@@ -122,7 +122,7 @@
   
         availableOptionsDimensions: [],
         availableOptionsUnits: [],
-  
+        storeDimensions: [],
         dimensionOp: 0,
   
         heightType: NO_OPTION, //NNo type of dimension until it's choosen an option
@@ -152,12 +152,25 @@
       vueSlider
     },
     created() {
-      store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS, {
-        width: this.width,
-        height: this.height,
-        depth: this.depth,
-        unit: this.unit
-      });
+      if (this.dimensionOp == undefined) {
+        this.undoDimensionConversion();
+        //Transform 
+        store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS, {
+          width: this.storeDispatchVec[WIDTH],
+          height: this.storeDispatchVec[HEIGHT],
+          depth: this.storeDispatchVec[DEPTH],
+          unit: DEFAULT_UNIT
+        });
+      } else {
+        store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS, {
+          width: this.width,
+          height: this.height,
+          depth: this.depth,
+          unit: DEFAULT_UNIT
+        });
+      }
+  
+  
       store.dispatch(ACTIVATE_CAN_MOVE_CLOSET);
       store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS);
       /*Get all available dimensions of the given product of the array*/
@@ -195,20 +208,27 @@
           depth: this.storeDispatchVec[DEPTH],
           unit: DEFAULT_UNIT
         });
+  
+  
       },
-    /*   convertDimensions(){
-        Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions?unit=${this.unit}`)
-        .then(response => this.storeDispatchVec.push(...response.data))
-        .catch(error => {
-          this.$toast.open(error.response.status + "An error occurred");
-        });
-      }, */
-      undoDimensionConversion(){
+      /*   convertDimensions(){
+          Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions?unit=${this.unit}`)
+          .then(response => this.storeDispatchVec.push(...response.data))
+          .catch(error => {
+            this.$toast.open(error.response.status + "An error occurred");
+          });
+        }, */
+      undoDimensionConversion() {
         Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions?unit=${DEFAULT_UNIT}`)
-        .then(response => this.storeDispatchVec.push(...response.data))
-        .catch(error => {
-          this.$toast.open(error.response.status + "An error occurred");
-        });
+          .then(response => this.storeDimensions.push(...response.data))
+          .catch(error => {
+            this.$toast.open(error.response.status + "An error occurred");
+          });
+  
+  
+        this.storeDispatchVec[WIDTH] = this.storeDimensions[this.dimensionOp].width;
+        this.storeDispatchVec[HEIGHT] = this.storeDimensions[this.dimensionOp].height;
+        this.storeDispatchVec[DEPTH] = this.storeDimensions[this.dimensionOp].depth;
       },
       //Method that identifies different types of dimensios
       //There are three types of dimensions: Discrete Interval, Discrete Value, Continuous Interval
@@ -247,7 +267,7 @@
       //Populate
       populateDimensions: function() {
   
-        
+  
         this.resetFlags();
         //Get information of the chosed option
         var op = this.dimensionOp;
@@ -334,7 +354,7 @@
           this.discreteValueFlags[this.DEPTH] = false;
           this.discreteIntervalFlags[this.DEPTH] = false;
         }
-        if(this.controlIndex == 0){ //First dimension
+        if (this.controlIndex == 0) { //First dimension
           this.createFirstReason;
           this.controlIndex++;
         }
@@ -410,39 +430,39 @@
         }
   
         /*         return new Promise((accept, reject) => {
-                  if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
-                    Axios.post(MYCM_API_URL + '/customizedproducts', {
-                      productId: store.state.product.id,
-                      customizedDimensions: {
-                        height: this.height,
-                        width: this.width,
-                        depth: this.depth,
-                        unit: this.unit
+                      if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
+                        Axios.post(MYCM_API_URL + '/customizedproducts', {
+                          productId: store.state.product.id,
+                          customizedDimensions: {
+                            height: this.height,
+                            width: this.width,
+                            depth: this.depth,
+                            unit: this.unit
+                          }
+                        })
+                        .then(response => {
+                          this.idCustomizedProduct=response.data.id
+                          accept
+                        })
+                        .catch((error_message) => {
+                          this.$toast.open({
+                            message: error_message.response.data.message
+                          });
+                          flag = true;
+                        });
+                        if (!flag) {
+                          alert(this.idCustomizedProduct);
+      
+                          store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
+                          this.drawRecommendedSlots();
+                          this.$emit("advance");
+                        }else{
+                          this.$toast.open("There was an error please try again!");
+                        }
+                      } else {
+                        this.$toast.open("Please select an option!");
                       }
-                    })
-                    .then(response => {
-                      this.idCustomizedProduct=response.data.id
-                      accept
-                    })
-                    .catch((error_message) => {
-                      this.$toast.open({
-                        message: error_message.response.data.message
-                      });
-                      flag = true;
-                    });
-                    if (!flag) {
-                      alert(this.idCustomizedProduct);
-  
-                      store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
-                      this.drawRecommendedSlots();
-                      this.$emit("advance");
-                    }else{
-                      this.$toast.open("There was an error please try again!");
-                    }
-                  } else {
-                    this.$toast.open("Please select an option!");
-                  }
-                }); */
+                    }); */
       },
       previousPanel() {
         //!TODO DELETE product
