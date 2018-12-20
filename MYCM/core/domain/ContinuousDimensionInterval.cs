@@ -61,7 +61,7 @@ namespace core.domain
         /// <summary>
         /// Constant that represents the message that occurs if the max value is not a multiple of the increment.
         /// </summary>
-        private const string MAXIMUM_VALUE_NOT_MULTIPLE_OF_INCREMENT = "The maximum value is not a multiple of increment.";
+        private const string INTERVAL_NOT_MULTIPLE_OF_INCREMENT = "The maximum value is not a multiple of increment.";
 
         /// <summary>
         /// Minimum value of the interval
@@ -137,7 +137,7 @@ namespace core.domain
                 throw new ArgumentException(INCREMENT_GREATER_THAN_MAX_MIN_DIFFERENCE_REFERENCE);
             }
 
-            checkIfMaxValueIsMultipleOfIncrement(maxValue, increment);
+            checkIfIntervalIsMultipleOfIncrement(maxValue-minValue, increment);
 
             this.minValue = minValue;
             this.maxValue = maxValue;
@@ -149,16 +149,16 @@ namespace core.domain
         /// </summary>
         /// <param name="maxValue">double representing the interval's maximum value.</param>
         /// <param name="increment">double representing the interval's increment value.</param>
-        private void checkIfMaxValueIsMultipleOfIncrement(double maxValue, double increment)
+        private void checkIfIntervalIsMultipleOfIncrement(double interval, double increment)
         {
-            decimal maxValueAsDecimal = (decimal)maxValue;
+            decimal intervalAsDecimal = (decimal)interval;
             decimal incrementAsDecimal = (decimal)increment;
 
-            decimal remainder = maxValueAsDecimal % incrementAsDecimal;
+            decimal remainder = intervalAsDecimal % incrementAsDecimal;
 
             if (decimal.Compare(decimal.Zero, remainder) != 0)
             {
-                throw new ArgumentException(MAXIMUM_VALUE_NOT_MULTIPLE_OF_INCREMENT);
+                throw new ArgumentException(INTERVAL_NOT_MULTIPLE_OF_INCREMENT);
             }
         }
 

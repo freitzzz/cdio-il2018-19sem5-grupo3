@@ -4,26 +4,22 @@ using backend.utils;
 using core.application;
 using core.domain;
 using core.dto;
+using core.exceptions;
 using core.modelview.algorithm;
+using core.modelview.input;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using support.dto;
 using support.utils;
 
-namespace backend.Controllers {
+namespace backend.Controllers
+{
     /// <summary>
     /// Backend AlgorithmController class
     /// </summary>
     [Route("mycm/api/algorithms")]
-    public class AlgorithmController : Controller {
-        /// <summary>
-        /// Constant that represents the 400 Bad Request message for when no Algorithms are found.
-        /// </summary>
-        private const string NO_ALGORITHMS_FOUND = "No algorithms found";
-        /// <summary>
-        /// Constant that represents the 400 Bad Request message for when no inputs are required by the Algorithm
-        /// </summary>
-        private const string NO_INPUTS_NEEDED_MESSAGE = "Algorithm does not require any inputs";
+    public class AlgorithmController : Controller
+    {
         /// <summary>
         /// Constant that represents the log message for when a GET All Request starts
         /// </summary>
@@ -37,13 +33,13 @@ namespace backend.Controllers {
         /// </summary>
         private const string LOG_GET_INPUTS_START = "GET Inputs Request started";
         /// <summary>
-        /// Constant that represents the log message for when a GET All Request returns a BadRequest
+        /// Constant that represents the log message for when a GET All Request returns a NotFound
         /// </summary>
-        private const string LOG_GET_ALL_BAD_REQUEST = "GET All BadRequest (No Algorithms Found)";
+        private const string LOG_GET_ALL_NOT_FOUND = "GET All NotFound (No Algorithms Found)";
         /// <summary>
-        /// Constant that represents the log message for when a GET by ID Request returns a BadRequest
+        /// Constant that represents the log message for when a GET by ID Request returns a NotFound
         /// </summary>
-        private const string LOG_GET_ID_BAD_REQUEST = "GET by ID BadRequest (Not a valid algorithm)";
+        private const string LOG_GET_ID_NOT_FOUND = "GET by ID NotFound (Not a valid algorithm)";
         /// <summary>
         /// Constant that represents the log message for when a GET by ID Request returns a BadRequest
         /// </summary>
@@ -73,7 +69,8 @@ namespace backend.Controllers {
         /// </summary>
         /// <param name="materialRepository">Repository to be used to manipulate Material instances</param>
         /// <param name="logger">Controllers logger to log any information regarding HTTP Requests and Responses</param>
-        public AlgorithmController(ILogger<AlgorithmController> logger) {
+        public AlgorithmController(ILogger<AlgorithmController> logger)
+        {
             this.logger = logger;
         }
         /// <summary>
@@ -83,16 +80,24 @@ namespace backend.Controllers {
         /// <br>HTTP Response 200 Ok with the basic info of all Algorithms in JSON format.
         /// </returns>
         [HttpGet]
-        public ActionResult findAll() {
+        public ActionResult findAll()
+        {
             logger.LogInformation(LOG_GET_ALL_START);
-            List<GetBasicAlgorithmModelView> algorithms = new core.application.AlgorithmController().getAllAlgorithms();
-            if (Collections.isListEmpty(algorithms)) {
-                logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
-                return BadRequest(new {error = NO_ALGORITHMS_FOUND});
+
+            try
+            {
+                GetAllAlgorithmsModelView allAlgorithms = new core.application.AlgorithmController().getAllAlgorithms();
+
+                logger.LogInformation(LOG_GET_ALL_SUCCESS, allAlgorithms);
+                return Ok(allAlgorithms);
             }
-            logger.LogInformation(LOG_GET_ALL_SUCCESS, algorithms);
-            return Ok(algorithms);
+            catch (ResourceNotFoundException ex)
+            {
+                logger.LogWarning(LOG_GET_ALL_NOT_FOUND);
+                return NotFound(new SimpleJSONMessageService(ex.Message));
+            }
         }
+
         /// <summary>
         /// Finds an Algorithm by its id
         /// </summary>
@@ -101,17 +106,24 @@ namespace backend.Controllers {
         /// <br>HTTP Response 200 Ok with the info of the algorithm
         /// </returns>
         [HttpGet("{id}", Name = "GetAlgorithm")]
-        public ActionResult findAlgorithm(int id) {
+        public ActionResult findAlgorithm(int id)
+        {
             logger.LogInformation(LOG_GET_ID_START);
-            try {
-                AlgorithmDTO algDTO = new core.application.AlgorithmController().getAlgorithm((RestrictionAlgorithm)id);
-                logger.LogInformation(LOG_GET_ID_SUCCESS, algDTO);
-                return Ok(algDTO);
-            } catch (ArgumentOutOfRangeException ex) {
-                logger.LogWarning(LOG_GET_ID_BAD_REQUEST);
-                return BadRequest(new {error = ex.Message});
+            try
+            {
+                GetAlgorithmModelView algorithmModelView = new core.application.AlgorithmController().getAlgorithm((RestrictionAlgorithm)id);
+
+                logger.LogInformation(LOG_GET_ID_SUCCESS, algorithmModelView);
+                return Ok(algorithmModelView);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                //this exception should only occur if the factory does not recognize an enumerate element with the given id value
+                logger.LogWarning(LOG_GET_ID_NOT_FOUND);
+                return NotFound(new SimpleJSONMessageService(ex.Message));
             }
         }
+
         /// <summary>
         /// Retrieves a certain algorithm's inputs
         /// </summary>
@@ -119,20 +131,28 @@ namespace backend.Controllers {
         /// <returns>
         /// <br>HTTP Response 200 Ok with the inputs the algorithm needs
         /// </returns>
-        [HttpGet("{id}/inputs", Name = "GetAlgorithmInputs")]
-        public ActionResult getAlgorithmInputs(int id) {
+        [HttpGet("{id}/inputs", Name = "GetAlgorithmRequiredInputs")]
+        public ActionResult getAlgorithmRequiredInputs(int id)
+        {
             logger.LogInformation(LOG_GET_INPUTS_START);
-            try {
-                List<InputDTO> inputs = new core.application.AlgorithmController().getAlgorithmInputs((RestrictionAlgorithm)id);
-                if (Collections.isListEmpty(inputs)) {
-                    logger.LogInformation(LOG_GET_INPUTS_SUCCESS_NO_INPUTS);
-                    return BadRequest(new {error = NO_INPUTS_NEEDED_MESSAGE});
-                }
-                logger.LogInformation(LOG_GET_INPUTS_SUCCESS, inputs);
-                return Ok(inputs);
-            } catch (ArgumentOutOfRangeException ex) {
+            try
+            {
+                GetAllInputsModelView requiredInputsModelView = new core.application.AlgorithmController().getAlgorithmRequiredInputs((RestrictionAlgorithm)id);
+
+                logger.LogInformation(LOG_GET_INPUTS_SUCCESS, requiredInputsModelView);
+                return Ok(requiredInputsModelView);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                //this exception should only occur if the factory does not recognize an enumerate element with the given id value
                 logger.LogWarning(LOG_GET_INPUTS_BAD_REQUEST);
-                return BadRequest(new {error = ex.Message});
+                return NotFound(new SimpleJSONMessageService(ex.Message));
+            }
+            catch (ResourceNotFoundException ex)
+            {
+                //this exception should only occur if the algorithm has no required inputs
+
+                return NotFound(new SimpleJSONMessageService(ex.Message));
             }
         }
     }

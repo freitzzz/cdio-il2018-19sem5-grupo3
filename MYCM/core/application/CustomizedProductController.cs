@@ -325,5 +325,23 @@ namespace core.application {
             List<CustomizedDimensions> customizedDimensions = customizedProduct.recommendedSlots();
             return CustomizedDimensionsModelViewService.fromCollection(customizedDimensions);
         }
+        /// <summary>
+        /// Gets min slots from a certain customized product
+        /// </summary>
+        /// <param name="customizedProductID">id of the customized product to get the information from</param>
+        /// <returns>list of min slots</returns>
+        public GetAllCustomizedDimensionsModelView getMinSlots(long customizedProductID) {
+            CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
+            CustomizedProduct customizedProduct = customizedProductRepository.find(customizedProductID);
+
+            if (customizedProduct == null) {
+                throw new ResourceNotFoundException(
+                    string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, customizedProductID)
+                );
+            }
+
+            List<CustomizedDimensions> customizedDimensions = customizedProduct.minSlots();
+            return CustomizedDimensionsModelViewService.fromCollection(customizedDimensions);
+        }
     }
 }

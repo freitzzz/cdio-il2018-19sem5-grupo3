@@ -26,12 +26,10 @@ using static core.domain.CustomizedProduct;
 using core.modelview.material;
 using System.Text;
 
-namespace backend_tests.Controllers
-{
+namespace backend_tests.Controllers {
     [Collection("Integration Collection")]
     [TestCaseOrderer(TestPriorityOrderer.TYPE_NAME, TestPriorityOrderer.ASSEMBLY_NAME)]
-    public sealed class CustomizedProductControllerIntegrationTest : IClassFixture<TestFixture<TestStartupSQLite>>
-    {
+    public sealed class CustomizedProductControllerIntegrationTest : IClassFixture<TestFixture<TestStartupSQLite>> {
 
         private const string BASE_URI = "mycm/api/customizedproducts";
 
@@ -41,19 +39,16 @@ namespace backend_tests.Controllers
 
         private HttpClient httpClient;
 
-        public CustomizedProductControllerIntegrationTest(TestFixture<TestStartupSQLite> fixture)
-        {
+        public CustomizedProductControllerIntegrationTest(TestFixture<TestStartupSQLite> fixture) {
             this.fixture = fixture;
-            this.httpClient = fixture.CreateClient(new WebApplicationFactoryClientOptions
-            {
+            this.httpClient = fixture.CreateClient(new WebApplicationFactoryClientOptions {
                 AllowAutoRedirect = false,
                 BaseAddress = new Uri("http://localhost:5001")
             });
         }
 
         [Fact, TestPriority(-15)]
-        public async void ensureGetAllBaseCustomizedProductsReturnsOkWhenCollectionHasBaseCustomizedProducts()
-        {
+        public async void ensureGetAllBaseCustomizedProductsReturnsOkWhenCollectionHasBaseCustomizedProducts() {
             string testNumber = "-15";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -104,8 +99,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-14)]
-        public async void ensureGetAllReturnsOkWhenCollectionHasResources()
-        {
+        public async void ensureGetAllReturnsOkWhenCollectionHasResources() {
             string testNumber = "-14";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -160,8 +154,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-13)]
-        public async void ensureDeletingCustomizedProductReturnsNotFoundIfCollectionIsEmpty()
-        {
+        public async void ensureDeletingCustomizedProductReturnsNotFoundIfCollectionIsEmpty() {
             var response =
                 await httpClient.DeleteAsync(BASE_URI + "/1");
 
@@ -171,8 +164,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-12)]
-        public async void ensureUpdatingCustomizedProductReturnsNotFoundIfCollectionIsEmpty()
-        {
+        public async void ensureUpdatingCustomizedProductReturnsNotFoundIfCollectionIsEmpty() {
             string testNumber = "-12";
 
             UpdateCustomizedProductModelView update =
@@ -189,8 +181,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-11)]
-        public async void ensureAddingSlotToCustomizedProductReturnsNotFoundIfCollectionIsEmpty()
-        {
+        public async void ensureAddingSlotToCustomizedProductReturnsNotFoundIfCollectionIsEmpty() {
             string testNumber = "-11";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -222,8 +213,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-10)]
-        public async void ensureGetAllReturnsNotFoundIfCollectionIsEmpty()
-        {
+        public async void ensureGetAllReturnsNotFoundIfCollectionIsEmpty() {
             var response = await httpClient.GetAsync(BASE_URI);
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -232,8 +222,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-9)]
-        public async void ensureGetAllBaseCustomizedProductsReturnsNotFoundIfCollectionIsEmpty()
-        {
+        public async void ensureGetAllBaseCustomizedProductsReturnsNotFoundIfCollectionIsEmpty() {
             var response = await httpClient.GetAsync(BASE_URI + "/base");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -242,8 +231,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-8)]
-        public async void ensureGetByIdReturnsNotFoundIfCollectionIsEmpty()
-        {
+        public async void ensureGetByIdReturnsNotFoundIfCollectionIsEmpty() {
             var response = await httpClient.GetAsync(BASE_URI + "/1");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -252,8 +240,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-7)]
-        public async void ensureGetSlotReturnsNotFoundIfCollectionIsEmpty()
-        {
+        public async void ensureGetSlotReturnsNotFoundIfCollectionIsEmpty() {
             var response = await httpClient.GetAsync(BASE_URI + "/1/slots/1");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -262,8 +249,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-6)]
-        public async void ensureDeleteCustomizedProductReturnsNotFoundIfCollectionIsEmpty()
-        {
+        public async void ensureDeleteCustomizedProductReturnsNotFoundIfCollectionIsEmpty() {
             var response = await httpClient.DeleteAsync(BASE_URI + "/1");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -272,8 +258,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-5)]
-        public async void ensureGetByIdReturnsNotFoundForNonExistingId()
-        {
+        public async void ensureGetByIdReturnsNotFoundForNonExistingId() {
             string testNumber = "-5";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -295,8 +280,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-4)]
-        public async void ensureGetSlotByIdReturnsNotFoundForNonExistingCustomizedProductId()
-        {
+        public async void ensureGetSlotByIdReturnsNotFoundForNonExistingCustomizedProductId() {
             string testNumber = "-4";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -319,8 +303,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-3)]
-        public async void ensureGetSlotByIdReturnsNotFoundIfCustomizedProductDoesntSupportSlots()
-        {
+        public async void ensureGetSlotByIdReturnsNotFoundIfCustomizedProductDoesntSupportSlots() {
             string testNumber = "-3";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -345,8 +328,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-2)]
-        public async void ensureGetSlotByIdReturnsNotFoundIfSlotIdDoesntExist()
-        {
+        public async void ensureGetSlotByIdReturnsNotFoundIfSlotIdDoesntExist() {
             string testNumber = "-2";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -371,8 +353,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-1)]
-        public async void ensureGetSlotByIdReturnsNotFoundIfSlotBelongsToAnotherCustomizedProduct()
-        {
+        public async void ensureGetSlotByIdReturnsNotFoundIfSlotBelongsToAnotherCustomizedProduct() {
             string testNumber = "-1";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -400,8 +381,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(0)]
-        public async void ensureAddingCustomizedProductWithNullBodyReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithNullBodyReturnsBadRequest() {
             AddCustomizedProductModelView customizedProductModelView = null;
 
             var response = await httpClient.PostAsJsonAsync(BASE_URI, customizedProductModelView);
@@ -412,8 +392,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(1)]
-        public async void ensureAddingCustomizedProductWithNonExistingProductIdReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithNonExistingProductIdReturnsBadRequest() {
             string testNumber = "1";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -429,8 +408,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(2)]
-        public async void ensureAddingCustomizedProductWithCustomizedDimensionsOnlyReturnsCreated()
-        {
+        public async void ensureAddingCustomizedProductWithCustomizedDimensionsOnlyReturnsCreated() {
             string testNumber = "2";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -460,8 +438,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(3)]
-        public async void ensureAddingCustomizedProductWithNonExistingMaterialIdReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithNonExistingMaterialIdReturnsBadRequest() {
             string testNumber = "3";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -478,8 +455,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(4)]
-        public async void ensureAddingCustomizedProductWithNullCustomizedDimensionsReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithNullCustomizedDimensionsReturnsBadRequest() {
             string testNumber = "4";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -495,8 +471,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(5)]
-        public async void ensureAddingCustomizedProductWithMaterialReferenceFromAnotherProductReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithMaterialReferenceFromAnotherProductReturnsBadRequest() {
             string testNumber = "5";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -515,8 +490,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(6)]
-        public async void ensureAddingCustomizedProductWithNullColorAndNullFinishReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithNullColorAndNullFinishReturnsBadRequest() {
             string testNumber = "6";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -533,8 +507,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(7)]
-        public async void ensureAddingCustomizedProductWithColorFromAnotherMaterialReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithColorFromAnotherMaterialReturnsBadRequest() {
             string testNumber = "7";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -553,8 +526,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(8)]
-        public async void ensureAddingCustomizedProductWithFinishFromAnotherMaterialReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithFinishFromAnotherMaterialReturnsBadRequest() {
             string testNumber = "8";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -573,8 +545,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(9)]
-        public async void ensureAddingCustomizedProductWithInvalidColorReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithInvalidColorReturnsBadRequest() {
             string testNumber = "9";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -590,8 +561,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(10)]
-        public async void ensureAddingCustomizedProductWithInvalidFinishReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithInvalidFinishReturnsBadRequest() {
             string testNumber = "10";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -607,8 +577,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(11)]
-        public async void ensureAddingCustomizedProductWithInvalidHeightReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithInvalidHeightReturnsBadRequest() {
             string testNumber = "11";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -624,8 +593,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(12)]
-        public async void ensureAddingCustomizedProductWithInvalidWidthReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithInvalidWidthReturnsBadRequest() {
             string testNumber = "12";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -641,8 +609,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(13)]
-        public async void ensureAddingCustomizedProductWithInvalidDepthReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithInvalidDepthReturnsBadRequest() {
             string testNumber = "13";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -658,8 +625,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(14)]
-        public async void ensureAddingCustomizedProductWithInvalidDimensionsUnitReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithInvalidDimensionsUnitReturnsBadRequest() {
             string testNumber = "14";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -675,8 +641,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(15)]
-        public async void ensureAddingCustomizedProductWithInvalidDesignationReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithInvalidDesignationReturnsBadRequest() {
             string testNumber = "15";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -692,8 +657,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(16)]
-        public async void ensureAddingCustomizedProductWithValidReferenceButNoTokenReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithValidReferenceButNoTokenReturnsBadRequest() {
             string testNumber = "16";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -709,8 +673,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(17)]
-        public async void ensureAddingCustomizedProductWithInvalidReferenceAndValidTokenReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithInvalidReferenceAndValidTokenReturnsBadRequest() {
             string testNumber = "17";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -728,8 +691,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(18)]
-        public async void ensureAddingCustomizedProductWithValidReferenceAndInvalidTokenReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductWithValidReferenceAndInvalidTokenReturnsBadRequest() {
             string testNumber = "18";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -747,8 +709,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(19)]
-        public async void ensureAddingCustomizedProductWithColorOnlyReturnsCreated()
-        {
+        public async void ensureAddingCustomizedProductWithColorOnlyReturnsCreated() {
             string testNumber = "19";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -777,8 +738,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(20)]
-        public async void ensureAddingCustomizedProductWithFinishOnlyReturnsCreated()
-        {
+        public async void ensureAddingCustomizedProductWithFinishOnlyReturnsCreated() {
             string testNumber = "20";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -807,8 +767,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(21)]
-        public async void ensureAddingCustomizedProductThatCanBeFinishedReturnsCreated()
-        {
+        public async void ensureAddingCustomizedProductThatCanBeFinishedReturnsCreated() {
             string testNumber = "21";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -835,8 +794,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(22)]
-        public async void ensureAddingCustomizedProductWithReferenceAndAuthTokenReturnsCreated()
-        {
+        public async void ensureAddingCustomizedProductWithReferenceAndAuthTokenReturnsCreated() {
             string testNumber = "22";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -846,8 +804,7 @@ namespace backend_tests.Controllers
 
             Uri baseUri = new Uri(httpClient.BaseAddress.ToString() + BASE_URI);
 
-            var request = new HttpRequestMessage()
-            {
+            var request = new HttpRequestMessage() {
                 RequestUri = baseUri,
                 Method = HttpMethod.Post
             };
@@ -878,8 +835,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(23)]
-        public async void ensureAddingCustomizedProductDuplicateReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductDuplicateReturnsBadRequest() {
             string testNumber = "23";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -889,8 +845,7 @@ namespace backend_tests.Controllers
 
             Uri baseUri = new Uri(httpClient.BaseAddress.ToString() + BASE_URI);
 
-            var request = new HttpRequestMessage()
-            {
+            var request = new HttpRequestMessage() {
                 RequestUri = baseUri,
                 Method = HttpMethod.Post
             };
@@ -927,8 +882,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(24)]
-        public async void ensureAddingCustomizedProductWithCustomizedDimensionsAndMaterialOnlyReturnsCreated()
-        {
+        public async void ensureAddingCustomizedProductWithCustomizedDimensionsAndMaterialOnlyReturnsCreated() {
             string testNumber = "24";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -957,8 +911,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(25)]
-        public async void ensureAddingCustomizedProductWithCustomizedDimensionsAndDesignationOnlyReturnsCreated()
-        {
+        public async void ensureAddingCustomizedProductWithCustomizedDimensionsAndDesignationOnlyReturnsCreated() {
             string testNumber = "25";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -987,8 +940,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(26)]
-        public async void ensureGetByIdReturnsOkForExistingCustomizedProductId()
-        {
+        public async void ensureGetByIdReturnsOkForExistingCustomizedProductId() {
             string testNumber = "26";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1008,8 +960,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(27)]
-        public async void ensureGetSlotByIdReturnsOkForCustomizedProductsSelfSlot()
-        {
+        public async void ensureGetSlotByIdReturnsOkForCustomizedProductsSelfSlot() {
             string testNumber = "27";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1051,8 +1002,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(28)]
-        public async void ensureGetSlotByIdReturnsOkForCustomizedProductsActualSlots()
-        {
+        public async void ensureGetSlotByIdReturnsOkForCustomizedProductsActualSlots() {
             string testNumber = "28";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1094,8 +1044,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(29)]
-        public async void ensureAddingSlotToCustomizedProductWithNullBodyReturnsBadRequest()
-        {
+        public async void ensureAddingSlotToCustomizedProductWithNullBodyReturnsBadRequest() {
             string testNumber = "29";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1115,8 +1064,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(30)]
-        public async void ensureAddingSlotToCustomizedProductReturnsNotFoundForNonExistingId()
-        {
+        public async void ensureAddingSlotToCustomizedProductReturnsNotFoundForNonExistingId() {
             string testNumber = "30";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1146,8 +1094,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(31)]
-        public async void ensureAddingSlotToCustomizedProductThatDoesntSupportSlotsReturnsBadRequest()
-        {
+        public async void ensureAddingSlotToCustomizedProductThatDoesntSupportSlotsReturnsBadRequest() {
             string testNumber = "31";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1176,8 +1123,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(32)]
-        public async void ensureAddingSlotToCustomizedProductWithInvalidHeightReturnsBadRequest()
-        {
+        public async void ensureAddingSlotToCustomizedProductWithInvalidHeightReturnsBadRequest() {
             string testNumber = "32";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1206,8 +1152,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(33)]
-        public async void ensureAddingSlotToCustomizedProductWithInvalidWidthReturnsBadRequest()
-        {
+        public async void ensureAddingSlotToCustomizedProductWithInvalidWidthReturnsBadRequest() {
             string testNumber = "33";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1236,8 +1181,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(34)]
-        public async void ensureAddingSlotToCustomizedProductWithInvalidDepthReturnsBadRequest()
-        {
+        public async void ensureAddingSlotToCustomizedProductWithInvalidDepthReturnsBadRequest() {
             string testNumber = "34";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1266,8 +1210,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(35)]
-        public async void ensureAddingSlotToCustomizedProductWithInvalidDimensionsUnitReturnsBadRequest()
-        {
+        public async void ensureAddingSlotToCustomizedProductWithInvalidDimensionsUnitReturnsBadRequest() {
             string testNumber = "35";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1296,8 +1239,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(36)]
-        public async void ensureAddingSlotToFinishedCustomizedProductReturnsBadRequest()
-        {
+        public async void ensureAddingSlotToFinishedCustomizedProductReturnsBadRequest() {
             string testNumber = "36";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1355,8 +1297,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(37)]
-        public async void ensureAddingValidSlotToCustomizedProductReturnsCreated()
-        {
+        public async void ensureAddingValidSlotToCustomizedProductReturnsCreated() {
             string testNumber = "37";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1393,8 +1334,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(38)]
-        public async void ensureAddingCustomizedProductToSlotReturnsBadRequestWithNullBody()
-        {
+        public async void ensureAddingCustomizedProductToSlotReturnsBadRequestWithNullBody() {
             AddCustomizedProductModelView customizedProductModelView = null;
 
             var response = await httpClient.PostAsJsonAsync
@@ -1409,8 +1349,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(39)]
-        public async void ensureAddingCustomizedProductToSlotWithNonExistingProductIdReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductToSlotWithNonExistingProductIdReturnsBadRequest() {
             string testNumber = "39";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1439,8 +1378,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(40)]
-        public async void ensureAddingCustomizedProductToSlotReturnsBadRequestForNonExistingSlotId()
-        {
+        public async void ensureAddingCustomizedProductToSlotReturnsBadRequestForNonExistingSlotId() {
             string testNumber = "40";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1467,8 +1405,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(41)]
-        public async void ensureAddingCustomizedProductToFinishedCustomizedProductReturnsBadRequest()
-        {
+        public async void ensureAddingCustomizedProductToFinishedCustomizedProductReturnsBadRequest() {
             string testNumber = "41";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1517,8 +1454,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(42)]
-        public async void ensureAddingValidCustomizedProductToSlotReturnsCreated()
-        {
+        public async void ensureAddingValidCustomizedProductToSlotReturnsCreated() {
             string testNumber = "42";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1571,8 +1507,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(43)]
-        public async void ensureUpdatingCustomizedProductWithNullBodyReturnsBadRequest()
-        {
+        public async void ensureUpdatingCustomizedProductWithNullBodyReturnsBadRequest() {
             string testNumber = "43";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1597,8 +1532,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(44)]
-        public async void ensureUpdatingCustomizedProductReturnsNotFoundForNonExistingId()
-        {
+        public async void ensureUpdatingCustomizedProductReturnsNotFoundForNonExistingId() {
             string testNumber = "44";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1626,8 +1560,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(45)]
-        public async void ensureUpdatingCustomizedProductWithNonExistingMaterialReturnsBadRequest()
-        {
+        public async void ensureUpdatingCustomizedProductWithNonExistingMaterialReturnsBadRequest() {
             string testNumber = "45";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1658,8 +1591,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(46)]
-        public async void ensureUpdatingCustomizedProductWithMaterialThatBelongsToAnotherProductReturnsBadRequest()
-        {
+        public async void ensureUpdatingCustomizedProductWithMaterialThatBelongsToAnotherProductReturnsBadRequest() {
             string testNumber = "46";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1697,8 +1629,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(47)]
-        public async void ensureUpdatingCustomizedProductWithInvalidColorReturnsBadRequest()
-        {
+        public async void ensureUpdatingCustomizedProductWithInvalidColorReturnsBadRequest() {
             string testNumber = "47";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1734,8 +1665,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(48)]
-        public async void ensureUpdatingCustomizedProductWithInvalidFinishReturnsBadRequest()
-        {
+        public async void ensureUpdatingCustomizedProductWithInvalidFinishReturnsBadRequest() {
             string testNumber = "48";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1769,8 +1699,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(49)]
-        public async void ensureUpdatingCustomizedProductWithInvalidDesignationReturnsBadRequest()
-        {
+        public async void ensureUpdatingCustomizedProductWithInvalidDesignationReturnsBadRequest() {
             string testNumber = "49";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1798,8 +1727,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(50)]
-        public async void ensureUpdatingCustomizedProductWithInvalidReferenceReturnsBadRequest()
-        {
+        public async void ensureUpdatingCustomizedProductWithInvalidReferenceReturnsBadRequest() {
             string testNumber = "50";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1827,8 +1755,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(51)]
-        public async void ensureUpdatingCustomizedProductWithInvalidStatusReturnsBadRequest()
-        {
+        public async void ensureUpdatingCustomizedProductWithInvalidStatusReturnsBadRequest() {
             string testNumber = "51";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1856,8 +1783,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(52)]
-        public async void ensureReversingFinishedStatusToPendingReturnsBadRequest()
-        {
+        public async void ensureReversingFinishedStatusToPendingReturnsBadRequest() {
             string testNumber = "52";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1912,8 +1838,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(53)]
-        public async void ensureUpdatingFinishedCustomizedProductDesignationReturnsBadRequest()
-        {
+        public async void ensureUpdatingFinishedCustomizedProductDesignationReturnsBadRequest() {
             string testNumber = "53";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -1971,8 +1896,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(54)]
-        public async void ensureUpdatingCustomizedProductThatIsntFinishedReturnsOk()
-        {
+        public async void ensureUpdatingCustomizedProductThatIsntFinishedReturnsOk() {
             string testNumber = "54";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -2075,8 +1999,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(55)]
-        public async void ensureDeletingCustomizedProductReturnsNotFoundForNonExistingId()
-        {
+        public async void ensureDeletingCustomizedProductReturnsNotFoundForNonExistingId() {
             string testNumber = "55";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -2096,8 +2019,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(56)]
-        public async void ensureDeletingExistingCustomizedProductReturnsNoContent()
-        {
+        public async void ensureDeletingExistingCustomizedProductReturnsNoContent() {
             string testNumber = "56";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -2128,8 +2050,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(57)]
-        public async void ensureDeletingChildCustomizedProductDoesntDeleteTheFather()
-        {
+        public async void ensureDeletingChildCustomizedProductDoesntDeleteTheFather() {
             string testNumber = "57";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -2190,8 +2111,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(58)]
-        public async void ensureUpdatingDimensionsOfAFinishedCustomizedProductReturnsBadRequest()
-        {
+        public async void ensureUpdatingDimensionsOfAFinishedCustomizedProductReturnsBadRequest() {
             string testNumber = "58";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -2242,8 +2162,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(59)]
-        public async void ensureUpdatingReferenceReturnsOkForValidNewReference()
-        {
+        public async void ensureUpdatingReferenceReturnsOkForValidNewReference() {
             string testNumber = "59";
 
             AddCustomizedProductModelView customizedProductModelView =
@@ -2254,8 +2173,7 @@ namespace backend_tests.Controllers
 
             Uri baseUri = new Uri(httpClient.BaseAddress.ToString() + BASE_URI);
 
-            var request = new HttpRequestMessage()
-            {
+            var request = new HttpRequestMessage() {
                 RequestUri = baseUri,
                 Method = HttpMethod.Post
             };
@@ -2303,33 +2221,139 @@ namespace backend_tests.Controllers
                             getAfterPutContent.reference);
             Assert.Equal(update.reference, getAfterPutContent.reference);
         }
+        [Fact, TestPriority(60)]
+        public async void ensureGetRecommendedSlotsReturnsNotFoundIfCustomizedProductDoesNotExist() {
+            string testNumber = "60";
 
-        private void assertCustomizedProductModelView(GetCustomizedProductModelView expectedModelView, GetCustomizedProductModelView actualModelView)
-        {
-            if (expectedModelView.reference != null)
-            {
+            AddCustomizedProductModelView customizedProductModelView =
+                await createFinishedCustomizedProduct(testNumber, false);
+
+            GetCustomizedProductModelView createdCustomizedProductModelView =
+               await saveCustomizedProduct(customizedProductModelView, false);
+
+            var getResponse = await httpClient.GetAsync
+            (
+                BASE_URI + "/" + createdCustomizedProductModelView.customizedProductId + 1
+            );
+
+            Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
+
+            var getRecommendedSlotsResponse = await httpClient.GetAsync
+                (
+                BASE_URI + "/" + createdCustomizedProductModelView.customizedProductId + 1 + "/recommendedslots"
+                );
+
+            Assert.Equal(HttpStatusCode.NotFound, getRecommendedSlotsResponse.StatusCode);
+
+            //TODO: compare message
+
+            await httpClient.DeleteAsync(BASE_URI + "/" + createdCustomizedProductModelView.customizedProductId);
+        }
+        [Fact, TestPriority(61)]
+        public async void ensureGetRecommendedSlotsReturnsOkForValidCustomizedProduct() {
+            string testNumber = "61";
+
+            AddCustomizedProductModelView customizedProductModelView =
+                await createFinishedCustomizedProduct(testNumber, false);
+
+            GetCustomizedProductModelView createdCustomizedProductModelView =
+                await saveCustomizedProduct(customizedProductModelView, false);
+
+            var getResponse = await httpClient.GetAsync(BASE_URI + "/" + createdCustomizedProductModelView.customizedProductId);
+
+            Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+
+            GetCustomizedProductModelView contentFromGet =
+                await getResponse.Content.ReadAsAsync<GetCustomizedProductModelView>();
+
+            assertCustomizedProductModelView(createdCustomizedProductModelView, contentFromGet);
+
+            var getRecommendedSlotsResponse = await httpClient.GetAsync
+                (
+                BASE_URI + "/" + createdCustomizedProductModelView.customizedProductId + "/recommendedslots"
+                );
+
+            Assert.Equal(HttpStatusCode.OK, getRecommendedSlotsResponse.StatusCode);
+
+            //TODO: compare message
+        }
+        [Fact, TestPriority(62)]
+        public async void ensureGetMinimumSlotsReturnsNotFoundIfCustomizedProductDoesNotExist() {
+            string testNumber = "62";
+
+            AddCustomizedProductModelView customizedProductModelView =
+                await createFinishedCustomizedProduct(testNumber, false);
+
+            GetCustomizedProductModelView createdCustomizedProductModelView =
+               await saveCustomizedProduct(customizedProductModelView, false);
+
+            var getResponse = await httpClient.GetAsync
+            (
+                BASE_URI + "/" + createdCustomizedProductModelView.customizedProductId + 1
+            );
+
+            Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
+
+            var getRecommendedSlotsResponse = await httpClient.GetAsync
+                (
+                BASE_URI + "/" + createdCustomizedProductModelView.customizedProductId + 1 + "/minslots"
+                );
+
+            Assert.Equal(HttpStatusCode.NotFound, getRecommendedSlotsResponse.StatusCode);
+
+            //TODO: compare message
+
+            await httpClient.DeleteAsync(BASE_URI + "/" + createdCustomizedProductModelView.customizedProductId);
+        }
+        [Fact, TestPriority(63)]
+        public async void ensureGetMinimumSlotsReturnsOkForValidCustomizedProduct() {
+            string testNumber = "63";
+
+            AddCustomizedProductModelView customizedProductModelView =
+                await createFinishedCustomizedProduct(testNumber, false);
+
+            GetCustomizedProductModelView createdCustomizedProductModelView =
+                await saveCustomizedProduct(customizedProductModelView, false);
+
+            var getResponse = await httpClient.GetAsync(BASE_URI + "/" + createdCustomizedProductModelView.customizedProductId);
+
+            Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+
+            GetCustomizedProductModelView contentFromGet =
+                await getResponse.Content.ReadAsAsync<GetCustomizedProductModelView>();
+
+            assertCustomizedProductModelView(createdCustomizedProductModelView, contentFromGet);
+
+            var getRecommendedSlotsResponse = await httpClient.GetAsync
+                (
+                BASE_URI + "/" + createdCustomizedProductModelView.customizedProductId + "/minslots"
+                );
+
+            Assert.Equal(HttpStatusCode.OK, getRecommendedSlotsResponse.StatusCode);
+
+            //TODO: compare message 
+        }
+
+        private void assertCustomizedProductModelView(GetCustomizedProductModelView expectedModelView, GetCustomizedProductModelView actualModelView) {
+            if (expectedModelView.reference != null) {
                 Assert.Equal(expectedModelView.reference, actualModelView.reference);
             }
 
-            if (expectedModelView.designation != null)
-            {
+            if (expectedModelView.designation != null) {
                 Assert.Equal(expectedModelView.designation, actualModelView.designation);
             }
 
-            if (expectedModelView.customizedMaterial != null)
-            {
+            if (expectedModelView.customizedMaterial != null) {
                 Assert.Equal(expectedModelView.customizedMaterial.materialId, actualModelView.customizedMaterial.materialId);
 
-                if (expectedModelView.customizedMaterial.color != null)
-                {
+                if (expectedModelView.customizedMaterial.color != null) {
                     //TODO Why does the GetColorModelView not have the color's name?
                     Assert.Equal(expectedModelView.customizedMaterial.color.red, actualModelView.customizedMaterial.color.red);
                     Assert.Equal(expectedModelView.customizedMaterial.color.green, actualModelView.customizedMaterial.color.green);
                     Assert.Equal(expectedModelView.customizedMaterial.color.blue, actualModelView.customizedMaterial.color.blue);
                 }
 
-                if (expectedModelView.customizedMaterial.finish != null)
-                {
+                if (expectedModelView.customizedMaterial.finish != null) {
                     Assert.Equal(expectedModelView.customizedMaterial.finish.description, actualModelView.customizedMaterial.finish.description);
                     Assert.Equal(expectedModelView.customizedMaterial.finish.shininess, actualModelView.customizedMaterial.finish.shininess);
                 }
@@ -2343,32 +2367,26 @@ namespace backend_tests.Controllers
             Assert.Equal(expectedModelView.product.productId, actualModelView.product.productId);
         }
 
-        private void assertCustomizedProductModelView(AddCustomizedProductModelView expectedModelView, GetCustomizedProductModelView actualModelView)
-        {
-            if (expectedModelView.reference != null)
-            {
+        private void assertCustomizedProductModelView(AddCustomizedProductModelView expectedModelView, GetCustomizedProductModelView actualModelView) {
+            if (expectedModelView.reference != null) {
                 Assert.Equal(expectedModelView.reference, actualModelView.reference);
             }
 
-            if (expectedModelView.designation != null)
-            {
+            if (expectedModelView.designation != null) {
                 Assert.Equal(expectedModelView.designation, actualModelView.designation);
             }
 
-            if (expectedModelView.customizedMaterial != null)
-            {
+            if (expectedModelView.customizedMaterial != null) {
                 Assert.Equal(expectedModelView.customizedMaterial.materialId, actualModelView.customizedMaterial.materialId);
 
-                if (expectedModelView.customizedMaterial.color != null)
-                {
+                if (expectedModelView.customizedMaterial.color != null) {
                     //TODO Why does the GetColorModelView not have the color's name?
                     Assert.Equal(expectedModelView.customizedMaterial.color.red, actualModelView.customizedMaterial.color.red);
                     Assert.Equal(expectedModelView.customizedMaterial.color.green, actualModelView.customizedMaterial.color.green);
                     Assert.Equal(expectedModelView.customizedMaterial.color.blue, actualModelView.customizedMaterial.color.blue);
                 }
 
-                if (expectedModelView.customizedMaterial.finish != null)
-                {
+                if (expectedModelView.customizedMaterial.finish != null) {
                     Assert.Equal(expectedModelView.customizedMaterial.finish.description, actualModelView.customizedMaterial.finish.description);
                     Assert.Equal(expectedModelView.customizedMaterial.finish.shininess, actualModelView.customizedMaterial.finish.shininess);
                 }
@@ -2382,8 +2400,7 @@ namespace backend_tests.Controllers
             Assert.Equal(expectedModelView.productId, actualModelView.product.productId);
         }
 
-        private async Task<AddCustomizedProductModelView> createMandatoryComponent(GetCustomizedProductModelView createdCustomizedProductModelView, string testNumber)
-        {
+        private async Task<AddCustomizedProductModelView> createMandatoryComponent(GetCustomizedProductModelView createdCustomizedProductModelView, string testNumber) {
             var getProduct =
                 await httpClient.GetAsync
                 (
@@ -2440,8 +2457,7 @@ namespace backend_tests.Controllers
             return addMandatoryComponent;
         }
 
-        private async Task<GetCustomizedProductModelView> saveCustomizedProduct(AddCustomizedProductModelView customizedProductModelView, bool addSlots)
-        {
+        private async Task<GetCustomizedProductModelView> saveCustomizedProduct(AddCustomizedProductModelView customizedProductModelView, bool addSlots) {
             var postCustomizedProduct = await httpClient.PostAsJsonAsync(
                 BASE_URI, customizedProductModelView
             );
@@ -2452,12 +2468,9 @@ namespace backend_tests.Controllers
                await postCustomizedProduct.Content.
                    ReadAsAsync<GetCustomizedProductModelView>();
 
-            if (!addSlots)
-            {
+            if (!addSlots) {
                 return createdCustomizedProductModelView;
-            }
-            else
-            {
+            } else {
                 AddCustomizedDimensionsModelView slotDimensions =
                     new AddCustomizedDimensionsModelView();
 
@@ -2488,8 +2501,7 @@ namespace backend_tests.Controllers
             }
         }
 
-        private async Task<AddCustomizedProductModelView> createUnfinishedCustomizedProduct(string testNumber, bool hasSlotsAndComponents)
-        {
+        private async Task<AddCustomizedProductModelView> createUnfinishedCustomizedProduct(string testNumber, bool hasSlotsAndComponents) {
             AddProductCategoryModelView categoryModelView =
                 createCategoryModelView(testNumber);
 
@@ -2538,8 +2550,7 @@ namespace backend_tests.Controllers
             return modelView;
         }
 
-        private async Task<AddCustomizedProductModelView> createFinishedCustomizedProduct(string testNumber, bool hasSlotsAndComponents)
-        {
+        private async Task<AddCustomizedProductModelView> createFinishedCustomizedProduct(string testNumber, bool hasSlotsAndComponents) {
             AddProductCategoryModelView categoryModelView =
                 createCategoryModelView(testNumber);
 
@@ -2560,17 +2571,14 @@ namespace backend_tests.Controllers
                 await postMaterial.Content.ReadAsAsync<AddProductMaterialModelView>();
 
             AddProductModelView productModelView = null;
-            if (!hasSlotsAndComponents)
-            {
+            if (!hasSlotsAndComponents) {
                 productModelView =
                     createProductWithoutComponentsAndWithoutSlots(
                         categoryModelViewFromPost,
                         materialModelViewFromPost,
                         testNumber
                 );
-            }
-            else
-            {
+            } else {
                 var firstComponentModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelViewFromPost, materialModelViewFromPost, "component 1 " + testNumber);
 
                 var firstComponentPostResponse = await httpClient.PostAsJsonAsync(PRODUCTS_URI, firstComponentModelView);
@@ -2625,8 +2633,7 @@ namespace backend_tests.Controllers
             return modelView;
         }
 
-        private AddProductModelView createProductWithComponentsAndWithSlots(GetProductCategoryModelView categoryModelView, AddProductMaterialModelView materialModelView, string testNumber, long firstComponentId, long secondComponentId)
-        {
+        private AddProductModelView createProductWithComponentsAndWithSlots(GetProductCategoryModelView categoryModelView, AddProductMaterialModelView materialModelView, string testNumber, long firstComponentId, long secondComponentId) {
             AddProductModelView productModelView = createProductWithoutComponentsAndWithoutSlots(categoryModelView, materialModelView, testNumber);
             productModelView.slotWidths = new AddProductSlotWidthsModelView();
             productModelView.slotWidths.maxWidth = 500;
@@ -2643,8 +2650,7 @@ namespace backend_tests.Controllers
             return productModelView;
         }
 
-        private AddProductModelView createProductWithoutComponentsAndWithoutSlots(GetProductCategoryModelView categoryModelView, AddProductMaterialModelView materialModelView, string testNumber)
-        {
+        private AddProductModelView createProductWithoutComponentsAndWithoutSlots(GetProductCategoryModelView categoryModelView, AddProductMaterialModelView materialModelView, string testNumber) {
             AddProductModelView productModelView = new AddProductModelView();
             productModelView.categoryId = categoryModelView.id;
             productModelView.materials = new List<AddProductMaterialModelView>();
@@ -2658,16 +2664,14 @@ namespace backend_tests.Controllers
             return productModelView;
         }
 
-        private AddProductCategoryModelView createCategoryModelView(string testNumber)
-        {
+        private AddProductCategoryModelView createCategoryModelView(string testNumber) {
             AddProductCategoryModelView modelView = new AddProductCategoryModelView();
             modelView.name = "TestCategory" + testNumber;
             return modelView;
         }
 
         //!Replace this with createMaterialModelView after refactor is made
-        private MaterialDTO createMaterialDTO(string testNumber)
-        {
+        private MaterialDTO createMaterialDTO(string testNumber) {
             MaterialDTO materialDTO = new MaterialDTO();
             materialDTO.designation = "Material Designation Test" + testNumber;
             materialDTO.reference = "Material Reference Test" + testNumber;
@@ -2693,8 +2697,7 @@ namespace backend_tests.Controllers
             return materialDTO;
         }
 
-        private AddMeasurementModelView createMeasurementModelView()
-        {
+        private AddMeasurementModelView createMeasurementModelView() {
             AddMeasurementModelView measurementModelView = new AddMeasurementModelView();
             AddSingleValueDimensionModelView heightModelView = new AddSingleValueDimensionModelView();
             AddContinuousDimensionIntervalModelView widthModelView = new AddContinuousDimensionIntervalModelView();

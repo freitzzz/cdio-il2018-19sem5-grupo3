@@ -264,8 +264,49 @@ export default {
       })
       .catch(error_message => {
         this.$toast.open("Unable to remove the material.");
+      });
+    
+      this.deleteSlots().then(() => {
+        this.$emit("back");
+      }).catch((error_message)=>{
+        this.$toast.open({message: error_message}); 
+      });
+    },
+    deleteSlots(){
+      let slotsToDelete = [];
+      var size = store.state.customizedProduct.slots.length;
+      for(let i = 0; i< size-1; i++){
+        slotsToDelete.unshift(store.state.customizedProduct.slots[i].idSlot);
+      }
+      return new Promise((accept,reject)=>{
+        this.deleteSlot(slotsToDelete)
+        .then(() => {
+          accept()})
+        .catch((error_message) => { 
+          reject(error_message)
+      });
       })
-    }
+    },
+    deleteSlot(slotsToDelete){
+      return new Promise((accept, reject) => {
+        let slotToDelete = slotsToDelete.pop();
+        Axios.delete(MYCM_API_URL + 
+        `/customizedproducts/${store.state.customizedProduct.id}/slots/${slotToDelete}`)
+        .then(() => {
+          if(slotsToDelete.length > 0 ){
+            return this.deleteSlot(slotsToDelete)
+            .then(()=>{
+              accept()})
+            .catch((error_message) => { reject(error_message)});
+          } else {
+             accept();
+          }
+        })
+        .catch((error_message) => {
+          reject(error_message.response.data.message);
+        });
+      })
+    },
   },
   created() {
     this.getProductMaterials();
