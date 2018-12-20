@@ -5,11 +5,7 @@ export const mutations = {
 
   [types.SET_RESIZE_FACTOR_DIMENSIONS](state,payload){
     if (payload) {
-      state.resizeFactorDimensions.push({
-        width: payload.width,
-        height: payload.height,
-        depth: payload.depth
-      })
+      state.resizeFactorDimensions=payload;
     } else { state.resizeFactorDimensions = []; }
 
   },
