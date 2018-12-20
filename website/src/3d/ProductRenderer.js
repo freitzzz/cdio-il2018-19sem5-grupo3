@@ -12,6 +12,9 @@ import HingedDoor from './HingedDoor'
 import FaceOrientationEnum from './api/domain/FaceOrientation';
 import ThreeDrawer from './threejeyass/domain/ThreeDrawer';
 import ProductTypeEnum from './api/domain/ProductType';
+import ThreeDrawerAnimations from './threejeyass/animations/ThreeDrawerAnimations';
+import Watcher from './api/domain/Watcher';
+import ThreeAction from './threejeyass/animations/ThreeAction';
 
 export default class ProductRenderer {
 
@@ -232,6 +235,7 @@ export default class ProductRenderer {
     this.initCloset();
     this.initLighting();
 
+    
     var geometry = new THREE.SphereBufferGeometry(430, 60, 40);
     geometry.scale(-1, 1, 1);
 
@@ -270,6 +274,17 @@ export default class ProductRenderer {
     this.scene.add(this.camera);
     this.scene.add(mesh);
     this.animate();
+    
+    let renderAction=function(renderer,scene,camera){
+      return function(){
+        console.log("??????????????????????????");
+        renderer.render(scene,camera);
+      };
+    };
+
+    
+    Watcher.currentWatcher().asd(new ThreeAction(renderAction(this.renderer,this.scene,this.camera)));
+    //Watcher.currentWatcher().asd(asd(this.renderer,this.scene,this.camera));
     this.showCloset();
   }
 
@@ -912,21 +927,16 @@ export default class ProductRenderer {
         flagClose = false;
         j = 0;
 
-        alert("<<<<<<<<<");
         let closetDrawers=this.closet.getProducts(ProductTypeEnum.DRAWER);
-        alert(closetDrawers);
-        alert(">>>>>>>>>");
         while (!flagOpen && !flagClose && j < closetDrawers.length) {
-          alert("????????????");
           let closetDrawerFaces=closetDrawers[j].getDrawerFaces();
+          var closetDrawer=closetDrawers[j];
           //Always get the front face of any drawer at index 5*j+1
           var drawer_front_face = closetDrawerFaces.get(FaceOrientationEnum.FRONT).mesh();
           console.log(face);
           console.log(drawer_front_face);
           //Check if the selected object is a drawer's front face
-          alert("?")
           if (drawer_front_face == face) {
-            alert("!")
             this.controls.enabled = false;
             var drawer_base_face = closetDrawerFaces.get(FaceOrientationEnum.BASE).mesh();
             var drawer_left_face = closetDrawerFaces.get(FaceOrientationEnum.LEFT).mesh();
@@ -942,9 +952,14 @@ export default class ProductRenderer {
         }
 
         if (flagOpen) {
-          requestAnimationFrame(function () {
+          /* requestAnimationFrame(function () {
+            
             context.openDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face);
-          });
+          }); */
+          /* requestAnimationFrame(function(){
+            ThreeDrawerAnimations.open(closetDrawer)
+          }); */
+          ThreeDrawerAnimations.open(closetDrawer);
         } else if (flagClose) {
           requestAnimationFrame(function () {
             context.closeDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face);
@@ -1368,7 +1383,6 @@ export default class ProductRenderer {
 
   openDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face) {
     if (drawer_front_face.position.z <= -50) {
-      console.log(">>>>>")
       drawer_front_face.translateZ(1);
       drawer_back_face.translateZ(1);
       drawer_base_face.translateZ(1);
@@ -1490,7 +1504,6 @@ export default class ProductRenderer {
    * Moves the face across the defined plan that intersects the closet, without overlapping the closet's slots
    */
   moveFace() {
-    alert("")
     let closetSlotsFaces=this.closet.getClosetSlotFaces();
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
       let closetLeftFace=this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
