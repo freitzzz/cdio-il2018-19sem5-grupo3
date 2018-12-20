@@ -337,7 +337,7 @@ function ensureGetCustomizedProductIdReturnsCorrectValue(){
             id: expectedId
         }
     });
-    const actualId = VuexStore.getters.idCustomizedProduct(VuexStore.default.state);
+    const actualId = VuexStore.getters.customizedProductId(VuexStore.default.state);
     expect(actualId).toBe(expectedId);
 }
 
