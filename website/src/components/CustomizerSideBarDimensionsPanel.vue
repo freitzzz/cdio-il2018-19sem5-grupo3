@@ -387,7 +387,7 @@
             this.discreteIntervalFlags[this.DEPTH] = false;
           }     
           if (this.controlIndex == 0) { //First dimension
-            alert("teste");
+
             this.createResizeFactor();
             this.controlIndex++;
           }
