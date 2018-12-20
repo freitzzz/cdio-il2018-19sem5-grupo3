@@ -22,12 +22,17 @@ describe('customized product mutations', () => {
         );
     });
     describe('customized product slots', () => {
+        describe('slot id', () => {
+            test('set slot id',
+                ensureSetSlotIdUpdatesStateCorrectly
+            );
+        });
         describe('slot dimensions', () => {
-            test('set slot dimensions',
-                ensureSetSlotDimensionsUpdatesStateCorrectly
+            test('add slot dimensions',
+                ensureAddSlotDimensionsUpdatesStateCorrectly
             );
             test('initialize slots to empty array if mutation payload is null',
-                ensureSetSlotDimensionsInitializesEmptyArrayIfMutationPayloadIsNull
+                ensureAddSlotDimensionsInitializesEmptyArrayIfMutationPayloadIsNull
             );
         });
     });
@@ -220,7 +225,7 @@ function ensureSetCustomizedProductIdUpdatesStateCorrectly() {
     expect(state.customizedProduct.id).toBe(payload);
 }
 
-function ensureSetSlotDimensionsUpdatesStateCorrectly() {
+function ensureAddSlotDimensionsUpdatesStateCorrectly() {
     const state = {
         customizedProduct: {
             slots: []
@@ -233,19 +238,42 @@ function ensureSetSlotDimensionsUpdatesStateCorrectly() {
         depth: 100,
         unit: "dm"
     };
-    mutations.set_slot_dimensions(state, payload);
+    mutations.add_slot_dimensions(state, payload);
     expect(state.customizedProduct.slots[0]).toEqual(payload);
 }
 
-function ensureSetSlotDimensionsInitializesEmptyArrayIfMutationPayloadIsNull() {
+function ensureAddSlotDimensionsInitializesEmptyArrayIfMutationPayloadIsNull() {
     const state = {
         customizedProduct: {
             slots: []
         }
     };
     const payload = null;
-    mutations.set_slot_dimensions(state, payload);
+    mutations.add_slot_dimensions(state, payload);
     expect(state.customizedProduct.slots).toHaveLength(0);
+}
+
+function ensureSetSlotIdUpdatesStateCorrectly() {
+    const state = {
+        customizedProduct: {
+            slots: [
+                {
+                    idSlot: 1,
+                    width: 100,
+                    height: 100,
+                    depth: 100,
+                    unit: "dm"
+                }
+            ]
+        }
+    };
+    const expectedSlotId = 2;
+    const payload = {
+        position: 0,
+        idSlot: expectedSlotId
+    };
+    mutations.set_id_slot(state, payload);
+    expect(state.customizedProduct.slots[0].idSlot).toEqual(expectedSlotId);
 }
 
 function ensureSetCustomizedProductMaterialUpdatesStateCorrectly() {
@@ -261,7 +289,7 @@ function ensureSetCustomizedProductMaterialUpdatesStateCorrectly() {
     };
     const payload = {
         id: 1,
-        reference: "hello i'm a refernce",
+        reference: "hello i'm a reference",
         designation: "and i'm a designation",
         image: "image.jpg"
     };
@@ -360,7 +388,6 @@ function ensureSetCustomizedProductComponentDoesntAddComponentIfCustomizedProduc
 function ensureSetCustomizedProductComponentInitializesEmptyArrayIfPayloadIsNull() {
     const state = {
         customizedProduct: {
-            components: [],
             slots: [{
                 components: [],
                 idSlot: 1,

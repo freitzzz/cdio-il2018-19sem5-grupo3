@@ -100,5 +100,25 @@ namespace core_tests.domain {
             Assert.Equal("one", inputs[0].name);
             Assert.Equal("two", inputs[1].name);
         }
+        //tests of ready method
+        [Fact]
+        public void ensureReadyFails() {
+            AlgorithmImpl alg = new AlgorithmImpl();
+            alg.setInputValue(Input.valueOf("one", "range"), "1");
+            Action action = () => alg.ready();
+            Assert.Throws<ArgumentNullException>(action);
+        }
+        [Fact]
+        public void ensureReadySucceeds() {
+            Input input1 = Input.valueOf("one", "number 1");
+            Input input2 = Input.valueOf("two", "number 2");
+            AlgorithmImpl alg = new AlgorithmImpl();
+            Dictionary<Input, string> inputValues = new Dictionary<Input, string>();
+            inputValues.Add(input1, "1");
+            inputValues.Add(input2, "2");
+            alg.setInputValues(inputValues);
+            alg.ready();
+            //this method does not need an assert
+        }
     }
 }
