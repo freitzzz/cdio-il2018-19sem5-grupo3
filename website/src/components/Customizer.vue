@@ -4,6 +4,8 @@
     <customizer-side-bar @changeStage="changeProgressBarStage"></customizer-side-bar>
     <canvas
       ref="threeCanvas"
+      @drop="drop"
+      @dragover="allowDrop"
       @mouseup="onMouseUp"
       @mousedown="onMouseDown"
       @mousemove="onMouseMove"
@@ -161,6 +163,14 @@ export default {
       alert("keydown");
       this.productRenderer.onKeyDown(event);
       event.preventDefault();
+    },
+    drop: function(event){
+      event.preventDefault();
+      this.productRenderer.renderDroppedComponent(event, this.$refs.threeCanvas);
+    },
+    allowDrop: function(event){
+      event.preventDefault();
+
     },
     changeProgressBarStage: function(currentPanelIndex){
       this.currentStage = currentPanelIndex;

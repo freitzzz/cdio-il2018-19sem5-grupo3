@@ -51,8 +51,7 @@ const state = {
             depth: "",
             unit: ""
         },
-        components: []
-       },
+    },
        resizeFactorDimensions:{
         width: "",
         height: "",

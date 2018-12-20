@@ -26,7 +26,7 @@
     </section>
     <footer class="modal-card-foot">
       <div class="has-text-centered">
-        <button class="button is-info" @click="emitCustomizedProductCollection($parent)">Create</button>
+        <button class="btn-primary" @click="emitCustomizedProductCollection($parent)">Create</button>
       </div>
     </footer>
   </div>
