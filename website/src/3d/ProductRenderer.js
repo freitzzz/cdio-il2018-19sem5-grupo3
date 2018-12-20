@@ -1085,8 +1085,9 @@ export default class ProductRenderer {
       var front_door = this.group.getObjectById(this.closet_sliding_doors_ids[0]);
       var back_door = this.group.getObjectById(this.closet_sliding_doors_ids[1]);
       //Front face of the last added drawer is always at index length - 4
-      var addedDrawer = this.group.getObjectById(this.closet_drawers_ids[this.closet_drawers_ids.length - 4]);
-      if (addedDrawer.position.x < 0) {
+      let addedDrawers=this.closet.getProducts(ProductTypeEnum.DRAWER);
+      let lastDrawerAddedFrontFace=addedDrawers[addedDrawers.length-1].mesh();
+      if (lastDrawerAddedFrontFace.position.x < 0) {
         var context = this;
         if (front_door.position.x < 0) {
           this.slidingDoor = front_door;
@@ -1271,92 +1272,76 @@ export default class ProductRenderer {
   }
 
 
-  closeSlotOpenDrawers(slot) {
-    var i = 0;
-    var index = 0;
-    let closet_back = this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
-    let closet_front = Math.abs(closet_back.position.z);
-    while (i < this.closet_drawers_ids.length) {
-      if (this.closet.drawers[index].slotId == slot) {
-        console.log(this.closet.drawers[index]);
-        var drawer_front_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 1]);
-        if (drawer_front_face.position.z > closet_front) {
-          var drawer_base_face = this.group.getObjectById(this.closet_drawers_ids[5 * index]);
-          var drawer_left_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 2]);
-          var drawer_right_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 3]);
-          var drawer_back_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 4]);
-          this.closeDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face);
-        }
-      }
-      i += 5;
-      index++;
-    }
+  /**
+   * Closes all open drawers on a certain slot
+   * @param {Number} slotId Number with the slot identifier
+   */
+  closeSlotOpenDrawers(slotId) {
+    let closetDrawers=this.closet.getProducts(ProductTypeEnum.DRAWER);
+    for(let closetDrawer of closetDrawers)
+      if(closetDrawer.getSlotId()==slotId)
+        ThreeDrawerAnimations.close(closetDrawer);
   }
 
+  /**
+   * Closes all open drawers on the current closet
+   */
   closeAllOpenDrawers() {
-    var i = 0;
-    var index = 0;
-    let closet_back = this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
-    var closet_front = Math.abs(closet_back.position.z);
-    while (i < this.closet_drawers_ids.length) {
-      var drawer_front_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 1]);
-      if (drawer_front_face.position.z > closet_front) {
-        var drawer_base_face = this.group.getObjectById(this.closet_drawers_ids[5 * index]);
-        var drawer_left_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 2]);
-        var drawer_right_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 3]);
-        var drawer_back_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 4]);
-        this.closeDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face);
-      }
-      i += 5;
-      index++;
-    }
+    let closetDrawers=this.closet.getProducts(ProductTypeEnum.DRAWER);
+    for(let closetDrawer of closetDrawers)
+        ThreeDrawerAnimations.close(closetDrawer);
   }
 
-
-  doesSlotHaveHingedDoor(slot) {
-    for (let i = 0; i < this.closet_hinged_doors_ids.length; i++) {
-      if (this.closet.hingedDoors[i].slotId == slot) {
+  /**
+   * Checks if an hinged door exists on a certain slot of the closet
+   * @param {Number} slotId Number with the slot identifier
+   */
+  doesSlotHaveHingedDoor(slotId) {
+    let closetHingedDoors=this.closet.getProducts(ProductTypeEnum.HINGED_DOOR);
+    for(let closetHingeedDoor of closetHingedDoors)
+      if(closetHingeedDoor.getSlotId()==slotId)
         return true;
-      }
-    }
     return false;
   }
 
+  /**
+   * Checks if there are any open drawers on a certain slot of the closet
+   * @param {Number} slot Number with the slot identifier 
+   */
   doesSlotHaveOpenDrawers(slot) {
-    let closet_back = this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
-    var closet_front = Math.abs(closet_back.position.z);
-    var index = 0;
-    for (let i = 0; i < this.closet_drawers_ids.length; i += 6) {
-      if (this.closet.drawers[index].slotId == slot) {
-        return this.group.getObjectById(this.closet_drawers_ids[5 * index + 1]).position.z
-          >= closet_front;
-      }
-      index++;
-    }
+    let closetDrawers=this.closet.getProducts(ProductTypeEnum.DRAWER);
+    for(let closetDrawer of closetDrawers)
+      if(closetDrawer.isOpen())
+        return true;
     return false;
   }
 
+  /**
+   * Checks if the closet has open drawers
+   */
   doesClosetHaveOpenDrawers() {
-    let closet_back = this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
-    let closet_front = Math.abs(closet_back.position.z);
-    let index = 0;
-    for (let i = 0; i < this.closet_drawers_ids.length; i += 6) {
-      if (i > 0) index = i - 5;
-      return this.group.getObjectById(this.closet_drawers_ids[5 * index + 1]).position.z
-        >= closet_front;
-    }
+    let closetDrawers=this.closet.getProducts(ProductTypeEnum.DRAWER);
+    for(let closetDrawer of closetDrawers)
+      if(closetDrawer.isOpen())
+        return true;
     return false;
   }
 
+  /**
+   * Checks if the closet has hinged doors
+   */
   doesClosetHaveHingedDoors() {
-    return this.closet.hingedDoors.length != 0;
+    return this.closet.getProducts(ProductTypeEnum.HINGED_DOOR).length>0;
   }
 
+  /**
+   * Checks if the closet has sliding doors
+   */
   doesClosetHaveSlidingDoors() {
-    return this.closet.slidingDoors.length != 0;
+    return this.closet.getProducts(ProductTypeEnum.SLIDING_DOOR).length>0;
   }
-
-
+  
+  
   closeHingedDoorAnimation() {
     if (this.hingedDoor.rotation.y < 0) {
       var rotationX = this.hingedDoor.geometry.parameters.width / 2;
