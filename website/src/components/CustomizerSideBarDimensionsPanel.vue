@@ -84,12 +84,21 @@
     "No available dimension please try the other option.";
   const NO_OPTION = -1;
   const N_DIMENSIONS = 3;
+
+  const WIDTH_INDEX = 0;
+  const HEIGHT_INDEX = 1;
+  const DEPTH_INDEX = 2;
+
+
+
   
   const DEFAULT_UNIT = "mm";
   export default {
     name: "CustomizerSideBarDimensionsPanel",
     data() {
       return {
+        storeDispatchVec: [],
+        dimensionVec : [],
         controlIndex:0,
         i: 0,
   
@@ -178,12 +187,27 @@
       },
   
       updateDimensions() {
+        this.undoDimensionConversion();
         //Transform 
         store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS, {
-          width: this.width,
-          height: this.height,
-          depth: this.depth,
-          unit: this.unit
+          width: this.storeDispatchVec[WIDTH],
+          height: this.storeDispatchVec[HEIGHT],
+          depth: this.storeDispatchVec[DEPTH],
+          unit: DEFAULT_UNIT
+        });
+      },
+    /*   convertDimensions(){
+        Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions?unit=${this.unit}`)
+        .then(response => this.storeDispatchVec.push(...response.data))
+        .catch(error => {
+          this.$toast.open(error.response.status + "An error occurred");
+        });
+      }, */
+      undoDimensionConversion(){
+        Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions?unit=${DEFAULT_UNIT}`)
+        .then(response => this.storeDispatchVec.push(...response.data))
+        .catch(error => {
+          this.$toast.open(error.response.status + "An error occurred");
         });
       },
       //Method that identifies different types of dimensios
