@@ -105,13 +105,13 @@ export default {
   background-color: white;
 }
 .progressbar li:after {
-  width: 84%;
+  width: 90%;
   height: 2px;
   content: "";
   position: absolute;
   background-color: #7d7d7d;
   top: 15px;
-  left: -42%;
+  left: -45%;
   z-index: 1;
 }
 .progressbar li:first-child:after {
