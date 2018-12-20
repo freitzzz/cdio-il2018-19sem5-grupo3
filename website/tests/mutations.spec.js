@@ -22,6 +22,11 @@ describe('customized product mutations', () => {
         );
     });
     describe('customized product slots', () => {
+        describe('slot id', () => {
+            test('set slot id',
+                ensureSetSlotIdUpdatesStateCorrectly
+            );
+        });
         describe('slot dimensions', () => {
             test('add slot dimensions',
                 ensureAddSlotDimensionsUpdatesStateCorrectly
@@ -248,6 +253,29 @@ function ensureAddSlotDimensionsInitializesEmptyArrayIfMutationPayloadIsNull() {
     expect(state.customizedProduct.slots).toHaveLength(0);
 }
 
+function ensureSetSlotIdUpdatesStateCorrectly() {
+    const state = {
+        customizedProduct: {
+            slots: [
+                {
+                    idSlot: 1,
+                    width: 100,
+                    height: 100,
+                    depth: 100,
+                    unit: "dm"
+                }
+            ]
+        }
+    };
+    const expectedSlotId = 2;
+    const payload = {
+        position: 0,
+        idSlot: expectedSlotId
+    };
+    mutations.set_id_slot(state, payload);
+    expect(state.customizedProduct.slots[0].idSlot).toEqual(expectedSlotId);
+}
+
 function ensureSetCustomizedProductMaterialUpdatesStateCorrectly() {
     const state = {
         customizedProduct: {
@@ -261,7 +289,7 @@ function ensureSetCustomizedProductMaterialUpdatesStateCorrectly() {
     };
     const payload = {
         id: 1,
-        reference: "hello i'm a refernce",
+        reference: "hello i'm a reference",
         designation: "and i'm a designation",
         image: "image.jpg"
     };
@@ -360,7 +388,6 @@ function ensureSetCustomizedProductComponentDoesntAddComponentIfCustomizedProduc
 function ensureSetCustomizedProductComponentInitializesEmptyArrayIfPayloadIsNull() {
     const state = {
         customizedProduct: {
-            components: [],
             slots: [{
                 components: [],
                 idSlot: 1,
