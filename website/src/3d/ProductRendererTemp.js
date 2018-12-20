@@ -241,7 +241,7 @@ export default class ProductRenderer {
 
     this.NUMBER_DIMENSIONS = 3;
 
-    this.websiteDimensions = [500, 100, 15000];
+    this.websiteDimensions = [];
 
     this.canMoveCloset = false;
     this.canMoveSlots = false;
@@ -749,6 +749,8 @@ export default class ProductRenderer {
     this.updateClosetGV();
   }
 
+
+
   /**
    * Removes a slot from the current closet
    */
@@ -760,6 +762,16 @@ export default class ProductRenderer {
   }
   /*End new methods*/
 
+
+    
+  /* TODO: Transfer this methods to new Product Renderer */
+  /** 
+   * Populate vector website dimensions
+  */
+  populateWebsiteDimensions(width, height, depth){
+    this.websiteDimensions=[width,height,depth];
+  }
+  /**  END   */
   /**
    * Changes the dimensions of the closet
    * @param {number} width Number with the closet width
