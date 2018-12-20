@@ -87,8 +87,7 @@ export default {
       this.productRenderer.populateWebsiteDimensions(
         newValue
       );
-      
-      
+
     },
     slots: function(newValue, oldValue) {
       if(newValue.length > 0){

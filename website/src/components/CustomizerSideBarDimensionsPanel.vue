@@ -292,7 +292,6 @@
       },
       //sends to product renderer the resize factor
       createResizeFactor() {
-        alert(this.width);
         store.dispatch(SET_RESIZE_FACTOR_DIMENSIONS, {
           width: this.width,
           height: this.height,
@@ -301,7 +300,6 @@
       },
       //Populate
       populateDimensions: function() {
-        let asd = new Promise((accept, reject) => {
           this.resetFlags();
           //Get information of the chosed option
           var op = this.dimensionOp;
@@ -387,17 +385,13 @@
             this.continousIntervalFlags[this.DEPTH] = true;
             this.discreteValueFlags[this.DEPTH] = false;
             this.discreteIntervalFlags[this.DEPTH] = false;
-  
-            accept();
-          }
-        })
-        asd.then(() => {
+          }     
           if (this.controlIndex == 0) { //First dimension
-  
+            alert("teste");
             this.createResizeFactor();
             this.controlIndex++;
           }
-        })
+
   
   
       },
