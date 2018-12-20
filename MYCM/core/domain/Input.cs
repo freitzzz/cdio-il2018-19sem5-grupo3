@@ -1,4 +1,5 @@
 ﻿using core.dto;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using support.domain.ddd;
 using support.dto;
 using support.utils;
@@ -33,6 +34,21 @@ namespace core.domain
         /// <value>Gets/Protected sets the range.</value>
         //*Please note that this is only used for visual aid when inputting data and should not be used to enforce values*/
         public string range { get; protected set; }
+
+        /// <summary>
+        /// Instance of ILazyLoader injected by the framework.
+        /// </summary>
+        /// <value>Gets/Sets the injected ILazyloader.</value>
+        private ILazyLoader lazyLoader { get; set; }
+
+        /// <summary>
+        /// Constructor used for injecting an instance of ILazyLoader.
+        /// </summary>
+        /// <param name="lazyLoader">Instance of ILazyLoader being injected.</param>
+        private Input(ILazyLoader lazyLoader)
+        {
+            this.lazyLoader = lazyLoader;
+        }
 
         /// <summary>
         /// Empty constructor

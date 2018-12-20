@@ -1,4 +1,5 @@
 using System;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using support.domain.ddd;
 using support.utils;
 
@@ -32,6 +33,20 @@ namespace core.domain
         /// <value>Gets/Protected sets the Input.</value>
         public Input input { get; protected set; }
 
+        /// <summary>
+        /// Instance of ILazyLoader injected by the framework.
+        /// </summary>
+        /// <value>Gets/Sets the injected ILazyloader.</value>
+        private ILazyLoader lazyLoader { get; set; }
+
+        /// <summary>
+        /// Constructor used for injecting an instance of ILazyLoader.
+        /// </summary>
+        /// <param name="lazyLoader">Instance of ILazyLoader being injected.</param>
+        private InputValue(ILazyLoader lazyLoader)
+        {
+            this.lazyLoader = lazyLoader;
+        }
 
         /// <summary>
         /// Creates an instance of InputValue referring to a given Input.
