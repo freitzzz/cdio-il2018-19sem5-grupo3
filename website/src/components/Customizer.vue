@@ -73,7 +73,7 @@ export default {
       return Store.getters.canMoveComponents;
     },
     populateWebsiteDimensions(){
-      return Store.getters.populateWebsiteDimensions;
+      return Store.getters.resizeFactorDimensions;
     }
   },
   components: {
@@ -81,12 +81,12 @@ export default {
     CustomizerProgressBar
   },
   watch: {
-    populateWebsiteDimensions : function(){
+    populateWebsiteDimensions : function(newValue){
       this.productRenderer.populateWebsiteDimensions(
-        store.getters.resizeFactorDimensions.width,
-        store.getters.resizeFactorDimensions.height,
-        store.getters.resizeFactorDimensions.depth
+        newValue
       );
+      
+      
     },
     slots: function(newValue, oldValue) {
       if(newValue.length > 0){
@@ -100,6 +100,7 @@ export default {
       this.productRenderer.showCloset();
     },
     updateDimensions: function() {
+ 
       this.productRenderer.changeClosetDimensions(
         Store.getters.customizedProductDimensions.width,
         Store.getters.customizedProductDimensions.height,
