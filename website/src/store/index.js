@@ -61,6 +61,9 @@ const state = {
 }
 
 export const getters = {
+    resizeFactorDimensions: state =>{
+        return state.resizeFactorDimensions;
+    },
     productId: state => {
         return state.product.id;
     },

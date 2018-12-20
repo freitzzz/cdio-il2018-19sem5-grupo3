@@ -4,11 +4,14 @@ import store from '.';
 export const mutations = {
 
   [types.SET_RESIZE_FACTOR_DIMENSIONS](state,payload){
-    state.resizeFactorDimensions={
-      width: payload.width,
-      height: payload.height,
-      depth: payload.depth,
-    }
+    if (payload) {
+      state.resizeFactorDimensions.push({
+        width: payload.width,
+        height: payload.height,
+        depth: payload.depth
+      })
+    } else { state.resizeFactorDimensions = []; }
+
   },
 
   /**
