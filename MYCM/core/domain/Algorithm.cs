@@ -31,6 +31,11 @@ namespace core.domain {
         private const string DUPLICATE_INPUT = "The input with the name '{0}' is a duplicate";
 
         /// <summary>
+        /// Constant representing the message presented when an input has no value.
+        /// </summary>
+        private const string INPUT_NOT_SET = "The input with the name '{0}' has no value yet";
+
+        /// <summary>
         /// Constant representing the message presented when an Input is not valid.
         /// </summary>
         private const string SET_INVALID_INPUT = "The input being set is not valid.";
@@ -172,6 +177,17 @@ namespace core.domain {
 
             foreach (KeyValuePair<Input, string> inputValue in inputValues) {
                 setInputValue(inputValue.Key, inputValue.Value);
+            }
+        }
+
+        /// <summary>
+        /// Checks if an algorithm is ready to be applied (if all inputs have values)
+        /// </summary>
+        protected void ready() {
+            foreach (InputValue inputValue in inputValues) {
+                if (inputValue.value == null) {
+                    throw new ArgumentNullException(string.Format(INPUT_NOT_SET, inputValue.input.name));
+                }
             }
         }
 
