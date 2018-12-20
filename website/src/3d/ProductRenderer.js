@@ -15,6 +15,7 @@ import ProductTypeEnum from './api/domain/ProductType';
 import ThreeDrawerAnimations from './threejeyass/animations/ThreeDrawerAnimations';
 import Watcher from './api/domain/Watcher';
 import ThreeAction from './threejeyass/animations/ThreeAction';
+import WatcherEventsTypes from './api/domain/WatcherEventsTypes';
 
 export default class ProductRenderer {
 
@@ -235,7 +236,7 @@ export default class ProductRenderer {
     this.initCloset();
     this.initLighting();
 
-    
+
     var geometry = new THREE.SphereBufferGeometry(430, 60, 40);
     geometry.scale(-1, 1, 1);
 
@@ -274,16 +275,16 @@ export default class ProductRenderer {
     this.scene.add(this.camera);
     this.scene.add(mesh);
     this.animate();
-    
-    let renderAction=function(renderer,scene,camera){
-      return function(){
+
+    let renderAction = function (renderer, scene, camera) {
+      return function () {
         console.log("??????????????????????????");
-        renderer.render(scene,camera);
+        renderer.render(scene, camera);
       };
     };
 
-    
-    Watcher.currentWatcher().asd(new ThreeAction(renderAction(this.renderer,this.scene,this.camera)));
+
+    Watcher.currentWatcher().watch(WatcherEventsTypes.RENDER, new ThreeAction(renderAction(this.renderer, this.scene, this.camera)));
     //Watcher.currentWatcher().asd(asd(this.renderer,this.scene,this.camera));
     this.showCloset();
   }
@@ -303,7 +304,7 @@ export default class ProductRenderer {
   initCloset() {
     var thickness = 4.20;
 
-    
+
     /* this.closet = new Closet(, //Bottom
       , //Top
       , //Left
@@ -319,18 +320,18 @@ export default class ProductRenderer {
       shininess: 20
     });
 
-    let closet_faces=new Map();
-    closet_faces.set(FaceOrientationEnum.BASE,new ThreeFace(null,this.material,FaceOrientationEnum.BASE,404.5, thickness, 100, 0, -210, -195));
-    closet_faces.set(FaceOrientationEnum.TOP,new ThreeFace(null,this.material,FaceOrientationEnum.TOP,404.5, thickness, 100, 0, 90, -195));
-    closet_faces.set(FaceOrientationEnum.LEFT,new ThreeFace(null,this.material,FaceOrientationEnum.LEFT,thickness, 300, 100, -200, -60, -195));
-    closet_faces.set(FaceOrientationEnum.RIGHT,new ThreeFace(null,this.material,FaceOrientationEnum.RIGHT,thickness, 300, 100, 200, -60, -195));
-    closet_faces.set(FaceOrientationEnum.BACK,new ThreeFace(null,this.material,FaceOrientationEnum.BACK,404.5, 300, 0, 0, -60, -245.8));
+    let closet_faces = new Map();
+    closet_faces.set(FaceOrientationEnum.BASE, new ThreeFace(null, this.material, FaceOrientationEnum.BASE, 404.5, thickness, 100, 0, -210, -195));
+    closet_faces.set(FaceOrientationEnum.TOP, new ThreeFace(null, this.material, FaceOrientationEnum.TOP, 404.5, thickness, 100, 0, 90, -195));
+    closet_faces.set(FaceOrientationEnum.LEFT, new ThreeFace(null, this.material, FaceOrientationEnum.LEFT, thickness, 300, 100, -200, -60, -195));
+    closet_faces.set(FaceOrientationEnum.RIGHT, new ThreeFace(null, this.material, FaceOrientationEnum.RIGHT, thickness, 300, 100, 200, -60, -195));
+    closet_faces.set(FaceOrientationEnum.BACK, new ThreeFace(null, this.material, FaceOrientationEnum.BACK, 404.5, 300, 0, 0, -60, -245.8));
 
-    this.closet=new ThreeCloset(closet_faces,null,1,1);
+    this.closet = new ThreeCloset(closet_faces, null, 1, 1);
 
     this.group.add(this.closet.draw());
-    
-    this.addSlotNumbered([{width:50}]);
+
+    this.addSlotNumbered([{ width: 50 }]);
 
     this.scene.add(this.group);
     this.group.visible = false;
@@ -363,11 +364,11 @@ export default class ProductRenderer {
    * Updates current closet graphical view
    */
   updateClosetGV() {
-    let closetFaces=this.closet.getClosetFaces().entries();
-    let closetInitialFaces=this.closet.getInitialClosetFaces().entries();
+    let closetFaces = this.closet.getClosetFaces().entries();
+    let closetInitialFaces = this.closet.getInitialClosetFaces().entries();
     for (let closetFace of closetFaces) {
-      let closet_face=closetFace["1"].mesh();
-      let closet_initial_face=closetInitialFaces.next().value["1"];
+      let closet_face = closetFace["1"].mesh();
+      let closet_initial_face = closetInitialFaces.next().value["1"];
       closet_face.scale.x = this.getNewScaleValue(closet_initial_face.width(), closetFace["1"].width(), closet_face.scale.x);
       closet_face.scale.y = this.getNewScaleValue(closet_initial_face.height(), closetFace["1"].height(), closet_face.scale.y);
       closet_face.scale.z = this.getNewScaleValue(closet_initial_face.depth(), closetFace["1"].depth(), closet_face.scale.z);
@@ -376,13 +377,13 @@ export default class ProductRenderer {
       closet_face.position.z = closetFace["1"].Z();
     }
 
-    let closetSlotFaces=this.closet.getClosetSlotFaces();
-    let closetInitialSlotFaces=this.closet.getInitialClosetSlotFaces();
+    let closetSlotFaces = this.closet.getClosetSlotFaces();
+    let closetInitialSlotFaces = this.closet.getInitialClosetSlotFaces();
 
-    for(let i=0;i<closetSlotFaces.length;i++){
-      let closetSlotFace=closetSlotFaces[i];
-      let closet_slot_face=closetSlotFace.mesh();
-      let closet_initial_slot_face=closetInitialSlotFaces[i];
+    for (let i = 0; i < closetSlotFaces.length; i++) {
+      let closetSlotFace = closetSlotFaces[i];
+      let closet_slot_face = closetSlotFace.mesh();
+      let closet_initial_slot_face = closetInitialSlotFaces[i];
       closet_slot_face.scale.x = this.getNewScaleValue(closet_initial_slot_face.width(), closetSlotFace.width(), closet_slot_face.scale.x);
       closet_slot_face.scale.y = this.getNewScaleValue(closet_initial_slot_face.height(), closetSlotFace.height(), closet_slot_face.scale.y);
       closet_slot_face.scale.z = this.getNewScaleValue(closet_initial_slot_face.depth(), closetSlotFace.depth(), closet_slot_face.scale.z);
@@ -419,7 +420,7 @@ export default class ProductRenderer {
    * Generates a cylinder with given properties on a certain position relative to axis x,y and z
    */
   generatePole(slot) {
-    if(slot==0)return;
+    if (slot == 0) return;
     var leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
     let rightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
     var radiusTop = 3,
@@ -436,7 +437,7 @@ export default class ProductRenderer {
     //If the closet has no slots, the pole's height needs to be the width of the closet
     //Otherwise the pole needs to go from the closet's left wall to a slot, 
     //from a slot to another slot or from a slot to the closet's right wall
-    let closetSlotsFaces=this.closet.getClosetSlotFaces();
+    let closetSlotsFaces = this.closet.getClosetSlotFaces();
     if (closetSlotsFaces.length == 0) {
       height = this.getCurrentClosetWidth();
       pole.changePoleHeight(height);
@@ -453,8 +454,8 @@ export default class ProductRenderer {
       z = this.calculateComponentPosition(leftFace.position.z, firstSlot.position.z);
 
     } else if (slot > 1 && slot <= closetSlotsFaces.length) { //Pole is added between slots w/ indexes [slot - 1] and [slot]
-      let slotToTheLeft = closetSlotsFaces[slot-2].mesh();
-      let slotToTheRight = ctlosetSlotsFaces[slot-1].mesh();
+      let slotToTheLeft = closetSlotsFaces[slot - 2].mesh();
+      let slotToTheRight = ctlosetSlotsFaces[slot - 1].mesh();
       height = this.calculateDistance(slotToTheLeft.position.x, slotToTheRight.position.x);
       pole.changePoleHeight(height);
       x = this.calculateComponentPosition(slotToTheLeft.position.x, slotToTheRight.position.x);
@@ -462,7 +463,7 @@ export default class ProductRenderer {
       z = this.calculateComponentPosition(slotToTheLeft.position.z, slotToTheRight.position.z);
 
     } else { //Pole is added between the last slot and the closet's right face
-      let lastSlot = closetSlotsFaces[slot-2].mesh();
+      let lastSlot = closetSlotsFaces[slot - 2].mesh();
       height = this.calculateDistance(lastSlot.position.x, rightFace.position.x);
       pole.changePoleHeight(height);
       x = this.calculateComponentPosition(lastSlot.position.x, rightFace.position.x);
@@ -477,16 +478,16 @@ export default class ProductRenderer {
     poleMesh.position.z = z;
     poleMesh.rotation.z = Math.PI / 2;
     //this.closet.addPole(pole);
-    let poleGroup=new THREE.Group();
+    let poleGroup = new THREE.Group();
     poleGroup.add(poleMesh);
     this.group.add(poleGroup);
-    console.log("Pole Group ID =>"+poleGroup.id);
-    console.log("Pole ID => "+poleMesh.id);
+    console.log("Pole Group ID =>" + poleGroup.id);
+    console.log("Pole ID => " + poleMesh.id);
     this.closet_poles_ids.push(poleMesh.id);
   }
 
   generateShelf(slot) {
-    let closetSlotsFaces=this.closet.getSlotFaces();
+    let closetSlotsFaces = this.closet.getSlotFaces();
     let leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
     let rightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
     var width, x, y, z;
@@ -503,14 +504,14 @@ export default class ProductRenderer {
       y = this.calculateComponentPosition(leftFace.position.y, firstSlot.position.y);
       z = this.calculateComponentPosition(leftFace.position.z, firstSlot.position.z);
     } else if (slot > 1 && slot <= closetSlotsFaces.length) { //If the chosen slot is not the first nor the last, the shelf is added between two slots
-      let slotToTheLeft = closetSlotsFaces[slot-2].mesh();
-      let slotToTheRight = closetSlotsFaces[slot-1].mesh();
+      let slotToTheLeft = closetSlotsFaces[slot - 2].mesh();
+      let slotToTheRight = closetSlotsFaces[slot - 1].mesh();
       width = this.calculateDistance(slotToTheLeft.position.x, slotToTheRight.position.x);
       x = this.calculateComponentPosition(slotToTheLeft.position.x, slotToTheRight.position.x);
       y = this.calculateComponentPosition(slotToTheLeft.position.y, slotToTheRight.position.y);
       z = this.calculateComponentPosition(slotToTheLeft.position.z, slotToTheRight.position.z);
     } else { //If the slot is the last one, the shelf is added between the slot and the right wall of the closet
-      let lastSlot = closetSlotsFaces[slot-2].mesh();
+      let lastSlot = closetSlotsFaces[slot - 2].mesh();
       width = this.calculateDistance(lastSlot.position.x, rightFace.position.x);
       x = this.calculateComponentPosition(lastSlot.position.x, rightFace.position.x);
       y = this.calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
@@ -525,9 +526,9 @@ export default class ProductRenderer {
 
 
   generateDrawer(slot) {
-    let closetSlotsFaces=this.closet.getClosetSlotFaces();
-    let leftFace=this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT);
-    let rightFace=this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT);
+    let closetSlotsFaces = this.closet.getClosetSlotFaces();
+    let leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT);
+    let rightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT);
     let leftThreeFace = leftFace.mesh();
     let rightThreeFace = rightFace.mesh();
     var depthDrawer = 3;
@@ -550,48 +551,48 @@ export default class ProductRenderer {
       y = this.calculateComponentPosition(leftThreeFace.position.y, firstSlot.position.y);
       z = this.calculateComponentPosition(leftThreeFace.position.z, firstSlot.position.z);
     } else if (slot > 1 && slot <= closetSlotsFaces.length) {
-      let slotToTheLeft = closetSlotsFaces[slot-2].mesh();
-      let slotToTheRight = closetSlotsFaces[slot-1].mesh();
+      let slotToTheLeft = closetSlotsFaces[slot - 2].mesh();
+      let slotToTheRight = closetSlotsFaces[slot - 1].mesh();
       width = this.calculateDistance(slotToTheLeft.position.x, slotToTheRight.position.x);
       x = this.calculateComponentPosition(slotToTheLeft.position.x, slotToTheRight.position.x);
       y = this.calculateComponentPosition(slotToTheLeft.position.y, slotToTheRight.position.y);
       z = this.calculateComponentPosition(slotToTheLeft.position.z, slotToTheRight.position.z);
     } else {
-      let lastSlot = closetSlotsFaces[slot-2].mesh();
+      let lastSlot = closetSlotsFaces[slot - 2].mesh();
       width = this.calculateDistance(lastSlot.position.x, rightThreeFace.position.x) - 4.20;
       x = this.calculateComponentPosition(lastSlot.position.x, rightThreeFace.position.x);
       y = this.calculateComponentPosition(lastSlot.position.y, rightThreeFace.position.y);
       z = this.calculateComponentPosition(lastSlot.position.z, rightThreeFace.position.z);
     }
 
-    let moduleFaces=new Map();
-    moduleFaces.set(FaceOrientationEnum.BASE,new ThreeFace(null,this.material,FaceOrientationEnum.BASE,width,depthDrawer,depthCloset,x,y-(spaceDrawerModule/4),z));
-    moduleFaces.set(FaceOrientationEnum.TOP,new ThreeFace(null,this.material,FaceOrientationEnum.TOP,width,depthDrawer,depthCloset,x,y+heightDrawer+(spaceDrawerModule/4),z));
-    moduleFaces.set(FaceOrientationEnum.LEFT,new ThreeFace(null,this.material,FaceOrientationEnum.LEFT,depthDrawer,heightDrawer+(spaceDrawerModule/4),depthCloset,x-(width/2),y+(heightDrawer/2),z));
-    moduleFaces.set(FaceOrientationEnum.RIGHT,new ThreeFace(null,this.material,FaceOrientationEnum.RIGHT,depthDrawer,heightDrawer+(spaceDrawerModule/4),depthCloset,x+(width/2),y+(heightDrawer/2),z));
+    let moduleFaces = new Map();
+    moduleFaces.set(FaceOrientationEnum.BASE, new ThreeFace(null, this.material, FaceOrientationEnum.BASE, width, depthDrawer, depthCloset, x, y - (spaceDrawerModule / 4), z));
+    moduleFaces.set(FaceOrientationEnum.TOP, new ThreeFace(null, this.material, FaceOrientationEnum.TOP, width, depthDrawer, depthCloset, x, y + heightDrawer + (spaceDrawerModule / 4), z));
+    moduleFaces.set(FaceOrientationEnum.LEFT, new ThreeFace(null, this.material, FaceOrientationEnum.LEFT, depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x - (width / 2), y + (heightDrawer / 2), z));
+    moduleFaces.set(FaceOrientationEnum.RIGHT, new ThreeFace(null, this.material, FaceOrientationEnum.RIGHT, depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x + (width / 2), y + (heightDrawer / 2), z));
 
-    let module=new ThreeModule(moduleFaces);
+    let module = new ThreeModule(moduleFaces);
 
-    let drawerFaces=new Map();
-    drawerFaces.set(FaceOrientationEnum.BASE,new ThreeFace(null,this.material,FaceOrientationEnum.BASE,width-spaceDrawerModule,depthDrawer,depthCloset,x,y+(depthDrawer/2),z));
-    drawerFaces.set(FaceOrientationEnum.FRONT,new ThreeFace(null,this.material,FaceOrientationEnum.FRONT,width-spaceDrawerModule,heightDrawer,depthDrawer,x,y+(heightDrawer/2),z+(depthCloset /2)-(depthDrawer/2)));
-    drawerFaces.set(FaceOrientationEnum.LEFT,new ThreeFace(null,this.material,FaceOrientationEnum.LEFT,depthDrawer,heightDrawer,depthCloset-(depthDrawer/2),x-(width/2)+(spaceDrawerModule/2),y+(heightDrawer/2),z));
-    drawerFaces.set(FaceOrientationEnum.RIGHT,new ThreeFace(null,this.material,FaceOrientationEnum.RIGHT,depthDrawer,heightDrawer,depthCloset-(depthDrawer/2),x+(width/2)-(spaceDrawerModule/2),y+(heightDrawer/2),z));
-    drawerFaces.set(FaceOrientationEnum.BACK,new ThreeFace(null,this.material,FaceOrientationEnum.BACK,width-spaceDrawerModule,heightDrawer,depthDrawer,x,y+(heightDrawer/2),z-(depthCloset/2)+(depthDrawer/2)));
-    
-    let drawer=new ThreeDrawer(drawerFaces);
-    
-    let drawnModule=module.draw();
-    let drawnDrawer=drawer.draw();
+    let drawerFaces = new Map();
+    drawerFaces.set(FaceOrientationEnum.BASE, new ThreeFace(null, this.material, FaceOrientationEnum.BASE, width - spaceDrawerModule, depthDrawer, depthCloset, x, y + (depthDrawer / 2), z));
+    drawerFaces.set(FaceOrientationEnum.FRONT, new ThreeFace(null, this.material, FaceOrientationEnum.FRONT, width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z + (depthCloset / 2) - (depthDrawer / 2)));
+    drawerFaces.set(FaceOrientationEnum.LEFT, new ThreeFace(null, this.material, FaceOrientationEnum.LEFT, depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x - (width / 2) + (spaceDrawerModule / 2), y + (heightDrawer / 2), z));
+    drawerFaces.set(FaceOrientationEnum.RIGHT, new ThreeFace(null, this.material, FaceOrientationEnum.RIGHT, depthDrawer, heightDrawer, depthCloset - (depthDrawer / 2), x + (width / 2) - (spaceDrawerModule / 2), y + (heightDrawer / 2), z));
+    drawerFaces.set(FaceOrientationEnum.BACK, new ThreeFace(null, this.material, FaceOrientationEnum.BACK, width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z - (depthCloset / 2) + (depthDrawer / 2)));
 
-    this.closet.getThreeGroup().add(drawnModule,drawnDrawer);
+    let drawer = new ThreeDrawer(drawerFaces);
 
-    this.closet.addProduct(leftFace.id(),module);
-    this.closet.addProduct(leftFace.id(),drawer);
+    let drawnModule = module.draw();
+    let drawnDrawer = drawer.draw();
 
-    console.log("Module Group ID => "+module.id());
-    console.log("Drawer Group ID => "+drawer.id());
-    
+    this.closet.getThreeGroup().add(drawnModule, drawnDrawer);
+
+    this.closet.addProduct(leftFace.id(), module);
+    this.closet.addProduct(leftFace.id(), drawer);
+
+    console.log("Module Group ID => " + module.id());
+    console.log("Drawer Group ID => " + drawer.id());
+
     this.group.add(drawnModule);
     this.group.add(drawnDrawer);
   }
@@ -709,13 +710,13 @@ export default class ProductRenderer {
    * @param {number[]} slotWidths 
    */
   updateSlotWidths(slotWidths) {
-    let closetSlotsFaces=this.closet.getClosetSlotFaces();
+    let closetSlotsFaces = this.closet.getClosetSlotFaces();
     for (let i = 0; i < slotWidths.length; i++) {
       let closet_face = closetSlotsFaces[i].mesh();
       closet_face.position.x = slotWidths[i];
     }
   }
-  
+
   /**
    * Generates a parellepiped with a certain dimensions (width, height, depth) and on a certain position relatively to axes (x,y,z)
    * @param {number} width Number with the parellepiped width
@@ -833,16 +834,16 @@ export default class ProductRenderer {
 
     //Finds all intersected objects (closet faces)
     //this.group.children[0] => Closet Group
-    var intersects = this.raycaster.intersectObjects(this.group.children,true);
+    var intersects = this.raycaster.intersectObjects(this.group.children, true);
     //Intersects must be 
     //Checks if any closet face was intersected
     if (intersects.length > 0) {
 
       //Gets the closest (clicked) object
       var face = intersects[0].object;
-      console.log("Face ID => "+face.id);
-      console.log("Closet ID => "+this.closet.id());
-      let closetSlotsFaces=this.closet.getClosetSlotFaces();
+      console.log("Face ID => " + face.id);
+      console.log("Closet ID => " + this.closet.id());
+      let closetSlotsFaces = this.closet.getClosetSlotFaces();
       //Checks if the selected closet face is a slot 
       for (var i = 0; i < closetSlotsFaces.length; i++) {
         var closet_face = closetSlotsFaces[i].mesh();
@@ -927,10 +928,10 @@ export default class ProductRenderer {
         flagClose = false;
         j = 0;
 
-        let closetDrawers=this.closet.getProducts(ProductTypeEnum.DRAWER);
+        let closetDrawers = this.closet.getProducts(ProductTypeEnum.DRAWER);
         while (!flagOpen && !flagClose && j < closetDrawers.length) {
-          let closetDrawerFaces=closetDrawers[j].getDrawerFaces();
-          var closetDrawer=closetDrawers[j];
+          let closetDrawerFaces = closetDrawers[j].getDrawerFaces();
+          var closetDrawer = closetDrawers[j];
           //Always get the front face of any drawer at index 5*j+1
           var drawer_front_face = closetDrawerFaces.get(FaceOrientationEnum.FRONT).mesh();
           console.log(face);
@@ -961,9 +962,10 @@ export default class ProductRenderer {
           }); */
           ThreeDrawerAnimations.open(closetDrawer);
         } else if (flagClose) {
-          requestAnimationFrame(function () {
+          /* requestAnimationFrame(function () {
             context.closeDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face);
-          });
+          }); */
+          ThreeDrawerAnimations.close(closetDrawer);
         }
 
         j = 0;
@@ -1157,7 +1159,7 @@ export default class ProductRenderer {
   }
 
   generateHingedDoor(slot) {
-    let closetSlotsFaces=this.closet.getClosetSlotFaces();
+    let closetSlotsFaces = this.closet.getClosetSlotFaces();
     let leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
     let rightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
     var depth = 3;
@@ -1165,7 +1167,7 @@ export default class ProductRenderer {
     var depth_closet = this.closet.getClosetDepth();
     var width;
     var x, y, z;
-    
+
     //For now this follows the same logic as the pole, it should be changed to whatever dimensions the shelf is allowed to have
     if (closetSlotsFaces.length == 0) {
       width = this.closet.getClosetWidth();
@@ -1179,14 +1181,14 @@ export default class ProductRenderer {
       y = this.calculateComponentPosition(leftFace.position.y, firstSlot.position.y);
       z = this.calculateComponentPosition(leftFace.position.z, firstSlot.position.z);
     } else if (slot > 1 && slot <= closetSlotsFaces.length) {
-      let slotToTheLeft = closetSlotsFaces[slot-2].mesh();
-      let slotToTheRight = closetSlotsFaces[slot-1].mesh();
+      let slotToTheLeft = closetSlotsFaces[slot - 2].mesh();
+      let slotToTheRight = closetSlotsFaces[slot - 1].mesh();
       width = this.calculateDistance(slotToTheLeft.position.x, slotToTheRight.position.x);
       x = this.calculateComponentPosition(slotToTheLeft.position.x, slotToTheRight.position.x);
       y = this.calculateComponentPosition(slotToTheLeft.position.y, slotToTheRight.position.y);
       z = this.calculateComponentPosition(slotToTheLeft.position.z, slotToTheRight.position.z);
     } else {
-      let lastSlot = closetSlotsFaces[slot-2].mesh();
+      let lastSlot = closetSlotsFaces[slot - 2].mesh();
       width = this.calculateDistance(lastSlot.position.x, rightFace.position.x);
       x = this.calculateComponentPosition(lastSlot.position.x, rightFace.position.x);
       y = this.calculateComponentPosition(lastSlot.position.y, rightFace.position.y);
@@ -1206,7 +1208,7 @@ export default class ProductRenderer {
     var bottomFace = this.closet.getClosetFaces().get(FaceOrientationEnum.BASE).mesh();
     var height = this.closet.getClosetHeight();
     var width = this.closet.getClosetWidth();
-    let backFace=this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
+    let backFace = this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
     var z = backFace.position.z + this.closet.getClosetDepth();
 
     var thickness = 4.20;
@@ -1272,7 +1274,7 @@ export default class ProductRenderer {
   closeSlotOpenDrawers(slot) {
     var i = 0;
     var index = 0;
-    let closet_back=this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
+    let closet_back = this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
     let closet_front = Math.abs(closet_back.position.z);
     while (i < this.closet_drawers_ids.length) {
       if (this.closet.drawers[index].slotId == slot) {
@@ -1294,7 +1296,7 @@ export default class ProductRenderer {
   closeAllOpenDrawers() {
     var i = 0;
     var index = 0;
-    let closet_back=this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
+    let closet_back = this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
     var closet_front = Math.abs(closet_back.position.z);
     while (i < this.closet_drawers_ids.length) {
       var drawer_front_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 1]);
@@ -1321,7 +1323,7 @@ export default class ProductRenderer {
   }
 
   doesSlotHaveOpenDrawers(slot) {
-    let closet_back=this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
+    let closet_back = this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
     var closet_front = Math.abs(closet_back.position.z);
     var index = 0;
     for (let i = 0; i < this.closet_drawers_ids.length; i += 6) {
@@ -1335,7 +1337,7 @@ export default class ProductRenderer {
   }
 
   doesClosetHaveOpenDrawers() {
-    let closet_back=this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
+    let closet_back = this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
     let closet_front = Math.abs(closet_back.position.z);
     let index = 0;
     for (let i = 0; i < this.closet_drawers_ids.length; i += 6) {
@@ -1400,8 +1402,10 @@ export default class ProductRenderer {
   }
 
   closeDrawer(drawer_front_face, drawer_back_face, drawer_base_face, drawer_left_face, drawer_right_face) {
-    let closet_back=this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
+    let closet_back = this.closet.getClosetFaces().get(FaceOrientationEnum.BACK).mesh();
     let closet_front = closet_back.position.z;
+    console.log("Drawer Back Z => "+drawer_back_face.position.z);
+        console.log("Drawer Front Z => "+closet_front);
     if (drawer_back_face.position.z > closet_front + 3) {
       drawer_front_face.translateZ(-1);
       drawer_back_face.translateZ(-1);
@@ -1492,7 +1496,7 @@ export default class ProductRenderer {
   moveSlot() {
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
       let newPosition = this.intersection.x - this.offset; //Subtracts the offset to the x coordinate of the intersection point
-      let leftFace=this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
+      let leftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
       let valueCloset = leftFace.position.x;
       if (Math.abs(newPosition) < Math.abs(valueCloset)) { //Doesn't allow the slot to overlap the faces of the closet
         this.selected_slot.position.x = newPosition;
@@ -1504,10 +1508,10 @@ export default class ProductRenderer {
    * Moves the face across the defined plan that intersects the closet, without overlapping the closet's slots
    */
   moveFace() {
-    let closetSlotsFaces=this.closet.getClosetSlotFaces();
+    let closetSlotsFaces = this.closet.getClosetSlotFaces();
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
-      let closetLeftFace=this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
-      let closetRightFace=this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
+      let closetLeftFace = this.closet.getClosetFaces().get(FaceOrientationEnum.LEFT).mesh();
+      let closetRightFace = this.closet.getClosetFaces().get(FaceOrientationEnum.RIGHT).mesh();
       if (this.selected_face == closetRightFace) { //If the selected face is the right one
 
         let rightFacePosition = this.intersection.x - this.offset + this.selected_face.position.x; //Position of the right closet face
@@ -1553,8 +1557,8 @@ export default class ProductRenderer {
   moveComponent() {
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
       var computedPosition = this.intersection.y - this.offset; //The component's new computed position on the yy axis
-      let closetTopFace=this.closet.getClosetFaces().get(FaceOrientationEnum.TOP).mesh();
-      let closetBaseFace=this.closet.getClosetFaces().get(FaceOrientationEnum.BASE).mesh();
+      let closetTopFace = this.closet.getClosetFaces().get(FaceOrientationEnum.TOP).mesh();
+      let closetBaseFace = this.closet.getClosetFaces().get(FaceOrientationEnum.BASE).mesh();
       if (computedPosition < closetTopFace.position.y &&
         computedPosition >= closetBaseFace.position.y) {
         this.selected_component.position.y = computedPosition; //Sets the new position as long as the component stays within the closet boundaries
