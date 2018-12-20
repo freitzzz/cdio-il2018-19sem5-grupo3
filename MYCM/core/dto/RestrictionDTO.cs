@@ -1,5 +1,6 @@
 using core.domain;
 using support.dto;
+using System;
 using System.Collections.Generic;
 
 namespace core.dto {
@@ -28,14 +29,7 @@ namespace core.dto {
         /// </summary>
         /// <returns>Entity equivalent of the DTO</returns>
         public Restriction toEntity() {
-            Restriction restriction = new Restriction(this.description);
-            restriction.Id = id;
-            restriction.description = description;
-            restriction.algorithm = algorithm;
-            if (this.inputs != null) {
-                restriction.inputs = (List<Input>)DTOUtils.reverseDTOS(inputs);
-            }
-            return restriction;
+            throw new NotImplementedException();
         }
     }
 }

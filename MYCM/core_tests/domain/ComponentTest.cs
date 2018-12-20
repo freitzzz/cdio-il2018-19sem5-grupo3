@@ -31,8 +31,8 @@ namespace core_tests.domain
 
             Assert.Throws<ArgumentException>(() => new Component(null, product));
             Assert.Throws<ArgumentException>(() => new Component(null, product, true));
-            Assert.Throws<ArgumentException>(() => new Component(null, product, new List<Restriction>() { new Restriction("LÁ ESTÁ") }));
-            Assert.Throws<ArgumentException>(() => new Component(null, product, new List<Restriction>() { new Restriction("LÁ ESTÁ") }, true));
+            Assert.Throws<ArgumentException>(() => new Component(null, product, new List<Restriction>() { new Restriction("LÁ ESTÁ", new SameMaterialAndFinishAlgorithm()) }));
+            Assert.Throws<ArgumentException>(() => new Component(null, product, new List<Restriction>() { new Restriction("LÁ ESTÁ", new SameMaterialAndFinishAlgorithm()) }, true));
         }
 
         [Fact]
@@ -53,8 +53,8 @@ namespace core_tests.domain
 
             Assert.Throws<ArgumentException>(() => new Component(parent, null));
             Assert.Throws<ArgumentException>(() => new Component(parent, null, true));
-            Assert.Throws<ArgumentException>(() => new Component(parent, null, new List<Restriction>() { new Restriction("ISTO É") }));
-            Assert.Throws<ArgumentException>(() => new Component(parent, null, new List<Restriction>() { new Restriction("ISTO É") }, true));
+            Assert.Throws<ArgumentException>(() => new Component(parent, null, new List<Restriction>() { new Restriction("ISTO É", new WidthPercentageAlgorithm()) }));
+            Assert.Throws<ArgumentException>(() => new Component(parent, null, new List<Restriction>() { new Restriction("ISTO É", new WidthPercentageAlgorithm()) }, true));
         }
 
         [Fact]
@@ -115,7 +115,7 @@ namespace core_tests.domain
             //Creates a material list
             List<Material> materials = new List<Material>() { new Material("123", "456, how original", "ola.jpg", colors, finishes) };
 
-           //Creates a parent product 
+            //Creates a parent product 
             Product parent = new Product("Kinda bad", "Anakin", "kindabad.glb", new ProductCategory("Drawers"), materials, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
             //Creates a child product
@@ -146,7 +146,7 @@ namespace core_tests.domain
             //Creates a child product
             Product child = new Product("Not so bad", "Luke", "notsobad.glb", new ProductCategory("Drawers"), materials, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
-            Assert.NotNull(new Component(parent, child, new List<Restriction>() { new Restriction("LÁ ESTÁ") }));
+            Assert.NotNull(new Component(parent, child, new List<Restriction>() { new Restriction("LÁ ESTÁ", new SameMaterialAndFinishAlgorithm()) }));
         }
 
         [Fact]
@@ -168,7 +168,7 @@ namespace core_tests.domain
             //Creates a child product
             Product child = new Product("Not so bad", "Luke", "notsobad.glb", new ProductCategory("Drawers"), materials, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
-            Assert.NotNull(new Component(parent, child, new List<Restriction>() { new Restriction("POIS") }, true));
+            Assert.NotNull(new Component(parent, child, new List<Restriction>() { new Restriction("POIS", new SameMaterialAndFinishAlgorithm()) }, true));
         }
 
 
@@ -193,7 +193,7 @@ namespace core_tests.domain
             Product child = new Product("Not so bad", "Luke", "notsobad.glb", new ProductCategory("Drawers"), materials, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
             Assert.Throws<ArgumentException>(() => new Component(parent, child,
-            new List<Restriction>() { new Restriction("FUNCIONE") }).addRestriction(null));
+            new List<Restriction>() { new Restriction("FUNCIONE", new WidthPercentageAlgorithm()) }).addRestriction(null));
         }
 
         [Fact]
@@ -215,7 +215,7 @@ namespace core_tests.domain
             //Creates a child product
             Product child = new Product("Not so bad", "Luke", "notsobad.glb", new ProductCategory("Drawers"), materials, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
-            Restriction restriction = new Restriction("FUNCIONE");
+            Restriction restriction = new Restriction("FUNCIONE", new WidthPercentageAlgorithm());
             Assert.Throws<ArgumentException>(() => new Component(parent, child,
             new List<Restriction>() { restriction }).addRestriction(restriction));
         }
@@ -239,9 +239,9 @@ namespace core_tests.domain
             //Creates a child product
             Product child = new Product("Not so bad", "Luke", "notsobad.glb", new ProductCategory("Drawers"), materials, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
-            Component component = new Component(parent, child, new List<Restriction>() { new Restriction("FUNCIONE") });
+            Component component = new Component(parent, child, new List<Restriction>() { new Restriction("FUNCIONE", new SameMaterialAndFinishAlgorithm()) });
 
-            Action addRestrictionAction = () => component.addRestriction(new Restriction("FUNCIONOU"));
+            Action addRestrictionAction = () => component.addRestriction(new Restriction("FUNCIONOU", new WidthPercentageAlgorithm()));
 
             Exception exception = Record.Exception(addRestrictionAction);
 
@@ -266,7 +266,7 @@ namespace core_tests.domain
             Product parent = new Product("Kinda bad", "Anakin", "kindabad.glb", new ProductCategory("Drawers"), materials, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
             //Creates a child product
-            Product child = new Product("Not so bad", "Luke",  "notsobad.glb", new ProductCategory("Drawers"), materials, measurements, ProductSlotWidths.valueOf(1, 5, 4));
+            Product child = new Product("Not so bad", "Luke", "notsobad.glb", new ProductCategory("Drawers"), materials, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
             Component component = new Component(parent, child);
 

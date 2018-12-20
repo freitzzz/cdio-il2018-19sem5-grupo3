@@ -4,7 +4,7 @@ import { mutations } from '../src/store/mutations'
 
 describe('product mutations', () => {
     describe('product information', () => {
-        test('init product mutation updates state with correct product information',
+        test('init product',
             ensureInitProductUpdatesStateCorrectly
         );
     });
@@ -12,32 +12,38 @@ describe('product mutations', () => {
 
 describe('customized product mutations', () => {
     describe('customized product id', () => {
-        test('set customized product id updates state with correct customized product id',
+        test('set customized product id',
             ensureSetCustomizedProductIdUpdatesStateCorrectly
         );
     });
     describe('customized product dimensions', () => {
-        test('set customized product dimensions updates state with correct dimensions',
+        test('set customized product dimensions',
             ensureSetCustomizedProductDimensionsUpdatesStateCorrectly
         );
     });
     describe('customized product slots', () => {
         describe('slot dimensions', () => {
-            test('set slot dimensions updates state with correct slot dimensions',
+            test('set slot dimensions',
                 ensureSetSlotDimensionsUpdatesStateCorrectly
+            );
+            test('initialize slots to empty array if mutation payload is null',
+                ensureSetSlotDimensionsInitializesEmptyArrayIfMutationPayloadIsNull
             );
         });
     });
     describe('customized product material', () => {
-        test('set customized product material updates state with correct information',
+        test('set customized product material',
             ensureSetCustomizedProductMaterialUpdatesStateCorrectly
         );
     });
     describe('customized product components', () => {
-        test('set customized product components adds a component to the customized product',
+        test('add a component to a customized product',
             ensureSetCustomizedProductComponentsUpdatesStateCorrectly
         );
-        test('remove a component from a customized product removes the component from the customized product',
+        test('don\'t add a component to a customized product if it has no slots',
+            ensureSetCustomizedProductComponentDoesntAddComponentIfCustomizedProductDoesntHaveSlots
+        );
+        test('remove a component from a customized product',
             ensureRemoveCustomizedProductComponentUpdatesStateCorrectly
         );
     });
@@ -206,7 +212,6 @@ function ensureSetSlotDimensionsUpdatesStateCorrectly() {
         }
     };
     const payload = {
-        components: [],
         idSlot: 1,
         width: 100,
         height: 100,
@@ -215,6 +220,17 @@ function ensureSetSlotDimensionsUpdatesStateCorrectly() {
     };
     mutations.set_slot_dimensions(state, payload);
     expect(state.customizedProduct.slots[0]).toEqual(payload);
+}
+
+function ensureSetSlotDimensionsInitializesEmptyArrayIfMutationPayloadIsNull() {
+    const state = {
+        customizedProduct: {
+            slots: []
+        }
+    };
+    const payload = null;
+    mutations.set_slot_dimensions(state, payload);
+    expect(state.customizedProduct.slots).toHaveLength(0);
 }
 
 function ensureSetCustomizedProductMaterialUpdatesStateCorrectly() {
@@ -239,11 +255,90 @@ function ensureSetCustomizedProductMaterialUpdatesStateCorrectly() {
 }
 
 function ensureSetCustomizedProductComponentsUpdatesStateCorrectly() {
-    //TODO Implement this test
+    const state = {
+        customizedProduct: {
+            components: [],
+            slots: [{
+                components: [],
+                idSlot: 1,
+                width: 100,
+                height: 100,
+                depth: 100,
+                unit: "dm"
+            }]
+        }
+    }
+    const payload = {
+        component: {
+            designation: "Drawer",
+            hasComponents: false,
+            id: 1,
+            mandatory: true,
+            model: "drawer.fbx",
+            reference: "#666",
+            slot: "1",
+            supportsSlots: true
+        }
+    }
+    mutations.set_slot_components(state, payload);
+    expect(state.customizedProduct.components[0]).toEqual(payload.component);
+}
+
+function ensureSetCustomizedProductComponentDoesntAddComponentIfCustomizedProductDoesntHaveSlots() {
+    const state = {
+        customizedProduct: {
+            components: [],
+            slots: []
+        }
+    }
+    const payload = {
+        component: {
+            designation: "Drawer",
+            hasComponents: false,
+            id: 1,
+            mandatory: true,
+            model: "drawer.fbx",
+            reference: "#666",
+            slot: "1",
+            supportsSlots: true
+        }
+    }
+    mutations.set_slot_components(state, payload);
+    expect(state.customizedProduct.components).toHaveLength(0);
 }
 
 function ensureRemoveCustomizedProductComponentUpdatesStateCorrectly() {
-    //TODO Implement this test
+    const state = {
+        canvasControls:{
+            componentToRemove:{}
+        },
+        customizedProduct: {
+            components: [],
+            slots: [{
+                components: [],
+                idSlot: 1,
+                width: 100,
+                height: 100,
+                depth: 100,
+                unit: "dm"
+            }]
+        }
+    }
+    const payload = {
+        component: {
+            designation: "Drawer",
+            hasComponents: false,
+            id: 1,
+            mandatory: true,
+            model: "drawer.fbx",
+            reference: "#666",
+            slot: "1",
+            supportsSlots: true
+        }
+    }
+    mutations.set_slot_components(state, payload);
+    mutations.remove_slot_component(state, payload);
+    expect(state.customizedProduct.components).toHaveLength(0);
 }
 
 function ensureActivatingClosetMovementFlagUpdatesStateCorrectly() {

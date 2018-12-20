@@ -2,6 +2,7 @@
 using core.domain;
 using core.dto;
 using core.modelview.algorithm;
+using core.modelview.input;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using System;
@@ -40,7 +41,8 @@ namespace backend_tests.Controllers {
         public async Task ensureGetAllAlgorithmsSucceeds() {
             var response = await client.GetAsync(urlBase);
             var responseString = await response.Content.ReadAsStringAsync();
-            List<GetBasicAlgorithmModelView> list = (List<GetBasicAlgorithmModelView>)JsonConvert.DeserializeObject<IEnumerable<GetBasicAlgorithmModelView>>(responseString);
+
+            GetAllAlgorithmsModelView list = JsonConvert.DeserializeObject<GetAllAlgorithmsModelView>(responseString);
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(Enum.GetValues(typeof(RestrictionAlgorithm)).Length, list.Count);
         }
@@ -48,32 +50,31 @@ namespace backend_tests.Controllers {
         public async Task ensureGetAlgorithmSucceeds() {
             var response = await client.GetAsync(urlBase + "/" + (int)RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM);
             var responseString = await response.Content.ReadAsStringAsync();
-            AlgorithmDTO dto = JsonConvert.DeserializeObject<AlgorithmDTO>(responseString);
+            GetAlgorithmModelView algorithmModelView = JsonConvert.DeserializeObject<GetAlgorithmModelView>(responseString);
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal(AlgorithmAttributes.getName(RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM), dto.name);
         }
         [Fact]
-        public async Task ensureGetAlgorithmReturnsBadRequestIfAlgorithmDoesNotExist() {
+        public async Task ensureGetAlgorithmReturnsNotFoundIfAlgorithmDoesNotExist() {
             var response = await client.GetAsync(urlBase + "/" + Enum.GetValues(typeof(RestrictionAlgorithm)).Length + 1);
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
         [Fact]
         public async Task ensureGetAlgorithmInputsSucceeds() {
             var response = await client.GetAsync(urlBase + "/" + (int)RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM + "/inputs");
             var responseString = await response.Content.ReadAsStringAsync();
-            List<InputDTO> list = (List<InputDTO>)JsonConvert.DeserializeObject<IEnumerable<InputDTO>>(responseString);
+            GetAllInputsModelView list = JsonConvert.DeserializeObject<GetAllInputsModelView>(responseString);
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(new AlgorithmFactory().createAlgorithm(RestrictionAlgorithm.WIDTH_PERCENTAGE_ALGORITHM).getRequiredInputs().Count, list.Count);
         }
         [Fact]
-        public async Task ensureGetAlgorithmInputsReturnsBadRequestIfAlgorithmDoesNotRequireInputs() {
+        public async Task ensureGetAlgorithmInputsReturnsNotFoundIfAlgorithmDoesNotRequireInputs() {
             var response = await client.GetAsync(urlBase + "/" + (int)RestrictionAlgorithm.SAME_MATERIAL_AND_FINISH_ALGORITHM + "/inputs");
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
         [Fact]
-        public async Task ensureGetAlgorithmInputsReturnsBadRequestIfAlgorithmDoesNotExist() {
+        public async Task ensureGetAlgorithmInputsReturnsNotFoundIfAlgorithmDoesNotExist() {
             var response = await client.GetAsync(urlBase + "/" + Enum.GetValues(typeof(RestrictionAlgorithm)).Length + 1 + "/inputs");
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }

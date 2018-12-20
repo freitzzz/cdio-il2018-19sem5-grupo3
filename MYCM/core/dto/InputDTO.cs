@@ -1,4 +1,5 @@
-﻿using core.domain;
+﻿using System;
+using core.domain;
 using support.dto;
 
 namespace core.dto {
@@ -15,18 +16,11 @@ namespace core.dto {
         /// </summary>
         public string name;
         /// <summary>
-        /// Value of the input
-        /// </summary>
-        public string value;
-        /// <summary>
         /// Returns Entity equivalent of the DTO
         /// </summary>
         /// <returns>Entity equivalent of the DTO</returns>
         public Input toEntity() {
-            Input input = new Input(name);
-            input.Id = id;
-            input.value = value;
-            return input;
+            throw new NotImplementedException();
         }
     }
 }
