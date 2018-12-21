@@ -103,7 +103,7 @@ namespace core_tests.domain
 
             Measurement measurement = new Measurement(height, width, depth);
 
-            Restriction restriction = new Restriction("This is a restriction", new WidthPercentageAlgorithm());
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action addValidRestrictionAction = () => measurement.addRestriction(restriction);
 
@@ -167,7 +167,7 @@ namespace core_tests.domain
             SingleValueDimension depth = new SingleValueDimension(8.0);
 
             Measurement measurement = new Measurement(height, width, depth);
-            Restriction restriction = new Restriction("This is a restriction", new WidthPercentageAlgorithm());
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             measurement.addRestriction(restriction);
 
