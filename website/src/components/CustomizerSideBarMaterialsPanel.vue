@@ -7,28 +7,29 @@
       </div>
       <div class="text-entry">Choose material to add:</div>
       <div class="padding-div">
-        <div class="scrollable-div" style="height: 400px; width: 100%;">
-          <a v-if="getMaterialInformationOK" class="sidepanel">
-            <a class="closebtn">×</a>
+        <div class="scrollable-div" style="height: 300px; width: 100%;">
+           <a v-if="getMaterialInformationOK" class="sidepanel">
               <a v-if="hasFinishes" class="sidepanel-entry" @click="changeShowFinishes">
-                <p>Finishes <i class="fa fa-caret-down"></i></p>
+                <p><i class="material-icons md-12 md-blue">brush</i> <b>Finishes <i class="fa fa-caret-down"></i></b></p>
               </a>
-              <div class="dropdown-container">
-                <ul v-if="showFinishes" v-for="finish in colors" :key="finish.description">
-                  <li class="sidepanel-subentry" @click="applyFinish(finish)">{{finish.description}}</li>   
-                </ul>           
+              <div class="dropdown-container" v-if="showFinishes">
+                <a class="sidepanel-subentry" @click="removeFinish()"><i class="material-icons md-12">not_interested</i> None</a>   
+                <div v-for="finish in finishes" :key="finish.description">
+                  <a class="sidepanel-subentry" @click="applyFinish(finish)">{{finish.description}}</a>   
+                </div>           
               </div>
               <a v-if="hasColors" class="sidepanel-entry" @click="changeShowColors">
-                <p>Colors <i class="fa fa-caret-down"></i></p>
+                <p><i class="material-icons md-12 md-blue">color_lens</i> <b>Colors <i class="fa fa-caret-down"></i></b></p>
               </a>
-              <div class="dropdown-container">
-                <ul v-if="showColors" v-for="color in colors" :key="color.name">
-                  <li class="sidepanel-subentry" @click="applyColor(color)">{{color.name}}</li>   
-                </ul>                       
+              <div class="dropdown-container" v-if="showColors">
+                <a class="sidepanel-subentry" @click="removeColor()"><i class="material-icons md-12">not_interested</i> None</a>
+                <div v-for="color in colors" :key="color.name">
+                  <a class="sidepanel-subentry" @click="applyColor(color)">{{color.name}}</a>   
+                </div>                       
               </div>
           </a>
           <ul class="image-list" v-for="material in materials" :key="material.id">
-            <li class="image-btn" @click="applyMaterial(material), getMaterialInformation(material.id)">
+            <li class="image-btn" @click="applyMaterial(material), removeFinish(), removeColor(), getMaterialInformation(material.id)">
               <img :src="findMaterialImage(material.image)" width="100%">
               <p>{{material.designation}}</p>
             </li>
@@ -59,12 +60,13 @@ import { error } from "three";
 import store from "./../store";
 import Toasted from "vue-toasted";
 import { MYCM_API_URL } from "./../config.js";
-import {
-  SET_CUSTOMIZED_PRODUCT_MATERIAL,
-  DEACTIVATE_CAN_MOVE_CLOSET,
-  DEACTIVATE_CAN_MOVE_SLOTS
-} from "./../store/mutation-types.js";
+import { SET_CUSTOMIZED_PRODUCT_MATERIAL, SET_CUSTOMIZED_PRODUCT_FINISH,
+         SET_CUSTOMIZED_PRODUCT_COLOR, DEACTIVATE_CAN_MOVE_CLOSET,
+         DEACTIVATE_CAN_MOVE_SLOTS
+        } from "./../store/mutation-types.js";
+
 Vue.use(Toasted);
+
 export default {
   name: "CustomizerSideBarMaterialsPanel",
   data() {
@@ -72,8 +74,8 @@ export default {
       materials: [],
       finishes: [],
       colors: [],
-      showColors:false,
-      showFinishes:false,
+      showColors: false,
+      showFinishes: false,
       httpCode: null
     };
   },
@@ -97,7 +99,6 @@ export default {
         .then(response => {
           this.materials = [];
           this.materials.push(...response.data);
-
           this.httpCode = response.status;
         })
         .catch(error => {
@@ -140,15 +141,32 @@ export default {
     },
     applyFinish(finish){
       store.dispatch(SET_CUSTOMIZED_PRODUCT_FINISH, {
-        shininess : finish.shininess
+        description: finish.description,
+        shininess: finish.shininess
       })
     },
+    removeFinish(){
+      store.dispatch(SET_CUSTOMIZED_PRODUCT_FINISH, {
+        description: "None",
+        shininess: 20
+      })
+    },     
     applyColor(color){
       store.dispatch(SET_CUSTOMIZED_PRODUCT_COLOR, {
+        name: color.name,
         red: color.red,
-        gree: color.green,
+        green: color.green,
         blue: color.blue,
         alpha: color.alpha
+      })
+    },
+    removeColor(){
+      store.dispatch(SET_CUSTOMIZED_PRODUCT_COLOR, {
+        name: "None",
+        red: 0,
+        green: 0,
+        blue: 0,
+        alpha: 0
       })
     },
     changeShowColors(){
@@ -160,12 +178,135 @@ export default {
       else this.showFinishes = true;
     },
     nextPanel() {
-      this.$emit("advance");
-      //TODO! POST product w/ material
+      var hasColor = store.getters.customizedMaterialColorName != "None";
+      var hasFinish = store.getters.customizedMaterialFinishDescription != "None";
+
+      if(!hasColor && !hasFinish){
+        this.$toast.open("You must choose at least one finish or color!");
+      } else if(hasColor && !hasFinish){
+         Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
+            {
+	            customizedMaterial: {
+		            materialId: store.state.customizedProduct.customizedMaterial.id,
+		            color: {
+			            name: store.state.customizedProduct.customizedMaterial.color.name,
+                  red: store.state.customizedProduct.customizedMaterial.color.red,
+                  green: store.state.customizedProduct.customizedMaterial.color.green,
+                  blue: store.state.customizedProduct.customizedMaterial.color.blue,
+                  alpha: store.state.customizedProduct.customizedMaterial.color.alpha
+		            } 
+	            },
+            })
+          .then(response => {
+            this.$emit("advance");
+          })
+          .catch(error_message => {
+            this.$toast.open("Unable to upload color.");
+          });
+      } else if(hasFinish && !hasColor){
+        Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
+          {
+	          customizedMaterial: {
+		          materialId: store.state.customizedProduct.customizedMaterial.id,
+              finish: {
+                description: store.state.customizedProduct.customizedMaterial.finish.description,
+                shininess: store.state.customizedProduct.customizedMaterial.finish.shininess,
+              }
+            }
+          })
+        .then(response => {
+          this.$emit("advance");
+        })
+        .catch(error_message => {
+          this.$toast.open("Unable to upload finish.");
+        });
+      } else if(hasFinish && hasColor){
+        Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
+          {
+	          customizedMaterial: {
+              materialId: store.state.customizedProduct.customizedMaterial.id,
+              color: {
+			          name: store.state.customizedProduct.customizedMaterial.color.name,
+                red: store.state.customizedProduct.customizedMaterial.color.red,
+                green: store.state.customizedProduct.customizedMaterial.color.green,
+                blue: store.state.customizedProduct.customizedMaterial.color.blue,
+                alpha: store.state.customizedProduct.customizedMaterial.color.alpha
+		          },
+              finish: {
+                description: store.state.customizedProduct.customizedMaterial.finish.description,
+                shininess: store.state.customizedProduct.customizedMaterial.finish.shininess,
+              }
+            }
+          })
+        .then(response => {
+          this.$emit("advance")
+        })
+        .catch(error_message => {
+          this.$toast.open("Unable to upload color or finish.");
+        });
+      }
     },
     previousPanel() {
-      this.$emit("back");
-    }
+      Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
+      {
+        customizedMaterial: {
+		      materialId: store.state.customizedProduct.customizedMaterial.id,
+          finish: {
+              description: store.state.customizedProduct.customizedMaterial.finish.description,
+              shininess: store.state.customizedProduct.customizedMaterial.finish.shininess,
+          }
+        }
+      })
+      .then(response => {
+        this.removeFinish();
+        this.removeColor();
+        this.$emit("back");
+      })
+      .catch(error_message => {
+        this.$toast.open("Unable to remove the material.");
+      });
+    
+      this.deleteSlots().then(() => {
+        this.$emit("back");
+      }).catch((error_message)=>{
+        this.$toast.open({message: error_message}); 
+      });
+    },
+    deleteSlots(){
+      let slotsToDelete = [];
+      var size = store.state.customizedProduct.slots.length;
+      for(let i = 0; i< size-1; i++){
+        slotsToDelete.unshift(store.state.customizedProduct.slots[i].idSlot);
+      }
+      return new Promise((accept,reject)=>{
+        this.deleteSlot(slotsToDelete)
+        .then(() => {
+          accept()})
+        .catch((error_message) => { 
+          reject(error_message)
+      });
+      })
+    },
+    deleteSlot(slotsToDelete){
+      return new Promise((accept, reject) => {
+        let slotToDelete = slotsToDelete.pop();
+        Axios.delete(MYCM_API_URL + 
+        `/customizedproducts/${store.state.customizedProduct.id}/slots/${slotToDelete}`)
+        .then(() => {
+          if(slotsToDelete.length > 0 ){
+            return this.deleteSlot(slotsToDelete)
+            .then(()=>{
+              accept()})
+            .catch((error_message) => { reject(error_message)});
+          } else {
+             accept();
+          }
+        })
+        .catch((error_message) => {
+          reject(error_message.response.data.message);
+        });
+      })
+    },
   },
   created() {
     this.getProductMaterials();

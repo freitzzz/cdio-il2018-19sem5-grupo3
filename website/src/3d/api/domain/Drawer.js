@@ -1,9 +1,9 @@
 //@ts-check
 
 /**
- * Requires BaseProduct for product base properties
+ * Requires OpenableProduct for openable product base properties
  */
-import BaseProduct from "./BaseProduct";
+import OpenableProduct from "./OpenableProduct";
 
 /**
  * Requires Face for drawer faces
@@ -23,7 +23,7 @@ import ProductType from "./ProductType";
 /**
  * Represents the internal core of a Drawer
  */
-export default class Drawer extends BaseProduct{
+export default class Drawer extends OpenableProduct{
     
     /**
      * Builds a new Drawer with the dimensions and axes values for all faces
@@ -33,8 +33,8 @@ export default class Drawer extends BaseProduct{
      */
     constructor(drawer_faces,productId,slotId=null){
         super(ProductType.DRAWER,productId,slotId);
-        this.drawer_faces=Object.assign({},drawer_faces);
-        this.initial_drawer_faces=Object.assign({},drawer_faces);
+        this.drawer_faces=new Map(drawer_faces);
+        this.initial_drawer_faces=new Map(drawer_faces);
     }
 
     //Drawer Logic
@@ -109,4 +109,10 @@ export default class Drawer extends BaseProduct{
      * Returns all current drawer drawer
      */
     getDrawerFaces(){return this.drawer_faces;}
+
+    /**
+     * Draws the current drawer
+     * @returns {Object} Object with the drawn drawer
+     */
+    draw(){}
 }

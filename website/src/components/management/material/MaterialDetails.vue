@@ -31,7 +31,7 @@
                     required>
                 </b-input>
             </b-field>
-             <b-checkbox @input="enableColors()">Colors</b-checkbox>
+             <b-checkbox type="is-info" @input="enableColors()">Colors</b-checkbox>
             <div v-if="showColors">
                 <b-field label="Colors">
                     <simple-table
@@ -40,7 +40,7 @@
                     />
                 </b-field>
             </div>
-             <b-checkbox @input="enableFinishes()">Finishes</b-checkbox>
+             <b-checkbox type="is-info" @input="enableFinishes()">Finishes</b-checkbox>
             <div v-if="showFinishes">
                 <b-field label="Finishes">
                     <simple-table

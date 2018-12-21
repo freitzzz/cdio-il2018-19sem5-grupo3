@@ -69,12 +69,12 @@
                             </b-select>
                         </b-field>
                             <b-field label="Add">
-                                <button class="button is-danger" @click="addDiscreteValue()">
+                                <button class="btn-primary" @click="addDiscreteValue()">
                                     <b-icon icon="plus"/>
                                 </button>
                             </b-field>
                             <b-field label="Remove">
-                                <button class="button is-danger" @click="removeDiscreteValue()">
+                                <button class="btn-primary" @click="removeDiscreteValue()">
                                     <b-icon icon="minus"/>
                                 </button>
                             </b-field>

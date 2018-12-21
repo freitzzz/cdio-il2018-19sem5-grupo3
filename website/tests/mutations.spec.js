@@ -2,58 +2,210 @@
 /* eslint-disable no-undef */
 import { mutations } from '../src/store/mutations'
 
-//TODO Refactor these tests after Store structure changes are made
-
 describe('product mutations', () => {
-    describe('product-id', () => {
-        test('INIT_PRODUCT-updates-state-with-correct-product-id',
-            ensureInitProductUpdatesStateCorrectly);
-    })
+    describe('product information', () => {
+        test('init product',
+            ensureInitProductUpdatesStateCorrectly
+        );
+    });
 });
 
 describe('customized product mutations', () => {
-    describe('customized-product-dimensions', () => {
-        //TODO Fix these failing tests
-        /* test('SET_CUSTOMIZED_PRODUCT_WIDTH-updates-state-with-correct-width',
-            ensureSetCustomizedProductWidthUpdatesStateCorrectly);
-        test('SET_CUSTOMIZED_PRODUCT_HEIGHT-updates-state-with-correct-height',
-            ensureSetCustomizedProductHeightUpdatesStateCorrectly);
-        test('SET_CUSTOMIZED_PRODUCT_DEPTH-updates-state-with-correct-depth',
-            ensureSetCustomizedProductDepthUpdatesStateCorrectly);
-        test('SET_CUSTOMIZED_PRODUCT_UNIT-updates-state-with-correct-unit',
-            ensureSetCustomizedProductUnitUpdatesStateCorrectly) */
+    describe('customized product id', () => {
+        test('set customized product id',
+            ensureSetCustomizedProductIdUpdatesStateCorrectly
+        );
     });
-    //TODO Comment out these tests after customized product slots structure is updated
-    /* describe('customized-product-slots', () => {
-        describe('slot-dimensions', () => {
-            test('SET_SLOT_WIDTH-updates-state-with-correct-width',
-                ensureSetSlotWidthUpdatesStateCorrectly);
-            test('SET_SLOT_HEIGHT-updates-state-with-correct-height',
-                ensureSetSlotHeightUpdatesStateCorrectly);
-            test('SET_SLOT_DEPTH-updates-state-with-correct-depth',
-                ensureSetSlotDepthUpdatesStateCorrectly);
-            test('SET_SLOT_UNIT-updates-state-with-correct-uni',
-                ensureSetSlotUnitUpdatesStateCorrectly);
-        })
-    }) */
+    describe('customized product dimensions', () => {
+        test('set customized product dimensions',
+            ensureSetCustomizedProductDimensionsUpdatesStateCorrectly
+        );
+    });
+    describe('customized product slots', () => {
+        describe('slot id', () => {
+            test('set slot id',
+                ensureSetSlotIdUpdatesStateCorrectly
+            );
+        });
+        describe('slot dimensions', () => {
+            test('add slot dimensions',
+                ensureAddSlotDimensionsUpdatesStateCorrectly
+            );
+            test('initialize slots to empty array if mutation payload is null',
+                ensureAddSlotDimensionsInitializesEmptyArrayIfMutationPayloadIsNull
+            );
+        });
+    });
+    describe('customized product material', () => {
+        test('set customized material',
+            ensureSetCustomizedProductMaterialUpdatesStateCorrectly
+        );
+        test('set customized material color',
+            ensureSetCstomizedProductMaterialColorUpdatesStateCorrectly
+        );
+        test('set customized material finish',
+            ensureSetCustomizedProductMaterialFinishUpdatesStateCorrectly
+        );
+    });
+    describe('customized product components', () => {
+        test('add a component to a customized product',
+            ensureSetCustomizedProductComponentsUpdatesStateCorrectly
+        );
+        test('don\'t add a component to a customized product if it has no slots',
+            ensureSetCustomizedProductComponentDoesntAddComponentIfCustomizedProductDoesntHaveSlots
+        );
+        test('initialize empty array if payload is null',
+            ensureSetCustomizedProductComponentInitializesEmptyArrayIfPayloadIsNull
+        );
+        test('remove a component from a customized product',
+            ensureRemoveCustomizedProductComponentUpdatesStateCorrectly
+        );
+    });
+})
+
+describe('canvas controls mutations', () => {
+    describe('closet movement controls', () => {
+        test('activate closet movement',
+            ensureActivatingClosetMovementFlagUpdatesStateCorrectly
+        );
+        test('deactivate closet movement',
+            ensureDeactivatingClosetMovementFlagUpdatesStateCorrectly
+        );
+    });
+    describe('slots movement controls', () => {
+        test('activate slots movement',
+            ensureActivatingSlotsMovementFlagUpdatesStateCorrectly
+        );
+        test('deactivate slots movement',
+            ensureDeactivatingSlotsMovementFlagUpdatesStateCorrectly
+        );
+    });
+    describe('components movement controls', () => {
+        test('activate components movement',
+            ensureActivatingComponentsMovementFlagUpdatesStateCorrectly
+        );
+        test('deactivate components movement',
+            ensureDeactivatingComponentsMovementFlagUpdatesStateCorrectly
+        );
+    });
+})
+
+describe('resize factor dimensions mutations', () => {
+    test('set resize factor dimensions values', () => {
+        ensureSetResizeFactorDimensionsUpdatesStateCorrectly
+    });
+    //TODO Check if the transformation of an object into an array is supposed to happen
+    test('initialize as empty array if payload is null',
+        ensureSetResizeFactorDimensionsInitializesAsEmptyArrayIfPayloadIsNull
+    );
+})
+
+describe('resize vector global mutations', () => {
+    test('set resize vector global values', () => {
+        ensureSetResizeVectorGlobalUpdatesStateCorrectly
+    });
+    //TODO Check if the transformation of an object into an array is supposed to happen
+    test('initialize as empty array if payload is null', () => {
+        ensureSetResizeVectorGlobalInitializesAsEmptyArrayIfPayloadIsNull
+    });
 })
 
 function ensureInitProductUpdatesStateCorrectly() {
     const state = {
         product: {
-            "id": ""
+
         }
     };
     const payload = {
         product: {
-            "id": "1"
+            id: 3,
+            reference: "123",
+            designation: "Closet",
+            model: "closet.glb",
+            category: {
+                id: 1,
+                name: "All Products"
+            },
+            materials: [
+                {
+                    id: 1,
+                    reference: "#666",
+                    designation: "Cherry Wood",
+                    image: "cherry-wood.png"
+                }
+            ],
+            components: [
+                {
+                    id: 1,
+                    reference: "1",
+                    designation: "component1",
+                    model: "component1.glb",
+                    mandatory: true
+                }
+            ],
+            dimensions: [
+                {
+                    id: 5,
+                    height: {
+                        id: 14,
+                        unit: "mm",
+                        values: [
+                            100,
+                            140,
+                            180,
+                            400
+                        ]
+                    },
+                    width: {
+                        id: 15,
+                        unit: "mm",
+                        value: 500
+                    },
+                    depth: {
+                        id: 13,
+                        unit: "mm",
+                        minValue: 15000,
+                        maxValue: 20000,
+                        increment: 250
+                    }
+                },
+                {
+                    id: 6,
+                    height: {
+                        id: 17,
+                        unit: "mm",
+                        minValue: 1,
+                        maxValue: 5,
+                        increment: 0.1
+                    },
+                    width: {
+                        id: 18,
+                        unit: "mm",
+                        value: 500
+                    },
+                    depth: {
+                        id: 16,
+                        unit: "mm",
+                        values: [
+                            100000,
+                            125000
+                        ]
+                    }
+                }
+            ],
+            slotWidths: {
+                minWidth: 200,
+                maxWidth: 500,
+                recommendedWidth: 250,
+                unit: "mm"
+            }
         }
     };
     mutations.init_product(state, payload);
-    expect(state.product.id).toBe(payload.product.id);
+    expect(state.product).toEqual(payload.product);
 }
 
-function ensureSetCustomizedProductWidthUpdatesStateCorrectly() {
+function ensureSetCustomizedProductDimensionsUpdatesStateCorrectly() {
     const state = {
         customizedProduct: {
             customizedDimensions: {
@@ -65,78 +217,338 @@ function ensureSetCustomizedProductWidthUpdatesStateCorrectly() {
         }
     }
     const payload = {
-        width: 100
-    }
-    mutations.set_customized_product_width(state, payload);
-    expect(state.customizedProduct.customizedDimensions.width).toBe(payload.width);
-}
-
-function ensureSetCustomizedProductHeightUpdatesStateCorrectly() {
-    const state = {
-        customizedProduct: {
-            customizedDimensions: {
-                width: "",
-                height: "",
-                depth: "",
-                unit: ""
-            }
-        }
-    }
-    const payload = {
-        height: 100
-    }
-    mutations.set_customized_product_height(state, payload);
-    expect(state.customizedProduct.customizedDimensions.height).toBe(payload.height);
-}
-
-function ensureSetCustomizedProductDepthUpdatesStateCorrectly() {
-    const state = {
-        customizedProduct: {
-            customizedDimensions: {
-                width: "",
-                height: "",
-                depth: "",
-                unit: ""
-            }
-        }
-    }
-    const payload = {
-        depth: 100
-    }
-    mutations.set_customized_product_depth(state, payload);
-    expect(state.customizedProduct.customizedDimensions.depth).toBe(payload.depth);
-}
-
-function ensureSetCustomizedProductUnitUpdatesStateCorrectly() {
-    const state = {
-        customizedProduct: {
-            customizedDimensions: {
-                width: "",
-                height: "",
-                depth: "",
-                unit: ""
-            }
-        }
-    }
-    const payload = {
+        width: 100,
+        height: 100,
+        depth: 100,
         unit: "cm"
     }
-    mutations.set_customized_product_unit(state, payload);
-    expect(state.customizedProduct.customizedDimensions.unit).toBe(payload.unit);
+    mutations.set_customized_product_dimensions(state, payload);
+    expect(state.customizedProduct.customizedDimensions).toEqual(payload);
 }
 
-function ensureSetSlotWidthUpdatesStateCorrectly() {
-    //!Implement test after mutation is fixed
+function ensureSetCustomizedProductIdUpdatesStateCorrectly() {
+    const state = {
+        customizedProduct: {
+            id: ""
+        }
+    };
+    const payload = {
+        id: 1
+    };
+    mutations.set_id_customized_product(state, payload);
+    expect(state.customizedProduct.id).toBe(payload);
 }
 
-function ensureSetSlotHeightUpdatesStateCorrectly() {
-    //!Implement test after mutation is fixed
+function ensureAddSlotDimensionsUpdatesStateCorrectly() {
+    const state = {
+        customizedProduct: {
+            slots: []
+        }
+    };
+    const payload = {
+        idSlot: 1,
+        width: 100,
+        height: 100,
+        depth: 100,
+        unit: "dm"
+    };
+    mutations.add_slot_dimensions(state, payload);
+    expect(state.customizedProduct.slots[0]).toEqual(payload);
 }
 
-function ensureSetSlotDepthUpdatesStateCorrectly() {
-    //!Implement test after mutation is fixed
+function ensureAddSlotDimensionsInitializesEmptyArrayIfMutationPayloadIsNull() {
+    const state = {
+        customizedProduct: {
+            slots: []
+        }
+    };
+    const payload = null;
+    mutations.add_slot_dimensions(state, payload);
+    expect(state.customizedProduct.slots).toHaveLength(0);
 }
 
-function ensureSetSlotUnitUpdatesStateCorrectly() {
-    //!Implement test after mutation is fixed
+function ensureSetSlotIdUpdatesStateCorrectly() {
+    const state = {
+        customizedProduct: {
+            slots: [
+                {
+                    idSlot: 1,
+                    width: 100,
+                    height: 100,
+                    depth: 100,
+                    unit: "dm"
+                }
+            ]
+        }
+    };
+    const expectedSlotId = 2;
+    const payload = {
+        position: 0,
+        idSlot: expectedSlotId
+    };
+    mutations.set_id_slot(state, payload);
+    expect(state.customizedProduct.slots[0].idSlot).toEqual(expectedSlotId);
+}
+
+function ensureSetCustomizedProductMaterialUpdatesStateCorrectly() {
+    const state = {
+        customizedProduct: {
+            customizedMaterial: {
+                id: "",
+                reference: "",
+                designation: "",
+                image: ""
+            }
+        }
+    };
+    const payload = {
+        id: 1,
+        reference: "hello i'm a reference",
+        designation: "and i'm a designation",
+        image: "image.jpg"
+    };
+    mutations.set_customized_product_material(state, payload);
+    expect(state.customizedProduct.customizedMaterial).toEqual(payload);
+}
+
+function ensureSetCstomizedProductMaterialColorUpdatesStateCorrectly() {
+    const state = {
+        customizedProduct: {
+            customizedMaterial: {
+                color: {}
+            }
+        }
+    };
+    const payload = {
+        name: "blue",
+        red: 100,
+        green: 100,
+        blue: 100,
+        alpha: 1
+    };
+    mutations.set_customized_product_color(state, payload);
+    expect(state.customizedProduct.customizedMaterial.color).toEqual(payload);
+}
+
+function ensureSetCustomizedProductMaterialFinishUpdatesStateCorrectly() {
+    const state = {
+        customizedProduct: {
+            customizedMaterial: {
+                finish: {}
+            }
+        }
+    };
+    const payload = {
+        description: "varnish",
+        shininess: 100
+    };
+    mutations.set_customized_product_finish(state, payload);
+    expect(state.customizedProduct.customizedMaterial.finish).toEqual(payload);
+}
+
+function ensureSetCustomizedProductComponentsUpdatesStateCorrectly() {
+    const state = {
+        customizedProduct: {
+            components: [],
+            slots: [{
+                components: [],
+                idSlot: 1,
+                width: 100,
+                height: 100,
+                depth: 100,
+                unit: "dm"
+            }]
+        }
+    }
+    const payload = {
+        component: {
+            designation: "Drawer",
+            hasComponents: false,
+            id: 1,
+            mandatory: true,
+            model: "drawer.fbx",
+            reference: "#666",
+            slot: "1",
+            supportsSlots: true
+        }
+    }
+    mutations.set_slot_components(state, payload);
+    expect(state.customizedProduct.components[0]).toEqual(payload.component);
+}
+
+function ensureSetCustomizedProductComponentDoesntAddComponentIfCustomizedProductDoesntHaveSlots() {
+    const state = {
+        customizedProduct: {
+            components: [],
+            slots: []
+        }
+    }
+    const payload = {
+        component: {
+            designation: "Drawer",
+            hasComponents: false,
+            id: 1,
+            mandatory: true,
+            model: "drawer.fbx",
+            reference: "#666",
+            slot: "1",
+            supportsSlots: true
+        }
+    }
+    mutations.set_slot_components(state, payload);
+    expect(state.customizedProduct.components).toHaveLength(0);
+}
+
+function ensureSetCustomizedProductComponentInitializesEmptyArrayIfPayloadIsNull() {
+    const state = {
+        customizedProduct: {
+            slots: [{
+                components: [],
+                idSlot: 1,
+                width: 100,
+                height: 100,
+                depth: 100,
+                unit: "dm"
+            }]
+        }
+    }
+    const payload = null;
+    mutations.set_slot_components(state, payload);
+    expect(state.customizedProduct.components).toHaveLength(0);
+}
+
+function ensureRemoveCustomizedProductComponentUpdatesStateCorrectly() {
+    const state = {
+        canvasControls: {
+            componentToRemove: {}
+        },
+        customizedProduct: {
+            components: [],
+            slots: [{
+                components: [],
+                idSlot: 1,
+                width: 100,
+                height: 100,
+                depth: 100,
+                unit: "dm"
+            }]
+        }
+    }
+    const payload = {
+        component: {
+            designation: "Drawer",
+            hasComponents: false,
+            id: 1,
+            mandatory: true,
+            model: "drawer.fbx",
+            reference: "#666",
+            slot: "1",
+            supportsSlots: true
+        }
+    }
+    mutations.set_slot_components(state, payload);
+    mutations.remove_slot_component(state, payload);
+    expect(state.customizedProduct.components).toHaveLength(0);
+}
+
+function ensureActivatingClosetMovementFlagUpdatesStateCorrectly() {
+    const state = {
+        canvasControls: {
+            canMoveCloset: false
+        }
+    };
+    mutations.activate_can_move_closet(state);
+    expect(state.canvasControls.canMoveCloset).toBeTruthy();
+}
+
+function ensureDeactivatingClosetMovementFlagUpdatesStateCorrectly() {
+    const state = {
+        canvasControls: {
+            canMoveCloset: true
+        }
+    };
+    mutations.deactivate_can_move_closet(state);
+    expect(state.canvasControls.canMoveCloset).toBeFalsy();
+}
+
+function ensureActivatingSlotsMovementFlagUpdatesStateCorrectly() {
+    const state = {
+        canvasControls: {
+            canMoveSlots: false
+        }
+    };
+    mutations.activate_can_move_slots(state);
+    expect(state.canvasControls.canMoveSlots).toBeTruthy();
+}
+
+function ensureDeactivatingSlotsMovementFlagUpdatesStateCorrectly() {
+    const state = {
+        canvasControls: {
+            canMoveSlots: true
+        }
+    };
+    mutations.deactivate_can_move_slots(state);
+    expect(state.canvasControls.canMoveSlots).toBeFalsy();
+}
+
+function ensureActivatingComponentsMovementFlagUpdatesStateCorrectly() {
+    const state = {
+        canvasControls: {
+            canMoveComponents: false
+        }
+    };
+    mutations.activate_can_move_components(state);
+    expect(state.canvasControls.canMoveComponents).toBeTruthy();
+}
+
+function ensureDeactivatingComponentsMovementFlagUpdatesStateCorrectly() {
+    const state = {
+        canvasControls: {
+            canMoveComponents: true
+        }
+    };
+    mutations.deactivate_can_move_components(state);
+    expect(state.canvasControls.canMoveComponents).toBeFalsy();
+}
+
+function ensureSetResizeFactorDimensionsUpdatesStateCorrectly() {
+    const state = {
+        resizeFactorDimensions: {}
+    };
+    const payload = {
+        width: "2",
+        height: "2",
+        depth: "2"
+    };
+    mutations.set_resize_factor_dimensions(state, payload);
+    expect(state.resizeFactorDimensions).toEqual(payload);
+}
+
+function ensureSetResizeFactorDimensionsInitializesAsEmptyArrayIfPayloadIsNull() {
+    const state = {};
+    const payload = null;
+    mutations.set_resize_factor_dimensions(state, payload);
+    expect(state.resizeFactorDimensions).toHaveLength(0);
+}
+
+function ensureSetResizeVectorGlobalUpdatesStateCorrectly() {
+    const state = {
+        resizeVectorGlobal: {}
+    };
+    const payload = {
+        width: "2",
+        height: "2",
+        depth: "2"
+    };
+    mutations.set_resize_vector_global(state, payload);
+    expect(state.resizeVectorGlobal).toEqual(payload);
+}
+
+function ensureSetResizeVectorGlobalInitializesAsEmptyArrayIfPayloadIsNull() {
+    const state = {
+        resizeVectorGlobal: {}
+    };
+    const payload = null;
+    mutations.set_resize_vector_global(state, payload);
+    expect(state.resizeVectorGlobal).toHaveLength(0);
 }

@@ -157,7 +157,7 @@
     /*stay in place*/
     z-index: 1;
     /*stay on top*/
-    top: 15%;
+    top: 20%;
     /*Display from top left corner*/
     left: 0;
     overflow-x: hidden;

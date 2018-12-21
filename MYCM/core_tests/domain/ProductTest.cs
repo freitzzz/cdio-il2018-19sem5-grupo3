@@ -672,7 +672,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Product nullComplementaryProduct = null;
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action addRestrictionToNullProductAction = () => product.addComplementaryProductRestriction(nullComplementaryProduct, restriction);
             Assert.Throws<ArgumentNullException>(addRestrictionToNullProductAction);
@@ -702,7 +702,7 @@ namespace core_tests.domain
 
             Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
-            Restriction restriction = new Restriction("I'm restricting things, here!");
+            Restriction restriction = new Restriction("I'm restricting things, here!", new SameMaterialAndFinishAlgorithm());
 
             Action addNullRestrictionToProductAction = () => product.addComplementaryProductRestriction(product, restriction);
 
@@ -716,7 +716,7 @@ namespace core_tests.domain
 
             Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
-            Restriction restriction = new Restriction("I'm restricting things, here!");
+            Restriction restriction = new Restriction("I'm restricting things, here!", new SameMaterialAndFinishAlgorithm());
 
             product.addComplementaryProduct(complementaryProduct);
 
@@ -732,7 +732,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Measurement measurement = null;
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action addRestrictionToNullMeasurement = () => product.addMeasurementRestriction(measurement, restriction);
 
@@ -762,7 +762,7 @@ namespace core_tests.domain
             Dimension depthDimension = new DiscreteDimensionInterval(new List<double>() { 20, 30, 35 });
 
             Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action addRestrictionToNotAddedMeasurementAction = () => product.addMeasurementRestriction(measurement, restriction);
 
@@ -775,7 +775,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Measurement measurement = buildValidMeasurement();
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action addRestrictionToMeasurementAction = () => product.addMeasurementRestriction(measurement, restriction);
             Exception exception = Record.Exception(addRestrictionToMeasurementAction);
@@ -788,7 +788,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Material material = null;
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action addRestrictionToNullMaterialAction = () => product.addMaterialRestriction(material, restriction);
 
@@ -817,7 +817,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Really Really Red", 255, 0, 0, 0);
             Material material = new Material("#154", "Stained Wood", "stainedwood.jpg", new List<Color>() { color }, new List<Finish>() { finish });
 
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action addRestrictionToNotAddedMaterial = () => product.addMaterialRestriction(material, restriction);
             Assert.Throws<ArgumentException>(addRestrictionToNotAddedMaterial);
@@ -829,7 +829,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Material material = buildValidMaterial();
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action addRestrictionToMaterialAction = () => product.addMaterialRestriction(material, restriction);
 
@@ -1308,7 +1308,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Measurement measurement = null;
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action removeRestrictionFromNullMeasurementAction = () => product.removeMeasurementRestriction(measurement, restriction);
 
@@ -1338,7 +1338,7 @@ namespace core_tests.domain
             Dimension depthDimension = new DiscreteDimensionInterval(new List<double>() { 20, 30, 35 });
 
             Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action removeRestrictionFromNotAddedMeasurementAction = () => product.removeMeasurementRestriction(measurement, restriction);
 
@@ -1351,7 +1351,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Measurement measurement = buildValidMeasurement();
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action removeRestrictionFromValidMeasurementAction = () => product.removeMeasurementRestriction(measurement, restriction);
 
@@ -1364,7 +1364,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Measurement measurement = buildValidMeasurement();
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             product.addMeasurementRestriction(measurement, restriction);
 
@@ -1380,7 +1380,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Material material = null;
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action removeRestrictionFromNullMaterialAction = () => product.removeMaterialRestriction(material, restriction);
 
@@ -1409,7 +1409,7 @@ namespace core_tests.domain
             Color color = Color.valueOf("Really Really Red", 255, 0, 0, 0);
             Material material = new Material("#154", "Stained Wood", "stainedwood.jpg", new List<Color>() { color }, new List<Finish>() { finish });
 
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action removeRestrictionFromNotAddedMaterialAction = () => product.removeMaterialRestriction(material, restriction);
 
@@ -1422,7 +1422,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Material material = buildValidMaterial();
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action removeNotAddedRestrictionAction = () => product.removeMaterialRestriction(material, restriction);
 
@@ -1435,7 +1435,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Material material = buildValidMaterial();
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             product.addMaterialRestriction(material, restriction);
 
@@ -1451,7 +1451,7 @@ namespace core_tests.domain
             Product product = buildValidSimpleProduct();
 
             Product complementaryProduct = null;
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action removeRestrictionFromNullComplementaryProductAction = () => product.removeComplementaryProductRestriction(complementaryProduct, restriction);
 
@@ -1483,7 +1483,7 @@ namespace core_tests.domain
             Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }); ;
 
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action removeRestrictionFromNotAddedComplementaryProductAction = () => product.removeComplementaryProductRestriction(complementaryProduct, restriction);
 
@@ -1500,7 +1500,7 @@ namespace core_tests.domain
 
             product.addComplementaryProduct(complementaryProduct);
 
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             Action removeNotAddedRestrictionAction = () => product.removeComplementaryProductRestriction(complementaryProduct, restriction);
 
@@ -1517,7 +1517,7 @@ namespace core_tests.domain
 
             product.addComplementaryProduct(complementaryProduct);
 
-            Restriction restriction = new Restriction("This is a restriction");
+            Restriction restriction = new Restriction("This is a restriction", new SameMaterialAndFinishAlgorithm());
 
             product.addComplementaryProductRestriction(complementaryProduct, restriction);
 

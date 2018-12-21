@@ -2,6 +2,20 @@ import * as types from './mutation-types'
 import store from '.';
 
 export const mutations = {
+  [types.SET_RESIZE_VECTOR_GLOBAL](state,payload){
+    if(payload){
+      state.resizeVectorGlobal = payload;
+    }else{
+      state.resizeVectorGlobal =[];
+    }
+  },
+
+  [types.SET_RESIZE_FACTOR_DIMENSIONS](state,payload){
+    if (payload) {
+      state.resizeFactorDimensions=payload;
+    } else { state.resizeFactorDimensions = []; }
+
+  },
 
   /**
    * Saves the retrieved product from MYCM into the state's product
@@ -10,6 +24,22 @@ export const mutations = {
    */
   [types.INIT_PRODUCT](state, payload) {
     state.product = payload.product;
+  },
+  /**
+   * Saves the id of customized product 
+   * @param {*} state The store's state
+   * @param {*} payload Received payload with the id
+   */
+  [types.SET_ID_CUSTOMIZED_PRODUCT](state, payload) {
+    state.customizedProduct.id = payload;
+  },
+  /**
+   * Saves the id of slot 
+   * @param {*} state The store's state
+   * @param {*} payload Received payload with the id
+   */
+  [types.SET_ID_SLOT](state, payload) {
+    state.customizedProduct.slots[payload.position].idSlot = payload.idSlot;
   },
 
   /**
@@ -31,29 +61,50 @@ export const mutations = {
    * @param {*} state The store's state
    * @param {*} payload Payload with the new slot width 
    */
-  [types.SET_SLOT_DIMENSIONS](state, payload) {
+  [types.ADD_SLOT_DIMENSIONS](state, payload) {
     if (payload) {
       state.customizedProduct.slots.push({
         idSlot: payload.idSlot,
         depth: payload.depth,
         width: payload.width,
         height: payload.height,
-        unit: payload.unit,
-        components: []
+        unit: payload.unit
       })
     } else { state.customizedProduct.slots = []; }
   },
+  /**
+   * Changes the states's customized product's material 
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the new material 
+  */
+  [types.SET_CUSTOMIZED_PRODUCT_MATERIAL](state, payload) {
+    state.customizedProduct.customizedMaterial.id = payload.id;
+    state.customizedProduct.customizedMaterial.reference = payload.reference;
+    state.customizedProduct.customizedMaterial.designation = payload.designation;
+    state.customizedProduct.customizedMaterial.image = payload.image;
+  },
 
   /**
-     * Changes the states's customized product's material 
-     * @param {*} state The store's state
-     * @param {*} payload Payload with the new material 
-     */
-  [types.SET_CUSTOMIZED_PRODUCT_MATERIAL](state, payload) {
-    state.customizedProduct.customizedMaterial.id = payload.id,
-      state.customizedProduct.customizedMaterial.reference = payload.reference,
-      state.customizedProduct.customizedMaterial.designation = payload.designation,
-      state.customizedProduct.customizedMaterial.image = payload.image
+   * Changes the states's customized product's color 
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the new color 
+   */
+  [types.SET_CUSTOMIZED_PRODUCT_COLOR](state, payload){
+    state.customizedProduct.customizedMaterial.color.name = payload.name;
+    state.customizedProduct.customizedMaterial.color.red = payload.red;
+    state.customizedProduct.customizedMaterial.color.green = payload.green;
+    state.customizedProduct.customizedMaterial.color.blue = payload.blue;
+    state.customizedProduct.customizedMaterial.color.alpha = payload.alpha;
+  },
+
+  /**
+   * Changes the states's customized product's finish 
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the new finish 
+   */
+  [types.SET_CUSTOMIZED_PRODUCT_FINISH](state, payload){
+    state.customizedProduct.customizedMaterial.finish.description = payload.description;
+    state.customizedProduct.customizedMaterial.finish.shininess = payload.shininess;
   },
 
   /**

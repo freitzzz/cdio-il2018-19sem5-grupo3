@@ -4,6 +4,8 @@
     <customizer-side-bar @changeStage="changeProgressBarStage"></customizer-side-bar>
     <canvas
       ref="threeCanvas"
+      @drop="drop"
+      @dragover="allowDrop"
       @mouseup="onMouseUp"
       @mousedown="onMouseDown"
       @mousemove="onMouseMove"
@@ -57,6 +59,12 @@ export default {
     applyMaterial(){
       return Store.getters.customizedMaterial;
     },
+    applyColor(){
+      return Store.getters.customizedMaterialColor;
+    },
+    applyFinish(){
+      return Store.getters.customizedMaterialFinish;
+    },
     canMoveCloset(){
       return Store.getters.canMoveCloset;
     },
@@ -65,6 +73,9 @@ export default {
     },
     canMoveComponents(){
       return Store.getters.canMoveComponents;
+    },
+    populateWebsiteDimensions(){
+      return Store.getters.resizeFactorDimensions;
     }
   },
   components: {
@@ -72,8 +83,15 @@ export default {
     CustomizerProgressBar
   },
   watch: {
+    populateWebsiteDimensions : function(newValue){
+      this.productRenderer.populateWebsiteDimensions(
+        newValue
+      );
+
+    },
     slots: function(newValue, oldValue) {
       if(newValue.length > 0){
+        this.productRenderer.removeAllSlots();
         this.productRenderer.addSlotNumbered(newValue);
       } else {
         this.productRenderer.removeAllSlots();
@@ -83,6 +101,7 @@ export default {
       this.productRenderer.showCloset();
     },
     updateDimensions: function() {
+ 
       this.productRenderer.changeClosetDimensions(
         Store.getters.customizedProductDimensions.width,
         Store.getters.customizedProductDimensions.height,
@@ -101,6 +120,12 @@ export default {
     },
     applyMaterial: function(newValue) {
       this.productRenderer.applyTexture("./src/assets/materials/" + newValue);
+    },
+    applyColor: function(newValue){ 
+      this.productRenderer.applyColor(newValue);
+    },
+    applyFinish: function(newValue){
+      this.productRenderer.applyFinish(newValue);
     },
     canMoveCloset(newValue){
       this.productRenderer.canMoveCloset = newValue;
@@ -138,6 +163,14 @@ export default {
       alert("keydown");
       this.productRenderer.onKeyDown(event);
       event.preventDefault();
+    },
+    drop: function(event){
+      event.preventDefault();
+      this.productRenderer.renderDroppedComponent(event, this.$refs.threeCanvas);
+    },
+    allowDrop: function(event){
+      event.preventDefault();
+
     },
     changeProgressBarStage: function(currentPanelIndex){
       this.currentStage = currentPanelIndex;

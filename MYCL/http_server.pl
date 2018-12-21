@@ -10,6 +10,8 @@
 :- http_handler('/mycl/api/travel',compute_algorithm,[time_limit(0)]). % Endpoint to compute a city circuit
 :- http_handler('/mycl/api/factories',shortest_factory,[time_limit(0)]). % Endpoint to compute the shortest factory
 :- http_handler('/mycl/api/packing',bin_packing,[time_limit(0)]). % Endpoint to compute the bin packing
+:- http_handler('/mycl/api/delivery',delivery_plan,[time_limit(0)]). %Endpoint to compute a delivery plan 
+
 
 % Loads required knowledge bases
 carregar:-['intersept.pl'],['cdio-tsp.pl'],['parameters.pl'],load_computations,load_algorithms,load_json_objects.
@@ -18,12 +20,14 @@ carregar:-['intersept.pl'],['cdio-tsp.pl'],['parameters.pl'],load_computations,l
 load_json_objects:-['json_algorithms.pl'].
 
 % Loads required algorithms
-load_algorithms:- ['algorithms/branch_and_bound.pl'],['algorithms/greedy.pl'],['algorithms/2opt.pl'],['algorithms/genetics.pl'],load_bin_packing_algorithms.
+load_algorithms:- ['algorithms/branch_and_bound.pl'],['algorithms/greedy.pl'],['algorithms/2opt.pl'],['algorithms/genetics.pl'],load_bin_packing_algorithms,load_delivery_plan.
 
 % Loads computation predicates
 load_computations:- ['algorithm_computation.pl'],['location_computation.pl'].
 
 load_bin_packing_algorithms:- ['algorithms/binpacking/guillotine_packing.pl'],['algorithms/binpacking/simulated_annealing.pl'].
+
+load_delivery_plan:-['algorithms/DeliveryPlan.pl'],['algorithms/tsp/cdio-tsp.pl','algorithms/tsp/intersept.pl','algorithms/tsp/parameters.pl'],['algorithms/tsp/branch_and_bound.pl'],['algorithms/tsp/greedy.pl'],['algorithms/tsp/2opt.pl'],['algorithms/tsp/genetics.pl'],['algorithms/packing/guillotine_packing.pl'],['algorithms/packing/simulated_annealing.pl'].
 
 % Starts the server
 server(Port) :-						% (2)
@@ -89,6 +93,8 @@ shortest_factory(Request):-
 
 
 
+% ######### BIN PACKING REQUEST ############
+
 
 % Processes the bin packing algorithm computation request
 bin_packing(Request):-
@@ -108,6 +114,36 @@ bin_packing(Request):-
 bin_packing(_Request):-
         prolog_to_json(message_object("An error occurd while processing the algorithm"),Message),
         reply_json(Message,[status(400)]).
+
+
+
+
+% ############ DELIVERY PLAN ############
+
+
+% Processes the delivery plan computation request
+delivery_plan(Request):-
+        http_read_json(Request,JSONIn,[json_object(delivery_plan_request)]),
+        json_to_prolog(JSONIn,DPR),
+        DPR=delivery_plan_request(CitiesToTravel,ProductionFactory,Orders,Trucks),
+        json_cities_to_tuples(CitiesToTravel,CitiesToTravelTuples),
+        delivery_plan_production_factory_request(FId,FName,FLatitude,FLongitude,FCityId)=ProductionFactory,
+        json_orders_to_tuples(Orders,OrdersTuples),
+        json_trucks_to_tuples(Trucks,TrucksTuples),
+        compute_delivery_plan(1,CitiesToTravelTuples,(FId,FName,FLatitude,FLongitude,FCityId),OrdersTuples,TrucksTuples,TravelPlan,TrucksPlan),
+        truck_route_to_json_object(TravelPlan,TravelPlanJSON),
+        truck_fill_to_json_object(TrucksPlan,TrucksPlanJSON),
+        prolog_to_json(delivery_plan_response(TrucksPlanJSON,TravelPlanJSON),DPRS),
+        reply_json(DPRS),
+        !.
+
+
+% Replies 400 Bad Request if an error occurs while processing the request
+delivery_plan(_Request):-
+        prolog_to_json(message_object("An error occurd while processing the algorithm"),Message),
+        reply_json(Message,[status(400)]).
+
+
 
 
 % Checks the query parameters that can be extracted from the available algorithms URI
@@ -148,3 +184,75 @@ package_tuples_to_json_packages([],[]):-!.
 package_tuples_to_json_packages([(ID,PW,PH,PD,PPD,PPI)|T],LPJ):-
         package_tuples_to_json_packages(T,LPJ1),
         append([package_response_object(ID,PW,PH,PD,PPI,PPD)],LPJ1,LPJ).
+
+
+
+
+
+
+
+% Parses a list of json city objects into a list of city tuples
+json_cities_to_tuples([],[]):-!.
+
+json_cities_to_tuples([H|T],TuplesCities):-
+        json_cities_to_tuples(T,TuplesCities1),
+        delivery_plan_truck_route_response(Id,Name,Latitude,Longitude)=H,
+        append([(Id,Name,Latitude,Longitude)],TuplesCities1,TuplesCities).
+
+
+% Parses a list of json orders objects into a list of order tuples
+json_orders_to_tuples([],[]):-!.
+
+json_orders_to_tuples([H|T],TuplesOrders):-
+        json_orders_to_tuples(T,TuplesOrders1),
+        delivery_plan_order_request(Id,Packages,CityId,DeliveryDate)=H,
+        json_packages_to_tuples(Packages,PackagesTuples),
+        append([(Id,PackagesTuples,CityId,DeliveryDate)],TuplesOrders1,TuplesOrders).
+
+
+% Parses a list of json packages objects into a list of packages tuples
+json_packages_to_tuples([],[]):-!.
+
+json_packages_to_tuples([H|T],TuplesPackages):-
+        json_packages_to_tuples(T,TuplesPackages1),
+        delivery_plan_truck_request(Id,Width,Height,Depth,Weight)=H,
+        append([(Id,Width,Height,Depth,Weight)],TuplesPackages1,TuplesPackages).
+
+
+
+% Parses a list of json trucks objects into a list of trucks tuples
+json_trucks_to_tuples([],[]):-!.
+
+json_trucks_to_tuples([H|T],TuplesTrucks):-
+        json_trucks_to_tuples(T,TuplesTrucks1),
+        delivery_plan_truck_request(Id,Width,Height,Depth,Weight)=H,
+        append([(Id,Width,Height,Depth,Weight)],TuplesTrucks1,TuplesTrucks).
+        %append([(Width,Height,Depth,Weight)],TuplesTrucks1,TuplesTrucks).
+
+
+
+
+truck_fill_to_json_object([],[]):-!.
+
+truck_fill_to_json_object([H|T],TruckFillJSONObject):-
+        (Id,Width,Depth,Height,Weight,MaxOccupation,ExpeditionDate,Packages)=H,
+        package_to_json_object(Packages,PackagesJSONObjects),
+        truck_fill_to_json_object(T,TruckFillJSONObject1),
+        append([delivery_plan_truck_response(Id,Width,Depth,Height,Weight,MaxOccupation,ExpeditionDate,PackagesJSONObjects)],TruckFillJSONObject1,TruckFillJSONObject).
+
+
+
+truck_route_to_json_object([],[]):-!.
+
+truck_route_to_json_object([H|T],TruckRouteJSONObject):-
+        (Id,Name,Latitude,Longitude)=H,
+        truck_route_to_json_object(T,TruckRouteJSONObject1),
+        append([delivery_plan_truck_route_response(Id,Name,Latitude,Longitude)],TruckRouteJSONObject1,TruckRouteJSONObject).
+
+
+package_to_json_object([],[]):-!.
+
+package_to_json_object([H|T],PackagesJSONObjects):-
+        (Id,X,Y,Z)=H,
+        package_to_json_object(T,PackagesJSONObjects1),
+        append([delivery_plan_package_response(Id,X,Y,Z)],PackagesJSONObjects1,PackagesJSONObjects).
