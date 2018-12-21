@@ -536,6 +536,7 @@
           });
       },
       drawRecommendedSlots() {
+        store.dispatch(ADD_SLOT_DIMENSIONS)
         var widthCloset = 6000; /*store.state.customizedProduct.customizedDimensions.width;*/ ///404.5;
         var depthCloset = 2500; /*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
         var heightCloset = 5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;
