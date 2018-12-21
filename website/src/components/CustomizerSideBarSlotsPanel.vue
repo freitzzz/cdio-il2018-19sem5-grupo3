@@ -17,7 +17,7 @@
       <i class="btn btn-primary material-icons" @click="removeLine(index)">remove</i>
       <i class="btn btn-primary material-icons" @click="addLine">add</i>
       <div class="slidersSection">
-        <span v-for="n in 1" :key="n">
+        <span v-for="n in (minNumberSlots - 1 )" :key="n">
           <vue-slider
             class="slidersSection" 
             :min="minSizeSlot"
@@ -28,7 +28,7 @@
           ></vue-slider>
         </span>
       </div>
-      <div v-for="(line, index) in lines.slice(0,5)" v-bind:key="index">
+      <div v-for="(line, index) in lines.slice(0, maxNumberSlots)" v-bind:key="index">
           <vue-slider
             class="slidersSection"
             :min="minSizeSlot"
@@ -88,6 +88,16 @@ export default {
     minSizeSlot(){
        return store.getters.minSlotWidth
     },
+    minNumberSlots(){
+      var number = parseInt(/*store.state.customizedProduct.customizedDimensions.width*/6000 / store.getters.maxSlotWidth)
+      alert(number);
+      return number;
+    },
+    maxNumberSlots(){
+      var number = parseInt(/*store.state.customizedProduct.customizedDimensions.width*/6000 / store.getters.minSlotWidth)
+      alert(number);
+      return number;
+    },
     displaySliders() {
       return this.picked === "customizedSlots";
     }
@@ -136,7 +146,7 @@ export default {
             height: store.state.customizedProduct.slots[a].height,
                     depth: store.state.customizedProduct.slots[a].depth,
                     width: store.state.customizedProduct.slots[a].width / reasonW,
-                    unit: store.state.customizedProduct.customizedDimensions.unit});
+                    unit: "mm" });// store.state.customizedProduct.customizedDimensions.unit
         }
       }
       let slotsToPost1 = [];
@@ -220,7 +230,7 @@ export default {
               var depthCloset = 2500; //store.state.customizedProduct.customizedDimensions.depth;
               var heightCloset = 5000; //store.state.customizedProduct.customizedDimensions.height;
               
-              var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
+              var unitCloset = "mm"//store.state.customizedProduct.customizedDimensions.unit;
               var unitSlots = store.getters.productSlotWidths.unit;
 
              /*  if(unitCloset != unitSlots){
@@ -269,7 +279,7 @@ export default {
               var depthCloset = 2500; //store.state.customizedProduct.customizedDimensions.depth;
               var heightCloset = 5000; //store.state.customizedProduct.customizedDimensions.height;
               
-              var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
+              var unitCloset = "mm"//store.state.customizedProduct.customizedDimensions.unit;
               var unitSlots = store.getters.productSlotWidths.unit;
 
              /*  if(unitCloset != unitSlots){
