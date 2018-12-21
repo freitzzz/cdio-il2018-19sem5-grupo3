@@ -122,16 +122,17 @@ export default {
         slider: null
       });
       this.addSlot(this.lines.length);
-      
     },
      addSlot(index){
-
-       if(index <= this.maxNumberSlots)
+      if(index <= this.maxNumberSlots)
       this.drawOneSlot();
-     
     },
     removeLine(lineId) {
-      if (!this.blockRemoval) this.lines.splice(lineId, 1);
+      if (!this.blockRemoval) this.lines.splice(lineId, 1); //this.removeSlot(this.lines.length);
+    },
+    removeSlot(index){
+      if(index >= this.minNumberSlots)
+      this.removeOneSlot();
     },
     nextPanel(){
       this.postSlots().then(() => {
@@ -359,6 +360,10 @@ export default {
                     width: min,
                     unit: unitCloset});
               
+    },
+    removeOneSlot(){
+      store.dispatch(ADD_SLOT_DIMENSIONS, {removeSlot: 1});
+      this.slotsToPost.pop();
     },
     updateWidthSlot(){
        var widthCloset = 6000; //store.state.customizedProduct.customizedDimensions.width;

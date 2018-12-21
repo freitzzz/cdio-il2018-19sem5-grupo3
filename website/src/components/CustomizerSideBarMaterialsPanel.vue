@@ -7,7 +7,7 @@
       </div>
       <div class="text-entry">Choose material to add:</div>
       <div class="padding-div">
-        <div class="scrollable-div" style="height: 400px; width: 100%;">
+        <div class="scrollable-div" style="height: 300px; width: 100%;">
            <a v-if="getMaterialInformationOK" class="sidepanel">
               <a v-if="hasFinishes" class="sidepanel-entry" @click="changeShowFinishes">
                 <p><i class="material-icons md-12 md-blue">brush</i> <b>Finishes <i class="fa fa-caret-down"></i></b></p>
