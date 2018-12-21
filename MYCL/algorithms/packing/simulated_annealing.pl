@@ -38,7 +38,6 @@ while(T, CPO, Container, PL, RPL, RPO, MC, RC) :-
             NC=MC
         )
     ),
-    nl,
     %write("PO intermédia "),
     %write(NCPO),
     T1 is T*0.85,              %Calculate new temperature value
@@ -118,7 +117,8 @@ get_list([], L, L).
 
 get_list(MC, L, RL) :-
     MC=[((P, TL), SL)|FL],
-    append([P], L, NL),
+    P=(ID,X,Y,Z,_,_,WE,PID),
+    append([(ID,X,Y,Z,WE,PID)], L, NL),
     get_list(TL, NL, NNL),
     get_list(SL, NNL, NNNL),
     get_list(FL, NNNL, RL).

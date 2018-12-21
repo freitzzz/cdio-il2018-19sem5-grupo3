@@ -115,6 +115,26 @@
         delivery_plan_request(cities:list,productionFactory:delivery_plan_production_factory_request/5,orders:list,trucks:list).
 
 
+
+% ########### RESPONSES ###########
+
+% JSON Object with the truck information used in the Delivery Plan response body
+:- json_object
+        delivery_plan_truck_response(id:number,width:number,height:number,depth:number,weight:number,maxoccupation:number,expeditionData:atom,packages:list).
+
+% JSON Object with the truck information used in the Delivery Plan response body
+:- json_object
+        delivery_plan_package_response(id:number,x:number,y:number,z:number).
+
+% JSON Object with the truck route information used in the Delivery Plan response body
+:- json_object
+        delivery_plan_truck_route_response(id:number,name:atom,latitude:number,longitude:number).
+
+% JSON Object with the Delivery Plan response body
+:- json_object
+        delivery_plan_response(trucks:list,path:list).
+
+
 % ###################################                 #########################################
 
 

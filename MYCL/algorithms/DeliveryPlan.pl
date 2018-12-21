@@ -160,10 +160,11 @@ fill_camioes(_,[],[]):-!.
 
 
 fill_camioes([H|T],Pacotes,FilledCamioes):-
-    simulated_annealing(H,Pacotes,PO,RL,NRL),
+    (TruckId,TruckWidth,TruckHeight,TruckDepth,TruckWeight)=H,
+    simulated_annealing((TruckWidth,TruckHeight,TruckDepth,TruckWeight),Pacotes,PO,RL,NRL),
     remove_filled_packages(RL,Pacotes,NewPacotes),
     fill_camioes(T,NewPacotes,FilledCamioes1),
-    append([(PO,RL,NRL)],FilledCamioes1,FilledCamioes).
+    append([(H,PO,RL,NRL)],FilledCamioes1,FilledCamioes).
 
 
 % Removes already filled packages from the initial package list
@@ -232,8 +233,9 @@ plan(Cities,ProductionFactory,Orders,Trucks,TrucksRoute,TrucksPlan,1):-
     caminho_as_prioridades(L,LP), % 4) Inverter o caminho da rota de modo a atribuir uma prioridade a cada uma das cidades
     associar_prioridade_pacotes(LP,LPP), % 5) Atribuir as prioridades a pacotes 
     fill_camioes(Trucks,LPP,FilledCamioes),
-    TrucksRoute=L,
-    TrucksPlan=FilledCamioes,
+    truck_route_to_pretty_tuples(L,TrucksRoute),
+    filled_trucks_to_pretty_tuples(FilledCamioes,TrucksPlan),
+    retractFacts,
     !. % 6) Correr o algoritmo de empacotamento (C/ Simulated Annealing)
 
 
@@ -243,6 +245,8 @@ plan(Initial,FilledCamioes,2):-
     caminho_as_prioridades(L,LP), % 4) Inverter o caminho da rota de modo a atribuir uma prioridade a cada uma das cidades
     associar_prioridade_pacotes(LP,LPP), % 5) Atribuir as prioridades a pacotes 
     fill_camioes([(200,200,200,200),(200,200,200,200),(200,200,200,200)],LPP,FilledCamioes),!. % 6) Correr o algoritmo de empacotamento (C/ Simulated Annealing)
+
+% (ID,X,Y,Z,WE,PID)
 
 % Plans a delivery trip using Branch & Bound heuristic
 plan(Initial,FilledCamioes,3):-
@@ -264,10 +268,65 @@ plan(Initial,FilledCamioes,4):-
 %encomenda(Id,CidadeId,Data).
 %caixa(Id,EncomendaId,Width,Height,Depth,Weight).
 
-Cities,ProductionFactory,Orders,Trucks,TrucksRoute,TrucksPlan,
+
+
 plan(_,_,_,_,_,_,_):-
-    retractall(city/4),
-    retractall(cidade/4),
-    retractall(encomenda/3),
-    retractall(caixa/6),
-    retractall(city/4).
+    retractFacts.
+    
+
+
+retractFacts:-
+    abolish(city/4),
+    abolish(cidade/4),
+    abolish(encomenda/3),
+    abolish(caixa/6),
+    abolish(city/4).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% Parses a list of filled trucks into a list of filled trucks as tuples
+
+filled_trucks_to_pretty_tuples([],[]):-!.
+
+filled_trucks_to_pretty_tuples([H|T],FilledTrucksTuples):-
+    ((TruckId,TruckWidth,TruckHeight,TruckDepth,TruckWeight),PO,RL,_)=H,
+    filled_packages_to_pretty_tuples(RL,FilledPackagesTuples),
+    filled_trucks_to_pretty_tuples(T,FilledTrucksTuples1),
+    get_time(X),stamp_date_time(X,Date,'UTC'),format_time(atom(RealDate),'%FT%T%z',Date,posix),
+    append([(TruckId,TruckWidth,TruckHeight,TruckDepth,TruckWeight,PO,RealDate,FilledPackagesTuples)],FilledTrucksTuples1,FilledTrucksTuples).
+
+
+
+% Parses a list of filled packages into a list of filled packages as tuples
+
+filled_packages_to_pretty_tuples([],[]):-!.
+
+filled_packages_to_pretty_tuples([H|T],FilledPackagesTuples):-
+    (PID,PX,PY,PZ,_,_)=H,
+    filled_packages_to_pretty_tuples(T,FilledPackagesTuples1),
+    append([(PID,PX,PY,PZ)],FilledPackagesTuples1,FilledPackagesTuples).
+
+
+
+
+% Parses a truck route into pretty tuples
+
+truck_route_to_pretty_tuples([],[]):-!.
+
+truck_route_to_pretty_tuples([H|T],TruckRouteTuples):-
+    cidade(CidadeId,H,CidadeLatitude,CidadeLongitude),
+    truck_route_to_pretty_tuples(T,TruckRouteTuples1),
+    append([(CidadeId,H,CidadeLatitude,CidadeLongitude)],TruckRouteTuples1,TruckRouteTuples).
