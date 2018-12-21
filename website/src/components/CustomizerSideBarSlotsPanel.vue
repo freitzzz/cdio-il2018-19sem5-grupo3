@@ -13,7 +13,6 @@
       </label>
     </div>
     <div v-if="displaySliders" class="slidersSection">
-      <input  class="slidersSection" size = 13  type="text" :placeholder="freeSpaceValue" id="freeSpace" v-model="freeSpace" disabled>
       <i class="btn btn-primary material-icons" @click="removeLine(index)">remove</i>
       <i class="btn btn-primary material-icons" @click="addLine">add</i>
       <div class="slidersSection">
