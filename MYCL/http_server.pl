@@ -131,9 +131,10 @@ delivery_plan(Request):-
         json_orders_to_tuples(Orders,OrdersTuples),
         json_trucks_to_tuples(Trucks,TrucksTuples),
         compute_delivery_plan(1,CitiesToTravelTuples,(FId,FName,FLatitude,FLongitude,FCityId),OrdersTuples,TrucksTuples,TravelPlan,TrucksPlan),
-        ContainerObject=container_object(CWidth,CHeight,CDepth,CWeight),
-        
-        reply_json(""),
+        truck_route_to_json_object(TravelPlan,TravelPlanJSON),
+        truck_fill_to_json_object(TrucksPlan,TrucksPlanJSON),
+        prolog_to_json(delivery_plan_response(TrucksPlanJSON,TravelPlanJSON),DPRS),
+        reply_json(DPRS),
         !.
 
 
@@ -195,7 +196,7 @@ json_cities_to_tuples([],[]):-!.
 
 json_cities_to_tuples([H|T],TuplesCities):-
         json_cities_to_tuples(T,TuplesCities1),
-        delivery_plan_city_request(Id,Name,Latitude,Longitude)=H,
+        delivery_plan_truck_route_response(Id,Name,Latitude,Longitude)=H,
         append([(Id,Name,Latitude,Longitude)],TuplesCities1,TuplesCities).
 
 
@@ -225,5 +226,33 @@ json_trucks_to_tuples([],[]):-!.
 json_trucks_to_tuples([H|T],TuplesTrucks):-
         json_trucks_to_tuples(T,TuplesTrucks1),
         delivery_plan_truck_request(Id,Width,Height,Depth,Weight)=H,
-        %append([(Id,Width,Height,Depth,Weight)],TuplesTrucks1,TuplesTrucks).
-        append([(Width,Height,Depth,Weight)],TuplesTrucks1,TuplesTrucks).
+        append([(Id,Width,Height,Depth,Weight)],TuplesTrucks1,TuplesTrucks).
+        %append([(Width,Height,Depth,Weight)],TuplesTrucks1,TuplesTrucks).
+
+
+
+
+truck_fill_to_json_object([],[]):-!.
+
+truck_fill_to_json_object([H|T],TruckFillJSONObject):-
+        (Id,Width,Depth,Height,Weight,MaxOccupation,ExpeditionDate,Packages)=H,
+        package_to_json_object(Packages,PackagesJSONObjects),
+        truck_fill_to_json_object(T,TruckFillJSONObject1),
+        append([delivery_plan_truck_response(Id,Width,Depth,Height,Weight,MaxOccupation,ExpeditionDate,PackagesJSONObjects)],TruckFillJSONObject1,TruckFillJSONObject).
+
+
+
+truck_route_to_json_object([],[]):-!.
+
+truck_route_to_json_object([H|T],TruckRouteJSONObject):-
+        (Id,Name,Latitude,Longitude)=H,
+        truck_route_to_json_object(T,TruckRouteJSONObject1),
+        append([delivery_plan_truck_route_response(Id,Name,Latitude,Longitude)],TruckRouteJSONObject1,TruckRouteJSONObject).
+
+
+package_to_json_object([],[]):-!.
+
+package_to_json_object([H|T],PackagesJSONObjects):-
+        (Id,X,Y,Z)=H,
+        package_to_json_object(T,PackagesJSONObjects1),
+        append([delivery_plan_package_response(Id,X,Y,Z)],PackagesJSONObjects1,PackagesJSONObjects).
