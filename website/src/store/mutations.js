@@ -2,13 +2,19 @@ import * as types from './mutation-types'
 import store from '.';
 
 export const mutations = {
+  [types.SET_RESIZE_VECTOR_GLOBAL](state,payload){
+    if(payload){
+      state.resizeVectorGlobal = payload;
+    }else{
+      state.resizeVectorGlobal =[];
+    }
+  },
 
   [types.SET_RESIZE_FACTOR_DIMENSIONS](state,payload){
-    state.resizeFactorDimensions={
-      width: payload.width,
-      height: payload.height,
-      depth: payload.depth,
-    }
+    if (payload) {
+      state.resizeFactorDimensions=payload;
+    } else { state.resizeFactorDimensions = []; }
+
   },
 
   /**
@@ -26,6 +32,14 @@ export const mutations = {
    */
   [types.SET_ID_CUSTOMIZED_PRODUCT](state, payload) {
     state.customizedProduct.id = payload;
+  },
+  /**
+   * Saves the id of slot 
+   * @param {*} state The store's state
+   * @param {*} payload Received payload with the id
+   */
+  [types.SET_ID_SLOT](state, payload) {
+    state.customizedProduct.slots[payload.position].idSlot = payload.idSlot;
   },
 
   /**
@@ -47,7 +61,7 @@ export const mutations = {
    * @param {*} state The store's state
    * @param {*} payload Payload with the new slot width 
    */
-  [types.SET_SLOT_DIMENSIONS](state, payload) {
+  [types.ADD_SLOT_DIMENSIONS](state, payload) {
     if (payload) {
       state.customizedProduct.slots.push({
         idSlot: payload.idSlot,
@@ -58,7 +72,6 @@ export const mutations = {
       })
     } else { state.customizedProduct.slots = []; }
   },
-
   /**
    * Changes the states's customized product's material 
    * @param {*} state The store's state

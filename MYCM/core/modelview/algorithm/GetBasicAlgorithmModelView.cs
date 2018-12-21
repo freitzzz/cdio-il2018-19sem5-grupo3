@@ -2,21 +2,24 @@ using System;
 using System.Runtime.Serialization;
 using core.domain;
 
-namespace core.modelview.algorithm {
+namespace core.modelview.algorithm
+{
     /// <summary>
-    /// Basic algorithm information modelview
+    /// Class representing the ModelView used for retrieving basic informationf from an instance of Algorithm.
     /// </summary>
-    public class GetBasicAlgorithmModelView {
+    public class GetBasicAlgorithmModelView
+    {
         /// <summary>
-        /// Algorithm id
+        /// Algorithm's RestrictionAlgorithm enumerate member.
         /// </summary>
-        /// <value>gets and sets the value of the id</value>
-        [DataMember]
-        public RestrictionAlgorithm id { get; set; }
+        /// <value>Gets/Sets the RestrictionAlgorithm.</value>
+        [DataMember(Name = "id")]
+        public RestrictionAlgorithm algorithm { get; set; }
+
         /// <summary>
-        /// Name of the algorithm
+        /// Algorithm's name.
         /// </summary>
-        /// <value>gets and sets the value of the name</value>
+        /// <value>Gets/Sets the name.</value>
         [DataMember]
         public string name { get; set; }
     }

@@ -4,6 +4,8 @@
     <customizer-side-bar @changeStage="changeProgressBarStage"></customizer-side-bar>
     <canvas
       ref="threeCanvas"
+      @drop="drop"
+      @dragover="allowDrop"
       @mouseup="onMouseUp"
       @mousedown="onMouseDown"
       @mousemove="onMouseMove"
@@ -73,7 +75,7 @@ export default {
       return Store.getters.canMoveComponents;
     },
     populateWebsiteDimensions(){
-      return Store.getters.populateWebsiteDimensions;
+      return Store.getters.resizeFactorDimensions;
     }
   },
   components: {
@@ -81,12 +83,11 @@ export default {
     CustomizerProgressBar
   },
   watch: {
-    populateWebsiteDimensions : function(){
+    populateWebsiteDimensions : function(newValue){
       this.productRenderer.populateWebsiteDimensions(
-        store.getters.resizeFactorDimensions.width,
-        store.getters.resizeFactorDimensions.height,
-        store.getters.resizeFactorDimensions.depth
+        newValue
       );
+
     },
     slots: function(newValue, oldValue) {
       if(newValue.length > 0){
@@ -100,6 +101,7 @@ export default {
       this.productRenderer.showCloset();
     },
     updateDimensions: function() {
+ 
       this.productRenderer.changeClosetDimensions(
         Store.getters.customizedProductDimensions.width,
         Store.getters.customizedProductDimensions.height,
@@ -161,6 +163,14 @@ export default {
       alert("keydown");
       this.productRenderer.onKeyDown(event);
       event.preventDefault();
+    },
+    drop: function(event){
+      event.preventDefault();
+      this.productRenderer.renderDroppedComponent(event, this.$refs.threeCanvas);
+    },
+    allowDrop: function(event){
+      event.preventDefault();
+
     },
     changeProgressBarStage: function(currentPanelIndex){
       this.currentStage = currentPanelIndex;

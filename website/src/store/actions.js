@@ -1,6 +1,13 @@
 import * as types from './mutation-types'
 
 export const actions = {
+
+    /**
+     * Action used to commit the mutation SET_RESIZE_VECTOR_GLOBAL
+     */
+    [types.SET_RESIZE_VECTOR_GLOBAL]: ({ commit }, payload) => {
+        commit(types.SET_RESIZE_VECTOR_GLOBAL, payload)
+    },
     /**
      * Action used to commit the mutation SET_RESIZE_FACTOR_DIMENSIONS
      */
@@ -20,12 +27,18 @@ export const actions = {
     [types.SET_ID_CUSTOMIZED_PRODUCT]: ({ commit }, payload) => {
         commit(types.SET_ID_CUSTOMIZED_PRODUCT, payload)
     },
+    /**
+     * Action used to commit the mutation SET_ID_SLOT
+     */
+    [types.SET_ID_SLOT]: ({ commit }, payload) => {
+        commit(types.SET_ID_SLOT, payload)
+    },
 
     /**
      * Action used to commit the mutation SET_SLOT_WIDTH
      */
-    [types.SET_SLOT_DIMENSIONS]: ({ commit }, payload) => {
-        commit(types.SET_SLOT_DIMENSIONS, payload);
+    [types.ADD_SLOT_DIMENSIONS]: ({ commit }, payload) => {
+        commit(types.ADD_SLOT_DIMENSIONS, payload);
     },
 
     /**

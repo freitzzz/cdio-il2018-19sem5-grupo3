@@ -8,6 +8,11 @@ import Module from './Module'
 import SlidingDoor from './SlidingDoor'
 import Shelf from './Shelf'
 import HingedDoor from './HingedDoor'
+import { LoopRepeat } from 'three';
+import store from "./../store";
+import {
+  SET_RESIZE_VECTOR_GLOBAL
+} from "./../store/mutation-types.js";
 
 export default class ProductRenderer {
 
@@ -241,7 +246,7 @@ export default class ProductRenderer {
 
     this.NUMBER_DIMENSIONS = 3;
 
-    this.websiteDimensions = [500, 100, 15000];
+    this.websiteDimensions = [];
 
     this.canMoveCloset = false;
     this.canMoveSlots = false;
@@ -340,7 +345,7 @@ export default class ProductRenderer {
       [404.5, thickness, 100, 0, 90, -195], //Top
       [thickness, 300, 100, -200, -60, -195], //Left
       [thickness, 300, 100, 200, -60, -195], //Right
-      [404.5, 300, 0, 0, -60, -245.8]); //Back
+      [404.5, 300, 0, 0, -60, -245.8], 0); //Back
 
     var faces = this.closet.closet_faces;
     this.textureLoader = new THREE.TextureLoader();
@@ -411,11 +416,12 @@ export default class ProductRenderer {
    */
   addComponent(component) {
     if (!component) return;
-    if (component.designation == "Shelf") this.generateShelf(component.slot);
-    if (component.designation == "Pole") this.generatePole(component.slot);
-    if (component.designation == "Drawer") this.generateDrawer(component.slot);
-    if (component.designation == "Hinged Door") this.generateHingedDoor(component.slot);
-    if (component.designation == "Sliding Door") this.generateSlidingDoor();
+    var designation = component.model.split(".")[0];
+    if (designation == "shelf") this.generateShelf(component.slot);
+    if (designation == "pole") this.generatePole(component.slot);
+    if (designation == "drawer") this.checkAddDrawerTriggers(component.slot);
+    if (designation == "hinged-door") this.checkAddHingedDoorTriggers(component.slot);
+    if (designation == "sliding-door") this.checkAddSlidingDoorTriggers();
   }
 
   /**
@@ -570,6 +576,44 @@ export default class ProductRenderer {
     this.closet.addPole(pole);
     this.group.add(poleMesh);
     this.closet_poles_ids.push(poleMesh.id);
+  }
+
+
+  renderDroppedComponent(event, canvas){
+    var splitted = event.dataTransfer.getData("text").split("/");
+    var componentImageFileName = splitted[splitted.length - 1]
+    console.log(componentImageFileName);
+    var x = event.clientX;
+    var y = event.clientY;
+    var rect = canvas.getBoundingClientRect();
+
+    this.mouse.x = (x - rect.left)/(canvas.clientWidth / 2.0) - 1.0;
+    this.mouse.y = -((y - rect.bottom)/(canvas.clientHeight / 2.0) + 1.0);
+
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+    var intersects = this.raycaster.intersectObjects(this.scene.children[0].children);
+
+    if(intersects.length > 0){
+      //Snapping
+        if(this.closet_slots_faces_ids.length == 0){
+          this.addComponent({model:componentImageFileName,slot:0});
+        } else {
+        var facesXPositionIntervals = [];
+        var raycasterPointX = intersects[0].point.x;
+
+        facesXPositionIntervals.push(this.group.getObjectById(this.closet_faces_ids[2]).position.x);
+        for(let i = 0; i < this.closet_slots_faces_ids.length; i++){
+          facesXPositionIntervals.push(this.group.getObjectById(this.closet_slots_faces_ids[i]).position.x);
+        }
+        facesXPositionIntervals.push(this.group.getObjectById(this.closet_faces_ids[3]).position.x);
+        
+        for(let i = 1; i < facesXPositionIntervals.length; i++){
+          if(raycasterPointX >= facesXPositionIntervals[i - 1] && raycasterPointX < facesXPositionIntervals[i]){
+            this.addComponent({model:componentImageFileName,slot:i});
+          }
+        }
+      }
+    }
   }
 
   generateShelf(slot) {
@@ -749,6 +793,8 @@ export default class ProductRenderer {
     this.updateClosetGV();
   }
 
+
+
   /**
    * Removes a slot from the current closet
    */
@@ -760,6 +806,20 @@ export default class ProductRenderer {
   }
   /*End new methods*/
 
+
+    
+  /* TODO: Transfer this methods to new Product Renderer */
+  /** 
+   * Populate vector website dimensions
+  */
+  populateWebsiteDimensions(websiteDimensions){
+      if(websiteDimensions.width != undefined || websiteDimensions.height != undefined || websiteDimensions.depth != undefined ){
+      
+        this.websiteDimensions=[websiteDimensions.width,websiteDimensions.height,websiteDimensions.depth];  
+      }
+  }
+  /**  END   */
+
   /**
    * Changes the dimensions of the closet
    * @param {number} width Number with the closet width
@@ -768,10 +828,9 @@ export default class ProductRenderer {
    */
   changeClosetDimensions(width, height, depth) {
     this.resizeFactor();
-
     this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
     this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
-    this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth) - 195.8);
+    this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth) - 250.8);
 
     this.updateClosetGV();
   }
@@ -783,7 +842,14 @@ export default class ProductRenderer {
     var i;
     for (i = 0; i < this.NUMBER_DIMENSIONS; i++) {
       this.resizeVec[i] = this.initialDimensions[i] / this.websiteDimensions[i];
+     
     }
+    store.dispatch(SET_RESIZE_VECTOR_GLOBAL, {
+      width: this.resizeVec[this.WIDTH],
+      height:this.resizeVec[this.HEIGHT],
+      depth: this.resizeVec[this.DEPTH],    
+    });
+
   }
   /**
    * Applies the texture to the closet.
@@ -1029,7 +1095,6 @@ export default class ProductRenderer {
         var j = 0;
 
         //Checks if the selected object is a sliding door
-
         while (!flagOpen && !flagClose && j < this.closet_sliding_doors_ids.length) {
           this.slidingDoor = this.group.getObjectById(this.closet_sliding_doors_ids[j]);
           if (this.slidingDoor == face) {
@@ -1043,13 +1108,15 @@ export default class ProductRenderer {
           j++;
         }
 
+        let aux = function(context, triggerDoorAnimationsFunction){ return function(){ triggerDoorAnimationsFunction(context); }}
+
         if (flagOpen) {
           requestAnimationFrame(function () {
-            context.slideDoorToLeft();
+            context.slideDoorToLeft(aux);
           });
         } else if (flagClose) {
           requestAnimationFrame(function () {
-            context.slideDoorToRight();
+            context.slideDoorToRight(aux);
           });
         }
 
@@ -1105,7 +1172,7 @@ export default class ProductRenderer {
 
         if (flagOpen) {
           requestAnimationFrame(function () {
-            context.openHingedDoor();
+            context.openHingedDoor(context);
           });
         } else if (flagClose) {
           requestAnimationFrame(function () {
@@ -1116,86 +1183,86 @@ export default class ProductRenderer {
     }
   }
 
-
-  slideDoorToLeft() {
+  slideDoorToLeft(aux) {
     if (this.doesClosetHaveOpenDrawers()) {
-      this.waitingDoors.push(this.slideDoorToLeftAnimation);
+      this.waitingDoors.push(aux(this, this.slideDoorToLeftAnimation));
       this.closeAllOpenDrawers();
     } else {
-      this.slideDoorToLeftAnimation();
+      this.slideDoorToLeftAnimation(this);
     }
   }
 
-  slideDoorToLeftAnimation() {
-    let closet_left = this.group.getObjectById(this.closet_faces_ids[2]);
-    let distanceFromDoorToLeftFace = Math.abs(this.slidingDoor.position.x - closet_left.position.x);
+  slideDoorToRight(aux) {
+    if (this.doesClosetHaveOpenDrawers()) {
+      this.waitingDoors.push(aux(this, this.slideDoorToRightAnimation));
+      this.closeAllOpenDrawers();
+    } else {
+      this.slideDoorToRightAnimation(this);
+    }
+  }
+
+  slideDoorToLeftAnimation(context) {
+    let closet_left = context.group.getObjectById(context.closet_faces_ids[2]);
+    let distanceFromDoorToLeftFace = Math.abs(context.slidingDoor.position.x - closet_left.position.x);
     let position = (Math.abs(closet_left.position.x - closet_left.geometry.parameters.width) / 2) - 2;
     if (position < distanceFromDoorToLeftFace) {
-      this.slidingDoor.translateX(-1);
-      var context = this;
+      context.slidingDoor.translateX(-1);
       requestAnimationFrame(function () {
-        context.slideDoorToLeft();
+        let aux = function(context, closeFunction){ return function(){ closeFunction(context); }}
+        context.slideDoorToLeft(aux);
       });
-      this.render();
-      this.controls.update();
+      context.render();
+      context.controls.update();
     }
   }
 
-  slideDoorToRight() {
-    if (this.doesClosetHaveOpenDrawers()) {
-      this.waitingDoors.push(this.slideDoorToRightAnimation);
-      this.closeAllOpenDrawers();
-    } else {
-      this.slideDoorToRightAnimation();
-    }
-  }
-
-  slideDoorToRightAnimation() {
-    let closet_right = this.group.getObjectById(this.closet_faces_ids[3]);
-    let distanceFromDoorToRightFace = Math.abs(this.slidingDoor.position.x - closet_right.position.x);
+  slideDoorToRightAnimation(context) {
+    let closet_right = context.group.getObjectById(context.closet_faces_ids[3]);
+    let distanceFromDoorToRightFace = Math.abs(context.slidingDoor.position.x - closet_right.position.x);
     let position = (Math.abs(closet_right.position.x + closet_right.geometry.parameters.width) / 2) - 2;
     if (position < distanceFromDoorToRightFace) {
-      var context = this;
-      this.slidingDoor.translateX(1);
+      context.slidingDoor.translateX(1);
       requestAnimationFrame(function () {
-        context.slideDoorToRight();
+        let aux = function(context, closeFunction){ return function(){ closeFunction(context); }}
+        context.slideDoorToRight(aux);
       });
-      this.render();
-      this.controls.update();
+      context.render();
+      context.controls.update();
     }
   }
 
-  openHingedDoor() {
-    if (this.hingedDoor.rotation.y > (-Math.PI / 2)) {
-      var rotationX = (this.hingedDoor.geometry.parameters.width / 2);
-      this.hingedDoor.translateX(-rotationX);
-      this.hingedDoor.rotation.y -= Math.PI / 100;
-      this.hingedDoor.translateX(rotationX);
-      var context = this;
+  openHingedDoor(context) {
+    if (context.hingedDoor.rotation.y > (-Math.PI / 2)) {
+      var rotationX = (context.hingedDoor.geometry.parameters.width / 2);
+      context.hingedDoor.translateX(-rotationX);
+      context.hingedDoor.rotation.y -= Math.PI / 100;
+      context.hingedDoor.translateX(rotationX);
       requestAnimationFrame(function () {
-        context.openHingedDoor();
+        context.openHingedDoor(context);
       });
-      this.render();
-      this.controls.update();
+      context.render();
+      context.controls.update();
     }
   }
 
   closeHingedDoor() {
     var hingedDoorSlot = this.getHingedDoorSlot(this.hingedDoor);
     if (this.doesSlotHaveOpenDrawers(hingedDoorSlot)) {
-      this.waitingDoors.push(this.closeHingedDoorAnimation);
+      let aux = function(context, closeFunction){ return function(){ closeFunction(context); }}
+      this.waitingDoors.push(aux(this, this.closeHingedDoorAnimation));
       this.closeSlotOpenDrawers(hingedDoorSlot);
     } else {
-      this.closeHingedDoorAnimation();
+      this.closeHingedDoorAnimation(this);
     }
   }
 
   checkAddDrawerTriggers(slot) {
     this.generateDrawer(slot);
+    let aux = function(context, triggerDoorAnimationsFunction){ return function(){ triggerDoorAnimationsFunction(context); }}
     if (this.doesSlotHaveHingedDoor(slot)) {
       if (!this.isHingedDoorClosed) {
         this.hingedDoor = this.group.getObjectById(this.closet_hinged_doors_ids[slot - 1]);
-        requestAnimationFrame(this.openHingedDoor);
+        requestAnimationFrame(aux(this, this.openHingedDoor));
       }
     }
     if (this.doesClosetHaveSlidingDoors()) {
@@ -1204,37 +1271,36 @@ export default class ProductRenderer {
       //Front face of the last added drawer is always at index length - 4
       var addedDrawer = this.group.getObjectById(this.closet_drawers_ids[this.closet_drawers_ids.length - 4]);
       if (addedDrawer.position.x < 0) {
-        var context = this;
-        if (front_door.position.x < 0) {
-          this.slidingDoor = front_door;
-          context.slideDoorToRight();
-        }
-        if (back_door.position.x < 0) {
-          this.slidingDoor = back_door;
-          context.slideDoorToLeft();
+        for(let i = 0; i < this.closet_sliding_doors_ids.length; i++){
+          var door = this.group.getObjectById(this.closet_sliding_doors_ids[i]);
+          if(door.position.x < 0){
+            this.slidingDoor = door;
+            this.slideDoorToRight(aux);
+          }          
         }
       } else {
-        if (front_door.position.x > 0) {
-          this.slidingDoor = front_door;
-          context.slideDoorToLeft();
-        }
-        if (back_door.position.x > 0) {
-          this.slidingDoor = back_door;
-          context.slideDoorToRight();
+        for(let i = 0; i < this.closet_sliding_doors_ids.length; i++){
+          var door = this.group.getObjectById(this.closet_sliding_doors_ids[i]);
+          if(door.position.x > 0){
+            this.slidingDoor = door;
+            this.slideDoorToLeft(aux);
+          }          
         }
       }
-
     }
   }
 
   checkAddSlidingDoorTriggers() {
     if (this.doesClosetHaveHingedDoors()) {
       alert("There are closet slots that have hinged doors!");
+    } else if(this.doesClosetHaveSlidingDoors()){
+      alert("The closet already has sliding doors!");
     } else {
       if (this.doesClosetHaveOpenDrawers()) {
         if (this.openDrawers.length > 0) {
+          var context = this;
           this.waitingDoors.push(function () {
-            this.generateSlidingDoor();
+            context.generateSlidingDoor();
           });
           this.closeAllOpenDrawers();
         } else {
@@ -1254,8 +1320,9 @@ export default class ProductRenderer {
     } else {
       if (this.doesSlotHaveOpenDrawers(slot)) {
         if (this.openDrawers.length > 0) {
+          var context = this;
           this.waitingDoors.push(function () {
-            this.addHingedDoor(slot);
+            context.addHingedDoor(slot);
           });
           this.closeSlotOpenDrawers(slot);
         } else {
@@ -1333,14 +1400,14 @@ export default class ProductRenderer {
     var front_frame = new Module([width, thickness, 5, bottomFace.position.x, bottomFace.position.y, z + 7],
       [width, thickness, 5, topFace.position.x, topFace.position.y, z + 7],
       [thickness, height, 5, leftFace.position.x, leftFace.position.y, z + 7],
-      [thickness, height, 5, rightFace.position.x, rightFace.position.y, z + 7]);
+      [thickness, height, 5, rightFace.position.x, rightFace.position.y, z + 7], 0);
 
     var back_door = new SlidingDoor([width / 2, (height - thickness), 5, rightFace.position.x / 2, rightFace.position.y, z + 2]);
 
     var back_frame = new Module([width, thickness, 5, bottomFace.position.x, bottomFace.position.y, z + 2],
       [width, thickness, 5, topFace.position.x, topFace.position.y, z + 2],
       [thickness, height, 5, leftFace.position.x, leftFace.position.y, z + 2],
-      [thickness, height, 5, rightFace.position.x, rightFace.position.y, z + 2]);
+      [thickness, height, 5, rightFace.position.x, rightFace.position.y, z + 2], 0);
 
     //Adds front frame
     var borders = front_frame.module_faces;
@@ -1388,11 +1455,11 @@ export default class ProductRenderer {
   closeSlotOpenDrawers(slot) {
     var i = 0;
     var index = 0;
-    var closet_front = Math.abs(this.group.getObjectById(this.closet_faces_ids[4]).position.z);
+    // var closet_front = Math.abs(this.group.getObjectById(this.closet_faces_ids[4]).position.z);
     while (i < this.closet_drawers_ids.length) {
       if (this.closet.drawers[index].slotId == slot) {
         var drawer_front_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 1]);
-        if (drawer_front_face.position.z > closet_front) {
+        if (drawer_front_face.position.z > -50) {
           var drawer_base_face = this.group.getObjectById(this.closet_drawers_ids[5 * index]);
           var drawer_left_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 2]);
           var drawer_right_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 3]);
@@ -1408,10 +1475,9 @@ export default class ProductRenderer {
   closeAllOpenDrawers() {
     var i = 0;
     var index = 0;
-    var closet_front = Math.abs(this.group.getObjectById(this.closet_faces_ids[4]).position.z);
     while (i < this.closet_drawers_ids.length) {
       var drawer_front_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 1]);
-      if (drawer_front_face.position.z > closet_front) {
+      if (drawer_front_face.position.z > -50) {
         var drawer_base_face = this.group.getObjectById(this.closet_drawers_ids[5 * index]);
         var drawer_left_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 2]);
         var drawer_right_face = this.group.getObjectById(this.closet_drawers_ids[5 * index + 3]);
@@ -1434,27 +1500,22 @@ export default class ProductRenderer {
   }
 
   doesSlotHaveOpenDrawers(slot) {
-    var closet_front = Math.abs(this.group.getObjectById(this.closet_faces_ids[4]).position.z);
-    var index = 0;
-    for (let i = 0; i < this.closet_drawers_ids.length; i += 6) {
-      if (this.closet.drawers[index].slotId == slot) {
-        return this.group.getObjectById(this.closet_drawers_ids[5 * index + 1]).position.z
-          >= closet_front;
+    var numberOfDrawers = this.closet_drawers_ids.length / 5;
+    for (let i = 0; i < numberOfDrawers; i++) {
+      if (this.closet.drawers[i].slotId == slot) {
+        return this.group.getObjectById(this.closet_drawers_ids[5 * i + 1]).position.z >= -50;
       }
-      index++;
     }
     return false;
   }
 
   doesClosetHaveOpenDrawers() {
-    var closet_front = Math.abs(this.group.getObjectById(this.closet_faces_ids[4]).position.z);
-    var index = 0;
-    for (let i = 0; i < this.closet_drawers_ids.length; i += 6) {
-      if (i > 0) index = i - 5;
-      return this.group.getObjectById(this.closet_drawers_ids[5 * index + 1]).position.z
-        >= closet_front;
+    var flag = false;
+    var numberOfDrawers = this.closet_drawers_ids.length / 5;
+    for (let i = 0; i < numberOfDrawers; i++) {
+      if(this.group.getObjectById(this.closet_drawers_ids[5 * i + 1]).position.z >= -50) flag = true;
     }
-    return false;
+    return flag;
   }
 
   doesClosetHaveHingedDoors() {
@@ -1465,21 +1526,19 @@ export default class ProductRenderer {
     return this.closet.slidingDoors.length != 0;
   }
 
-
-  closeHingedDoorAnimation() {
-    if (this.hingedDoor.rotation.y < 0) {
-      var rotationX = this.hingedDoor.geometry.parameters.width / 2;
-      this.hingedDoor.translateX(-rotationX);
-      this.hingedDoor.rotation.y += Math.PI / 100;
-      this.hingedDoor.translateX(rotationX);
-      var context = this;
+  closeHingedDoorAnimation(context) {
+    if (context.hingedDoor.rotation.y < 0) {
+      var rotationX = context.hingedDoor.geometry.parameters.width / 2;
+      context.hingedDoor.translateX(-rotationX);
+      context.hingedDoor.rotation.y += Math.PI / 100;
+      context.hingedDoor.translateX(rotationX);
       requestAnimationFrame(function () {
         context.closeHingedDoor();
       });
-      this.render();
-      this.controls.update();
+      context.render();
+      context.controls.update();
     } else {
-      this.isHingedDoorClosed = true;
+      context.isHingedDoorClosed = true;
     }
   }
 

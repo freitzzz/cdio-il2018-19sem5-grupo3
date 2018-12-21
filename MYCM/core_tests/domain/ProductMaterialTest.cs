@@ -31,7 +31,7 @@ namespace core_tests.domain {
         public void ensureAddRestrictionSucceeds() {
             Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
-            Restriction rest = new Restriction("restriction");
+            Restriction rest = new Restriction("restriction", new SameMaterialAndFinishAlgorithm());
 
             Action addValidRestrictionAction = () => pm.addRestriction(rest);
 
@@ -44,7 +44,7 @@ namespace core_tests.domain {
         public void ensureAddingDuplicateRestrictionThrowsException() {
             Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
-            Restriction rest = new Restriction("restriction");
+            Restriction rest = new Restriction("restriction", new WidthPercentageAlgorithm());
             pm.addRestriction(rest);
 
             Action addDuplicateRestrictionAction = () => pm.addRestriction(rest);
@@ -56,7 +56,7 @@ namespace core_tests.domain {
         public void ensureHasRestrictionReturnsTrueIfRestrictionWasAdded() {
             Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
-            Restriction rest = new Restriction("restriction");
+            Restriction rest = new Restriction("restriction", new SameMaterialAndFinishAlgorithm());
             pm.addRestriction(rest);
             Assert.True(pm.hasRestriction(rest));
         }
@@ -73,7 +73,7 @@ namespace core_tests.domain {
         public void ensureHasRestrictionrReturnsFalseIfRestrictionWasNotAdded() {
             Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
-            Restriction rest = new Restriction("restriction");
+            Restriction rest = new Restriction("restriction", new WidthPercentageAlgorithm());
             Assert.False(pm.hasRestriction(rest));
         }
 
@@ -91,7 +91,7 @@ namespace core_tests.domain {
         public void ensureRemovingDuplicateRestrictionThrowsException() {
             Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
-            Restriction rest = new Restriction("restriction");
+            Restriction rest = new Restriction("restriction", new SameMaterialAndFinishAlgorithm());
             
             Action addNullRestrictionCreation = () =>  pm.removeRestriction(rest);
             Assert.Throws<ArgumentException>(addNullRestrictionCreation);
@@ -101,7 +101,7 @@ namespace core_tests.domain {
         public void ensureRemovePreviouslyAddedRestrictionDoesNotThrowException() {
             Product p = new Product("#666", "der alte würfelt nicht", "product666.glb", PREDEFEFINED_CATEGORY, PREDEFINED_MATERIALS, PREDEFINED_MEASUREMENTS);
             ProductMaterial pm = new ProductMaterial(p, PREDEFINED_MATERIAL2);
-            Restriction rest = new Restriction("restriction");
+            Restriction rest = new Restriction("restriction", new WidthPercentageAlgorithm());
             pm.addRestriction(rest);
 
             Action removeValidRestrictionAction = () => pm.removeRestriction(rest);

@@ -413,10 +413,22 @@ namespace backend.Controllers {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
-        [HttpGet("{customizedProductId}/recommendedSlots")]
+        [HttpGet("{customizedProductId}/recommendedslots")]
         public ActionResult getRecommendedSlots(long customizedProductId) {
             try {
                 GetAllCustomizedDimensionsModelView allCustomDimensionsMV = new core.application.CustomizedProductController().getRecommendedSlots(customizedProductId);
+                return Ok(allCustomDimensionsMV);
+            } catch (ResourceNotFoundException ex) {
+                return NotFound(new SimpleJSONMessageService(ex.Message));
+            } catch (Exception ex) {
+                logger.LogWarning(ex, UNEXPECTED_ERROR);
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+        [HttpGet("{customizedProductId}/minslots")]
+        public ActionResult getMinSlots(long customizedProductId) {
+            try {
+                GetAllCustomizedDimensionsModelView allCustomDimensionsMV = new core.application.CustomizedProductController().getMinSlots(customizedProductId);
                 return Ok(allCustomDimensionsMV);
             } catch (ResourceNotFoundException ex) {
                 return NotFound(new SimpleJSONMessageService(ex.Message));

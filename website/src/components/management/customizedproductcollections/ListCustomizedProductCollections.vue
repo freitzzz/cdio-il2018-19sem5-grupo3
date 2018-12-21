@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <button class="button is-info" @click="createNewCollection()">
+      <button class="btn-primary" @click="createNewCollection()">
         <b-icon icon="plus"/>
       </button>
       <div v-if="createNewCollectionModal">
@@ -13,7 +13,7 @@
           />
         </b-modal>
       </div>
-      <button class="button is-info" @click="fetchRequests()">
+      <button class="btn-primary" @click="fetchRequests()">
         <b-icon icon="refresh" custom-class="fa-spin"/>
       </button>
     </div>
@@ -58,6 +58,9 @@ export default {
       this.fetchAvailableCustomizedProducts();
     },
     refreshCollections() {
+      this.columns = this.generateCollectionsTableColumns();
+      this.data = [];
+      this.total = this.data.length;
       Axios.get(MYCM_API_URL + "/collections")
         .then(response => {
           this.data = this.generateCollectionsTableData(response.data);
