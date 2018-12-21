@@ -106,6 +106,18 @@ describe('canvas controls getters', () => {
     });
 })
 
+describe('resize factor dimensions getters', () => {
+    test('get resize factor dimensions returns correct values',
+        ensureGetResizeFactorDimensionsReturnsCorrectValues
+    );
+})
+
+describe('resize vector global getters', () => {
+    test('get resize vector global returns correct values',
+        ensureGetResizeVectorGlobalReturnsCorrectValues
+    );
+})
+
 function ensureGetProductIdReturnsCorrectValue() {
     const expectedId = 1;
     VuexStore.default.replaceState({
@@ -470,4 +482,30 @@ function ensureGetCustomizedProductIdReturnsCorrectValue() {
     });
     const actualId = VuexStore.getters.customizedProductId(VuexStore.default.state);
     expect(actualId).toBe(expectedId);
+}
+
+function ensureGetResizeFactorDimensionsReturnsCorrectValues() {
+    const expectedValues = {
+        width: 100,
+        height: 100,
+        depth: 100
+    };
+    VuexStore.default.replaceState({
+        resizeFactorDimensions: expectedValues
+    });
+    const actualValues = VuexStore.getters.resizeFactorDimensions(VuexStore.default.state);
+    expect(actualValues).toEqual(expectedValues);
+}
+
+function ensureGetResizeVectorGlobalReturnsCorrectValues() {
+    const expectedValues = {
+        width: 100,
+        height: 100,
+        depth: 100
+    };
+    VuexStore.default.replaceState({
+        resizeVectorGlobal: expectedValues
+    });
+    const actualValues = VuexStore.getters.resizeVectorGlobal(VuexStore.default.state);
+    expect(actualValues).toEqual(expectedValues);
 }

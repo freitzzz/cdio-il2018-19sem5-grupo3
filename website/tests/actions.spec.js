@@ -96,6 +96,12 @@ describe('resize factor dimensions actions', () => {
     });
 })
 
+describe('resize vector global actions', () => {
+    test('set resize vector global values', () => {
+        ensureSetResizeVectorGlobalUpdatesStateCorrectly
+    });
+})
+
 function ensureInitProductActionUpdatesStateCorrectly() {
     VuexStore.default.replaceState({
         product: {}
@@ -508,4 +514,21 @@ function ensureSetResizeFactorDimensionsUpdatesStateCorrectly() {
     };
     VuexStore.default.dispatch(mutationsTypes.SET_RESIZE_FACTOR_DIMENSIONS, payload);
     expect(VuexStore.default.state.resizeFactorDimensions).toEqual(payload);
+}
+
+function ensureSetResizeVectorGlobalUpdatesStateCorrectly() {
+    VuexStore.default.replaceState({
+        resizeVectorGlobal: {
+            width: "",
+            height: "",
+            depth: ""
+        }
+    });
+    const payload = {
+        width: "2",
+        height: "2",
+        depth: "2"
+    };
+    VuexStore.default.dispatch(mutationsTypes.SET_RESIZE_VECTOR_GLOBAL, payload);
+    expect(VuexStore.default.state.resizeVectorGlobal).toEqual(payload);
 }

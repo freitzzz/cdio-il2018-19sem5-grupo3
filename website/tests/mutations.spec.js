@@ -94,6 +94,20 @@ describe('resize factor dimensions mutations', () => {
     test('set resize factor dimensions values', () => {
         ensureSetResizeFactorDimensionsUpdatesStateCorrectly
     });
+    //TODO Check if the transformation of an object into an array is supposed to happen
+    test('initialize as empty array if payload is null',
+        ensureSetResizeFactorDimensionsInitializesAsEmptyArrayIfPayloadIsNull
+    );
+})
+
+describe('resize vector global mutations', () => {
+    test('set resize vector global values', () => {
+        ensureSetResizeVectorGlobalUpdatesStateCorrectly
+    });
+    //TODO Check if the transformation of an object into an array is supposed to happen
+    test('initialize as empty array if payload is null', () => {
+        ensureSetResizeVectorGlobalInitializesAsEmptyArrayIfPayloadIsNull
+    });
 })
 
 function ensureInitProductUpdatesStateCorrectly() {
@@ -499,11 +513,7 @@ function ensureDeactivatingComponentsMovementFlagUpdatesStateCorrectly() {
 
 function ensureSetResizeFactorDimensionsUpdatesStateCorrectly() {
     const state = {
-        resizeFactorDimensions: {
-            width: "",
-            height: "",
-            depth: ""
-        }
+        resizeFactorDimensions: {}
     };
     const payload = {
         width: "2",
@@ -512,4 +522,33 @@ function ensureSetResizeFactorDimensionsUpdatesStateCorrectly() {
     };
     mutations.set_resize_factor_dimensions(state, payload);
     expect(state.resizeFactorDimensions).toEqual(payload);
+}
+
+function ensureSetResizeFactorDimensionsInitializesAsEmptyArrayIfPayloadIsNull() {
+    const state = {};
+    const payload = null;
+    mutations.set_resize_factor_dimensions(state, payload);
+    expect(state.resizeFactorDimensions).toHaveLength(0);
+}
+
+function ensureSetResizeVectorGlobalUpdatesStateCorrectly() {
+    const state = {
+        resizeVectorGlobal: {}
+    };
+    const payload = {
+        width: "2",
+        height: "2",
+        depth: "2"
+    };
+    mutations.set_resize_vector_global(state, payload);
+    expect(state.resizeVectorGlobal).toEqual(payload);
+}
+
+function ensureSetResizeVectorGlobalInitializesAsEmptyArrayIfPayloadIsNull() {
+    const state = {
+        resizeVectorGlobal: {}
+    };
+    const payload = null;
+    mutations.set_resize_vector_global(state, payload);
+    expect(state.resizeVectorGlobal).toHaveLength(0);
 }
