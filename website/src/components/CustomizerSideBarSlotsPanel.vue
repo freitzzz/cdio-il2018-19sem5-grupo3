@@ -24,7 +24,7 @@
             :max="maxSizeSlot"
             :value="slotWidthChange"
             v-model="sliderValue"
-            @change="updateWidthSlot"
+            @callback="updateWidthSlot"
           ></vue-slider>
         </span>
       </div>
@@ -51,7 +51,7 @@ import vueSlider from "vue-slider-component";
 import store from "./../store";
 import Axios from "axios";
  import {MYCM_API_URL} from "./../config.js";
-import { ADD_SLOT_DIMENSIONS,SET_ID_SLOT, DEACTIVATE_CAN_MOVE_CLOSET, ACTIVATE_CAN_MOVE_SLOTS, DEACTIVATE_CAN_MOVE_SLOTS } from "./../store/mutation-types.js";
+import { ADD_SLOT_DIMENSIONS,SET_SLOT_DIMENSIONS,SET_ID_SLOT, DEACTIVATE_CAN_MOVE_CLOSET, ACTIVATE_CAN_MOVE_SLOTS, DEACTIVATE_CAN_MOVE_SLOTS } from "./../store/mutation-types.js";
 
 export default {
   name: "CustomizerSideBarSlotsPanel",
@@ -183,15 +183,9 @@ export default {
       })
     },
     previousPanel(){
-      this.deleteSlots().then(() => {
         this.$emit("back");
-      }).catch((error_message)=>{
-           this.$toast.open({
-              message: error_message
-          }); 
-      });
+        store.dispatch(ADD_SLOT_DIMENSIONS);
     },
-   
     activateCanvasControls(){
       store.dispatch(ADD_SLOT_DIMENSIONS);
       this.getMinSlots();
@@ -350,15 +344,18 @@ export default {
               
     },
     updateWidthSlot(){
-       var widthCloset = 6000; //store.state.customizedProduct.customizedDimensions.width;
-              var depthCloset = 2500; //store.state.customizedProduct.customizedDimensions.depth;
-              var heightCloset = 5000; //store.state.customizedProduct.customizedDimensions.height;
+       var widthCloset = store.state.customizedProduct.customizedDimensions.width;
+              var depthCloset = store.state.customizedProduct.customizedDimensions.depth;
+              var heightCloset = store.state.customizedProduct.customizedDimensions.height;
               
               var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
+              var numberSlots = store.state.customizedProduct.slots.length +1 ;
               
-              var reasonW = 404.5 / widthCloset;
-      store.dispatch(ADD_SLOT_DIMENSIONS, {
-                  idSlot: 1,
+              var reasonW = store.state.resizeVectorGlobal.width;
+
+
+      store.dispatch(SET_SLOT_DIMENSIONS, {
+                  idSlot: numberSlots,
                   width: this.sliderValue * reasonW,
                   height: heightCloset,
                   depth: depthCloset,
