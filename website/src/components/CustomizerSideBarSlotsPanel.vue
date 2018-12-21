@@ -34,7 +34,6 @@
             :min="minSizeSlot"
             :max="maxSizeSlot"
             :value="slotWidthChange"
-            
           ></vue-slider>
 
           <!--v-model="sliderValues[index]"-->
@@ -90,12 +89,10 @@ export default {
     },
     minNumberSlots(){
       var number = parseInt(/*store.state.customizedProduct.customizedDimensions.width*/6000 / store.getters.maxSlotWidth)
-      alert(number);
       return number;
     },
     maxNumberSlots(){
-      var number = parseInt(/*store.state.customizedProduct.customizedDimensions.width*/6000 / store.getters.minSlotWidth)
-      alert(number);
+      var number = parseInt(/*store.state.customizedProduct.customizedDimensions.width*/6000 / store.getters.minSlotWidth) -1;
       return number;
     },
     displaySliders() {
@@ -119,11 +116,20 @@ export default {
     },
     addLine() {
       let checkEmptyLines = this.lines.filter(line => line.number === null);
-      if (checkEmptyLines.length >= 1 && this.lines.length > 0) return;
+      if (checkEmptyLines.length >= 1 && this.lines.length > 0){
+        return;
+      } 
       this.lines.push({
         slider: null
       });
-      //this.drawOneSlot();
+      this.addSlot(this.lines.length);
+      
+    },
+     addSlot(index){
+
+       if(index <= this.maxNumberSlots)
+      this.drawOneSlot();
+     
     },
     removeLine(lineId) {
       if (!this.blockRemoval) this.lines.splice(lineId, 1);
@@ -193,13 +199,8 @@ export default {
       })
     },
     previousPanel(){
-      this.deleteSlots().then(() => {
-        this.$emit("back");
-      }).catch((error_message)=>{
-           this.$toast.open({
-              message: error_message
-          }); 
-      });
+      store.dispatch(ADD_SLOT_DIMENSIONS); 
+      this.$emit("back");
     },
    
     activateCanvasControls(){
@@ -213,6 +214,7 @@ export default {
       store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS)
     },
     getRecommendedSlots(){
+      this.listRecommendedSlots = []
         Axios.get(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}/recommendedSlots`)
             .then(response => {
               this.listRecommendedSlots = response.data;
