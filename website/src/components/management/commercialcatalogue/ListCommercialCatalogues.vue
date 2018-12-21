@@ -4,7 +4,7 @@
       <button class="btn-primary" @click="enableCatalogueModal">
         <b-icon icon="plus"/>
       </button>
-      <button class="btn-primary">
+      <button class="btn-primary" @click="getCatalogues()">
         <b-icon icon="refresh"/>
       </button>
     </div>
@@ -50,7 +50,7 @@ export default {
     getCatalogues() {
       CommercialCatalogueRequests.getCommercialCatalogues()
         .then(response => {
-          this.data.push(...response.data);
+          this.data = response.data;
         })
         .catch(error => {
           error.response.data.message;
