@@ -20,6 +20,7 @@ export default class BaseProduct{
         this.productType=productType;
         this.baseId=id;
         this.slotId=slotId;
+        this.drawn=false;
     }
 
     /**
@@ -44,5 +45,16 @@ export default class BaseProduct{
      * Returns the current product type
      */
     getProductType(){return this.productType;}
+
+    /**
+     * Checks if the product is drawn
+     */
+    isDrawn(){return this.drawn;}
+
+    /**
+     * Draws the current product
+     * @returns {Object} Object with the drawn product
+     */
+    draw(){this.drawn=true;}
 
 }

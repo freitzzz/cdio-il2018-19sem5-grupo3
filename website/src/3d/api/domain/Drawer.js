@@ -1,9 +1,9 @@
 //@ts-check
 
 /**
- * Requires BaseProduct for product base properties
+ * Requires OpenableProduct for openable product base properties
  */
-import BaseProduct from "./BaseProduct";
+import OpenableProduct from "./OpenableProduct";
 
 /**
  * Requires Face for drawer faces
@@ -23,7 +23,7 @@ import ProductType from "./ProductType";
 /**
  * Represents the internal core of a Drawer
  */
-export default class Drawer extends BaseProduct{
+export default class Drawer extends OpenableProduct{
     
     /**
      * Builds a new Drawer with the dimensions and axes values for all faces

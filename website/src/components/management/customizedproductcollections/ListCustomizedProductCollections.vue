@@ -58,6 +58,9 @@ export default {
       this.fetchAvailableCustomizedProducts();
     },
     refreshCollections() {
+      this.columns = this.generateCollectionsTableColumns();
+      this.data = [];
+      this.total = this.data.length;
       Axios.get(MYCM_API_URL + "/collections")
         .then(response => {
           this.data = this.generateCollectionsTableData(response.data);

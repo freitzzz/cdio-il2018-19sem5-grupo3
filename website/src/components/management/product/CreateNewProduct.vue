@@ -54,7 +54,7 @@
                 :place-holder="materials.placeholder"
                 @emitItems="changeCurrentMaterials"
             />
-            <b-checkbox @input="enableComponents()">Components</b-checkbox>
+            <b-checkbox  type="is-info" @input="enableComponents()">Components</b-checkbox>
             <div v-if="components">
                 <customized-selected-items
                 :available-items="availableComponents"
@@ -65,7 +65,7 @@
                 @emitItems="changeCurrentComponents"
             />
             </div>
-            <b-checkbox @input="enableDimensions()">Dimensions</b-checkbox>
+            <b-checkbox  type="is-info" @input="enableDimensions()">Dimensions</b-checkbox>
             <div v-if="dimensions">
                 <b-field label="Dimensions"/>
                 <b-field>
@@ -95,7 +95,7 @@
                 <product-dimensions dimension-label="Height" :available-units="availableUnits" @getDimension="changeCurrentHeightDimension"/>
                 <product-dimensions dimension-label="Depth" :available-units="availableUnits" @getDimension="changeCurrentDepthDimension"/>
             </div>
-            <b-checkbox @input="enableSlots()">Slots</b-checkbox>
+            <b-checkbox type="is-info" @input="enableSlots()">Slots</b-checkbox>
             <div v-if="slots">
                 <b-field label="Slots"/>
                 <b-field>

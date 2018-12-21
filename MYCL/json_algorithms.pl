@@ -82,6 +82,40 @@
 
 
 
+% ################################### DELIVERIES PLAN #########################################
+
+% ########### REQUESTS ###########
+
+% JSON Object with the city information used in Delivery Plan request body
+:-json_object
+        delivery_plan_city_request(id:number,name:atom,latitude:number,longitude:number).
+
+
+% JSON Object with the production factory information used in Delivery Plan request body
+:-json_object
+        delivery_plan_production_factory_request(id:number,name:atom,latitude:number,longitude:number,cityId:number).
+
+
+% JSON Object with the order information used in Delivery Plan request body
+:-json_object
+        delivery_plan_order_request(id:number,packages:list,cityId:number,deliveryDate:atom).
+
+% JSON Object with the package information used in Delivery Plan request body
+:-json_object
+        delivery_plan_package_request(id:number,width:number,height:number,depth:number,weight:number).
+
+
+% JSON Object with the truck information used in Delivery Plan request body
+:-json_object
+        delivery_plan_truck_request(id:number,width:number,depth:number,height:number,weight:number).
+
+
+% JSON Object with the city information used in Delivery Plan request body
+:-json_object
+        delivery_plan_request(cities:list,productionFactory:delivery_plan_production_factory_request/5,orders:list,trucks:list).
+
+
+% ###################################                 #########################################
 
 
 % JSON Object with a message

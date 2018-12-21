@@ -112,7 +112,7 @@ export default {
           this.$emit("refreshData");
         })
         .catch(error_message => {
-          this.$toast.open({ message: error_message.data.message });
+          this.$toast.open({ message: error_message.response.data.message });
         });
     },
     editCollectionDetails(collectionId) {
@@ -130,7 +130,10 @@ export default {
             accept();
           })
           .catch(error_message => {
-            this.$toast.open({ message: error_message });
+            if(error_message.response.status == 404){
+              accept();
+            }
+            this.$toast.open({ message: error_message.response.data.message });
             reject();
           });
       });
