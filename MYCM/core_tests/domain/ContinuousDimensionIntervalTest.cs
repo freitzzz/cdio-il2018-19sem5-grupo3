@@ -260,8 +260,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureInstancesWithDifferentMaxValuesAreNotEqual()
         {
-            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(1.0, 50.0, 5.0);
-            ContinuousDimensionInterval other = new ContinuousDimensionInterval(1.0, 40.0, 5.0);
+            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(10.0, 50.0, 5.0);
+            ContinuousDimensionInterval other = new ContinuousDimensionInterval(10.0, 40.0, 5.0);
 
             Assert.False(instance.Equals(other));
         }

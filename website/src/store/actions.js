@@ -1,6 +1,13 @@
 import * as types from './mutation-types'
 
 export const actions = {
+
+    /**
+     * Action used to commit the mutation SET_RESIZE_VECTOR_GLOBAL
+     */
+    [types.SET_RESIZE_VECTOR_GLOBAL]: ({ commit }, payload) => {
+        commit(types.SET_RESIZE_VECTOR_GLOBAL, payload)
+    },
     /**
      * Action used to commit the mutation SET_RESIZE_FACTOR_DIMENSIONS
      */

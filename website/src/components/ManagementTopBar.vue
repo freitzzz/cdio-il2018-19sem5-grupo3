@@ -3,11 +3,26 @@
   
     <div id="navBarManagement" class="navbar-menu">
       <div class="navbar-start">
-        <a class="navbar-item" @click="enableListCategories">Category</a>
-        <a class="navbar-item" @click="enableListMaterials"> Material</a>
-        <a class="navbar-item" @click="enableListProducts">Product</a>
-        <a class="navbar-item" @click="enableListCollections">Customized Product Collections</a>
-        <a class="navbar-item" @click="enableCustomizedProduct">Create Customized Product</a>
+  
+        <a class="navbar-item " @click="enableListCategories">
+                                  Category
+                                </a>
+  
+        <a class="navbar-item" @click="enableListMaterials">
+                                  Material
+                                </a>
+        <a class="navbar-item " @click="enableListProducts">
+                                  Product
+                                </a>
+        <a class="navbar-item" @click="enableCustomizedProduct">
+                                    Create Customized Product
+                                </a>
+        <a class = "navbar-item" @click="enableListCollections">
+                                    Customized Product Collections
+                                </a>
+        <a class = "navbar-item" @click="enableListCatalogues">
+                                    Commercial Catalogues
+                                </a>
       </div>
     </div>
   
@@ -33,6 +48,9 @@
     </section>
     <section v-if="CustomListCollections" style="width:100%">
       <list-customized-product-collections/>
+    </section>
+    <section v-if="ListCatalogues" style="width:100%">
+      <list-catalogues />
     </section>
     <customizer v-if="CustomCustomizedProduct"></customizer>
   </nav>
@@ -66,6 +84,7 @@
   import ListMaterials from './management/material/ListMaterials.vue'
   import ListCategories from './management/category/ListCategories.vue'
   import ListProducts from './management/product/ListProducts.vue';
+  import ListCatalogues from './management/commercialcatalogue/ListCommercialCatalogues.vue'
   import Customizer from './Customizer.vue';
   export default {
     name: 'ManagementTopBar',
@@ -77,6 +96,7 @@
         CustomListMaterials: false,
         CustomListProducts: false,
         CustomListCollections: false,
+        ListCatalogues: false,
         CustomCustomizedProduct: false,
       };
     },
@@ -87,6 +107,7 @@
         this.CustomListCollections = false;
         this.CustomListCategories = false;
         this.CustomCustomizedProduct = true;
+        this.ListCatalogues = false;
       },
       enableListCategories() {
         this.CustomListMaterials = false;
@@ -94,14 +115,15 @@
         this.CustomListCollections = false;
         this.CustomCustomizedProduct = false;
         this.CustomListCategories = true;
+        this.ListCatalogues = false;
       },
-  
       enableListProducts() {
         this.CustomListCategories = false;
         this.CustomListMaterials = false;
         this.CustomListCollections = false;
         this.CustomCustomizedProduct = false;
         this.CustomListProducts = true;
+        this.ListCatalogues = false;
       },
       enableListMaterials() {
         this.CustomListProducts = false;
@@ -109,6 +131,7 @@
         this.CustomListCollections = false;
         this.CustomCustomizedProduct = false;
         this.CustomListMaterials = true;
+        this.ListCatalogues = false;
       },
       enableListCollections() {
         this.CustomListProducts = false;
@@ -116,13 +139,23 @@
         this.CustomListMaterials = false;
         this.CustomCustomizedProduct = false;
         this.CustomListCollections = true;
+        this.ListCatalogues = false;
       },
+      enableListCatalogues(){
+        this.CustomListProducts = false;
+        this.CustomListCategories = false;
+        this.CustomListMaterials = false;
+        this.CustomCustomizedProduct = false;
+        this.CustomListCollections = false;
+        this.ListCatalogues = true;
+      }
     },
     components: {
       ListCategories,
       ListMaterials,
       ListProducts,
       ListCustomizedProductCollections,
+      ListCatalogues,
       Customizer
     }
   };

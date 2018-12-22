@@ -70,6 +70,14 @@ compute_algorithm(5,Container,Packages,Packed,OccupationPercentage):-
     simulated_annealing(Container,Packages,OccupationPercentage,Packed).
 
 
+
+% Computes Delivery Plan for a certain range of cities, production factory, orders to deliver and trucks to fill
+compute_delivery_plan(1,Cities,ProductionFactory,Orders,Trucks,TravelPlan,TrucksPlan):-
+    plan(Cities,ProductionFactory,Orders,Trucks,TravelPlan,TrucksPlan,1),
+    !.
+
+
+
 % Asserts a list of cities into the current knowledge base
 assert_cities([]).
 assert_cities([H|T]):-

@@ -39,7 +39,7 @@
                     icon="tag"
                 />
             </b-field>
-            <b-checkbox @input="enableMaterials()">Materials</b-checkbox>
+            <b-checkbox type="is-info" @input="enableMaterials()">Materials</b-checkbox>
             <div v-if="showMaterials">
                 <b-field label="Materials">
                     <b-field>
@@ -57,7 +57,7 @@
                     </b-field>
                 </b-field>
             </div>
-            <b-checkbox v-if="product.components!=null" @input="enableComponents()">Components</b-checkbox>
+            <b-checkbox type="is-info" v-if="product.components!=null" @input="enableComponents()">Components</b-checkbox>
             <div v-if="showComponents">
                 <b-field label="Components">
                     <b-field>
@@ -75,7 +75,7 @@
                     </b-field>
                 </b-field>
             </div>
-            <b-checkbox v-if="product.dimensions!=null" @input="enableDimensions()">Dimensions</b-checkbox>
+            <b-checkbox type="is-info" v-if="product.dimensions!=null" @input="enableDimensions()">Dimensions</b-checkbox>
                 <div v-if="showDimensions">
                     <b-field label="Width Dimensions">
                         <simple-table
@@ -96,7 +96,7 @@
                         />
                     </b-field>
                 </div>
-            <b-checkbox v-if="product.slotWidths!=null" @input="enableSlots()">Slots</b-checkbox>
+            <b-checkbox type="is-info" v-if="product.slotWidths!=null" @input="enableSlots()">Slots</b-checkbox>
             <div v-if="showSlots">
                 <b-field label="Slots"/>
                 <b-field>

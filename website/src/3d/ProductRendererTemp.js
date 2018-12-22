@@ -8,6 +8,11 @@ import Module from './Module'
 import SlidingDoor from './SlidingDoor'
 import Shelf from './Shelf'
 import HingedDoor from './HingedDoor'
+import { LoopRepeat } from 'three';
+import store from "./../store";
+import {
+  SET_RESIZE_VECTOR_GLOBAL
+} from "./../store/mutation-types.js";
 
 export default class ProductRenderer {
 
@@ -241,7 +246,7 @@ export default class ProductRenderer {
 
     this.NUMBER_DIMENSIONS = 3;
 
-    this.websiteDimensions = [500, 100, 15000];
+    this.websiteDimensions = [];
 
     this.canMoveCloset = false;
     this.canMoveSlots = false;
@@ -788,6 +793,8 @@ export default class ProductRenderer {
     this.updateClosetGV();
   }
 
+
+
   /**
    * Removes a slot from the current closet
    */
@@ -799,6 +806,20 @@ export default class ProductRenderer {
   }
   /*End new methods*/
 
+
+    
+  /* TODO: Transfer this methods to new Product Renderer */
+  /** 
+   * Populate vector website dimensions
+  */
+  populateWebsiteDimensions(websiteDimensions){
+      if(websiteDimensions.width != undefined || websiteDimensions.height != undefined || websiteDimensions.depth != undefined ){
+      
+        this.websiteDimensions=[websiteDimensions.width,websiteDimensions.height,websiteDimensions.depth];  
+      }
+  }
+  /**  END   */
+
   /**
    * Changes the dimensions of the closet
    * @param {number} width Number with the closet width
@@ -807,10 +828,9 @@ export default class ProductRenderer {
    */
   changeClosetDimensions(width, height, depth) {
     this.resizeFactor();
-
     this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
     this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
-    this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth) - 195.8);
+    this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth) - 250.8);
 
     this.updateClosetGV();
   }
@@ -822,7 +842,14 @@ export default class ProductRenderer {
     var i;
     for (i = 0; i < this.NUMBER_DIMENSIONS; i++) {
       this.resizeVec[i] = this.initialDimensions[i] / this.websiteDimensions[i];
+     
     }
+    store.dispatch(SET_RESIZE_VECTOR_GLOBAL, {
+      width: this.resizeVec[this.WIDTH],
+      height:this.resizeVec[this.HEIGHT],
+      depth: this.resizeVec[this.DEPTH],    
+    });
+
   }
   /**
    * Applies the texture to the closet.

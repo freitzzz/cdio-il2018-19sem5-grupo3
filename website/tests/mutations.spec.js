@@ -22,6 +22,11 @@ describe('customized product mutations', () => {
         );
     });
     describe('customized product slots', () => {
+        describe('slot id', () => {
+            test('set slot id',
+                ensureSetSlotIdUpdatesStateCorrectly
+            );
+        });
         describe('slot dimensions', () => {
             test('add slot dimensions',
                 ensureAddSlotDimensionsUpdatesStateCorrectly
@@ -88,6 +93,20 @@ describe('canvas controls mutations', () => {
 describe('resize factor dimensions mutations', () => {
     test('set resize factor dimensions values', () => {
         ensureSetResizeFactorDimensionsUpdatesStateCorrectly
+    });
+    //TODO Check if the transformation of an object into an array is supposed to happen
+    test('initialize as empty array if payload is null',
+        ensureSetResizeFactorDimensionsInitializesAsEmptyArrayIfPayloadIsNull
+    );
+})
+
+describe('resize vector global mutations', () => {
+    test('set resize vector global values', () => {
+        ensureSetResizeVectorGlobalUpdatesStateCorrectly
+    });
+    //TODO Check if the transformation of an object into an array is supposed to happen
+    test('initialize as empty array if payload is null', () => {
+        ensureSetResizeVectorGlobalInitializesAsEmptyArrayIfPayloadIsNull
     });
 })
 
@@ -248,6 +267,29 @@ function ensureAddSlotDimensionsInitializesEmptyArrayIfMutationPayloadIsNull() {
     expect(state.customizedProduct.slots).toHaveLength(0);
 }
 
+function ensureSetSlotIdUpdatesStateCorrectly() {
+    const state = {
+        customizedProduct: {
+            slots: [
+                {
+                    idSlot: 1,
+                    width: 100,
+                    height: 100,
+                    depth: 100,
+                    unit: "dm"
+                }
+            ]
+        }
+    };
+    const expectedSlotId = 2;
+    const payload = {
+        position: 0,
+        idSlot: expectedSlotId
+    };
+    mutations.set_id_slot(state, payload);
+    expect(state.customizedProduct.slots[0].idSlot).toEqual(expectedSlotId);
+}
+
 function ensureSetCustomizedProductMaterialUpdatesStateCorrectly() {
     const state = {
         customizedProduct: {
@@ -261,7 +303,7 @@ function ensureSetCustomizedProductMaterialUpdatesStateCorrectly() {
     };
     const payload = {
         id: 1,
-        reference: "hello i'm a refernce",
+        reference: "hello i'm a reference",
         designation: "and i'm a designation",
         image: "image.jpg"
     };
@@ -360,7 +402,6 @@ function ensureSetCustomizedProductComponentDoesntAddComponentIfCustomizedProduc
 function ensureSetCustomizedProductComponentInitializesEmptyArrayIfPayloadIsNull() {
     const state = {
         customizedProduct: {
-            components: [],
             slots: [{
                 components: [],
                 idSlot: 1,
@@ -472,11 +513,7 @@ function ensureDeactivatingComponentsMovementFlagUpdatesStateCorrectly() {
 
 function ensureSetResizeFactorDimensionsUpdatesStateCorrectly() {
     const state = {
-        resizeFactorDimensions: {
-            width: "",
-            height: "",
-            depth: ""
-        }
+        resizeFactorDimensions: {}
     };
     const payload = {
         width: "2",
@@ -485,4 +522,33 @@ function ensureSetResizeFactorDimensionsUpdatesStateCorrectly() {
     };
     mutations.set_resize_factor_dimensions(state, payload);
     expect(state.resizeFactorDimensions).toEqual(payload);
+}
+
+function ensureSetResizeFactorDimensionsInitializesAsEmptyArrayIfPayloadIsNull() {
+    const state = {};
+    const payload = null;
+    mutations.set_resize_factor_dimensions(state, payload);
+    expect(state.resizeFactorDimensions).toHaveLength(0);
+}
+
+function ensureSetResizeVectorGlobalUpdatesStateCorrectly() {
+    const state = {
+        resizeVectorGlobal: {}
+    };
+    const payload = {
+        width: "2",
+        height: "2",
+        depth: "2"
+    };
+    mutations.set_resize_vector_global(state, payload);
+    expect(state.resizeVectorGlobal).toEqual(payload);
+}
+
+function ensureSetResizeVectorGlobalInitializesAsEmptyArrayIfPayloadIsNull() {
+    const state = {
+        resizeVectorGlobal: {}
+    };
+    const payload = null;
+    mutations.set_resize_vector_global(state, payload);
+    expect(state.resizeVectorGlobal).toHaveLength(0);
 }

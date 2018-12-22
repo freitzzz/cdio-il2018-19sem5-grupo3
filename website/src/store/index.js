@@ -58,10 +58,22 @@ const state = {
         width: "",
         height: "",
         depth: "",
+    },
+
+    resizeVectorGlobal:{
+        width: "",
+        height: "",
+        depth: "",
     }
 }
 
 export const getters = {
+    resizeVectorGlobal: state =>{
+        return state.resizeVectorGlobal;
+    },
+    resizeFactorDimensions: state =>{
+        return state.resizeFactorDimensions;
+    },
     productId: state => {
         return state.product.id;
     },
@@ -89,17 +101,8 @@ export const getters = {
     customizedProductId: state => {
         return state.customizedProduct.id;
     },
-    width: state => {
-        return state.customizedProduct.dimensions.width;
-    },
     customizedProductDimensions: state => {
         return state.customizedProduct.customizedDimensions;
-    },
-    depth: state => {
-        return state.customizedProduct.dimensions.depth;
-    },
-    unit: state => {
-        return state.customizedProduct.dimensions.unit;
     },
     customizedProductSlotWidth: state => index => {
         return state.customizedProduct.slots[index];

@@ -45,7 +45,7 @@
                 :place-holder="materials.placeholder"
                 @emitItems="changeCurrentMaterials"
             />
-            <b-checkbox @input="enableComponents()">Components</b-checkbox>
+            <b-checkbox type="is-info" @input="enableComponents()">Components</b-checkbox>
             <div v-if="components">
                 <customized-selected-items
                     :added-items="toCustomizedSelectedComponents(product.components ? product.components : [])"
@@ -57,7 +57,7 @@
                     @emitItems="changeCurrentComponents"
                 />
             </div>
-            <b-checkbox @input="enableDimensions()">Dimensions</b-checkbox>
+            <b-checkbox type="is-info" @input="enableDimensions()">Dimensions</b-checkbox>
             <div v-if="dimensions">
                 <b-field label="Dimensions"/>
                 <b-field>
