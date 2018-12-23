@@ -1,5 +1,6 @@
 using core.domain;
 using core.dto;
+using core.exceptions;
 using core.persistence;
 using support.utils;
 using System;
@@ -24,12 +25,12 @@ namespace core.services.ensurance{
         /// <summary>
         /// Constant that represents the message that occurs if the material being fetched the price history doens't exist
         /// </summary>
-        public const string INVALID_MATERIAL_PRICE_HISTORY_FETCH="The material being fetched the price history doesn't exist";
+        public const string INVALID_MATERIAL_PRICE_HISTORY_FETCH="The material(s) being fetched doesn't have a price history";
 
         /// <summary>
         /// Constant that represents the message that occurs if the material finish being fetched the price history doens't exist
         /// </summary>
-        public const string INVALID_MATERIAL_FINISH_PRICE_HISTORY_FETCH="The material finish being fetched the price history doesn't exist";
+        public const string INVALID_MATERIAL_FINISH_PRICE_HISTORY_FETCH="The material finish(es) being fetched doesn't have a price history";
 
         /// <summary>
         /// Constant that represents the message that occurs if the materials being fetched 
@@ -81,7 +82,7 @@ namespace core.services.ensurance{
         /// <param name="materialFinishPriceTableEntries">IEnumerable with the fetched material price history</param>
         public static void ensureMaterialPriceHistoryFetchWasSuccessful(IEnumerable<MaterialPriceTableEntry> materialPriceTableEntries){
             if(Collections.isEnumerableNullOrEmpty(materialPriceTableEntries))
-                throw new InvalidOperationException(INVALID_MATERIAL_PRICE_HISTORY_FETCH);
+                throw new ResourceNotFoundException(INVALID_MATERIAL_PRICE_HISTORY_FETCH);
         }
 
         /// <summary>
@@ -90,7 +91,7 @@ namespace core.services.ensurance{
         /// <param name="materialFinishPriceTableEntries">IEnumerable with the fetched material finish price history</param>
         public static void ensureMaterialFinishPriceHistoryFetchWasSuccessful(IEnumerable<FinishPriceTableEntry> materialFinishPriceTableEntries){
             if(Collections.isEnumerableNullOrEmpty(materialFinishPriceTableEntries))
-                throw new InvalidOperationException(INVALID_MATERIAL_FINISH_PRICE_HISTORY_FETCH);
+                throw new ResourceNotFoundException(INVALID_MATERIAL_FINISH_PRICE_HISTORY_FETCH);
         }
 
         /// <summary>
