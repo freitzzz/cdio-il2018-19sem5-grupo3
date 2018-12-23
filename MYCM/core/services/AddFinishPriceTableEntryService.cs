@@ -7,14 +7,16 @@ using NodaTime.Text;
 using System;
 using System.Threading.Tasks;
 using System.Net.Http;
+using core.modelview.pricetable;
+using core.exceptions;
+using System.Collections.Generic;
 
 namespace core.services
 {
     /// <summary>
     /// Service that helps transforming and persisting a Finish Price Table Entry
     /// </summary>
-    //TODO This Service and AddMaterialPriceTableEntryModelViewService are very similar. Should we look into a way of decreasing duplicated code?
-    public static class AddFinishPriceTableEntryModelViewService
+    public static class AddFinishPriceTableEntryService
     {
         /// <summary>
         /// Message that occurs if the requested material for the price table entry isn't found
@@ -42,13 +44,35 @@ namespace core.services
         private const string PRICE_TABLE_ENTRY_NOT_CREATED = "A price table entry with the same values already exists for this finish. Please try again with different values";
 
         /// <summary>
+        /// Message that occurs if the new currency isn't supported
+        /// </summary>
+        private const string UNSUPPORTED_CURRENCY = "The inserted currency is not being supported at the moment!";
+
+        /// <summary>
+        /// Message to help the user know which currencies to use
+        /// </summary>
+        private const string SUPPORTED_CURRENCIES_MESSAGE = "Please use one of the currencies that are currently being supported";
+
+        /// <summary>
+        /// Message that occurs if the new area isn't supported
+        /// </summary>
+        private const string UNSUPPORTED_AREA = "The inserted area is not being supported at the moment!";
+
+        /// <summary>
+        /// Message to help the user know which areas to use
+        /// </summary>
+        private const string SUPPORTED_AREAS_MESSAGE = "Please use one of the areas that are currently being supported";
+
+        /// <summary>
         /// Transforms and creates a finish price table entry
         /// </summary>
         /// <param name="modelView">model view with the necessary info to create a finish price table entry</param>
         /// <param name="clientFactory">injected client factory</param>
         /// <returns></returns>
-        public static async Task<AddFinishPriceTableEntryModelView> transform(AddFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public static async Task<GetMaterialFinishPriceModelView> create(AddFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
+            string defaultCurrency = CurrencyPerAreaConversionService.getBaseCurrency();
+            string defaultArea = CurrencyPerAreaConversionService.getBaseArea();
             MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
             long materialId = modelView.entityId;
 
@@ -56,7 +80,7 @@ namespace core.services
 
             if (material == null)
             {
-                throw new NullReferenceException(MATERIAL_NOT_FOUND);
+                throw new ResourceNotFoundException(MATERIAL_NOT_FOUND);
             }
 
             //TODO Is this null check enough? Should we check ,if an entry exists, that the time period of the price entry is valid?
@@ -67,7 +91,6 @@ namespace core.services
                 throw new InvalidOperationException(MATERIAL_HAS_NO_PRICE);
             }
 
-            //TODO Should this be done with a query instead of a foreach?
             foreach (Finish finish in material.Finishes)
             {
                 if (finish.Id == modelView.finishId)
@@ -90,14 +113,47 @@ namespace core.services
 
                     TimePeriod timePeriod = TimePeriod.valueOf(startingDate, endingDate);
 
-                    //TODO Take area conversion into account
+                    List<string> availableCurrencies = (List<string>)CurrenciesService.getAvailableCurrencies();
+                    List<string> availableAreas = (List<string>)AreasService.getAvailableAreas();
+
+                    if (!availableCurrencies.Contains(modelView.priceTableEntry.price.currency))
+                    {
+                        throw new ArgumentException
+                        (
+                            string.Format
+                            (
+                                "{0} {1}: {2}",
+                                UNSUPPORTED_CURRENCY, SUPPORTED_CURRENCIES_MESSAGE, string.Join(", ", availableCurrencies)
+                            )
+                        );
+                    }
+
+                    if (!availableAreas.Contains(modelView.priceTableEntry.price.area))
+                    {
+                        throw new ArgumentException
+                        (
+                            string.Format
+                            (
+                             "{0} {1}: {2}",
+                             UNSUPPORTED_AREA, SUPPORTED_AREAS_MESSAGE, string.Join(", ", availableAreas)
+                            )
+                        );
+                    }
+
                     Price price = null;
                     try
                     {
-                        double convertedValue = await new CurrencyPerAreaConversionService(clientFactory)
+                        if (defaultCurrency.Equals(modelView.priceTableEntry.price.currency) && defaultArea.Equals(modelView.priceTableEntry.price.area))
+                        {
+                            price = Price.valueOf(modelView.priceTableEntry.price.value);
+                        }
+                        else
+                        {
+                            double convertedValue = await new CurrencyPerAreaConversionService(clientFactory)
                                                             .convertCurrencyToDefaultCurrency(modelView.priceTableEntry.price.currency,
                                                                  modelView.priceTableEntry.price.value);
-                        price = Price.valueOf(convertedValue);
+                            price = Price.valueOf(convertedValue);
+                        }
                     }
                     catch (HttpRequestException)
                     {
@@ -113,26 +169,20 @@ namespace core.services
                         throw new InvalidOperationException(PRICE_TABLE_ENTRY_NOT_CREATED);
                     }
 
-                    PriceTableEntryDTO createdPriceTableEntryDTO = new PriceTableEntryDTO();
-                    createdPriceTableEntryDTO.startingDate = LocalDateTimePattern.GeneralIso.Format(savedFinishPriceTableEntry.timePeriod.startingDate);
-                    createdPriceTableEntryDTO.endingDate = LocalDateTimePattern.GeneralIso.Format(savedFinishPriceTableEntry.timePeriod.endingDate);
-                    createdPriceTableEntryDTO.price = new PriceDTO();
-                    createdPriceTableEntryDTO.price.value = savedFinishPriceTableEntry.price.value;
-                    //TODO Take area conversion into account
-                    createdPriceTableEntryDTO.price.currency = CurrencyPerAreaConversionService.getBaseCurrency();
-                    createdPriceTableEntryDTO.price.area = CurrencyPerAreaConversionService.getBaseArea();
+                    GetMaterialFinishPriceModelView createdPriceModelView = new GetMaterialFinishPriceModelView();
 
-                    AddFinishPriceTableEntryModelView createdPriceModelView = new AddFinishPriceTableEntryModelView();
-                    createdPriceModelView.priceTableEntry = createdPriceTableEntryDTO;
-                    createdPriceModelView.entityId = material.Id;
+                    createdPriceModelView.startingDate = LocalDateTimePattern.GeneralIso.Format(savedFinishPriceTableEntry.timePeriod.startingDate);
+                    createdPriceModelView.endingDate = LocalDateTimePattern.GeneralIso.Format(savedFinishPriceTableEntry.timePeriod.endingDate);
+                    createdPriceModelView.value = savedFinishPriceTableEntry.price.value;
+                    createdPriceModelView.currency = defaultCurrency;
+                    createdPriceModelView.area = defaultArea;
                     createdPriceModelView.finishId = finish.Id;
-                    createdPriceModelView.tableEntryId = savedFinishPriceTableEntry.Id;
+                    createdPriceModelView.id = savedFinishPriceTableEntry.Id;
 
                     return createdPriceModelView;
                 }
             }
-
-            throw new NullReferenceException(FINISH_NOT_FOUND);
+            throw new ResourceNotFoundException(FINISH_NOT_FOUND);
         }
     }
 }
