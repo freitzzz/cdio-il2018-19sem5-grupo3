@@ -6,6 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "start": "npm run build && ./node_modules/.bin/http-server",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
     "test": "jest --verbose"
@@ -32,6 +33,7 @@
     "axios": "^0.18.0",
     "buefy": "^0.7.0",
     "es6-promise": "^4.2.5",
+    "http-server": "^0.11.1",
     "i": "^0.3.6",
     "imports-loader": "^0.8.0",
     "npm": "^6.4.1",
