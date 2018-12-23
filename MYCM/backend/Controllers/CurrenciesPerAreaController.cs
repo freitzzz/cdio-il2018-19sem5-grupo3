@@ -7,6 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace backend.Controllers
 {
+    /// <summary>
+    /// Currencies Per Area MVC 
+    /// </summary>
 
     [Route("mycm/api/currenciesperarea")]
     public class CurrenciesPerAreaController : Controller
@@ -19,12 +22,21 @@ namespace backend.Controllers
 
         private readonly ILogger<CurrenciesPerAreaController> logger;
 
+        /// <summary>
+        /// Controller constructor
+        /// </summary>
+        /// <param name="logger"></param>
         public CurrenciesPerAreaController(ILogger<CurrenciesPerAreaController> logger)
         {
             this.logger = logger;
         }
 
 
+        /// <summary>
+        /// Fetches all available currencies
+        /// </summary>
+        /// <returns>ActionResult with HTTP 200 Ok and all available currencies
+        ///     Or ActionResult with HTTP 500 if an error happens</returns>
         [HttpGet("currencies")]
         public ActionResult getAllCurrencies()
         {
@@ -42,6 +54,11 @@ namespace backend.Controllers
             }
         }
 
+        /// <summary>
+        /// Fetches all available areas
+        /// </summary>
+        /// <returns>ActionResult with HTTP 200 Ok and all available areas
+        ///     Or ActionResult with HTTP 500 if an error happens</returns>
         [HttpGet("areas")]
         public ActionResult getAllAreas()
         {

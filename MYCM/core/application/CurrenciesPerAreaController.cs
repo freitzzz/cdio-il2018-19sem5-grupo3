@@ -5,8 +5,15 @@ using core.services;
 
 namespace core.application
 {
+    /// <summary>
+    /// Application CurrenciesPerArea Controller
+    /// </summary>
     public class CurrenciesPerAreaController
     {
+        /// <summary>
+        /// Fetches all available currencies
+        /// </summary>
+        /// <returns>GetAllCurrenciesModelView containing all available currencies</returns>
         public GetAllCurrenciesModelView getAllCurrencies()
         {
             IEnumerable<string> availableCurrencies = CurrenciesService.getAvailableCurrencies();
@@ -22,6 +29,10 @@ namespace core.application
             return allCurrenciesModelView;
         }
 
+        /// <summary>
+        /// Fetches all available areas
+        /// </summary>
+        /// <returns>GetAllAreasModelView with all available areas</returns>
         public GetAllAreasModelView getAllAreas()
         {
             IEnumerable<string> availableAreas = AreasService.getAvailableAreas();
