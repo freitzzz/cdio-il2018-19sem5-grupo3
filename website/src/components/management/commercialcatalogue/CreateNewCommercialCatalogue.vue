@@ -42,17 +42,23 @@
         <!--Prevents the auto complete prompt from overlapping the checkboxes-->
         <div v-if="isInputtingData" class="expandable-div"></div>
 
-        <div class="scrollable-checkboxes">
-          <b-field horizontal v-for="collection in suggestedCollections" :key="collection.id">
-            <b-checkbox
-              type="is-info"
-              v-model="selectedCollections[collection.id]"
-            >{{collection.name}}</b-checkbox>
-            <button class="btn-primary">
-              <b-icon icon="pencil"></b-icon>
-            </button>
-          </b-field>
-        </div>
+        <b-table
+          :data="collections"
+          :checked-rows.sync="selectedCollections"
+          :paginated="true"
+          :pagination-simple="true"
+          checkable
+          per-page="5"
+        >
+          <template slot-scope="props">
+            <b-table-column label="Name">{{props.row.name}}</b-table-column>
+            <b-table-column>
+              <button class="btn-primary">
+                <b-icon icon="pencil"></b-icon>
+              </button>
+            </b-table-column>
+          </template>
+        </b-table>
       </div>
       <footer class="modal-card-foot">
         <button class="btn-primary" @click="createCatalogue">Create</button>
@@ -72,11 +78,7 @@ export default {
       designation: null,
       searchedCollection: "",
       collectionsAvailable: false, //boolean used as flag for rendering the autocomplete box and checkboxes
-      /**
-       * Selected options are represented as an Object instead of an Array in order to make ids unique
-       * Each entry in the Object will have a boolean representing selection state
-       */
-      selectedCollections: {},
+      selectedCollections: [],
       collections: []
     };
   },
@@ -100,13 +102,10 @@ export default {
     buildCollectionArray() {
       var collectionArray = [];
 
-      Object.keys(this.selectedCollections).map(key => {
-        if (this.selectedCollections[key]) {
-          var collection = { collectionId: key };
-
-          collectionArray.push(collection);
-        }
-      });
+      for (let i = 0; i < this.selectedCollections.length; i++) {
+        var collection = { collectionId: this.selectedCollections[i].id };
+        collectionArray.push(collection);
+      }
 
       return collectionArray;
     },
@@ -115,7 +114,20 @@ export default {
      * Selects an option.
      */
     selectCollection(option) {
-      this.selectedCollections[option.id] = true;
+      var alreadyAdded = false;
+
+      //check it the collection was already added
+      for (let i = 0; i < this.selectedCollections.length; i++) {
+        if (this.selectedCollections[i].id == option.id) {
+          alreadyAdded = true;
+          break;
+        }
+      }
+
+      //don't push more than once
+      if (!alreadyAdded) {
+        this.selectedCollections.push(option);
+      }
     },
 
     /**

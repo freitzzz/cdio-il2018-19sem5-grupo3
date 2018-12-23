@@ -7,13 +7,16 @@
       </div>
       <div class="text-entry">Choose material to add:</div>
       <div class="padding-div">
-        <div class="scrollable-div" style="height: 400px; width: 100%;">
+        <div class="scrollable-div" style="height: 300px; width: 100%;">
            <a v-if="getMaterialInformationOK" class="sidepanel">
               <a v-if="hasFinishes" class="sidepanel-entry" @click="changeShowFinishes">
                 <p><i class="material-icons md-12 md-blue">brush</i> <b>Finishes <i class="fa fa-caret-down"></i></b></p>
               </a>
               <div class="dropdown-container" v-if="showFinishes">
-                <a class="sidepanel-subentry" @click="removeFinish()"><i class="material-icons md-12">not_interested</i> None</a>   
+                <a class="sidepanel-subentry" @click="removeFinish()">
+                  <swatches value="" :trigger-style="{ width: '10px', height: '10px', position:'absolute', left:'-16px', top:'6px'}"/>
+                  None
+                </a>   
                 <div v-for="finish in finishes" :key="finish.description">
                   <a class="sidepanel-subentry" @click="applyFinish(finish)">{{finish.description}}</a>   
                 </div>           
@@ -22,9 +25,25 @@
                 <p><i class="material-icons md-12 md-blue">color_lens</i> <b>Colors <i class="fa fa-caret-down"></i></b></p>
               </a>
               <div class="dropdown-container" v-if="showColors">
-                <a class="sidepanel-subentry" @click="removeColor()"><i class="material-icons md-12">not_interested</i> None</a>
+                <a class="sidepanel-subentry" @click="removeColor()">
+                <swatches value="" :trigger-style="{ width: '10px', height: '10px', position:'absolute', left:'-16px', top:'6px'}"/>
+                None
+                </a>
                 <div v-for="color in colors" :key="color.name">
-                  <a class="sidepanel-subentry" @click="applyColor(color)">{{color.name}}</a>   
+                  <a class="sidepanel-subentry" @click="applyColor(color)">
+                    <swatches
+                    :value="rgbToHex(color)"
+                    :trigger-style="{ width: '10px',
+                                      height: '10px',
+                                      position: 'absolute',
+                                      left: '-16px',
+                                      top: '6px',
+                                      borderRadius: '3px',
+                                      cursor: 'pointer',
+                                      border: 'thin solid black' }"
+                    :disabled="true"/>
+                    {{color.name}}
+                  </a>   
                 </div>                       
               </div>
           </a>
@@ -60,6 +79,8 @@ import { error } from "three";
 import store from "./../store";
 import Toasted from "vue-toasted";
 import { MYCM_API_URL } from "./../config.js";
+import Swatches from "vue-swatches";
+import "vue-swatches/dist/vue-swatches.min.css";
 import { SET_CUSTOMIZED_PRODUCT_MATERIAL, SET_CUSTOMIZED_PRODUCT_FINISH,
          SET_CUSTOMIZED_PRODUCT_COLOR, DEACTIVATE_CAN_MOVE_CLOSET,
          DEACTIVATE_CAN_MOVE_SLOTS
@@ -69,6 +90,7 @@ Vue.use(Toasted);
 
 export default {
   name: "CustomizerSideBarMaterialsPanel",
+  components: { Swatches }, 
   data() {
     return {
       materials: [],
@@ -176,6 +198,17 @@ export default {
     changeShowFinishes(){
       if(this.showFinishes == true) this.showFinishes = false;
       else this.showFinishes = true;
+    },
+    rgbToHex(color){
+      var red = this.convertValue(color.red);
+      var green = this.convertValue(color.green);
+      var blue = this.convertValue(color.blue);
+      return "#" + red + green + blue;
+    },
+    convertValue(value){
+      var hex = Number(value).toString(16);
+      if (hex.length < 2) hex = "0" + hex;
+      return hex;
     },
     nextPanel() {
       var hasColor = store.getters.customizedMaterialColorName != "None";
