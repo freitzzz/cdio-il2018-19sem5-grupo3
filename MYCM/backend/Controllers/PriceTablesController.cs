@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using NodaTime.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
+using core.exceptions;
 
 namespace backend.Controllers
 {
@@ -19,6 +20,11 @@ namespace backend.Controllers
     [Route("mycm/api/prices")]
     public class PriceTablesController : Controller
     {
+        /// <summary>
+        /// Constant that represents the message that is presented/logged if an unexpected error happens
+        /// </summary>
+        private const string UNEXPECTED_ERROR = "An unexpected error occured, please try again later";
+
         /// <summary>
         /// Constant that represents the message that is logged if a price entry for a material isn't created
         /// </summary>
@@ -145,6 +151,11 @@ namespace backend.Controllers
         private const string LOG_GET_ALL_MATERIAL_FINISHES_PRICE_HISTORY_NOT_FOUND = "GET ALL Finishes Price History of Material {id} NotFound";
 
         /// <summary>
+        /// Constant that represents the message that is logged if a post material price table entry returns not found
+        /// </summary>
+        private const string LOG_POST_MATERIAL_ENTRY_MATERIAL_NOT_FOUND = "POST{@modelView} Material Price Table Entry Material{id} NotFound";
+
+        /// <summary>
         /// Material Price Table Repository
         /// </summary>
         private readonly MaterialPriceTableRepository materialPriceTableRepository;
@@ -194,10 +205,14 @@ namespace backend.Controllers
                 logger.LogInformation(LOG_GET_ALL_MATERIALS_PRICE_HISTORY_SUCCESS, modelView);
                 return Ok(modelView);
             }
-            catch (InvalidOperationException invalidOperationException)
+            catch (ResourceNotFoundException e)
             {
-                logger.LogWarning(invalidOperationException, LOG_GET_ALL_MATERIALS_PRICE_HISTORY_NOT_FOUND);
-                return NotFound(new { error = invalidOperationException.Message });
+                logger.LogWarning(e, LOG_GET_ALL_MATERIALS_PRICE_HISTORY_NOT_FOUND);
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -213,10 +228,14 @@ namespace backend.Controllers
                 logger.LogInformation(LOG_GET_ALL_MATERIAL_FINISHES_PRICE_HISTORY_SUCCESS, materialID, allMaterialFinishesPriceHistoryModelView);
                 return Ok(allMaterialFinishesPriceHistoryModelView);
             }
-            catch (InvalidOperationException invalidOperationException)
+            catch (ResourceNotFoundException e)
             {
-                logger.LogWarning(invalidOperationException, LOG_GET_ALL_MATERIAL_FINISHES_PRICE_HISTORY_NOT_FOUND, materialID);
-                return NotFound(new { error = invalidOperationException.Message });
+                logger.LogWarning(e, LOG_GET_ALL_MATERIAL_FINISHES_PRICE_HISTORY_NOT_FOUND, materialID);
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -239,10 +258,14 @@ namespace backend.Controllers
                 logger.LogInformation(LOG_GET_MATERIAL_PRICE_HISTORY_SUCCESS, materialID, materialPriceHistoryModelView);
                 return Ok(materialPriceHistoryModelView);
             }
-            catch (InvalidOperationException invalidOperationException)
+            catch (ResourceNotFoundException e)
             {
-                logger.LogWarning(invalidOperationException, LOG_GET_MATERIAL_PRICE_HISTORY_NOT_FOUND, materialID);
-                return NotFound(new { error = invalidOperationException.Message });
+                logger.LogWarning(e, LOG_GET_MATERIAL_PRICE_HISTORY_NOT_FOUND, materialID);
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -267,10 +290,14 @@ namespace backend.Controllers
                 logger.LogInformation(LOG_GET_MATERIAL_FINISH_PRICE_HISTORY_SUCCESS, finishID, materialID, materialFinishPriceHistoryModelView);
                 return Ok(materialFinishPriceHistoryModelView);
             }
-            catch (InvalidOperationException invalidOperationException)
+            catch (ResourceNotFoundException e)
             {
-                logger.LogWarning(LOG_GET_MATERIAL_FINISH_PRICE_HISTORY_NOT_FOUND, finishID, materialID);
-                return NotFound(new { error = invalidOperationException.Message });
+                logger.LogWarning(e, LOG_GET_MATERIAL_FINISH_PRICE_HISTORY_NOT_FOUND, finishID, materialID);
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -288,34 +315,44 @@ namespace backend.Controllers
             try
             {
                 modelView.entityId = id;
-                AddPriceTableEntryModelView createdPrice = await new core.application.PriceTablesController().addMaterialPriceTableEntry(modelView, clientFactory);
+                GetMaterialPriceModelView createdPrice = await new core.application.PriceTablesController().addMaterialPriceTableEntry(modelView, clientFactory);
                 if (createdPrice == null)
                 {
                     logger.LogWarning(LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
-                    return BadRequest(new { error = PRICE_ENTRY_NOT_CREATED });
+                    return BadRequest(new SimpleJSONMessageService(PRICE_ENTRY_NOT_CREATED));
                 }
-                logger.LogInformation(LOG_POST_MATERIAL_ENTRY_SUCCESS, createdPrice, createdPrice.entityId);
+                logger.LogInformation(LOG_POST_MATERIAL_ENTRY_SUCCESS, createdPrice, createdPrice.id);
                 return Created(Request.Path, createdPrice);
             }
-            catch (NullReferenceException nullReferenceException)
+            catch (ResourceNotFoundException e)
             {
-                logger.LogWarning(nullReferenceException, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
-                return BadRequest(new { error = nullReferenceException.Message });
+                logger.LogWarning(e, LOG_POST_MATERIAL_ENTRY_MATERIAL_NOT_FOUND, modelView, id);
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (InvalidOperationException invalidOperationException)
+            catch (NullReferenceException e)
             {
-                logger.LogWarning(invalidOperationException, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
-                return BadRequest(new { error = invalidOperationException.Message });
+                logger.LogWarning(e, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (UnparsableValueException unparsableValueException)
+            catch (InvalidOperationException e)
             {
-                logger.LogWarning(unparsableValueException, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
-                return BadRequest(new { error = unparsableValueException.Message });
+                logger.LogWarning(e, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (ArgumentException argumentException)
+            catch (UnparsableValueException e)
             {
-                logger.LogWarning(argumentException, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
-                return BadRequest(new { error = argumentException.Message });
+                logger.LogWarning(e, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (ArgumentException e)
+            {
+                logger.LogWarning(e, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception e)
+            {
+                logger.LogWarning(e, UNEXPECTED_ERROR);
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -334,34 +371,42 @@ namespace backend.Controllers
             {
                 modelView.entityId = materialid;
                 modelView.finishId = finishid;
-                AddFinishPriceTableEntryModelView createdPrice = await new core.application.PriceTablesController().addFinishPriceTableEntry(modelView, clientFactory);
+                GetMaterialFinishPriceModelView createdPrice = await new core.application.PriceTablesController().addFinishPriceTableEntry(modelView, clientFactory);
                 if (createdPrice == null)
                 {
                     logger.LogWarning(LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
-                    return BadRequest(new { error = PRICE_ENTRY_NOT_CREATED });
+                    return BadRequest(new SimpleJSONMessageService(PRICE_ENTRY_NOT_CREATED));
                 }
-                logger.LogInformation(LOG_POST_MATERIAL_ENTRY_SUCCESS, createdPrice, createdPrice.finishId, createdPrice.entityId);
+                logger.LogInformation(LOG_POST_MATERIAL_ENTRY_SUCCESS, createdPrice, createdPrice.finishId, createdPrice.id);
                 return Created(Request.Path, createdPrice);
             }
-            catch (NullReferenceException nullReferenceException)
+            catch (ResourceNotFoundException e)
             {
-                logger.LogWarning(nullReferenceException, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
-                return BadRequest(new { error = nullReferenceException.Message });
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (InvalidOperationException invalidOperationException)
+            catch (NullReferenceException e)
             {
-                logger.LogWarning(invalidOperationException, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
-                return BadRequest(new { error = invalidOperationException.Message });
+                logger.LogWarning(e, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (UnparsableValueException unparsableValueException)
+            catch (InvalidOperationException e)
             {
-                logger.LogWarning(unparsableValueException, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
-                return BadRequest(new { error = unparsableValueException.Message });
+                logger.LogWarning(e, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (ArgumentException argumentException)
+            catch (UnparsableValueException e)
             {
-                logger.LogWarning(argumentException, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
-                return BadRequest(new { error = argumentException.Message });
+                logger.LogWarning(e, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (ArgumentException e)
+            {
+                logger.LogWarning(e, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -381,33 +426,42 @@ namespace backend.Controllers
             {
                 modelView.entityId = materialid;
                 modelView.tableEntryId = entryid;
-                if (!await new core.application.PriceTablesController().updateMaterialPriceTableEntry(modelView, clientFactory))
+                GetMaterialPriceModelView updatedEntry = await new core.application.PriceTablesController().updateMaterialPriceTableEntry(modelView, clientFactory);
+                if (updatedEntry == null)
                 {
                     logger.LogWarning(LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
-                    return BadRequest(new { error = ENTRY_NOT_UPDATED });
+                    return BadRequest(new SimpleJSONMessageService(ENTRY_NOT_UPDATED));
                 }
                 logger.LogInformation(LOG_PUT_MATERIAL_ENTRY_SUCCESS, entryid, materialid, modelView);
-                return Ok(new { message = ENTRY_UPDATE_SUCCESSFUL });
+                return Ok(updatedEntry);
             }
-            catch (NullReferenceException nullReferenceException)
+            catch (ResourceNotFoundException e)
             {
-                logger.LogWarning(nullReferenceException, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
-                return BadRequest(new { error = nullReferenceException.Message });
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (InvalidOperationException invalidOperationException)
+            catch (NullReferenceException e)
             {
-                logger.LogWarning(invalidOperationException, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
-                return BadRequest(new { error = invalidOperationException.Message });
+                logger.LogWarning(e, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (UnparsableValueException unparsableValueException)
+            catch (InvalidOperationException e)
             {
-                logger.LogWarning(unparsableValueException, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
-                return BadRequest(new { error = unparsableValueException.Message });
+                logger.LogWarning(e, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (ArgumentException argumentException)
+            catch (UnparsableValueException e)
             {
-                logger.LogWarning(argumentException, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
-                return BadRequest(new { error = argumentException.Message });
+                logger.LogWarning(e, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (ArgumentException e)
+            {
+                logger.LogWarning(e, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
@@ -429,34 +483,45 @@ namespace backend.Controllers
                 modelView.entityId = materialid;
                 modelView.finishId = finishid;
                 modelView.tableEntryId = entryid;
-                if (!await new core.application.PriceTablesController().updateFinishPriceTableEntry(modelView, clientFactory))
+                GetMaterialFinishPriceModelView updatedEntry = await new core.application.PriceTablesController().updateFinishPriceTableEntry(modelView, clientFactory);
+                if (updatedEntry == null)
                 {
                     logger.LogWarning(LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
                     return BadRequest(new { error = ENTRY_NOT_UPDATED });
                 }
                 logger.LogInformation(LOG_PUT_FINISH_ENTRY_SUCCESS, entryid, finishid, materialid, modelView);
-                return Ok(new { message = ENTRY_UPDATE_SUCCESSFUL });
+                return Ok(updatedEntry);
             }
-            catch (NullReferenceException nullReferenceException)
+            catch (ResourceNotFoundException e)
             {
-                logger.LogWarning(nullReferenceException, LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
-                return BadRequest(new { error = nullReferenceException.Message });
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (InvalidOperationException invalidOperationException)
+            catch (NullReferenceException e)
             {
-                logger.LogWarning(invalidOperationException, LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
-                return BadRequest(new { error = invalidOperationException.Message });
+                logger.LogWarning(e, LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (UnparsableValueException unparsableValueException)
+            catch (InvalidOperationException e)
             {
-                logger.LogWarning(unparsableValueException, LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
-                return BadRequest(new { error = unparsableValueException.Message });
+                logger.LogWarning(e, LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (ArgumentException argumentException)
+            catch (UnparsableValueException e)
             {
-                logger.LogWarning(argumentException, LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
-                return BadRequest(new { error = argumentException.Message });
+                logger.LogWarning(e, LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (ArgumentException e)
+            {
+                logger.LogWarning(e, LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
+
+        //TODO GET Current Material Price & GET Current Material Finish Price
     }
 }

@@ -70,36 +70,36 @@ namespace core.application
         /// Adds a new price table entry for a material
         /// </summary>
         /// <param name="modelView">model view with the price table entry's information</param>
-        public async Task<AddPriceTableEntryModelView> addMaterialPriceTableEntry(AddPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public async Task<GetMaterialPriceModelView> addMaterialPriceTableEntry(AddPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
-            return await AddMaterialPriceTableEntryModelViewService.transform(modelView, clientFactory);
+            return await AddMaterialPriceTableEntryService.create(modelView, clientFactory);
         }
 
         /// <summary>
         /// Adds new price table entry for a material's finish
         /// </summary>
         /// <param name="modelView">model view with the price table entry's information</param>
-        public async Task<AddFinishPriceTableEntryModelView> addFinishPriceTableEntry(AddFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public async Task<GetMaterialFinishPriceModelView> addFinishPriceTableEntry(AddFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
-            return await AddFinishPriceTableEntryModelViewService.transform(modelView, clientFactory);
+            return await AddFinishPriceTableEntryService.create(modelView, clientFactory);
         }
 
         /// <summary>
         /// Updates a material's price table entry
         /// </summary>
         /// <param name="modelView">model view with the necessary update information</param>
-        public async Task<bool> updateMaterialPriceTableEntry(UpdatePriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public async Task<GetMaterialPriceModelView> updateMaterialPriceTableEntry(UpdatePriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
-            return await UpdateMaterialPriceTableEntryModelViewService.update(modelView, clientFactory);
+            return await UpdateMaterialPriceTableEntryService.update(modelView, clientFactory);
         }
 
         /// <summary>
         /// Updates a finish's price table entry
         /// </summary>
         /// <param name="modelView">model view with the necessary update information</param>
-        public async Task<bool> updateFinishPriceTableEntry(UpdateFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public async Task<GetMaterialFinishPriceModelView> updateFinishPriceTableEntry(UpdateFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
-            return await UpdateFinishPriceTableEntryModelViewService.update(modelView, clientFactory);
+            return await UpdateFinishPriceTableEntryService.update(modelView, clientFactory);
         }
     }
 }
