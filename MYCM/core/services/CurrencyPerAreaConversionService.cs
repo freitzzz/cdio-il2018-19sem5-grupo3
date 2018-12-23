@@ -90,6 +90,7 @@ namespace core.services
         public async Task<double> convertCurrencyToDefaultCurrency(string convertFrom, double valueToConvert)
         {
 
+            //TODO Take area into account
             HttpClient client = clientFactory.CreateClient("CurrencyConversion");
 
             String getRequest = String.Format(client.BaseAddress.OriginalString + "/currency?from={0}&to={1}", convertFrom, defaultCurrency);
