@@ -53,8 +53,8 @@ namespace core_tests.domain
 
             Assert.Throws<ArgumentException>(() => new Component(parent, null));
             Assert.Throws<ArgumentException>(() => new Component(parent, null, true));
-            Assert.Throws<ArgumentException>(() => new Component(parent, null, new List<Restriction>() { new Restriction("ISTO É", new WidthPercentageAlgorithm()) }));
-            Assert.Throws<ArgumentException>(() => new Component(parent, null, new List<Restriction>() { new Restriction("ISTO É", new WidthPercentageAlgorithm()) }, true));
+            Assert.Throws<ArgumentException>(() => new Component(parent, null, new List<Restriction>() { new Restriction("ISTO É", new SameMaterialAndFinishAlgorithm()) }));
+            Assert.Throws<ArgumentException>(() => new Component(parent, null, new List<Restriction>() { new Restriction("ISTO É", new SameMaterialAndFinishAlgorithm()) }, true));
         }
 
         [Fact]
@@ -193,7 +193,7 @@ namespace core_tests.domain
             Product child = new Product("Not so bad", "Luke", "notsobad.glb", new ProductCategory("Drawers"), materials, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
             Assert.Throws<ArgumentException>(() => new Component(parent, child,
-            new List<Restriction>() { new Restriction("FUNCIONE", new WidthPercentageAlgorithm()) }).addRestriction(null));
+            new List<Restriction>() { new Restriction("FUNCIONE", new SameMaterialAndFinishAlgorithm()) }).addRestriction(null));
         }
 
         [Fact]
@@ -215,7 +215,7 @@ namespace core_tests.domain
             //Creates a child product
             Product child = new Product("Not so bad", "Luke", "notsobad.glb", new ProductCategory("Drawers"), materials, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
-            Restriction restriction = new Restriction("FUNCIONE", new WidthPercentageAlgorithm());
+            Restriction restriction = new Restriction("FUNCIONE", new SameMaterialAndFinishAlgorithm());
             Assert.Throws<ArgumentException>(() => new Component(parent, child,
             new List<Restriction>() { restriction }).addRestriction(restriction));
         }
@@ -241,7 +241,7 @@ namespace core_tests.domain
 
             Component component = new Component(parent, child, new List<Restriction>() { new Restriction("FUNCIONE", new SameMaterialAndFinishAlgorithm()) });
 
-            Action addRestrictionAction = () => component.addRestriction(new Restriction("FUNCIONOU", new WidthPercentageAlgorithm()));
+            Action addRestrictionAction = () => component.addRestriction(new Restriction("FUNCIONOU", new SameMaterialAndFinishAlgorithm()));
 
             Exception exception = Record.Exception(addRestrictionAction);
 

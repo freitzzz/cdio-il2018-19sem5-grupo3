@@ -129,12 +129,12 @@ export default class Closet extends SlotableProduct{
     /**
      * Returns the current width of the closet
      */
-    getClosetWidth() { return this.faces.get(FaceOrientation.BASE); }
+    getClosetWidth() { return this.faces.get(FaceOrientation.BASE).width(); }
 
     /**
      * Returns the current height of the closet
      */
-    getClosetHeight() { return this.faces.get(FaceOrientation.LEFT); }
+    getClosetHeight() { return this.faces.get(FaceOrientation.LEFT).height(); }
 
     /**
      * Returns the current depth of the closet

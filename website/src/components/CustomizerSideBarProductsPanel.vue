@@ -7,7 +7,7 @@
         </div>
         <div class="text-entry">Select a structure:</div>
        <div class="padding-div">
-        <div class="scrollable-div" style="height: 400px; width: 100%;">
+        <div class="scrollable-div" style="height: 300px; width: 100%;">
             <ul class="image-list" v-for="product in products" :key="product.id">
             <li>
               <div class="image-btn" @click="selectProduct(product.id)">

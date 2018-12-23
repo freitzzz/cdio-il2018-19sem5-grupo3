@@ -1,9 +1,9 @@
 //@ts-check
 
 /**
- * Requires BaseProduct for product base properties
+ * Requires OpenableProduct for openable product base properties
  */
-import BaseProduct from "./BaseProduct";
+import OpenableProduct from "./OpenableProduct";
 
 /**
  * Requires Face for identifying the sliding door face
@@ -18,7 +18,7 @@ import ProductType from "./ProductType";
 /**
  * Represents a sliding door using box geometry
  */
-export default class SlidingDoor extends BaseProduct{
+export default class SlidingDoor extends OpenableProduct{
 
     /**
      * Builds a new SlidingDoor
@@ -62,4 +62,15 @@ export default class SlidingDoor extends BaseProduct{
     getWidth() {
         return this.face.width();
     }
+
+    /**
+     * Returns the face of the sliding door
+     */
+    getFace(){return this.face;}
+
+    /**
+     * Draws the current sliding door
+     * @returns {Object} Object with the drawn sliding door
+     */
+    draw(){}
 }

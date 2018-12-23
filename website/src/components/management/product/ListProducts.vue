@@ -232,7 +232,7 @@ export default {
          * Fetches all available products
          */
         refreshProducts(){
-            this.columns = this.generateCollectionsTableColumns();
+            this.columns = this.generateProductsTableColumns();
             this.data = [];
             this.total = this.data.length;
             Axios.get(MYCM_API_URL+'/products')

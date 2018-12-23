@@ -14,6 +14,7 @@ import ThreeFace from '../../threejeyass/domain/ThreeFace';
  * Requires Three.js Group and Mesh
  */
 import {Group,Mesh} from 'three';
+import BaseProduct from '../../api/domain/BaseProduct';
 
 /**
  * Represents a Closet built with Three.js properties
@@ -42,6 +43,17 @@ export default class ThreeCloset extends Closet{
         return slot;
     }
     
+    /**
+     * Adds a new product into a certain slot of the closet
+     * @param {Number} slotId Number with the slot identifier where the product will be inserted
+     * @param {BaseProduct} product BaseProduct with the product to be added on the current closet slot
+     */
+    addProduct(slotId,product){
+        if(!product.isDrawn())
+            this.faceGroup.add(product.draw());
+        super.addProduct(slotId,product);
+    }
+
     /**
      * Removes a slot from the closet
      */

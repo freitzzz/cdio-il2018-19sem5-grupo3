@@ -7,7 +7,7 @@
         <template slot="actions" slot-scope="props">
             <div class="custom-actions">
                 <button
-                    class="button is-danger"
+                    class="btn-primary"
                     @click="emitShowDetails(props.rowData.id)"
                 >
                     <b-icon icon="magnify"/>
