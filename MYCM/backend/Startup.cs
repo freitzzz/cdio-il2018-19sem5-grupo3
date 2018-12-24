@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using backend.persistence.ef;
 using System;
 using System.Collections.Generic;
+using backend.middleware;
 
 namespace backend
 {
@@ -24,16 +25,16 @@ namespace backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public virtual void ConfigureServices(IServiceCollection services)
         {
-
-            /*services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });*/
             DatabaseConfiguration.ConfigureDatabase(Configuration, services);
 
-            services.AddCors();
+            services.AddCors(options =>
+                options.AddPolicy("Website",
+                    builder => builder
+                        .WithOrigins(Configuration.GetSection("WEBSITE_URL").Value)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                ));
+
             services.AddHttpClient("CurrencyConversion", client =>
             {
                 client.BaseAddress = new Uri("http://rate-exchange-1.appspot.com");
@@ -41,9 +42,10 @@ namespace backend
                 client.DefaultRequestHeaders.Add("User-Agent", "CurrencyConversionAgent");
             });
 
-            services.AddHttpClient("MYCA",httpClient=>{
-                httpClient.BaseAddress=new Uri(Program.configuration.GetValue<string>("MYCA_ENTRYPOINT"));
-                httpClient.DefaultRequestHeaders.Add("Accept",new List<string>(new []{"application/json","text/html"}));
+            services.AddHttpClient("MYCA", httpClient =>
+            {
+                httpClient.BaseAddress = new Uri(Program.configuration.GetValue<string>("MYCA_ENTRYPOINT"));
+                httpClient.DefaultRequestHeaders.Add("Accept", new List<string>(new[] { "application/json", "text/html" }));
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -52,24 +54,16 @@ namespace backend
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            /*else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
+            app.UseSerilogMiddleware();
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseCookiePolicy(); */
+/*             if (!env.IsDevelopment())
+            {
+                app.UseHsts();
+                app.UseHttpsRedirection();
+            } */
 
             //Allow requests from MYC's website
-            app.UseCors(builder => 
-            builder.WithOrigins("http://localhost:8080")
-            .AllowAnyMethod().AllowAnyHeader());
+            app.UseCors("Website");
 
             app.UseMvc();
         }
