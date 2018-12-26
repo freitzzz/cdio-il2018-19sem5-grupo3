@@ -114,21 +114,20 @@ export default {
         .catch(error => {});
     },
     addLine() {
-      let checkEmptyLines = this.lines.filter(line => line.number === null);
-      if (checkEmptyLines.length >= 1 && this.lines.length > 0){
-        return;
-      } 
       this.lines.push({
         slider: null
       });
       this.addSlot(this.lines.length);
     },
-     addSlot(index){
-      if(index <= this.maxNumberSlots)
-      this.drawOneSlot();
+    addSlot(index){
+      if(index <= this.maxNumberSlots){
+        this.drawOneSlot();
+      }else{
+         this.$toast.open("Já atingiu o número máximo de slots"); 
+      }
     },
     removeLine(lineId) {
-      if (!this.blockRemoval) this.lines.splice(lineId, 1); //this.removeSlot(this.lines.length);
+      if (!this.blockRemoval) this.lines.splice(lineId, 1); this.removeSlot(this.lines.length);
     },
     removeSlot(index){
       if(index >= this.minNumberSlots)
@@ -331,7 +330,7 @@ export default {
               var depthCloset = 2500; //store.state.customizedProduct.customizedDimensions.depth;
               var heightCloset = 5000; //store.state.customizedProduct.customizedDimensions.height;
               
-              var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
+              var unitCloset = "mm"//store.state.customizedProduct.customizedDimensions.unit;
               var unitSlots = store.getters.productSlotWidths.unit;
 
               var min = store.getters.minSlotWidth;
