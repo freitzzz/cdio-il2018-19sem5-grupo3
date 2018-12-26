@@ -1,4 +1,5 @@
 using core.domain;
+using core.exceptions;
 using core.modelview.customizedproductcollection;
 using core.persistence;
 using core.services;
@@ -6,6 +7,7 @@ using support.dto;
 using support.utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace core.application
 {
@@ -14,6 +16,20 @@ namespace core.application
     /// </summary>
     public sealed class CustomizedProductCollectionController
     {
+        /// <summary>
+        /// Constant that represents the message that occurs if there are no collections available
+        /// </summary>
+        private const string NO_COLLECTIONS_AVAILABLE = "There are no customized products collections available";
+
+        /// <summary>
+        /// Constant that represents the message presented when no collection could be found with a matching identifier.
+        /// </summary>
+        private const string UNABLE_TO_FIND_COLLECTION_BY_ID = "Unable to find a collection with an identifier of: {0}";
+
+        /// <summary>
+        /// Constant that represents the message presented when no collection could be found with a matching name.
+        /// </summary>
+        private const string UNABLE_TO_FIND_COLLECTION_BY_NAME = "Unable to find a collection with the name '{0}'";
 
         /// <summary>
         /// Fetches all available customized products collections
@@ -21,9 +37,14 @@ namespace core.application
         /// <returns>List with all available customized products collections</returns>
         public GetAllCustomizedProductCollectionsModelView findAllCollections()
         {
-            return CustomizedProductCollectionModelViewService.fromCollection(
-                    PersistenceContext.repositories().createCustomizedProductCollectionRepository().findAllCollections()
-            );
+            IEnumerable<CustomizedProductCollection> collections = PersistenceContext.repositories().createCustomizedProductCollectionRepository().findAll();
+
+            if (!collections.Any())
+            {
+                throw new ResourceNotFoundException(NO_COLLECTIONS_AVAILABLE);
+            }
+
+            return CustomizedProductCollectionModelViewService.fromCollection(collections);
         }
 
         /// <summary>
@@ -33,9 +54,14 @@ namespace core.application
         /// <returns>CustomizedProductCollectionDTO with the fetched customized product collection information</returns>
         public GetCustomizedProductCollectionModelView findCollectionByID(GetCustomizedProductCollectionModelView modelView)
         {
-            return CustomizedProductCollectionModelViewService.fromEntity(
-                PersistenceContext.repositories().createCustomizedProductCollectionRepository().find(modelView.id)
-            );
+            CustomizedProductCollection collection = PersistenceContext.repositories().createCustomizedProductCollectionRepository().find(modelView.id);
+
+            if (collection == null)
+            {
+                throw new ResourceNotFoundException(string.Format(UNABLE_TO_FIND_COLLECTION_BY_ID, modelView.id));
+            }
+
+            return CustomizedProductCollectionModelViewService.fromEntity(collection);
         }
 
         /// <summary>
@@ -45,9 +71,14 @@ namespace core.application
         /// <returns>CustomizedProductCollectionDTO with the fetched customized product collection information</returns>
         public GetCustomizedProductCollectionModelView findCollectionByEID(GetCustomizedProductCollectionModelView modelView)
         {
-            return CustomizedProductCollectionModelViewService.fromEntity(
-                PersistenceContext.repositories().createCustomizedProductCollectionRepository().find(modelView.name)
-            );
+            CustomizedProductCollection collection = PersistenceContext.repositories().createCustomizedProductCollectionRepository().find(modelView.name);
+
+            if (collection == null)
+            {
+                throw new ResourceNotFoundException(string.Format(UNABLE_TO_FIND_COLLECTION_BY_NAME, modelView.name));
+            }
+
+            return CustomizedProductCollectionModelViewService.fromEntity(collection);
         }
 
         /// <summary>

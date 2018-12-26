@@ -28,84 +28,17 @@ namespace backend.Controllers
         private const string INVALID_REQUEST_BODY_MESSAGE = "The request body is invalid. Check documentation for more information";
 
         /// <summary>
-        /// Constant that represents the log message for when a GET All Request starts
-        /// </summary>
-        private const string LOG_GET_ALL_START = "GET All Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET By ID Request starts
-        /// </summary>
-        private const string LOG_GET_BY_ID_START = "GET By ID Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a POST Request starts
-        /// </summary>
-        private const string LOG_POST_START = "POST Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a PUT Request starts
-        /// </summary>
-        private const string LOG_PUT_START = "PUT Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET All Request returns a BadRequest
-        /// </summary>
-        private const string LOG_GET_ALL_BAD_REQUEST = "GET All BadRequest (No Commercial Catalogues Found)";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET By ID Request returns a BadRequest
-        /// </summary>
-        private const string LOG_GET_BY_ID_BAD_REQUEST = "GETByID({id}) BadRequest";
-
-        /// <summary>
-        /// Constant that represents the log message for when a POST Request returns a BadRequest
-        /// </summary>
-        private const string LOG_POST_BAD_REQUEST = "POST {@catalogue} BadRequest";
-
-        /// <summary>
-        /// Constant that represents the log message for when a PUT Request returns a BadRequest
-        /// </summary>
-        private const string LOG_PUT_BAD_REQUEST = "Commercial Catalogue with id {id} PUT {@updateInfo} BadRequest";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET All Request is successful
-        /// </summary>
-        private const string LOG_GET_ALL_SUCCESS = "Commercial Catalogues {@list} retrieved";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET By ID Request is successful
-        /// </summary>
-        private const string LOG_GET_BY_ID_SUCCESS = "Commercial Catalogue {@commercialCatalogue} retrieved";
-
-        /// <summary>
-        /// Constant that represents the log message for when a POST Request is successful
-        /// </summary>
-        private const string LOG_POST_SUCCESS = "Commercial Catalogue {@commercialCatalogue} created";
-
-        /// <summary>
-        /// Constant that represents the log message for when a PUT Request is successful
-        /// </summary>
-        private const string LOG_PUT_SUCCESS = "Commercial Catalogue with id {id} updated with info {@updateInfo}";
-
-        /// <summary>
         /// Repository used to manipulate CommercialCatalogue instances
         /// </summary>
         private readonly CommercialCatalogueRepository commercialCatalogueRepository;
 
         /// <summary>
-        /// Controllers logger
-        /// </summary>
-        private readonly ILogger<CommercialCatalogueController> logger;
-
-        /// <summary>
         /// Constructor with injected type of repository and logger
         /// </summary>
         /// <param name="commercialCatalogueRepository">repository used to manipulate CommercialCatalogue instances</param>
-        /// <param name="logger">logger used to log messages regarding HTTP Requests and Responses</param>
-        public CommercialCatalogueController(CommercialCatalogueRepository commercialCatalogueRepository, ILogger<CommercialCatalogueController> logger)
+        public CommercialCatalogueController(CommercialCatalogueRepository commercialCatalogueRepository)
         {
             this.commercialCatalogueRepository = commercialCatalogueRepository;
-            this.logger = logger;
         }
 
 
@@ -120,8 +53,6 @@ namespace backend.Controllers
         [HttpGet]
         public ActionResult findAll()
         {
-            logger.LogInformation(LOG_GET_ALL_START);
-
             try
             {
                 GetAllCommercialCataloguesModelView allCommercialCataloguesModelView = new core.application.CommercialCatalogueController().findAll();
@@ -131,9 +62,8 @@ namespace backend.Controllers
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -151,8 +81,6 @@ namespace backend.Controllers
         [HttpGet("{id}", Name = "GetCommercialCatalogue")]
         public ActionResult findById(long id)
         {
-            logger.LogInformation(LOG_GET_BY_ID_START);
-
             try
             {
                 FindCommercialCatalogueModelView findCommercialCatalogueModelView = new FindCommercialCatalogueModelView();
@@ -160,16 +88,14 @@ namespace backend.Controllers
 
                 GetCommercialCatalogueModelView getCommercialCatalogueModelView = new core.application.CommercialCatalogueController().findCommercialCatalogue(findCommercialCatalogueModelView);
 
-                logger.LogInformation(LOG_GET_BY_ID_SUCCESS, getCommercialCatalogueModelView);
                 return Ok(getCommercialCatalogueModelView);
             }
             catch (ResourceNotFoundException e)
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -199,9 +125,8 @@ namespace backend.Controllers
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception )
             {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -233,9 +158,8 @@ namespace backend.Controllers
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception )
             {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -268,9 +192,8 @@ namespace backend.Controllers
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception )
             {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -288,7 +211,6 @@ namespace backend.Controllers
         [HttpPost]
         public ActionResult addCommercialCatalogue([FromBody]AddCommercialCatalogueModelView addCommercialCatalogueModelView)
         {
-            logger.LogInformation(LOG_POST_START);
 
             if (addCommercialCatalogueModelView == null)
             {
@@ -306,9 +228,8 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception )
             {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -349,9 +270,8 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception )
             {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -396,9 +316,8 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception )
             {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -442,9 +361,8 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -475,9 +393,8 @@ namespace backend.Controllers
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -510,9 +427,8 @@ namespace backend.Controllers
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -546,9 +462,8 @@ namespace backend.Controllers
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }

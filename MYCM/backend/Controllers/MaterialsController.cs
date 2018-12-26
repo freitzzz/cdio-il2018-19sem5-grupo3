@@ -1,17 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using backend.Models;
-using backend.Controllers;
-using core.application;
-using core.domain;
-using support.dto;
-using System.Web;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using support.utils;
 using core.persistence;
 using core.dto;
@@ -56,98 +45,6 @@ namespace backend.Controllers
         /// Constant that represents the message for creating a Material with an invalid Request Body.
         /// </summary>
         private const string INVALID_REQUEST_BODY_MESSAGE = "The request body is invalid\nCheck documentation for more information";
-        /// <summary>
-        /// Constant that represents the log message for when a GET All Request starts
-        /// </summary>
-        private const string LOG_GET_ALL_START = "GET All Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET By ID Request starts
-        /// </summary>
-        private const string LOG_GET_BY_ID_START = "GET By ID Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a POST Request starts
-        /// </summary>
-        private const string LOG_POST_START = "POST Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a DELETE Request starts
-        /// </summary>
-        private const string LOG_DELETE_START = "DELETE Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a PUT Basic Info Request starts
-        /// </summary>
-        private const string LOG_PUT_BASIC_INFO_START = "PUT Basic Info Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a POST Finish Request starts
-        /// </summary>
-        private const string LOG_POST_FINISH_START = "POST Finish Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a POST Color Request starts
-        /// </summary>
-        private const string LOG_POST_COLOR_START = "POST Color Request started";
-         /// <summary>
-        /// Constant that represents the log message for when a DELETE Finish Request starts
-        /// </summary>
-        private const string LOG_DELETE_FINISH_START = "DELETE Finish Request started";
-         /// <summary>
-        /// Constant that represents the log message for when a DELETE Color Request starts
-        /// </summary>
-        private const string LOG_DELETE_COLOR_START = "DELETE Color Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET All Request returns a BadRequest
-        /// </summary>
-        private const string LOG_GET_ALL_BAD_REQUEST = "GET All BadRequest (No Materials Found)";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET By ID Request returns a BadRequest
-        /// </summary>
-        private const string LOG_GET_BY_ID_BAD_REQUEST = "GETByID({id}) BadRequest";
-
-        /// <summary>
-        /// Constant that represents the log message for when a POST Request returns a BadRequest
-        /// </summary>
-        private const string LOG_POST_BAD_REQUEST = "POST {@material} BadRequest";
-
-        /// <summary>
-        /// Constant that represents the log message for when a DELETE Request returns a BadRequest
-        /// </summary>
-        private const string LOG_DELETE_BAD_REQUEST = "DELETE({id}) BadRequest";
-
-        /// <summary>
-        /// Constant that represents the log message for when a PUT Request returns a BadRequest
-        /// </summary>
-        private const string LOG_PUT_BAD_REQUEST = "Material with id {id} PUT {@updateInfo} BadRequest";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET All Request is successful
-        /// </summary>
-        private const string LOG_GET_ALL_SUCCESS = "Materials {@materials} retrieved";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET By ID Request is successful
-        /// </summary>
-        private const string LOG_GET_BY_ID_SUCCESS = "Material {@material} retrieved";
-
-        /// <summary>
-        /// Constant that represents the log message for when a POST Request is successful
-        /// </summary>
-        private const string LOG_POST_SUCCESS = "Material {@material} created";
-
-        /// <summary>
-        /// Constant that represents the log message for when a POST Request is successful
-        /// </summary>
-        private const string LOG_DELETE_SUCCESS = "Material with id {id} soft deleted";
-
-        /// <summary>
-        /// Constant that represents the log message for when a PUT Request is successful
-        /// </summary>
-        private const string LOG_PUT_SUCCESS = "Material with id {id} updated with info {@updateInfo}";
 
         /// <summary>
         /// Constant representing the message presented when an unexpected error occurs.
@@ -160,19 +57,13 @@ namespace backend.Controllers
         private readonly MaterialRepository materialRepository;
 
         /// <summary>
-        /// MaterialsControllers logger
-        /// </summary>
-        private readonly ILogger<MaterialsController> logger;
-
-        /// <summary>
         /// Constructor with injected type of repository
         /// </summary>
         /// <param name="materialRepository">Repository to be used to manipulate Material instances</param>
         /// <param name="logger">Controllers logger to log any information regarding HTTP Requests and Responses</param>
-        public MaterialsController(MaterialRepository materialRepository, ILogger<MaterialsController> logger)
+        public MaterialsController(MaterialRepository materialRepository)
         {
             this.materialRepository = materialRepository;
-            this.logger = logger;
         }
 
         /// <summary>
@@ -185,15 +76,13 @@ namespace backend.Controllers
         [HttpGet]
         public ActionResult<List<MaterialDTO>> findAll()
         {
-            logger.LogInformation(LOG_GET_ALL_START);
             List<MaterialDTO> materials = new core.application.MaterialsController().findAllMaterials();
 
             if (Collections.isListEmpty(materials))
             {
-                logger.LogWarning(LOG_GET_ALL_BAD_REQUEST);
                 return BadRequest(new SimpleJSONMessageService(NO_MATERIALS_FOUND));
             }
-            logger.LogInformation(LOG_GET_ALL_SUCCESS, materials);
+
             return Ok(materials);
         }
 
@@ -208,21 +97,18 @@ namespace backend.Controllers
         [HttpGet("{id}", Name = "GetMaterial")]
         public ActionResult<MaterialDTO> findById(long id)
         {
-            logger.LogInformation(LOG_GET_BY_ID_START);
             try
             {
                 MaterialDTO materialDTO = new core.application.MaterialsController().findMaterialByID(id);
                 if (materialDTO == null)
                 {
-                    logger.LogWarning(LOG_GET_BY_ID_BAD_REQUEST, id);
                     return BadRequest(new SimpleJSONMessageService(MATERIAL_NOT_FOUND));
                 }
-                logger.LogInformation(LOG_GET_BY_ID_SUCCESS, materialDTO);
+
                 return Ok(materialDTO);
             }
-            catch (NullReferenceException nullReferenceException)
+            catch (NullReferenceException)
             {
-                logger.LogWarning(nullReferenceException, LOG_GET_BY_ID_BAD_REQUEST, id);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
         }
@@ -238,13 +124,11 @@ namespace backend.Controllers
         [HttpPost]
         public ActionResult<MaterialDTO> addMaterial([FromBody]MaterialDTO materialDTO)
         {
-            logger.LogInformation(LOG_POST_START);
             try
             {
                 MaterialDTO createdMaterialDTO = new core.application.MaterialsController().addMaterial(materialDTO);
                 if (createdMaterialDTO != null)
                 {
-                    logger.LogInformation(LOG_POST_SUCCESS, createdMaterialDTO);
                     return CreatedAtRoute("GetMaterial", new { id = createdMaterialDTO.id }, createdMaterialDTO);
                 }
                 else
@@ -252,14 +136,12 @@ namespace backend.Controllers
                     return BadRequest(new SimpleJSONMessageService(UNABLE_TO_ADD_MATERIAL));
                 }
             }
-            catch (NullReferenceException nullReferenceException)
+            catch (NullReferenceException)
             {
-                logger.LogWarning(nullReferenceException, LOG_POST_BAD_REQUEST, materialDTO);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
             catch (ArgumentException argumentException)
             {
-                logger.LogWarning(argumentException, LOG_POST_BAD_REQUEST, materialDTO);
                 return BadRequest(new SimpleJSONMessageService(argumentException.Message));
             }
         }
@@ -275,19 +157,20 @@ namespace backend.Controllers
         [HttpDelete("{id}")]
         public ActionResult disableMaterial(long id)
         {
-            logger.LogInformation(LOG_DELETE_START);
             MaterialDTO materialDTO = new MaterialDTO();
             materialDTO.id = id;
 
-            try{
+            try
+            {
                 new core.application.MaterialsController().disableMaterial(materialDTO);
-                logger.LogInformation(LOG_DELETE_SUCCESS, id);
                 return NoContent();
-            }catch(ResourceNotFoundException e){
-                logger.LogWarning(e, LOG_DELETE_BAD_REQUEST, id);
+            }
+            catch (ResourceNotFoundException)
+            {
                 return NotFound(new SimpleJSONMessageService(UNABLE_TO_REMOVE_MATERIAL));
-            }catch(Exception e){
-                logger.LogWarning(e, UNEXPECTED_ERROR);
+            }
+            catch (Exception)
+            {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -301,22 +184,18 @@ namespace backend.Controllers
         [HttpPut("{id}")]
         public ActionResult updateMaterialBasicInformation(long id, [FromBody] UpdateMaterialDTO updateMaterialData)
         {
-            logger.LogInformation(LOG_PUT_BASIC_INFO_START);
             try
             {
                 updateMaterialData.id = id;
                 if (new core.application.MaterialsController().updateMaterialBasicInformation(updateMaterialData))
                 {
-                    logger.LogInformation(LOG_PUT_SUCCESS, id, updateMaterialData);
                     return Ok(new SimpleJSONMessageService(UPDATE_MATERIAL_SUCCESS));
                 }
             }
-            catch (NullReferenceException nullReferenceException)
+            catch (NullReferenceException)
             {
-                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, id, updateMaterialData);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
-            logger.LogWarning(LOG_PUT_BAD_REQUEST, id, updateMaterialData);
             return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }
 
@@ -329,22 +208,18 @@ namespace backend.Controllers
         [HttpPost("{idMaterial}/finishes")]
         public ActionResult addFinish(long idMaterial, [FromBody] FinishDTO addFinishDTO)
         {
-            logger.LogInformation(LOG_POST_FINISH_START);
             try
             {
                 AddFinishModelView addFinishModelView = new core.application.MaterialsController().addFinish(idMaterial, addFinishDTO);
-                 if (addFinishModelView != null)
+                if (addFinishModelView != null)
                 {
-                    logger.LogInformation(LOG_PUT_SUCCESS, idMaterial, addFinishDTO);
                     return Created(Request.Path, addFinishModelView);
-                    }
+                }
             }
-            catch (NullReferenceException nullReferenceException)
+            catch (NullReferenceException)
             {
-                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, addFinishDTO);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
-            logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, addFinishDTO);
             return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }
         /// <summary>
@@ -356,21 +231,17 @@ namespace backend.Controllers
         [HttpDelete("{idMaterial}/finishes/{idFinish}")]
         public ActionResult removeFinish(long idMaterial, long idFinish)
         {
-            logger.LogInformation(LOG_DELETE_FINISH_START);
             try
             {
                 if (new core.application.MaterialsController().removeFinish(idMaterial, idFinish))
                 {
-                    logger.LogInformation(LOG_PUT_SUCCESS, idMaterial, idFinish);
                     return NoContent();
                 }
             }
-            catch (NullReferenceException nullReferenceException)
+            catch (NullReferenceException)
             {
-                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, idFinish);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
-            logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, idFinish);
             return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }
 
@@ -383,22 +254,18 @@ namespace backend.Controllers
         [HttpPost("{idMaterial}/colors")]
         public ActionResult addColor(long idMaterial, [FromBody] ColorDTO addColorDTO)
         {
-            logger.LogInformation(LOG_POST_COLOR_START);
             try
             {
                 AddColorModelView addColorModelView = new core.application.MaterialsController().addColor(idMaterial, addColorDTO);
-               if (addColorModelView != null)
+                if (addColorModelView != null)
                 {
-                    logger.LogInformation(LOG_PUT_SUCCESS, idMaterial, addColorDTO);
                     return Created(Request.Path, addColorModelView);
-                    }
+                }
             }
-            catch (NullReferenceException nullReferenceException)
+            catch (NullReferenceException)
             {
-                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, addColorDTO);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
-            logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, addColorDTO);
             return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }
         /// <summary>
@@ -410,21 +277,17 @@ namespace backend.Controllers
         [HttpDelete("{idMaterial}/colors/{idColor}")]
         public ActionResult removeColor(long idMaterial, long idColor)
         {
-            logger.LogInformation(LOG_DELETE_COLOR_START);
             try
             {
                 if (new core.application.MaterialsController().removeColor(idMaterial, idColor))
                 {
-                    logger.LogInformation(LOG_PUT_SUCCESS, idMaterial, idColor);
                     return NoContent();
                 }
             }
-            catch (NullReferenceException nullReferenceException)
+            catch (NullReferenceException)
             {
-                logger.LogWarning(nullReferenceException, LOG_PUT_BAD_REQUEST, idMaterial, idColor);
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
-            logger.LogWarning(LOG_PUT_BAD_REQUEST, idMaterial, idColor);
             return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }
     }

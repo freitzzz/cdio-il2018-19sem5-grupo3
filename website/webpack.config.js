@@ -47,7 +47,7 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       'three$': 'three/build/three.js',
-      'three/.*$': 'three' 
+      'three/.*$': 'three'
     },
     extensions: ['*', '.js', '.vue', '.json']
   },
@@ -59,13 +59,7 @@ module.exports = {
   performance: {
     hints: false
   },
-  devtool: '#eval-source-map',
-/*   plugins: [
-    //https://vuejs.org/v2/guide/deployment.html
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
-    })
-  ] */
+  devtool: '#eval-source-map'
 }
 
 if (process.env.NODE_ENV === 'production') {
