@@ -84,6 +84,17 @@ export const actions = {
     },
 
     /**
+     * Action used to commit the mutation SET_COMPONENT_TO_REMOVE
+     */
+    [types.SET_COMPONENT_TO_REMOVE]: ({commit}, payload) => {
+        commit(types.SET_COMPONENT_TO_REMOVE, payload);
+    },
+
+    [types.SET_DOORS_FLAG]: ({commit}, payload) => {
+        commit(types.SET_DOORS_FLAG, payload);
+    },
+
+    /**
     * Action used to commit the mutation ACTIVATE_CAN_MOVE_CLOSET
     */
     [types.ACTIVATE_CAN_MOVE_CLOSET]: ({ commit }) => {

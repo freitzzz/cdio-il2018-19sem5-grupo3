@@ -14,6 +14,7 @@ const state = {
         canMoveCloset: "false",
         canMoveSlots: "false",
         canMoveComponents: "false",
+        doorsFlag: "",
         componentToRemove: {}
     },
 
@@ -60,7 +61,7 @@ const state = {
         depth: "",
     },
 
-    resizeVectorGlobal:{
+    resizeVectorGlobal: {
         width: "",
         height: "",
         depth: "",
@@ -136,6 +137,9 @@ export const getters = {
     },
     canMoveComponents: state => {
         return state.canvasControls.canMoveComponents;
+    },
+    doorsFlag: state => {
+        return state.canvasControls.doorsFlag;
     },
     componentToRemove: state => {
         return state.canvasControls.componentToRemove;

@@ -8,10 +8,9 @@ import Module from './Module'
 import SlidingDoor from './SlidingDoor'
 import Shelf from './Shelf'
 import HingedDoor from './HingedDoor'
-import { LoopRepeat } from 'three';
 import store from "./../store";
 import {
-  SET_RESIZE_VECTOR_GLOBAL
+  SET_RESIZE_VECTOR_GLOBAL, SET_CUSTOMIZED_PRODUCT_COMPONENTS, REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, SET_COMPONENT_TO_REMOVE, SET_DOORS_FLAG
 } from "./../store/mutation-types.js";
 
 export default class ProductRenderer {
@@ -359,7 +358,7 @@ export default class ProductRenderer {
     //this.applyTexture("./src/assets/materials/worn-wood.jpg");
 
     for (var i = 0; i < faces.length; i++) {
-      this.closet_faces_ids.push(this.generateParellepiped(faces[i][0], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], this.material, this.group));
+      this.closet_faces_ids.push(this.generateParellepiped(faces[i][0], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], this.material, this.group, ""));
     }
     this.scene.add(this.group);
     this.group.visible = false;
@@ -417,11 +416,15 @@ export default class ProductRenderer {
   addComponent(component) {
     if (!component) return;
     var designation = component.model.split(".")[0];
-    if (designation == "shelf") this.generateShelf(component.slot);
-    if (designation == "pole") this.generatePole(component.slot);
-    if (designation == "drawer") this.checkAddDrawerTriggers(component.slot);
-    if (designation == "hinged-door") this.checkAddHingedDoorTriggers(component.slot);
-    if (designation == "sliding-door") this.checkAddSlidingDoorTriggers();
+    if (designation == "shelf") this.generateShelf(component);
+    if (designation == "pole") this.generatePole(component);
+    if (designation == "drawer") this.checkAddDrawerTriggers(component);
+    if (designation == "hinged-door") this.checkAddHingedDoorTriggers(component);
+    if (designation == "sliding-door") this.checkAddSlidingDoorTriggers(component);
+    store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, {
+      model: component.model,
+      slot: component.slot    
+    });
   }
 
   /**
@@ -430,11 +433,17 @@ export default class ProductRenderer {
   */
   removeComponent(component) {
     if (!component) return;
-    if (component.designation == "Shelf") this.removeShelf(component.slot);
-    if (component.designation == "Pole") this.removePole(component.slot);
-    if (component.designation == "Drawer") this.removeDrawer(component.slot);
-    if (component.designation == "Hinged Door") this.removeHingedDoor(component.slot);
-    if (component.designation == "Sliding Door") this.removeSlidingDoor();
+    var designation = component.model.split(".")[0];
+    if (designation == "shelf") this.removeShelf(component.slot);
+    if (designation == "pole") this.removePole(component.slot);
+    if (designation == "drawer") this.removeDrawer(component.slot);
+    if (designation == "hinged-door") this.removeHingedDoor(component.slot);
+    if (designation == "sliding-door") this.removeSlidingDoor();
+    store.dispatch(REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, {
+      model: component.model,
+      slot: component.slot    
+    });
+    store.dispatch(SET_COMPONENT_TO_REMOVE, {});
   }
 
   /**
@@ -517,7 +526,8 @@ export default class ProductRenderer {
   /**
    * Generates a cylinder with given properties on a certain position relative to axis x,y and z
    */
-  generatePole(slot) {
+  generatePole(component) {
+    var slot = component.slot;
     var leftFace = this.group.getObjectById(this.closet_faces_ids[2]),
       rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
     var radiusTop = 3,
@@ -573,6 +583,7 @@ export default class ProductRenderer {
     poleMesh.position.y = y;
     poleMesh.position.z = z;
     poleMesh.rotation.z = Math.PI / 2;
+    poleMesh.userData = {model: component.model, slot: component.slot}
     this.closet.addPole(pole);
     this.group.add(poleMesh);
     this.closet_poles_ids.push(poleMesh.id);
@@ -582,7 +593,7 @@ export default class ProductRenderer {
   renderDroppedComponent(event, canvas){
     var splitted = event.dataTransfer.getData("text").split("/");
     var componentImageFileName = splitted[splitted.length - 1]
-    console.log(componentImageFileName);
+
     var x = event.clientX;
     var y = event.clientY;
     var rect = canvas.getBoundingClientRect();
@@ -596,7 +607,7 @@ export default class ProductRenderer {
     if(intersects.length > 0){
       //Snapping
         if(this.closet_slots_faces_ids.length == 0){
-          this.addComponent({model:componentImageFileName,slot:0});
+          this.addComponent({model:componentImageFileName, slot:0});
         } else {
         var facesXPositionIntervals = [];
         var raycasterPointX = intersects[0].point.x;
@@ -616,7 +627,8 @@ export default class ProductRenderer {
     }
   }
 
-  generateShelf(slot) {
+  generateShelf(component) {
+    var slot = component.slot;
     var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
     var rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
     var width, x, y, z;
@@ -647,11 +659,12 @@ export default class ProductRenderer {
       z = this.calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
     }
     this.closet.addShelf(new Shelf([width, 3, this.closet.getClosetDepth(), x, y, z], slot));
-    this.closet_shelves_ids.push(this.generateParellepiped(width, 3, this.closet.getClosetDepth(), x, y, z, this.material, this.group));
+    this.closet_shelves_ids.push(this.generateParellepiped(width, 3, this.closet.getClosetDepth(), x, y, z, this.material, this.group, component));
   }
 
 
-  generateDrawer(slot) {
+  generateDrawer(component) {
+    var slot = component.slot;
     var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
     var rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
     var depthDrawer = 3;
@@ -697,7 +710,7 @@ export default class ProductRenderer {
     for (var i = 0; i < borders_module.length; i++) {
       this.closet_modules_ids.push(this.generateParellepiped(borders_module[i][0],
         borders_module[i][1], borders_module[i][2], borders_module[i][3],
-        borders_module[i][4], borders_module[i][5], this.material, this.group));
+        borders_module[i][4], borders_module[i][5], this.material, this.group, component));
     }
 
     var drawer = new Drawer([width - spaceDrawerModule, depthDrawer, depthCloset, x, y + (depthDrawer / 2), z], //Base
@@ -710,7 +723,7 @@ export default class ProductRenderer {
     for (var i = 0; i < borders_drawer.length; i++) {
       this.closet_drawers_ids.push(this.generateParellepiped(borders_drawer[i][0],
         borders_drawer[i][1], borders_drawer[i][2], borders_drawer[i][3],
-        borders_drawer[i][4], borders_drawer[i][5], this.material, this.group));
+        borders_drawer[i][4], borders_drawer[i][5], this.material, this.group, component));
     }
 
     this.closet.addModule(module);
@@ -737,7 +750,7 @@ export default class ProductRenderer {
   addSlotNumbered(slotsToAdd) {
     for (var i = 0; i < slotsToAdd.length; i++) {
       var slotFace = this.closet.addSlot(slotsToAdd[i]);
-      this.closet_slots_faces_ids.push(this.generateParellepiped(slotFace[0], slotFace[1], slotFace[2], slotFace[3], slotFace[4], slotFace[5], this.material, this.group));
+      this.closet_slots_faces_ids.push(this.generateParellepiped(slotFace[0], slotFace[1], slotFace[2], slotFace[3], slotFace[4], slotFace[5], this.material, this.group, ""));
     }
     this.updateClosetGV();
   }
@@ -849,7 +862,6 @@ export default class ProductRenderer {
       height:this.resizeVec[this.HEIGHT],
       depth: this.resizeVec[this.DEPTH],    
     });
-
   }
   /**
    * Applies the texture to the closet.
@@ -925,13 +937,15 @@ export default class ProductRenderer {
    * @param {number} z Number with the parellepiped position relatively to the Z axe
    * @param {THREE.Material} material THREE.Material with the parellepiped material
    * @param {THREE.Group} group THREE.Group with the group where the parellepied will be putted
+   * @param {*} component Component info
    */
-  generateParellepiped(width, height, depth, x, y, z, material, group) {
+  generateParellepiped(width, height, depth, x, y, z, material, group, component) {
     var parellepipedGeometry = new THREE.CubeGeometry(width, height, depth);
     var parellepiped = new THREE.Mesh(parellepipedGeometry, material);
     parellepiped.position.x = x;
     parellepiped.position.y = y;
     parellepiped.position.z = z;
+    if(component != "") parellepiped.userData = {model: component.model, slot: component.slot}
     this.group.add(parellepiped);
     return parellepiped.id;
   }
@@ -1003,7 +1017,7 @@ export default class ProductRenderer {
    */
   onKeyDown(event) {
     event.preventDefault();
-    alert("entro no three");
+    //alert("entro no three");
     // switch (event.keyCode) {
     //     case 37:
     //         alert('left');
@@ -1037,16 +1051,16 @@ export default class ProductRenderer {
     if (intersects.length > 0) {
 
       //Gets the closest (clicked) object
-      var face = intersects[0].object;
+      var intersected_object = intersects[0].object;
 
       //Checks if the selected closet face is a slot 
       for (var i = 0; i < this.closet_slots_faces_ids.length; i++) {
         var closet_face = this.group.getObjectById(this.closet_slots_faces_ids[i]);
-        if (closet_face == face) {
+        if (closet_face == intersected_object) {
           //Disables rotation while moving the slot
           this.controls.enabled = false;
           //Sets the selection to the current slot
-          this.selected_slot = face;
+          this.selected_slot = intersected_object;
           if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
             this.offset = this.intersection.x - this.selected_slot.position.x;
           }
@@ -1056,9 +1070,9 @@ export default class ProductRenderer {
       //Checks if the selected object is a shelf
       for (let j = 0; j < this.closet_shelves_ids.length; j++) {
         let shelf = this.group.getObjectById(this.closet_shelves_ids[j]);
-        if (shelf == face) {
+        if (shelf == intersected_object) {
           this.controls.enabled = false;
-          this.selected_component = face;
+          this.selected_component = intersected_object;
           if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
             this.offset = this.intersection.y - this.selected_component.position.y;
           }
@@ -1068,9 +1082,9 @@ export default class ProductRenderer {
       //Checks if the selected object is a pole
       for (let j = 0; j < this.closet_poles_ids.length; j++) {
         let pole = this.group.getObjectById(this.closet_poles_ids[j]);
-        if (pole == face) {
+        if (pole == intersected_object) {
           this.controls.enabled = false;
-          this.selected_component = face;
+          this.selected_component = intersected_object;
           if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
             this.offset = this.intersection.y - this.selected_component.position.y;
           }
@@ -1078,12 +1092,12 @@ export default class ProductRenderer {
       }
 
       //Checks if the selected closet face is a face
-      if (this.group.getObjectById(this.closet_faces_ids[3]) == face ||
-        this.group.getObjectById(this.closet_faces_ids[2]) == face) {
+      if (this.group.getObjectById(this.closet_faces_ids[3]) == intersected_object ||
+        this.group.getObjectById(this.closet_faces_ids[2]) == intersected_object) {
         //Disables rotation while moving the face
         this.controls.enabled = false;
         //Sets the selection to the current face
-        this.selected_face = face;
+        this.selected_face = intersected_object;
         if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
           this.offset = this.intersection.x - this.selected_face.position.x;
         }
@@ -1097,7 +1111,7 @@ export default class ProductRenderer {
         //Checks if the selected object is a sliding door
         while (!flagOpen && !flagClose && j < this.closet_sliding_doors_ids.length) {
           this.slidingDoor = this.group.getObjectById(this.closet_sliding_doors_ids[j]);
-          if (this.slidingDoor == face) {
+          if (this.slidingDoor == intersected_object) {
             this.controls.enabled = false;
             if (this.slidingDoor.position.x < 0) {
               flagClose = true; //"Closing" ==> slide door to the right
@@ -1128,7 +1142,7 @@ export default class ProductRenderer {
           //Always get the front face of any drawer at index 5*j+1
           var drawer_front_face = this.group.getObjectById(this.closet_drawers_ids[5 * j + 1]);
           //Check if the selected object is a drawer's front face
-          if (drawer_front_face == face) {
+          if (drawer_front_face == intersected_object) {
             this.controls.enabled = false;
             var drawer_base_face = this.group.getObjectById(this.closet_drawers_ids[5 * j]);
             var drawer_left_face = this.group.getObjectById(this.closet_drawers_ids[5 * j + 2]);
@@ -1159,7 +1173,7 @@ export default class ProductRenderer {
         while (!flagOpen && !flagClose && j < this.closet_hinged_doors_ids.length) {
           this.hingedDoor = this.group.getObjectById(this.closet_hinged_doors_ids[j]);
           var closet_face = this.group.getObjectById(this.closet_faces_ids[0]);
-          if (this.hingedDoor == face) {
+          if (this.hingedDoor == intersected_object) {
             this.controls.enabled = false;
             if (this.hingedDoor.rotation.y < 0) {
               flagClose = true;
@@ -1256,8 +1270,9 @@ export default class ProductRenderer {
     }
   }
 
-  checkAddDrawerTriggers(slot) {
-    this.generateDrawer(slot);
+  checkAddDrawerTriggers(component) {
+    var slot = component.slot;
+    this.generateDrawer(component);
     let aux = function(context, triggerDoorAnimationsFunction){ return function(){ triggerDoorAnimationsFunction(context); }}
     if (this.doesSlotHaveHingedDoor(slot)) {
       if (!this.isHingedDoorClosed) {
@@ -1266,8 +1281,6 @@ export default class ProductRenderer {
       }
     }
     if (this.doesClosetHaveSlidingDoors()) {
-      var front_door = this.group.getObjectById(this.closet_sliding_doors_ids[0]);
-      var back_door = this.group.getObjectById(this.closet_sliding_doors_ids[1]);
       //Front face of the last added drawer is always at index length - 4
       var addedDrawer = this.group.getObjectById(this.closet_drawers_ids[this.closet_drawers_ids.length - 4]);
       if (addedDrawer.position.x < 0) {
@@ -1290,59 +1303,61 @@ export default class ProductRenderer {
     }
   }
 
-  checkAddSlidingDoorTriggers() {
+  checkAddSlidingDoorTriggers(component) {
     if (this.doesClosetHaveHingedDoors()) {
-      alert("There are closet slots that have hinged doors!");
+      store.dispatch(SET_DOORS_FLAG, {flag : "CLOSET_HAS_HINGED_DOORS"});
     } else if(this.doesClosetHaveSlidingDoors()){
-      alert("The closet already has sliding doors!");
+      store.dispatch(SET_DOORS_FLAG, {flag : "CLOSET_HAS_SLIDING_DOORS"});
     } else {
       if (this.doesClosetHaveOpenDrawers()) {
         if (this.openDrawers.length > 0) {
           var context = this;
           this.waitingDoors.push(function () {
-            context.generateSlidingDoor();
+            context.generateSlidingDoor(component);
           });
           this.closeAllOpenDrawers();
         } else {
-          this.generateSlidingDoor();
+          this.generateSlidingDoor(component);
         }
       } else {
-        this.generateSlidingDoor();
+        this.generateSlidingDoor(component);
       }
     }
   }
 
-  checkAddHingedDoorTriggers(slot) {
+  checkAddHingedDoorTriggers(component) {
+    var slot = component.slot;
     if (this.doesSlotHaveHingedDoor(slot)) {
-      alert("This slot already has a door!");
+      store.dispatch(SET_DOORS_FLAG, {flag : "SLOT_HAS_DOOR"});
     } else if (this.doesClosetHaveSlidingDoors()) {
-      alert("The closet already has sliding doors!");
+      store.dispatch(SET_DOORS_FLAG, {flag : "CLOSET_HAS_SLIDING_DOORS"});
     } else {
       if (this.doesSlotHaveOpenDrawers(slot)) {
         if (this.openDrawers.length > 0) {
           var context = this;
           this.waitingDoors.push(function () {
-            context.addHingedDoor(slot);
+            context.addHingedDoor(component);
           });
           this.closeSlotOpenDrawers(slot);
         } else {
-          this.addHingedDoor(slot);
+          this.addHingedDoor(component);
         }
       } else {
-        this.addHingedDoor(slot);
+        this.addHingedDoor(component);
       }
     }
   }
 
-  addHingedDoor(slot) {
+  addHingedDoor(component) {
     if (this.openDrawers.length == 0) {
-      this.generateHingedDoor(slot);
+      this.generateHingedDoor(component);
     } else {
-      this.generateHingedDoor(slot);
+      this.generateHingedDoor(component);
     }
   }
 
-  generateHingedDoor(slot) {
+  generateHingedDoor(component) {
+    var slot = component.slot;
     var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
     var rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
     var depth = 3;
@@ -1378,13 +1393,13 @@ export default class ProductRenderer {
       z = this.calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
     }
 
-    var meshID = this.generateParellepiped(width, height, depth, x, y, z + (depth_closet / 2), this.material, this.group);
+    var meshID = this.generateParellepiped(width, height, depth, x, y, z + (depth_closet / 2), this.material, this.group, component);
     var hingedDoor = new HingedDoor([width, height, depth, x, y, z + (depth_closet / 2)], slot, meshID);
     this.closet.addHingedDoor(hingedDoor);
     this.closet_hinged_doors_ids.push(meshID);
   }
 
-  generateSlidingDoor() {
+  generateSlidingDoor(component) {
     var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
     var rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
     var topFace = this.group.getObjectById(this.closet_faces_ids[1]);
@@ -1414,7 +1429,7 @@ export default class ProductRenderer {
     for (var i = 0; i < borders.length; i++) {
       this.generateParellepiped(borders[i][0],
         borders[i][1], borders[i][2], borders[i][3],
-        borders[i][4], borders[i][5], this.material, this.group);
+        borders[i][4], borders[i][5], this.material, this.group, component);
     }
 
     //Adds front door
@@ -1425,7 +1440,7 @@ export default class ProductRenderer {
       front_door.sliding_door_axes[3],
       front_door.sliding_door_axes[4],
       front_door.sliding_door_axes[5],
-      this.material, this.group);
+      this.material, this.group, component);
 
     //Adds back door
     var back_door_mesh_id = this.generateParellepiped(
@@ -1435,7 +1450,7 @@ export default class ProductRenderer {
       back_door.sliding_door_axes[3],
       back_door.sliding_door_axes[4],
       back_door.sliding_door_axes[5],
-      this.material, this.group);
+      this.material, this.group, component);
 
     this.closet.addSlidingDoor(front_door);
     this.closet.addSlidingDoor(back_door);
@@ -1448,7 +1463,7 @@ export default class ProductRenderer {
     for (var i = 0; i < borders.length; i++) {
       this.generateParellepiped(borders[i][0],
         borders[i][1], borders[i][2], borders[i][3],
-        borders[i][4], borders[i][5], this.material, this.group);
+        borders[i][4], borders[i][5], this.material, this.group, component);
     }
   }
 
@@ -1722,6 +1737,11 @@ export default class ProductRenderer {
       if (computedPosition < this.group.getObjectById(this.closet_faces_ids[1]).position.y &&
         computedPosition >= this.group.getObjectById(this.closet_faces_ids[0]).position.y) {
         this.selected_component.position.y = computedPosition; //Sets the new position as long as the component stays within the closet boundaries
+      } else {
+        store.dispatch(SET_COMPONENT_TO_REMOVE, {
+          model: this.selected_component.userData.model,
+          slot: this.selected_component.userData.slot
+        });
       }
     }
 

@@ -11,6 +11,8 @@ using NodaTime.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using core.exceptions;
+using core.modelview.material;
+using core.modelview.price;
 
 namespace backend.Controllers
 {
@@ -34,11 +36,6 @@ namespace backend.Controllers
         /// Constant that represents the message that is logged if a price entry isn't updated
         /// </summary>
         private const string ENTRY_NOT_UPDATED = "The price entry wasn't updated";
-
-        /// <summary>
-        /// Constant that represents the message that is logged if a price entry is updated successfully
-        /// </summary>
-        private const string ENTRY_UPDATE_SUCCESSFUL = "The price entry was updated successfully";
 
         /// <summary>
         /// Material Price Table Repository
@@ -70,20 +67,26 @@ namespace backend.Controllers
         /// <summary>
         /// Fetches price history of all materials
         /// </summary>
+        /// <param name="currency">Query parameter to know the currency in which the price is presented</param>
+        /// <param name="area">Query parameter to know the area in which the price is presented</param>
         /// <returns>HTTP Response 200; OK with the price history of all materials
-        ///          HTTP Response 404; Not Found if there no material has a price history
+        ///          HTTP Response 404; Not Found if no materials have price histories
         /// </returns>
         [HttpGet("materials")]
-        public ActionResult fetchAllMaterialsPriceHistory()
+        public async Task<ActionResult> fetchAllMaterialsPriceHistory([FromQuery] string currency, [FromQuery] string area)
         {
             try
             {
-                GetAllMaterialPriceHistoryModelView modelView = new core.application.PriceTablesController().fetchPriceHistoryOfAllMaterials();
+                GetAllMaterialPriceHistoryModelView modelView = await new core.application.PriceTablesController().fetchPriceHistoryOfAllMaterials(currency, area, clientFactory);
                 return Ok(modelView);
             }
             catch (ResourceNotFoundException e)
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (Exception)
             {
@@ -91,19 +94,33 @@ namespace backend.Controllers
             }
         }
 
+        /// <summary>
+        /// Fetches price history of all finishes of a material
+        /// </summary>
+        /// <param name="materialID">Material's PID</param>
+        /// <param name="currency">Query parameter to know the currency in which the price is presented</param>
+        /// <param name="area">Query parameter to know the area in which the price is presented</param>
+        /// <returns>Action Result with HTTP Code 200 and the price history of all material finishes
+        ///         Or Action Result with HTTP Code 404 if no material finishes have a price history</returns>
         [HttpGet("materials/{materialID}/finishes")]
-        public ActionResult fetchAllMaterialFinishesPriceHistory(long materialID)
+        public async Task<ActionResult> fetchAllMaterialFinishesPriceHistory(long materialID, [FromQuery] string currency, [FromQuery] string area)
         {
             try
             {
                 FetchMaterialFinishPriceHistoryDTO priceHistoryDTO = new FetchMaterialFinishPriceHistoryDTO();
                 priceHistoryDTO.materialID = materialID;
-                GetAllMaterialFinishPriceHistoryModelView allMaterialFinishesPriceHistoryModelView = new core.application.PriceTablesController().fetchPriceHistoryOfAllMaterialFinishes(priceHistoryDTO);
+                priceHistoryDTO.currency = currency;
+                priceHistoryDTO.area = area;
+                GetAllMaterialFinishPriceHistoryModelView allMaterialFinishesPriceHistoryModelView = await new core.application.PriceTablesController().fetchPriceHistoryOfAllMaterialFinishes(priceHistoryDTO, clientFactory);
                 return Ok(allMaterialFinishesPriceHistoryModelView);
             }
             catch (ResourceNotFoundException e)
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (Exception)
             {
@@ -115,22 +132,30 @@ namespace backend.Controllers
         /// Fetches the price history of a material
         /// </summary>
         /// <param name="materialID">Long with the resource ID of the material being fetched the price history</param>
+        /// <param name="currency">Query parameter to know the currency in which the price is presented</param>
+        /// <param name="area">Query parameter to know the area in which the price is presented</param>
         /// <returns>HTTP Response 200; OK with the material price history
         ///      <br>HTTP Response 404; Not Found if there is no price history for the given material
         /// </returns>
         [HttpGet("materials/{materialID}")]
-        public ActionResult fetchMaterialPriceHistory(long materialID)
+        public async Task<ActionResult> fetchMaterialPriceHistory(long materialID, [FromQuery] string currency, [FromQuery] string area)
         {
             FetchMaterialPriceHistoryDTO fetchMaterialPriceHistoryDTO = new FetchMaterialPriceHistoryDTO();
             fetchMaterialPriceHistoryDTO.materialID = materialID;
+            fetchMaterialPriceHistoryDTO.currency = currency;
+            fetchMaterialPriceHistoryDTO.area = area;
             try
             {
-                GetAllMaterialPriceHistoryModelView materialPriceHistoryModelView = new core.application.PriceTablesController().fetchMaterialPriceHistory(fetchMaterialPriceHistoryDTO);
+                GetAllMaterialPriceHistoryModelView materialPriceHistoryModelView = await new core.application.PriceTablesController().fetchMaterialPriceHistory(fetchMaterialPriceHistoryDTO, clientFactory);
                 return Ok(materialPriceHistoryModelView);
             }
             catch (ResourceNotFoundException e)
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (Exception)
             {
@@ -143,23 +168,107 @@ namespace backend.Controllers
         /// </summary>
         /// <param name="materialID">Long with the resource ID of the material being fetched the price history</param>
         /// <param name="finishID">Long with the resource ID of the material finish being fetched the price history</param>
+        /// <param name="currency">Query parameter to know the currency in which the price is presented</param>
+        /// <param name="area">Query parameter to know the area in which the price is presented</param>
         /// <returns>HTTP Response 200; OK with the material price history
         ///      <br>HTTP Response 404; Not Found if there is no price history for the given material
         /// </returns>
         [HttpGet("materials/{materialID}/finishes/{finishID}")]
-        public ActionResult fetchMaterialFinishPriceHistory(long materialID, long finishID)
+        public async Task<ActionResult> fetchMaterialFinishPriceHistory(long materialID, long finishID, [FromQuery] string currency, [FromQuery] string area)
         {
             FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO = new FetchMaterialFinishPriceHistoryDTO();
             fetchMaterialFinishPriceHistoryDTO.materialID = materialID;
             fetchMaterialFinishPriceHistoryDTO.finishID = finishID;
+            fetchMaterialFinishPriceHistoryDTO.currency = currency;
+            fetchMaterialFinishPriceHistoryDTO.area = area;
             try
             {
-                GetAllMaterialFinishPriceHistoryModelView materialFinishPriceHistoryModelView = new core.application.PriceTablesController().fetchMaterialFinishPriceHistory(fetchMaterialFinishPriceHistoryDTO);
+                GetAllMaterialFinishPriceHistoryModelView materialFinishPriceHistoryModelView = await new core.application.PriceTablesController().fetchMaterialFinishPriceHistory(fetchMaterialFinishPriceHistoryDTO, clientFactory);
                 return Ok(materialFinishPriceHistoryModelView);
             }
             catch (ResourceNotFoundException e)
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+        /// <summary>
+        /// Fetches the current price of a material
+        /// </summary>
+        /// <param name="materialId">Material's PID</param>
+        /// <param name="currency">Query parameter to know to which currency to convert the price to</param>
+        /// <param name="area">Query parameter to know to which area to convert the price to</param>
+        /// <returns>Action Result with HTTP Code 200 with the material's current price
+        ///         Or Action Result with HTTP Code 404 if the requested material isn't found
+        ///         Or Action Result with HTTP Code 500 if an unexpected error happens </returns>
+        [HttpGet("materials/{materialId}/currentprice")]
+        public async Task<ActionResult> fetchCurrentMaterialPrice(long materialId, [FromQuery] string currency, [FromQuery] string area)
+        {
+            GetCurrentMaterialPriceModelView fetchCurrentMaterialPrice = new GetCurrentMaterialPriceModelView();
+            fetchCurrentMaterialPrice.material = new GetBasicMaterialModelView();
+            fetchCurrentMaterialPrice.currentPrice = new PriceModelView();
+            fetchCurrentMaterialPrice.material.id = materialId;
+            fetchCurrentMaterialPrice.currentPrice.currency = currency;
+            fetchCurrentMaterialPrice.currentPrice.area = area;
+            try
+            {
+                GetCurrentMaterialPriceModelView currentMaterialPrice = await new core.application.PriceTablesController().fetchCurrentMaterialPrice(fetchCurrentMaterialPrice, clientFactory);
+                return Ok(currentMaterialPrice);
+            }
+            catch (ResourceNotFoundException e)
+            {
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+        /// <summary>
+        /// Fetches the current price of a material finish
+        /// </summary>
+        /// <param name="materialId">Material's PID</param>
+        /// <param name="finishId">Finish's PID</param>
+        /// <param name="currency">Query parameter to know in which currency to present the price in</param>
+        /// <param name="area">Query parameter to know in which area to present the price in</param>
+        /// <returns>Action Result with HTTP Code 200 and the material's finish current price
+        ///         Or Action Result with HTTP Code 404 if one of the requested resources isn't found
+        ///         Or Action Result with HTTP Code 500 if an unexpected error happens</returns>
+        [HttpGet("materials/{materialId}/finishes/{finishId}/currentprice")]
+        public async Task<ActionResult> fetchCurrentMaterialFinishPrice(long materialId, long finishId, [FromQuery] string currency, [FromQuery] string area)
+        {
+            GetCurrentMaterialFinishPriceModelView fetchCurrentMaterialFinishPrice = new GetCurrentMaterialFinishPriceModelView();
+            fetchCurrentMaterialFinishPrice.finish = new GetMaterialFinishModelView();
+            fetchCurrentMaterialFinishPrice.currentPrice = new PriceModelView();
+            fetchCurrentMaterialFinishPrice.finish.materialId = materialId;
+            fetchCurrentMaterialFinishPrice.finish.id = finishId;
+            fetchCurrentMaterialFinishPrice.currentPrice.currency = currency;
+            fetchCurrentMaterialFinishPrice.currentPrice.area = area;
+            try
+            {
+                GetCurrentMaterialFinishPriceModelView currentMaterialFinishPrice = await new core.application.PriceTablesController().fetchCurrentMaterialFinishPrice(fetchCurrentMaterialFinishPrice, clientFactory);
+                return Ok(currentMaterialFinishPrice);
+            }
+            catch (ResourceNotFoundException e)
+            {
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (Exception)
             {
@@ -254,7 +363,7 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
@@ -302,7 +411,7 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
@@ -352,12 +461,10 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
-
-        //TODO GET Current Material Price & GET Current Material Finish Price
     }
 }
