@@ -1,52 +1,59 @@
 <template>
-    <vuetable
-        :api-mode="false"
-        :data="data"
-        :fields="columns"
-    >
-        <template slot="actions" slot-scope="props">
-            <!-- Table Actions -->
-            <div class="custom-actions">
-                <button
-                    class="btn-primary"
-                    @click="openProductDetails(props.rowData.id)"
-                >
-                    <b-icon icon="magnify"/>
-                </button>
-                <button
-                    class="btn-primary"
-                    @click="editProductDetails(props.rowData.id)"
-                >
-                    <b-icon icon="pencil"/>
-                </button>
-                <button
-                    class="btn-primary"
-                    @click="deleteProduct(props.rowData.id)"
-                >
-                    <b-icon icon="minus"/>
-                </button>
-            </div>
-            <div v-if="showProductDetails">
-                <b-modal :active.sync="showProductDetails" has-modal-card scroll="keep">
-                    <product-details
-                        :product="currentSelectedProduct"
-                    />
-                </b-modal>
-            </div>
-            <div v-if="showEditProductDetails">
-                <b-modal :active.sync="showEditProductDetails" has-modal-card scroll="keep">
-                    <edit-product
-                        @emitProduct="updateProduct"
-                        :available-categories="availableCategories"
-                        :available-components="availableComponents"
-                        :available-materials="availableMaterials"
-                        :available-units="availableUnits"
-                        :product="currentSelectedProductClone"
-                    />
-                </b-modal>
-            </div>
-        </template>
-    </vuetable>
+    <section>
+        <vuetable
+            :api-mode="false"
+            :data="data"
+            :fields="columns"
+        >
+            <template slot="actions" slot-scope="props">
+                <!-- Table Actions -->
+                <div class="custom-actions">
+                    <button
+                        class="btn-primary"
+                        @click="openProductDetails(props.rowData.id)"
+                    >
+                        <b-icon icon="magnify"/>
+                    </button>
+                    <button
+                        class="btn-primary"
+                        @click="editProductDetails(props.rowData.id)"
+                    >
+                        <b-icon icon="pencil"/>
+                    </button>
+                    <button
+                        class="btn-primary"
+                        @click="deleteProduct(props.rowData.id)"
+                    >
+                        <b-icon icon="minus"/>
+                    </button>
+                </div>
+                <div v-if="showProductDetails">
+                    <b-modal :active.sync="showProductDetails" has-modal-card scroll="keep">
+                        <product-details
+                            :product="currentSelectedProduct"
+                        />
+                    </b-modal>
+                </div>
+                <div v-if="showEditProductDetails">
+                    <b-modal :active.sync="showEditProductDetails" has-modal-card scroll="keep">
+                        <edit-product
+                            @emitProduct="updateProduct"
+                            :available-categories="availableCategories"
+                            :available-components="availableComponents"
+                            :available-materials="availableMaterials"
+                            :available-units="availableUnits"
+                            :product="currentSelectedProductClone"
+                        />
+                    </b-modal>
+                </div>
+                
+            </template>
+        </vuetable>
+        <loading-dialog
+            :active.sync="updatingProductState.value"
+            :message.sync="updatingProductState.message"
+        />
+    </section>
 </template>
 
 <script>
@@ -67,6 +74,11 @@ import ProductDetails from './ProductDetails';
 import EditProduct from './EditProduct';
 
 /**
+ * Requires LoadingDialog component for alerting the user of loading actions
+ */
+import LoadingDialog from '../../UIComponents/LoadingDialog';
+
+/**
  * Requires App Configuration for accessing MYCM API URL
  */
 import Config,{MYCM_API_URL} from '../../../config';
@@ -76,6 +88,7 @@ export default {
      * Components exported components
      */
     components:{
+        LoadingDialog,
         EditProduct,
         ProductDetails
     },
@@ -128,7 +141,11 @@ export default {
                 }
             ],
             showEditProductDetails:false,
-            showProductDetails:false
+            showProductDetails:false,
+            updatingProductState:{
+                value:false,
+                message:String
+            }
         }
     },
     /**
@@ -162,21 +179,29 @@ export default {
          * Edits the details of a product
          */
         editProductDetails(productId){
+            this.updatingProductState.value=true;
+            this.updatingProductState.message="Fetching product details...";
             this
                 .getProductDetails(productId)
                 .then((product)=>{
+                    
+                    this.updatingProductState.message="Fetching available categories";
                     this
                         .getAllCategories()
                         .then(()=>{
+                            this.updatingProductState.message="Fetching available components";
                             this
                                 .getAllComponents()
                                 .then(()=>{
+                                    this.updatingProductState.message="Fetching available materials";
                                     this
                                         .getAllMaterials()
                                         .then(()=>{
+                                            this.updatingProductState.message="Fetching available units";
                                             this
                                                 .getAllUnits()
                                                 .then(()=>{
+                                                    this.updatingProductState.value=false;
                                                     this.showEditProductDetails=true;
                                                 })
                                         });
