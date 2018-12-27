@@ -27,28 +27,28 @@
                         <b-icon icon="minus"/>
                     </button>
                 </div>
-                <div v-if="showProductDetails">
-                    <b-modal :active.sync="showProductDetails" has-modal-card scroll="keep">
-                        <product-details
-                            :product="currentSelectedProduct"
-                        />
-                    </b-modal>
-                </div>
-                <div v-if="showEditProductDetails">
-                    <b-modal :active.sync="showEditProductDetails" has-modal-card scroll="keep">
-                        <edit-product
-                            @emitProduct="updateProduct"
-                            :available-categories="availableCategories"
-                            :available-components="availableComponents"
-                            :available-materials="availableMaterials"
-                            :available-units="availableUnits"
-                            :product="currentSelectedProductClone"
-                        />
-                    </b-modal>
-                </div>
-                
             </template>
         </vuetable>
+        
+        <div v-if="showProductDetails">
+            <b-modal :active.sync="showProductDetails" has-modal-card scroll="keep">
+                <product-details
+                    :product="currentSelectedProduct"
+                />
+            </b-modal>
+        </div>
+        <div v-if="showEditProductDetails">
+            <b-modal :active.sync="showEditProductDetails" has-modal-card scroll="keep">
+                <edit-product
+                    @emitProduct="updateProduct"
+                    :available-categories="availableCategories"
+                    :available-components="availableComponents"
+                    :available-materials="availableMaterials"
+                    :available-units="availableUnits"
+                    :product="currentSelectedProductClone"
+                />
+            </b-modal>
+        </div>
         <loading-dialog
             :active.sync="updatingProductState.value"
             :message.sync="updatingProductState.message"
