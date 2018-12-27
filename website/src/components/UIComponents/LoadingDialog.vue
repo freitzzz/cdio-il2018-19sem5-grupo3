@@ -1,10 +1,10 @@
 <template>
     <section>
         <!-- v-model on active property is required due to syncing active with isActive -->
-        <b-modal v-model="active" :active.sync="isActive" :width="200">
+        <b-modal v-model="active" :active.sync="isActive" :width="200" :canCancel="false">
             <div class="modal-card" style="height:150px;width:auto">
                 <b-field>
-                    <b-loading :active.sync="isActive" :is-full-page="false" :canCancel="true"/>
+                    <b-loading :active.sync="isActive" :is-full-page="false" :canCancel="false"/>
                 </b-field>
                 <b-field :label.sync="message" class="has-text-centered"/>
             </div>
