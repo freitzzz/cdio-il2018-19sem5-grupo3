@@ -27,5 +27,13 @@ namespace core.persistence
         /// <param name="fetchMaterialFinishPriceHistoryDTO">FetchMaterialFinishPriceHistoryDTO with the material's PID</param>
         /// <returns>IEnumerable with the price history of all finishes of a material</returns>
         IEnumerable<FinishPriceTableEntry> fetchAllMaterialFinishesPriceHistory(FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO);
+    
+        /// <summary>
+        /// Fetches the current price of a material finish
+        /// </summary>
+        /// <param name="materialId">Material's PID</param>
+        /// <param name="finishId">Finish's PID</param>
+        /// <returns>FinishPriceTableEntry with the current material finish price</returns>
+        FinishPriceTableEntry fetchCurrentMaterialFinishPrice(long finishId);
     }
 }
