@@ -35,26 +35,6 @@ namespace core.services
         private const string PRICE_TABLE_ENTRY_NOT_CREATED = "A price table entry for the requested material with the same values already exists. Please try again";
 
         /// <summary>
-        /// Message that occurs if the new currency isn't supported
-        /// </summary>
-        private const string UNSUPPORTED_CURRENCY = "The inserted currency is not being supported at the moment!";
-
-        /// <summary>
-        /// Message to help the user know which currencies to use
-        /// </summary>
-        private const string SUPPORTED_CURRENCIES_MESSAGE = "Please use one of the currencies that are currently being supported";
-
-        /// <summary>
-        /// Message that occurs if the new area isn't supported
-        /// </summary>
-        private const string UNSUPPORTED_AREA = "The inserted area is not being supported at the moment!";
-
-        /// <summary>
-        /// Message to help the user know which areas to use
-        /// </summary>
-        private const string SUPPORTED_AREAS_MESSAGE = "Please use one of the areas that are currently being supported";
-
-        /// <summary>
         /// Transforms an AddMaterialPriceTableEntry into a MaterialPriceTableEntry and saves it to the database
         /// </summary>
         /// <param name="modelView">material price table entry to transform and persist</param>
@@ -91,32 +71,8 @@ namespace core.services
 
             TimePeriod timePeriod = TimePeriod.valueOf(startingDate, endingDate);
 
-            List<string> availableCurrencies = (List<string>)CurrenciesService.getAvailableCurrencies();
-            List<string> availableAreas = (List<string>)AreasService.getAvailableAreas();
-
-            if (!availableCurrencies.Contains(modelView.priceTableEntry.price.currency))
-            {
-                throw new ArgumentException
-                (
-                    string.Format
-                    (
-                        "{0} {1}: {2}",
-                        UNSUPPORTED_CURRENCY, SUPPORTED_CURRENCIES_MESSAGE, string.Join(", ", availableCurrencies)
-                    )
-                );
-            }
-
-            if (!availableAreas.Contains(modelView.priceTableEntry.price.area))
-            {
-                throw new ArgumentException
-                (
-                    string.Format
-                    (
-                     "{0} {1}: {2}",
-                     UNSUPPORTED_AREA, SUPPORTED_AREAS_MESSAGE, string.Join(", ", availableAreas)
-                    )
-                );
-            }
+            CurrenciesService.checkCurrencySupport(modelView.priceTableEntry.price.currency);
+            AreasService.checkAreaSupport(modelView.priceTableEntry.price.area);
 
             Price price = null;
             try
@@ -128,8 +84,10 @@ namespace core.services
                 else
                 {
                     double convertedValue = await new CurrencyPerAreaConversionService(clientFactory)
-                                                    .convertCurrencyToDefaultCurrency(modelView.priceTableEntry.price.currency,
-                                                         modelView.priceTableEntry.price.value);
+                                                    .convertCurrencyPerAreaToDefaultCurrencyPerArea(
+                                                        modelView.priceTableEntry.price.currency,
+                                                        modelView.priceTableEntry.price.area,
+                                                        modelView.priceTableEntry.price.value);
                     price = Price.valueOf(convertedValue);
                 }
             }
@@ -153,8 +111,8 @@ namespace core.services
             createdPriceModelView.startingDate = LocalDateTimePattern.GeneralIso.Format(savedMaterialPriceTableEntry.timePeriod.startingDate);
             createdPriceModelView.endingDate = LocalDateTimePattern.GeneralIso.Format(savedMaterialPriceTableEntry.timePeriod.endingDate);
             createdPriceModelView.value = savedMaterialPriceTableEntry.price.value;
-            createdPriceModelView.currency = CurrencyPerAreaConversionService.getBaseCurrency();
-            createdPriceModelView.area = CurrencyPerAreaConversionService.getBaseArea();
+            createdPriceModelView.currency = defaultCurrency;
+            createdPriceModelView.area = defaultArea;
             createdPriceModelView.id = savedMaterialPriceTableEntry.Id;
 
             return createdPriceModelView;
