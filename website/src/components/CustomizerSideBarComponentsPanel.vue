@@ -10,7 +10,7 @@
         <div class="scrollable-div" style="height: 200px; width: 100%;">
           <ul class="image-list" v-for="component in components" :key="component.id">
             <li class="image-icon-div">
-              <div class="image-btn" @click="createDivElements(component)">
+              <div class="image-btn">
                 <img :src="findComponentImage(component.model)" width="100%">
                 <span v-if="isComponentMandatory(component.id)">
                 <i class="image-icon material-icons md-12 md-red btn">warning</i>
@@ -21,9 +21,9 @@
             </li>
           </ul>
         </div>
-        <div class="scrollable-div" style="height: 100px; width: 100%;">
-          <div class="small-padding-div border" v-for="(divElement, index) in div_elements" :key="index">
-            <div v-if="hasSlots()">
+        <!-- <div class="scrollable-div" style="height: 100px; width: 100%;">
+          <div class="small-padding-div border" v-for="(divElement, index) in div_elements" :key="index"> -->
+            <!-- <div v-if="hasSlots()">
               <div v-if="canAddComponentToSlot(divElement.model)">
                 <div class="small-padding-div" align="center">
                   <b>{{divElement.designation}}</b>
@@ -49,9 +49,9 @@
                   <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="addDivElement(divElement)">check_circle_outline</i>
                   <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="removeDivElement(divElement)">highlight_off</i>
                 </div>
-            </div>
-          </div>
-        </div>
+            </div> -->
+          <!-- </div>
+        </div> -->
       </div>
     </div>
     <div v-else>
@@ -121,44 +121,44 @@ export default {
     findComponentImage(filename) {
       return "./src/assets/products/" + filename.split(".")[0] + ".png";
     },
-    createDivElements(component) {
-      this.div_elements.push(component);
-    },
-    canAddComponentToSlot(model){
-      return model.split(".")[0] != "sliding-door";
-    },
+    // createDivElements(component) {
+    //   this.div_elements.push(component);
+    // },
+    // canAddComponentToSlot(model){
+    //   return model.split(".")[0] != "sliding-door";
+    // },
     isComponentMandatory(componentId){
       for(let i = 0; i < this.components.length; i++){
         if(this.components[i].id == componentId) return this.components[i].mandatory == true;
       }
     },
-    addDivElement(component, index) {
-      //If the product has slots and the chosen component can be added to a slot, checks if the 
-      if (this.hasSlots() && this.canAddComponentToSlot(component.model)){
-        if(this.div_inputs[index] == undefined) {
-          this.$toast.open("You must choose a slot to apply the component!");
-        } else if(this.div_inputs[index] < 1 || this.div_inputs[index] > store.state.customizedProduct.slots.length + 1){
-            this.$toast.open("You must choose a valid slot to apply the component!");
-        } else {
-            component.slot = this.div_inputs[index];
-            store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
-            //TODO! DISABLE apply button
-        }
-      } else if(!this.hasSlots() || !this.canAddComponentToSlot(component.model)){
-        component.slot = 0;
-        store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
-          //TODO! DISABLE apply button
-      }
-    },
-    removeDivElement(component, index) {
-      component.slot = this.div_inputs[index];
+    // addDivElement(component, index) {
+    //   //If the product has slots and the chosen component can be added to a slot, checks if the 
+    //   if (this.hasSlots() && this.canAddComponentToSlot(component.model)){
+    //     if(this.div_inputs[index] == undefined) {
+    //       this.$toast.open("You must choose a slot to apply the component!");
+    //     } else if(this.div_inputs[index] < 1 || this.div_inputs[index] > store.state.customizedProduct.slots.length + 1){
+    //         this.$toast.open("You must choose a valid slot to apply the component!");
+    //     } else {
+    //         component.slot = this.div_inputs[index];
+    //         store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
+    //         //TODO! DISABLE apply button
+    //     }
+    //   } else if(!this.hasSlots() || !this.canAddComponentToSlot(component.model)){
+    //     component.slot = 0;
+    //     store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
+    //       //TODO! DISABLE apply button
+    //   }
+    // },
+    // removeDivElement(component, index) {
+    //   component.slot = this.div_inputs[index];
 
-      //TODO! only remove from graphical representation and store if DELETE request returns 204
-      store.dispatch(REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, { component: component });
-      this.div_inputs.splice(index, 1);
-      this.div_elements.splice(index, 1);
-      this.$toast.open("The component was sucessfully removed!");
-    },
+    //   //TODO! only remove from graphical representation and store if DELETE request returns 204
+    //   store.dispatch(REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, { component: component });
+    //   this.div_inputs.splice(index, 1);
+    //   this.div_elements.splice(index, 1);
+    //   this.$toast.open("The component was sucessfully removed!");
+    // },
     nextPanel(){
       //TODO! POST components
       this.$emit("advance");
