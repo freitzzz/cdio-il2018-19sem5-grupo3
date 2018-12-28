@@ -220,8 +220,7 @@
               }
             }
             /* =this.storeDimensions[controlIndex].slice();
-             alert("a tua prima"); */
-            /*   alert(this.storeDispatchVec[WIDTH]);
+            
               this.storeDispatchVec[HEIGHT] = this.storeDimensions[this.dimensionOp].height;
               this.storeDispatchVec[DEPTH] = this.storeDimensions[this.dimensionOp].depth; */
   
@@ -287,17 +286,12 @@
         }
       },
       initialPopulate() {
-        alert("entrei");
         this.dimensionOp = this.availableOptionsDimensions[0];
         this.populateDimensions();
   
       },
       //sends to product renderer the resize factor
       createResizeFactor() {
-        
-        alert(this.width);
-        alert(this.height);
-        alert(this.depth);
         store.dispatch(SET_RESIZE_FACTOR_DIMENSIONS, {
           width: this.width,
           height: this.height,
@@ -336,7 +330,8 @@
             op.height
           );
           this.heightIncrement = this.determineIncrementOfInterval(op.height);
-  
+
+          this.height = this.heightMin;
           this.continousIntervalFlags[this.HEIGHT] = true;
           this.discreteIntervalFlags[this.HEIGHT] = false;
           this.discreteValueFlags[this.HEIGHT] = false;
