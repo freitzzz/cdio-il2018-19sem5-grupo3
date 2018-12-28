@@ -6,12 +6,12 @@
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
     <select class="dropdown" v-model="dimensionOp" @change="populateDimensions">
-                                                  <option
-                                                    v-for="option in availableOptionsDimensions"
-                                                    :key="option.id"
-                                                    :value="option"
-                                                  >{{"Option: "+option.id}}</option>
-                                                </select>
+                                                    <option
+                                                      v-for="option in availableOptionsDimensions"
+                                                      :key="option.id"
+                                                      :value="option"
+                                                    >{{"Option: "+option.id}}</option>
+                                                  </select>
   
     <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
@@ -33,12 +33,12 @@
   
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="this.updateUnit">
-                                                  <option
-                                                    v-for="optionUnit in availableOptionsUnits"
-                                                    :key="optionUnit.id"
-                                                    :value="optionUnit.unit"
-                                                  >{{optionUnit.unit}}</option>
-                                                </select>
+                                                    <option
+                                                      v-for="optionUnit in availableOptionsUnits"
+                                                      :key="optionUnit.id"
+                                                      :value="optionUnit.unit"
+                                                    >{{optionUnit.unit}}</option>
+                                                  </select>
     <div class="center-controls">
       <i class="btn btn-primary material-icons" @click="previousPanel()">arrow_back</i>
       <i class="btn btn-primary material-icons" @click="nextPanel()">arrow_forward</i>
@@ -173,6 +173,7 @@
       store.dispatch(ACTIVATE_CAN_MOVE_CLOSET);
       store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS);
       /*Get all available dimensions of the given product of the array*/
+   
       Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions`)
         .then(response => this.availableOptionsDimensions.push(...response.data))
         .catch(error => {
@@ -184,7 +185,7 @@
         .catch(error => {
           this.$toast.open(error.response.status + "An error occurred");
         });
-      /*       this.initialPopulate(); */
+      this.initialPopulate(); 
   
   
     },
@@ -219,8 +220,7 @@
               }
             }
             /* =this.storeDimensions[controlIndex].slice();
-             alert("a tua prima"); */
-            /*   alert(this.storeDispatchVec[WIDTH]);
+            
               this.storeDispatchVec[HEIGHT] = this.storeDimensions[this.dimensionOp].height;
               this.storeDispatchVec[DEPTH] = this.storeDimensions[this.dimensionOp].depth; */
   
@@ -300,98 +300,103 @@
       },
       //Populate
       populateDimensions: function() {
-          this.resetFlags();
-          //Get information of the chosed option
-          var op = this.dimensionOp;
-          //Populate Height:
-          this.heightType = this.identifyTypeDimensions(op.height);
-          if (this.heightType == DISCRETE_INTERVAL) {
-            this.discreteIntervalHeight = op.height.values;
-  
-            this.discreteIntervalFlags[this.HEIGHT] = true;
-            this.continousIntervalFlags[this.HEIGHT] = false;
-            this.discreteValueFlags[this.HEIGHT] = false;
-  
-            this.heightIncrement = 1;
-          } else if (this.heightType == DISCRETE_VALUE) {
-            this.height = this.determineMinOfInterval(this.heightType, op.height);
-  
-            this.discreteValueFlags[this.HEIGHT] = true;
-            this.continousIntervalFlags[this.HEIGHT] = false;
-            this.discreteIntervalFlags[this.HEIGHT] = false;
-          } else {
-            this.heightMin = this.determineMinOfInterval(
-              this.heightType,
-              op.height
-            );
-            this.heightMax = this.determineMaxOfInterval(
-              this.heightType,
-              op.height
-            );
-            this.heightIncrement = this.determineIncrementOfInterval(op.height);
-  
-            this.continousIntervalFlags[this.HEIGHT] = true;
-            this.discreteIntervalFlags[this.HEIGHT] = false;
-            this.discreteValueFlags[this.HEIGHT] = false;
-          }
-  
-  
-          //Populate Width
-          this.widthType = this.identifyTypeDimensions(op.width);
-          if (this.widthType == DISCRETE_INTERVAL) {
-            this.discreteIntervalWidth = op.width.values;
-  
-            this.discreteIntervalFlags[this.WIDTH] = true;
-            this.continousIntervalFlags[this.WIDTH] = false;
-            this.discreteValueFlags[this.WIDTH] = false;
-  
-            this.widthIncrement = 1;
-          } else if (this.widthType == DISCRETE_VALUE) {
-            this.width = this.determineMinOfInterval(this.widthType, op.width);
-  
-            this.discreteValueFlags[this.WIDTH] = true;
-            this.continousIntervalFlags[this.WIDTH] = false;
-            this.discreteIntervalFlags[this.WIDTH] = false;
-          } else {
-            this.widthMin = this.determineMinOfInterval(this.widthType, op.width);
-            this.widthMax = this.determineMaxOfInterval(this.widthType, op.width);
-            this.widthIncrement = this.determineIncrementOfInterval(op.width);
-  
-            this.continousIntervalFlags[this.WIDTH] = true;
-            this.discreteValueFlags[this.WIDTH] = false;
-            this.discreteIntervalFlags[this.WIDTH] = false;
-          }
-          //Populate Depth:
-          this.depthType = this.identifyTypeDimensions(op.depth);
-          if (this.depthType == DISCRETE_INTERVAL) {
-            this.discreteIntervalDepth = op.depth.values;
-  
-            this.discreteIntervalFlags[this.DEPTH] = true;
-            this.continousIntervalFlags[this.DEPTH] = false;
-            this.discreteValueFlags[this.DEPTH] = false;
-  
-            this.depthIncrement = 1;
-          } else if (this.depthType == DISCRETE_VALUE) {
-            this.depth = this.determineMinOfInterval(this.depthType, op.depth);
-  
-            this.discreteValueFlags[this.DEPTH] = true;
-            this.continousIntervalFlags[this.DEPTH] = false;
-            this.discreteIntervalFlags[this.DEPTH] = false;
-          } else {
-            this.depthMax = this.determineMaxOfInterval(this.depthType, op.depth);
-            this.depthMin = this.determineMinOfInterval(this.depthType, op.depth);
-            this.depthIncrement = this.determineIncrementOfInterval(op.depth);
-  
-            this.continousIntervalFlags[this.DEPTH] = true;
-            this.discreteValueFlags[this.DEPTH] = false;
-            this.discreteIntervalFlags[this.DEPTH] = false;
-          }     
-          if (this.controlIndex == 0) { //First dimension
 
-            this.createResizeFactor();
-            this.controlIndex++;
-          }
+        this.resetFlags();
+        //Get information of the chosed option
+        var op = this.dimensionOp;
+        //Populate Height:
+        this.heightType = this.identifyTypeDimensions(op.height);
+        if (this.heightType == DISCRETE_INTERVAL) {
+          this.discreteIntervalHeight = op.height.values;
+  
+          this.discreteIntervalFlags[this.HEIGHT] = true;
+          this.continousIntervalFlags[this.HEIGHT] = false;
+          this.discreteValueFlags[this.HEIGHT] = false;
+  
+          this.heightIncrement = 1;
+        } else if (this.heightType == DISCRETE_VALUE) {
+          this.height = this.determineMinOfInterval(this.heightType, op.height);
+  
+          this.discreteValueFlags[this.HEIGHT] = true;
+          this.continousIntervalFlags[this.HEIGHT] = false;
+          this.discreteIntervalFlags[this.HEIGHT] = false;
+        } else {
+          this.heightMin = this.determineMinOfInterval(
+            this.heightType,
+            op.height
+          );
+          this.heightMax = this.determineMaxOfInterval(
+            this.heightType,
+            op.height
+          );
+          this.heightIncrement = this.determineIncrementOfInterval(op.height);
 
+          this.height = this.heightMin;
+          this.continousIntervalFlags[this.HEIGHT] = true;
+          this.discreteIntervalFlags[this.HEIGHT] = false;
+          this.discreteValueFlags[this.HEIGHT] = false;
+        }
+  
+  
+        //Populate Width
+        this.widthType = this.identifyTypeDimensions(op.width);
+        if (this.widthType == DISCRETE_INTERVAL) {
+          this.discreteIntervalWidth = op.width.values;
+  
+          this.discreteIntervalFlags[this.WIDTH] = true;
+          this.continousIntervalFlags[this.WIDTH] = false;
+          this.discreteValueFlags[this.WIDTH] = false;
+  
+          this.widthIncrement = 1;
+        } else if (this.widthType == DISCRETE_VALUE) {
+          this.width = this.determineMinOfInterval(this.widthType, op.width);
+  
+          this.discreteValueFlags[this.WIDTH] = true;
+          this.continousIntervalFlags[this.WIDTH] = false;
+          this.discreteIntervalFlags[this.WIDTH] = false;
+        } else {
+          
+          this.widthMin = this.determineMinOfInterval(this.widthType, op.width);
+          this.widthMax = this.determineMaxOfInterval(this.widthType, op.width);
+          this.widthIncrement = this.determineIncrementOfInterval(op.width);
+          this.width=this.widthMin;
+          
+  
+          this.continousIntervalFlags[this.WIDTH] = true;
+          this.discreteValueFlags[this.WIDTH] = false;
+          this.discreteIntervalFlags[this.WIDTH] = false;
+        }
+        //Populate Depth:
+        this.depthType = this.identifyTypeDimensions(op.depth);
+        if (this.depthType == DISCRETE_INTERVAL) {
+          this.discreteIntervalDepth = op.depth.values;
+  
+          this.discreteIntervalFlags[this.DEPTH] = true;
+          this.continousIntervalFlags[this.DEPTH] = false;
+          this.discreteValueFlags[this.DEPTH] = false;
+  
+          this.depthIncrement = 1;
+        } else if (this.depthType == DISCRETE_VALUE) {
+          this.depth = this.determineMinOfInterval(this.depthType, op.depth);
+  
+          this.discreteValueFlags[this.DEPTH] = true;
+          this.continousIntervalFlags[this.DEPTH] = false;
+          this.discreteIntervalFlags[this.DEPTH] = false;
+        } else {
+          this.depthMax = this.determineMaxOfInterval(this.depthType, op.depth);
+          this.depthMin = this.determineMinOfInterval(this.depthType, op.depth);
+          this.depthIncrement = this.determineIncrementOfInterval(op.depth);
+
+          this.depth = this.depthMin;
+          this.continousIntervalFlags[this.DEPTH] = true;
+          this.discreteValueFlags[this.DEPTH] = false;
+          this.discreteIntervalFlags[this.DEPTH] = false;
+        }
+        if (this.controlIndex == 0) { //First dimension
+          this.createResizeFactor();
+          this.controlIndex++;
+        }
+  
   
   
       },
@@ -551,9 +556,7 @@
            minSlotWidth = this.valueConvertedSlotsWidth;
          }  */
   
-        var reasonW = 404.5 / widthCloset;
-        var reasonD = 100 / depthCloset;
-        var reasonH = 300 / heightCloset;
+        var reasonW = store.state.resizeVectorGlobal.width;
   
         for (let i = 0; i < this.listRecommendedSlots.length; i++) {
           store.dispatch(ADD_SLOT_DIMENSIONS, {

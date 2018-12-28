@@ -50,26 +50,6 @@ namespace core.services
         private const string DATES_WRONG_FORMAT = "Make sure all dates follow the General ISO Format: ";
 
         /// <summary>
-        /// Message that occurs if the new currency isn't supported
-        /// </summary>
-        private const string UNSUPPORTED_CURRENCY = "The inserted currency is not being supported at the moment!";
-
-        /// <summary>
-        /// Message to help the user know which currencies to use
-        /// </summary>
-        private const string SUPPORTED_CURRENCIES_MESSAGE = "Please use one of the currencies that are currently being supported";
-
-        /// <summary>
-        /// Message that occurs if the new area isn't supported
-        /// </summary>
-        private const string UNSUPPORTED_AREA = "The inserted area is not being supported at the moment!";
-
-        /// <summary>
-        /// Message to help the user know which areas to use
-        /// </summary>
-        private const string SUPPORTED_AREAS_MESSAGE = "Please use one of the areas that are currently being supported";
-
-        /// <summary>
         /// Updates a material's price table entry
         /// </summary>
         /// <param name="modelView">model view with the update information</param>
@@ -114,32 +94,8 @@ namespace core.services
 
             if (modelView.priceTableEntry.price != null)
             {
-                List<string> availableCurrencies = (List<string>)CurrenciesService.getAvailableCurrencies();
-                List<string> availableAreas = (List<string>)AreasService.getAvailableAreas();
-
-                if (!availableCurrencies.Contains(modelView.priceTableEntry.price.currency))
-                {
-                    throw new ArgumentException
-                    (
-                        string.Format
-                        (
-                            "{0} {1}: {2}",
-                            UNSUPPORTED_CURRENCY, SUPPORTED_CURRENCIES_MESSAGE, string.Join(", ", availableCurrencies)
-                        )
-                    );
-                }
-
-                if (!availableAreas.Contains(modelView.priceTableEntry.price.area))
-                {
-                    throw new ArgumentException
-                    (
-                        string.Format
-                        (
-                         "{0} {1}: {2}",
-                         UNSUPPORTED_AREA, SUPPORTED_AREAS_MESSAGE, string.Join(", ", availableAreas)
-                        )
-                    );
-                }
+                CurrenciesService.checkCurrencySupport(modelView.priceTableEntry.price.currency);
+                AreasService.checkAreaSupport(modelView.priceTableEntry.price.area);
 
                 Price newPrice = null;
                 try
@@ -151,8 +107,10 @@ namespace core.services
                     else
                     {
                         double convertedValue = await new CurrencyPerAreaConversionService(clientFactory)
-                                                        .convertCurrencyToDefaultCurrency(modelView.priceTableEntry.price.currency,
-                                                             modelView.priceTableEntry.price.value);
+                                                        .convertCurrencyPerAreaToDefaultCurrencyPerArea(
+                                                            modelView.priceTableEntry.price.currency,
+                                                            modelView.priceTableEntry.price.area,
+                                                            modelView.priceTableEntry.price.value);
                         newPrice = Price.valueOf(convertedValue);
                     }
                 }
@@ -218,7 +176,6 @@ namespace core.services
 
                 return updatedTableEntryModelView;
             }
-
             throw new InvalidOperationException(UPDATE_NOT_SUCCESSFUL);
         }
     }

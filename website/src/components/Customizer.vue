@@ -17,10 +17,15 @@
 </template>
 
 <script>
-import ProductRenderer from "./../3d/ProductRendererTemp.js";
-import CustomizerSideBar from "./CustomizerSideBar";
-import CustomizerProgressBar from "./CustomizerProgressBar.vue";
+import Vue from "vue";
 import Store from "./../store/index.js";
+import CustomizerSideBar from "./CustomizerSideBar";
+import ProductRenderer from "./../3d/ProductRendererTemp.js";
+import { SET_DOORS_FLAG } from "./../store/mutation-types.js";
+import CustomizerProgressBar from "./CustomizerProgressBar.vue";
+import Toasted from "vue-toasted";
+
+Vue.use(Toasted);
 
 export default {
   name: "Customizer",
@@ -74,6 +79,9 @@ export default {
     canMoveComponents(){
       return Store.getters.canMoveComponents;
     },
+    controlDoorsFlag(){
+      return Store.getters.doorsFlag;
+    },
     populateWebsiteDimensions(){
       return Store.getters.resizeFactorDimensions;
     }
@@ -101,7 +109,6 @@ export default {
       this.productRenderer.showCloset();
     },
     updateDimensions: function() {
- 
       this.productRenderer.changeClosetDimensions(
         Store.getters.customizedProductDimensions.width,
         Store.getters.customizedProductDimensions.height,
@@ -116,7 +123,10 @@ export default {
       }
     },
     removeComponent: function(newValue){
-      this.productRenderer.removeComponent(newValue);
+      console.log(newValue)
+      if(newValue){
+        if(confirm('Are you sure you want to remove the selected component?')) this.productRenderer.removeComponent(newValue);
+      }
     },
     applyMaterial: function(newValue) {
       this.productRenderer.applyTexture("./src/assets/materials/" + newValue);
@@ -135,6 +145,12 @@ export default {
     },
     canMoveComponents(newValue){
       this.productRenderer.canMoveComponents = newValue;
+    },
+    controlDoorsFlag(newValue){
+      if(newValue == "CLOSET_HAS_HINGED_DOORS") this.$toast.open("There are closet slots that have hinged doors!");
+      if(newValue == "CLOSET_HAS_SLIDING_DOORS") this.$toast.open("The closet already has sliding doors!");
+      if(newValue == "SLOT_HAS_DOOR") this.$toast.open("This slot already has a door!");
+      Store.dispatch(SET_DOORS_FLAG, {flag : "NONE"});
     }
   },
   methods: {
@@ -170,7 +186,6 @@ export default {
     },
     allowDrop: function(event){
       event.preventDefault();
-
     },
     changeProgressBarStage: function(currentPanelIndex){
       this.currentStage = currentPanelIndex;
