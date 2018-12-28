@@ -5,6 +5,12 @@ export const mutations = {
   [types.SET_RESIZE_VECTOR_GLOBAL](state,payload){
     if(payload){
       state.resizeVectorGlobal = payload;
+
+      /* alert(state.resizeVectorGlobal.width);
+      alert(state.resizeVectorGlobal.height);
+      alert(state.resizeVectorGlobal.depth); */
+
+
     }else{
       state.resizeVectorGlobal =[];
     }
