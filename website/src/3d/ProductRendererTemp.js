@@ -826,9 +826,15 @@ export default class ProductRenderer {
    * Populate vector website dimensions
   */
   populateWebsiteDimensions(websiteDimensions){
-      if(websiteDimensions.width != undefined || websiteDimensions.height != undefined || websiteDimensions.depth != undefined ){
+    /* alert(websiteDimensions.width);
+    alert(websiteDimensions.height);
+    alert(websiteDimensions.depth); */
+    
+    if(websiteDimensions.width != undefined || websiteDimensions.height != undefined || websiteDimensions.depth != undefined ){
       
         this.websiteDimensions=[websiteDimensions.width,websiteDimensions.height,websiteDimensions.depth];  
+        this.resizeFactor();
+
       }
   }
   /**  END   */
@@ -840,7 +846,6 @@ export default class ProductRenderer {
    * @param {number} depth Number with the closet depth
    */
   changeClosetDimensions(width, height, depth) {
-    this.resizeFactor();
     this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
     this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
     this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth) - 250.8);
@@ -856,7 +861,11 @@ export default class ProductRenderer {
     for (i = 0; i < this.NUMBER_DIMENSIONS; i++) {
       this.resizeVec[i] = this.initialDimensions[i] / this.websiteDimensions[i];
      
-    }
+    }/* 
+    alert(this.resizeVec[this.WIDTH]);
+    alert(this.resizeVec[this.HEIGHT]);
+    alert(this.resizeVec[this.DEPTH]); */
+    
     store.dispatch(SET_RESIZE_VECTOR_GLOBAL, {
       width: this.resizeVec[this.WIDTH],
       height:this.resizeVec[this.HEIGHT],
