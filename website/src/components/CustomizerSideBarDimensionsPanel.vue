@@ -556,9 +556,7 @@
            minSlotWidth = this.valueConvertedSlotsWidth;
          }  */
   
-        var reasonW = 404.5 / widthCloset;
-        var reasonD = 100 / depthCloset;
-        var reasonH = 300 / heightCloset;
+        var reasonW = store.state.resizeVectorGlobal.width;
   
         for (let i = 0; i < this.listRecommendedSlots.length; i++) {
           store.dispatch(ADD_SLOT_DIMENSIONS, {
