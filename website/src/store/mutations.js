@@ -61,16 +61,25 @@ export const mutations = {
    * @param {*} state The store's state
    * @param {*} payload Payload with the new slot width 
    */
-  [types.ADD_SLOT_DIMENSIONS](state, payload) {
-    if (payload) {
+  [types.ADD_SLOT_DIMENSIONS](state, payload) {    
+    if (payload ) {
+      if(payload.height==0){
+        state.customizedProduct.slots[0] = {
+          idSlot: payload.idSlot,
+          depth: payload.depth,
+          width: payload.width,
+          height: payload.height,
+          unit: payload.unit
+        }
+      }else{
       state.customizedProduct.slots.push({
         idSlot: payload.idSlot,
         depth: payload.depth,
         width: payload.width,
         height: payload.height,
         unit: payload.unit
-      })
-    } else { state.customizedProduct.slots = []; }
+      })}
+    }else{ state.customizedProduct.slots = []; }
   },
   /**
    * Changes the states's customized product's material 
