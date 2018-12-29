@@ -36,7 +36,7 @@ namespace core.services
         public static void checkAreaSupport(string area)
         {
             List<string> availableAreas = (List<string>)loadAreas();
-            if (availableAreas.Contains(area))
+            if (!availableAreas.Contains(area))
             {
                 throw new ArgumentException
                 (
