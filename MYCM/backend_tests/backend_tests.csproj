@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Content Include="../core/measurement_units.json" Link="../core/measurement_units.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../core/current_price_per_area_units.json" Link="../core/current_price_per_area_units.json" CopyToOutputDirectory="PreserveNewest"/>
     <Content Include="../core/application-settings" Link="application-settings" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
