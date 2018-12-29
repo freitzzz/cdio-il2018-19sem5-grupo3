@@ -1,5 +1,6 @@
 <template>
-  <div class="modal-card" style="width: auto">
+  <div>
+  
     <header class="modal-card-head">
       <p class="modal-card-title">Signup</p>
     </header>
@@ -16,14 +17,11 @@
         </b-field>
   
         <b-checkbox type="is-info" @input="iHaveReadThePolicy"> </b-checkbox>
-        <a @click="activateModalPrivacy">I have read the <u>Privacy Policy</u></a>
+        <a @click="emitPrivacy()">I have read the <u>Privacy Policy</u></a>
+        <div>
+          <privacy-policy-modal :activateModal="activateModalForm"></privacy-policy-modal>
+        </div>
       </div>
-    <div v-if="activateModal">  
-      <b-modal :active.sync="activateModal" has-modal-card scroll="keep">
-        <privacy-policy-modal></privacy-policy-modal>
-      </b-modal>
-    
-    </div>
       <!-- Create check box + form  -->
     </section>
     <footer class="modal-card-foot">
@@ -31,8 +29,6 @@
         <button class="btn-primary" @click="emitSignup()">Sign Up</button>
       </div>
     </footer>
- 
-  
   </div>
 </template>
 
@@ -54,24 +50,24 @@
         name: "",
         privacyCheckBox: false,
         checkBox: "",
-        activateModal: false
+        activateModalForm: true,
+  
   
       };
+    },
+    components: {
+      PrivacyPolicyModal
     },
     /**
      * Component methods
      */
     methods: {
-      activateModalPrivacy() {
-        if (this.activateModal) {
-          this.activateModal = false;
-        }else{
-          this.activateModal = true;
-        }
+      emitPrivacy() {
+        this.activateModalForm = true;
       },
   
       iHaveReadThePolicy: function() {
-        if (this.privacyCheckBox) {
+        if (this.privacyCheckBox == true) {
           this.privacyCheckBox = false;
         } else {
           this.privacyCheckBox = true;
@@ -82,7 +78,7 @@
        * Emits the signup action
        */
       emitSignup() {
-        if (this.privacyCheckBox) {
+        if (this.privacyCheckBox == true) {
           var invalidEmail = !this.email || this.email.trim() == "";
           var invalidName = !this.name || this.name.trim() == "";
           var invalidPassword = !this.password || this.password.trim() == "";
@@ -121,9 +117,6 @@
           this.$toast.open('Please confirm that you have read our privacy policy');
         }
       }
-    },
-    components: {
-      PrivacyPolicyModal
     }
   
   };
