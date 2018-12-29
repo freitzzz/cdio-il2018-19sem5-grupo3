@@ -43,7 +43,7 @@ namespace core.services
         /// <summary>
         /// Number of decimal places that a price always has
         /// </summary>
-        private const int DECIMAL_PLACES = 2;
+        private const int DECIMAL_PLACES = 10;
 
         /// <summary>
         /// Represents the error message that occurs if an error happens while parsing the JSON file that holds the default area unit
@@ -103,7 +103,7 @@ namespace core.services
             *   To convert prices (value that's in currency per unit of area)
             *   we need to use the following formula:
             *  =======================================
-            *          !Cp = Op * CR * F²
+            *          !Cp = Op * CR * 1/F²
             *  =======================================
             *   Where Cp is the converted price,
             *         Op is the original price,
@@ -152,7 +152,7 @@ namespace core.services
                                                                 new String(defaultArea.Where(c => Char.IsLetter(c)).ToArray())
                                                             ), SQUARE);
 
-                double convertedValue = currencyConversionInfoDTO.rate * valueToConvert * areaConversionFactor;
+                double convertedValue = currencyConversionInfoDTO.rate * valueToConvert * 1 / areaConversionFactor;
                 return Math.Round(convertedValue, DECIMAL_PLACES);
             }
             else
@@ -192,7 +192,7 @@ namespace core.services
                                                                 new String(convertToArea.Where(c => Char.IsLetter(c)).ToArray())
                                                             ), SQUARE);
 
-                double convertedValue = currencyConversionInfoDTO.rate * valueToConvert * areaConversionFactor;
+                double convertedValue = currencyConversionInfoDTO.rate * valueToConvert * 1 / areaConversionFactor;
                 return Math.Round(convertedValue, DECIMAL_PLACES);
             }
             else
@@ -234,7 +234,7 @@ namespace core.services
                                                                 new String(toArea.Where(c => Char.IsLetter(c)).ToArray())
                                                             ), SQUARE);
 
-                double convertedValue = currencyConversionInfoDTO.rate * valueToConvert * areaConversionFactor;
+                double convertedValue = currencyConversionInfoDTO.rate * valueToConvert * 1 / areaConversionFactor;
                 return Math.Round(convertedValue, DECIMAL_PLACES);
             }
             else
