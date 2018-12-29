@@ -31,7 +31,9 @@ public class UserController {
         } catch (IllegalStateException ex) {
             User user = new User(auth);
             userRepo.save(user);
-            return UserMVService.createdUserMVFromAuth(auth);
+            CreatedUserMV createdUserMV=UserMVService.createdUserMVFromAuth(auth);
+            createdUserMV.activationCode=user.activationCode();
+            return createdUserMV;
         }
         throw new IllegalStateException("User already exists!");
     }
