@@ -71,8 +71,7 @@ namespace backend.Controllers
 
             FetchProductDTO fetchProductDTO = new FetchProductDTO();
             fetchProductDTO.reference = reference;
-            ProductDTOOptions options = new ProductDTOOptions();
-            options.requiredUnit = unit;
+            fetchProductDTO.productDTOOptions.requiredUnit = unit;
 
             return findByReference(fetchProductDTO);
         }
