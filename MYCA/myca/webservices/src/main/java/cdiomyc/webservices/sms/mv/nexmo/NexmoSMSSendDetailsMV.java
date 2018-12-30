@@ -26,17 +26,17 @@ public final class NexmoSMSSendDetailsMV extends SMSSendDetailsMV{
      * String with the Nexmo sender indentifier
      */
     @SerializedName(value = "from")
-    public final String from=senderIdentifier;
+    public String from;
     
     /**
      * String with the Nexmo SMS message to send
      */
     @SerializedName(value = "text")
-    public final String text=message;
+    public String text;
     
     /**
      * String with the Nexmo receptor phone number
      */
     @SerializedName(value = "to")
-    public final String to=receptorPhoneNumber;
+    public String to;
 }

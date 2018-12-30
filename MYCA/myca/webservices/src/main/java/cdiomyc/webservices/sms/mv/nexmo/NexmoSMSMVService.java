@@ -1,5 +1,6 @@
 package cdiomyc.webservices.sms.mv.nexmo;
 
+import cdiomyc.webservices.configuration.WebservicesConfiguration;
 import cdiomyc.webservices.sms.mv.SMSSendDetailsMV;
 
 /**
@@ -8,14 +9,18 @@ import cdiomyc.webservices.sms.mv.SMSSendDetailsMV;
  */
 public class NexmoSMSMVService {
     
+    /**
+     * Transforms a SMSSendDetailsMV in a NexmoSMSSendDetailsMV using webservices configuration
+     * @param smsSendDetailsMV SMSSendDetailsMV with the sms send details
+     * @return NexmoSMSSendDetails with the Nexmo sms send details
+     */
     public static NexmoSMSSendDetailsMV from(SMSSendDetailsMV smsSendDetailsMV){
         NexmoSMSSendDetailsMV nexmoSMSSendDetailsMV=new NexmoSMSSendDetailsMV();
-        nexmoSMSSendDetailsMV.senderIdentifier=smsSendDetailsMV.senderIdentifier;
-        nexmoSMSSendDetailsMV.message=smsSendDetailsMV.message;
-        nexmoSMSSendDetailsMV.receptorPhoneNumber=smsSendDetailsMV.receptorPhoneNumber;
-        nexmoSMSSendDetailsMV.apiKey=null;
-        nexmoSMSSendDetailsMV.apiSecret=null;
-        //TODO: CALL CONFIGURATION SERVICE FOR NEXMO API KEYS INJECTED VIA DEPENDECY INJECTION
+        nexmoSMSSendDetailsMV.from=smsSendDetailsMV.senderIdentifier;
+        nexmoSMSSendDetailsMV.text=smsSendDetailsMV.message;
+        nexmoSMSSendDetailsMV.to=smsSendDetailsMV.receptorPhoneNumber;
+        nexmoSMSSendDetailsMV.apiKey=WebservicesConfiguration.settings().getNexmoAPIKey();
+        nexmoSMSSendDetailsMV.apiSecret=WebservicesConfiguration.settings().getNexmoAPISecret();
         return nexmoSMSSendDetailsMV;
     }
 }
