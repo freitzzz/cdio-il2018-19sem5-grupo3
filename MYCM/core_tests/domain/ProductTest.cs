@@ -4,20 +4,18 @@ using core.persistence;
 using System;
 using System.Collections.Generic;
 using Xunit;
+using static core.domain.CustomizedProduct;
 
-namespace core_tests.domain
-{
+namespace core_tests.domain {
     /// <summary>
     /// Unit and Business rules tests for Product entity class
     /// </summary>
-    public class ProductTest
-    {
+    public class ProductTest {
         /// <summary>
         /// Creates an instance of Material.
         /// </summary>
         /// <returns>Created instance of Material.</returns>
-        private Material buildValidMaterial()
-        {
+        private Material buildValidMaterial() {
 
             Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
             Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
@@ -34,8 +32,7 @@ namespace core_tests.domain
         /// Creates an instance of ProductCategory.
         /// </summary>
         /// <returns>Created instance of ProductCategory.</returns>
-        private ProductCategory buildValidCategory()
-        {
+        private ProductCategory buildValidCategory() {
             return new ProductCategory("All Products");
         }
 
@@ -43,8 +40,7 @@ namespace core_tests.domain
         /// Creates an instance of Measurement.
         /// </summary>
         /// <returns>Created instance of Measurement.</returns>
-        private Measurement buildValidMeasurement()
-        {
+        private Measurement buildValidMeasurement() {
             Dimension heightDimension = new SingleValueDimension(50);
             Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
             Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
@@ -56,8 +52,7 @@ namespace core_tests.domain
         /// Creates a simple instance of Product (no complementary products nor slot dimensions)
         /// </summary>
         /// <returns>Created instance of Product.</returns>
-        private Product buildValidSimpleProduct()
-        {
+        private Product buildValidSimpleProduct() {
             return new Product("#001", "Simple Product", "Simple_Product_001.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
         }
 
@@ -65,8 +60,7 @@ namespace core_tests.domain
         /// Ensures that product can't be created with a null reference
         /// </summary>
         [Fact]
-        public void ensureProductCantBeCreatedWithNullReference()
-        {
+        public void ensureProductCantBeCreatedWithNullReference() {
             Action invalidNullProductReferenceCreation = () =>
                 new Product(null, "Shelf", "shelf.obj", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with a null reference then it should throw
@@ -78,8 +72,7 @@ namespace core_tests.domain
         /// Ensures that product can't be created with an empty reference
         /// </summary>
         [Fact]
-        public void ensureProductCantBeCreatedWithEmptyReference()
-        {
+        public void ensureProductCantBeCreatedWithEmptyReference() {
             Action invalidEmptyProductReferenceCreation = () =>
                 new Product("", "Shelf", "shelf.dae", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with an empty reference then it should throw
@@ -91,8 +84,7 @@ namespace core_tests.domain
         /// Ensures that product can't be created with a null designation
         /// </summary>
         [Fact]
-        public void ensureProductCantBeCreatedWithNullDesignation()
-        {
+        public void ensureProductCantBeCreatedWithNullDesignation() {
             Action invalidNullProductDesignationCreation = () =>
                 new Product("#666", null, "666.gltf", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with a null designation then it should throw
@@ -104,8 +96,7 @@ namespace core_tests.domain
         /// Ensures that product can't be created with an empty designation
         /// </summary>
         [Fact]
-        public void ensureProductCantBeCreatedWithEmptyDesignation()
-        {
+        public void ensureProductCantBeCreatedWithEmptyDesignation() {
             Action invalidEmptyProductDesignationCreation = () =>
                 new Product("#666", "", "666.fbx", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with an empty designation then it should throw
@@ -114,8 +105,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureProductCantBeCreatedWithEmptyModelFilename()
-        {
+        public void ensureProductCantBeCreatedWithEmptyModelFilename() {
             Action emptyModelFilenameProductCreation = () => new Product("#666", "Shelf", "",
                 buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
@@ -123,8 +113,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureProductCantBeCreatedWithNullModelFilename()
-        {
+        public void ensureProductCantBeCreatedWithNullModelFilename() {
             Action nullModelFilenameProductCreation = () => new Product("#666", "Shelf", null,
                 buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
@@ -132,8 +121,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureProductCantBeCreatedWithInvalidModelFileExtension()
-        {
+        public void ensureProductCantBeCreatedWithInvalidModelFileExtension() {
             Action invalidExtesionFilenameProductCreation = () => new Product("#666", "Shelf", "shelf666.jpg",
                buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
@@ -141,8 +129,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureProductCantBeCreatedWithNullProductCategory()
-        {
+        public void ensureProductCantBeCreatedWithNullProductCategory() {
             Action action = () => new Product("#666", "Shelf", "shelf.glb", null, new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
             Assert.Throws<ArgumentNullException>(action);
@@ -152,8 +139,7 @@ namespace core_tests.domain
         /// Ensures that product can't be created with null materials
         /// </summary>
         [Fact]
-        public void ensureProductCantBeCreatedWithNullMaterials()
-        {
+        public void ensureProductCantBeCreatedWithNullMaterials() {
             Action invalidNullMaterialsProductCreation = () =>
                 new Product("#666", "Shelf", "shelf.glb", buildValidCategory(), null, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with null materials then it should throw
@@ -165,8 +151,7 @@ namespace core_tests.domain
         /// Ensures that product can't be created with empty materials
         /// </summary>
         [Fact]
-        public void ensureProductCantBeCreatedWithEmptyMaterials()
-        {
+        public void ensureProductCantBeCreatedWithEmptyMaterials() {
             Action invalidEmptyMaterialsProductCreation = () =>
                 new Product("#666", "Shelf", "shelf.glb", buildValidCategory(), new List<Material>(), new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with empty materials then it should throw
@@ -179,8 +164,7 @@ namespace core_tests.domain
         /// Ensures that product can't be created with duplicated materials
         /// </summary>
         [Fact]
-        public void ensureProductCantBeCreatedWithDuplicatedMaterials()
-        {
+        public void ensureProductCantBeCreatedWithDuplicatedMaterials() {
             List<Material> duplicatedMaterials = new List<Material>() { buildValidMaterial(), buildValidMaterial() };
             Action invalidDuplicatedMaterialsProductCreation = () =>
                 new Product("#666", "Shelf", "shelf.glb", buildValidCategory(), duplicatedMaterials, new List<Measurement>() { buildValidMeasurement() });
@@ -190,8 +174,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureProductCantBeCreatedWithNullMeasurements()
-        {
+        public void ensureProductCantBeCreatedWithNullMeasurements() {
             Action nullMeasurementsProductCreation = () =>
                 new Product("#666", "Shelf", "shelf.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, null);
 
@@ -199,8 +182,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureProductCantBeCreatedWithEmptyMeasurements()
-        {
+        public void ensureProductCantBeCreatedWithEmptyMeasurements() {
             Action emptyMeasurementsProductCreation = () =>
                 new Product("#666", "Shelf", "shelf.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>());
 
@@ -208,8 +190,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureProductCantBeCreatedWithDuplicatedMeasurements()
-        {
+        public void ensureProductCantBeCreatedWithDuplicatedMeasurements() {
             List<Measurement> measurements = new List<Measurement>() { buildValidMeasurement(), buildValidMeasurement() };
 
             Action duplicatedMeasurementsProductCreation = () => new Product("#666", "Shelf", "shelf.glb", buildValidCategory(),
@@ -223,8 +204,7 @@ namespace core_tests.domain
         /// Ensures that product can't be created with null complementary products
         /// </summary>
         [Fact]
-        public void ensureProductCantBeCreatedWithNullComplementaryProducts()
-        {
+        public void ensureProductCantBeCreatedWithNullComplementaryProducts() {
             IEnumerable<Product> complementaryProducts = null;
             Action invalidNullComplementaryProductsProductCreation = () =>
                 new Product("#666", "Shelf", "shelf.glb", buildValidCategory(),
@@ -239,8 +219,7 @@ namespace core_tests.domain
         /// Ensures that product can't be created with empty complementary products
         /// </summary>
         [Fact]
-        public void ensureProductCantBeCreatedWithEmptyComplementaryProducts()
-        {
+        public void ensureProductCantBeCreatedWithEmptyComplementaryProducts() {
             Action invalidEmptyComplementaryProductsProductCreation = () =>
                 new Product("#666", "Shelf", "shelf.glb", buildValidCategory(),
                     new List<Material>() { buildValidMaterial() },
@@ -257,8 +236,7 @@ namespace core_tests.domain
         /// Ensures that product can't be created with duplicated materials
         /// </summary>
         [Fact]
-        public void ensureProductCantBeCreatedWithDuplicatedComplementaryProducts()
-        {
+        public void ensureProductCantBeCreatedWithDuplicatedComplementaryProducts() {
             List<Material> materials = new List<Material>() { buildValidMaterial() };
             List<Measurement> measurements = new List<Measurement>() { buildValidMeasurement() };
 
@@ -275,8 +253,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureProductCantBeCreatedWithNullProductSlotWidths()
-        {
+        public void ensureProductCantBeCreatedWithNullProductSlotWidths() {
             ProductSlotWidths slotWidths = null;
 
             Action nullMinSlotDimensionsProductCreation = () =>
@@ -288,8 +265,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureProductWithAllValidArgumentsIsCreated()
-        {
+        public void ensureProductWithAllValidArgumentsIsCreated() {
             string reference = "#success";
             string designation = "it just works!";
             string modelFilename = "valid_product.glb";
@@ -306,8 +282,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingNullMaterialToProductThrowsException()
-        {
+        public void ensureAddingNullMaterialToProductThrowsException() {
             Product product = buildValidSimpleProduct();
             //Since we added a null material then an ArgumentNullException should be thrown
             Action nullAddAction = () => product.addMaterial(null);
@@ -315,17 +290,14 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingNullMaterialToProductDoesNotAddMaterial()
-        {
+        public void ensureAddingNullMaterialToProductDoesNotAddMaterial() {
             Product product = buildValidSimpleProduct();
 
             Material nullMaterial = null;
 
-            try
-            {
+            try {
                 product.addMaterial(nullMaterial);
-            }
-            catch (ArgumentNullException) { }
+            } catch (ArgumentNullException) { }
 
             Assert.False(product.containsMaterial(nullMaterial));
             Assert.Single(product.productMaterials);
@@ -333,8 +305,7 @@ namespace core_tests.domain
 
 
         [Fact]
-        public void ensureAddingDuplicatedMaterialToProductThrowsException()
-        {
+        public void ensureAddingDuplicatedMaterialToProductThrowsException() {
             Material productMaterial = buildValidMaterial();
             Product product = buildValidSimpleProduct();
             //Since we added a duplicated material then an ArgumentException should be thrown
@@ -343,24 +314,20 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingDuplicatedMaterialToProductDoesNotAddMaterial()
-        {
+        public void ensureAddingDuplicatedMaterialToProductDoesNotAddMaterial() {
             Material productMaterial = buildValidMaterial();
             Product product = buildValidSimpleProduct();
 
-            try
-            {
+            try {
                 product.addMaterial(productMaterial);
-            }
-            catch (ArgumentException) { }
+            } catch (ArgumentException) { }
 
             Assert.Single(product.productMaterials);
         }
 
 
         [Fact]
-        public void ensureAddingValidMaterialToProductDoesNotThrowException()
-        {
+        public void ensureAddingValidMaterialToProductDoesNotThrowException() {
             Product product = buildValidSimpleProduct();
 
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
@@ -374,8 +341,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingValidMaterialToProductAddsMaterial()
-        {
+        public void ensureAddingValidMaterialToProductAddsMaterial() {
             Product product = buildValidSimpleProduct();
 
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
@@ -390,8 +356,7 @@ namespace core_tests.domain
 
 
         [Fact]
-        public void ensureAddingNullComplementaryProductToProductThrowsException()
-        {
+        public void ensureAddingNullComplementaryProductToProductThrowsException() {
             Product product = buildValidSimpleProduct();
             //Since we added a null complementary product then an ArgumentNullException
             Action addNullComplementAction = () => product.addComplementaryProduct(null);
@@ -399,46 +364,38 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingNullComplementaryProductToProductDoesNotAddComplementaryProduct()
-        {
+        public void ensureAddingNullComplementaryProductToProductDoesNotAddComplementaryProduct() {
             Product product = buildValidSimpleProduct();
             Product nullComplementaryProduct = null;
 
-            try
-            {
+            try {
                 product.addComplementaryProduct(nullComplementaryProduct);
-            }
-            catch (ArgumentNullException) { }
+            } catch (ArgumentNullException) { }
 
             Assert.False(product.containsComplementaryProduct(nullComplementaryProduct));
             Assert.Empty(product.components);
         }
 
         [Fact]
-        public void ensureAddingProductToItselfThrowsException()
-        {
+        public void ensureAddingProductToItselfThrowsException() {
             Product product = buildValidSimpleProduct();
             Action addRecursiveProductAction = () => product.addComplementaryProduct(product);
             Assert.Throws<ArgumentException>(addRecursiveProductAction);
         }
 
         [Fact]
-        public void ensureAddingProductToItselfDoesNotAddProduct()
-        {
+        public void ensureAddingProductToItselfDoesNotAddProduct() {
             Product product = buildValidSimpleProduct();
-            try
-            {
+            try {
                 product.addComplementaryProduct(product);
-            }
-            catch (ArgumentException) { }
+            } catch (ArgumentException) { }
 
             Assert.False(product.containsComplementaryProduct(product));
             Assert.Empty(product.components);
         }
 
         [Fact]
-        public void ensureAddingDuplicatedComplementaryProductThrowsException()
-        {
+        public void ensureAddingDuplicatedComplementaryProductThrowsException() {
             Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
             Product product = new Product("#001", "Simple Product", "simpleproduct.glb", buildValidCategory(),
@@ -449,25 +406,21 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingDuplicatedComplementaryProductDoesNotAddProduct()
-        {
+        public void ensureAddingDuplicatedComplementaryProductDoesNotAddProduct() {
             Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
             Product product = new Product("#001", "Simple Product", "simpleproduct.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, new List<Product>() { child });
 
-            try
-            {
+            try {
                 product.addComplementaryProduct(child);
-            }
-            catch (ArgumentException) { }
+            } catch (ArgumentException) { }
 
             Assert.Single(product.components);
         }
 
         [Fact]
-        public void ensureAddingValidComplementaryProductDoesNotThrowException()
-        {
+        public void ensureAddingValidComplementaryProductDoesNotThrowException() {
             Product product = buildValidSimpleProduct();
             Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
@@ -477,8 +430,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingValidComplementaryProductAddsComplementaryProduct()
-        {
+        public void ensureAddingValidComplementaryProductAddsComplementaryProduct() {
             Product product = buildValidSimpleProduct();
             Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             product.addComplementaryProduct(child);
@@ -487,9 +439,8 @@ namespace core_tests.domain
             Assert.True(product.containsComplementaryProduct(child));
         }
 
-       [Fact]
-        public void ensureAddingNullMandatoryComplementaryProductToProductThrowsException()
-        {
+        [Fact]
+        public void ensureAddingNullMandatoryComplementaryProductToProductThrowsException() {
             Product product = buildValidSimpleProduct();
             //Since we added a null complementary product then an ArgumentNullException
             Action addNullComplementAction = () => product.addMandatoryComplementaryProduct(null);
@@ -497,46 +448,38 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingNullMandatoryComplementaryProductToProductDoesNotAddComplementaryProduct()
-        {
+        public void ensureAddingNullMandatoryComplementaryProductToProductDoesNotAddComplementaryProduct() {
             Product product = buildValidSimpleProduct();
             Product nullComplementaryProduct = null;
 
-            try
-            {
+            try {
                 product.addMandatoryComplementaryProduct(nullComplementaryProduct);
-            }
-            catch (ArgumentNullException) { }
+            } catch (ArgumentNullException) { }
 
             Assert.False(product.containsComplementaryProduct(nullComplementaryProduct));
             Assert.Empty(product.components);
         }
 
         [Fact]
-        public void ensureAddingMandatoryComplementaryProductEqualToProductThrowsException()
-        {
+        public void ensureAddingMandatoryComplementaryProductEqualToProductThrowsException() {
             Product product = buildValidSimpleProduct();
             Action addRecursiveProductAction = () => product.addMandatoryComplementaryProduct(product);
             Assert.Throws<ArgumentException>(addRecursiveProductAction);
         }
 
         [Fact]
-        public void ensureAddingMandatoryComplementaryProductEqualToProductDoesNotAddProduct()
-        {
+        public void ensureAddingMandatoryComplementaryProductEqualToProductDoesNotAddProduct() {
             Product product = buildValidSimpleProduct();
-            try
-            {
+            try {
                 product.addMandatoryComplementaryProduct(product);
-            }
-            catch (ArgumentException) { }
+            } catch (ArgumentException) { }
 
             Assert.False(product.containsComplementaryProduct(product));
             Assert.Empty(product.components);
         }
 
         [Fact]
-        public void ensureAddingDuplicatedMandatoryComplementaryProductThrowsException()
-        {
+        public void ensureAddingDuplicatedMandatoryComplementaryProductThrowsException() {
             Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
             Product product = new Product("#001", "Simple Product", "simpleproduct.glb", buildValidCategory(),
@@ -547,25 +490,21 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingDuplicatedMandatoryComplementaryProductDoesNotAddProduct()
-        {
+        public void ensureAddingDuplicatedMandatoryComplementaryProductDoesNotAddProduct() {
             Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
             Product product = new Product("#001", "Simple Product", "simpleproduct.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, new List<Product>() { child });
 
-            try
-            {
+            try {
                 product.addMandatoryComplementaryProduct(child);
-            }
-            catch (ArgumentException) { }
+            } catch (ArgumentException) { }
 
             Assert.Single(product.components);
         }
 
         [Fact]
-        public void ensureAddingValidMandatoryComplementaryProductDoesNotThrowException()
-        {
+        public void ensureAddingValidMandatoryComplementaryProductDoesNotThrowException() {
             Product product = buildValidSimpleProduct();
             Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
 
@@ -575,8 +514,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingValidMandatoryComplementaryProductAddsComplementaryProduct()
-        {
+        public void ensureAddingValidMandatoryComplementaryProductAddsComplementaryProduct() {
             Product product = buildValidSimpleProduct();
             Product child = new Product("#123", "Child Product", "child123.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             product.addMandatoryComplementaryProduct(child);
@@ -586,8 +524,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingNullMeasurementToProductThrowsException()
-        {
+        public void ensureAddingNullMeasurementToProductThrowsException() {
             Product product = buildValidSimpleProduct();
             Measurement nullMeasurement = null;
             Action addNullMeasurementAction = () => product.addMeasurement(nullMeasurement);
@@ -595,23 +532,19 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingNullMeasurementToProductDoesNotAddMeasurement()
-        {
+        public void ensureAddingNullMeasurementToProductDoesNotAddMeasurement() {
             Product product = buildValidSimpleProduct();
             Measurement nullMeasurement = null;
-            try
-            {
+            try {
                 product.addMeasurement(nullMeasurement);
-            }
-            catch (ArgumentNullException) { }
+            } catch (ArgumentNullException) { }
 
             Assert.Single(product.productMeasurements);
             Assert.False(product.containsMeasurement(nullMeasurement));
         }
 
         [Fact]
-        public void ensureAddingDuplicateMeasurementToProductThrowsException()
-        {
+        public void ensureAddingDuplicateMeasurementToProductThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Measurement duplicateMeasurement = buildValidMeasurement();
@@ -621,22 +554,18 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingDuplicateMeasurementToProductDoesNotAddMeasurement()
-        {
+        public void ensureAddingDuplicateMeasurementToProductDoesNotAddMeasurement() {
             Product product = buildValidSimpleProduct();
             Measurement duplicateMeasurement = buildValidMeasurement();
-            try
-            {
+            try {
                 product.addMeasurement(duplicateMeasurement);
-            }
-            catch (ArgumentException) { }
+            } catch (ArgumentException) { }
 
             Assert.Single(product.productMeasurements);
         }
 
         [Fact]
-        public void ensureAddingValidMeasurementToProductDoesNotThrowException()
-        {
+        public void ensureAddingValidMeasurementToProductDoesNotThrowException() {
             Product product = buildValidSimpleProduct();
 
             Dimension heightDimension = new DiscreteDimensionInterval(new List<double>() { 40, 45, 50, 55, 60, 65 });
@@ -651,8 +580,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingValidMeasurementToProductAddsMeasurement()
-        {
+        public void ensureAddingValidMeasurementToProductAddsMeasurement() {
             Product product = buildValidSimpleProduct();
 
             Dimension heightDimension = new DiscreteDimensionInterval(new List<double>() { 40, 45, 50, 55, 60, 65 });
@@ -667,8 +595,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingRestrictionToNullComplementaryThrowsException()
-        {
+        public void ensureAddingRestrictionToNullComplementaryThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Product nullComplementaryProduct = null;
@@ -679,8 +606,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingNullRestrictionToComplementaryProductThrowsException()
-        {
+        public void ensureAddingNullRestrictionToComplementaryProductThrowsException() {
 
             Product product = buildValidSimpleProduct();
 
@@ -696,8 +622,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingRestrictionToNotAddedComplementaryProductThrowsException()
-        {
+        public void ensureAddingRestrictionToNotAddedComplementaryProductThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
@@ -710,8 +635,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingRestrictionToValidComplementaryProductDoesNotThrowException()
-        {
+        public void ensureAddingRestrictionToValidComplementaryProductDoesNotThrowException() {
             Product product = buildValidSimpleProduct();
 
             Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
@@ -727,8 +651,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingRestrictionToNullMeasurementThrowsException()
-        {
+        public void ensureAddingRestrictionToNullMeasurementThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Measurement measurement = null;
@@ -740,8 +663,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingNullRestrictionToMeasurementThrowsException()
-        {
+        public void ensureAddingNullRestrictionToMeasurementThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Measurement measurement = buildValidMeasurement();
@@ -753,8 +675,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingRestrictionToNotAddedMeasurementThrowsException()
-        {
+        public void ensureAddingRestrictionToNotAddedMeasurementThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Dimension heightDimension = new ContinuousDimensionInterval(50, 60, 2);
@@ -770,8 +691,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingRestrictionToValidMeasurementDoesNotThrowException()
-        {
+        public void ensureAddingRestrictionToValidMeasurementDoesNotThrowException() {
             Product product = buildValidSimpleProduct();
 
             Measurement measurement = buildValidMeasurement();
@@ -783,8 +703,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingRestrictionToNullMaterialThrowsException()
-        {
+        public void ensureAddingRestrictionToNullMaterialThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Material material = null;
@@ -796,8 +715,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingNullRestrictionToMaterialThrowsException()
-        {
+        public void ensureAddingNullRestrictionToMaterialThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Material material = buildValidMaterial();
@@ -809,11 +727,10 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingRestrictionToNotAddedMaterialThrowsException()
-        {
+        public void ensureAddingRestrictionToNotAddedMaterialThrowsException() {
             Product product = buildValidSimpleProduct();
 
-            Finish finish = Finish.valueOf("Clear Coating",4);
+            Finish finish = Finish.valueOf("Clear Coating", 4);
             Color color = Color.valueOf("Really Really Red", 255, 0, 0, 0);
             Material material = new Material("#154", "Stained Wood", "stainedwood.jpg", new List<Color>() { color }, new List<Finish>() { finish });
 
@@ -824,8 +741,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingRestrictionToValidMaterialDoesNotThrowException()
-        {
+        public void ensureAddingRestrictionToValidMaterialDoesNotThrowException() {
             Product product = buildValidSimpleProduct();
 
             Material material = buildValidMaterial();
@@ -839,8 +755,7 @@ namespace core_tests.domain
 
 
         [Fact]
-        public void ensureChangingToNullReferenceThrowsException()
-        {
+        public void ensureChangingToNullReferenceThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Action changeToNullReferenceAction = () => product.changeProductReference(null);
@@ -849,21 +764,17 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToNullReferenceDoesNotChangeReference()
-        {
+        public void ensureChangingToNullReferenceDoesNotChangeReference() {
             Product product = buildValidSimpleProduct();
-            try
-            {
+            try {
                 product.changeProductReference(null);
-            }
-            catch (ArgumentException) { }
+            } catch (ArgumentException) { }
 
             Assert.NotNull(product.reference);
         }
 
         [Fact]
-        public void ensureChangingToEmptyReferenceThrowsException()
-        {
+        public void ensureChangingToEmptyReferenceThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Action changeToEmptyReferenceAction = () => product.changeProductReference("");
@@ -872,21 +783,17 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToEmptyReferenceDoesNotChangeReference()
-        {
+        public void ensureChangingToEmptyReferenceDoesNotChangeReference() {
             Product product = buildValidSimpleProduct();
-            try
-            {
+            try {
                 product.changeProductReference(null);
-            }
-            catch (ArgumentException) { }
+            } catch (ArgumentException) { }
 
             Assert.NotEqual("", product.reference);
         }
 
         [Fact]
-        public void ensureChangingToSameReferenceThrowsException()
-        {
+        public void ensureChangingToSameReferenceThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Action changeToSameReferenceAction = () => product.changeProductReference(product.reference);
@@ -895,8 +802,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToValidReferenceDoesNotThrowException()
-        {
+        public void ensureChangingToValidReferenceDoesNotThrowException() {
             Product product = buildValidSimpleProduct();
             string newReference = "This is a brand new reference!";
 
@@ -906,8 +812,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToValidReferenceChangesReference()
-        {
+        public void ensureChangingToValidReferenceChangesReference() {
             Product product = buildValidSimpleProduct();
             string newReference = "This is a brand new reference!";
 
@@ -916,8 +821,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToNullDesignationThrowsException()
-        {
+        public void ensureChangingToNullDesignationThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Action changeToNullDesignationAction = () => product.changeProductDesignation(null);
@@ -926,21 +830,17 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToNullDesignationDoesNotChangeDesignation()
-        {
+        public void ensureChangingToNullDesignationDoesNotChangeDesignation() {
             Product product = buildValidSimpleProduct();
-            try
-            {
+            try {
                 product.changeProductDesignation(null);
-            }
-            catch (ArgumentException) { }
+            } catch (ArgumentException) { }
 
             Assert.NotNull(product.designation);
         }
 
         [Fact]
-        public void ensureChangingToEmptyDesignationThrowsException()
-        {
+        public void ensureChangingToEmptyDesignationThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Action changeToEmptyDesignationAction = () => product.changeProductDesignation("");
@@ -949,21 +849,17 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToEmptyDesignationDoesNotChangeDesignation()
-        {
+        public void ensureChangingToEmptyDesignationDoesNotChangeDesignation() {
             Product product = buildValidSimpleProduct();
-            try
-            {
+            try {
                 product.changeProductDesignation("");
-            }
-            catch (ArgumentException) { }
+            } catch (ArgumentException) { }
 
             Assert.NotEqual("", product.designation);
         }
 
         [Fact]
-        public void ensureChangingToSameDesignationThrowsException()
-        {
+        public void ensureChangingToSameDesignationThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Action changeToSameDesignationAction = () => product.changeProductDesignation(product.designation);
@@ -971,8 +867,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToValidDesignationDoesNotThrowException()
-        {
+        public void ensureChangingToValidDesignationDoesNotThrowException() {
             Product product = buildValidSimpleProduct();
             string newDesignation = "This is an updated designation";
 
@@ -982,8 +877,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToValidDesignationChangesDesignation()
-        {
+        public void ensureChangingToValidDesignationChangesDesignation() {
             Product product = buildValidSimpleProduct();
             string newDesignation = "This is an updated designation";
 
@@ -993,8 +887,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToInvalidModelFilenameThrowsException()
-        {
+        public void ensureChangingToInvalidModelFilenameThrowsException() {
             Product product = buildValidSimpleProduct();
 
             string modelFilename = "newmodel.xpto";
@@ -1004,8 +897,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToValidModelFilenameDoesNotThrowException()
-        {
+        public void ensureChangingToValidModelFilenameDoesNotThrowException() {
             Product product = buildValidSimpleProduct();
 
             string modelFilename = "updatedmodelfile.glb";
@@ -1016,8 +908,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToNullCategoryThrowsException()
-        {
+        public void ensureChangingToNullCategoryThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Action changeToNullCategoryAction = () => product.changeProductCategory(null);
@@ -1026,22 +917,18 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToNullCategoryDoesNotChangeCategory()
-        {
+        public void ensureChangingToNullCategoryDoesNotChangeCategory() {
             Product product = buildValidSimpleProduct();
 
-            try
-            {
+            try {
                 product.changeProductCategory(null);
-            }
-            catch (ArgumentNullException) { }
+            } catch (ArgumentNullException) { }
 
             Assert.NotNull(product.productCategory);
         }
 
         [Fact]
-        public void ensureChangingToSameCategoryThrowsException()
-        {
+        public void ensureChangingToSameCategoryThrowsException() {
             Product product = buildValidSimpleProduct();
             ProductCategory category = buildValidCategory();
 
@@ -1051,8 +938,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToValidCategoryDoesNotThrowException()
-        {
+        public void ensureChangingToValidCategoryDoesNotThrowException() {
             Product product = buildValidSimpleProduct();
             ProductCategory category = new ProductCategory("This is not the same category as before");
 
@@ -1063,8 +949,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToValidCategoryChangesCategory()
-        {
+        public void ensureChangingToValidCategoryChangesCategory() {
             Product product = buildValidSimpleProduct();
             ProductCategory category = new ProductCategory("This is not the same category as before");
 
@@ -1074,8 +959,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingTheLastMeasurementThrowsException()
-        {
+        public void ensureRemovingTheLastMeasurementThrowsException() {
             Product product = buildValidSimpleProduct();
             Measurement measurementToRemove = product.productMeasurements[0].measurement;
 
@@ -1084,23 +968,19 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingTheLastMeasurementDoesNotRemoveLastMeasurement()
-        {
+        public void ensureRemovingTheLastMeasurementDoesNotRemoveLastMeasurement() {
             Product product = buildValidSimpleProduct();
             Measurement measurementToRemove = product.productMeasurements[0].measurement;
 
-            try
-            {
+            try {
                 product.removeMeasurement(measurementToRemove);
-            }
-            catch (InvalidOperationException) { }
+            } catch (InvalidOperationException) { }
 
             Assert.NotEmpty(product.productMeasurements);
         }
 
         [Fact]
-        public void ensureRemovingNullMeasurementThrowsException()
-        {
+        public void ensureRemovingNullMeasurementThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Action removeNullMeasurementAction = () => product.removeMeasurement(null);
@@ -1109,8 +989,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingNotAddedMeasurementThrowsException()
-        {
+        public void ensureRemovingNotAddedMeasurementThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Dimension heightDimension = new DiscreteDimensionInterval(new List<double>() { 40, 45, 50, 55, 60, 65 });
@@ -1124,8 +1003,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingValidMeasurementDoesNotThrowException()
-        {
+        public void ensureRemovingValidMeasurementDoesNotThrowException() {
             Dimension heightDimension = new DiscreteDimensionInterval(new List<double>() { 40, 45, 50, 55, 60, 65 });
             Dimension widthDimension = new ContinuousDimensionInterval(70, 90, 2);
             Dimension depthDimension = new SingleValueDimension(30);
@@ -1144,8 +1022,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingValidMeasurementRemovesMeasurement()
-        {
+        public void ensureRemovingValidMeasurementRemovesMeasurement() {
             Dimension heightDimension = new DiscreteDimensionInterval(new List<double>() { 40, 45, 50, 55, 60, 65 });
             Dimension widthDimension = new ContinuousDimensionInterval(70, 90, 2);
             Dimension depthDimension = new SingleValueDimension(30);
@@ -1164,8 +1041,7 @@ namespace core_tests.domain
 
 
         [Fact]
-        public void ensureRemovingLastMaterialThrowsException()
-        {
+        public void ensureRemovingLastMaterialThrowsException() {
             Product product = buildValidSimpleProduct();
             Material lastMaterial = product.productMaterials[0].material;
 
@@ -1174,24 +1050,20 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingLastMaterialDoesNotRemoveMaterial()
-        {
+        public void ensureRemovingLastMaterialDoesNotRemoveMaterial() {
             Product product = buildValidSimpleProduct();
             Material lastMaterial = product.productMaterials[0].material;
 
-            try
-            {
+            try {
                 product.removeMaterial(lastMaterial);
-            }
-            catch (InvalidOperationException) { }
+            } catch (InvalidOperationException) { }
 
             Assert.True(product.containsMaterial(lastMaterial));
             Assert.Single(product.productMaterials);
         }
 
         [Fact]
-        public void ensureRemovingNullMaterialThrowsException()
-        {
+        public void ensureRemovingNullMaterialThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Action removeNullMaterialAction = () => product.removeMaterial(null);
@@ -1199,8 +1071,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingNotAddedMaterialThrowsException()
-        {
+        public void ensureRemovingNotAddedMaterialThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
@@ -1212,8 +1083,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingValidMaterialDoesNotThrowException()
-        {
+        public void ensureRemovingValidMaterialDoesNotThrowException() {
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
             Finish varnish = Finish.valueOf("Varnish", 50);
             Material material1 = new Material("#002", "Different Material", "ola.jpg", new List<Color>() { red }, new List<Finish>() { varnish });
@@ -1235,8 +1105,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingValidMaterialRemovesMaterial()
-        {
+        public void ensureRemovingValidMaterialRemovesMaterial() {
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
             Finish varnish = Finish.valueOf("Varnish", 50);
             Material material1 = new Material("#002", "Different Material", "ola.jpg", new List<Color>() { red }, new List<Finish>() { varnish });
@@ -1258,8 +1127,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingNullComplementaryProductThrowsException()
-        {
+        public void ensureRemovingNullComplementaryProductThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Action removeNullProductAction = () => product.removeComplementaryProduct(null);
@@ -1267,8 +1135,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingNotAddedComplementaryProductThrowsException()
-        {
+        public void ensureRemovingNotAddedComplementaryProductThrowsException() {
             Product child = buildValidSimpleProduct();
             //the product does not own the child
             Product product = new Product("#003", "Super Stylish Product", "stylish003.glb", buildValidCategory(),
@@ -1279,8 +1146,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingValidComplementaryProductDoesNotThrowException()
-        {
+        public void ensureRemovingValidComplementaryProductDoesNotThrowException() {
             Product child = buildValidSimpleProduct();
             Product product = new Product("#003", "Super Stylish Product", "stylish003.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, new List<Product>() { child });
@@ -1291,8 +1157,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingValidComplementaryProductRemovesComplementaryProduct()
-        {
+        public void ensureRemovingValidComplementaryProductRemovesComplementaryProduct() {
             Product child = buildValidSimpleProduct();
             Product product = new Product("#003", "Super Stylish Product", "stylish003.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() }, new List<Product>() { child });
@@ -1303,8 +1168,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingRestrictionFromNullMeasurementThrowsException()
-        {
+        public void ensureRemovingRestrictionFromNullMeasurementThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Measurement measurement = null;
@@ -1316,8 +1180,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingNullRestrictionFromMeasurementThrowsException()
-        {
+        public void ensureRemovingNullRestrictionFromMeasurementThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Measurement measurement = buildValidMeasurement();
@@ -1329,8 +1192,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingRestrictionFromNotAddedMeasurementThrowsException()
-        {
+        public void ensureRemovingRestrictionFromNotAddedMeasurementThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Dimension heightDimension = new ContinuousDimensionInterval(50, 60, 2);
@@ -1346,8 +1208,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemoveNotAddedMeasurementRestrictionThrowsException()
-        {
+        public void ensureRemoveNotAddedMeasurementRestrictionThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Measurement measurement = buildValidMeasurement();
@@ -1359,8 +1220,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemoveMeasurementRestrictionDoesNotThrowException()
-        {
+        public void ensureRemoveMeasurementRestrictionDoesNotThrowException() {
             Product product = buildValidSimpleProduct();
 
             Measurement measurement = buildValidMeasurement();
@@ -1375,8 +1235,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingRestrictionFromNullMaterialThrowsException()
-        {
+        public void ensureRemovingRestrictionFromNullMaterialThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Material material = null;
@@ -1388,8 +1247,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingNullRestrictionFromMaterialRestriction()
-        {
+        public void ensureRemovingNullRestrictionFromMaterialRestriction() {
             Product product = buildValidSimpleProduct();
 
             Material material = buildValidMaterial();
@@ -1401,11 +1259,10 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingRestrictionFromNotAddedMaterialThrowsException()
-        {
+        public void ensureRemovingRestrictionFromNotAddedMaterialThrowsException() {
             Product product = buildValidSimpleProduct();
 
-            Finish finish = Finish.valueOf("Clear Coating",5);
+            Finish finish = Finish.valueOf("Clear Coating", 5);
             Color color = Color.valueOf("Really Really Red", 255, 0, 0, 0);
             Material material = new Material("#154", "Stained Wood", "stainedwood.jpg", new List<Color>() { color }, new List<Finish>() { finish });
 
@@ -1417,8 +1274,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingNotAddedMaterialRestrictionThrowsException()
-        {
+        public void ensureRemovingNotAddedMaterialRestrictionThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Material material = buildValidMaterial();
@@ -1430,8 +1286,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemoveMaterialRestrictionDoesNotThrowException()
-        {
+        public void ensureRemoveMaterialRestrictionDoesNotThrowException() {
             Product product = buildValidSimpleProduct();
 
             Material material = buildValidMaterial();
@@ -1446,8 +1301,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingRestrictionFromNullComplementaryProductThrowsException()
-        {
+        public void ensureRemovingRestrictionFromNullComplementaryProductThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Product complementaryProduct = null;
@@ -1459,8 +1313,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingNullRestrictionFromComplementaryProductThrowsException()
-        {
+        public void ensureRemovingNullRestrictionFromComplementaryProductThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
@@ -1476,8 +1329,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingRestrictionFromNotAddedComplementaryProductThrowsException()
-        {
+        public void ensureRemovingRestrictionFromNotAddedComplementaryProductThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
@@ -1491,8 +1343,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingNotAddedComplementaryProductRestrictionThrowsException()
-        {
+        public void ensureRemovingNotAddedComplementaryProductRestrictionThrowsException() {
             Product product = buildValidSimpleProduct();
 
             Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
@@ -1508,8 +1359,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingComplementaryProductRestrictionDoesNotThrowException()
-        {
+        public void ensureRemovingComplementaryProductRestrictionDoesNotThrowException() {
             Product product = buildValidSimpleProduct();
 
             Product complementaryProduct = new Product("#172", "Complementary Product", "complementaryproduct.obj", buildValidCategory(),
@@ -1528,15 +1378,13 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureContainsMaterialReturnsFalseIfMaterialIsNull()
-        {
+        public void ensureContainsMaterialReturnsFalseIfMaterialIsNull() {
             Product product = buildValidSimpleProduct();
             Assert.False(product.containsMaterial(null));
         }
 
         [Fact]
-        public void ensureContainsMaterialReturnsFalseIfMaterialWasNotAdded()
-        {
+        public void ensureContainsMaterialReturnsFalseIfMaterialWasNotAdded() {
             Product product = buildValidSimpleProduct();
 
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
@@ -1547,8 +1395,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureContainsMaterialReturnsTrueIfMaterialWasAdded()
-        {
+        public void ensureContainsMaterialReturnsTrueIfMaterialWasAdded() {
             Product product = buildValidSimpleProduct();
             Material material = buildValidMaterial();
 
@@ -1556,16 +1403,14 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureContainsComplementaryProductReturnsFalseIfComplementaryProductIsNull()
-        {
+        public void ensureContainsComplementaryProductReturnsFalseIfComplementaryProductIsNull() {
             Product product = buildValidSimpleProduct();
 
             Assert.False(product.containsComplementaryProduct(null));
         }
 
         [Fact]
-        public void ensureContainsComplementaryProductReturnsFalseIfComplementaryProductWasNotAdded()
-        {
+        public void ensureContainsComplementaryProductReturnsFalseIfComplementaryProductWasNotAdded() {
             Product child = buildValidSimpleProduct();
 
             Product product = new Product("#003", "Super Stylish Product", "stylish003.glb", buildValidCategory(),
@@ -1575,8 +1420,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureContainsComplementaryProductReturnsTrueIfComplementaryProductWasAdded()
-        {
+        public void ensureContainsComplementaryProductReturnsTrueIfComplementaryProductWasAdded() {
             Product child = buildValidSimpleProduct();
 
             Product product = new Product("#003", "Super Stylish Product", "stylish003.glb", buildValidCategory(),
@@ -1586,16 +1430,14 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureContainsMeasurementReturnsFalseIfMeasurementIsNull()
-        {
+        public void ensureContainsMeasurementReturnsFalseIfMeasurementIsNull() {
             Product product = buildValidSimpleProduct();
 
             Assert.False(product.containsMeasurement(null));
         }
 
         [Fact]
-        public void ensureContainsMeasurementReturnsFalseIfMeasurementWasNotAdded()
-        {
+        public void ensureContainsMeasurementReturnsFalseIfMeasurementWasNotAdded() {
             Product product = buildValidSimpleProduct();
 
             Dimension heightDimension = new DiscreteDimensionInterval(new List<double>() { 40, 45, 50, 55, 60, 65 });
@@ -1608,8 +1450,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureContaintsMeasurementReturnsTrueIfMeasurementWasAdded()
-        {
+        public void ensureContaintsMeasurementReturnsTrueIfMeasurementWasAdded() {
             Product product = buildValidSimpleProduct();
 
             Dimension heightDimension = new DiscreteDimensionInterval(new List<double>() { 40, 45, 50, 55, 60, 65 });
@@ -1627,8 +1468,7 @@ namespace core_tests.domain
         /// Ensures that a product identifier is the same as its created one
         /// </summary>
         [Fact]
-        public void ensureProductIdentifierIsTheSame()
-        {
+        public void ensureProductIdentifierIsTheSame() {
             string id = "#666";
             Product product = new Product(id, "Shelf", "shelf666.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with the id "#666" then its id should be "#666"
@@ -1639,8 +1479,7 @@ namespace core_tests.domain
         /// Ensures that a product identifier is the same as its created one
         /// </summary>
         [Fact]
-        public void ensureProductIdentierSameAs()
-        {
+        public void ensureProductIdentierSameAs() {
             string id = "#666";
             Product product = new Product(id, "Shelf", "shelf666.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
             //Since the product was created with the id "#666" then its id should be "#666"
@@ -1649,29 +1488,25 @@ namespace core_tests.domain
 
 
         [Fact]
-        public void ensureSameInstanceIsEqual()
-        {
+        public void ensureSameInstanceIsEqual() {
             Product product = buildValidSimpleProduct();
             Assert.True(product.Equals(product));
         }
 
         [Fact]
-        public void ensureNullObjectIsNotEqual()
-        {
+        public void ensureNullObjectIsNotEqual() {
             Product product = buildValidSimpleProduct();
             Assert.False(product.Equals(null));
         }
 
         [Fact]
-        public void ensureDifferentTypeObjectIsNotEqual()
-        {
+        public void ensureDifferentTypeObjectIsNotEqual() {
             Product product = buildValidSimpleProduct();
             Assert.False(product.Equals("product"));
         }
 
         [Fact]
-        public void ensureDifferentReferenceInstanceIsNotEqual()
-        {
+        public void ensureDifferentReferenceInstanceIsNotEqual() {
             Product product = buildValidSimpleProduct();
             Product otherProduct = new Product("#725", "This is another product", "anotherproduct.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
@@ -1680,8 +1515,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureSameReferenceInstanceIsEqual()
-        {
+        public void ensureSameReferenceInstanceIsEqual() {
             Product product = buildValidSimpleProduct();
             Product otherProduct = new Product("#001", "This is another product", "anotherproduct.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
@@ -1690,8 +1524,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureDifferentReferenceProducesDifferentHashCode()
-        {
+        public void ensureDifferentReferenceProducesDifferentHashCode() {
             Product product = buildValidSimpleProduct();
             Product otherProduct = new Product("#725", "This is another product", "anotherproduct.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
@@ -1700,8 +1533,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureSameReferenceProducesSameHashCode()
-        {
+        public void ensureSameReferenceProducesSameHashCode() {
             Product product = buildValidSimpleProduct();
             Product otherProduct = new Product("#001", "This is another product", "anotherproduct.glb", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() });
@@ -1713,13 +1545,360 @@ namespace core_tests.domain
         /// Ensures that the textual description of two equal products is the same
         /// </summary>
         [Fact]
-        public void ensureToStringWorks()
-        {
+        public void ensureToStringWorks() {
             string id = "Test";
             Assert.Equal(new Product(id, "Shelf", "shelf.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
             ProductSlotWidths.valueOf(4, 4, 4)).ToString(),
             new Product(id, "Shelf", "shelf.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { buildValidMeasurement() },
             ProductSlotWidths.valueOf(4, 4, 4)).ToString());
+        }
+
+        [Fact]
+        public void ensureGetRestrictedComponentsReturnsEmptyListIfArgumentIsNull() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product2 = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+
+            CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
+            CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material, white, matte);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+
+            customizedProduct.changeCustomizedMaterial(customMaterial);
+            customizedProduct.finalizeCustomization();
+
+            Assert.Empty(product.getRestrictedComponents(null));
+        }
+        [Fact]
+        public void ensureGetRestrictedComponentsAppliesProductMeasurementRestriction() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product2 = new Product("Test2", "Shelf2", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+
+            product.addComplementaryProduct(product2);
+
+            CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
+            CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material, white, matte);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+
+            customizedProduct.changeCustomizedMaterial(customMaterial);
+
+            customizedProduct.finalizeCustomization();
+            product.productMeasurements[0].measurement.addRestriction(new Restriction("same material", new SameMaterialAndFinishAlgorithm()));
+            List<Product> returnedList = (List<Product>)product.getRestrictedComponents(customizedProduct);
+            Product returned = returnedList[0];
+            Assert.True(returned.productMaterials.Count == 1);
+            Assert.True(returned.productMaterials[0].material.Equals(material));
+        }
+        [Fact]
+        public void ensureGetRestrictedComponentsAppliesProductMaterialRestriction() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product2 = new Product("Test2", "Shelf2", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+
+            product.addComplementaryProduct(product2);
+
+            CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
+            CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material, white, matte);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+
+            customizedProduct.changeCustomizedMaterial(customMaterial);
+
+            customizedProduct.finalizeCustomization();
+            product.productMaterials[0].addRestriction(new Restriction("same material", new SameMaterialAndFinishAlgorithm()));
+            List<Product> returnedList = (List<Product>)product.getRestrictedComponents(customizedProduct);
+            Product returned = returnedList[0];
+            Assert.True(returned.productMaterials.Count == 1);
+            Assert.True(returned.productMaterials[0].material.Equals(material));
+        }
+        [Fact]
+        public void ensureGetRestrictedComponentsAppliesComponentRestrictions() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product2 = new Product("Test2", "Shelf2", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+
+            product.addComplementaryProduct(product2);
+
+            CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
+            CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material, white, matte);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+
+            customizedProduct.changeCustomizedMaterial(customMaterial);
+
+            customizedProduct.finalizeCustomization();
+            product.components[0].addRestriction(new Restriction("same material", new SameMaterialAndFinishAlgorithm()));
+            List<Product> returnedList = (List<Product>)product.getRestrictedComponents(customizedProduct);
+            Product returned = returnedList[0];
+            Assert.True(returned.productMaterials.Count == 1);
+            Assert.True(returned.productMaterials[0].material.Equals(material));
+        }
+        [Fact]
+        public void ensureGetRestrictedComponentsDoesNotApplyRestrictionsOfDifferentComponents() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product2 = new Product("Test2", "Shelf2", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product3 = new Product("Test3", "Shelf3", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+
+
+            product.addComplementaryProduct(product2);
+            product.addComplementaryProduct(product3);
+
+            CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
+            CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material, white, matte);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+
+            customizedProduct.changeCustomizedMaterial(customMaterial);
+
+            customizedProduct.finalizeCustomization();
+            product.components[0].addRestriction(new Restriction("same material", new SameMaterialAndFinishAlgorithm()));
+            List<Product> returnedList = (List<Product>)product.getRestrictedComponents(customizedProduct);
+            Product firstComponent = returnedList[0];
+            Product secondComponent = returnedList[1];
+            Assert.True(firstComponent.productMaterials.Count == 1);
+            Assert.True(firstComponent.productMaterials[0].material.Equals(material));
+            Assert.True(secondComponent.productMaterials.Count == 2);
+        }
+        [Fact]
+        public void ensureGetRestrictedComponentsDoesNotReturnsProductsThatDontObeyMeasurementRestrictions() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product2 = new Product("Test2", "Shelf2", "shelf.glb", cat, new List<Material>() { material }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            product.addComplementaryProduct(product2);
+            CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
+            CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material2, white, matte);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+
+            customizedProduct.changeCustomizedMaterial(customMaterial);
+
+            customizedProduct.finalizeCustomization();
+            product.productMeasurements[0].measurement.addRestriction(new Restriction("same material", new SameMaterialAndFinishAlgorithm()));
+            Assert.Empty(product.getRestrictedComponents(customizedProduct));
+        }
+        [Fact]
+        public void ensureGetRestrictedComponentsDoesNotReturnsProductsThatDontObeyMaterialRestrictions() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product2 = new Product("Test2", "Shelf2", "shelf.glb", cat, new List<Material>() { material }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            product.addComplementaryProduct(product2);
+            CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
+            CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material2, white, matte);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+
+            customizedProduct.changeCustomizedMaterial(customMaterial);
+
+            customizedProduct.finalizeCustomization();
+            product.productMaterials[0].addRestriction(new Restriction("same material", new SameMaterialAndFinishAlgorithm()));
+            Assert.Empty(product.getRestrictedComponents(customizedProduct));
+        }
+        [Fact]
+        public void ensureGetRestrictedComponentsDoesNotReturnsProductsThatDontObeyComponentRestrictions() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product2 = new Product("Test2", "Shelf2", "shelf.glb", cat, new List<Material>() { material }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            product.addComplementaryProduct(product2);
+
+            CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
+            CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material2, white, matte);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+
+            customizedProduct.changeCustomizedMaterial(customMaterial);
+
+            customizedProduct.finalizeCustomization();
+            product.components[0].addRestriction(new Restriction("same material", new SameMaterialAndFinishAlgorithm()));
+            Assert.Empty(product.getRestrictedComponents(customizedProduct));
+        }
+        [Fact]
+        public void ensureGetAllComponentsAsProductsReturnsEmptyIfProductDoesNotHaveComponents() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Assert.Empty(product.getAllComponentsAsProducts());
+        }
+        [Fact]
+        public void ensureGetAllComponentsAsProductsWorks() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product2 = new Product("Test2", "Shelf2", "shelf.glb", cat, new List<Material>() { material }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            product.addComplementaryProduct(product2);
+            Assert.True(product.getAllComponentsAsProducts().Count == 1);
         }
     }
 }

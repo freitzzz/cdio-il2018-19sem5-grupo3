@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace core.domain
-{
+namespace core.domain {
     /// <summary>
     /// Abstract class used for indicating that an Entity can hold instances of Restriction.
     /// </summary>
-    public abstract class Restrictable
-    {
+    public abstract class Restrictable {
         /// <summary>
         /// Constant that represents the message presented when an instance of Restriction could not be added.
         /// </summary>
@@ -30,8 +28,7 @@ namespace core.domain
         /// Constructor used by the framework for injecting an instance of ILazyLoader.
         /// </summary>
         /// <param name="lazyLoader">Instance of ILazyLoader.</param>
-        protected Restrictable(ILazyLoader lazyLoader)
-        {
+        protected Restrictable(ILazyLoader lazyLoader) {
             this.LazyLoader = lazyLoader;
         }
 
@@ -45,8 +42,7 @@ namespace core.domain
         /// </summary>
         /// <value>Gets/ protected sets the value of the list.</value>
         private List<Restriction> _restrictions;    //!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Restriction> restrictions
-        {
+        public List<Restriction> restrictions {
             get => LazyLoader.Load(this, ref _restrictions); protected set => _restrictions = value;
         }
 
@@ -57,10 +53,8 @@ namespace core.domain
         /// <exception cref="System.ArgumentException">
         /// Thrown when the provided Restriction is null or could not be added.
         /// </exception>
-        public void addRestriction(Restriction restriction)
-        {
-            if (restriction == null || restrictions.Contains(restriction))
-            {
+        public void addRestriction(Restriction restriction) {
+            if (restriction == null || restrictions.Contains(restriction)) {
                 throw new ArgumentException(ERROR_UNABLE_TO_ADD_RESTRICTION);
             }
             restrictions.Add(restriction);
@@ -73,10 +67,8 @@ namespace core.domain
         /// <exception cref="System.ArgumentException">
         /// Thrown when the provided Restriction is null or could not be removed.
         /// </exception>
-        public void removeRestriction(Restriction restriction)
-        {
-            if (!restrictions.Remove(restriction))
-            {
+        public void removeRestriction(Restriction restriction) {
+            if (!restrictions.Remove(restriction)) {
                 throw new ArgumentException(ERROR_UNABLE_TO_REMOVE_RESTRICTION);
             }
         }
@@ -86,9 +78,27 @@ namespace core.domain
         /// </summary>
         /// <param name="restriction">Instance of Restriction being checked.</param>
         /// <returns>true if the provided Restriction had previously been added; false, otherwise.</returns>
-        public bool hasRestriction(Restriction restriction)
-        {
+        public bool hasRestriction(Restriction restriction) {
             return restrictions.Contains(restriction);
+        }
+
+        /// <summary>
+        /// Applies all restrictions of this restrictable to a product
+        /// </summary>
+        /// <param name="customizedProduct">customized product to base restrictions on</param>
+        /// <param name="product">product to restrict</param>
+        /// <returns>restricted product</returns>
+        public Product applyAllRestrictions(CustomizedProduct customizedProduct, Product product) {
+            if (product == null || customizedProduct == null) {
+                return null;
+            }
+            foreach (Restriction restriction in restrictions) {
+                product = restriction.applyAlgorithm(customizedProduct, product);
+                if (product == null) {
+                    return null;
+                }
+            }
+            return product;
         }
     }
 }
