@@ -297,6 +297,9 @@
           height: this.height,
           depth: this.depth
         });
+
+        //Send to store the first values for the dimensions
+        this.updateDimensions();
       },
       //Populate
       populateDimensions: function() {

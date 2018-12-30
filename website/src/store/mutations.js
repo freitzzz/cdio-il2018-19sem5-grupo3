@@ -54,6 +54,10 @@ export const mutations = {
    * @param {*} payload Payload with the new width
    */
   [types.SET_CUSTOMIZED_PRODUCT_DIMENSIONS](state, payload) {
+ /*    alert(state.customizedProduct.customizedDimensions.width);
+    alert(state.customizedProduct.customizedDimensions.height);
+    alert(state.customizedProduct.customizedDimensions.depth);
+ */
     state.customizedProduct.customizedDimensions = {
       width: payload.width,
       height: payload.height,
