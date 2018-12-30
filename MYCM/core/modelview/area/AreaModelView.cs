@@ -9,6 +9,13 @@ namespace core.modelview.area
     public class AreaModelView
     {
         /// <summary>
+        /// Double containing an area value
+        /// </summary>
+        /// <value>Gets/Sets the value</value>
+        [DataMember(Name = "value", EmitDefaultValue = false)]
+        public double value { get; set; }
+
+        /// <summary>
         /// String containing the unit of area
         /// </summary>
         /// <value>Gets/Sets the unit of area</value>

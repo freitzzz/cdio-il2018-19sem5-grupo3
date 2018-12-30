@@ -36,7 +36,7 @@ namespace core.services
         public static void checkCurrencySupport(string currency)
         {
             List<string> availableCurrencies = (List<string>)loadCurrencies();
-            if (availableCurrencies.Contains(currency))
+            if (!availableCurrencies.Contains(currency))
             {
                 throw new ArgumentException
                 (
