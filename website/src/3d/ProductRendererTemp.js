@@ -1617,6 +1617,21 @@ export default class ProductRenderer {
     }
   }
 
+  /**
+   * Resizes the renderer to the provided canvas dimensions.
+   * @param {number} canvasWidth - Canvas's width.
+   * @param {number} canvasHeight - Canvas's height.
+   */
+  resizeRenderer(canvasWidth, canvasHeight) {
+    
+    //*Please note that while the renderer instance has access to the canvas, 
+    //*the dimensions don't seem to be updated correctly when accessing the canvas's properties, hence the parameters
+
+    this.camera.aspect = canvasWidth / canvasHeight;
+    this.camera.updateProjectionMatrix();
+
+    this.renderer.setSize(canvasWidth, canvasHeight);
+  }
 
   /**
    * Represents the action that occurs when the mouse's left button is released, which is
