@@ -1,68 +1,75 @@
 <template>
-        <signup-form @emitSignup="signup"/>
-   
+    <div class="modal-card" style="width: auto">
+        <signup-form @emitSignup="signup" />
+    </div>
 </template>
 
 <script>
-
-/**
- * Requires SignupForm component
- */
-import SignupForm from '../UIComponents/SignupForm';
-import Axios from 'axios';
-
-export default {
     /**
-     * Component imported components
+     * Requires SignupForm component
      */
-    components:{
-        SignupForm
-    },
-    /**
-     * Component data
-     */
-    data(){
-        return{
-            active:true
-        }
-    },
-    /**
-     * Component methods
-     */
-    methods:{
+    import SignupForm from '../UIComponents/SignupForm';
+    import Axios from 'axios';
+    
+    export default {
+    
         /**
-         * Signups into MYC API's
+         * Component imported components
          */
-        signup(details){
-            let authenticationRequestData={
-                type:"credentials",
-                mame:details.name,
-                email:details.email,
-                password:details.password,
-            };
-            let authenticationRequestHeaders={
-                Secrete:"Secrete"
-            };
-            Axios.post("http://localhost:2000/myca/api/users",authenticationRequestData,{
-                headers:authenticationRequestHeaders
-            })
-            .then((authenticationData)=>{
-                let apiToken=authenticationData.data.token;
-                this.$toast.open({message:"Here's your API token\nDon't lose it!\n"+apiToken});
-                this.active=false;
-                emitCloseSignup();
-            })
-            .catch((_error_message)=>{
-                let message=_error_message.response.data.message;
-                this.$toast.open({message:message});
-            });
+        components: {
+            SignupForm
         },
         /**
-         * Emits close signup action
+         * Component data
          */
-        emitCloseSignup(){
-            this.$emit("closeSignup");
+        data() {
+            return {
+                active: true
+            }
+        },
+        /**
+         * Component methods
+         */
+        methods: {
+    
+          
+            /**
+             * Signups into MYC API's
+             */
+            signup(details) {
+                let authenticationRequestData = {
+                    type: "credentials",
+                    mame: details.name,
+                    email: details.email,
+                    password: details.password,
+                };
+                let authenticationRequestHeaders = {
+                    Secrete: "Secrete"
+                };
+                Axios.post("http://localhost:2000/myca/api/users", authenticationRequestData, {
+                        headers: authenticationRequestHeaders
+                    })
+                    .then((authenticationData) => {
+                        let apiToken = authenticationData.data.token;
+                        this.$toast.open({
+                            message: "Here's your API token\nDon't lose it!\n" + apiToken
+                        });
+                        this.active = false;
+                        emitCloseSignup();
+                    })
+                    .catch((_error_message) => {
+                        let message = _error_message.response.data.message;
+                        this.$toast.open({
+                            message: message
+                        });
+                    });
+            },
+            /**
+             * Emits close signup action
+             */
+            emitCloseSignup() {
+                this.$emit("closeSignup");
+            }
         }
     }
-}
 </script>
