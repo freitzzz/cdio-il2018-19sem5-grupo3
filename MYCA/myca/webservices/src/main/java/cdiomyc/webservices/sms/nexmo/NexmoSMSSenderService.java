@@ -24,17 +24,20 @@ public final class NexmoSMSSenderService {
      * @param smsSendDetailsMV NexmoSMSSendDetailsMV with the message send details
      */
     public static void send(NexmoSMSSendDetailsMV smsSendDetailsMV){
+        String deserializedSMSSendDetails=new Gson().toJson(smsSendDetailsMV,NexmoSMSSendDetailsMV.class);
         Response smsSendResponse=
                 ClientBuilder
                         .newClient()
                         .target("https://rest.nexmo.com/sms/json")
                         .request(MediaType.APPLICATION_JSON)
                         .post(Entity
-                                .json(new Gson().toJson(smsSendDetailsMV,NexmoSMSSendDetailsMV.class)));
-        
+                                .json(deserializedSMSSendDetails));
         //TODO: Verify POST status code? Or trust Nexmo API response body status
         
         String nexmoSMSSendResponse=smsSendResponse.readEntity(String.class);
+        
+        //TODO: FIX NEXMO SEND RESPONSE SERIALIZATION
+        
         NexmoSMSSendResponseMV nexmoSMSSendResponseMV=new Gson().fromJson(nexmoSMSSendResponse,NexmoSMSSendResponseMV.class);
         if(nexmoSMSSendResponseMV.status!=NexmoSMSSendResponseMV.SUCCESSFUL_RESPONSE_STATUS_CODE)
             throw new IllegalStateException("An error occurd while sendind the SMS to the receptor");
