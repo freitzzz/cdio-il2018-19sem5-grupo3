@@ -1,5 +1,6 @@
 package cdiomyc.webservices.users;
 
+import cdiomyc.core.mv.users.CreateCredentialsUserMV;
 import cdiomyc.core.mv.users.CreateUserMV;
 import cdiomyc.core.mv.users.CreatedUserMV;
 import cdiomyc.core.mv.users.UserMVService;
@@ -36,9 +37,22 @@ public class UserController {
             CreateUserMV createUserMV;
             createUserMV = (CreateUserMV) new Gson().fromJson(userCreationDetails, UserMVService.classFromType(new Gson().fromJson(userCreationDetails, CreateUserType.class).type));
             CreatedUserMV created = new cdiomyc.core.application.users.UserController().createUser(createUserMV);
+            if(createUserMV instanceof CreateCredentialsUserMV){
+                if(((CreateCredentialsUserMV) createUserMV).phoneNumber!=null && !((CreateCredentialsUserMV) createUserMV).phoneNumber.trim().isEmpty()){
+                    SendUserActivationCodeSMSDetails sendUserActivationCodeSMSDetails=new SendUserActivationCodeSMSDetails();
+                    sendUserActivationCodeSMSDetails.name=((CreateCredentialsUserMV) createUserMV).username;
+                    sendUserActivationCodeSMSDetails.phoneNumber=((CreateCredentialsUserMV) createUserMV).phoneNumber;
+                    sendUserActivationCodeSMSDetails.activationCode=created.activationCode;
+                    UserActivationCodeSenderService.sendUserActivationCode(sendUserActivationCodeSMSDetails);
+                }
+            }
             return Response.ok().entity(new Gson().toJson(created)).build();
+        } catch(IllegalArgumentException illegalArgumentException){
+            return Response.status(Status.BAD_REQUEST).entity(new Gson().toJson(new SimpleJSONMessageService(illegalArgumentException.getMessage()))).build();
         } catch (IllegalStateException illStateEX) {
             return Response.status(Status.BAD_REQUEST).entity(new Gson().toJson(new SimpleJSONMessageService(illStateEX.getMessage()))).build();
+        } catch(Exception notCapturedException){
+            return Response.status(Status.INTERNAL_SERVER_ERROR).encoding(new Gson().toJson(new SimpleJSONMessageService(notCapturedException.getMessage()))).build();
         }
     }
 
