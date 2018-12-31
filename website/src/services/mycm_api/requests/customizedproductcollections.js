@@ -13,7 +13,7 @@ export default {
 
     /**
      * Retrieves a CustomizedProductCollection by its identifier.
-     * @param {Number} collectionId - CustomizedProductCollection's identifier.
+     * @param {number} collectionId - CustomizedProductCollection's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing he CustomizedProductCollection.
      */
     getCustomizedProductCollection(collectionId) {
@@ -22,7 +22,7 @@ export default {
 
     /**
      * Retrieves a CustomizedProductCollection by its name.
-     * @param {String} collectionName - CustomizedProductCollection's name.
+     * @param {string} collectionName - CustomizedProductCollection's name.
      * @returns {AxiosPromise<any>} Axios Promise representing the CustomizedProductCollection.  
      */
     getCustomizedProductCollectionByName(collectionName) {
@@ -40,7 +40,7 @@ export default {
 
     /**
      * Adds a CustomizedProduct to a CustomizedProductCollection.
-     * @param {Number} collectionId - CustomizedProductCollection's persistence identifier.
+     * @param {number} collectionId - CustomizedProductCollection's persistence identifier.
      * @param {*} customizedProduct 
      */
     postCustomizedProductCollectionCustomizedProduct(collectionId, customizedProduct) {
@@ -49,7 +49,7 @@ export default {
 
     /**
      * Updates a CustomizedProductCollection.
-     * @param {*} collectionId - CustomizedProductCollection's persistence identifier.
+     * @param {number} collectionId - CustomizedProductCollection's persistence identifier.
      * @param {*} collection - CustomizedProductCollection's updated data.
      */
     putCustomizedProductCollection(collectionId, collection) {
@@ -58,7 +58,7 @@ export default {
 
     /**
      * Deletes a CustomizedProductCollection.
-     * @param {*} collectionId - CustomizedProductCollection's identifier.
+     * @param {number} collectionId - CustomizedProductCollection's identifier.
      */
     deleteCustomizedProductCollection(collectionId) {
         return Axios.delete(`${MYCM_API_URL}/collections/${collectionId}`);
@@ -66,8 +66,8 @@ export default {
 
     /**
      * Deletes a CustomizedProduct from a CustomizedProductCollection.
-     * @param {*} collectionId - CustomizedProductCollection's identifier.
-     * @param {*} customizedProductId - CustomizedProduct's identifier.
+     * @param {number} collectionId - CustomizedProductCollection's identifier.
+     * @param {number} customizedProductId - CustomizedProduct's identifier.
      */
     deleteCustomizedProductCollectionCustomizedProduct(collectionId, customizedProductId) {
         return Axios.delete(`${MYCM_API_URL}/collections/${collectionId}/customizedproducts/${customizedProductId}`);

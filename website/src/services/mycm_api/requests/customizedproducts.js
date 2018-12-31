@@ -18,6 +18,7 @@ export default {
 
     /**
      * Retrieves all of the available base CustomizedProducts.
+     * @returns {AxiosPromise<any>} Axios Promise representing all of the available base CustomizedProducts.
      */
     getBaseCustomizedProducts() {
         return Axios.get(`${CUSTOMIZED_PRODUCTS_URL}/base`);
@@ -26,7 +27,7 @@ export default {
 
     /**
      * Retrieves a CustomizedProduct with a matching identifier.
-     * @param {Number} customizedProductId - CustomizedProduct's identifier.
+     * @param {number} customizedProductId - CustomizedProduct's identifier.
      */
     getCustomizedProduct(customizedProductId) {
         return Axios.get(`${CUSTOMIZED_PRODUCTS_URL}/${customizedProductId}`);
@@ -35,7 +36,7 @@ export default {
 
     /**
      * Retrieves a CustomizedProduct's recommended slot layout.
-     * @param {Number} customizedProductId - CustomizedProduct's identifier.
+     * @param {number} customizedProductId - CustomizedProduct's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the CustomizedProduct's recommended slot layout.
      */
     getCustomizedProductRecommendedSlots(customizedProductId) {
@@ -45,7 +46,7 @@ export default {
 
     /**
      * Retrieves a CustomizedProduct's minimum slot layout.
-     * @param {Number} customizedProductId - CustomizedProduct's identifier.
+     * @param {number} customizedProductId - CustomizedProduct's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the CustomizedProduct's minimum slot layout.
      */
     getCustomizedProductMinimumSlots(customizedProductId) {
@@ -54,8 +55,8 @@ export default {
 
     /**
      * Retrieves a CustomizedProduct's Slot.
-     * @param {Number} customizedProductId - CustomizedProduct's identifier.
-     * @param {Number} slotId - Slot's identifier.
+     * @param {number} customizedProductId - CustomizedProduct's identifier.
+     * @param {number} slotId - Slot's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the CustomizedProduct's Slot.
      */
     getCustomizedProductSlot(customizedProductId, slotId) {
@@ -64,9 +65,9 @@ export default {
 
     /**
      * Retrieves a CustomizedProduct's price.
-     * @param {Number} customizedProductId - CustomizedProduct's identifier.
-     * @param {String} currency - Currency in which the price will be displayed.
-     * @param {String} area - CustomizedProduct's surface area.
+     * @param {number} customizedProductId - CustomizedProduct's identifier.
+     * @param {string} currency - Currency in which the price will be displayed.
+     * @param {string} area - CustomizedProduct's surface area.
      * @returns {AxiosPromise<any>} Axios Promise representing the CustomizedProduct's price.
      */
     getCustomizedProductPrice(customizedProductId, currency, area) {
@@ -75,9 +76,9 @@ export default {
 
     /**
      * Options used for adding a CustomizedProduct to another CustomizedProduct's slot.
-     * @typedef {Object} PostOptions
-     * @property {Number} customizedProductId - CustomizedProduct's identifier.
-     * @property {Number} slotId - Slot's identifier.
+     * @typedef {object} PostOptions
+     * @property {number} customizedProductId - CustomizedProduct's identifier.
+     * @property {number} slotId - Slot's identifier.
      */
 
     /**
@@ -88,19 +89,21 @@ export default {
      */
     postCustomizedProduct(customizedProduct, postOptions) {
 
-        if (postOptions == undefined) {
-            return Axios.post(`${CUSTOMIZED_PRODUCTS_URL}`, customizedProduct);
-        } else {
+        var requestUrl = `${CUSTOMIZED_PRODUCTS_URL}`;
+
+        if(postOptions !== undefined){
 
             const { customizedProductId, slotId } = postOptions;
 
-            return Axios.post(`${CUSTOMIZED_PRODUCTS_URL}/${customizedProductId}/slots/${slotId}/customizedproducts`, customizedProduct);
+            requestUrl = requestUrl.concat(`/${customizedProductId}/slots/${slotId}/customizedproducts`);
         }
+        
+        return Axios.post(requestUrl, customizedProduct);
     },
 
     /**
      * Adds a new Slot to a CustomizedProduct.
-     * @param {Number} customizedProductId 
+     * @param {number} customizedProductId 
      * @param {*} slot - Slot being added.
      * @returns {AxiosPromise<any>} Axios Promise representing the added Slot.
      */
@@ -110,7 +113,7 @@ export default {
 
     /**
      * Updates a CustomizedProduct.
-     * @param {Number} customizedProductId - CustomizedProduct's identifier.
+     * @param {number} customizedProductId - CustomizedProduct's identifier.
      * @param {*} customizedProduct - CustomizedProduct's updated data.
      * @returns {AxiosPromise<any>} Axios Promise representing the updated CustomizedProduct. 
      */
@@ -120,8 +123,8 @@ export default {
 
     /**
      * Updates a CustomizedProduct's Slot.
-     * @param {Number} customizedProductId - CustomizedProduct's identifier.
-     * @param {Number} slotId - Slot's identifier.
+     * @param {number} customizedProductId - CustomizedProduct's identifier.
+     * @param {number} slotId - Slot's identifier.
      * @param {*} slot - Slot's updated data.
      * @returns {AxiosPromise<any>} Axios Promise representing the updated Slot.
      */
@@ -131,7 +134,7 @@ export default {
 
     /**
      * Deletes a CustomizedProduct.
-     * @param {Number} customizedProductId - CustomizedProduct's identifier.
+     * @param {number} customizedProductId - CustomizedProduct's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the deleted CustomizedProduct.
      */
     deleteCustomizedProduct(customizedProductId) {
@@ -140,8 +143,8 @@ export default {
 
     /**
      * Deletes a CustomizedProduct's Slot.
-     * @param {Number} customizedProductId - CustomizedProduct's identifier.
-     * @param {Number} slotId - Slot's identifier.
+     * @param {number} customizedProductId - CustomizedProduct's identifier.
+     * @param {number} slotId - Slot's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the deleted Slot. 
      */
     deleteCustomizedProductSlot(customizedProductId, slotId) {

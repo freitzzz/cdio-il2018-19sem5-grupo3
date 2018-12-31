@@ -18,7 +18,7 @@ export default {
 
     /**
      * Retrieves a Material with a matching identifier.
-     * @param {Number} materialId - Material's identifier.
+     * @param {number} materialId - Material's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved Material.
      */
     getMaterial(materialId) {
@@ -37,7 +37,7 @@ export default {
 
     /**
      * Adds a new Finish to the Material.
-     * @param {Number} materialId - Material's identifier.
+     * @param {number} materialId - Material's identifier.
      * @param {*} finish - Finish being added.
      * @returns {AxiosPromise<any>} Axios Promise representing the added Finish.
      */
@@ -47,7 +47,7 @@ export default {
 
     /**
      * Adds a new Color to the Material.
-     * @param {Number} materialId - Material's identifier.
+     * @param {number} materialId - Material's identifier.
      * @param {*} color - Color being added.
      * @returns {AxiosPromise<any>} Axios Promise representing the added Color.
      */
@@ -57,7 +57,7 @@ export default {
 
     /**
      * Updates a Material.
-     * @param {Number} materialId - Material's identifier.
+     * @param {number} materialId - Material's identifier.
      * @param {*} material - Material's data being updated.
      * @returns {AxiosPromise<any>} Axios Promise representing the updated Material.
      */
@@ -67,7 +67,7 @@ export default {
 
     /**
      * Deletes a Material.
-     * @param {Number} materialId - Material's identifier.
+     * @param {number} materialId - Material's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the deleted Material.
      */
     deleteMaterial(materialId) {
@@ -76,8 +76,8 @@ export default {
 
     /**
      * Deletes a Material's Finish.
-     * @param {Number} materialId - Material's identifier.
-     * @param {*} finishId - Finish's identifier.
+     * @param {number} materialId - Material's identifier.
+     * @param {number} finishId - Finish's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the deleted Finish.
      */
     deleteMaterialFinish(materialId, finishId) {
@@ -86,8 +86,8 @@ export default {
 
     /**
      * Deletes a Material's Color.
-     * @param {Number} materialId - Material's identifier.
-     * @param {*} colorId - Color's identifier.
+     * @param {number} materialId - Material's identifier.
+     * @param {number} colorId - Color's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the deleted Color.
      */
     deleteMaterialColor(materialId, colorId) {
