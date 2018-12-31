@@ -1,0 +1,9 @@
+CURRENT_SMS_CARRIER=Nexmo
+
+# Uncomment to use Nexmo SMS service
+# But be careful we only have like ~38 messages left to use
+# QA Engineer please mock SMS services or don't send using a phone number!!!
+
+# NEXMO_API_KEY=52231b1d
+
+# NEXMO_API_SECRET=MmInnYh4XFDz8Bmo
