@@ -5,18 +5,11 @@
     </header>
     <section class="modal-card-body">
       <b-field label="Reference">
-        <b-input
-          type="String"
-          :value="reference"
-          placeholder="Catalogue's Reference"
-          required
-          v-model="reference"
-        />
+        <b-input type="String" placeholder="Catalogue's Reference" required v-model="reference"/>
       </b-field>
       <b-field label="Designation">
         <b-input
           type="String"
-          :value="designation"
           placeholder="Catalogue's Designation"
           required
           v-model="designation"
