@@ -16,15 +16,14 @@
       </template>
     </vuetable>
     <b-modal
-      :active="displayCatalogueDetails"
+      :active.sync="displayCatalogueDetails"
       has-modal-card
       scroll="keep"
-      :onCancel="confirmClose"
     >
       <commercial-catalogue-details
-        :commercialCatalogue="selectedCatalogue"
+        :commercialCatalogueId="selectedCatalogueId"
         :editable="editable"
-        @updateCatalogue="updateTableEntry"
+        @updateTableEntry="updateTableEntry"
       />
     </b-modal>
   </div>
@@ -56,7 +55,7 @@ export default {
           title: "Actions"
         }
       ],
-      selectedCatalogue: null,
+      selectedCatalogueId: 0,
       displayCatalogueDetails: false,
       editable: false
     };
@@ -127,36 +126,9 @@ export default {
      * @param {boolean} editable
      */
     enableCatalogueDetails(commercialCatalogueId, editable) {
-      CommercialCatalogueRequests.getCommercialCatalogue(commercialCatalogueId)
-        .then(response => {
-          this.selectedCatalogue = response.data;
-          this.editable = editable;
-          this.displayCatalogueDetails = true;
-        })
-        .catch(error => {
-          //delete table entry if request fails since it means the catalogue is not available
-          this.deleteTableEntry(commercialCatalogueId);
-          this.$toast.open(error.response.data.message);
-        });
-    },
-
-    /**
-     * Requests user confirmation when closing the details modal, if it's editable.
-     */
-    confirmClose() {
-      if (this.editable) {
-        this.$dialog.confirm({
-          title: "Confirm Close",
-          message: `Are you sure you want exit?`,
-          cancelText: "Cancel",
-          confirmText: "OK",
-          type: "is-info",
-          onConfirm: () => (this.displayCatalogueDetails = false),
-          onCancel: () => (this.displayCatalogueDetails = true)
-        });
-      } else {
-        this.displayCatalogueDetails = false;
-      }
+      this.selectedCatalogueId = commercialCatalogueId;
+      this.editable = editable;
+      this.displayCatalogueDetails = true;
     }
   }
 };

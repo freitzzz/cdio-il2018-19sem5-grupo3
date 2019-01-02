@@ -5,18 +5,42 @@
     </header>
     <section class="modal-card-body">
       <b-field label="Reference">
-        <b-input type="String" :disabled="!editable" v-model="reference" placeholder="No reference"></b-input>
+        <b-input
+          type="String"
+          :disabled="!editable"
+          required
+          v-model="reference"
+          placeholder="No reference"
+        ></b-input>
       </b-field>
       <b-field label="Designation">
         <b-input
           type="String"
           :disabled="!editable"
+          required
           v-model="designation"
           placeholder="No designation"
         ></b-input>
       </b-field>
       <div v-if="availableCollections.length > 0">
-        <b-field label="Collections"></b-field>
+        <b-field label="Collections">
+          <b-autocomplete
+            rounded
+            v-model="searchedCollection"
+            :keep-first="true"
+            :data="suggestedCollections"
+            field="name"
+            :clear-on-select="true"
+            @select="option => selectCollection(option)"
+            placeholder="e.g. Winter 2018"
+            icon="magnify"
+          >
+            <template slot="empty">No collections found</template>
+          </b-autocomplete>
+        </b-field>
+
+        <!--Prevents the auto complete prompt from overlapping the checkboxes-->
+        <div v-if="isInputtingData" class="expandable-div"/>
 
         <b-table
           :data="availableCollections"
@@ -27,10 +51,26 @@
           per-page="5"
         >
           <template slot-scope="props">
+            <b-table-column label="ID">{{props.row.id}}</b-table-column>
             <b-table-column label="Name">{{props.row.name}}</b-table-column>
-            <b-table-column v-if="editable">
-              <button class="btn-primary">
+            <!--Only display the edit button if the editable props is set and the collection has products-->
+            <b-table-column v-if="editable && props.row.hasCustomizedProducts">
+              <!--Conditionally bind class to the button-->
+              <button
+                :class="[selectedCollections.map(collection => collection.id).includes(props.row.id) ? 'btn-primary' : 'btn-primary-disabled']"
+                :disabled="!selectedCollections.map(collection => collection.id).includes(props.row.id)"
+                @click="enableCollectionDetails(props.row.id, props.row.name)"
+              >
                 <b-icon icon="pencil"/>
+              </button>
+            </b-table-column>
+            <!--If the editable prop is not set, but the collection has customized products display the details button-->
+            <b-table-column v-else-if="!editable && props.row.hasCustomizedProducts">
+              <button
+                class="btn-primary"
+                @click="enableCollectionDetails(props.row.id, props.row.name)"
+              >
+                <b-icon icon="magnify"/>
               </button>
             </b-table-column>
           </template>
@@ -40,26 +80,64 @@
         <button class="btn-primary" @click="updateCatalogue()">Update</button>
       </footer>
     </section>
+
+    <b-modal :active.sync="displayCollectionDetails" has-modal-card scroll="keep">
+      <commercial-catalogue-collection-details
+        :editable="editable"
+        :commercialCatalogueId="commercialCatalogueId"
+        :collectionId="selectedCollectionId"
+        :collectionName="selectedCollectionName"
+      />
+    </b-modal>
   </div>
 </template>
 
 <script>
+import CommercialCatalogueCollectionDetails from "./CommercialCatalogueCollectionDetails";
 import CustomizedProductCollectionsRequests from "./../../../services/mycm_api/requests/customizedproductcollections.js";
 import CommercialCatalogueRequests from "./../../../services/mycm_api/requests/commercialcatalogues.js";
-const UPDATE_CATALOGUE_EVENT = "updateCatalogue";
+const UPDATE_TABLE_ENTRY_EVENT = "updateTableEntry";
 export default {
   name: "CommercialCatalogueDetails",
+  components: {
+    CommercialCatalogueCollectionDetails
+  },
   data() {
     return {
-      reference: this.commercialCatalogue.reference,
-      designation: this.commercialCatalogue.designation,
+      reference: "",
+      designation: "",
+      searchedCollection: "",
       availableCollections: [],
-      selectedCollections: []
+      selectedCollections: [],
+      displayCollectionDetails: false,
+      selectedCollectionId: 0,
+      selectedCollectionName: ""
     };
   },
   props: {
-    commercialCatalogue: {},
+    commercialCatalogueId: Number,
     editable: Boolean
+  },
+  computed: {
+    suggestedCollections() {
+      var suggestedCollections = [];
+
+      //the "i" flag makes the pattern case insensitive
+      var patt = new RegExp(`^.*(${this.searchedCollection}).*$`, "i");
+
+      const numAvailableCollections = this.availableCollections.length;
+      for (let i = 0; i < numAvailableCollections; i++) {
+        var match = patt.test(this.availableCollections[i].name);
+        if (match) {
+          suggestedCollections.push(this.availableCollections[i]);
+        }
+      }
+
+      return suggestedCollections;
+    },
+    isInputtingData() {
+      return this.searchedCollection.length > 0;
+    }
   },
   watch: {
     /**
@@ -73,9 +151,11 @@ export default {
       oldSelectedCollectionIds.forEach(oldId => {
         if (!newSelectedCollectionIds.includes(oldId)) {
           CommercialCatalogueRequests.deleteCommercialCatalogueCollection(
-            this.commercialCatalogue.id,
+            this.commercialCatalogueId,
             oldId
-          );
+          ).catch(error => {
+            this.$toast.open(error.response.data);
+          });
         }
       });
 
@@ -85,88 +165,160 @@ export default {
           const postBody = { collectionId: newId };
 
           CommercialCatalogueRequests.postCommercialCatalogueCollection(
-            this.commercialCatalogue.id,
+            this.commercialCatalogueId,
             postBody
-          );
+          ).catch(error => {
+            this.$toast.open(error.response.data);
+          });
         }
       });
     }
   },
   methods: {
+    //? should there be a watcher for basic properties?
+    /**
+     * Updates the catalogue's basic properties and emits the changes back to the table.
+     */
     updateCatalogue() {
-      //check if any of the basic properties changed
-      if (
-        this.commercialCatalogue.reference !== this.reference ||
-        this.commercialCatalogue.designation !== this.designation
-      ) {
-        var putBody = {};
+      var putBody = {
+        reference: this.reference,
+        designation: this.designation
+      };
 
-        if (this.commercialCatalogue.reference !== this.reference) {
-          putBody.reference = this.reference;
+      CommercialCatalogueRequests.putCommercialCatalogue(
+        this.commercialCatalogueId,
+        putBody
+      )
+        .then(response => {
+          this.$emit(
+            UPDATE_TABLE_ENTRY_EVENT,
+            response.data.id,
+            response.data.reference,
+            response.data.designation
+          );
+        })
+        .catch(error => {
+          this.$toast.open(error.response.data);
+        });
+    },
+
+    //TODO: fix selection
+    selectCollection(collection) {
+      if (this.editable) {
+        const { id: collectionId } = collection;
+        var collectionFound = false;
+        var alreadyAdded = false;
+        const numAvailableCollections = this.availableCollections.length;
+        var selectedIndex = 0;
+
+        for (let i = 0; i < numAvailableCollections; i++) {
+          if (this.availableCollections[i].id === collection.id) {
+            if (
+              this.selectedCollections
+                .map(collection => collection.id)
+                .includes(collectionId)
+            ) {
+              alreadyAdded = true;
+            } else {
+              collectionFound = true;
+              selectedIndex = i;
+            }
+            break;
+          }
         }
 
-        if (this.commercialCatalogue.designation !== this.designation) {
-          putBody.designation = this.designation;
+        if (!alreadyAdded && collectionFound) {
+          this.selectedCollections.push(
+            this.availableCollections[selectedIndex]
+          );
         }
-
-        CommercialCatalogueRequests.putCommercialCatalogue(
-          this.commercialCatalogue.id,
-          putBody
-        )
-          .then(response => {
-            this.$emit(
-              UPDATE_CATALOGUE_EVENT,
-              response.data.id,
-              response.data.reference,
-              response.data.designation
-            );
-          })
-          .catch(error => {
-            this.$toast.open(error.response.data);
-          });
-      } else {
-        //if none of the basic properties changed, emit the update event with the original data
-        this.$emit(
-          UPDATE_CATALOGUE_EVENT,
-          this.commercialCatalogue.id,
-          this.commercialCatalogue.reference,
-          this.commercialCatalogue.designation
-        );
       }
     },
-    getAvailableCollections() {
-      CustomizedProductCollectionsRequests.getCustomizedProductCollections().then(
-        response => {
-          var collectionIds = this.availableCollections.map(
-            collection => collection.id
-          );
+    /**
+     * Enables the collection details modal.
+     * @param {number} collectionId
+     * @param {string} collectionName
+     */
+    enableCollectionDetails(collectionId, collectionName) {
+      this.selectedCollectionId = collectionId;
+      this.selectedCollectionName = collectionName;
+      this.displayCollectionDetails = true;
+    },
 
-          var additionalCollections = response.data.filter(
-            collection => !collectionIds.includes(collection.id)
-          );
-
-          this.availableCollections.push(...additionalCollections);
-        }
+    getCommercialCatalogue() {
+      return CommercialCatalogueRequests.getCommercialCatalogue(
+        this.commercialCatalogueId
       );
+    },
+
+    /**
+     * Fills the collections table.
+     * If the editable prop is set to true, then the table is filled with all available collections and the those currently added to the catalogue are checked.
+     * If the editable prop is set to false, the the table is filled with all of the catalogue's collections.
+     *
+     */
+    fillTable() {
+      this.getCommercialCatalogue()
+        .then(catalogueResponse => {
+          const { data: commercialCatalogue } = catalogueResponse;
+          const { reference, designation } = commercialCatalogue;
+
+          this.reference = reference;
+          this.designation = designation;
+
+          var commercialCatalogueCollections =
+            commercialCatalogue.commercialCatalogueCollections !== undefined
+              ? commercialCatalogue.commercialCatalogueCollections
+              : [];
+
+          if (this.editable) {
+            CustomizedProductCollectionsRequests.getCustomizedProductCollections().then(
+              collectionsResponse => {
+                const {
+                  data: customizedProductCollections
+                } = collectionsResponse;
+                const numCustomizedProductCollections =
+                  customizedProductCollections.length;
+                const numCommercialCatalogueCollections =
+                  commercialCatalogueCollections.length;
+
+                for (let i = 0; i < numCustomizedProductCollections; i++) {
+                  for (let j = 0; j < numCommercialCatalogueCollections; j++) {
+                    if (
+                      customizedProductCollections[i].id ===
+                      commercialCatalogueCollections[j].id
+                    ) {
+                      this.selectedCollections.push(
+                        customizedProductCollections[i]
+                      );
+                    }
+                  }
+                  this.availableCollections.push(
+                    customizedProductCollections[i]
+                  );
+                }
+              }
+            );
+          } else {
+            this.availableCollections.push(...commercialCatalogueCollections);
+          }
+        })
+        .catch(error => {
+          //this should only occur if the catalogue was deleted immediately after selecting it
+          this.$toast.open(error.response.data);
+          this.$parent.close();
+        });
     }
   },
   created() {
-    if (this.commercialCatalogue.commercialCatalogueCollections !== undefined) {
-      this.availableCollections.push(
-        ...this.commercialCatalogue.commercialCatalogueCollections
-      );
-
-      //don't push data to the selected collections unless it's editable
-      if (this.editable) {
-        this.selectedCollections.push(
-          ...this.commercialCatalogue.commercialCatalogueCollections
-        );
-      }
-    }
-
-    if (this.editable) {
-      this.getAvailableCollections();
-    }
+    this.fillTable();
   }
 };
 </script>
+
+
+<style>
+.expandable-div {
+  padding-bottom: 25%;
+}
+</style>
