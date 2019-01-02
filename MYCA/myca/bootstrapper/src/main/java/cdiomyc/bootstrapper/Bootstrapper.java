@@ -1,5 +1,6 @@
-package cdiomyc.bootstrapp;
+package cdiomyc.bootstrapper;
 
+import cdiomyc.bootstrapper.users.UsersBootstrapper;
 import cdiomyc.support.actions.Action;
 
 /**
@@ -11,7 +12,7 @@ public final class Bootstrapper implements Action{
     /**
      * Represents MYCA inner boostrappers
      */
-    private static final Action[] INNER_BOOTSTRAPPERS ={};
+    private static final Action[] INNER_BOOTSTRAPPERS ={new UsersBootstrapper()};
     
     /**
      * Executes MYCA bootstrapper
