@@ -10,6 +10,7 @@
         <module>persistence</module>
     <module>webservices</module>
         <module>support</module>
+        <module>bootstrapper</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
