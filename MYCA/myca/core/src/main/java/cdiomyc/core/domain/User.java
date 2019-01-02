@@ -129,6 +129,16 @@ public class User implements AggregateRoot<Auth>,Serializable{
     }
     
     /**
+     * Adds a set of roles to the user
+     * @param roles Iterable with the roles being added to the user
+     */
+    public void addRoles(Iterable<Role> roles){
+        if(roles==null||!roles.iterator().hasNext())
+            throw new IllegalArgumentException("Roles to add are invalid");
+        roles.forEach(role ->{addRole(role);});
+    }
+    
+    /**
      * Removes a role from the user
      * @param role Role with the role being removed
      */
@@ -153,12 +163,12 @@ public class User implements AggregateRoot<Auth>,Serializable{
     
     /**
      * Activates the current user
-     * @param activationCode Short with the user activation code
+     * @param activationCode String with the user activation code
      */
-    public void activate(short activationCode){
+    public void activate(String activationCode){
         if(this.enabled)
             throw new IllegalStateException("User is already enabled");
-        if(this.activationCode!=activationCode)
+        if(this.activationCode!=Short.parseShort(activationCode))
             throw new IllegalArgumentException("Activation code is invalid!");
         this.enabled=true;
     }
