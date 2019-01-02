@@ -17,7 +17,7 @@ public class UsernameTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void ensureUsernameCantBeSmall() {
-        Username.valueOf("yey");
+        Username.valueOf("ye");
     }
 
     @Test(expected = IllegalArgumentException.class)
