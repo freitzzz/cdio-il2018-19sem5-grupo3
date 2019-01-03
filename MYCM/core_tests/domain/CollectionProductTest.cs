@@ -32,7 +32,7 @@ namespace core_tests.domain
             Product product = new Product("0L4", "H4H4", "goodmeme.glb", new ProductCategory("Drawers"), new List<Material>() { material }, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
             Assert.NotNull(new CollectionProduct(new CustomizedProductCollection("Hang in there"),
-            CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product,
+            CustomizedProductBuilder.createCustomizedProduct("reference", product,
                 CustomizedDimensions.valueOf(500.0, 500.0, 500.0))
                 .withMaterial(CustomizedMaterial.valueOf(material, color, finish)).build()));
         }
@@ -57,7 +57,7 @@ namespace core_tests.domain
             Product product = new Product("0L4", "H4H4", "goodmeme.glb", new ProductCategory("Drawers"), new List<Material>() { material }, measurements, ProductSlotWidths.valueOf(1, 5, 4));
 
             Assert.Throws<ArgumentException>(() => new CollectionProduct(null,
-                CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product,
+                CustomizedProductBuilder.createCustomizedProduct("reference", product,
                     CustomizedDimensions.valueOf(500.0, 500.0, 500.0))
                         .withMaterial(CustomizedMaterial.valueOf(material, color, finish)).build()));
         }

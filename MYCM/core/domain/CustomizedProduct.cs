@@ -36,11 +36,6 @@ namespace core.domain
         private const string INVALID_PRODUCT_REFERENCE = "The inserted product reference is not valid";
 
         /// <summary>
-        /// Constant that represents the message presented if the CustomizedProduct's serial number is not valid.
-        /// </summary>
-        private const string INVALID_SERIAL_NUMBER = "The inserted serial number is not valid";
-
-        /// <summary>
         /// Constant that represents the message presented if the CustomizedProduct's user authentication token is not valid.
         /// </summary>
         private const string INVALID_AUTH_TOKEN = "The inserted authentication token is not valid.";
@@ -74,11 +69,6 @@ namespace core.domain
         /// Constant that represents the message that occurs if the CustomizedProduct's product doesn't support slots
         /// </summary>
         private const string PRODUCT_DOES_NOT_SUPPORT_SLOTS = "This customized product doesn't support slots";
-
-        /// <summary>
-        /// Constant that represents the message that occurs if the CustomizedProduct's reference is attempted to be changed while a serial number is defined
-        /// </summary>
-        private const string CHANGE_REFERENCE_WITH_SERIAL_NUMBER = "Unable to change reference while a serial number is defined.";
 
         /// <summary>
         /// Constant that represents the message presented when the CustomizedProduct's dimensions are attempted to be changed after adding slots.
@@ -185,13 +175,6 @@ namespace core.domain
         /// </summary>
         public string designation { get; protected set; }
 
-        //*Please note that this serial number has to be a snapshot of the value in CustomizedProductSerialNumber, instead of referencing it.*/
-        /// <summary>
-        /// CustomizedProduct's serial number.
-        /// </summary>
-        /// <value>Gets/protected sets the serial number.s</value>
-        public string serialNumber { get; protected set; }
-
         /// <summary>
         /// Authentication token of the user who created the CustomizedProduct.
         /// </summary>
@@ -264,55 +247,17 @@ namespace core.domain
         protected CustomizedProduct() { }
 
         /// <summary>
-        /// Creates a new instance of CustomizedProduct with a given serial number based on the specifications of a given Product.
+        ///  Creates a new instance of CustomizedProduct with a given reference, based on the specifications of a given Product.
         /// </summary>
-        /// <param name="serialNumber">Serial number assigned to this CustomizedProduct.</param>
-        /// <param name="product">Product defining the specification for this CustomizedProduct.</param>
-        /// <param name="customizedDimensions">Instance of CustomizedDimensions detailing the CustomizedProduct's dimensions.</param>
-        protected CustomizedProduct(string serialNumber, Product product, CustomizedDimensions customizedDimensions)
-        {
-            checkString(serialNumber, INVALID_SERIAL_NUMBER);
-            checkProduct(product);
-            checkCustomizedDimensions(customizedDimensions, product);
-            this.serialNumber = serialNumber;
-            this.product = product;
-            this.customizedDimensions = customizedDimensions;
-            this.status = CustomizationStatus.PENDING;
-            this.slots = new List<Slot>();
-            //Add slot matching the CustomizedProduct's dimensions
-            this.slots.Add(new Slot(id() + this.slots.Count, customizedDimensions));
-        }
-
-        /// <summary>
-        /// Creates a new instance of CustomizedProduct with a given serial number based on the specifications of a given Product, 
-        /// created by a user with the given authentication token.
-        /// </summary>
-        /// <param name="serialNumber">Serial number assigned to this CustomizedProduct.</param>
-        /// <param name="authToken">Authentication token of the user creating this CustomizedProduct.</param>
-        /// <param name="product">Product defining the specification for this CustomizedProduct.</param>
-        /// <param name="customizedDimensions">Instance of CustomizedDimensions detailing the CustomizedProduct's dimensions.</param>
-        protected CustomizedProduct(string serialNumber, string authToken, Product product, CustomizedDimensions customizedDimensions) : this(serialNumber, product, customizedDimensions)
-        {
-            checkString(authToken, INVALID_AUTH_TOKEN);
-            this.authToken = authToken;
-        }
-
-        /// <summary>
-        /// Creates a new instance of CustomizedProduct with a given reference based on the specifications of a given Product
-        /// created by the content manager with the given authentication token.
-        /// </summary>
-        /// <param name="product">Product defining the specification for this CustomizedProduct.</param>
-        /// <param name="customizedDimensions">Instance of CustomizedDimensions detailing the CustomizedProduct's dimensions.</param>
         /// <param name="reference">Reference assigned to this CustomizedProduct.</param>
-        /// <param name="authToken">Authentication token of the user creating this CustomizedProduct.</param>
-        protected CustomizedProduct(Product product, CustomizedDimensions customizedDimensions, string reference, string authToken)
+        /// <param name="product">Product defining the specification for this CustomizedProduct.</param>
+        /// <param name="customizedDimensions">Instance of CustomizedDimensions detailing the CustomizedProduct's dimensions.</param>
+        public CustomizedProduct(string reference, Product product, CustomizedDimensions customizedDimensions)
         {
             checkString(reference, INVALID_PRODUCT_REFERENCE);
-            checkString(authToken, INVALID_AUTH_TOKEN);
             checkProduct(product);
             checkCustomizedDimensions(customizedDimensions, product);
             this.reference = reference;
-            this.authToken = authToken;
             this.product = product;
             this.customizedDimensions = customizedDimensions;
             this.status = CustomizationStatus.PENDING;
@@ -321,7 +266,20 @@ namespace core.domain
             this.slots.Add(new Slot(id() + this.slots.Count, customizedDimensions));
         }
 
-        //!Serial number should not be allowed to change
+        /// <summary>
+        /// Creates a new instance of CustomizedProduct with a given reference, based on the specifications of a given Product,
+        /// with the given authentication token.
+        /// </summary>
+        /// <param name="authToken">Authentication token of the user creating this CustomizedProduct.</param>
+        /// <param name="reference">Reference assigned to this CustomizedProduct.</param>
+        /// <param name="product">Product defining the specification for this CustomizedProduct.</param>
+        /// <param name="customizedDimensions">Instance of CustomizedDimensions detailing the CustomizedProduct's dimensions.</param>
+        public CustomizedProduct(string authToken, string reference, Product product, CustomizedDimensions customizedDimensions)
+            : this(reference, product, customizedDimensions)
+        {
+            checkString(authToken, INVALID_AUTH_TOKEN);
+            this.authToken = authToken;
+        }
 
         /// <summary>
         /// Changes the CustomizedProduct's reference.
@@ -330,8 +288,6 @@ namespace core.domain
         public void changeReference(string reference)
         {
             if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
-            //if a serial number was assigned to the customized product, then it shouldn't be possible to define a reference
-            if (serialNumber != null) throw new InvalidOperationException(CHANGE_REFERENCE_WITH_SERIAL_NUMBER);
             if (String.IsNullOrEmpty(reference)) throw new ArgumentException(INVALID_PRODUCT_REFERENCE);
             this.reference = reference;
         }
@@ -913,72 +869,80 @@ namespace core.domain
         /// Returns the recommended slots
         /// </summary>
         /// <returns>List with the recommended slots</returns>
-        public List<CustomizedDimensions> recommendedSlots(){
-            
+        public List<CustomizedDimensions> recommendedSlots()
+        {
+
             List<CustomizedDimensions> recommendedSlots = new List<CustomizedDimensions>();
 
             var widthCloset = //customizedDimensions.width; 
             6000;
             /*store.state.customizedProduct.customizedDimensions.width;*/ ///404.5;
-              var depthCloset = //customizedDimensions.depth; 
-              2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
-              var heightCloset = //customizedDimensions.height; 
-              5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;   
-              var unitCloset = "mm";//customizedDimensions.unit;
-              //store.state.customizedProduct.customizedDimensions.unit;
-              var unitSlots = "mm"; 
-              //store.getters.productSlotWidths.unit;
-              var recommendedSlotWidth = product.slotWidths.recommendedWidth;
-              ///store.getters.recommendedSlotWidth;
-              var minSlotWidth = product.slotWidths.minWidth;
-              ///store.getters.minSlotWidth;
+            var depthCloset = //customizedDimensions.depth; 
+            2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
+            var heightCloset = //customizedDimensions.height; 
+            5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;   
+            var unitCloset = "mm";//customizedDimensions.unit;
+                                  //store.state.customizedProduct.customizedDimensions.unit;
+            var unitSlots = "mm";
+            //store.getters.productSlotWidths.unit;
+            var recommendedSlotWidth = product.slotWidths.recommendedWidth;
+            ///store.getters.recommendedSlotWidth;
+            var minSlotWidth = product.slotWidths.minWidth;
+            ///store.getters.minSlotWidth;
 
-              /* if(unitCloset != unitSlots){
-                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
-                recommendedSlotWidth = this.valueConvertedSlotsWidth;
-                this.convert(unitSlots,unitCloset,minSlotWidth);
-                minSlotWidth = this.valueConvertedSlotsWidth;
-              }  */
+            /* if(unitCloset != unitSlots){
+              this.convert(unitSlots,unitCloset,recommendedSlotWidth);
+              recommendedSlotWidth = this.valueConvertedSlotsWidth;
+              this.convert(unitSlots,unitCloset,minSlotWidth);
+              minSlotWidth = this.valueConvertedSlotsWidth;
+            }  */
 
-              var reasonW = 404.5 / widthCloset;
-              var reasonD = 100 / depthCloset;
-              var reasonH = 300 / heightCloset;
+            var reasonW = 404.5 / widthCloset;
+            var reasonD = 100 / depthCloset;
+            var reasonH = 300 / heightCloset;
 
-              var recommendedNumberSlots = (int) (widthCloset / recommendedSlotWidth);
-              var remainder = widthCloset % recommendedSlotWidth;
-              var remainderWidth =
-                widthCloset - recommendedNumberSlots * recommendedSlotWidth;
-            for (var i = 0; i < recommendedNumberSlots; i++) {
-                recommendedSlots.Add( 
+            var recommendedNumberSlots = (int)(widthCloset / recommendedSlotWidth);
+            var remainder = widthCloset % recommendedSlotWidth;
+            var remainderWidth =
+              widthCloset - recommendedNumberSlots * recommendedSlotWidth;
+            for (var i = 0; i < recommendedNumberSlots; i++)
+            {
+                recommendedSlots.Add(
                     CustomizedDimensions.valueOf(
                         heightCloset,
-                        recommendedSlotWidth,  
+                        recommendedSlotWidth,
                         depthCloset));
             }
-            if(remainderWidth>0){
-                if(remainder>minSlotWidth){
-                    recommendedSlots.Add( 
+            if (remainderWidth > 0)
+            {
+                if (remainder > minSlotWidth)
+                {
+                    recommendedSlots.Add(
                         CustomizedDimensions.valueOf(
                             heightCloset,
-                            remainderWidth ,  
+                            remainderWidth,
                             depthCloset));
-                }else{
+                }
+                else
+                {
                     var lackToMin = minSlotWidth - remainderWidth;
                     var takeRecommended = lackToMin / recommendedNumberSlots;
-                    
-                    if((recommendedSlotWidth - takeRecommended) > minSlotWidth){
-                        recommendedSlots = new List<CustomizedDimensions>();    
-                        for (var i = 0; i < recommendedNumberSlots ; i++) {
-                        recommendedSlots.Add( 
-                            CustomizedDimensions.valueOf(
-                            heightCloset,
-                            (recommendedSlotWidth - takeRecommended),  
-                            depthCloset));
+
+                    if ((recommendedSlotWidth - takeRecommended) > minSlotWidth)
+                    {
+                        recommendedSlots = new List<CustomizedDimensions>();
+                        for (var i = 0; i < recommendedNumberSlots; i++)
+                        {
+                            recommendedSlots.Add(
+                                CustomizedDimensions.valueOf(
+                                heightCloset,
+                                (recommendedSlotWidth - takeRecommended),
+                                depthCloset));
                         }
-                        recommendedSlots.Add( 
+                        recommendedSlots.Add(
                             CustomizedDimensions.valueOf(
                             heightCloset,
-                            (minSlotWidth),  
+                            (minSlotWidth),
                             depthCloset));
                     }
                 }
@@ -989,72 +953,80 @@ namespace core.domain
         /// Returns the min slots
         /// </summary>
         /// <returns>List with the min slots</returns>
-        public List<CustomizedDimensions> minSlots(){
-            
+        public List<CustomizedDimensions> minSlots()
+        {
+
             List<CustomizedDimensions> minSlots = new List<CustomizedDimensions>();
 
             var widthCloset = //customizedDimensions.width; 
             6000;
             /*store.state.customizedProduct.customizedDimensions.width;*/ ///404.5;
-              var depthCloset = //customizedDimensions.depth; 
-              2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
-              var heightCloset = //customizedDimensions.height; 
-              5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;   
-              var unitCloset = "mm";//customizedDimensions.unit;
-              //store.state.customizedProduct.customizedDimensions.unit;
-              var unitSlots = "mm"; 
-              //store.getters.productSlotWidths.unit;
-              var maxSlotWidth = product.slotWidths.maxWidth;
-              ///store.getters.recommendedSlotWidth;
-              var minSlotWidth = product.slotWidths.minWidth;
-              ///store.getters.minSlotWidth;
+            var depthCloset = //customizedDimensions.depth; 
+            2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
+            var heightCloset = //customizedDimensions.height; 
+            5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;   
+            var unitCloset = "mm";//customizedDimensions.unit;
+                                  //store.state.customizedProduct.customizedDimensions.unit;
+            var unitSlots = "mm";
+            //store.getters.productSlotWidths.unit;
+            var maxSlotWidth = product.slotWidths.maxWidth;
+            ///store.getters.recommendedSlotWidth;
+            var minSlotWidth = product.slotWidths.minWidth;
+            ///store.getters.minSlotWidth;
 
-              /* if(unitCloset != unitSlots){
-                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
-                recommendedSlotWidth = this.valueConvertedSlotsWidth;
-                this.convert(unitSlots,unitCloset,minSlotWidth);
-                minSlotWidth = this.valueConvertedSlotsWidth;
-              }  */
+            /* if(unitCloset != unitSlots){
+              this.convert(unitSlots,unitCloset,recommendedSlotWidth);
+              recommendedSlotWidth = this.valueConvertedSlotsWidth;
+              this.convert(unitSlots,unitCloset,minSlotWidth);
+              minSlotWidth = this.valueConvertedSlotsWidth;
+            }  */
 
-              var reasonW = 404.5 / widthCloset;
-              var reasonD = 100 / depthCloset;
-              var reasonH = 300 / heightCloset;
+            var reasonW = 404.5 / widthCloset;
+            var reasonD = 100 / depthCloset;
+            var reasonH = 300 / heightCloset;
 
-              var maxNumberSlots = (int) (widthCloset / maxSlotWidth);
-              var remainder = widthCloset % maxSlotWidth;
-              var remainderWidth =
-                widthCloset - maxNumberSlots * maxSlotWidth;
-            for (var i = 0; i < maxNumberSlots; i++) {
-                minSlots.Add( 
+            var maxNumberSlots = (int)(widthCloset / maxSlotWidth);
+            var remainder = widthCloset % maxSlotWidth;
+            var remainderWidth =
+              widthCloset - maxNumberSlots * maxSlotWidth;
+            for (var i = 0; i < maxNumberSlots; i++)
+            {
+                minSlots.Add(
                     CustomizedDimensions.valueOf(
                         heightCloset,
-                        maxSlotWidth,  
+                        maxSlotWidth,
                         depthCloset));
             }
-            if(remainderWidth>0){
-                if(remainder>minSlotWidth){
-                    minSlots.Add( 
+            if (remainderWidth > 0)
+            {
+                if (remainder > minSlotWidth)
+                {
+                    minSlots.Add(
                         CustomizedDimensions.valueOf(
                             heightCloset,
-                            remainderWidth ,  
+                            remainderWidth,
                             depthCloset));
-                }else{
+                }
+                else
+                {
                     var lackToMin = minSlotWidth - remainderWidth;
                     var takeRecommended = lackToMin / maxNumberSlots;
-                    
-                    if((maxSlotWidth - takeRecommended) > minSlotWidth){
-                        minSlots = new List<CustomizedDimensions>();    
-                        for (var i = 0; i < maxNumberSlots ; i++) {
-                        minSlots.Add( 
-                            CustomizedDimensions.valueOf(
-                            heightCloset,
-                            (maxSlotWidth - takeRecommended),  
-                            depthCloset));
+
+                    if ((maxSlotWidth - takeRecommended) > minSlotWidth)
+                    {
+                        minSlots = new List<CustomizedDimensions>();
+                        for (var i = 0; i < maxNumberSlots; i++)
+                        {
+                            minSlots.Add(
+                                CustomizedDimensions.valueOf(
+                                heightCloset,
+                                (maxSlotWidth - takeRecommended),
+                                depthCloset));
                         }
-                        minSlots.Add( 
+                        minSlots.Add(
                             CustomizedDimensions.valueOf(
                             heightCloset,
-                            (minSlotWidth),  
+                            (minSlotWidth),
                             depthCloset));
                     }
                 }
@@ -1128,7 +1100,7 @@ namespace core.domain
         /// <returns>String with the CustomizedProduct's identity</returns>
         public string id()
         {
-            return reference == null ? serialNumber : reference;
+            return reference;
         }
 
         /// <summary>
@@ -1138,10 +1110,6 @@ namespace core.domain
         /// <returns>true if the given identifier is equal to the CustomizedProduct's identity; false, otherwise.</returns>
         public bool sameAs(string comparingEntity)
         {
-            if (reference == null)
-            {
-                return serialNumber.Equals(comparingEntity, StringComparison.InvariantCultureIgnoreCase);
-            }
             return reference.Equals(comparingEntity, StringComparison.InvariantCultureIgnoreCase);
         }
 
@@ -1202,14 +1170,7 @@ namespace core.domain
         public override int GetHashCode()
         {
             int hashCode = 17;
-            if (reference == null)
-            {
-                hashCode = hashCode * 23 + this.serialNumber.GetHashCode();
-            }
-            else
-            {
-                hashCode = hashCode * 23 + this.reference.GetHashCode();
-            }
+            hashCode = hashCode * 23 + this.reference.GetHashCode();
             return hashCode;
         }
 
@@ -1228,11 +1189,6 @@ namespace core.domain
             else
             {
                 CustomizedProduct other = (CustomizedProduct)obj;
-
-                if (this.reference == null && other.reference == null)
-                {
-                    return this.serialNumber.Equals(other.serialNumber);
-                }
 
                 return this.reference.Equals(other.reference);
             }
@@ -1280,48 +1236,32 @@ namespace core.domain
             /// </summary>
             private CustomizedProductBuilder() { }
 
-
             /// <summary>
-            /// Creates an instance of CustomizedProductBuilder, responsible for building an instance of CustomizedProduct made by an anonymous user.
+            /// Creates an instance of CustomizedProductBuilder, responsible for building an instance of CustomizedProduct.
             /// </summary>
-            /// <param name="serialNumber">Serial number assigned to the CustomizedProduct.</param>
+            /// <param name="reference">Reference assigned to the CustomizedProduct.</param>
             /// <param name="product">Product defining the specification for the CustomizedProduct.</param>
             /// <param name="customizedDimensions">Instance of CustomizedDimensions detailing the CustomizedProduct's dimensions.</param>
             /// <returns>An instance of CustomizedProductBuilder.</returns>
-            public static CustomizedProductBuilder createAnonymousUserCustomizedProduct(string serialNumber, Product product, CustomizedDimensions customizedDimensions)
+            public static CustomizedProductBuilder createCustomizedProduct(string reference, Product product, CustomizedDimensions customizedDimensions)
             {
                 CustomizedProductBuilder builder = new CustomizedProductBuilder();
-                builder.customizedProduct = new CustomizedProduct(serialNumber, product, customizedDimensions);
+                builder.customizedProduct = new CustomizedProduct(reference, product, customizedDimensions);
                 return builder;
             }
 
             /// <summary>
-            /// Creates an instance of CustomizedProductBuilder, responsible for building an instance of CustomizedProduct made by a registered user.
+            /// Creates an instance of CustomizedProductBuilder, responsible for building an instance of CustomizedProduct.
             /// </summary>
-            /// <param name="serialNumber">Serial number assigned to the CustomizedProduct.</param>
             /// <param name="authToken">Authentication token of the user creating the CustomizedProduct.</param>
-            /// <param name="product">Product defining the specification for the CustomizedProduct</param>
-            /// <param name="customizedDimensions">Instance of CustomizedDimensions detailing the CustomizedProduct's dimensions.</param>
-            /// <returns>An instance of CustomizedProductBuilder.</returns>
-            public static CustomizedProductBuilder createRegisteredUserCustomizedProduct(string serialNumber, string authToken, Product product, CustomizedDimensions customizedDimensions)
-            {
-                CustomizedProductBuilder builder = new CustomizedProductBuilder();
-                builder.customizedProduct = new CustomizedProduct(serialNumber, authToken, product, customizedDimensions);
-                return builder;
-            }
-
-            /// <summary>
-            /// Creates an instance of CustomizedProductBuilder, responsible for building an instance of CustomizedProduct made by a content manager.
-            /// </summary>
             /// <param name="reference">Reference assigned to the CustomizedProduct.</param>
-            /// <param name="authToken">Authentication token of the user creating the CustomizedProduct.</param>
-            /// <param name="product">Product defining the specification for the CustomizedProduct</param>
+            /// <param name="product">Product defining the specification for the CustomizedProduct.</param>
             /// <param name="customizedDimensions">Instance of CustomizedDimensions detailing the CustomizedProduct's dimensions.</param>
             /// <returns>An instance of CustomizedProductBuilder.</returns>
-            public static CustomizedProductBuilder createManagerCustomizedProduct(string reference, string authToken, Product product, CustomizedDimensions customizedDimensions)
+            public static CustomizedProductBuilder createCustomizedProduct(string authToken, string reference, Product product, CustomizedDimensions customizedDimensions)
             {
                 CustomizedProductBuilder builder = new CustomizedProductBuilder();
-                builder.customizedProduct = new CustomizedProduct(product, customizedDimensions, reference, authToken);
+                builder.customizedProduct = new CustomizedProduct(authToken, reference, product, customizedDimensions);
                 return builder;
             }
 

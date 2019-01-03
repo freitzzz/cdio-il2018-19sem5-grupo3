@@ -54,14 +54,14 @@ namespace core_tests.domain
             return product;
         }
 
-        private CustomizedProduct buildCustomizedProduct(string serialNumber, CustomizedDimensions customizedDimensions)
+        private CustomizedProduct buildCustomizedProduct(string reference, CustomizedDimensions customizedDimensions)
         {
             Finish matte = Finish.valueOf("Matte", 30);
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(buildMaterial(), red, matte);
 
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, buildProduct(), customizedDimensions)
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct(reference, buildProduct(), customizedDimensions)
                 .withMaterial(customizedMaterial).build();
 
             return customizedProduct;

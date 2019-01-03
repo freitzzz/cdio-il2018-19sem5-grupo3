@@ -120,7 +120,7 @@ namespace core_tests.domain {
             List<Measurement> measurements = new List<Measurement>() { measurement };
             Product product = new Product("#12", "Mother Goose of Mutual Recursion: Recursive Mother Goose", "product12.glb", cat, new List<Material>(new[] { material }), measurements);
             Product component = new Product("#13", "Mother Goose of Diffractive Recitavo: Diffraction Mother Goose", "product13.gltf", cat, new List<Material>(new[] { material1, material }), measurements);
-            CustomizedProduct custom = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("#8", product, CustomizedDimensions.valueOf(100, 100, 100)).withMaterial(CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht", 12))).build();
+            CustomizedProduct custom = CustomizedProductBuilder.createCustomizedProduct("#8", product, CustomizedDimensions.valueOf(100, 100, 100)).withMaterial(CustomizedMaterial.valueOf(material, Color.valueOf("Epigraph of the Closed Curve: Close Epigraph", 100, 100, 100, 100), Finish.valueOf("der alte wurfelt nicht", 12))).build();
             Assert.True(instance.applyAlgorithm(custom, component).productMaterials[0].material.Equals(material));
         }
     }
