@@ -15,7 +15,8 @@ const state = {
         canMoveSlots: "false",
         canMoveComponents: "false",
         doorsFlag: "",
-        componentToRemove: {}
+        componentToRemove: {},
+        slostSlider: []
     },
 
     product: {},
@@ -105,7 +106,7 @@ export const getters = {
     customizedProductDimensions: state => {
         return state.customizedProduct.customizedDimensions;
     },
-    customizedProductSlotWidth: state => index => {
+    customizedProductSlot: state => index => {
         return state.customizedProduct.slots[index];
     },
     customizedProductComponents: state => {
