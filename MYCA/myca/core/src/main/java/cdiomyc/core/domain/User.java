@@ -135,7 +135,7 @@ public class User implements AggregateRoot<Auth>,Serializable{
     public void addRoles(Iterable<Role> roles){
         if(roles==null||!roles.iterator().hasNext())
             throw new IllegalArgumentException("Roles to add are invalid");
-        roles.forEach(role ->{addRole(role);});
+        roles.forEach(role->{this.addRole(role);});
     }
     
     /**
