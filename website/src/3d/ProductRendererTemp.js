@@ -389,7 +389,7 @@ export default class ProductRenderer {
    */
   updateClosetGV() {
     for (var i = 0; i < this.closet_faces_ids.length; i++) {
-      var closet_face = this.group.getObjectById(this.closet_faces_ids[i]);
+      let closet_face = this.group.getObjectById(this.closet_faces_ids[i]);
       closet_face.scale.x = this.getNewScaleValue(this.closet.getInitialClosetFaces()[i][0], this.closet.getClosetFaces()[i][0], closet_face.scale.x);
       closet_face.scale.y = this.getNewScaleValue(this.closet.getInitialClosetFaces()[i][1], this.closet.getClosetFaces()[i][1], closet_face.scale.y);
       closet_face.scale.z = this.getNewScaleValue(this.closet.getInitialClosetFaces()[i][2], this.closet.getClosetFaces()[i][2], closet_face.scale.z);
@@ -398,8 +398,8 @@ export default class ProductRenderer {
       closet_face.position.z = this.closet.getClosetFaces()[i][5];
     }
 
-    for (var i = 0; i < this.closet_slots_faces_ids.length; i++) {
-      var closet_face = this.group.getObjectById(this.closet_slots_faces_ids[i]);
+    for (let i = 0; i < this.closet_slots_faces_ids.length; i++) {
+      let closet_face = this.group.getObjectById(this.closet_slots_faces_ids[i]);
       closet_face.scale.x = this.getNewScaleValue(this.closet.getInitialClosetSlotFaces()[i][0], this.closet.getClosetSlotFaces()[i][0], closet_face.scale.x);
       closet_face.scale.y = this.getNewScaleValue(this.closet.getInitialClosetSlotFaces()[i][1], this.closet.getClosetSlotFaces()[i][1], closet_face.scale.y);
       closet_face.scale.z = this.getNewScaleValue(this.closet.getInitialClosetSlotFaces()[i][2], this.closet.getClosetSlotFaces()[i][2], closet_face.scale.z);
@@ -707,7 +707,7 @@ export default class ProductRenderer {
       [depthDrawer, heightDrawer + (spaceDrawerModule / 4), depthCloset, x + (width / 2), y + (heightDrawer / 2), z], slot); //Right
 
     var borders_module = module.module_faces;
-    for (var i = 0; i < borders_module.length; i++) {
+    for (let i = 0; i < borders_module.length; i++) {
       this.closet_modules_ids.push(this.generateParellepiped(borders_module[i][0],
         borders_module[i][1], borders_module[i][2], borders_module[i][3],
         borders_module[i][4], borders_module[i][5], this.material, this.group, component));
@@ -720,7 +720,7 @@ export default class ProductRenderer {
       [width - spaceDrawerModule, heightDrawer, depthDrawer, x, y + (heightDrawer / 2), z - (depthCloset / 2) + (depthDrawer / 2)], slot); //Back
 
     var borders_drawer = drawer.drawer_faces;
-    for (var i = 0; i < borders_drawer.length; i++) {
+    for (let i = 0; i < borders_drawer.length; i++) {
       this.closet_drawers_ids.push(this.generateParellepiped(borders_drawer[i][0],
         borders_drawer[i][1], borders_drawer[i][2], borders_drawer[i][3],
         borders_drawer[i][4], borders_drawer[i][5], this.material, this.group, component));
@@ -908,13 +908,13 @@ export default class ProductRenderer {
   changeClosetSlots(slots, slotWidths) {
     var newSlots = this.closet.computeNewClosetSlots(slots);
     if (newSlots > 0) {
-      for (var i = 0; i < newSlots; i++) {
+      for (let i = 0; i < newSlots; i++) {
         this.addSlot();
       }
     } else {
       newSlots = -newSlots;
       if (newSlots > 0) {
-        for (var i = 0; i < newSlots; i++) {
+        for (let i = 0; i < newSlots; i++) {
           this.removeSlot();
         }
       }
@@ -1181,7 +1181,6 @@ export default class ProductRenderer {
         flagClose = false;
         while (!flagOpen && !flagClose && j < this.closet_hinged_doors_ids.length) {
           this.hingedDoor = this.group.getObjectById(this.closet_hinged_doors_ids[j]);
-          var closet_face = this.group.getObjectById(this.closet_faces_ids[0]);
           if (this.hingedDoor == intersected_object) {
             this.controls.enabled = false;
             if (this.hingedDoor.rotation.y < 0) {
@@ -1294,7 +1293,7 @@ export default class ProductRenderer {
       var addedDrawer = this.group.getObjectById(this.closet_drawers_ids[this.closet_drawers_ids.length - 4]);
       if (addedDrawer.position.x < 0) {
         for(let i = 0; i < this.closet_sliding_doors_ids.length; i++){
-          var door = this.group.getObjectById(this.closet_sliding_doors_ids[i]);
+          let door = this.group.getObjectById(this.closet_sliding_doors_ids[i]);
           if(door.position.x < 0){
             this.slidingDoor = door;
             this.slideDoorToRight(aux);
@@ -1302,7 +1301,7 @@ export default class ProductRenderer {
         }
       } else {
         for(let i = 0; i < this.closet_sliding_doors_ids.length; i++){
-          var door = this.group.getObjectById(this.closet_sliding_doors_ids[i]);
+          let door = this.group.getObjectById(this.closet_sliding_doors_ids[i]);
           if(door.position.x > 0){
             this.slidingDoor = door;
             this.slideDoorToLeft(aux);
@@ -1434,11 +1433,11 @@ export default class ProductRenderer {
       [thickness, height, 5, rightFace.position.x, rightFace.position.y, z + 2], 0);
 
     //Adds front frame
-    var borders = front_frame.module_faces;
-    for (var i = 0; i < borders.length; i++) {
-      this.generateParellepiped(borders[i][0],
-        borders[i][1], borders[i][2], borders[i][3],
-        borders[i][4], borders[i][5], this.material, this.group, component);
+    var frontFrameBorders = front_frame.module_faces;
+    for (var i = 0; i < frontFrameBorders.length; i++) {
+      this.generateParellepiped(frontFrameBorders[i][0],
+        frontFrameBorders[i][1], frontFrameBorders[i][2], frontFrameBorders[i][3],
+        frontFrameBorders[i][4], frontFrameBorders[i][5], this.material, this.group, component);
     }
 
     //Adds front door
@@ -1468,11 +1467,11 @@ export default class ProductRenderer {
     this.closet_sliding_doors_ids.push(back_door_mesh_id);
 
     //Adds back frame
-    var borders = back_frame.module_faces;
-    for (var i = 0; i < borders.length; i++) {
-      this.generateParellepiped(borders[i][0],
-        borders[i][1], borders[i][2], borders[i][3],
-        borders[i][4], borders[i][5], this.material, this.group, component);
+    var backFrameBorders = back_frame.module_faces;
+    for (let i = 0; i < backFrameBorders.length; i++) {
+      this.generateParellepiped(backFrameBorders[i][0],
+        backFrameBorders[i][1], backFrameBorders[i][2], backFrameBorders[i][3],
+        backFrameBorders[i][4], backFrameBorders[i][5], this.material, this.group, component);
     }
   }
 
@@ -1551,7 +1550,7 @@ export default class ProductRenderer {
   }
 
   closeHingedDoorAnimation(context) {
-    if (context.hingedDoor.rotation.y < 0) {
+    if (context.hingedDoor.rotation.y <= 0) {
       var rotationX = context.hingedDoor.geometry.parameters.width / 2;
       context.hingedDoor.translateX(-rotationX);
       context.hingedDoor.rotation.y += Math.PI / 100;
@@ -1608,8 +1607,9 @@ export default class ProductRenderer {
       this.render();
       this.controls.update();
     } else {
+      let oldLength = this.openDrawers.length;
       this.openDrawers.pop();
-      if (this.openDrawers.length == 0) {
+      if (this.openDrawers.length < oldLength) {
         while (this.waitingDoors.length != 0) {
           this.waitingDoors.pop()();
         }
