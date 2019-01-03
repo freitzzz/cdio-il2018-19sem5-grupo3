@@ -117,7 +117,7 @@ export default {
   },
   methods: {
     getProductMaterials() {
-      Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/materials`)
+      Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/materials?pricedmaterialsonly=true`)
         .then(response => {
           this.materials = [];
           this.materials.push(...response.data);
@@ -132,7 +132,7 @@ export default {
         });
     },
     getMaterialInformation(materialId) {
-      Axios.get(`${MYCM_API_URL}/materials/${materialId}`)
+      Axios.get(`${MYCM_API_URL}/materials/${materialId}?pricedfinishesonly=true`)
         .then(response => {
           this.finishes = [];
           this.finishes.push(...response.data.finishes);

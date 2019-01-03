@@ -73,7 +73,7 @@ namespace core.services
             {
                 currentMaterialPriceModelView.currentPrice.value =
                     await new CurrencyPerAreaConversionService(clientFactory)
-                        .convertDefaultCurrencyPerAreaToCurrencyPerArea(currentMaterialPriceModelView.currentPrice.value, modelView.currentPrice.currency, modelView.currentPrice.area);
+                        .convertDefaultCurrencyPerAreaToCurrencyPerArea(currentPrice.price.value, modelView.currentPrice.currency, modelView.currentPrice.area);
                 currentMaterialPriceModelView.currentPrice.currency = modelView.currentPrice.currency;
                 currentMaterialPriceModelView.currentPrice.area = modelView.currentPrice.area;
             }
@@ -125,7 +125,7 @@ namespace core.services
                     {
                         currentMaterialFinishPriceModelView.currentPrice.value =
                             await new CurrencyPerAreaConversionService(clientFactory)
-                                .convertDefaultCurrencyPerAreaToCurrencyPerArea(currentMaterialFinishPriceModelView.currentPrice.value, modelView.currentPrice.currency, modelView.currentPrice.area);
+                                .convertDefaultCurrencyPerAreaToCurrencyPerArea(currentMaterialFinishPrice.price.value, modelView.currentPrice.currency, modelView.currentPrice.area);
                         currentMaterialFinishPriceModelView.currentPrice.currency = modelView.currentPrice.currency;
                         currentMaterialFinishPriceModelView.currentPrice.area = modelView.currentPrice.area;
                     }
