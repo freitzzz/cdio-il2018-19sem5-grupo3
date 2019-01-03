@@ -10,13 +10,12 @@
       <Signup @closeSignUp="closeSignUp()"/>
       </b-modal>
     </div>
-    <component :is="currentComp" @switch-to-customizer="switchPage()" @switch-to-sign-in-form="logIn()"
+    <component :is="currentComp" @switch-to-sign-in-form="logIn()"
     @switch-to-sign-up-form="signUp()"></component>
   </div>
 </template>
 
 <script>
-import Customizer from "./Customizer.vue";
 import Intro from "./Intro.vue";
 import Login from "./authentication/Login.vue";
 import Signup from "./authentication/Signup.vue";
@@ -31,9 +30,6 @@ export default {
     };
   },
   methods: {
-    switchPage() {
-      this.currentComp = Customizer;
-    },
     logIn() {
       this.showLogInModal = true;
     },
@@ -49,7 +45,6 @@ export default {
     }
   },
   components: {
-    Customizer,
     Intro,
     Login,
     Signup

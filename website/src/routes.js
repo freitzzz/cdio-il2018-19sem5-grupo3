@@ -10,11 +10,8 @@ import ListCommercialCatalogues from "./components/management/commercialcatalogu
 
 export const routes = [
     { path: "/", redirect: "/home" },
-    {
-        path: "/home", component: Home, children: [
-            { path: "customization", component: Customizer }
-        ]
-    },
+    { path: "/home", component: Home },
+    { path: "/customization", component: Customizer },
     {
         path: "/management", component: ManagementTopBar, children: [
             { path: "categories", component: ListCategories },

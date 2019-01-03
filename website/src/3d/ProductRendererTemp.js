@@ -443,7 +443,8 @@ export default class ProductRenderer {
       model: component.model,
       slot: component.slot    
     });
-    store.dispatch(SET_COMPONENT_TO_REMOVE, {});
+    this.selected_component = null;
+    this.controls.enabled = true;
   }
 
   /**
@@ -1617,6 +1618,21 @@ export default class ProductRenderer {
     }
   }
 
+  /**
+   * Resizes the renderer to the provided canvas dimensions.
+   * @param {number} canvasWidth - Canvas's width.
+   * @param {number} canvasHeight - Canvas's height.
+   */
+  resizeRenderer(canvasWidth, canvasHeight) {
+    
+    //*Please note that while the renderer instance has access to the canvas, 
+    //*the dimensions don't seem to be updated correctly when accessing the canvas's properties, hence the parameters
+
+    this.camera.aspect = canvasWidth / canvasHeight;
+    this.camera.updateProjectionMatrix();
+
+    this.renderer.setSize(canvasWidth, canvasHeight);
+  }
 
   /**
    * Represents the action that occurs when the mouse's left button is released, which is
@@ -1737,15 +1753,18 @@ export default class ProductRenderer {
   }
 
   /**
-   * Moves a component across the y axis without overlapping the slots planes or the closets planes
+   * Moves a component across the yy axis without overlapping the slots planes or the closets planes
    */
   moveComponent() {
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
-      var computedPosition = this.intersection.y - this.offset; //The component's new computed position on the yy axis
+      var computedYPosition = this.intersection.y - this.offset; //The component's new computed position on the yy axis
+      var computedXPosition = this.intersection.x - this.offset; //The component's new computed position on the xx axis
 
-      if (computedPosition < this.group.getObjectById(this.closet_faces_ids[1]).position.y &&
-        computedPosition >= this.group.getObjectById(this.closet_faces_ids[0]).position.y) {
-        this.selected_component.position.y = computedPosition; //Sets the new position as long as the component stays within the closet boundaries
+      if (computedYPosition < this.group.getObjectById(this.closet_faces_ids[1]).position.y &&
+        computedYPosition >= this.group.getObjectById(this.closet_faces_ids[0]).position.y &&
+        computedXPosition < this.group.getObjectById(this.closet_faces_ids[3]).position.x &&
+        computedXPosition >= this.group.getObjectById(this.closet_faces_ids[2]).position.x) {
+        this.selected_component.position.y = computedYPosition; //Sets the new position as long as the component stays within the closet boundaries
       } else {
         store.dispatch(SET_COMPONENT_TO_REMOVE, {
           model: this.selected_component.userData.model,

@@ -8,12 +8,11 @@
         <b-icon icon="refresh"/>
       </button>
     </div>
-    <!--The v-if is used for disabling the modal after clicking on the create button-->
-    <div v-if="modalEnabled">
-      <b-modal :active="modalEnabled" has-modal-card scroll="keep" :onCancel="confirmClose">
-        <create-new-commercial-catalogue @createCatalogue="createCatalogue"/>
-      </b-modal>
-    </div>
+
+    <b-modal :active="modalEnabled" has-modal-card scroll="keep" :onCancel="confirmClose">
+      <create-new-commercial-catalogue @createCatalogue="createCatalogue"/>
+    </b-modal>
+    
     <commercial-catalogues-table :data="data"/>
   </div>
 </template>

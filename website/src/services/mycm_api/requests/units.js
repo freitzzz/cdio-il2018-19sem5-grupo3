@@ -19,7 +19,7 @@ export default {
      * Converts a given value in a unit to another unit.
      * @param {"mm" | "cm" | "dm" | "m"} fromUnit
      * @param {"mm" | "cm" | "dm" | "m"} toUnit 
-     * @param {Number} value 
+     * @param {number} value 
      * @return {AxiosPromise<any>} Axios Promise representing the converted value.
      */
     convertValue(fromUnit, toUnit, value) {

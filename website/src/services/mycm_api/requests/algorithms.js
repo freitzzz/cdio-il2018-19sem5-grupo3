@@ -17,7 +17,7 @@ export default {
 
     /**
      * Retrieves the Algorithm with a matching identifier.
-     * @param {*} algorithmId - Algorithm's identifier.
+     * @param {number} algorithmId - Algorithm's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved Algorithm.
      */
     getAlgorithm(algorithmId) {
@@ -26,7 +26,7 @@ export default {
 
     /**
      * Retrieves the Algorithm's inputs.
-     * @param {*} algorithmId - Algorithm's identifier.
+     * @param {number} algorithmId - Algorithm's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the Algorithm's inputs.
      */
     getAlgorithmInputs(algorithmId) {

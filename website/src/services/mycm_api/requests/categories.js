@@ -35,8 +35,8 @@ export default {
 
     /**
      * Retrieves the Category with a matching identifier.
-     * @param {Number} categoryId- Category's identifier.
-     * @param {Boolean} withParent - Boolean representing whether or not Parent Category information should also be retrieved.
+     * @param {number} categoryId- Category's identifier.
+     * @param {boolean=} withParent - Boolean representing whether or not Parent Category information should also be retrieved.
      * @returns {AxiosPromise<any>} Axios Promise representing the Category with a matching identifier. 
      */
     getCategoryById(categoryId, withParent) {
@@ -64,7 +64,7 @@ export default {
 
     /**
      * Updates a Category's data.
-     * @param {Number} categoryId - Category's identifier.
+     * @param {number} categoryId - Category's identifier.
      * @param {*} category - Category's new data.
      * @returns {AxiosPromise<any>} Axios Promise representing the updated Category.
      */
@@ -74,7 +74,7 @@ export default {
 
     /**
      * Deletes a Category.
-     * @param {Number} categoryId - Category's identifier.
+     * @param {number} categoryId - Category's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the deleted Category.
      */
     deleteCategory(categoryId) {
