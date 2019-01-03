@@ -36,27 +36,27 @@ export default class ProductRenderer {
 
   /**
    * Instance variable representing the camera through which the scene is rendered.
-   * @type{THREE.Camera}
+   * @type {THREE.Camera}
    */
   camera;
 
   /**
-   * @type{THREE.OrbitControls}
+   * @type {THREE.OrbitControls}
    */
   controls;
 
   /**
-   * @type{THREE.Scene}
+   * @type {THREE.Scene}
    */
   scene;
 
   /**
-   * @type{THREE.WebGLRenderer}
+   * @type {THREE.WebGLRenderer}
    */
   renderer;
 
   /**
-   * @type{THREE.Group}
+   * @type {THREE.Group}
    */
   group;
 
@@ -66,12 +66,12 @@ export default class ProductRenderer {
   textureLoader;
 
   /**
-   * @type{THREE.MeshPhongMaterial}
+   * @type {THREE.MeshPhongMaterial}
    */
   material;
 
   /**
-   * @type{Closet}
+   * @type {Closet}
    */
   closet;
 
@@ -201,7 +201,7 @@ export default class ProductRenderer {
 
   /**
    * Instance variable with a Raycaster used for picking (hovering, clicking and identifying) objects
-   * @type{THREE.Raycaster}
+   * @type {THREE.Raycaster}
    */
   raycaster;
 
@@ -277,23 +277,20 @@ export default class ProductRenderer {
       canvas: this.canvasWebGL,
       antialias: true
     });
-    this.initCamera();
-    this.initControls();
+
+    //enable shadows
+    this.renderer.shadowMap.enabled = true;
+    //Available types: BasicShadowMap, PCFShadowMap, PCFSoftShadowMap
+    this.renderer.shadowMap.type = THREE.BasicShadowMap;
+
     this.scene = new THREE.Scene();
     this.group = new THREE.Group();
+
     this.initCloset();
+    this.initCamera();
+    this.initControls();
     this.initLighting();
-
-    var geometry = new THREE.SphereBufferGeometry(430, 60, 40);
-    geometry.scale(-1, 1, 1);
-
-    var material = new THREE.MeshBasicMaterial({
-      map: new THREE.TextureLoader().load("./../../src/assets/background.jpg")
-    });
-
-
-    var mesh = new THREE.Mesh(geometry, material);
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.initPanorama();
 
     //Creates the intersection plane
     this.plane = new THREE.Plane();
@@ -320,7 +317,6 @@ export default class ProductRenderer {
 
     this.scene.add(dispPlane);
     this.scene.add(this.camera);
-    this.scene.add(mesh);
 
     this.animate();
   }
@@ -373,15 +369,90 @@ export default class ProductRenderer {
   }
 
   /**
+  * Initializes the graphic representation camera
+  */
+  initCamera() {
+    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 10, 1000);
+    this.camera.position.y = 400;
+    this.camera.position.z = 400;
+    this.camera.rotation.x = .70;
+  }
+
+  /**
+  * Initializes the graphic representation controls
+  */
+  initControls() {
+    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+
+    this.controls.target = new THREE.Vector3(0, 0, 0);
+
+    this.controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
+    this.controls.dampingFactor = 0.25;
+
+    this.controls.screenSpacePanning = false;
+    this.controls.minDistance = 100;
+    this.controls.maxDistance = 500;
+
+    this.controls.maxPolarAngle = Math.PI / 2;
+  }
+
+  /**
+  * Initializes the panorama background.
+  */
+  initPanorama() {
+    var sphereGeometry = new THREE.SphereBufferGeometry(430, 60, 40);
+    sphereGeometry.scale(-1, 1, 1);
+
+    var roomMaterial = new THREE.MeshBasicMaterial({
+      map: new THREE.TextureLoader().load("./../../src/assets/background.jpg")
+    });
+
+    var room = new THREE.Mesh(sphereGeometry, roomMaterial);
+    this.scene.add(room);
+  }
+
+  /**
    * Initializes the scene's lighting.
    */
   initLighting() {
-    var spotlight = new THREE.SpotLight(0x404040);
-    this.camera.add(spotlight);
+    //soft white light coming from the sky and soft brown reflecting from the ground
+    var hemisphereLight = new THREE.HemisphereLight(0x404040, 0xffe5a3, 0.5);
+    this.scene.add(hemisphereLight);
 
-    spotlight.target = this.group;
-    var lightAmbient = new THREE.AmbientLight(0x404040);
-    this.scene.add(lightAmbient);
+    //light bulb positioned on the right of the camera's initial position
+    var lightBulbRight = new THREE.PointLight(0x404040, 0.2);
+    lightBulbRight.position.set(280, 175, 280);
+    lightBulbRight.castShadow = true;
+    lightBulbRight.shadow.mapSize.set(512, 512);
+    this.scene.add(lightBulbRight);
+
+/*     var lightBulbRightHelper = new THREE.PointLightHelper(lightBulbRight, 10);
+    lightBulbRightHelper.visible = true;
+    this.scene.add(lightBulbRightHelper); */
+
+    //light bulb positioned on the left of the camera's initial position
+    var lightBulbLeft = new THREE.PointLight(0x404040, 0.2);
+    lightBulbLeft.position.set(-280, 175, 280);
+    lightBulbLeft.castShadow = true;
+    lightBulbLeft.shadow.mapSize.set(512, 512);
+    this.scene.add(lightBulbLeft);
+
+    var lightBulbLeftHelper = new THREE.PointLightHelper(lightBulbLeft, 10);
+    lightBulbLeftHelper.visible = true;
+    this.scene.add(lightBulbLeftHelper);
+
+    //sunlight coming out of the window in the middle pointing at the closet
+    var sunLightCenter = new THREE.DirectionalLight(0xffffff, 1);
+    sunLightCenter.position.set(-450, 100, -600);
+    sunLightCenter.target = this.group;
+    sunLightCenter.castShadow = true;
+    sunLightCenter.shadow.mapSize.set(512, 512);
+    sunLightCenter.shadow.camera.near = 0.5;
+    sunLightCenter.shadow.camera.far = 500;
+    this.scene.add(sunLightCenter);
+
+/*     var sunLightCenterHelper = new THREE.DirectionalLightHelper(sunLightCenter, 5);
+    this.scene.add(sunLightCenterHelper); */
   }
 
   /**
@@ -423,7 +494,7 @@ export default class ProductRenderer {
     if (designation == "sliding-door") this.checkAddSlidingDoorTriggers(component);
     store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, {
       model: component.model,
-      slot: component.slot    
+      slot: component.slot
     });
   }
 
@@ -441,7 +512,7 @@ export default class ProductRenderer {
     if (designation == "sliding-door") this.removeSlidingDoor();
     store.dispatch(REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, {
       model: component.model,
-      slot: component.slot    
+      slot: component.slot
     });
     this.selected_component = null;
     this.controls.enabled = true;
@@ -584,14 +655,19 @@ export default class ProductRenderer {
     poleMesh.position.y = y;
     poleMesh.position.z = z;
     poleMesh.rotation.z = Math.PI / 2;
-    poleMesh.userData = {model: component.model, slot: component.slot}
+    poleMesh.userData = { model: component.model, slot: component.slot }
+
+    //Enable shadows for pole's mesh
+    poleMesh.castShadow = true;
+    poleMesh.receiveShadow = true;
+
     this.closet.addPole(pole);
     this.group.add(poleMesh);
     this.closet_poles_ids.push(poleMesh.id);
   }
 
 
-  renderDroppedComponent(event, canvas){
+  renderDroppedComponent(event, canvas) {
     var splitted = event.dataTransfer.getData("text").split("/");
     var componentImageFileName = splitted[splitted.length - 1]
 
@@ -599,29 +675,29 @@ export default class ProductRenderer {
     var y = event.clientY;
     var rect = canvas.getBoundingClientRect();
 
-    this.mouse.x = (x - rect.left)/(canvas.clientWidth / 2.0) - 1.0;
-    this.mouse.y = -((y - rect.bottom)/(canvas.clientHeight / 2.0) + 1.0);
+    this.mouse.x = (x - rect.left) / (canvas.clientWidth / 2.0) - 1.0;
+    this.mouse.y = -((y - rect.bottom) / (canvas.clientHeight / 2.0) + 1.0);
 
     this.raycaster.setFromCamera(this.mouse, this.camera);
     var intersects = this.raycaster.intersectObjects(this.scene.children[0].children);
 
-    if(intersects.length > 0){
+    if (intersects.length > 0) {
       //Snapping
-        if(this.closet_slots_faces_ids.length == 0){
-          this.addComponent({model:componentImageFileName, slot:0});
-        } else {
+      if (this.closet_slots_faces_ids.length == 0) {
+        this.addComponent({ model: componentImageFileName, slot: 0 });
+      } else {
         var facesXPositionIntervals = [];
         var raycasterPointX = intersects[0].point.x;
 
         facesXPositionIntervals.push(this.group.getObjectById(this.closet_faces_ids[2]).position.x);
-        for(let i = 0; i < this.closet_slots_faces_ids.length; i++){
+        for (let i = 0; i < this.closet_slots_faces_ids.length; i++) {
           facesXPositionIntervals.push(this.group.getObjectById(this.closet_slots_faces_ids[i]).position.x);
         }
         facesXPositionIntervals.push(this.group.getObjectById(this.closet_faces_ids[3]).position.x);
-        
-        for(let i = 1; i < facesXPositionIntervals.length; i++){
-          if(raycasterPointX >= facesXPositionIntervals[i - 1] && raycasterPointX < facesXPositionIntervals[i]){
-            this.addComponent({model:componentImageFileName,slot:i});
+
+        for (let i = 1; i < facesXPositionIntervals.length; i++) {
+          if (raycasterPointX >= facesXPositionIntervals[i - 1] && raycasterPointX < facesXPositionIntervals[i]) {
+            this.addComponent({ model: componentImageFileName, slot: i });
           }
         }
       }
@@ -821,22 +897,22 @@ export default class ProductRenderer {
   /*End new methods*/
 
 
-    
+
   /* TODO: Transfer this methods to new Product Renderer */
   /** 
    * Populate vector website dimensions
   */
-  populateWebsiteDimensions(websiteDimensions){
+  populateWebsiteDimensions(websiteDimensions) {
     /* alert(websiteDimensions.width);
     alert(websiteDimensions.height);
     alert(websiteDimensions.depth); */
-    
-    if(websiteDimensions.width != undefined || websiteDimensions.height != undefined || websiteDimensions.depth != undefined ){
-      
-        this.websiteDimensions=[websiteDimensions.width,websiteDimensions.height,websiteDimensions.depth];  
-        this.resizeFactor();
 
-      }
+    if (websiteDimensions.width != undefined || websiteDimensions.height != undefined || websiteDimensions.depth != undefined) {
+
+      this.websiteDimensions = [websiteDimensions.width, websiteDimensions.height, websiteDimensions.depth];
+      this.resizeFactor();
+
+    }
   }
   /**  END   */
 
@@ -861,16 +937,16 @@ export default class ProductRenderer {
     var i;
     for (i = 0; i < this.NUMBER_DIMENSIONS; i++) {
       this.resizeVec[i] = this.initialDimensions[i] / this.websiteDimensions[i];
-     
+
     }/* 
     alert(this.resizeVec[this.WIDTH]);
     alert(this.resizeVec[this.HEIGHT]);
     alert(this.resizeVec[this.DEPTH]); */
-    
+
     store.dispatch(SET_RESIZE_VECTOR_GLOBAL, {
       width: this.resizeVec[this.WIDTH],
-      height:this.resizeVec[this.HEIGHT],
-      depth: this.resizeVec[this.DEPTH],    
+      height: this.resizeVec[this.HEIGHT],
+      depth: this.resizeVec[this.DEPTH],
     });
   }
   /**
@@ -898,7 +974,7 @@ export default class ProductRenderer {
     var green = values[1];
     var blue = values[2];
     var alpha = values[3];
-    if(alpha == 0) this.material.color.setHex(0xffffff);
+    if (alpha == 0) this.material.color.setHex(0xffffff);
     else this.material.color.setRGB(red, green, blue);
   }
 
@@ -955,7 +1031,12 @@ export default class ProductRenderer {
     parellepiped.position.x = x;
     parellepiped.position.y = y;
     parellepiped.position.z = z;
-    if(component != "") parellepiped.userData = {model: component.model, slot: component.slot}
+
+    //enable shadows for parallelepiped mesh
+    parellepiped.castShadow = true;
+    parellepiped.receiveShadow = true;
+
+    if (component != "") parellepiped.userData = { model: component.model, slot: component.slot }
     this.group.add(parellepiped);
     return parellepiped.id;
   }
@@ -979,34 +1060,6 @@ export default class ProductRenderer {
    */
   render() {
     this.renderer.render(this.scene, this.camera);
-  }
-
-  /**
-   * Initializes the graphic representation controls
-   */
-  initControls() {
-    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-
-    this.controls.target = new THREE.Vector3(0, 0, 0);
-
-    this.controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
-    this.controls.dampingFactor = 0.25;
-
-    this.controls.screenSpacePanning = false;
-    this.controls.minDistance = 100;
-    this.controls.maxDistance = 500;
-
-    this.controls.maxPolarAngle = Math.PI / 2;
-  }
-
-  /**
-   * Initializes the graphic representation camera
-   */
-  initCamera() {
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 10, 1000);
-    this.camera.position.y = 400;
-    this.camera.position.z = 400;
-    this.camera.rotation.x = .70;
   }
 
   /**
@@ -1132,7 +1185,7 @@ export default class ProductRenderer {
           j++;
         }
 
-        let aux = function(context, triggerDoorAnimationsFunction){ return function(){ triggerDoorAnimationsFunction(context); }}
+        let aux = function (context, triggerDoorAnimationsFunction) { return function () { triggerDoorAnimationsFunction(context); } }
 
         if (flagOpen) {
           requestAnimationFrame(function () {
@@ -1231,7 +1284,7 @@ export default class ProductRenderer {
     if (position < distanceFromDoorToLeftFace) {
       context.slidingDoor.translateX(-1);
       requestAnimationFrame(function () {
-        let aux = function(context, closeFunction){ return function(){ closeFunction(context); }}
+        let aux = function (context, closeFunction) { return function () { closeFunction(context); } }
         context.slideDoorToLeft(aux);
       });
       context.render();
@@ -1246,7 +1299,7 @@ export default class ProductRenderer {
     if (position < distanceFromDoorToRightFace) {
       context.slidingDoor.translateX(1);
       requestAnimationFrame(function () {
-        let aux = function(context, closeFunction){ return function(){ closeFunction(context); }}
+        let aux = function (context, closeFunction) { return function () { closeFunction(context); } }
         context.slideDoorToRight(aux);
       });
       context.render();
@@ -1271,7 +1324,7 @@ export default class ProductRenderer {
   closeHingedDoor() {
     var hingedDoorSlot = this.getHingedDoorSlot(this.hingedDoor);
     if (this.doesSlotHaveOpenDrawers(hingedDoorSlot)) {
-      let aux = function(context, closeFunction){ return function(){ closeFunction(context); }}
+      let aux = function (context, closeFunction) { return function () { closeFunction(context); } }
       this.waitingDoors.push(aux(this, this.closeHingedDoorAnimation));
       this.closeSlotOpenDrawers(hingedDoorSlot);
     } else {
@@ -1282,7 +1335,7 @@ export default class ProductRenderer {
   checkAddDrawerTriggers(component) {
     var slot = component.slot;
     this.generateDrawer(component);
-    let aux = function(context, triggerDoorAnimationsFunction){ return function(){ triggerDoorAnimationsFunction(context); }}
+    let aux = function (context, triggerDoorAnimationsFunction) { return function () { triggerDoorAnimationsFunction(context); } }
     if (this.doesSlotHaveHingedDoor(slot)) {
       if (!this.isHingedDoorClosed) {
         this.hingedDoor = this.group.getObjectById(this.closet_hinged_doors_ids[slot - 1]);
@@ -1298,7 +1351,7 @@ export default class ProductRenderer {
           if(door.position.x < 0){
             this.slidingDoor = door;
             this.slideDoorToRight(aux);
-          }          
+          }
         }
       } else {
         for(let i = 0; i < this.closet_sliding_doors_ids.length; i++){
@@ -1306,7 +1359,7 @@ export default class ProductRenderer {
           if(door.position.x > 0){
             this.slidingDoor = door;
             this.slideDoorToLeft(aux);
-          }          
+          }
         }
       }
     }
@@ -1314,9 +1367,9 @@ export default class ProductRenderer {
 
   checkAddSlidingDoorTriggers(component) {
     if (this.doesClosetHaveHingedDoors()) {
-      store.dispatch(SET_DOORS_FLAG, {flag : "CLOSET_HAS_HINGED_DOORS"});
-    } else if(this.doesClosetHaveSlidingDoors()){
-      store.dispatch(SET_DOORS_FLAG, {flag : "CLOSET_HAS_SLIDING_DOORS"});
+      store.dispatch(SET_DOORS_FLAG, { flag: "CLOSET_HAS_HINGED_DOORS" });
+    } else if (this.doesClosetHaveSlidingDoors()) {
+      store.dispatch(SET_DOORS_FLAG, { flag: "CLOSET_HAS_SLIDING_DOORS" });
     } else {
       if (this.doesClosetHaveOpenDrawers()) {
         if (this.openDrawers.length > 0) {
@@ -1337,9 +1390,9 @@ export default class ProductRenderer {
   checkAddHingedDoorTriggers(component) {
     var slot = component.slot;
     if (this.doesSlotHaveHingedDoor(slot)) {
-      store.dispatch(SET_DOORS_FLAG, {flag : "SLOT_HAS_DOOR"});
+      store.dispatch(SET_DOORS_FLAG, { flag: "SLOT_HAS_DOOR" });
     } else if (this.doesClosetHaveSlidingDoors()) {
-      store.dispatch(SET_DOORS_FLAG, {flag : "CLOSET_HAS_SLIDING_DOORS"});
+      store.dispatch(SET_DOORS_FLAG, { flag: "CLOSET_HAS_SLIDING_DOORS" });
     } else {
       if (this.doesSlotHaveOpenDrawers(slot)) {
         if (this.openDrawers.length > 0) {
@@ -1537,7 +1590,7 @@ export default class ProductRenderer {
     var flag = false;
     var numberOfDrawers = this.closet_drawers_ids.length / 5;
     for (let i = 0; i < numberOfDrawers; i++) {
-      if(this.group.getObjectById(this.closet_drawers_ids[5 * i + 1]).position.z >= -50) flag = true;
+      if (this.group.getObjectById(this.closet_drawers_ids[5 * i + 1]).position.z >= -50) flag = true;
     }
     return flag;
   }
@@ -1624,7 +1677,7 @@ export default class ProductRenderer {
    * @param {number} canvasHeight - Canvas's height.
    */
   resizeRenderer(canvasWidth, canvasHeight) {
-    
+
     //*Please note that while the renderer instance has access to the canvas, 
     //*the dimensions don't seem to be updated correctly when accessing the canvas's properties, hence the parameters
 
