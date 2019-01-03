@@ -19,6 +19,12 @@ namespace core.dto{
         /// </summary>
         [DataMember(Name="reference")]
         public string reference{get;set;}
+
+        /// <summary>
+        /// Boolean to know if only priced materials are to be fetched
+        /// </summary>
+        [DataMember(Name="pricedMaterialsOnly")]
+        public bool pricedMaterialsOnly{get;set;}
         
         /// <summary>
         /// ProductDTOOptions with the set of options which the product information can have 
