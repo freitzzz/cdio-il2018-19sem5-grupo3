@@ -116,8 +116,17 @@ export default {
       }
     },
     removeComponent: function(newValue) {
-      if (confirm("Are you sure you want to remove the selected component?"))
-        this.productRenderer.removeComponent(newValue);
+      this.$dialog.confirm({
+        title: 'Remove component',
+        hasIcon: true,
+        type: 'is-info',
+        icon: 'fas fa-exclamation-circle size:5px',
+        iconPack: 'fa',
+        message: 'Do you want to remove the selected product from the closet?',
+        onConfirm: () => {
+          this.productRenderer.removeComponent(newValue);  
+        }
+      })
     },
     applyMaterial: function(newValue) {
       this.productRenderer.applyTexture("./src/assets/materials/" + newValue);
