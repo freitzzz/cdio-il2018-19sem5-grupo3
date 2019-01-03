@@ -1,4 +1,4 @@
-package cdiomyc.core.domain.auth.credentials;
+package cdiomyc.core.domain;
 
 import cdiomyc.support.domain.ddd.ValueObject;
 import java.io.Serializable;
