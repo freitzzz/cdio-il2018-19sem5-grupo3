@@ -48,7 +48,7 @@
               </div>
           </a>
           <ul class="image-list" v-for="material in materials" :key="material.id">
-            <li class="image-btn" @click="applyMaterial(material), removeFinish(), removeColor()">
+            <li class="image-btn" @click="applyMaterial(material), removeFinish(), removeColor(), getMaterialInformation(material.id)">
               <img :src="findMaterialImage(material.image)" width="100%">
               <p>{{material.designation}}</p>
             </li>
@@ -160,7 +160,6 @@ export default {
         designation: material.designation,
         image: material.image
       });
-      this.getMaterialInformation(material.id);
     },
     applyFinish(finish){
       store.dispatch(SET_CUSTOMIZED_PRODUCT_FINISH, {
@@ -287,39 +286,43 @@ export default {
         icon: 'fas fa-exclamation-circle size:5px',
         iconPack: 'fa',
         message: 'Are you sure you want to return? All progress made in this step will be lost.',
-        onConfirm: () => {
+        onConfirm: () => {          
           this.discardChanges();
         }
       })
     },
     discardChanges(){
-    var defaultMaterial = this.materials[0];
-    this.applyMaterial(defaultMaterial);
-    
-    Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
-      {
-        customizedMaterial: {
-		      materialId: defaultMaterial.id,
-          finish: {
-            description: this.finishes[0].description,
-            shininess: this.finishes[0].shininess,
-          }
-        }
-      })
-      .then(response => {
-        this.removeFinish();
-        this.removeColor();
-        this.$emit("back");
-      })
-      .catch(error_message => {
-        this.$toast.open("Unable to remove the material.");
-      });
-    
-      this.deleteSlots().then(() => {
-        this.$emit("back");
-      }).catch((error_message)=>{
-        this.$toast.open({message: error_message}); 
-      });
+      var defaultMaterial = this.materials[0];
+      Axios.get(`${MYCM_API_URL}/materials/${defaultMaterial.id}`)
+        .then(response => {
+          var defaultFinish = response.data.finishes[0];
+          Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
+          {
+            customizedMaterial: {
+              materialId: defaultMaterial.id,
+              finish: {
+                description: defaultFinish.description,
+                shininess: defaultFinish.shininess,
+              }
+            }
+          })
+          .then(response => {
+            this.deleteSlots().then(() => {
+              this.$emit("back");
+              this.applyMaterial(defaultMaterial);
+              this.removeFinish();
+              this.removeColor();
+            }).catch((error_message) => {
+              this.$toast.open("An error has occurred while returning to the divisions step.");
+            });
+          })
+          .catch(error_message => {
+          this.$toast.open("An error has occurred while removing the material from the closet.");
+          });
+        })
+        .catch(error => {
+          this.$toast.open("An error has occurred while removing the material from the closet.");
+        });
     },
     deleteSlots(){
       let slotsToDelete = [];
