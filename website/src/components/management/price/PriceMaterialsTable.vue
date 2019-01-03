@@ -174,26 +174,7 @@ export default {
          * Fetches the details of a certain material in a promise way
          */
         getMaterialDetails(materialId){
-            return new Promise((accept,reject)=>{
-                Axios
-                    .get(MYCM_API_URL+'/materials/'+materialId)
-                    .then((material)=>{
-                        this.currentSelectedMaterial=material.data;
-                        for(let i =0; i<this.currentSelectedMaterial.colors.length; i++){
-                            this.currentSelectedMaterial.colors[i].colors = {
-                                red: this.currentSelectedMaterial.colors[i].red,
-                                green: this.currentSelectedMaterial.colors[i].green,
-                                blue: this.currentSelectedMaterial.colors[i].blue,
-                            }
-                        }
-                        this.currentSelectedMaterial2=Object.assign({},this.currentSelectedMaterial);
-                        accept(material);
-                    })
-                    .catch((error_message)=>{
-                        this.$toast.open({message:error_message});
-                        reject();
-                    });
-            });
+            
         },
         /**
          * Edits the details of a material
@@ -220,34 +201,11 @@ export default {
          * Updates a given material properties (PUT) in a promise way
          */
         updateMaterialProperties(materialDetails){
-            let materialPropertiesToUpdate={};
-            let atLeastOneUpdate=false;
-            if(materialDetails.reference!=null && materialDetails.reference!=this.currentSelectedMaterial.reference){
-                materialPropertiesToUpdate.reference=materialDetails.reference;
-                atLeastOneUpdate=true;
-            }
-            if(materialDetails.designation!=null && materialDetails.designation!=this.currentSelectedMaterial.designation){
-                materialPropertiesToUpdate.designation=materialDetails.designation;
-                atLeastOneUpdate=true;
-            }            
-            return new Promise((accept,reject)=>{
-                if(atLeastOneUpdate){
-                    Axios
-                    .put(MYCM_API_URL+'/materials/'+materialDetails.id,materialPropertiesToUpdate)
-                    .then((material)=>{
-                        accept(material);
-                    })
-                    .catch((error_message)=>{
-                        reject(error_message.data.message);
-                    });
-                }else{
-                    accept();
-                }
-            });
+            
         },
     },
       props:{
-        data:[]
+        data:Array
     } 
 }
 </script>
