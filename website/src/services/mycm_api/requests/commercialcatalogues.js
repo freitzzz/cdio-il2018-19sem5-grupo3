@@ -13,9 +13,9 @@ export default {
     },
 
     /**
-     * Retrieves a CommercialCatalogue with the persistence identifier.
-     * @param commercialCatalogueId - CommercialCatalogue's persistence identifier.
-     * @returns {AxiosPromise<any>} Axios Promise representing the CommercialCatalogue with the matching persistence identifier.
+     * Retrieves a CommercialCatalogue with the matching identifier.
+     * @param {number} commercialCatalogueId - CommercialCatalogue's identifier.
+     * @returns {AxiosPromise<any>} Axios Promise representing the CommercialCatalogue with the matching identifier.
      */
     getCommercialCatalogue(commercialCatalogueId) {
         return Axios.get(`${MYCM_API_URL}/commercialcatalogues/${commercialCatalogueId}`);
@@ -23,7 +23,7 @@ export default {
 
     /**
      * Retrieves all of the Collections from a CommercialCatalogue.
-     * @param commercialCatalogueId - CommercialCatalogue's persistence identifier.
+     * @param {number} commercialCatalogueId - CommercialCatalogue's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the CommercialCatalogue's Collections.
      */
     getCommercialCatalogueCollections(commercialCatalogueId) {
@@ -32,8 +32,8 @@ export default {
 
     /**
      * Retrieves a Collection from a CommercialCatalogue.
-     * @param commercialCatalogueId - CommercialCatalogue's persistence identifier.
-     * @param collectionId - Collection's persistence identifier.
+     * @param {number} commercialCatalogueId - CommercialCatalogue's identifier.
+     * @param {number} collectionId - Collection's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the CommercialCatalogue's Collection.
      */
     getCommercialCatalogueCollection(commercialCatalogueId, collectionId) {
@@ -42,8 +42,8 @@ export default {
 
     /**
      * Retrieves the list of CustomizedProducts from a CommercialCatalogue's Collection.
-     * @param commercialCatalogueId - CommercialCatalogue's persistence identifier.
-     * @param collectionId - Collection's persistence identifier.
+     * @param {number} commercialCatalogueId - CommercialCatalogue's identifier.
+     * @param {number} collectionId - Collection's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the CustomizedProducts in the CommercialCatalogue's Collection.
      */
     getCommercialCatalogueCollectionCustomizedProducts(commercialCatalogueId, collectionId) {
@@ -52,7 +52,7 @@ export default {
 
     /**
      * Adds a CommercialCatalogue.
-     * @param commercialCatalogue
+     * @param {*} commercialCatalogue
      * @returns {AxiosPromise<any>} Axios Promise representing the added CommercialCatalogue.
      */
     postCommercialCatalogue(commercialCatalogue) {
@@ -61,19 +61,19 @@ export default {
 
     /**
      * Adds a Collection to a CommercialCatalogue.
-     * @param commercialCatalogueId - CommercialCatalogue's persistence identifier.
-     * @param collection - Collection being added.
+     * @param {number} commercialCatalogueId - CommercialCatalogue's identifier.
+     * @param {*} collection - Collection being added.
      * @returns {AxiosPromise<any>} Axios Promise representing the added Collection.
      */
     postCommercialCatalogueCollection(commercialCatalogueId, collection) {
-        return Axios.post(`${MYCM_API_URL}/commercialcatalogues/${commercialCatalogueId}`, collection);
+        return Axios.post(`${MYCM_API_URL}/commercialcatalogues/${commercialCatalogueId}/collections`, collection);
     },
 
     /**
      * Adds a CustomizedProduct to a CommercialCatalogue's Collection.
-     * @param commercialCatalogueId - CommercialCatalogue's persistence identifier.
-     * @param collectionId - Collection's persistence identifier.
-     * @param customizedProduct 
+     * @param {number} commercialCatalogueId - CommercialCatalogue's identifier.
+     * @param {number} collectionId - Collection's identifier.
+     * @param {*} customizedProduct 
      * @returns {AxiosPromise<any>} Axios Promise representing the added CustomizedProduct.
      */
     postCommercialCatalogueCollectionCustomizedProduct(commercialCatalogueId, collectionId, customizedProduct) {
@@ -82,9 +82,9 @@ export default {
 
     /**
      * Updates a CommercialCatalogue.
-     * @param commercialCatalogueId - CommercialCatalogue's persistence identifier.
-     * @param commercialCatalogue - CommercialCatalogue's updated data.
-     * @returns {AxiosPromise<any>} Axios Promose representing the updated CommercialCatalogue.
+     * @param {number} commercialCatalogueId - CommercialCatalogue's identifier.
+     * @param {number} commercialCatalogue - CommercialCatalogue's updated data.
+     * @returns {AxiosPromise<any>} Axios Promise representing the updated CommercialCatalogue.
      */
     putCommercialCatalogue(commercialCatalogueId, commercialCatalogue) {
         return Axios.put(`${MYCM_API_URL}/commercialcatalogues/${commercialCatalogueId}`, commercialCatalogue);
@@ -92,7 +92,7 @@ export default {
 
     /**
      * Deletes a CommercialCatalogue.
-     * @param commercialCatalogueId - CommercialCatalogue's persistence identifier.
+     * @param {number} commercialCatalogueId - CommercialCatalogue's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the deleted CommercialCatalogue.
      */
     deleteCommercialCatalogue(commercialCatalogueId) {
@@ -101,8 +101,8 @@ export default {
 
     /**
      * Deletes a CommercialCatalogue's Collection.
-     * @param commercialCatalogueId - CommercialCatalogue's persistence identifier.
-     * @param collectionId - Collection's persistence identifier.
+     * @param {number} commercialCatalogueId - CommercialCatalogue's identifier.
+     * @param {number} collectionId - Collection's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the deleted Collection.
      */
     deleteCommercialCatalogueCollection(commercialCatalogueId, collectionId) {
@@ -111,10 +111,10 @@ export default {
 
     /**
      * Deletes a CustomizedProduct from a CommercialCatalogue's Collection.
-     * @param commercialCatalogueId - CommercialCatalogue's persistence identifier.
-     * @param collectionId - Collection's persistence identifier.
-     * @param customizedProductId - CustomizedProduct's persistence identifier.
-     * @returns {AxiosPromise<any>} Axios Promise represesenting the deleted CustomizedProduct.
+     * @param {number} commercialCatalogueId - CommercialCatalogue's identifier.
+     * @param {number} collectionId - Collection's identifier.
+     * @param {*} customizedProductId - CustomizedProduct's identifier.
+     * @returns {AxiosPromise<any>} Axios Promise representing the deleted CustomizedProduct.
      */
     deleteCommercialCatalogueCollectionCustomizedProduct(commercialCatalogueId, collectionId, customizedProductId) {
         return Axios.delete(`${MYCM_API_URL}/commercialcatalogues/${commercialCatalogueId}/collections/${collectionId}/customizedproducts/${customizedProductId}`);

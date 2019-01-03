@@ -10,8 +10,8 @@
       @mousedown="onMouseDown"
       @mousemove="onMouseMove"
       @keydown="onKeyDown"
-      :width="initialWidth"
-      :height="initialHeight"
+      :width="canvasWidth"
+      :height="canvasHeight"
     ></canvas>
   </div>
 </template>
@@ -31,17 +31,13 @@ export default {
   name: "Customizer",
   data() {
     return {
-      productRenderer: {},
-      currentStage: 0
+      productRenderer: ProductRenderer.prototype,
+      currentStage: 0,
+      canvasWidth: document.documentElement.clientWidth,
+      canvasHeight: document.documentElement.clientHeight * 0.7
     };
   },
   computed: {
-    initialWidth() {
-      return document.documentElement.clientWidth;
-    },
-    initialHeight() {
-      return document.documentElement.clientHeight * 0.7;
-    },
     slots() {
       var array = [];
       for (let i = 0; i < Store.state.customizedProduct.slots.length - 1; i++) {
@@ -178,7 +174,16 @@ export default {
       this.productRenderer.onKeyDown(event);
       event.preventDefault();
     },
-    drop: function(event) {
+    /**
+     * Window resize event handler, which updates the canvas's size when the window size changes.
+     */
+    onWindowResize(){
+      this.canvasWidth = document.documentElement.clientWidth;
+      this.canvasHeight = document.documentElement.clientHeight * 0.7;
+
+      this.productRenderer.resizeRenderer(this.canvasWidth, this.canvasHeight);
+    },
+    drop: function(event){
       event.preventDefault();
       this.productRenderer.renderDroppedComponent(
         event,
@@ -195,6 +200,14 @@ export default {
   mounted() {
     var canvas = this.$refs.threeCanvas;
     this.productRenderer = new ProductRenderer(canvas);
+
+    this.$nextTick(function(){
+      window.addEventListener("resize", this.onWindowResize);
+    });
+  },
+
+  beforeDestroy(){
+    window.removeEventListener("resize", this.onWindowResize);
   }
 };
 </script>

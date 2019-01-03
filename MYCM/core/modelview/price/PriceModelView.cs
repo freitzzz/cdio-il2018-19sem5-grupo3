@@ -26,7 +26,7 @@ namespace core.modelview.price
         /// The area in which the price is presented
         /// </summary>
         /// <value>Gets/Sets the Area</value>
-        [DataMember(Name = "area")]
+        [DataMember(Name = "area", EmitDefaultValue = false)]
         public string area { get; set; }
     }
 }

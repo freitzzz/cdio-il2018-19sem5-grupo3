@@ -8,4 +8,9 @@ import cdiomyc.core.mv.authentication.CredentialsAuthenticationMV;
  */
 public class CreateCredentialsUserMV extends CredentialsAuthenticationMV implements CreateUserMV {
 
+    /**
+     * String with the user to create phone number
+     */
+    public String phoneNumber;
+    
 }

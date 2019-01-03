@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -58,6 +59,16 @@ public class User implements AggregateRoot<Auth>,Serializable{
     private Set<Role> roles;
     
     /**
+     * Short with the user activation code
+     */
+    private short activationCode;
+    
+    /**
+     * Boolean with the user enableness
+     */
+    private boolean enabled;
+    
+    /**
      * Builds a new User
      * @param auth Auth with the user authentication
      */
@@ -67,6 +78,8 @@ public class User implements AggregateRoot<Auth>,Serializable{
         this.sessions=new ArrayList<>();
         this.roles=new HashSet<>();
         this.roles.add(Role.CLIENT);
+        this.enabled=false;
+        this.activationCode=generateActivationCode();
     }
     
     /**
@@ -116,6 +129,16 @@ public class User implements AggregateRoot<Auth>,Serializable{
     }
     
     /**
+     * Adds a set of roles to the user
+     * @param roles Iterable with the roles being added to the user
+     */
+    public void addRoles(Iterable<Role> roles){
+        if(roles==null||!roles.iterator().hasNext())
+            throw new IllegalArgumentException("Roles to add are invalid");
+        roles.forEach(role ->{addRole(role);});
+    }
+    
+    /**
      * Removes a role from the user
      * @param role Role with the role being removed
      */
@@ -135,6 +158,33 @@ public class User implements AggregateRoot<Auth>,Serializable{
         checkRole(role);
         return this.roles.contains(role);
     }
+    
+    //TODO: Requires Unit Tests updates
+    
+    /**
+     * Activates the current user
+     * @param activationCode String with the user activation code
+     */
+    public void activate(String activationCode){
+        if(this.enabled)
+            throw new IllegalStateException("User is already enabled");
+        if(this.activationCode!=Short.parseShort(activationCode))
+            throw new IllegalArgumentException("Activation code is invalid!");
+        this.enabled=true;
+    }
+    
+    public String newActivationCode(){
+        if(this.enabled)
+            throw new IllegalStateException("User is already enabled");
+        this.activationCode=generateActivationCode();
+        return activationCode();
+    }
+    
+    /**
+     * Returns the current user activation code
+     * @return String with the user activation code
+     */
+    public String activationCode(){return this.activationCode>999 ? Short.toString(this.activationCode) : String.format("0%s",this.activationCode);}
     
     /**
      * Returns the current user identifier
@@ -171,6 +221,12 @@ public class User implements AggregateRoot<Auth>,Serializable{
                         .get(this.sessions.size()-1)
                         .isActive();
     }
+    
+    /**
+     * Generates a random activation code
+     * @return Short with the generated activation code
+     */
+    private short generateActivationCode(){return (short)new Random().nextInt(9999);}
     
     /**
      * Checks if an user authentication is valid

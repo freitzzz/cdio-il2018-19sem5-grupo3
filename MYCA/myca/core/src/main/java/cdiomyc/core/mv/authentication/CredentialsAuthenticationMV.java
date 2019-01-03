@@ -18,4 +18,12 @@ public class CredentialsAuthenticationMV extends AuthenticationMV{
      * String with the credentials password
      */
     public String password;
+    
+    /**
+     * Builds a new CredentialsAuthenticationMV
+     */
+    public CredentialsAuthenticationMV() {
+        super.type=TYPE;
+    }
+    
 }
