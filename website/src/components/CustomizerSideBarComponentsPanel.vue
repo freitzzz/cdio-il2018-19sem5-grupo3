@@ -3,11 +3,11 @@
     <div v-if="getComponentsOk">
       <div class="icon-div-top">
         <i class="material-icons md-12 md-blue btn">help</i>
-        <span class="tooltiptext">In this step, you can add components to the structure.</span>
+        <span class="tooltiptext">In this step, you can drag components to the closet's structure.</span>
       </div>
       <div class="text-entry">Choose components to add:</div>
       <div class="padding-div">
-        <div class="scrollable-div" style="height: 200px; width: 100%;">
+        <div class="scrollable-div" style="height: 300px; width: 100%;">
           <ul class="image-list" v-for="component in components" :key="component.id">
             <li class="image-icon-div">
               <div class="image-btn">
@@ -21,37 +21,6 @@
             </li>
           </ul>
         </div>
-        <!-- <div class="scrollable-div" style="height: 100px; width: 100%;">
-          <div class="small-padding-div border" v-for="(divElement, index) in div_elements" :key="index"> -->
-            <!-- <div v-if="hasSlots()">
-              <div v-if="canAddComponentToSlot(divElement.model)">
-                <div class="small-padding-div" align="center">
-                  <b>{{divElement.designation}}</b>
-                </div>
-                <div class="small-padding-div" align="center">
-                  Slot:
-                  <input type="number" value="1" min="1" style="width:50px" v-model="div_inputs[index]">
-                  <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="addDivElement(divElement, index)">check_circle_outline</i>
-                  <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="removeDivElement(divElement, index)">highlight_off</i>
-                </div>
-              </div>
-              <div v-else class="small-padding-div" align="center">
-                  <b>{{divElement.designation}}</b>
-                  <div class="small-padding-div" align="center">
-                    <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="addDivElement(divElement)">check_circle_outline</i>
-                    <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="removeDivElement(divElement)">highlight_off</i>
-                  </div>
-              </div>
-            </div>
-            <div v-else class="small-padding-div" align="center">
-                <b>{{divElement.designation}}</b>
-                <div class="small-padding-div" align="center">
-                  <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="addDivElement(divElement)">check_circle_outline</i>
-                  <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="removeDivElement(divElement)">highlight_off</i>
-                </div>
-            </div> -->
-          <!-- </div>
-        </div> -->
       </div>
     </div>
     <div v-else>
@@ -121,52 +90,29 @@ export default {
     findComponentImage(filename) {
       return "./src/assets/products/" + filename.split(".")[0] + ".png";
     },
-    // createDivElements(component) {
-    //   this.div_elements.push(component);
-    // },
-    // canAddComponentToSlot(model){
-    //   return model.split(".")[0] != "sliding-door";
-    // },
     isComponentMandatory(componentId){
       for(let i = 0; i < this.components.length; i++){
         if(this.components[i].id == componentId) return this.components[i].mandatory == true;
       }
     },
-    // addDivElement(component, index) {
-    //   //If the product has slots and the chosen component can be added to a slot, checks if the 
-    //   if (this.hasSlots() && this.canAddComponentToSlot(component.model)){
-    //     if(this.div_inputs[index] == undefined) {
-    //       this.$toast.open("You must choose a slot to apply the component!");
-    //     } else if(this.div_inputs[index] < 1 || this.div_inputs[index] > store.state.customizedProduct.slots.length + 1){
-    //         this.$toast.open("You must choose a valid slot to apply the component!");
-    //     } else {
-    //         component.slot = this.div_inputs[index];
-    //         store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
-    //         //TODO! DISABLE apply button
-    //     }
-    //   } else if(!this.hasSlots() || !this.canAddComponentToSlot(component.model)){
-    //     component.slot = 0;
-    //     store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
-    //       //TODO! DISABLE apply button
-    //   }
-    // },
-    // removeDivElement(component, index) {
-    //   component.slot = this.div_inputs[index];
-
-    //   //TODO! only remove from graphical representation and store if DELETE request returns 204
-    //   store.dispatch(REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, { component: component });
-    //   this.div_inputs.splice(index, 1);
-    //   this.div_elements.splice(index, 1);
-    //   this.$toast.open("The component was sucessfully removed!");
-    // },
     nextPanel(){
       //TODO! POST components
       this.$emit("advance");
     },
     previousPanel(){
       //TODO! DELETE ALL components
-      store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS);
-      this.$emit("back");
+       this.$dialog.confirm({
+        title: 'Return',
+        hasIcon: true,
+        type: 'is-info',
+        icon: 'fas fa-exclamation-circle size:5px',
+        iconPack: 'fa',
+        message: 'Are you sure you want to return? All progress made in this step will be lost.',
+        onConfirm: () => {
+          store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS);
+          this.$emit("back");
+        }
+      })
     }
   },
   created() {
@@ -183,8 +129,8 @@ export default {
 }
 
 .image-icon-div .image-icon {
- position: absolute;
- top: 10%;
+  position: absolute;
+  top: 10%;
   left: 90%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);

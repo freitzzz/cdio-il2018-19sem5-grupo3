@@ -6,6 +6,7 @@
           <router-link class="navbar-item" tag="li" to="/management/categories">Categories</router-link>
           <router-link class="navbar-item" tag="li" to="/management/materials">Materials</router-link>
           <router-link class="navbar-item" tag="li" to="/management/products">Products</router-link>
+          <router-link class="navbar-item" tag="li" to="/management/prices">Price Materials</router-link>
           <router-link
             class="navbar-item"
             tag="li"

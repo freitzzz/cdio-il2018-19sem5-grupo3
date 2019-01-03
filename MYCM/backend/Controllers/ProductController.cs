@@ -185,9 +185,10 @@ namespace backend.Controllers
         }
 
         [HttpGet("{productId}/materials")]
-        public ActionResult findProductMaterials(long productId){
+        public ActionResult findProductMaterials(long productId, [FromQuery] bool pricedMaterialsOnly){
             FetchProductDTO fetchProductDTO = new FetchProductDTO();
             fetchProductDTO.id = productId;
+            fetchProductDTO.pricedMaterialsOnly = pricedMaterialsOnly;
             try{
                 GetAllMaterialsModelView allMaterialsModelView = new core.application.ProductController().findProductMaterials(fetchProductDTO);
                 return Ok(allMaterialsModelView);
