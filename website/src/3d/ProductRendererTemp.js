@@ -443,7 +443,8 @@ export default class ProductRenderer {
       model: component.model,
       slot: component.slot    
     });
-    store.dispatch(SET_COMPONENT_TO_REMOVE, {});
+    this.selected_component = null;
+    this.controls.enabled = true;
   }
 
   /**
@@ -1693,20 +1694,6 @@ export default class ProductRenderer {
       if (this.hovered_object !== null) this.hovered_object = null;
     }
   }
-
-  /**
-   * Moves the slot across the defined plan that intersects the closet, without overlapping the closet's faces
-   */
-  moveSlot() {
-    if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
-      var newPosition = this.intersection.x - this.offset; //Subtracts the offset to the x coordinate of the intersection point
-      var valueCloset = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
-      if (Math.abs(newPosition) < Math.abs(valueCloset)) { //Doesn't allow the slot to overlap the faces of the closet
-        this.selected_slot.position.x = newPosition;
-      }
-    }
-  }
-
   /**
    * Moves the face across the defined plan that intersects the closet, without overlapping the closet's slots
    */
@@ -1750,17 +1737,76 @@ export default class ProductRenderer {
       }
     }
   }
+  /**
+   * Moves the slot across the defined plan that intersects the closet, without overlapping the closet's faces
+   */
+  moveSlot() {
+
+    
+  /* moveSlot() {
+    if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+      var newPosition = this.intersection.x - this.offset; //Subtracts the offset to the x coordinate of the intersection point
+      var valueCloset = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
+      if (Math.abs(newPosition) < Math.abs(valueCloset)) { //Doesn't allow the slot to overlap the faces of the closet
+        this.selected_slot.position.x = newPosition;
+      }
+    }
+  } */
+    /*  var information = { idSlot : 0, 
+     newValue: 0}; */
+     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+       var newPosition = this.intersection.x - this.offset; //Subtracts the offset to the x coordinate of the intersection point
+       var valueCloset = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
+       if (Math.abs(newPosition) < Math.abs(valueCloset)) { //Doesn't allow the slot to overlap the faces of the closet
+         this.selected_slot.position.x = newPosition;
+         for (let i = 0; i < this.closet_slots_faces_ids.length; i++) {
+           if (this.group.getObjectById(this.closet_slots_faces_ids[i]) == this.selected_slot) {
+             this.group.getObjectById(this.closet_slots_faces_ids[i]).position.x = newPosition;
+            /*  var v1 = this.group.getObjectById(this.closet_faces_ids[3]).position.x;
+             var v2 = this.closet.getClosetWidth() * 2;
+             var v3 = Math.abs(this.group.getObjectById(this.closet_faces_ids[3]).position.x);
+             var v4 = Math.abs(this.group.getObjectById(this.closet_faces_ids[2]).position.x);
+             var conversion = ((newPosition + v1) * v2) / (v3 + v4); */
+            /*  information.idSlot = i + 1;
+             information.newValue = conversion; */
+           }
+         }
+       }
+     }
+     /* return information; */
+   }
+       
+   /**
+    * Move slot with slider
+    */
+   moveSlotSlider(index, newWidth) {
+     /* alert("antes" + this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x); */
+     var left_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
+     this.selected_slot = this.group.getObjectById(this.closet_slots_faces_ids[index]);
+     if (index == 0) {
+       let newPosition = left_closet_face_x_value + newWidth;
+       this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x = newPosition;
+     } else {
+       this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x = this.group.getObjectById(this.closet_slots_faces_ids[index - 1]).position.x + (newWidth);
+     }
+     this.updateClosetGV()
+     /* alert("depois" + this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x); */
+   }
+
 
   /**
-   * Moves a component across the y axis without overlapping the slots planes or the closets planes
+   * Moves a component across the yy axis without overlapping the slots planes or the closets planes
    */
   moveComponent() {
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
-      var computedPosition = this.intersection.y - this.offset; //The component's new computed position on the yy axis
+      var computedYPosition = this.intersection.y - this.offset; //The component's new computed position on the yy axis
+      var computedXPosition = this.intersection.x - this.offset; //The component's new computed position on the xx axis
 
-      if (computedPosition < this.group.getObjectById(this.closet_faces_ids[1]).position.y &&
-        computedPosition >= this.group.getObjectById(this.closet_faces_ids[0]).position.y) {
-        this.selected_component.position.y = computedPosition; //Sets the new position as long as the component stays within the closet boundaries
+      if (computedYPosition < this.group.getObjectById(this.closet_faces_ids[1]).position.y &&
+        computedYPosition >= this.group.getObjectById(this.closet_faces_ids[0]).position.y &&
+        computedXPosition < this.group.getObjectById(this.closet_faces_ids[3]).position.x &&
+        computedXPosition >= this.group.getObjectById(this.closet_faces_ids[2]).position.x) {
+        this.selected_component.position.y = computedYPosition; //Sets the new position as long as the component stays within the closet boundaries
       } else {
         store.dispatch(SET_COMPONENT_TO_REMOVE, {
           model: this.selected_component.userData.model,
