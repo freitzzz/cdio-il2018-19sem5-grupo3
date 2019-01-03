@@ -74,13 +74,11 @@ export const mutations = {
   [types.ADD_SLOT_DIMENSIONS](state, payload) {    
     if (payload ) {
       if(payload.height==0){
-        state.customizedProduct.slots[0] = {
-          idSlot: payload.idSlot,
-          depth: payload.depth,
-          width: payload.width,
-          height: payload.height,
-          unit: payload.unit
-        }
+        state.customizedProduct.slots[payload.idSlot].idSlot = payload.idSlot,
+        state.customizedProduct.slots[payload.idSlot].depth = payload.depth,
+        state.customizedProduct.slots[payload.idSlot].width = payload.width,
+        state.customizedProduct.slots[payload.idSlot].height = payload.height,
+        state.customizedProduct.slots[payload.idSlot].unit = payload.unit
       }else{
       state.customizedProduct.slots.push({
         idSlot: payload.idSlot,

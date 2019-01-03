@@ -41,9 +41,28 @@ export default {
     slots() {
       var array = [];
       for (let i = 0; i < Store.state.customizedProduct.slots.length - 1; i++) {
-        array.push(Store.getters.customizedProductSlotWidth(i));
+       /*  alert("Witdh de i " + Store.state.customizedProduct.slots[i].width); */
+        array.push(Store.getters.customizedProductSlot(i));
       }
       return array;
+    },
+    updateSlotsWidths(){
+      /* alert("1  " + Store.state.canvasControls.slostSlider);
+      alert("2   " + this.productRenderer.closet_slots_faces_ids) */
+      Store.state.canvasControls.slostSlider = (this.productRenderer.closet_slots_faces_ids);
+      /* alert("3" + Store.state.canvasControls.slostSlider.length); */
+      /*var size = Store.state.canvasControls.slostSlider.length;
+      alert(size);
+      var position = {idSlot: 0, newValue: 0};
+      
+      for(let i=0; i<size; i++){*/
+      var array = []
+        position.newValue = 
+          this.productRenderer.group.getObjectById(Store.state.canvasControls.slostSlider[0]).position.x;
+        position.idSlot=Store.state.canvasControls.slostSlider[0];
+        array.push(position);
+    
+     return array;
     },
     loadProduct() {
       return Store.getters.productId;
@@ -90,13 +109,30 @@ export default {
     populateWebsiteDimensions: function(newValue) {
       this.productRenderer.populateWebsiteDimensions(newValue);
     },
-    slots: function(newValue, oldValue) {
-      if (newValue.length > 0) {
-        this.productRenderer.removeAllSlots();
-        this.productRenderer.addSlotNumbered(newValue);
+   slots: function(newValue, oldValue) {
+      if(newValue.length > 0){
+        let index = 0;
+         for(let i = 0; i< newValue.length; i++){
+          if(newValue[i].height == 0){
+            index = i;
+          }
+        } 
+        let size = newValue.length - 1
+        if(newValue[index].height == 0){
+          this.productRenderer.moveSlotSlider(index, newValue[index].width)
+        }
+        if(newValue[size].height > 0){
+          this.productRenderer.removeAllSlots();
+          this.productRenderer.addSlotNumbered(newValue);
+        }
       } else {
         this.productRenderer.removeAllSlots();
       }
+    },
+    updateSlotsWidths: function(newValue, oldValue){
+
+      alert("aaaaaaa");
+
     },
     loadProduct: function() {
       this.productRenderer.showCloset();
