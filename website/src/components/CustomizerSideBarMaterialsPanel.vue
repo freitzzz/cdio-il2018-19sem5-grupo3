@@ -48,7 +48,7 @@
               </div>
           </a>
           <ul class="image-list" v-for="material in materials" :key="material.id">
-            <li class="image-btn" @click="applyMaterial(material), removeFinish(), removeColor(), getMaterialInformation(material.id)">
+            <li class="image-btn" @click="applyMaterial(material), removeFinish(), removeColor()">
               <img :src="findMaterialImage(material.image)" width="100%">
               <p>{{material.designation}}</p>
             </li>
@@ -160,6 +160,7 @@ export default {
         designation: material.designation,
         image: material.image
       });
+      this.getMaterialInformation(material.id);
     },
     applyFinish(finish){
       store.dispatch(SET_CUSTOMIZED_PRODUCT_FINISH, {
@@ -213,7 +214,6 @@ export default {
     nextPanel() {
       var hasColor = store.getters.customizedMaterialColorName != "None";
       var hasFinish = store.getters.customizedMaterialFinishDescription != "None";
-
       if(!hasColor && !hasFinish){
         this.$toast.open("You must choose at least one finish or color!");
       } else if(hasColor && !hasFinish){
@@ -280,13 +280,29 @@ export default {
       }
     },
     previousPanel() {
-      Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
+      this.$dialog.confirm({
+        title: 'Return',
+        hasIcon: true,
+        type: 'is-info',
+        icon: 'fas fa-exclamation-circle size:5px',
+        iconPack: 'fa',
+        message: 'Are you sure you want to return? All progress made in this step will be lost.',
+        onConfirm: () => {
+          this.discardChanges();
+        }
+      })
+    },
+    discardChanges(){
+    var defaultMaterial = this.materials[0];
+    this.applyMaterial(defaultMaterial);
+    
+    Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
       {
         customizedMaterial: {
-		      materialId: store.state.customizedProduct.customizedMaterial.id,
+		      materialId: defaultMaterial.id,
           finish: {
-              description: store.state.customizedProduct.customizedMaterial.finish.description,
-              shininess: store.state.customizedProduct.customizedMaterial.finish.shininess,
+            description: this.finishes[0].description,
+            shininess: this.finishes[0].shininess,
           }
         }
       })
