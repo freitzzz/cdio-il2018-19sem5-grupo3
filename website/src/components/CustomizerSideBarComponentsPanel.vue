@@ -101,8 +101,18 @@ export default {
     },
     previousPanel(){
       //TODO! DELETE ALL components
-      store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS);
-      this.$emit("back");
+       this.$dialog.confirm({
+        title: 'Return',
+        hasIcon: true,
+        type: 'is-info',
+        icon: 'fas fa-exclamation-circle size:5px',
+        iconPack: 'fa',
+        message: 'Are you sure you want to return? All progress made in this step will be lost.',
+        onConfirm: () => {
+          store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS);
+          this.$emit("back");
+        }
+      })
     }
   },
   created() {
