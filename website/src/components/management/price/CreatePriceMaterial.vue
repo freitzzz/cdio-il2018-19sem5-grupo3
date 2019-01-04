@@ -69,6 +69,7 @@
               <b-field>
                 <b-datepicker
                   icon="calendar"
+                  :min-date="minDate"
                   placeholder="Click to choose date"
                   v-model="startingDate"
                 >
@@ -107,6 +108,7 @@
               <b-field>
                 <b-datepicker
                   icon="calendar"
+                  :minDate="minDate"
                   placeholder="Click to choose date"
                   v-model="endingDate"
                 >
@@ -153,6 +155,7 @@ export default {
   name: "CreatePriceMaterial",
 
   data() {
+    const today = new Date();
     return {
       searchedMaterial: "",
       selectedMaterials: [],
@@ -165,7 +168,8 @@ export default {
       startingDate: new Date(),
       endingDate: new Date(),
       startingTime: new Date(),
-      endingTime: new Date()
+      endingTime: new Date(),
+      minDate: new Date(today.getFullYear(), today.getMonth(), today.getDay())
     };
   },
 
