@@ -61,6 +61,7 @@ namespace core.services
             currentMaterialPriceModelView.material = new GetBasicMaterialModelView();
             currentMaterialPriceModelView.currentPrice = new PriceModelView();
             currentMaterialPriceModelView.timePeriod = new TimePeriodModelView();
+            currentMaterialPriceModelView.tableEntryId = currentPrice.Id;
             currentMaterialPriceModelView.material.id = material.Id;
             currentMaterialPriceModelView.material.designation = material.designation;
             currentMaterialPriceModelView.material.reference = material.reference;
@@ -116,6 +117,7 @@ namespace core.services
                     currentMaterialFinishPriceModelView.finish = new GetMaterialFinishModelView();
                     currentMaterialFinishPriceModelView.currentPrice = new PriceModelView();
                     currentMaterialFinishPriceModelView.timePeriod = new TimePeriodModelView();
+                    currentMaterialFinishPriceModelView.tableEntryId = currentMaterialFinishPrice.Id;
                     currentMaterialFinishPriceModelView.finish.materialId = material.Id;
                     currentMaterialFinishPriceModelView.finish.id = finish.Id;
                     currentMaterialFinishPriceModelView.finish.description = finish.description;
