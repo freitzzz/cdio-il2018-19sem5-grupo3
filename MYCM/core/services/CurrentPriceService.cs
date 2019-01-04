@@ -6,6 +6,7 @@ using core.modelview.material;
 using core.modelview.price;
 using core.modelview.pricetable;
 using core.persistence;
+using NodaTime.Text;
 
 namespace core.services
 {
@@ -59,10 +60,13 @@ namespace core.services
 
             currentMaterialPriceModelView.material = new GetBasicMaterialModelView();
             currentMaterialPriceModelView.currentPrice = new PriceModelView();
+            currentMaterialPriceModelView.timePeriod = new TimePeriodModelView();
             currentMaterialPriceModelView.material.id = material.Id;
             currentMaterialPriceModelView.material.designation = material.designation;
             currentMaterialPriceModelView.material.reference = material.reference;
             currentMaterialPriceModelView.material.imageFilename = material.image;
+            currentMaterialPriceModelView.timePeriod.startingDate = LocalDateTimePattern.GeneralIso.Format(currentPrice.timePeriod.startingDate);
+            currentMaterialPriceModelView.timePeriod.endingDate = LocalDateTimePattern.GeneralIso.Format(currentPrice.timePeriod.endingDate);
             if (modelView.currentPrice.currency == null || modelView.currentPrice.area == null)
             {
                 currentMaterialPriceModelView.currentPrice.value = currentPrice.price.value;
@@ -111,10 +115,13 @@ namespace core.services
                     GetCurrentMaterialFinishPriceModelView currentMaterialFinishPriceModelView = new GetCurrentMaterialFinishPriceModelView();
                     currentMaterialFinishPriceModelView.finish = new GetMaterialFinishModelView();
                     currentMaterialFinishPriceModelView.currentPrice = new PriceModelView();
+                    currentMaterialFinishPriceModelView.timePeriod = new TimePeriodModelView();
                     currentMaterialFinishPriceModelView.finish.materialId = material.Id;
                     currentMaterialFinishPriceModelView.finish.id = finish.Id;
                     currentMaterialFinishPriceModelView.finish.description = finish.description;
                     currentMaterialFinishPriceModelView.finish.shininess = finish.shininess;
+                    currentMaterialFinishPriceModelView.timePeriod.startingDate = LocalDateTimePattern.GeneralIso.Format(currentMaterialFinishPrice.timePeriod.startingDate);
+                    currentMaterialFinishPriceModelView.timePeriod.endingDate = LocalDateTimePattern.GeneralIso.Format(currentMaterialFinishPrice.timePeriod.endingDate);
                     if (modelView.currentPrice.currency == null || modelView.currentPrice.area == null)
                     {
                         currentMaterialFinishPriceModelView.currentPrice.value = currentMaterialFinishPrice.price.value;
