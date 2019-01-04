@@ -11,7 +11,7 @@
                 <b-modal :active.sync="createMaterialModal" has-modal-card scroll="keep">
                     <create-price-material 
                         :active="createMaterialModal" 
-                        @emitMaterial="postMaterialPriceTableEntry"
+                        @createMaterialPriceTableEntry="createMaterialPriceTableEntry"
                     />
                 </b-modal>
             </div> 
@@ -76,14 +76,14 @@ export default {
                 this.currencies = response.data;
             })
             .catch((error)=>{
-                //throw error?
+                this.$toast.open(error.response.data.message);
             });
         CurrenciesPerAreaRequests.getAreas()
             .then((response)=>{
                 this.areas = response.data;
             })
             .catch((error)=>{
-                //throw error?
+                this.$toast.open(error.response.data.message);
             });
     },
     data(){
@@ -121,12 +121,27 @@ export default {
         /**
          * Posts a new material price table entry
          */
-        postMaterialPriceTableEntry(entryDetails){
+        async createMaterialPriceTableEntry(entries){
+            let errorOccurred = false;
+            for(let i=0; i < entries.length; i++){
+                try{
+                    await PriceTableRequests.postMaterialPriceTableEntry(entries[i].materialId, entries[i].tableEntry);
+                }catch(error){
+                    errorOccurred = true;
+                    this.$toast.open(error.response.data.message);
+                    break;
+                }
+            }
+            if(!errorOccurred){
+                this.$toast.open({
+                message: "Prices created succesfully!"
+                });
+                this.createMaterialModal=false;
+                this.refreshTable();
+            }
         },
         fetchRequests(){
             this.refreshTable();
-            /* this.fetchAvailableColors();
-            this.fetchAvailableFinishes(); */
         },
         /**
          * Fetches all available materials
@@ -194,7 +209,7 @@ export default {
                         price: currentPrice.value + " " + currentPrice.currency + "/" + currentPrice.area
                     });
                 }catch(error){
-                    //Throw error?
+                    this.$toast.open(error.response.data.message);
                 }
             }
         },
@@ -210,7 +225,7 @@ export default {
                     const {data: convertedPrice} = await CurrenciesPerAreaRequests.convertValue(fromCurrency,toCurrency,fromArea,fromArea,value)
                     this.data[i].price = convertedPrice.value + " " + convertedPrice.currency + "/" + convertedPrice.area;
                 }catch(error){
-                    //Throw error?
+                    this.$toast.open(error.response.data.message);
                 }
             }
         },
@@ -226,7 +241,7 @@ export default {
                     const {data: convertedPrice} = await CurrenciesPerAreaRequests.convertValue(fromCurrency,fromCurrency,fromArea,toArea,value);
                     this.data[i].price = convertedPrice.value + " " + convertedPrice.currency + "/" + convertedPrice.area;
                 }catch(error){
-                    //Throw error?
+                    this.$toast.open(error.response.data.message);
                 }
             }
         }
