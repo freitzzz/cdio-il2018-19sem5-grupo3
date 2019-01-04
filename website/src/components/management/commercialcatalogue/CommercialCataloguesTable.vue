@@ -48,6 +48,12 @@ export default {
           title: "Designation"
         },
         {
+          name: "hasCollections",
+          title: "Collections",
+          dataClass: "centered aligned",
+          callback: this.booleansAsIcons
+        },
+        {
           name: "__slot:actions",
           title: "Actions"
         }
@@ -69,6 +75,11 @@ export default {
     }
   },
   methods: {
+    booleansAsIcons(value) {
+      return value
+        ? '<span class="ui teal label"><i class="material-icons">check</i></span>'
+        : '<span class="ui teal label"><i class="material-icons">close</i></span>';
+    },
     /**
      * Deletes a CommercialCatalogue.
      * @param {number} commercialCatalogueId
@@ -93,15 +104,24 @@ export default {
      * @param {number} commercialCatalogueId
      * @param {string} newReference
      * @param {string} newDesignation
+     * @param {boolean} hasCollections
+     * @param {boolean} keepAlive
      */
-    updateTableEntry(commercialCatalogueId, newReference, newDesignation) {
+    updateTableEntry(
+      commercialCatalogueId,
+      newReference,
+      newDesignation,
+      hasCollections,
+      keepAlive
+    ) {
       for (let i = 0; i < this.data.length; i++) {
         if (this.data[i].id == commercialCatalogueId) {
           this.data[i].reference = newReference;
           this.data[i].designation = newDesignation;
+          this.data[i].hasCollections = hasCollections;
         }
       }
-      this.displayCatalogueDetails = false;
+      this.displayCatalogueDetails = keepAlive;
     },
 
     /**
