@@ -235,6 +235,23 @@
   transition: all 0.3s;
 }
 
+.btn-primary-disabled{
+  background-color: #243d46 !important;
+  border-color: #243d46 !important;
+  border: 0;
+  padding: 5px 15px;
+  margin: 0;
+  font-size: 16px;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+.btn-primary-disabled :hover{
+  background-color: #243d46 !important;
+  border-color: #243d46 !important;
+  cursor: not-allowed;
+}
+
 .btn-primary:hover {
   background-color: #7eddff !important;
   border-color: #7eddff !important;

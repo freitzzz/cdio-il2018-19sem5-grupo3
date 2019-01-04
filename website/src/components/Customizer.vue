@@ -10,8 +10,8 @@
       @mousedown="onMouseDown"
       @mousemove="onMouseMove"
       @keydown="onKeyDown"
-      :width="initialWidth"
-      :height="initialHeight"
+      :width="canvasWidth"
+      :height="canvasHeight"
     ></canvas>
   </div>
 </template>
@@ -31,23 +31,38 @@ export default {
   name: "Customizer",
   data() {
     return {
-      productRenderer: {},
-      currentStage: 0
+      productRenderer: ProductRenderer.prototype,
+      currentStage: 0,
+      canvasWidth: document.documentElement.clientWidth,
+      canvasHeight: document.documentElement.clientHeight * 0.7
     };
   },
   computed: {
-    initialWidth() {
-      return document.documentElement.clientWidth;
-    },
-    initialHeight() {
-      return document.documentElement.clientHeight * 0.7;
-    },
     slots() {
       var array = [];
       for (let i = 0; i < Store.state.customizedProduct.slots.length - 1; i++) {
-        array.push(Store.getters.customizedProductSlotWidth(i));
+       /*  alert("Witdh de i " + Store.state.customizedProduct.slots[i].width); */
+        array.push(Store.getters.customizedProductSlot(i));
       }
       return array;
+    },
+    updateSlotsWidths(){
+      /* alert("1  " + Store.state.canvasControls.slostSlider);
+      alert("2   " + this.productRenderer.closet_slots_faces_ids) */
+      Store.state.canvasControls.slostSlider = (this.productRenderer.closet_slots_faces_ids);
+      /* alert("3" + Store.state.canvasControls.slostSlider.length); */
+      /*var size = Store.state.canvasControls.slostSlider.length;
+      alert(size);
+      var position = {idSlot: 0, newValue: 0};
+      
+      for(let i=0; i<size; i++){*/
+      var array = []
+        position.newValue = 
+          this.productRenderer.group.getObjectById(Store.state.canvasControls.slostSlider[0]).position.x;
+        position.idSlot=Store.state.canvasControls.slostSlider[0];
+        array.push(position);
+    
+     return array;
     },
     loadProduct() {
       return Store.getters.productId;
@@ -58,31 +73,31 @@ export default {
     addComponent() {
       return Store.getters.customizedProductComponents;
     },
-    removeComponent(){
+    removeComponent() {
       return Store.getters.componentToRemove;
     },
-    applyMaterial(){
+    applyMaterial() {
       return Store.getters.customizedMaterial;
     },
-    applyColor(){
+    applyColor() {
       return Store.getters.customizedMaterialColor;
     },
-    applyFinish(){
+    applyFinish() {
       return Store.getters.customizedMaterialFinish;
     },
-    canMoveCloset(){
+    canMoveCloset() {
       return Store.getters.canMoveCloset;
     },
-    canMoveSlots(){
+    canMoveSlots() {
       return Store.getters.canMoveSlots;
     },
-    canMoveComponents(){
+    canMoveComponents() {
       return Store.getters.canMoveComponents;
     },
-    controlDoorsFlag(){
+    controlDoorsFlag() {
       return Store.getters.doorsFlag;
     },
-    populateWebsiteDimensions(){
+    populateWebsiteDimensions() {
       return Store.getters.resizeFactorDimensions;
     }
   },
@@ -91,19 +106,33 @@ export default {
     CustomizerProgressBar
   },
   watch: {
-    populateWebsiteDimensions : function(newValue){
-      this.productRenderer.populateWebsiteDimensions(
-        newValue
-      );
-
+    populateWebsiteDimensions: function(newValue) {
+      this.productRenderer.populateWebsiteDimensions(newValue);
     },
-    slots: function(newValue, oldValue) {
+   slots: function(newValue, oldValue) {
       if(newValue.length > 0){
-        this.productRenderer.removeAllSlots();
-        this.productRenderer.addSlotNumbered(newValue);
+        let index = 0;
+         for(let i = 0; i< newValue.length; i++){
+          if(newValue[i].height == 0){
+            index = i;
+          }
+        } 
+        let size = newValue.length - 1
+        if(newValue[index].height == 0){
+          this.productRenderer.moveSlotSlider(index, newValue[index].width)
+        }
+        if(newValue[size].height > 0){
+          this.productRenderer.removeAllSlots();
+          this.productRenderer.addSlotNumbered(newValue);
+        }
       } else {
         this.productRenderer.removeAllSlots();
       }
+    },
+    updateSlotsWidths: function(newValue, oldValue){
+
+      alert("aaaaaaa");
+
     },
     loadProduct: function() {
       this.productRenderer.showCloset();
@@ -116,41 +145,51 @@ export default {
       );
     },
     addComponent: function(newValue, oldValue) {
-      if(oldValue.length <= newValue.length){
+      if (oldValue.length <= newValue.length) {
         this.productRenderer.addComponent(newValue[newValue.length - 1]);
-      } else if(newValue.length == 0) {
+      } else if (newValue.length == 0) {
         this.productRenderer.removeAllComponents();
       }
     },
-    removeComponent: function(newValue){
-      console.log(newValue)
-      if(newValue){
-        if(confirm('Are you sure you want to remove the selected component?')) this.productRenderer.removeComponent(newValue);
-      }
+    removeComponent: function(newValue) {
+      this.$dialog.confirm({
+        title: 'Remove component',
+        hasIcon: true,
+        type: 'is-info',
+        icon: 'fas fa-exclamation-circle size:5px',
+        iconPack: 'fa',
+        message: 'Do you want to remove the selected product from the closet?',
+        onConfirm: () => {
+          this.productRenderer.removeComponent(newValue);  
+        }
+      })
     },
     applyMaterial: function(newValue) {
       this.productRenderer.applyTexture("./src/assets/materials/" + newValue);
     },
-    applyColor: function(newValue){ 
+    applyColor: function(newValue) {
       this.productRenderer.applyColor(newValue);
     },
-    applyFinish: function(newValue){
+    applyFinish: function(newValue) {
       this.productRenderer.applyFinish(newValue);
     },
-    canMoveCloset(newValue){
+    canMoveCloset(newValue) {
       this.productRenderer.canMoveCloset = newValue;
     },
-    canMoveSlots(newValue){
+    canMoveSlots(newValue) {
       this.productRenderer.canMoveSlots = newValue;
     },
-    canMoveComponents(newValue){
+    canMoveComponents(newValue) {
       this.productRenderer.canMoveComponents = newValue;
     },
-    controlDoorsFlag(newValue){
-      if(newValue == "CLOSET_HAS_HINGED_DOORS") this.$toast.open("There are closet slots that have hinged doors!");
-      if(newValue == "CLOSET_HAS_SLIDING_DOORS") this.$toast.open("The closet already has sliding doors!");
-      if(newValue == "SLOT_HAS_DOOR") this.$toast.open("This slot already has a door!");
-      Store.dispatch(SET_DOORS_FLAG, {flag : "NONE"});
+    controlDoorsFlag(newValue) {
+      if (newValue == "CLOSET_HAS_HINGED_DOORS")
+        this.$toast.open("There are closet slots that have hinged doors!");
+      if (newValue == "CLOSET_HAS_SLIDING_DOORS")
+        this.$toast.open("The closet already has sliding doors!");
+      if (newValue == "SLOT_HAS_DOOR")
+        this.$toast.open("This slot already has a door!");
+      Store.dispatch(SET_DOORS_FLAG, { flag: "NONE" });
     }
   },
   methods: {
@@ -180,20 +219,40 @@ export default {
       this.productRenderer.onKeyDown(event);
       event.preventDefault();
     },
+    /**
+     * Window resize event handler, which updates the canvas's size when the window size changes.
+     */
+    onWindowResize(){
+      this.canvasWidth = document.documentElement.clientWidth;
+      this.canvasHeight = document.documentElement.clientHeight * 0.7;
+
+      this.productRenderer.resizeRenderer(this.canvasWidth, this.canvasHeight);
+    },
     drop: function(event){
       event.preventDefault();
-      this.productRenderer.renderDroppedComponent(event, this.$refs.threeCanvas);
+      this.productRenderer.renderDroppedComponent(
+        event,
+        this.$refs.threeCanvas
+      );
     },
-    allowDrop: function(event){
+    allowDrop: function(event) {
       event.preventDefault();
     },
-    changeProgressBarStage: function(currentPanelIndex){
+    changeProgressBarStage: function(currentPanelIndex) {
       this.currentStage = currentPanelIndex;
     }
   },
   mounted() {
     var canvas = this.$refs.threeCanvas;
     this.productRenderer = new ProductRenderer(canvas);
+
+    this.$nextTick(function(){
+      window.addEventListener("resize", this.onWindowResize);
+    });
+  },
+
+  beforeDestroy(){
+    window.removeEventListener("resize", this.onWindowResize);
   }
 };
 </script>

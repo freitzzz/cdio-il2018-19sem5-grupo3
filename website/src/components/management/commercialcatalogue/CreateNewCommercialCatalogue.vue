@@ -5,24 +5,17 @@
     </header>
     <section class="modal-card-body">
       <b-field label="Reference">
-        <b-input
-          type="String"
-          :value="reference"
-          placeholder="Catalogue's Reference"
-          required
-          v-model="reference"
-        />
+        <b-input type="String" placeholder="Catalogue's Reference" required v-model="reference"/>
       </b-field>
       <b-field label="Designation">
         <b-input
           type="String"
-          :value="designation"
           placeholder="Catalogue's Designation"
           required
           v-model="designation"
         />
       </b-field>
-      <div v-if="collectionsAvailable">
+      <div v-if="collections.length > 0">
         <b-field label="Collections">
           <b-autocomplete
             rounded
@@ -52,8 +45,11 @@
         >
           <template slot-scope="props">
             <b-table-column label="Name">{{props.row.name}}</b-table-column>
-            <b-table-column>
-              <button class="btn-primary">
+            <b-table-column v-if="props.row.hasCustomizedProducts">
+              <button
+                :class="[selectedCollections.map(collection => collection.id).includes(props.row.id) ? 'btn-primary' : 'btn-primary-disabled']"
+                :disabled="!selectedCollections.map(collection => collection.id).includes(props.row.id)"
+              >
                 <b-icon icon="pencil"></b-icon>
               </button>
             </b-table-column>
@@ -77,7 +73,6 @@ export default {
       reference: null,
       designation: null,
       searchedCollection: "",
-      collectionsAvailable: false, //boolean used as flag for rendering the autocomplete box and checkboxes
       selectedCollections: [],
       collections: []
     };
@@ -111,14 +106,14 @@ export default {
     },
 
     /**
-     * Selects an option.
+     * Selects a collection.
      */
-    selectCollection(option) {
+    selectCollection(collection) {
       var alreadyAdded = false;
 
       //check it the collection was already added
       for (let i = 0; i < this.selectedCollections.length; i++) {
-        if (this.selectedCollections[i].id == option.id) {
+        if (this.selectedCollections[i].id == collection.id) {
           alreadyAdded = true;
           break;
         }
@@ -126,7 +121,7 @@ export default {
 
       //don't push more than once
       if (!alreadyAdded) {
-        this.selectedCollections.push(option);
+        this.selectedCollections.push(collection);
       }
     },
 
@@ -136,7 +131,6 @@ export default {
     getAvailableCollections() {
       CustomizedProductCollectionsRequests.getCustomizedProductCollections()
         .then(response => {
-          this.collectionsAvailable = true;
           this.collections.push(...response.data);
         })
         .catch(error => {
@@ -175,11 +169,6 @@ export default {
 </script>
 
 <style>
-.scrollable-checkboxes {
-  max-height: 200px;
-  overflow-y: auto;
-}
-
 .expandable-div {
   padding-bottom: 25%;
 }

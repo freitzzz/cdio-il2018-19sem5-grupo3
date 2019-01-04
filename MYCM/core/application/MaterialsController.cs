@@ -17,9 +17,14 @@ namespace core.application
     public class MaterialsController
     {
         /// <summary>
-        /// Constant representing the message presented when 
+        /// Constant representing the message presented when the requested material isn't found
         /// </summary>
         private const string ERROR_MATERIAL_NOT_FOUND = "Unable to find a material with an identifier of: {0}";
+
+        /// <summary>
+        /// Constant representing the message presented when no finishes have a current price
+        /// </summary>
+        private const string NO_PRICED_FINISHES = "The requested material doesn't have any currently priced finishes";
 
         /// <summary>
         /// Builds a new MaterialsController
@@ -76,10 +81,11 @@ namespace core.application
         /// <returns>boolean true if the material was disabled with success, false if not</returns>
         public void disableMaterial(MaterialDTO materialDTO)
         {
-            MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository(); 
+            MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
             Material materialBeingDisabled = materialRepository.find(materialDTO.id);
 
-            if(materialBeingDisabled == null){
+            if (materialBeingDisabled == null)
+            {
                 throw new ResourceNotFoundException(string.Format(ERROR_MATERIAL_NOT_FOUND, materialDTO.id));
             }
 
@@ -114,8 +120,38 @@ namespace core.application
         /// </summary>
         /// <param name = "materialID">the Material's ID</param>
         /// <returns>DTO that represents the Material</returns>
-        public MaterialDTO findMaterialByID(long materialID)
+        public MaterialDTO findMaterialByID(long materialID, bool pricedFinishesOnly)
         {
+            Material material = PersistenceContext.repositories().createMaterialRepository().find(materialID);
+
+            if (material == null)
+            {
+                throw new ResourceNotFoundException(ERROR_MATERIAL_NOT_FOUND);
+            }
+
+            if (pricedFinishesOnly)
+            {
+                FinishPriceTableRepository finishPriceTableRepository =
+                    PersistenceContext.repositories().createFinishPriceTableRepository();
+                List<Finish> pricedFinishes = new List<Finish>();
+                foreach (Finish finish in material.Finishes)
+                {
+                    if (finishPriceTableRepository.fetchCurrentMaterialFinishPrice(finish.Id) != null)
+                    {
+                        pricedFinishes.Add(finish);
+                    }
+                }
+
+                if (pricedFinishes.Count == 0)
+                {
+                    throw new ResourceNotFoundException(NO_PRICED_FINISHES);
+                }
+
+                material.Finishes.Clear();
+                material.Finishes.AddRange(pricedFinishes);
+                return material.toDTO();
+            }
+
             return PersistenceContext.repositories().createMaterialRepository().find(materialID).toDTO();
         }
         public MaterialDTO findMaterialByReference(string reference)
@@ -190,13 +226,13 @@ namespace core.application
             Material material = materialRepository.find(idMaterial);
             if (addFinishDTO != null)
             {
-               material.addFinish(addFinishDTO.toEntity());
+                material.addFinish(addFinishDTO.toEntity());
 
-            
-            materialRepository.update(material);
-            AddFinishModelView addFinishModelView = new AddFinishModelView();
-            addFinishModelView.finish = addFinishDTO;
-            return addFinishModelView;
+
+                materialRepository.update(material);
+                AddFinishModelView addFinishModelView = new AddFinishModelView();
+                addFinishModelView.finish = addFinishDTO;
+                return addFinishModelView;
             }
             return null;
         }
@@ -238,11 +274,11 @@ namespace core.application
                 Color colorToAdd = addColorDTO.toEntity();
                 material.addColor(colorToAdd);
 
-            
-            materialRepository.update(material);
-            AddColorModelView addColorModelView = new AddColorModelView();
-            addColorModelView.color = addColorDTO;
-            return addColorModelView;
+
+                materialRepository.update(material);
+                AddColorModelView addColorModelView = new AddColorModelView();
+                addColorModelView.color = addColorDTO;
+                return addColorModelView;
             }
             return null;
         }

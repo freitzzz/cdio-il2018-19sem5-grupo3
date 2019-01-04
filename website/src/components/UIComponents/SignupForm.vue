@@ -38,6 +38,11 @@
         <button class="btn-primary" @click="emitSignup()">Sign Up</button>
       </div>
     </footer>
+    <div v-if="activateModalForm">
+      <b-modal :active.sync="activateModalForm" class="modal-card" style="width:100% overflow-y: auto  overflow-x: hidden">
+        <privacy-policy-modal ></privacy-policy-modal>
+      </b-modal>
+    </div>
   </div>
 </template>
 
@@ -67,7 +72,7 @@
         name: "",
         privacyCheckBox: false,
         checkBox: "",
-        activateModalForm: true,
+        activateModalForm: false,
       };
     },
     components: {
@@ -78,16 +83,11 @@
      * Component methods
      */
     methods: {
-      emitPrivacy() {
-        this.activateModalForm = true;
+      emitPrivacy: function() {
+        this.activateModalForm ? this.activateModalForm = false : this.activateModalForm = true;
       },
-  
       iHaveReadThePolicy: function() {
-        if (this.privacyCheckBox == true) {
-          this.privacyCheckBox = false;
-        } else {
-          this.privacyCheckBox = true;
-        }
+       this.privacyCheckBox ?  this.privacyCheckBox = false :  this.privacyCheckBox = true;
       },
   
       /**
