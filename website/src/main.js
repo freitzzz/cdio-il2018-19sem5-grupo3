@@ -6,16 +6,10 @@ import Buefy from 'buefy';
 import 'buefy/dist/buefy.css';
 import Vuetable from "vuetable-2";
 //import VueTablePagination from 'vuetable-2/src/components/VuetablePagination'
-import { routes } from "./routes"
+import { router } from "./router"
 
 Vue.use(VueRouter);
 Vue.use(Buefy);
-
-
-const router = new VueRouter({
-  routes
-});
-
 
 function install(Vue) {
   Vue.component("vuetable", Vuetable);
