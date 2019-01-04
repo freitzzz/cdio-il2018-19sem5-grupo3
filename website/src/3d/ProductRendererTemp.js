@@ -245,7 +245,7 @@ export default class ProductRenderer {
     this.resizeVec = [];
     this.controlIndexBuild = 0;
 
-    /* Create vector for initial values of height,width and depth */
+    /* Create vector for initial values of width,height and depth */
     this.initialDimensions = [404.5, 300, 245];
 
     this.NUMBER_DIMENSIONS = 3;
@@ -928,13 +928,16 @@ export default class ProductRenderer {
    * @param {number} depth Number with the closet depth
    */
   changeClosetDimensions(width, height, depth) {
-    if(this.controlIndexBuild>0){
+   
       this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
       this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
       this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth));
-    }else{
+     
+   /*  }else{
       this.controlIndexBuild ++;
-    }
+      this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
+      this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
+    } */
     
  
 
