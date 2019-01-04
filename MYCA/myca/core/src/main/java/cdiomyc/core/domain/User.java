@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -48,6 +49,12 @@ public class User implements AggregateRoot<Auth>,Serializable{
     private Auth auth;
     
     /**
+     * Name with the user name
+     */
+    @Embedded
+    private Name name;
+    
+    /**
      * List with the user API sessions
      */
     @OneToMany(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
@@ -80,6 +87,17 @@ public class User implements AggregateRoot<Auth>,Serializable{
         this.roles.add(Role.CLIENT);
         this.enabled=false;
         this.activationCode=generateActivationCode();
+    }
+    
+    /**
+     * Changes the current user name
+     * @param name String with the new user name
+     */
+    public void changeName(String name){
+        Name newUserName=Name.valueOf(name);
+        if(newUserName.equals(this.name))
+            throw new IllegalArgumentException("Both old and new user names are equal");
+        this.name=newUserName;
     }
     
     /**
@@ -135,7 +153,7 @@ public class User implements AggregateRoot<Auth>,Serializable{
     public void addRoles(Iterable<Role> roles){
         if(roles==null||!roles.iterator().hasNext())
             throw new IllegalArgumentException("Roles to add are invalid");
-        roles.forEach(role ->{addRole(role);});
+        roles.forEach(role->{this.addRole(role);});
     }
     
     /**
@@ -250,4 +268,48 @@ public class User implements AggregateRoot<Auth>,Serializable{
      * Protected constructor in order to allow JPA persistence
      */
     protected User(){}
+    
+    /**
+     * Buider class for simplifying the creation of a user
+     */
+    public static class UserBuilder{
+        
+        /**
+         * User with the user being build
+         */
+        private final User userBeingBuild;
+        
+        /**
+         * Builds a new UserBuilder
+         * @param auth Auth with the user auth
+         */
+        private UserBuilder(Auth auth){this.userBeingBuild=new User(auth);}
+        
+        /**
+         * Creates a new UserBuilder
+         * @param auth Auth with the user auth
+         * @return UserBuilder with the created UserBuilder
+         */
+        public static UserBuilder createUserBuilder(Auth auth){
+            return new UserBuilder(auth);
+        }
+        
+        /**
+         * Adds a name to the user being build
+         * @param name String with the user name
+         * @return UserBuilder with the refreshed user builder
+         */
+        public UserBuilder withName(String name){
+            this.userBeingBuild.changeName(name);
+            return this;
+        }
+        
+        /**
+         * Builds the user
+         * @return User with the built user
+         */
+        public User build(){return userBeingBuild;}
+        
+    }
+    
 }

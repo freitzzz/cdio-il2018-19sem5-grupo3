@@ -79,19 +79,33 @@ namespace core.services
                     string endingDateAsString = modelView.priceTableEntry.endingDate;
 
                     LocalDateTime startingDate;
-                    LocalDateTime endingDate;
 
                     try
                     {
                         startingDate = LocalDateTimePattern.GeneralIso.Parse(startingDateAsString).GetValueOrThrow();
-                        endingDate = LocalDateTimePattern.GeneralIso.Parse(endingDateAsString).GetValueOrThrow();
                     }
                     catch (UnparsableValueException)
                     {
                         throw new UnparsableValueException(DATES_WRONG_FORMAT + LocalDateTimePattern.GeneralIso.PatternText);
                     }
 
-                    TimePeriod timePeriod = TimePeriod.valueOf(startingDate, endingDate);
+                    TimePeriod timePeriod = null;
+
+                    if (endingDateAsString != null)
+                    {
+                        try
+                        {
+                            timePeriod = TimePeriod.valueOf(startingDate, LocalDateTimePattern.GeneralIso.Parse(endingDateAsString).GetValueOrThrow());
+                        }
+                        catch (UnparsableValueException)
+                        {
+                            throw new UnparsableValueException(DATES_WRONG_FORMAT + LocalDateTimePattern.GeneralIso.PatternText);
+                        }
+                    }
+                    else
+                    {
+                        timePeriod = TimePeriod.valueOf(startingDate);
+                    }
 
                     CurrenciesService.checkCurrencySupport(modelView.priceTableEntry.price.currency);
                     AreasService.checkAreaSupport(modelView.priceTableEntry.price.area);

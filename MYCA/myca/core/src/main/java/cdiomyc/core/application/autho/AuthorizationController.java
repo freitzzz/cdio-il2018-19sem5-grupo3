@@ -26,7 +26,9 @@ public final class AuthorizationController {
         User userBeingAuthorized=userRepository
                 .findUserBySessionAPIToken(userSessionAPIToken);
         UserGrants.grantUserIsClient(userBeingAuthorized);
+        if(userAuthorizationDetails.isAdministrator)UserGrants.grantUserIsAdministrator(userBeingAuthorized);
         if(userAuthorizationDetails.isContentManager)UserGrants.grantUserIsContentManager(userBeingAuthorized);
+        if(userAuthorizationDetails.isLogisticManager)UserGrants.grantUserIsLogisticManager(userBeingAuthorized);
         Session userLastSession=userBeingAuthorized.getLastSession();
         SessionGrants.grantSessionHasToken(userLastSession,userSessionAPIToken);
         SessionGrants.grantSessionIsActive(userLastSession);

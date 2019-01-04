@@ -15,6 +15,7 @@ import {
 
 export default class ProductRenderer {
 
+
   /* Flags used to interact with the graphical representation on certain steps of the wizard */
 
   /**
@@ -220,6 +221,8 @@ export default class ProductRenderer {
 
   /**Number of dimensions in question */
   NUMBER_DIMENSIONS;
+
+
   // ---------------- End of resize control --------------------------
 
   /**
@@ -235,8 +238,8 @@ export default class ProductRenderer {
     this.DEPTH = 2;
     this.resizeVec = [];
 
-    /* Create vector for initial values of height,width and depth */
-    this.initialDimensions = [404.5, 300, 100];
+    /* Create vector for initial values of width,height and depth */
+    this.initialDimensions = [404.5, 300, 245];
 
     this.NUMBER_DIMENSIONS = 3;
 
@@ -335,7 +338,7 @@ export default class ProductRenderer {
       [404.5, thickness, 100, 0, 90, -195], //Top
       [thickness, 300, 100, -200, -60, -195], //Left
       [thickness, 300, 100, 200, -60, -195], //Right
-      [404.5, 300, 0, 0, -60, -245.8], 0); //Back
+      [404.5, 300, 0, 0, -60, -245], 0); //Back POsition: 195 + width of lateral wall /2
 
     var faces = this.closet.closet_faces;
     
@@ -917,9 +920,12 @@ export default class ProductRenderer {
    * @param {number} depth Number with the closet depth
    */
   changeClosetDimensions(width, height, depth) {
-    this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
-    this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
-    this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth) - 250.8);
+   
+      this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
+      this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
+      this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth));
+
+ 
 
     this.updateClosetGV();
   }
@@ -930,7 +936,7 @@ export default class ProductRenderer {
   resizeFactor() {
     var i;
     for (i = 0; i < this.NUMBER_DIMENSIONS; i++) {
-      this.resizeVec[i] = this.initialDimensions[i] / this.websiteDimensions[i];
+      this.resizeVec[i] = (this.initialDimensions[i] / this.websiteDimensions[i]);
 
     }/* 
     alert(this.resizeVec[this.WIDTH]);

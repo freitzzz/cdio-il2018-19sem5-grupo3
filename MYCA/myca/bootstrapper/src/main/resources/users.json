@@ -2,36 +2,36 @@
     {
         "username":"antonio",
         "password":"kerokerobonito",
-        "roles":["Administrator","Client","Content Manager","Logistic Manager"]
+        "roles":["Administrator","Content Manager","Logistic Manager"]
     },
     {
         "username":"freitas",
         "password":"kerokerobonito",
-        "roles":["Administrator","Client","Content Manager","Logistic Manager"]
+        "roles":["Administrator","Content Manager","Logistic Manager"]
     },
     {
         "username":"gil",
         "password":"kerokerobonito",
-        "roles":["Administrator","Client","Content Manager","Logistic Manager"]
+        "roles":["Administrator","Content Manager","Logistic Manager"]
     },
     {
         "username":"margarida",
         "password":"kerokerobonito",
-        "roles":["Administrator","Client","Content Manager","Logistic Manager"]
+        "roles":["Administrator","Content Manager","Logistic Manager"]
     },
     {
         "username":"moreira",
         "password":"kerokerobonito",
-        "roles":["Administrator","Client","Content Manager","Logistic Manager"]
+        "roles":["Administrator","Content Manager","Logistic Manager"]
     },
     {
         "username":"rita",
         "password":"kerokerobonito",
-        "roles":["Administrator","Client","Content Manager","Logistic Manager"]
+        "roles":["Administrator","Content Manager","Logistic Manager"]
     },
     {
         "username":"vera",
         "password":"kerokerobonito",
-        "roles":["Administrator","Client","Content Manager","Logistic Manager"]
+        "roles":["Administrator","Content Manager","Logistic Manager"]
     }
 ]

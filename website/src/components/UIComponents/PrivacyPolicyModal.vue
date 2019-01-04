@@ -1,12 +1,9 @@
 <template>
-    <b-modal :active.sync="activateModal" class="modal-card" style="width:100% overflow-y: auto  overflow-x: hidden">
+    <div>
         <header class="modal-card-head">
             <p class="modal-card-title">New Product</p>
-        </header>
-    
-        <div>
-    
-    
+        </header>   
+        <div>  
             <p class="p0 ft0">MAKE YOUR CLOSET</p>
             <p class="p1 ft1">Privacy Policy</p>
             <p class="p2 ft5">
@@ -221,7 +218,7 @@
             <p>
                 <a href="https://www.pdfonline.com/convert-pdf/" style="color: #c8c8c8; text-decoration: none;">Word to pDF</a> Converted By BCLTechnologies</p>
         </div>
-    </b-modal>
+    </div>
 </template>
 
 <script>

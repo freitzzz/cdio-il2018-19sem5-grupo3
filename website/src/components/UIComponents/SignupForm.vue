@@ -15,10 +15,19 @@
         <b-field label="Password">
           <b-input type="password" v-model="password" :placeholder="placeholder.password" icon="key" password-reveal required></b-input>
         </b-field>
-  
+        <b-field label="Phone Number">
+          <telephone-input
+            :enabledFlags="true"
+            v-model="phoneNumber"
+            @onInput="onPhoneNumberInput"
+            :preferredCountries="['us', 'gb', 'ua']"
+          />
+        </b-field>
+
+
         <b-checkbox type="is-info" @input="iHaveReadThePolicy"> </b-checkbox>
         <a @click="emitPrivacy()">I have read the <u>Privacy Policy</u></a>
-        <div>
+        <div v-if="false">
           <privacy-policy-modal :activateModal="activateModalForm"></privacy-policy-modal>
         </div>
       </div>
@@ -29,11 +38,23 @@
         <button class="btn-primary" @click="emitSignup()">Sign Up</button>
       </div>
     </footer>
+    <div v-if="activateModalForm">
+      <b-modal :active.sync="activateModalForm" class="modal-card" style="width:100% overflow-y: auto  overflow-x: hidden">
+        <privacy-policy-modal ></privacy-policy-modal>
+      </b-modal>
+    </div>
   </div>
 </template>
 
 <script>
+
   import PrivacyPolicyModal from './PrivacyPolicyModal.vue';
+  
+  /**
+   * Requires vue-tel-input for the phone number input
+   */
+  import TelephoneInput from 'vue-tel-input';
+  
   export default {
     /**
      * Component Data
@@ -47,31 +68,26 @@
         },
         email: "",
         password: "",
+        phoneNumber:"",
         name: "",
         privacyCheckBox: false,
         checkBox: "",
-        activateModalForm: true,
-  
-  
+        activateModalForm: false,
       };
     },
     components: {
-      PrivacyPolicyModal
+      PrivacyPolicyModal,
+      TelephoneInput
     },
     /**
      * Component methods
      */
     methods: {
-      emitPrivacy() {
-        this.activateModalForm = true;
+      emitPrivacy: function() {
+        this.activateModalForm ? this.activateModalForm = false : this.activateModalForm = true;
       },
-  
       iHaveReadThePolicy: function() {
-        if (this.privacyCheckBox == true) {
-          this.privacyCheckBox = false;
-        } else {
-          this.privacyCheckBox = true;
-        }
+       this.privacyCheckBox ?  this.privacyCheckBox = false :  this.privacyCheckBox = true;
       },
   
       /**
@@ -116,6 +132,9 @@
         } else {
           this.$toast.open('Please confirm that you have read our privacy policy');
         }
+      },
+      onPhoneNumberInput(phoneNumberInput){
+        console.log(phoneNumberInput);
       }
     }
   

@@ -83,16 +83,6 @@ namespace core.application
                 throw new ArgumentException(INVALID_VALUE_TO_CONVERT);
             }
 
-            if (convertPriceModelView.fromCurrency.Equals(convertPriceModelView.toCurrency))
-            {
-                throw new ArgumentException(SAME_CURRENCY);
-            }
-
-            if (convertPriceModelView.fromArea.Equals(convertPriceModelView.toArea))
-            {
-                throw new ArgumentException(SAME_AREA);
-            }
-
             convertedPrice.value =
                 await new CurrencyPerAreaConversionService(clientFactory)
                     .convertCurrencyPerArea(convertPriceModelView.value, convertPriceModelView.fromCurrency, convertPriceModelView.toCurrency, convertPriceModelView.fromArea, convertPriceModelView.toArea);
