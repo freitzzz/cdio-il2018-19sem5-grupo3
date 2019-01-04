@@ -227,8 +227,7 @@ export default class ProductRenderer {
   /**Number of dimensions in question */
   NUMBER_DIMENSIONS;
 
-  /** control index to avoid bad contruction of closet**/
-  controlIndexBuild;
+
   // ---------------- End of resize control --------------------------
 
   /**
@@ -243,7 +242,6 @@ export default class ProductRenderer {
     this.HEIGHT = 1;
     this.DEPTH = 2;
     this.resizeVec = [];
-    this.controlIndexBuild = 0;
 
     /* Create vector for initial values of width,height and depth */
     this.initialDimensions = [404.5, 300, 245];
@@ -932,13 +930,7 @@ export default class ProductRenderer {
       this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
       this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
       this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth));
-     
-   /*  }else{
-      this.controlIndexBuild ++;
-      this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
-      this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
-    } */
-    
+
  
 
     this.updateClosetGV();
@@ -950,7 +942,7 @@ export default class ProductRenderer {
   resizeFactor() {
     var i;
     for (i = 0; i < this.NUMBER_DIMENSIONS; i++) {
-      this.resizeVec[i] = this.initialDimensions[i] / this.websiteDimensions[i];
+      this.resizeVec[i] = (this.initialDimensions[i] / this.websiteDimensions[i]);
 
     }/* 
     alert(this.resizeVec[this.WIDTH]);
