@@ -11,6 +11,13 @@ namespace core.modelview.pricetable
     public class GetCurrentMaterialPriceModelView
     {
         /// <summary>
+        /// Price Table Entry's PID
+        /// </summary>
+        /// <value>Gets/Sets the id</value>
+        [DataMember(Name = "tableEntryId")]
+        public long tableEntryId { get; set; }
+
+        /// <summary>
         /// Requested material
         /// </summary>
         /// <value>Gets/Sets the model view</value>
@@ -29,6 +36,6 @@ namespace core.modelview.pricetable
         /// </summary>
         /// <value>Gets/Sets the time period</value>
         [DataMember(Name = "timePeriod")]
-        public TimePeriodModelView timePeriod {get; set;}
+        public TimePeriodModelView timePeriod { get; set; }
     }
 }

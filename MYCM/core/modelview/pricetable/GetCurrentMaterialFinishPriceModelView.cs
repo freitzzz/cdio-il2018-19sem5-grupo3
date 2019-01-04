@@ -12,6 +12,13 @@ namespace core.modelview.pricetable
     public class GetCurrentMaterialFinishPriceModelView
     {
         /// <summary>
+        /// Price Table Entry's PID
+        /// </summary>
+        /// <value>Gets/Sets the id</value>
+        [DataMember(Name = "tableEntryId")]
+        public long tableEntryId { get; set; }
+
+        /// <summary>
         /// Requested Material Finish
         /// </summary>
         /// <value></value>
