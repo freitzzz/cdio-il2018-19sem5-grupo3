@@ -120,8 +120,16 @@ export default {
     };
   },
   props: {
-    commercialCatalogueId: Number,
-    editable: Boolean
+    commercialCatalogueId: {
+      type: Number,
+      required: true,
+      default: 0
+    },
+    editable: {
+      type: Boolean,
+      required: true,
+      default: false
+    }
   },
   computed: {
     suggestedCollections() {
@@ -147,6 +155,8 @@ export default {
   watch: {
     /**
      * Watches for changes in the selectedCollections and performs the appropriate requests.
+     * @param {Array} newVal
+     * @param {Array} oldVal
      */
     selectedCollections(newVal, oldVal) {
       const oldSelectedCollectionIds = oldVal.map(collection => collection.id);
@@ -158,9 +168,23 @@ export default {
           CommercialCatalogueRequests.deleteCommercialCatalogueCollection(
             this.commercialCatalogueId,
             oldId
-          ).catch(error => {
-            this.$toast.open(error.response.data);
-          });
+          )
+            .then(() => {
+              //only emit the update table event if the request resolved
+              if (newVal.length == 0) {
+                this.$emit(
+                  UPDATE_TABLE_ENTRY_EVENT,
+                  this.commercialCatalogueId,
+                  this.reference,
+                  this.designation,
+                  false,
+                  true
+                );
+              }
+            })
+            .catch(error => {
+              this.$toast.open(error.response.data);
+            });
         }
       });
 
@@ -172,9 +196,23 @@ export default {
           CommercialCatalogueRequests.postCommercialCatalogueCollection(
             this.commercialCatalogueId,
             postBody
-          ).catch(error => {
-            this.$toast.open(error.response.data);
-          });
+          )
+            .then(() => {
+              //only emit the update table event if the request resolved
+              if (oldVal.length == 0 && newVal.length > 0) {
+                this.$emit(
+                  UPDATE_TABLE_ENTRY_EVENT,
+                  this.commercialCatalogueId,
+                  this.reference,
+                  this.designation,
+                  true,
+                  true
+                );
+              }
+            })
+            .catch(error => {
+              this.$toast.open(error.response.data);
+            });
         }
       });
     }
@@ -184,7 +222,7 @@ export default {
     /**
      * Updates the catalogue's basic properties and emits the changes back to the table.
      */
-    updateCatalogue() {
+    async updateCatalogue() {
       var putBody = {
         reference: this.reference,
         designation: this.designation
@@ -195,11 +233,22 @@ export default {
         putBody
       )
         .then(response => {
+          var hasCollections = false;
+
+          if (
+            response.data.commercialCatalogueCollections !== undefined &&
+            response.data.commercialCatalogueCollections.length > 0
+          ) {
+            hasCollections = true;
+          }
+
           this.$emit(
             UPDATE_TABLE_ENTRY_EVENT,
             response.data.id,
             response.data.reference,
-            response.data.designation
+            response.data.designation,
+            hasCollections,
+            false
           );
         })
         .catch(error => {
