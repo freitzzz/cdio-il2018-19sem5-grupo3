@@ -76,10 +76,20 @@ export default {
             message: "Commercial Catalogue created succesfully!"
           });
 
+          var hasCollections = false;
+
+          if (
+            response.data.commercialCatalogueCollections !== undefined &&
+            response.data.commercialCatalogueCollections.length > 0
+          ) {
+            hasCollections = true;
+          }
+
           var addedCatalogue = {
             id: response.data.id,
             reference: response.data.reference,
-            designation: response.data.designation
+            designation: response.data.designation,
+            hasCollections
           };
           //push added catalogue to data so that tables can be updated
           this.data.push(addedCatalogue);
