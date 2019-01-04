@@ -97,16 +97,15 @@ closetResizeValues=[4.2/404.5,300/300,100/245];
      */
     changeClosetDepth(depth) {
         if (depth > 0) {
-            
-            
             var axesDepth = depth / 2;
+     
             this.closet_base_face_dimensions_axes[2] = depth*this.closetResizeValues[DEPTH];
             this.closet_top_face_dimensions_axes[2] = depth*this.closetResizeValues[DEPTH]; 
-            this.closet_back_face_dimensions_axes[5] = -depth;
+            this.closet_back_face_dimensions_axes[5] = -depth; 
             this.closet_left_face_dimensions_axes[2] = depth*this.closetResizeValues[DEPTH]; 
             this.closet_right_face_dimensions_axes[2] = depth*this.closetResizeValues[DEPTH];
             for (var i = 0; i < this.closet_slots_faces.length; i++) {
-                this.closet_slots_faces[i][2] = depth;
+                this.closet_slots_faces[i][2] = depth*this.closetResizeValues[DEPTH];
             }
         }
     }
