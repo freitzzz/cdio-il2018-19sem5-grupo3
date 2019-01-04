@@ -61,11 +61,6 @@ export default class ProductRenderer {
   group;
 
   /**
-   * @type{THREE.TextureLoader}
-   */
-  textureLoader;
-
-  /**
    * @type {THREE.MeshPhongMaterial}
    */
   material;
@@ -343,7 +338,7 @@ export default class ProductRenderer {
       [404.5, 300, 0, 0, -60, -245.8], 0); //Back
 
     var faces = this.closet.closet_faces;
-    this.textureLoader = new THREE.TextureLoader();
+    
     //A MeshPhongMaterial allows for shiny surfaces
     //A soft white light is being as specular light
     //The shininess value is the same as the matte finishing's value
@@ -351,7 +346,6 @@ export default class ProductRenderer {
     this.material.specular = new THREE.Color(0x404040);
     this.material.shininess = 20;
     this.material.map;
-    //this.applyTexture("./src/assets/materials/worn-wood.jpg");
 
     for (var i = 0; i < faces.length; i++) {
       this.closet_faces_ids.push(this.generateParellepiped(faces[i][0], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], this.material, this.group, ""));
@@ -437,9 +431,9 @@ export default class ProductRenderer {
     lightBulbLeft.shadow.mapSize.set(512, 512);
     this.scene.add(lightBulbLeft);
 
-    var lightBulbLeftHelper = new THREE.PointLightHelper(lightBulbLeft, 10);
+/*     var lightBulbLeftHelper = new THREE.PointLightHelper(lightBulbLeft, 10);
     lightBulbLeftHelper.visible = true;
-    this.scene.add(lightBulbLeftHelper);
+    this.scene.add(lightBulbLeftHelper); */
 
     //sunlight coming out of the window in the middle pointing at the closet
     var sunLightCenter = new THREE.DirectionalLight(0xffffff, 1);
