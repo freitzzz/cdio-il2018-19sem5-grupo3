@@ -15,17 +15,14 @@
         </div>
       </template>
     </vuetable>
-    <b-modal
-      :active.sync="displayCatalogueDetails"
-      has-modal-card
-      scroll="keep"
-    >
-      <commercial-catalogue-details
-        :commercialCatalogueId="selectedCatalogueId"
-        :editable="editable"
-        @updateTableEntry="updateTableEntry"
-      />
-    </b-modal>
+
+    <commercial-catalogue-details
+      v-if="displayCatalogueDetails"
+      :commercialCatalogueId="selectedCatalogueId"
+      :editable="editable"
+      @closeModal="displayCatalogueDetails = false"
+      @updateTableEntry="updateTableEntry"
+    />
   </div>
 </template>
 

@@ -1,102 +1,107 @@
 <template>
-  <div class="modal-card" style="width:auto">
-    <header class="modal-card-head">
-      <p class="modal-card-title">Commercial Catalogue Details</p>
-    </header>
-    <section class="modal-card-body">
-      <b-field label="Reference">
-        <b-input
-          type="String"
-          :disabled="!editable"
-          required
-          v-model="reference"
-          placeholder="No reference"
-        ></b-input>
-      </b-field>
-      <b-field label="Designation">
-        <b-input
-          type="String"
-          :disabled="!editable"
-          required
-          v-model="designation"
-          placeholder="No designation"
-        ></b-input>
-      </b-field>
-      <div v-if="availableCollections.length > 0">
-        <b-field label="Collections">
-          <b-autocomplete
-            rounded
-            v-model="searchedCollection"
-            :keep-first="true"
-            :data="suggestedCollections"
-            field="name"
-            :clear-on-select="true"
-            @select="option => selectCollection(option)"
-            placeholder="e.g. Winter 2018"
-            icon="magnify"
-          >
-            <template slot="empty">No collections found</template>
-          </b-autocomplete>
+  <b-modal :active="true" :onCancel="closeModal" has-modal-card scroll="keep">
+    <div class="modal-card" style="width:auto">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Commercial Catalogue Details</p>
+      </header>
+      <section class="modal-card-body">
+        <b-field label="Reference">
+          <b-input
+            type="String"
+            :disabled="!editable"
+            required
+            v-model="reference"
+            placeholder="No reference"
+          ></b-input>
         </b-field>
+        <b-field label="Designation">
+          <b-input
+            type="String"
+            :disabled="!editable"
+            required
+            v-model="designation"
+            placeholder="No designation"
+          ></b-input>
+        </b-field>
+        <div v-if="availableCollections.length > 0">
+          <b-field label="Collections">
+            <b-autocomplete
+              rounded
+              v-model="searchedCollection"
+              :keep-first="true"
+              :data="suggestedCollections"
+              field="name"
+              :clear-on-select="true"
+              @select="option => selectCollection(option)"
+              placeholder="e.g. Winter 2018"
+              icon="magnify"
+            >
+              <template slot="empty">No collections found</template>
+            </b-autocomplete>
+          </b-field>
 
-        <!--Prevents the auto complete prompt from overlapping the checkboxes-->
-        <div v-if="isInputtingData" class="expandable-div"/>
+          <!--Prevents the auto complete prompt from overlapping the checkboxes-->
+          <div v-if="isInputtingData" class="expandable-div"/>
 
-        <b-table
-          :data="availableCollections"
-          :checkable="editable"
-          :checked-rows.sync="selectedCollections"
-          :paginated="true"
-          :pagination-simple="true"
-          per-page="5"
-        >
-          <template slot-scope="props">
-            <b-table-column label="ID">{{props.row.id}}</b-table-column>
-            <b-table-column label="Name">{{props.row.name}}</b-table-column>
-            <!--Only display the edit button if the editable props is set and the collection has products-->
-            <b-table-column v-if="editable && props.row.hasCustomizedProducts">
-              <!--Conditionally bind class to the button-->
-              <button
-                :class="[selectedCollections.map(collection => collection.id).includes(props.row.id) ? 'btn-primary' : 'btn-primary-disabled']"
-                :disabled="!selectedCollections.map(collection => collection.id).includes(props.row.id)"
-                @click="enableCollectionDetails(props.row.id, props.row.name)"
-              >
-                <b-icon icon="pencil"/>
-              </button>
-            </b-table-column>
-            <!--If the editable prop is not set, but the collection has customized products display the details button-->
-            <b-table-column v-else-if="!editable && props.row.hasCustomizedProducts">
-              <button
-                class="btn-primary"
-                @click="enableCollectionDetails(props.row.id, props.row.name)"
-              >
-                <b-icon icon="magnify"/>
-              </button>
-            </b-table-column>
-          </template>
-        </b-table>
-      </div>
-      <footer v-if="editable" class="modal-card-foot">
-        <button class="btn-primary" @click="updateCatalogue()">Update</button>
-      </footer>
-    </section>
+          <b-table
+            :data="availableCollections"
+            :checkable="editable"
+            :checked-rows.sync="selectedCollections"
+            :paginated="true"
+            :pagination-simple="true"
+            per-page="5"
+          >
+            <template slot-scope="props">
+              <b-table-column label="ID">{{props.row.id}}</b-table-column>
+              <b-table-column label="Name">{{props.row.name}}</b-table-column>
+              <!--Only display the edit button if the editable props is set and the collection has products-->
+              <b-table-column v-if="editable && props.row.hasCustomizedProducts">
+                <!--Conditionally bind class to the button-->
+                <button
+                  :class="[selectedCollections.map(collection => collection.id).includes(props.row.id) ? 'btn-primary' : 'btn-primary-disabled']"
+                  :disabled="!selectedCollections.map(collection => collection.id).includes(props.row.id)"
+                  @click="enableCollectionDetails(props.row.id, props.row.name)"
+                >
+                  <b-icon icon="pencil"/>
+                </button>
+              </b-table-column>
+              <!--If the editable prop is not set, but the collection has customized products display the details button-->
+              <b-table-column v-else-if="!editable && props.row.hasCustomizedProducts">
+                <button
+                  class="btn-primary"
+                  @click="enableCollectionDetails(props.row.id, props.row.name)"
+                >
+                  <b-icon icon="magnify"/>
+                </button>
+              </b-table-column>
+            </template>
+          </b-table>
+        </div>
+        <footer v-if="editable" class="modal-card-foot">
+          <button class="btn-primary" @click="updateCatalogue()">Update</button>
+        </footer>
+      </section>
 
-    <b-modal :active.sync="displayCollectionDetails" has-modal-card scroll="keep">
-      <commercial-catalogue-collection-details
-        :editable="editable"
-        :commercialCatalogueId="commercialCatalogueId"
-        :collectionId="selectedCollectionId"
-        :collectionName="selectedCollectionName"
-      />
-    </b-modal>
-  </div>
+      <b-modal :active.sync="displayCollectionDetails" has-modal-card scroll="keep">
+        <commercial-catalogue-collection-details
+          :editable="editable"
+          :commercialCatalogueId="commercialCatalogueId"
+          :collectionId="selectedCollectionId"
+          :collectionName="selectedCollectionName"
+        />
+      </b-modal>
+    </div>
+  </b-modal>
 </template>
 
 <script>
 import CommercialCatalogueCollectionDetails from "./CommercialCatalogueCollectionDetails";
 import CustomizedProductCollectionsRequests from "./../../../services/mycm_api/requests/customizedproductcollections.js";
 import CommercialCatalogueRequests from "./../../../services/mycm_api/requests/commercialcatalogues.js";
+
 const UPDATE_TABLE_ENTRY_EVENT = "updateTableEntry";
+const CLOSE_MODAL_EVENT = "closeModal";
+
 export default {
   name: "CommercialCatalogueDetails",
   components: {
@@ -202,6 +207,9 @@ export default {
         });
     },
 
+    closeModal() {
+      this.$emit(CLOSE_MODAL_EVENT);
+    },
     //TODO: fix selection
     selectCollection(collection) {
       if (this.editable) {
