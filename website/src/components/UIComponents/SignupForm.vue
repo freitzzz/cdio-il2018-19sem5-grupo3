@@ -15,10 +15,19 @@
         <b-field label="Password">
           <b-input type="password" v-model="password" :placeholder="placeholder.password" icon="key" password-reveal required></b-input>
         </b-field>
-  
+        <b-field label="Phone Number">
+          <telephone-input
+            :enabledFlags="true"
+            v-model="phoneNumber"
+            @onInput="onPhoneNumberInput"
+            :preferredCountries="['us', 'gb', 'ua']"
+          />
+        </b-field>
+
+
         <b-checkbox type="is-info" @input="iHaveReadThePolicy"> </b-checkbox>
         <a @click="emitPrivacy()">I have read the <u>Privacy Policy</u></a>
-        <div>
+        <div v-if="false">
           <privacy-policy-modal :activateModal="activateModalForm"></privacy-policy-modal>
         </div>
       </div>
@@ -33,7 +42,14 @@
 </template>
 
 <script>
+
   import PrivacyPolicyModal from './PrivacyPolicyModal.vue';
+  
+  /**
+   * Requires vue-tel-input for the phone number input
+   */
+  import TelephoneInput from 'vue-tel-input';
+  
   export default {
     /**
      * Component Data
@@ -47,16 +63,16 @@
         },
         email: "",
         password: "",
+        phoneNumber:"",
         name: "",
         privacyCheckBox: false,
         checkBox: "",
         activateModalForm: true,
-  
-  
       };
     },
     components: {
-      PrivacyPolicyModal
+      PrivacyPolicyModal,
+      TelephoneInput
     },
     /**
      * Component methods
@@ -116,6 +132,9 @@
         } else {
           this.$toast.open('Please confirm that you have read our privacy policy');
         }
+      },
+      onPhoneNumberInput(phoneNumberInput){
+        console.log(phoneNumberInput);
       }
     }
   
