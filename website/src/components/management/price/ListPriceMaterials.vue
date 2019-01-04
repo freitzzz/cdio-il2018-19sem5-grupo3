@@ -58,9 +58,6 @@ import PriceTableRequests from './../../../services/mycm_api/requests/pricetable
 import MaterialRequests from './../../../services/mycm_api/requests/materials.js';
 import CurrenciesPerAreaRequests from './../../../services/mycm_api/requests/currenciesperarea.js';
 
-let colors=[];
-let finishes=[];
-
 export default {
     components:{
         PriceMaterialsTable,
@@ -201,12 +198,15 @@ export default {
         async generateMaterialsTableData(materials){
             for(let i=0; i < materials.length; i++){    
                 try{
-                    const {data : {currentPrice}} = await PriceTableRequests.getCurrentMaterialPrice(materials[i].id, "", "");
+                    const {data} = await PriceTableRequests.getCurrentMaterialPrice(materials[i].id, "", "");
                     this.data.push({
                         id: materials[i].id,
+                        tableEntryId: data.tableEntryId,
                         reference: materials[i].reference,
                         designation: materials[i].designation,
-                        price: currentPrice.value + " " + currentPrice.currency + "/" + currentPrice.area
+                        price: data.currentPrice.value + " " + data.currentPrice.currency + "/" + data.currentPrice.area,
+                        startingDate: data.timePeriod.startingDate,
+                        endingDate: data.timePeriod.endingDate
                     });
                 }catch(error){
                     this.$toast.open(error.response.data.message);

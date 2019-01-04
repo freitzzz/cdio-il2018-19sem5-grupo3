@@ -9,16 +9,15 @@
             <div class="custom-actions">
                 <button
                     class="btn-primary"
-                    @click="openListPriceFinishes(props.rowData.id)"
-                >List of Finishes
-                    
+                    @click="openListPriceFinishes(props.rowData)"
+                >                    
                 </button>
                
             </div>
             <div v-if="showListFinishes">
                 <b-modal :active.sync="showListFinishes" has-modal-card scroll="keep">
                     <list-price-finishes
-                        :material="currentSelectedMaterial2"
+                        :material="currentSelectedMaterial"
                     />
                 </b-modal>
             </div>                    
@@ -29,13 +28,13 @@
             <div class="custom-actions">
                 <button
                     class="btn-primary"
-                    @click="openMaterialDetails(props.rowData.id)"
+                    @click="openMaterialDetails(props.rowData)"
                 >
                     <b-icon icon="chart-line"/>
                 </button>
                 <button
                     class="btn-primary"
-                    @click="editMaterialDetails(props.rowData.id)"
+                    @click="editMaterialDetails(props.rowData)"
                 >
                     <b-icon icon="pencil"/>
                 </button>
@@ -51,7 +50,7 @@
                 <b-modal :active.sync="showEditMaterialDetails" has-modal-card scroll="keep">
                     <edit-price-material
                         @emitMaterial="updateMaterial"
-                        :material="currentSelectedMaterial2"
+                        :material="currentSelectedMaterial"
                     />
                 </b-modal>
             </div>
@@ -86,8 +85,12 @@ import EditPriceMaterial from './EditPriceMaterial';
  */
 import Config,{MYCM_API_URL} from '../../../config';
 
+import MaterialRequest from './../../../services/mycm_api/requests/materials';
+import PriceTable from './../../../services/mycm_api/requests/pricetables.js';
+
 
 export default {
+   
     /**
      * Components exported components
      */
@@ -101,13 +104,11 @@ export default {
      */
     data(){
         return{
-            availableColors:[],
-            availableFinishes:[],
+            finishes: Array,
             /**
              * Current Table Selected Material
              */
             currentSelectedMaterial:null,
-            currentSelectedMaterial2:null,
             /**
              * Materials table columns
              */
@@ -153,19 +154,19 @@ export default {
         /**
          * Opens a modal with the material details
          */
-        openMaterialDetails(materialId){
-            /* this
-                .getMaterialDetails(materialId)
-                .then((material)=>{ */
+        openMaterialDetails(material){
+             this
+                .getMaterialDetails(material)
+                .then((material)=>{ 
                     this.showMaterialDetails=true;
-                /* }); */
+                 }); 
         },
         /**
          * Opens a modal with the material details
          */
-        openListPriceFinishes(materialId){
+        openListPriceFinishes(material){
             this
-                .getMaterialDetails(materialId)
+                .getMaterialDetails(material)
                 .then((material)=>{
                     this.showListFinishes=true;
                 });
@@ -173,14 +174,64 @@ export default {
         /**
          * Fetches the details of a certain material in a promise way
          */
-        getMaterialDetails(materialId){
+        getMaterialDetails(material){
+            let value = material.price.split(" ")[0];
+            let currency = material.price.split(" ")[1].split("/")[0];
+            let area = material.price.split(" ")[1].split("/")[1];
+
+            let initialDate = material.startingDate.split("T")[0];
+            let initalTime = material.startingDate.split("T")[1];
+            let endDate = material.endingDate.split("T")[0];
+            let endTime = material.endingDate.split("T")[1];
+
+            return new Promise((accept,reject)=>{
+                MaterialRequest.getMaterial(material.id)
+                    .then((response)=>{
+
+                        
+
+                                for(let i=0; i<response.data.finishes.length; i++){
+                                    PriceTable.getCurrentMaterialFinishPrice(response.data.id, response.data.finishes[i].id, "", "")
+                                    .then((finishData) => {
+                                        this.finishes.push({
+                                            id: response.data.finishes[i].id,
+                                            description: response.data.finishes[i].description,
+                                            shininess: response.data.finishes[i].shininess,
+                                            value: finishData.data.currentPrice.value + " " + finishData.data.currentPrice.currency + "/" + finishData.data.currentPrice.area,
+                                        })
+                                    })
+                                    .catch(); 
+                                };
+                                this.currentSelectedMaterial= {
+                                id: response.data.id,
+                                tableEntryId: material.tableEntryId,
+                                reference: response.data.reference,
+                                designation: response.data.designation,
+                                //finishes: this.finishes,
+                                finishes: response.data.finishes,
+                                value: value,
+                                currency: currency,
+                                area: area,
+                                startingDate: initialDate,
+                                endingDate: endDate,
+                                startingTime: initalTime,
+                                endingTime: endTime
+                                };
+                                accept(response);
+                             
+                    })
+                    .catch((error_message)=>{
+                        this.$toast.open({message:error_message});
+                        reject();
+                    });
+            });
             
         },
         /**
          * Edits the details of a material
          */
-        editMaterialDetails(materialId){
-            this.getMaterialDetails(materialId)
+        editMaterialDetails(materialId, price){
+            this.getMaterialDetails(materialId, price)
                 .then((matrial)=>{this.showEditMaterialDetails=true;});
         },
         /**
