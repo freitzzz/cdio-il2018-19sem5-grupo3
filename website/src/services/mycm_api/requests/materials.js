@@ -17,12 +17,28 @@ export default {
 
 
     /**
+     * Options used for retrieving a Material.
+     * @typedef {Object} GetOptions
+     * @property {boolean} pricedFinishesOnly
+     */
+
+    /**
      * Retrieves a Material with a matching identifier.
      * @param {number} materialId - Material's identifier.
+     * @param {GetOptions=} getOptions - Additional options used for retrieving a Material.
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved Material.
      */
-    getMaterial(materialId) {
-        return Axios.get(`${MATERIALS_URL}/${materialId}`);
+    getMaterial(materialId, getOptions) {
+
+        var requestUrl = `${MATERIALS_URL}/${materialId}`;
+
+        if (getOptions !== undefined) {
+            const { pricedFinishesOnly } = getOptions;
+
+            requestUrl = requestUrl.concat(`?pricedfinishesonly=${pricedFinishesOnly}`)
+        }
+
+        return Axios.get(requestUrl);
     },
 
 
