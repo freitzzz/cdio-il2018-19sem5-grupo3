@@ -9,10 +9,12 @@
       </button>
     </div>
 
-    <b-modal :active="modalEnabled" has-modal-card scroll="keep" :onCancel="confirmClose">
-      <create-new-commercial-catalogue @createCatalogue="createCatalogue"/>
-    </b-modal>
-    
+    <create-new-commercial-catalogue
+      v-if="modalEnabled"
+      @createCatalogue="createCatalogue"
+      @closeModal="closeCatalogueModal"
+    />
+
     <commercial-catalogues-table :data="data"/>
   </div>
 </template>
@@ -41,6 +43,13 @@ export default {
      */
     enableCatalogueModal() {
       this.modalEnabled = true;
+    },
+
+    /**
+     * Disables the catalogue creation modal.
+     */
+    closeCatalogueModal() {
+      this.modalEnabled = false;
     },
 
     /**
@@ -78,21 +87,6 @@ export default {
         .catch(error => {
           this.$toast.open(error.response.data);
         });
-    },
-
-    /**
-     * Displays a dialog in order to confirm closing the Commercial Catalogue creation modal.
-     */
-    confirmClose() {
-      this.$dialog.confirm({
-        title: "Confirm Close",
-        message: `Are you sure you want exit?`,
-        cancelText: "Cancel",
-        confirmText: "OK",
-        type: "is-info",
-        onConfirm: () => (this.modalEnabled = false),
-        onCancel: () => (this.modalEnabled = true)
-      });
     }
   },
   created() {

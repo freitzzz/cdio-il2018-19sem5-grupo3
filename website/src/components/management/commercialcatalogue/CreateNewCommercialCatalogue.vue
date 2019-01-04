@@ -1,71 +1,76 @@
 <template>
-  <div class="modal-card" style="width:auto">
-    <header class="modal-card-head">
-      <p class="modal-card-title">New Commercial Catalogue</p>
-    </header>
-    <section class="modal-card-body">
-      <b-field label="Reference">
-        <b-input type="String" placeholder="Catalogue's Reference" required v-model="reference"/>
-      </b-field>
-      <b-field label="Designation">
-        <b-input
-          type="String"
-          placeholder="Catalogue's Designation"
-          required
-          v-model="designation"
-        />
-      </b-field>
-      <div v-if="collections.length > 0">
-        <b-field label="Collections">
-          <b-autocomplete
-            rounded
-            v-model="searchedCollection"
-            :keep-first="true"
-            :data="suggestedCollections"
-            field="name"
-            :clear-on-select="true"
-            @select="option => selectCollection(option)"
-            placeholder="e.g. Winter 2018"
-            icon="magnify"
-          >
-            <template slot="empty">No collections found</template>
-          </b-autocomplete>
+  <b-modal :active="true" :onCancel="confirmClose" has-modal-card scroll="keep">
+    <div class="modal-card" style="width:auto">
+      <header class="modal-card-head">
+        <p class="modal-card-title">New Commercial Catalogue</p>
+      </header>
+      <section class="modal-card-body">
+        <b-field label="Reference">
+          <b-input type="String" placeholder="Catalogue's Reference" required v-model="reference"/>
         </b-field>
+        <b-field label="Designation">
+          <b-input
+            type="String"
+            placeholder="Catalogue's Designation"
+            required
+            v-model="designation"
+          />
+        </b-field>
+        <div v-if="collections.length > 0">
+          <b-field label="Collections">
+            <b-autocomplete
+              rounded
+              v-model="searchedCollection"
+              :keep-first="true"
+              :data="suggestedCollections"
+              field="name"
+              :clear-on-select="true"
+              @select="option => selectCollection(option)"
+              placeholder="e.g. Winter 2018"
+              icon="magnify"
+            >
+              <template slot="empty">No collections found</template>
+            </b-autocomplete>
+          </b-field>
 
-        <!--Prevents the auto complete prompt from overlapping the checkboxes-->
-        <div v-if="isInputtingData" class="expandable-div"></div>
+          <!--Prevents the auto complete prompt from overlapping the checkboxes-->
+          <div v-if="isInputtingData" class="expandable-div"></div>
 
-        <b-table
-          :data="collections"
-          :checked-rows.sync="selectedCollections"
-          :paginated="true"
-          :pagination-simple="true"
-          checkable
-          per-page="5"
-        >
-          <template slot-scope="props">
-            <b-table-column label="Name">{{props.row.name}}</b-table-column>
-            <b-table-column v-if="props.row.hasCustomizedProducts">
-              <button
-                :class="[selectedCollections.map(collection => collection.id).includes(props.row.id) ? 'btn-primary' : 'btn-primary-disabled']"
-                :disabled="!selectedCollections.map(collection => collection.id).includes(props.row.id)"
-              >
-                <b-icon icon="pencil"></b-icon>
-              </button>
-            </b-table-column>
-          </template>
-        </b-table>
-      </div>
-      <footer class="modal-card-foot">
-        <button class="btn-primary" @click="createCatalogue">Create</button>
-      </footer>
-    </section>
-  </div>
+          <b-table
+            :data="collections"
+            :checked-rows.sync="selectedCollections"
+            :paginated="true"
+            :pagination-simple="true"
+            checkable
+            per-page="5"
+          >
+            <template slot-scope="props">
+              <b-table-column label="Name">{{props.row.name}}</b-table-column>
+              <b-table-column v-if="props.row.hasCustomizedProducts">
+                <button
+                  :class="[selectedCollections.map(collection => collection.id).includes(props.row.id) ? 'btn-primary' : 'btn-primary-disabled']"
+                  :disabled="!selectedCollections.map(collection => collection.id).includes(props.row.id)"
+                >
+                  <b-icon icon="pencil"></b-icon>
+                </button>
+              </b-table-column>
+            </template>
+          </b-table>
+        </div>
+        <footer class="modal-card-foot">
+          <button class="btn-primary" @click="createCatalogue">Create</button>
+        </footer>
+      </section>
+    </div>
+  </b-modal>
 </template>
 
 <script>
 import CustomizedProductCollectionsRequests from "./../../../services/mycm_api/requests/customizedproductcollections.js";
+
 const CREATE_CATALOGUE_EVENT = "createCatalogue";
+const CLOSE_MODAL_EVENT = "closeModal";
+
 export default {
   name: "CreateNewCommercialCatalogue",
   data() {
@@ -136,6 +141,19 @@ export default {
         .catch(error => {
           this.$toast.open(error.response.data);
         });
+    },
+    /**
+     * Displays a dialog in order to confirm closing the Commercial Catalogue creation modal.
+     */
+    confirmClose() {
+      this.$dialog.confirm({
+        title: "Confirm Close",
+        message: `Are you sure you want exit?`,
+        cancelText: "Cancel",
+        confirmText: "OK",
+        type: "is-info",
+        onConfirm: () => this.$emit(CLOSE_MODAL_EVENT)
+      });
     }
   },
   computed: {
