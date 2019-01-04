@@ -106,7 +106,7 @@ namespace core_tests.domain
             return customizedProduct;
         }
 
-        private CustomizedProduct buildValidInstanceWithSubCustomizedProducts(string reference)
+        private CustomizedProduct buildValidInstanceWithSubCustomizedProducts()
         {
             Dimension heightDimension = new ContinuousDimensionInterval(60, 80, 2);
             Dimension widthDimension = new SingleValueDimension(200);
@@ -676,7 +676,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureChangingFinishIfCustomizedMaterialIsNullThrowsException()
         {
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("user auth token", "reference", 
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("user auth token", "reference",
                buildValidProduct(), buildCustomizedDimensions()).build();
 
             Action changeFinish = () => customizedProduct.changeFinish(buildGlossyFinish());
@@ -687,7 +687,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureChangingFinishIfCustomizedMaterialIsNullDoesNotChangeFinish()
         {
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("user auth token", "reference", 
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("user auth token", "reference",
                 buildValidProduct(), buildCustomizedDimensions()).build();
 
             try
@@ -702,7 +702,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureChangingFinishIfCustomizedMaterialIsDefinedDoesNotThrowException()
         {
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("user auth token", "reference", 
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("user auth token", "reference",
                 buildValidProduct(), buildCustomizedDimensions()).withMaterial(buildCustomizedMaterial()).build();
 
             Action changeFinish = () => customizedProduct.changeFinish(buildGlossyFinish());
@@ -714,7 +714,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureChangingFinishIfCustomizedMaterialIsDefinedChangesFinish()
         {
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("user auth token", "reference", 
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("user auth token", "reference",
                  buildValidProduct(), buildCustomizedDimensions()).withMaterial(buildCustomizedMaterial()).build();
 
             Finish finish = buildGlossyFinish();
@@ -727,7 +727,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureChangingColorIfCustomizationIsFinishedThrowsException()
         {
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("user auth token", "reference", 
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("user auth token", "reference",
                 buildValidProduct(), buildCustomizedDimensions()).withMaterial(buildCustomizedMaterial()).build();
 
             customizedProduct.finalizeCustomization();
@@ -740,7 +740,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureChangingColorIfCustomizationIsFinishedDoesNotChangeFinish()
         {
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("user auth token", "reference", 
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("user auth token", "reference",
                 buildValidProduct(), buildCustomizedDimensions()).withMaterial(buildCustomizedMaterial()).build();
 
             customizedProduct.finalizeCustomization();
@@ -2080,9 +2080,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureActivatingAnActivatedCustomizedProductDoesntActivateItAndItsChildren()
         {
-            string reference = "reference";
-
-            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(reference);
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
 
             customizedProduct.activate();
 
@@ -2109,9 +2107,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureActivatingADeactivatedCustomizedProductActivatesItAndItsChildren()
         {
-            string reference = "reference";
-
-            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(reference);
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
             customizedProduct.deactivate();
             Assert.True(customizedProduct.activate());
             Assert.True(customizedProduct.activated);
@@ -2148,9 +2144,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureDeactivatingAnActivatedCustomizedProductDeactivatesItAndItsChildren()
         {
-            string reference = "reference";
-
-            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(reference);
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
 
             customizedProduct.activate();
 
@@ -2165,9 +2159,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureDeactivatingADeactivatedCustomizedProductDoesntDeactivateItAndItsChildren()
         {
-            string reference = "reference";
-
-            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(reference);
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
             customizedProduct.deactivate();
 
             Assert.False(customizedProduct.deactivate());
@@ -2319,9 +2311,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureRemovingNullCustomizedProductThrowsException()
         {
-            string reference = "reference";
-
-            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(reference);
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
 
             Action act = () => customizedProduct.removeCustomizedProduct(null, customizedProduct.slots[0]);
 
@@ -2331,9 +2321,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureRemovingCustomizedProductFromNullSlotThrowsException()
         {
-            string reference = "reference";
-
-            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(reference);
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
 
             Action act = () => customizedProduct.removeCustomizedProduct(customizedProduct.slots[0].customizedProducts[0], null);
 
@@ -2386,9 +2374,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureRemovingCustomizedProductFromSlotRemovesIt()
         {
-            string reference = "reference";
-
-            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(reference);
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
 
             customizedProduct.removeCustomizedProduct(customizedProduct.slots[0].customizedProducts[0], customizedProduct.slots[0]);
 
@@ -2398,9 +2384,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureSubCustomizedProductsFinalizingTheCustomizationProcessThrowsException()
         {
-            string reference = "reference";
-
-            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(reference);
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
 
             Action act = () => customizedProduct.slots[0].customizedProducts[0].finalizeCustomization();
 
@@ -2422,9 +2406,7 @@ namespace core_tests.domain
         [Fact]
         public void ensureFinalizingCustomizationOfAValidCustomizedProductSetsStatusToFinished()
         {
-            string reference = "reference";
-
-            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(reference);
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
             customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
             customizedProduct.slots[0].customizedProducts[0].changeCustomizedMaterial(buildCustomizedMaterial());
             customizedProduct.slots[0].customizedProducts[0].slots[0].customizedProducts[0].changeCustomizedMaterial(buildCustomizedMaterial());
@@ -2432,6 +2414,27 @@ namespace core_tests.domain
             customizedProduct.finalizeCustomization();
 
             Assert.Equal(CustomizationStatus.FINISHED, customizedProduct.status);
+        }
+
+        [Fact]
+        public void ensureNumberOfSlotsWorks()
+        {
+            CustomizedProduct customizedProduct = buildValidInstanceWithSlotsAndSubCustomizedProducts();
+            int expectedNumSlots = 2;
+            int actualNumSlots = customizedProduct.numberOfSlots();
+
+            Assert.Equal(expectedNumSlots, actualNumSlots);
+        }
+
+        [Fact]
+        public void ensureNumberOfSubCustomizedProductsWorks()
+        {
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
+
+            int expectedNumSubCustomizedProducts = 1;
+            int actualNumSubCustomizedProducts = customizedProduct.numberOfSubCustomizedProducts();
+
+            Assert.Equal(expectedNumSubCustomizedProducts, actualNumSubCustomizedProducts);
         }
     }
 }

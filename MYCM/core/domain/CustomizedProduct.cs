@@ -865,6 +865,24 @@ namespace core.domain
         {
             return slots.Count;
         }
+
+        /// <summary>
+        /// Returns the number of sub CustomizedProducts.
+        /// </summary>
+        /// <returns>Number of sub CustomizedProducts within the CustomizedProduct.</returns>
+        public int numberOfSubCustomizedProducts()
+        {
+            int result = 0;
+
+            foreach (Slot slot in this.slots)
+            {
+                result += slot.customizedProducts.Count;
+            }
+
+            return result;
+        }
+
+
         /// <summary>
         /// Returns the recommended slots
         /// </summary>
