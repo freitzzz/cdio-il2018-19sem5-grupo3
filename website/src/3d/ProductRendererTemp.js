@@ -1063,7 +1063,12 @@ export default class ProductRenderer {
    * @param {number} currentScaleValue Number with the current scale value
    */
   getNewScaleValue(initialScaleValue, newScaleValue, currentScaleValue) {
-    if (initialScaleValue == 0) return 0;
+
+    //*Scaling objects to 0 will result in 'Matrix3.getInverse(): can't invert matrix, determinant is 0' warnings
+    //See: https://github.com/aframevr/aframe-inspector/issues/524
+    //And: https://stackoverflow.com/questions/19150120/scaling-an-object-in-three-js
+
+    if (initialScaleValue == 0) return 0.00001;
     return (newScaleValue * 1) / initialScaleValue;
   }
 
