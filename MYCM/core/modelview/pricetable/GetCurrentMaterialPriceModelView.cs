@@ -23,5 +23,12 @@ namespace core.modelview.pricetable
         /// <value>Gets/Sets the current price</value>
         [DataMember(Name = "currentPrice")]
         public PriceModelView currentPrice { get; set; }
+
+        /// <summary>
+        /// Time period for which the current price is going to be active
+        /// </summary>
+        /// <value>Gets/Sets the time period</value>
+        [DataMember(Name = "timePeriod")]
+        public TimePeriodModelView timePeriod {get; set;}
     }
 }
