@@ -36,26 +36,45 @@
               </b-select>
             </b-field>
           </b-field>
-          <base-table
+          <custom-simple-table
             :columns="simpleTablesColumns.components"
+            :actionsButtons="this.buttons"
             :data="this.material.finishes"
             :allowActions="true"
-            
+            @emitButtonClick="showEditFinish"
           />
+          <div v-if="editFinishModal">
+                <b-modal :active.sync="editFinishModal" has-modal-card scroll="keep">
+                    <edit-price-finish 
+                        :active="editFinishModal"
+                        :material="this.material.finishes"
+                    />
+                </b-modal>
+                </div>
         </section>
     </div>
   </div>
 </template> 
 <script>
 import Axios from "axios";
-import BaseTable from './../../UIComponents/BaseTable';
+import CustomSimpleTable from './../../UIComponents/CustomSimpleTable';
 import Config,{ MYCM_API_URL } from '../../../config.js';
 import CurrenciesPerAreaRequests from './../../../services/mycm_api/requests/currenciesperarea.js';
 import CreatePriceFinish from './CreatePriceFinish.vue';
+import EditPriceFinish from './EditPriceFinish.vue';
 import PriceTableRequests from './../../../services/mycm_api/requests/pricetables.js';
 export default {
   name: "ListFinishes",
    created(){
+       
+       this.buttons.push(  
+            {
+                class:"btn-primary",
+                icon:"pencil",
+                id:1
+            }
+
+       );
         CurrenciesPerAreaRequests.getCurrencies()
             .then((response)=>{
                 this.currencies = response.data;
@@ -73,8 +92,9 @@ export default {
     },
   data() {
     return {
-      tou:null,
+      buttons: [],
         createMaterialModal:false,
+        editFinishModal: false,
       activeFlag: true,
       currencies:Array,
       areas:Array,
@@ -103,10 +123,12 @@ export default {
     }
   },
   components:{
-        BaseTable,
-        CreatePriceFinish
+        CustomSimpleTable,
+        CreatePriceFinish,
+        EditPriceFinish
   },
   methods: {
+      
       /**
          * Triggers the creation of a new material
          */
@@ -143,6 +165,12 @@ export default {
                     //Throw error?
                 });
         },   
+        /**
+         * Shows the details of a material
+         */
+        async showEditFinish(materialId){
+            this.editFinishModal=true;
+        },
          /**
          * Posts a new material price table entry
          */
@@ -167,6 +195,7 @@ export default {
                 this.refreshTable();
             }
         },
+        
      async convertValuesToCurrency(){
             for(let i=0; i<this.data.length; i++){
                 try{
