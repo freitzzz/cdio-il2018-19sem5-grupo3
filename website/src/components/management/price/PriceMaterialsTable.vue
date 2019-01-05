@@ -10,7 +10,8 @@
                 <button
                     class="btn-primary"
                     @click="openListPriceFinishes(props.rowData)"
-                >                    
+                >      
+                    <b-icon icon="format-list-bulleted"></b-icon>              
                 </button>
                
             </div>
@@ -28,7 +29,7 @@
             <div class="custom-actions">
                 <button
                     class="btn-primary"
-                    @click="openMaterialDetails(props.rowData)"
+                    @click="showMaterialPriceHistory(props.rowData)"
                 >
                     <b-icon icon="chart-line"/>
                 </button>
@@ -39,10 +40,10 @@
                     <b-icon icon="pencil"/>
                 </button>
             </div>
-            <div v-if="showMaterialDetails">
-                <b-modal :active.sync="showMaterialDetails" has-modal-card scroll="keep">
-                    <price-material-details
-                        :material="currentSelectedMaterial"
+            <div v-if="showMaterialPriceHistoryModal">
+                <b-modal :active.sync="showMaterialPriceHistoryModal" has-modal-card scroll="keep">
+                    <material-price-history
+                        :materialId="currentSelectedMaterial.id"
                     />
                 </b-modal>
             </div>                    
@@ -68,7 +69,7 @@ import Axios from 'axios';
 /**
  * Requires MaterialDetails modal for material details
  */
-import PriceMaterialDetails from './PriceMaterialDetails';
+import MaterialPriceHistory from './MaterialPriceHistory';
 
 /**
  * Requires MaterialDetails modal for material details
@@ -96,7 +97,7 @@ export default {
      */
     components:{
         EditPriceMaterial,
-        PriceMaterialDetails,
+        MaterialPriceHistory,
         ListPriceFinishes
     },
     /**
@@ -143,8 +144,8 @@ export default {
                 }
             ],
             showEditMaterialDetails:false,
-            showMaterialDetails:false,
-            showListFinishes:false
+            showListFinishes:false,
+            showMaterialPriceHistoryModal:false
         }
     },
     /**
@@ -152,14 +153,11 @@ export default {
      */
     methods:{
         /**
-         * Opens a modal with the material details
+         * Opens a modal with the material's price history
          */
-        openMaterialDetails(material){
-             this
-                .getMaterialDetails(material)
-                .then((material)=>{ 
-                    this.showMaterialDetails=true;
-                 }); 
+        showMaterialPriceHistory(material){
+            this.currentSelectedMaterial = material;
+            this.showMaterialPriceHistoryModal=true;
         },
         /**
          * Opens a modal with the material details
