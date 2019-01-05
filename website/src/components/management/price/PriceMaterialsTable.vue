@@ -104,7 +104,7 @@ export default {
      */
     data(){
         return{
-            finishes: Array,
+            finishes: [],
             /**
              * Current Table Selected Material
              */
@@ -187,8 +187,6 @@ export default {
             return new Promise((accept,reject)=>{
                 MaterialRequest.getMaterial(material.id)
                     .then((response)=>{
-
-                        
 
                                 for(let i=0; i<response.data.finishes.length; i++){
                                     PriceTable.getCurrentMaterialFinishPrice(response.data.id, response.data.finishes[i].id, "", "")
