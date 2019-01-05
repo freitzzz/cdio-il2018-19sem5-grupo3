@@ -68,7 +68,6 @@ export default {
          * @param {Number} actionId Number with the action id
          */
         emitButtonClick(tableDataId,actionId){
-            alert(actionId)
             this.$emit('emitButtonClick',tableDataId);
         }
     },

@@ -1,23 +1,23 @@
 <template>
   <div class="modal-card" style="width: auto">
     <header class="modal-card-head">
-      <p class="modal-card-title">Schedule Material Price</p>
+      <p class="modal-card-title">Schedule Finish Price</p>
     </header>
     <section class="modal-card-body">
-      <div v-if="materials.length > 0">
-        <b-field label="Select the Materials">
+      <div v-if="finishes.length > 0">
+        <b-field label="Select the Finishes">
           <b-autocomplete
             rounded
-            v-model="searchedMaterial"
+            v-model="searchedFinish"
             :keep-first="true"
-            :data="suggestedMaterials"
-            field="designation"
+            :data="suggestedFinishes"
+            field="description"
             :clean-on-select="true"
-            @select="option => selectMaterial(option)"
-            placeholder="Search by Material designation"
+            @select="option => selectFinish(option)"
+            placeholder="Search by Material description"
             icon="magnify"
           >
-            <template slot="empty">No materials found</template>
+            <template slot="empty">No finishes found</template>
           </b-autocomplete>
         </b-field>
 
@@ -25,15 +25,15 @@
         <div v-if="isInputtingData" class="expandable-div"></div>
 
         <b-table
-          :data="materials"
-          :checked-rows.sync="selectedMaterials"
+          :data="finishes"
+          :checked-rows.sync="selectedFinishes"
           :paginated="true"
           :pagination-simple="true"
           checkable
           per-page="5"
         >
           <template slot-scope="props">
-            <b-table-column label="Designation">{{props.row.designation}}</b-table-column>
+            <b-table-column label="Description">{{props.row.description}}</b-table-column>
           </template>
         </b-table>
       </div>
@@ -146,20 +146,18 @@
 </template>
 
 <script>
-import Axios from "axios";
 import MaterialRequests from "./../../../services/mycm_api/requests/materials.js";
-import PriceTableRequests from "./../../../services/mycm_api/requests/pricetables.js";
 import CurrenciesPerAreaRequests from "./../../../services/mycm_api/requests/currenciesperarea.js";
 
 export default {
-  name: "CreatePriceMaterial",
+  name: "CreatePriceFinish",
 
   data() {
     const today = new Date();
     return {
-      searchedMaterial: "",
-      selectedMaterials: [],
-      materials: [],
+      searchedFinish: "",
+      selectedFinishes: [],
+      finishes: [],
       priceValue: "",
       currencies: Array,
       areas: Array,
@@ -174,7 +172,7 @@ export default {
   },
 
   created() {
-    this.getAvailableMaterials();
+    this.getAvailableFinishes();
     CurrenciesPerAreaRequests.getCurrencies()
       .then(response => {
         this.currencies = response.data;
@@ -192,43 +190,42 @@ export default {
   },
 
   methods: {
-    getAvailableMaterials() {
-      MaterialRequests.getMaterials()
+    getAvailableFinishes() {
+      MaterialRequests.getMaterial(this.material.id)
         .then(response => {
-          this.materials.push(...response.data);
+          this.finishes.push(...response.data.finishes);
         })
         .catch(error => {
           this.$toast.open(error.response.data);
         });
     },
 
-    selectMaterial(material) {
+    selectFinish(finish) {
       var alreadyAdded = false;
-
-      //check if the material was already added
-      for (let i = 0; i < this.selectedMaterials.length; i++) {
-        if (this.selectedMaterials[i].id == material.id) {
+      //check if the finish was already added
+      for (let i = 0; i < this.selectedFinishes.length; i++) {
+        if (this.selectedFinishes[i].id == finish.id) {
           alreadyAdded = true;
           break;
         }
       }
-
       if (!alreadyAdded) {
-        this.selectedMaterials.push(material);
+        this.selectedFinishes.push(finish);
       }
     },
 
     createPriceTableEntries() {
-      let entries = [];
+       let entries = [];
       if(this.selectedCurrency == null || this.selectedArea == null){
         this.$toast.open({
           message : "Choose a currency and an area before you schedule the price!"
         });
         return;
       }
-      for (let i = 0; i < this.selectedMaterials.length; i++) {
+      for (let i = 0; i < this.selectedFinishes.length; i++) {
         entries.push({
-          materialId: this.selectedMaterials[i].id,
+          materialId: this.material.id,
+          finishId: this.selectedFinishes[i].id,
           tableEntry: {
             tableEntry: {
               price: {
@@ -242,35 +239,37 @@ export default {
           }
         });
       }
-
-      this.$emit("createMaterialPriceTableEntry", entries);
+      this.$emit("createMaterialFinishPriceTableEntry", entries);
     },
 
     parseDateTimeToGeneralIsoFormatString(date, time){
       let dateToIso = date == null ? null : date.toISOString();
       let timeToIso = time == null ? null : time.toISOString();
-      return dateToIso == null || timeToIso == null ? "" : dateToIso.split("T")[0] + "T" + timeToIso.split("T")[1].split(".")[0];
+      return dateToIso == null && timeToIso == null ? null : dateToIso.split("T")[0] + "T" + timeToIso.split("T")[1].split(".")[0];
     }
   },
 
   computed: {
-    suggestedMaterials() {
-      var suggestedMaterials = [];
+    suggestedFinishes() {
+      var suggestedFinishes = [];
       //the "i" flag makes the pattern case insensitive
-      var patt = new RegExp(`^.*(${this.searchedMaterial}).*$`, "i");
-
-      for (let i = 0; i < this.materials.length; i++) {
-        var match = patt.test(this.materials[i].designation);
+      var patt = new RegExp(`^.*(${this.searchedFinish}).*$`, "i");
+      for (let i = 0; i < this.finishes.length; i++) {
+        var match = patt.test(this.finishes[i].description);
         if (match) {
-          suggestedMaterials.push(this.materials[i]);
+          suggestedFinishes.push(this.finishes[i]);
         }
       }
-
-      return suggestedMaterials;
+      return suggestedFinishes;
     },
-
     isInputtingData() {
-      return this.searchedMaterial.length > 0;
+      return this.searchedFinish.length > 0;
+    }
+  },
+  props: {
+    material: {
+      type: Object,
+      required: true
     }
   }
 };

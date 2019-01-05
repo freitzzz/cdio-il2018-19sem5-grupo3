@@ -916,29 +916,14 @@ namespace core.domain
         public List<CustomizedDimensions> recommendedSlots(){
             
             List<CustomizedDimensions> recommendedSlots = new List<CustomizedDimensions>();
-
-            var widthCloset = //customizedDimensions.width; 
-            6000;
-            /*store.state.customizedProduct.customizedDimensions.width;*/ ///404.5;
-              var depthCloset = //customizedDimensions.depth; 
-              2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
-              var heightCloset = //customizedDimensions.height; 
-              5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;   
-              var unitCloset = "mm";//customizedDimensions.unit;
-              //store.state.customizedProduct.customizedDimensions.unit;
-              var unitSlots = "mm"; 
-              //store.getters.productSlotWidths.unit;
-              var recommendedSlotWidth = product.slotWidths.recommendedWidth;
-              ///store.getters.recommendedSlotWidth;
-              var minSlotWidth = product.slotWidths.minWidth;
-              ///store.getters.minSlotWidth;
-
-              /* if(unitCloset != unitSlots){
-                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
-                recommendedSlotWidth = this.valueConvertedSlotsWidth;
-                this.convert(unitSlots,unitCloset,minSlotWidth);
-                minSlotWidth = this.valueConvertedSlotsWidth;
-              }  */
+            
+            var widthCloset = customizedDimensions.width; 
+            var depthCloset = customizedDimensions.depth; 
+            var heightCloset = customizedDimensions.height; 
+            var unitCloset = "mm"; //customizedDimensions.unit;
+            var unitSlots = "mm";
+            var recommendedSlotWidth = product.slotWidths.recommendedWidth;
+            var minSlotWidth = product.slotWidths.minWidth;
 
               var reasonW = 404.5 / widthCloset;
               var reasonD = 100 / depthCloset;
@@ -993,28 +978,16 @@ namespace core.domain
             
             List<CustomizedDimensions> minSlots = new List<CustomizedDimensions>();
 
-            var widthCloset = //customizedDimensions.width; 
-            6000;
-            /*store.state.customizedProduct.customizedDimensions.width;*/ ///404.5;
-              var depthCloset = //customizedDimensions.depth; 
-              2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
-              var heightCloset = //customizedDimensions.height; 
-              5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;   
-              var unitCloset = "mm";//customizedDimensions.unit;
-              //store.state.customizedProduct.customizedDimensions.unit;
+            var widthCloset = customizedDimensions.width; 
+            var depthCloset = customizedDimensions.depth; 
+            var heightCloset = customizedDimensions.height; 
+            var unitCloset = "mm"; //customizedDimensions.unit;
               var unitSlots = "mm"; 
-              //store.getters.productSlotWidths.unit;
               var maxSlotWidth = product.slotWidths.maxWidth;
-              ///store.getters.recommendedSlotWidth;
               var minSlotWidth = product.slotWidths.minWidth;
-              ///store.getters.minSlotWidth;
 
-              /* if(unitCloset != unitSlots){
-                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
-                recommendedSlotWidth = this.valueConvertedSlotsWidth;
-                this.convert(unitSlots,unitCloset,minSlotWidth);
-                minSlotWidth = this.valueConvertedSlotsWidth;
-              }  */
+              Console.WriteLine(widthCloset);
+             
 
               var reasonW = 404.5 / widthCloset;
               var reasonD = 100 / depthCloset;
@@ -1025,6 +998,7 @@ namespace core.domain
               var remainderWidth =
                 widthCloset - maxNumberSlots * maxSlotWidth;
             for (var i = 0; i < maxNumberSlots; i++) {
+                
                 minSlots.Add( 
                     CustomizedDimensions.valueOf(
                         heightCloset,

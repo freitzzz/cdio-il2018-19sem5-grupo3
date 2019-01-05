@@ -9,16 +9,16 @@
             <div class="custom-actions">
                 <button
                     class="btn-primary"
-                    @click="openListPriceFinishes(props.rowData.id)"
-                >List of Finishes
-                    
+                    @click="openListPriceFinishes(props.rowData)"
+                >      
+                    <b-icon icon="format-list-bulleted"></b-icon>              
                 </button>
                
             </div>
             <div v-if="showListFinishes">
                 <b-modal :active.sync="showListFinishes" has-modal-card scroll="keep">
                     <list-price-finishes
-                        :material="currentSelectedMaterial2"
+                        :material="currentSelectedMaterial"
                     />
                 </b-modal>
             </div>                    
@@ -29,29 +29,29 @@
             <div class="custom-actions">
                 <button
                     class="btn-primary"
-                    @click="openMaterialDetails(props.rowData.id)"
+                    @click="showMaterialPriceHistory(props.rowData)"
                 >
                     <b-icon icon="chart-line"/>
                 </button>
                 <button
                     class="btn-primary"
-                    @click="editMaterialDetails(props.rowData.id)"
+                    @click="editMaterialPriceTableEntry(props.rowData)"
                 >
                     <b-icon icon="pencil"/>
                 </button>
             </div>
-            <div v-if="showMaterialDetails">
-                <b-modal :active.sync="showMaterialDetails" has-modal-card scroll="keep">
-                    <price-material-details
-                        :material="currentSelectedMaterial"
+            <div v-if="showMaterialPriceHistoryModal">
+                <b-modal :active.sync="showMaterialPriceHistoryModal" has-modal-card scroll="keep">
+                    <material-price-history
+                        :materialId="currentSelectedMaterial.id"
                     />
                 </b-modal>
             </div>                    
-            <div v-if="showEditMaterialDetails">
-                <b-modal :active.sync="showEditMaterialDetails" has-modal-card scroll="keep">
+            <div v-if="showEditMaterialPriceTableEntry">
+                <b-modal :active.sync="showEditMaterialPriceTableEntry" has-modal-card scroll="keep">
                     <edit-price-material
-                        @emitMaterial="updateMaterial"
-                        :material="currentSelectedMaterial2"
+                        @updateMaterialPriceTableEntry="updateMaterialPriceTableEntry"
+                        :material="currentSelectedMaterial"
                     />
                 </b-modal>
             </div>
@@ -69,7 +69,7 @@ import Axios from 'axios';
 /**
  * Requires MaterialDetails modal for material details
  */
-import PriceMaterialDetails from './PriceMaterialDetails';
+import MaterialPriceHistory from './MaterialPriceHistory';
 
 /**
  * Requires MaterialDetails modal for material details
@@ -86,14 +86,20 @@ import EditPriceMaterial from './EditPriceMaterial';
  */
 import Config,{MYCM_API_URL} from '../../../config';
 
+import MaterialRequest from './../../../services/mycm_api/requests/materials';
+import PriceTablesRequests from './../../../services/mycm_api/requests/pricetables.js';
+
 
 export default {
+   
+    name:"PriceMaterialsTable",
+
     /**
      * Components exported components
      */
     components:{
         EditPriceMaterial,
-        PriceMaterialDetails,
+        MaterialPriceHistory,
         ListPriceFinishes
     },
     /**
@@ -101,13 +107,11 @@ export default {
      */
     data(){
         return{
-            availableColors:[],
-            availableFinishes:[],
+            finishes: [],
             /**
              * Current Table Selected Material
              */
             currentSelectedMaterial:null,
-            currentSelectedMaterial2:null,
             /**
              * Materials table columns
              */
@@ -141,9 +145,9 @@ export default {
                     dataClass: "center aligned"
                 }
             ],
-            showEditMaterialDetails:false,
-            showMaterialDetails:false,
-            showListFinishes:false
+            showEditMaterialPriceTableEntry:false,
+            showListFinishes:false,
+            showMaterialPriceHistoryModal:false
         }
     },
     /**
@@ -151,21 +155,18 @@ export default {
      */
     methods:{
         /**
-         * Opens a modal with the material details
+         * Opens a modal with the material's price history
          */
-        openMaterialDetails(materialId){
-            /* this
-                .getMaterialDetails(materialId)
-                .then((material)=>{ */
-                    this.showMaterialDetails=true;
-                /* }); */
+        showMaterialPriceHistory(material){
+            this.currentSelectedMaterial = material;
+            this.showMaterialPriceHistoryModal=true;
         },
         /**
          * Opens a modal with the material details
          */
-        openListPriceFinishes(materialId){
+        openListPriceFinishes(material){
             this
-                .getMaterialDetails(materialId)
+                .getMaterialDetails(material)
                 .then((material)=>{
                     this.showListFinishes=true;
                 });
@@ -173,36 +174,80 @@ export default {
         /**
          * Fetches the details of a certain material in a promise way
          */
-        getMaterialDetails(materialId){
+        getMaterialDetails(material){
+            let value = material.price.split(" ")[0];
+            let currency = material.price.split(" ")[1].split("/")[0];
+            let area = material.price.split(" ")[1].split("/")[1];
+
+            let initialDate = material.startingDate.split("T")[0];
+            let initalTime = material.startingDate.split("T")[1];
+            let endDate = material.endingDate.split("T")[0];
+            let endTime = material.endingDate.split("T")[1];
+
+            return new Promise((accept,reject)=>{
+                MaterialRequest.getMaterial(material.id)
+                    .then((response)=>{
+
+                                for(let i=0; i<response.data.finishes.length; i++){
+                                    PriceTablesRequests.getCurrentMaterialFinishPrice(response.data.id, response.data.finishes[i].id, "", "")
+                                    .then((finishData) => {
+                                        this.finishes.push({
+                                            id: response.data.finishes[i].id,
+                                            description: response.data.finishes[i].description,
+                                            shininess: response.data.finishes[i].shininess,
+                                            value: finishData.data.currentPrice.value + " " + finishData.data.currentPrice.currency + "/" + finishData.data.currentPrice.area,
+                                        })
+                                    })
+                                    .catch(); 
+                                };
+                                this.currentSelectedMaterial= {
+                                id: response.data.id,
+                                tableEntryId: material.tableEntryId,
+                                reference: response.data.reference,
+                                designation: response.data.designation,
+                                //finishes: this.finishes,
+                                finishes: response.data.finishes,
+                                value: value,
+                                currency: currency,
+                                area: area,
+                                startingDate: initialDate,
+                                endingDate: endDate,
+                                startingTime: initalTime,
+                                endingTime: endTime
+                                };
+                                accept(response);
+                             
+                    })
+                    .catch((error_message)=>{
+                        this.$toast.open({message:error_message});
+                        reject();
+                    });
+            });
             
         },
         /**
          * Edits the details of a material
          */
-        editMaterialDetails(materialId){
-            this.getMaterialDetails(materialId)
-                .then((matrial)=>{this.showEditMaterialDetails=true;});
+        editMaterialPriceTableEntry(materialId, price){
+            this.getMaterialDetails(materialId, price)
+                .then((material)=>{this.showEditMaterialPriceTableEntry=true;});
         },
         /**
-         * Updates a given material
+         * Updates a price table entry of a material
          */
-        updateMaterial(materialDetails){
-            this
-                .updateMaterialProperties(materialDetails)
-                .then(()=>{
-                    this.$emit('refreshData');
-                    this.$toast.open({message:"Material was updated with success!"});      
+        updateMaterialPriceTableEntry(materialId, tableEntryId, updatedEntry){
+            PriceTablesRequests.putMaterialPriceTableEntry(materialId, tableEntryId, updatedEntry)
+                .then(response =>{
+                    this.$toast.open({
+                        message: "Update was successful!"
+                    })
+                    this.$emit("refreshData");
+                    this.showEditMaterialPriceTableEntry = false;
                 })
-                .catch((error_message)=>{
-                    this.$toast.open({message:error_message});
+                .catch(error =>{
+                    this.$toast.open(error.response.data.message);
                 });
-        },
-        /**
-         * Updates a given material properties (PUT) in a promise way
-         */
-        updateMaterialProperties(materialDetails){
-            
-        },
+        }
     },
       props:{
         data:Array

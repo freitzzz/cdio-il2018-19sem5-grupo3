@@ -2,11 +2,17 @@
     <div>
         <!-- CUD BUTTONS -->
         <b-field grouped>
-            <div>
                 <b-field>
-                <button class="btn-primary" @click="createMaterial()">
-                <b-icon icon="plus"/>
-                </button>
+                    <button class="btn-primary" @click="createMaterial()">
+                        <b-icon icon="plus"/>
+                    </button>
+                </b-field>
+                <b-field>
+                    <button class="btn-primary" @click="fetchRequests()">
+                    <b-icon 
+                        icon="refresh"/>
+                    </button>
+                </b-field>
             <div v-if="createMaterialModal">
                 <b-modal :active.sync="createMaterialModal" has-modal-card scroll="keep">
                     <create-price-material 
@@ -14,16 +20,10 @@
                         @createMaterialPriceTableEntry="createMaterialPriceTableEntry"
                     />
                 </b-modal>
-            </div> 
-            <button class="btn-primary" @click="fetchRequests()">
-                <b-icon 
-                    icon="refresh"/>
-            </button>
-            </b-field>
             </div>
             <b-field>
                 <b-field>
-                    <b-field label="Currency"> 
+                    <b-field> 
                         <b-select icon="coin" placeholder="Currency" v-model="selectedCurrency" @input="convertValuesToCurrency">
                             <option v-for="currency in this.currencies" 
                             :key="currency.currency" 
@@ -31,7 +31,7 @@
                             {{currency.currency}}</option>
                         </b-select>
                     </b-field>
-                    <b-field label="Area"> 
+                    <b-field> 
                         <b-select icon="move-resize-variant" placeholder="Area" v-model="selectedArea" @input="convertValuesToArea">
                             <option  v-for="area in this.areas" 
                             :key="area.area" 
@@ -45,6 +45,7 @@
         
         <price-materials-table
             :data="data"
+            @refreshData="fetchRequests"
         />
     </div>
 </template>
@@ -58,10 +59,10 @@ import PriceTableRequests from './../../../services/mycm_api/requests/pricetable
 import MaterialRequests from './../../../services/mycm_api/requests/materials.js';
 import CurrenciesPerAreaRequests from './../../../services/mycm_api/requests/currenciesperarea.js';
 
-let colors=[];
-let finishes=[];
-
 export default {
+
+    name:"ListPriceMaterials",
+
     components:{
         PriceMaterialsTable,
         CreatePriceMaterial,
@@ -201,12 +202,15 @@ export default {
         async generateMaterialsTableData(materials){
             for(let i=0; i < materials.length; i++){    
                 try{
-                    const {data : {currentPrice}} = await PriceTableRequests.getCurrentMaterialPrice(materials[i].id, "", "");
+                    const {data} = await PriceTableRequests.getCurrentMaterialPrice(materials[i].id, "", "");
                     this.data.push({
                         id: materials[i].id,
+                        tableEntryId: data.tableEntryId,
                         reference: materials[i].reference,
                         designation: materials[i].designation,
-                        price: currentPrice.value + " " + currentPrice.currency + "/" + currentPrice.area
+                        price: data.currentPrice.value + " " + data.currentPrice.currency + "/" + data.currentPrice.area,
+                        startingDate: data.timePeriod.startingDate,
+                        endingDate: data.timePeriod.endingDate
                     });
                 }catch(error){
                     this.$toast.open(error.response.data.message);
