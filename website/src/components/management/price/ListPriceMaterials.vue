@@ -2,11 +2,17 @@
     <div>
         <!-- CUD BUTTONS -->
         <b-field grouped>
-            <div>
                 <b-field>
-                <button class="btn-primary" @click="createMaterial()">
-                <b-icon icon="plus"/>
-                </button>
+                    <button class="btn-primary" @click="createMaterial()">
+                        <b-icon icon="plus"/>
+                    </button>
+                </b-field>
+                <b-field>
+                    <button class="btn-primary" @click="fetchRequests()">
+                    <b-icon 
+                        icon="refresh"/>
+                    </button>
+                </b-field>
             <div v-if="createMaterialModal">
                 <b-modal :active.sync="createMaterialModal" has-modal-card scroll="keep">
                     <create-price-material 
@@ -14,16 +20,10 @@
                         @createMaterialPriceTableEntry="createMaterialPriceTableEntry"
                     />
                 </b-modal>
-            </div> 
-            <button class="btn-primary" @click="fetchRequests()">
-                <b-icon 
-                    icon="refresh"/>
-            </button>
-            </b-field>
             </div>
             <b-field>
                 <b-field>
-                    <b-field label="Currency"> 
+                    <b-field> 
                         <b-select icon="coin" placeholder="Currency" v-model="selectedCurrency" @input="convertValuesToCurrency">
                             <option v-for="currency in this.currencies" 
                             :key="currency.currency" 
@@ -31,7 +31,7 @@
                             {{currency.currency}}</option>
                         </b-select>
                     </b-field>
-                    <b-field label="Area"> 
+                    <b-field> 
                         <b-select icon="move-resize-variant" placeholder="Area" v-model="selectedArea" @input="convertValuesToArea">
                             <option  v-for="area in this.areas" 
                             :key="area.area" 
