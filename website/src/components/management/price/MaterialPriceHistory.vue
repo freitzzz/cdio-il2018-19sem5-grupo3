@@ -36,30 +36,33 @@
             </b-select>
           </b-field>
         </b-field>
-        <b-table
-          :data="data"
-          :columns="columns"
-          :paginated="true"
-          :pagination-simple="true"
-          per-page="10"
-        >
-          <template slot="actions" slot-scope="props">
-            <div class="custom-actions">
-              <button
-                class="btn-primary"
-                @click="editMaterialPriceTableEntryDetails(props.rowData)"
-              >
-                <b-icon icon="pencil"></b-icon>
-              </button>
-            </div>
-            <div v-if="showEditMaterialPriceTableEntryModal">
-              <b-modal :active.sync="showEditMaterialPriceTableEntryModal">
-                <edit-price-material
-                  :material="currentSelectedPriceTableEntry"
-                  @emitMaterial="updateMaterial"
-                ></edit-price-material>
-              </b-modal>
-            </div>
+        <b-table :data="data" :paginated="true" :pagination-simple="true" per-page="10">
+          <template slot-scope="props">
+            <b-table-column field="id" label="ID">{{props.row.id}}</b-table-column>
+            <b-table-column field="price" label="Price">{{props.row.value}}</b-table-column>
+            <b-table-column
+              field="startingDateTime"
+              label="Starting Date & Time"
+            >{{props.row.startingDateTime}}</b-table-column>
+            <b-table-column
+              field="endingDateTime"
+              label="Ending Date & Time"
+            >{{props.row.endingDateTime}}</b-table-column>
+            <b-table-column field="actions" label="Actions">
+              <div class="custom-actions">
+                <button class="btn-primary" @click="editMaterialPriceTableEntry(props.row.id)">
+                  <b-icon icon="pencil"></b-icon>
+                </button>
+              </div>
+              <div v-if="showEditMaterialPriceTableEntryModal">
+                <b-modal :active.sync="showEditMaterialPriceTableEntryModal">
+                  <edit-price-material
+                    :material="currentSelectedPriceTableEntry"
+                    @updateMaterialPriceTableEntry="updateMaterialPriceTableEntry"
+                  ></edit-price-material>
+                </b-modal>
+              </div>
+            </b-table-column>
           </template>
         </b-table>
       </div>
@@ -69,11 +72,17 @@
 
 <script>
 import EditPriceMaterial from "./EditPriceMaterial";
-import PriceTableRequests from "./../../../services/mycm_api/requests/pricetables.js";
+import PriceTablesRequests from "./../../../services/mycm_api/requests/pricetables.js";
 import MaterialRequests from "./../../../services/mycm_api/requests/materials.js";
 import CurrenciesPerAreaRequests from "./../../../services/mycm_api/requests/currenciesperarea.js";
 
 export default {
+  name: "MaterialPriceHistory",
+
+  components: {
+    EditPriceMaterial
+  },
+
   /**
    * Received properties from father component
    */
@@ -114,38 +123,7 @@ export default {
       currencies: Array,
       areas: Array,
       showEditMaterialPriceTableEntryModal: false,
-      defaultSortDirection: "asc",
-      /**
-       * Materials table columns
-       */
-      columns: [
-        {
-          field: "id",
-          label: "ID"
-        },
-        {
-          field: "price",
-          label: "Price"
-        },
-        {
-          field: "startingDateTime",
-          label: "Starting Date & Time",
-          labelClass: "center aligned",
-          dataClass: "center aligned"
-        },
-        {
-          field: "endingDateTime",
-          label: "Ending Date & Time",
-          labelClass: "center aligned",
-          dataClass: "center aligned"
-        },
-        {
-          field: "__slot:actions",
-          label: "Actions",
-          labelClass: "center aligned",
-          dataClass: "center aligned"
-        }
-      ],
+      currentSelectedPriceTableEntry: null,
       data: []
     };
   },
@@ -154,7 +132,7 @@ export default {
     async convertValuesToCurrency() {
       for (let i = 0; i < this.data.length; i++) {
         try {
-          let auxArray = this.data[i].price.split(" ");
+          let auxArray = this.data[i].value.split(" ");
           let value = auxArray[0];
           auxArray = auxArray[1].split("/");
           let fromCurrency = auxArray[0];
@@ -169,7 +147,7 @@ export default {
             fromArea,
             value
           );
-          this.data[i].price =
+          this.data[i].value =
             convertedPrice.value +
             " " +
             convertedPrice.currency +
@@ -184,7 +162,7 @@ export default {
     async convertValuesToArea() {
       for (let i = 0; i < this.data.length; i++) {
         try {
-          let auxArray = this.data[i].price.split(" ");
+          let auxArray = this.data[i].value.split(" ");
           let value = auxArray[0];
           auxArray = auxArray[1].split("/");
           let fromCurrency = auxArray[0];
@@ -199,7 +177,7 @@ export default {
             toArea,
             value
           );
-          this.data[i].price =
+          this.data[i].value =
             convertedPrice.value +
             " " +
             convertedPrice.currency +
@@ -219,7 +197,7 @@ export default {
       this.data = [];
 
       try {
-        const { data } = await PriceTableRequests.getMaterialPriceHistory(
+        const { data } = await PriceTablesRequests.getMaterialPriceHistory(
           this.materialId,
           "",
           ""
@@ -228,10 +206,11 @@ export default {
         for (let i = 0; i < data.length; i++) {
           sortEntriesByStartingDateTime.push({
             id: data[i].id,
-            price: data[i].value + " " + data[i].currency + "/" + data[i].area,
+            value: data[i].value + " " + data[i].currency + "/" + data[i].area,
             startingDateTime: data[i].startingDate,
             endingDateTime: data[i].endingDate
           });
+          this.data[i];
         }
         sortEntriesByStartingDateTime.sort(function(a, b) {
           return new Date(a.startingDateTime) - new Date(b.startingDateTime);
@@ -256,6 +235,53 @@ export default {
       } catch (error) {
         this.$toast.open(error.response.data.message);
       }
+    },
+
+    async editMaterialPriceTableEntry(tableEntryId) {
+      for (let i = 0; i < this.data.length; i++) {
+        if (this.data[i].id == tableEntryId) {
+          try {
+            const { data } = await MaterialRequests.getMaterial(
+              this.materialId
+            );
+            this.currentSelectedPriceTableEntry = {
+              id: data.id,
+              tableEntryId: tableEntryId,
+              reference: data.reference,
+              designation: data.designation,
+              value: this.data[i].value.split(" ")[0],
+              currency: this.data[i].value.split(" ")[1].split("/")[0],
+              area: this.data[i].value.split(" ")[1].split("/")[1],
+              startingDate: this.data[i].startingDateTime.split(" ")[0],
+              endingDate: this.data[i].endingDateTime.split(" ")[0],
+              startingTime: this.data[i].startingDateTime.split(" ")[1],
+              endingTime: this.data[i].endingDateTime.split(" ")[1]
+            };
+          } catch (error) {
+            //Throw error?
+          }
+          break;
+        }
+      }
+      this.showEditMaterialPriceTableEntryModal = true;
+    },
+
+    updateMaterialPriceTableEntry(materialId, tableEntryId, updatedEntry) {
+      PriceTablesRequests.putMaterialPriceTableEntry(
+        materialId,
+        tableEntryId,
+        updatedEntry
+      )
+        .then(response => {
+          this.$toast.open({
+            message: "Update was successful!"
+          });
+          this.refreshTable();
+          this.showEditMaterialPriceTableEntryModal = false;
+        })
+        .catch(error => {
+          this.$toast.open(error.response.data.message);
+        });
     }
   }
 };
