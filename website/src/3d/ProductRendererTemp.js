@@ -150,12 +150,6 @@ export default class ProductRenderer {
   closet_sliding_doors_ids;
 
   /**
-   * Instance variable with the WebGL canvas
-   * @type {HTMLCanvasElement}
-   */
-  canvasWebGL;
-
-  /**
    * Instance variables that represent the currently selected slot (null if none)
    */
   selected_slot;
@@ -276,9 +270,9 @@ export default class ProductRenderer {
     this.mouse = new THREE.Vector2();
     this.intersection = new THREE.Vector3(0, 0, 0);
     this.raycaster = new THREE.Raycaster();
-    this.canvasWebGL = htmlCanvasElement;
+
     this.renderer = new THREE.WebGLRenderer({
-      canvas: this.canvasWebGL,
+      canvas: htmlCanvasElement,
       antialias: true
     });
 
@@ -1539,6 +1533,10 @@ export default class ProductRenderer {
     this.closet_hinged_doors_ids.push(meshID);
   }
 
+  /**
+   * Generates a new sliding door.
+   * @param {*} component - Component info
+   */
   generateSlidingDoor(component) {
     var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
     var rightFace = this.group.getObjectById(this.closet_faces_ids[3]);
@@ -1607,6 +1605,10 @@ export default class ProductRenderer {
     }
   }
 
+  /**
+   * Closes all the currently open drawers in a slot.
+   * @param {*} slot 
+   */
   closeSlotOpenDrawers(slot) {
     var i = 0;
     var index = 0;
@@ -1627,6 +1629,9 @@ export default class ProductRenderer {
     }
   }
 
+  /**
+   * Closes all the currently open drawers.
+   */
   closeAllOpenDrawers() {
     var i = 0;
     var index = 0;
@@ -1644,7 +1649,11 @@ export default class ProductRenderer {
     }
   }
 
-
+  /**
+   * Checks if the slot has a hinged door.
+   * @param {*} slot 
+   * @returns {boolean} true, if the slot has a hinged door; false, otherwise.
+   */
   doesSlotHaveHingedDoor(slot) {
     for (let i = 0; i < this.closet_hinged_doors_ids.length; i++) {
       if (this.closet.hingedDoors[i].slotId == slot) {
@@ -1806,17 +1815,19 @@ export default class ProductRenderer {
 
   /**
    * Represents the action that occurs when the mouse is dragged (mouse move), which
-   * is interacting with the previously picked object on mouse down (moving it accross
+   * is interacting with the previously picked object on mouse down (moving it across
    * the x axis)
+   * @param {MouseEvent} event - MouseEvent being triggered.
+   * @param {HTMLCanvasElement} canvas - Canvas on which the event was triggered.
    */
-  onMouseMove(event) {
+  onMouseMove(event, canvas) {
     event.preventDefault();
 
-    var rect = event.target.getBoundingClientRect();
+    var rect = canvas.getBoundingClientRect();
     var x = event.clientX;
     var y = event.clientY;
-    this.mouse.x = (x - rect.left) / (this.canvasWebGL.clientWidth / 2.0) - 1.0; //Get mouse x position
-    this.mouse.y = -((y - rect.bottom) / (this.canvasWebGL.clientHeight / 2.0) + 1.0); //Get mouse y position
+    this.mouse.x = (x - rect.left) / (canvas.clientWidth / 2.0) - 1.0; //Get mouse x position
+    this.mouse.y = -((y - rect.bottom) / (canvas.clientHeight / 2.0) + 1.0); //Get mouse y position
     this.raycaster.setFromCamera(this.mouse, this.camera); //Set raycast position
 
     //If the selected object is a slot
