@@ -242,6 +242,10 @@ namespace core.application
 
             customizedProduct = customizedProductRepository.update(customizedProduct);
 
+            if(customizedProduct == null){
+                throw new ArgumentException(ERROR_UNABLE_TO_SAVE_CUSTOMIZED_PRODUCT);
+            }
+
             return CustomizedProductModelViewService.fromEntity(customizedProduct);
         }
 
@@ -355,6 +359,7 @@ namespace core.application
 
             customizedProductRepository.update(customizedProduct);
         }
+
         /// <summary>
         /// Gets recommended slots from a certain customized product
         /// </summary>
@@ -375,6 +380,7 @@ namespace core.application
             List<CustomizedDimensions> customizedDimensions = customizedProduct.recommendedSlots();
             return CustomizedDimensionsModelViewService.fromCollection(customizedDimensions);
         }
+        
         /// <summary>
         /// Gets min slots from a certain customized product
         /// </summary>
