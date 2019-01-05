@@ -302,7 +302,7 @@ export default {
             
     },
     drawOneSlot(){
-      CustomizedProductRequests.postCustomizedProductSlot(store.state.customizedProduct.id,
+      /*CustomizedProductRequests.postCustomizedProductSlot(store.state.customizedProduct.id,
               {
                 height: this.slotsToPost[0].height,
                 depth: this.slotsToPost[0].depth,
