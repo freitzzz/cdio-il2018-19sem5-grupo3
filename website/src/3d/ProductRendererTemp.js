@@ -296,7 +296,8 @@ export default class ProductRenderer {
 
     var planeGeometry = new THREE.PlaneGeometry(500, 500);
 
-    var coplanarPoint = this.plane.coplanarPoint();
+    //? Should the coplanar point's target match the group's position?
+    var coplanarPoint = this.plane.coplanarPoint(this.group.position);
 
     var focalPoint = new THREE.Vector3().copy(coplanarPoint).add(this.plane.normal);
 
@@ -362,13 +363,11 @@ export default class ProductRenderer {
       [404.5, 300, 0, 0, -60, -245], 0); //Back POsition: 195 + width of lateral wall /2
 
     var faces = this.closet.closet_faces;
-    
+
     //A MeshPhongMaterial allows for shiny surfaces
     //A soft white light is being as specular light
-    //The shininess value is the same as the matte finishing's value
     this.material = new THREE.MeshPhongMaterial();
     this.material.specular = new THREE.Color(0x404040);
-    this.material.shininess = 20;
     this.material.map;
 
     for (var i = 0; i < faces.length; i++) {
@@ -1009,14 +1008,14 @@ export default class ProductRenderer {
 
   /**
    * Changes the closet's material's color.
-   * @param {*} color The new color in RGB format
+   * @param {string} color The new color in RGB format
    */
   applyColor(color) {
     var values = color.split("-");
-    var red = values[0];
-    var green = values[1];
-    var blue = values[2];
-    var alpha = values[3];
+    var red = Number(values[0]);
+    var green = Number(values[1]);
+    var blue = Number(values[2]);
+    var alpha = Number(values[3]);
     if (alpha == 0) this.material.color.setHex(0xffffff);
     else this.material.color.setRGB(red, green, blue);
   }
