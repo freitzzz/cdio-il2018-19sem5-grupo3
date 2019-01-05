@@ -13,4 +13,9 @@ public class CreateCredentialsUserMV extends CredentialsAuthenticationMV impleme
      */
     public String phoneNumber;
     
+    /**
+     * String with the user to create name
+     */
+    public String name;
+    
 }
