@@ -7,11 +7,11 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
 /**
- * Represents a credentials based authentication
+ * Represents an username credentials based authentication
  * @author <a href="https://github.com/freitzzz">freitzzz</a>
  */
 @Entity
-public class CredentialsAuth extends Auth{
+public class UsernameCredentialsAuth extends Auth{
     /**
      * Username with the credentials username
      */
@@ -28,7 +28,7 @@ public class CredentialsAuth extends Auth{
      * @param username String with the credentials username
      * @param password String with the credentials password
      */
-    public CredentialsAuth(String username,String password){
+    public UsernameCredentialsAuth(String username,String password){
         super(generateToken(Username.valueOf(username).username,Password.valueOf(password).password));
         this.username=Username.valueOf(username);
         this.password=Password.valueOf(password);
@@ -50,5 +50,5 @@ public class CredentialsAuth extends Auth{
     /**
      * Protected constructor to allow JPA persistence
      */
-    protected CredentialsAuth(){}
+    protected UsernameCredentialsAuth(){}
 }
