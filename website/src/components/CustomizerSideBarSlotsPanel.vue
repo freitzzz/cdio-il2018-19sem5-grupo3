@@ -49,10 +49,9 @@
 <script>
 import vueSlider from "vue-slider-component";
 import store from "./../store";
-import Axios from "axios";
- import {MYCM_API_URL} from "./../config.js";
+import UnitRequests from "./../services/mycm_api/requests/units.js";
+import CustomizedProductRequests from "./../services/mycm_api/requests/customizedproducts.js";
 import { ADD_SLOT_DIMENSIONS,SET_ID_SLOT, DEACTIVATE_CAN_MOVE_CLOSET, ACTIVATE_CAN_MOVE_SLOTS, DEACTIVATE_CAN_MOVE_SLOTS } from "./../store/mutation-types.js";
-import { Store } from 'vuex';
 
 export default {
   name: "CustomizerSideBarSlotsPanel",
@@ -110,9 +109,7 @@ export default {
       this.createNewSlider = false;
     },
     convert(from, to, value) {
-      Axios.get(
-        `http://localhost:5000/mycm/api/units/convert/?from=${from}&to=${to}&value=${value}`
-      )
+      UnitRequests.convertValue(from, to, value)
         .then(response => (this.valueConverted = response.data))
         .catch(error => {});
     },
@@ -182,7 +179,7 @@ export default {
     postSlot(slotsToPost1){
       return new Promise((accept, reject) => {
         let slotToPost = slotsToPost1.pop();
-        Axios.post(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}/slots`,
+        CustomizedProductRequests.postCustomizedProductSlot(store.state.customizedProduct.id,
               {
                 height: slotToPost.height,
                 depth: slotToPost.depth,
@@ -229,7 +226,7 @@ export default {
     },
     getRecommendedSlots(){
       this.listRecommendedSlots = []
-        Axios.get(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}/recommendedSlots`)
+       CustomizedProductRequests.getCustomizedProductRecommendedSlots(store.state.customizedProduct.id)
             .then(response => {
               this.listRecommendedSlots = response.data;
               this.drawRecommendedSlots();
@@ -275,7 +272,7 @@ export default {
               } 
     },
      getMinSlots(){
-        Axios.get(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}/minSlots`)
+       CustomizedProductRequests.getCustomizedProductMinimumSlots(store.state.customizedProduct.id)
             .then(response => {
               
               this.listMinSlots = response.data;
@@ -326,13 +323,13 @@ export default {
     },
     drawOneSlot(){
       console.log(store.state.canvasControls.slostSlider[0]);
-       Axios.post(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}/slots`,
+      CustomizedProductRequests.postCustomizedProductSlot(store.state.customizedProduct.id,
               {
                 height: this.slotsToPost[0].height,
                 depth: this.slotsToPost[0].depth,
                 width: store.getters.minSlotWidth,
                 unit: this.slotsToPost[0].unit,
-              }).then(() => {
+              }).then(response => {
                     this.drawCustomizedSlots = response.data
                 })
               .catch((error_message) => {
