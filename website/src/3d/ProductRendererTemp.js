@@ -1835,22 +1835,19 @@ export default class ProductRenderer {
      /* return information; */
    }
        
-   /**
-    * Move slot with slider
-    */
-   moveSlotSlider(index, newWidth) {
-     /* alert("antes" + this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x); */
+  /**
+  * Move slot with slider
+  */
+  moveSlotSlider(index, newWidth) {
      var left_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
      this.selected_slot = this.group.getObjectById(this.closet_slots_faces_ids[index]);
      if (index == 0) {
        let newPosition = left_closet_face_x_value + newWidth;
-       this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x = newPosition;
+       this.selected_slot.position.x = newPosition;
      } else {
-       this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x = this.group.getObjectById(this.closet_slots_faces_ids[index - 1]).position.x + (newWidth);
+      this.selected_slot.position.x = this.group.getObjectById(this.closet_slots_faces_ids[index - 1]).position.x + (newWidth);
      }
-     this.updateClosetGV()
-     /* alert("depois" + this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x); */
-   }
+  }
 
 
   /**
