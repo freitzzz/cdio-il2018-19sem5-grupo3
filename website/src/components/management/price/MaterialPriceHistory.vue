@@ -65,12 +65,14 @@
             </b-table-column>
           </template>
         </b-table>
+        <div style="width:100%" ref="timeSeriesChart"></div>
       </div>
     </section>
   </div>
 </template>
 
 <script>
+import Plotly from "plotly.js-finance-dist";
 import EditPriceMaterial from "./EditPriceMaterial";
 import PriceTablesRequests from "./../../../services/mycm_api/requests/pricetables.js";
 import MaterialRequests from "./../../../services/mycm_api/requests/materials.js";
@@ -103,14 +105,14 @@ export default {
         this.currencies = response.data;
       })
       .catch(error => {
-        this.$toast.open(error.response.data.message);
+        this.$toast.open(error.response.data);
       });
     CurrenciesPerAreaRequests.getAreas()
       .then(response => {
         this.areas = response.data;
       })
       .catch(error => {
-        this.$toast.open(error.response.data.message);
+        this.$toast.open(error.response.data);
       });
   },
   /**
@@ -154,7 +156,7 @@ export default {
             "/" +
             convertedPrice.area;
         } catch (error) {
-          this.$toast.open(error.response.data.message);
+          this.$toast.open(error.response.data);
         }
       }
     },
@@ -184,7 +186,7 @@ export default {
             "/" +
             convertedPrice.area;
         } catch (error) {
-          this.$toast.open(error.response.data.message);
+          this.$toast.open(error.response.data);
         }
       }
     },
@@ -210,7 +212,6 @@ export default {
             startingDateTime: data[i].startingDate,
             endingDateTime: data[i].endingDate
           });
-          this.data[i];
         }
         sortEntriesByStartingDateTime.sort(function(a, b) {
           return new Date(a.startingDateTime) - new Date(b.startingDateTime);
@@ -232,8 +233,10 @@ export default {
             tempEndingDateTimeAsStringArray[1];
         }
         this.data = sortEntriesByStartingDateTime;
+        this.plotTimeSeriesChart();
       } catch (error) {
-        this.$toast.open(error.response.data.message);
+        console.log(error);
+        this.$toast.open(error.response.data);
       }
     },
 
@@ -280,8 +283,44 @@ export default {
           this.showEditMaterialPriceTableEntryModal = false;
         })
         .catch(error => {
-          this.$toast.open(error.response.data.message);
+          this.$toast.open(error.response.data);
         });
+    },
+
+    plotTimeSeriesChart() {
+      let xAxisArray = [];
+      let yAxisArray = [];
+
+      for (let i = 0; i < this.data.length; i++) {
+        xAxisArray.push(this.data[i].startingDateTime);
+        xAxisArray.push(this.data[i].endingDateTime);
+        yAxisArray.push(this.data[i].value.split(" ")[0]);
+        yAxisArray.push(this.data[i].value.split(" ")[0]);
+      }
+
+      var trace = {
+        type: "scatter",
+        mode: "lines",
+        name: "Material " + this.materialId,
+        x: xAxisArray,
+        y: yAxisArray,
+        line: { color: "#17BECF" }
+      };
+
+      var data = [trace];
+
+      let minValue = 0;
+      let maxValue = Math.max(yAxisArray);
+
+      var layout = {
+        title: "Price Evolution Time Series",
+        width: 750,
+        height: 500,
+        xaxis: {range: [minValue, maxValue]},
+        yaxis: {range: [minValue, maxValue]},
+      };
+
+      Plotly.newPlot(this.$refs.timeSeriesChart, data, layout);
     }
   }
 };
