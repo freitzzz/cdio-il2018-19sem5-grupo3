@@ -1,8 +1,5 @@
 <template>
     <div>
-        <header class="modal-card-head">
-            <p class="modal-card-title">New Product</p>
-        </header>   
         <div>  
             <p class="p0 ft0">MAKE YOUR CLOSET</p>
             <p class="p1 ft1">Privacy Policy</p>
@@ -222,13 +219,15 @@
 </template>
 
 <script>
-    import Signup from "./SignupForm.vue";
-    export default {
-        props: {
-            activateModal: Boolean
-        }
-    
-    }
+
+export default{
+
+    /**
+     * Component name
+     */
+    name:"PrivacyPolicy"
+}
+
 </script>
 
 <style>
