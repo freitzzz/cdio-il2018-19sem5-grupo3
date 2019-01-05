@@ -20,24 +20,27 @@ export default class ProductRenderer {
 
   /**
    * Flag used to control if the user can or can not resize the closet.
+   * @type {boolean}
    */
   canMoveCloset;
 
 
   /**
    * Flag used to control if the user can or can not move the closet's slots.
+   * @type {boolean}
    */
   canMoveSlots;
 
 
   /**
    * Flag used to control if the user can or can not move the closet's components.
+   * @type {boolean}
    */
   canMoveComponents;
 
   /**
    * Instance variable representing the camera through which the scene is rendered.
-   * @type {THREE.Camera}
+   * @type {THREE.PerspectiveCamera}
    */
   camera;
 
@@ -88,11 +91,13 @@ export default class ProductRenderer {
 
   /**
    * Flag to know whether a drawer is closed or not
+   * @type {boolean[]}
    */
   openDrawers;
 
   /**
    * Flag to know whether a hinged door is closed or not
+   * @type {boolean}
    */
   isHingedDoorClosed;
 
@@ -172,26 +177,27 @@ export default class ProductRenderer {
 
   /**
    * Instance variable that represents the plane that intersects the closet
+   * @type {THREE.Plane}
    */
   plane;
 
   /**
    * Instance variable that represents the difference between the intersection's x coordinate
    * and the selected object's x coordinate
-   * @type{number}
+   * @type {number}
    */
   offset;
 
   /**
    * Instance variable with a Vector that holds the mouse coordinates (x, y)
-   * @type{THREE.Vector2}
+   * @type {THREE.Vector2}
    */
   mouse;
 
   /**
    * Instance variable with a Vector that represents the intersection between the plane and
    * the clicked object
-   * @type{THREE.Vector3}
+   * @type {THREE.Vector3}
    */
   intersection;
 
@@ -226,8 +232,8 @@ export default class ProductRenderer {
   // ---------------- End of resize control --------------------------
 
   /**
-   * 
-   * @param {HTMLCanvasElement} htmlCanvasElement 
+   * Creates a new instance of ProductRenderer attaching it to a Canvas.
+   * @param {HTMLCanvasElement} htmlCanvasElement - HTMLCanvasElement to which the renderer will be attached.
    */
   constructor(htmlCanvasElement) {
 
@@ -319,13 +325,34 @@ export default class ProductRenderer {
     this.animate();
   }
 
+  /**
+   * Enables slot movement.
+   */
   activateCanMoveSlots() { this.canMoveSlots = true; }
+
+  /**
+   * Disables slot movement.
+   */
   deactivateCanMoveSlots() { this.canMoveSlots = false; }
 
+  /**
+   * Enables component movement.
+   */
   activateCanMoveComponents() { this.canMoveComponents = true; }
+
+  /**
+   * Disables component movement.
+   */
   deactivateCanMoveComponents() { this.canMoveComponents = false; }
 
+  /**
+   * Enables closet movement.
+   */
   activateCanMoveCloset() { this.canMoveCloset = true; }
+
+  /**
+   * Disables closet movement.
+   */
   deactivateCanMoveCloset() { this.canMoveCloset = false; }
 
   /**
@@ -412,6 +439,9 @@ export default class ProductRenderer {
    * Initializes the scene's lighting.
    */
   initLighting() {
+
+    //*Turn on the helpers below for debugging purposes if needed
+
     //soft white light coming from the sky and soft brown reflecting from the ground
     var hemisphereLight = new THREE.HemisphereLight(0x404040, 0xffe5a3, 0.5);
     this.scene.add(hemisphereLight);
@@ -423,9 +453,9 @@ export default class ProductRenderer {
     lightBulbRight.shadow.mapSize.set(512, 512);
     this.scene.add(lightBulbRight);
 
-/*     var lightBulbRightHelper = new THREE.PointLightHelper(lightBulbRight, 10);
-    lightBulbRightHelper.visible = true;
-    this.scene.add(lightBulbRightHelper); */
+    /*     var lightBulbRightHelper = new THREE.PointLightHelper(lightBulbRight, 10);
+        lightBulbRightHelper.visible = true;
+        this.scene.add(lightBulbRightHelper); */
 
     //light bulb positioned on the left of the camera's initial position
     var lightBulbLeft = new THREE.PointLight(0x404040, 0.2);
@@ -434,9 +464,9 @@ export default class ProductRenderer {
     lightBulbLeft.shadow.mapSize.set(512, 512);
     this.scene.add(lightBulbLeft);
 
-/*     var lightBulbLeftHelper = new THREE.PointLightHelper(lightBulbLeft, 10);
-    lightBulbLeftHelper.visible = true;
-    this.scene.add(lightBulbLeftHelper); */
+    /*     var lightBulbLeftHelper = new THREE.PointLightHelper(lightBulbLeft, 10);
+        lightBulbLeftHelper.visible = true;
+        this.scene.add(lightBulbLeftHelper); */
 
     //sunlight coming out of the window in the middle pointing at the closet
     var sunLightCenter = new THREE.DirectionalLight(0xffffff, 1);
@@ -448,8 +478,8 @@ export default class ProductRenderer {
     sunLightCenter.shadow.camera.far = 500;
     this.scene.add(sunLightCenter);
 
-/*     var sunLightCenterHelper = new THREE.DirectionalLightHelper(sunLightCenter, 5);
-    this.scene.add(sunLightCenterHelper); */
+    /*     var sunLightCenterHelper = new THREE.DirectionalLightHelper(sunLightCenter, 5);
+        this.scene.add(sunLightCenterHelper); */
   }
 
   /**
@@ -594,6 +624,7 @@ export default class ProductRenderer {
 
   /**
    * Generates a cylinder with given properties on a certain position relative to axis x,y and z
+   * @param {*} component - Component info
    */
   generatePole(component) {
     var slot = component.slot;
@@ -663,7 +694,11 @@ export default class ProductRenderer {
     this.closet_poles_ids.push(poleMesh.id);
   }
 
-
+  /**
+   * Renders component dropped into the scene.
+   * @param {DragEvent} event - DragEvent being triggered.
+   * @param {HTMLCanvasElement} canvas - HTMLCanvasElement targeted by the event.
+   */
   renderDroppedComponent(event, canvas) {
     var splitted = event.dataTransfer.getData("text").split("/");
     var componentImageFileName = splitted[splitted.length - 1]
@@ -701,6 +736,10 @@ export default class ProductRenderer {
     }
   }
 
+  /**
+   * Generates a shelf
+   * @param {*} component - Component info 
+   */
   generateShelf(component) {
     var slot = component.slot;
     var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
@@ -737,6 +776,10 @@ export default class ProductRenderer {
   }
 
 
+  /**
+   * Generates a drawer.
+   * @param {*} component - Component info
+   */
   generateDrawer(component) {
     var slot = component.slot;
     var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
@@ -830,6 +873,10 @@ export default class ProductRenderer {
   }
 
   /*New methods*/
+
+  /**
+   * Removes all slots inside the closet.
+   */
   removeAllSlots() {
     var size = this.closet_slots_faces_ids.length;
     for (let i = 0; i < size; i++) {
@@ -837,6 +884,9 @@ export default class ProductRenderer {
     }
   }
 
+  /**
+   * Removes all the components inside the closet.
+   */
   removeAllComponents() {
     var size = this.closet_drawers_ids.length;
     for (let i = 0; i < size; i++) {
@@ -920,12 +970,10 @@ export default class ProductRenderer {
    * @param {number} depth Number with the closet depth
    */
   changeClosetDimensions(width, height, depth) {
-   
-      this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
-      this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
-      this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth));
 
- 
+    this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
+    this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
+    this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth));
 
     this.updateClosetGV();
   }
@@ -1045,12 +1093,6 @@ export default class ProductRenderer {
    * Animates the scene
    */
   animate() {
-    /*         var instance = this;
-            setTimeout(function () {
-        
-            }, 1000 / 60)
-            //TODO: re-enable frame cap  */
-
     requestAnimationFrame(() => this.animate());
     this.render();
   }
@@ -1081,7 +1123,7 @@ export default class ProductRenderer {
   /**
    * Represents the action that occurs when any keyboard key is pressed (key down),
    * which is blocking its action (disabling it).
-   * @param {*} event 
+   * @param {KeyboardEvent} event 
    */
   onKeyDown(event) {
     event.preventDefault();
@@ -1106,6 +1148,7 @@ export default class ProductRenderer {
  * Represents the action that occurs when the mouse's left button is pressed (mouse down),
  * which is recognizing the object being clicked on, setting it as the selected one if
  * it is a slot and disabling the rotation control
+ * @param {MouseEvent} event - MouseEvent being captured.
  */
   onMouseDown(event) {
     event.preventDefault();
@@ -1264,6 +1307,10 @@ export default class ProductRenderer {
     }
   }
 
+  /**
+   * Slides a door to the left.
+   * @param {*} aux 
+   */
   slideDoorToLeft(aux) {
     if (this.doesClosetHaveOpenDrawers()) {
       this.waitingDoors.push(aux(this, this.slideDoorToLeftAnimation));
@@ -1273,6 +1320,10 @@ export default class ProductRenderer {
     }
   }
 
+  /**
+   * Slides a door to the right.
+   * @param {*} aux 
+   */
   slideDoorToRight(aux) {
     if (this.doesClosetHaveOpenDrawers()) {
       this.waitingDoors.push(aux(this, this.slideDoorToRightAnimation));
@@ -1282,6 +1333,10 @@ export default class ProductRenderer {
     }
   }
 
+  /**
+  * Plays the animation used for sliding a door to the left.
+  * @param {ProductRenderer} context - Instance of ProductRenderer
+  */
   slideDoorToLeftAnimation(context) {
     let closet_left = context.group.getObjectById(context.closet_faces_ids[2]);
     let distanceFromDoorToLeftFace = Math.abs(context.slidingDoor.position.x - closet_left.position.x);
@@ -1297,6 +1352,10 @@ export default class ProductRenderer {
     }
   }
 
+  /**
+   * Plays the animation used for sliding a door to the right.
+   * @param {ProductRenderer} context - Instance of ProductRenderer
+   */
   slideDoorToRightAnimation(context) {
     let closet_right = context.group.getObjectById(context.closet_faces_ids[3]);
     let distanceFromDoorToRightFace = Math.abs(context.slidingDoor.position.x - closet_right.position.x);
@@ -1312,6 +1371,10 @@ export default class ProductRenderer {
     }
   }
 
+  /**
+   * Opens a hinged door.
+   * @param {ProductRenderer} context - Instance of ProductRenderer
+   */
   openHingedDoor(context) {
     if (context.hingedDoor.rotation.y > (-Math.PI / 2)) {
       var rotationX = (context.hingedDoor.geometry.parameters.width / 2);
@@ -1326,6 +1389,9 @@ export default class ProductRenderer {
     }
   }
 
+  /**
+   * Closes a hinged door.
+   */
   closeHingedDoor() {
     var hingedDoorSlot = this.getHingedDoorSlot(this.hingedDoor);
     if (this.doesSlotHaveOpenDrawers(hingedDoorSlot)) {
@@ -1351,17 +1417,17 @@ export default class ProductRenderer {
       //Front face of the last added drawer is always at index length - 4
       var addedDrawer = this.group.getObjectById(this.closet_drawers_ids[this.closet_drawers_ids.length - 4]);
       if (addedDrawer.position.x < 0) {
-        for(let i = 0; i < this.closet_sliding_doors_ids.length; i++){
+        for (let i = 0; i < this.closet_sliding_doors_ids.length; i++) {
           let door = this.group.getObjectById(this.closet_sliding_doors_ids[i]);
-          if(door.position.x < 0){
+          if (door.position.x < 0) {
             this.slidingDoor = door;
             this.slideDoorToRight(aux);
           }
         }
       } else {
-        for(let i = 0; i < this.closet_sliding_doors_ids.length; i++){
+        for (let i = 0; i < this.closet_sliding_doors_ids.length; i++) {
           let door = this.group.getObjectById(this.closet_sliding_doors_ids[i]);
-          if(door.position.x > 0){
+          if (door.position.x > 0) {
             this.slidingDoor = door;
             this.slideDoorToLeft(aux);
           }
@@ -1415,6 +1481,9 @@ export default class ProductRenderer {
     }
   }
 
+
+
+  //?Isn't this method redundant?
   addHingedDoor(component) {
     if (this.openDrawers.length == 0) {
       this.generateHingedDoor(component);
@@ -1423,6 +1492,10 @@ export default class ProductRenderer {
     }
   }
 
+  /**
+   * Generates a new hinged door.
+   * @param {*} component - Component info
+   */
   generateHingedDoor(component) {
     var slot = component.slot;
     var leftFace = this.group.getObjectById(this.closet_faces_ids[2]);
@@ -1581,6 +1654,11 @@ export default class ProductRenderer {
     return false;
   }
 
+  /**
+   * Checks if the slot has any open drawers.
+   * @param {*} slot 
+   * @returns {boolean} true, if the slot has any open drawers; false, otherwise.
+   */
   doesSlotHaveOpenDrawers(slot) {
     var numberOfDrawers = this.closet_drawers_ids.length / 5;
     for (let i = 0; i < numberOfDrawers; i++) {
@@ -1591,6 +1669,10 @@ export default class ProductRenderer {
     return false;
   }
 
+  /**
+   * Checks if the closet currently has any open drawers.
+   * @returns {boolean} true, if the closet has any open drawers; false, otherwise.
+   */
   doesClosetHaveOpenDrawers() {
     var flag = false;
     var numberOfDrawers = this.closet_drawers_ids.length / 5;
@@ -1600,14 +1682,26 @@ export default class ProductRenderer {
     return flag;
   }
 
+  /**
+   * Checks if the closet current has any hinged doors.
+   * @returns {boolean} true, if the closet has hinged doors; false, otherwise.
+   */
   doesClosetHaveHingedDoors() {
     return this.closet.hingedDoors.length != 0;
   }
 
+  /**
+   * Checks if the closet currently has any sliding doors.
+   * @returns {boolean} true, if the closet has sliding doors; false, otherwise.
+   */
   doesClosetHaveSlidingDoors() {
     return this.closet.slidingDoors.length != 0;
   }
 
+  /**
+   * Plays the animation for closing a hinged door.
+   * @param {ProductRenderer} context - Instance of ProductRenderer. 
+   */
   closeHingedDoorAnimation(context) {
     if (context.hingedDoor.rotation.y <= 0) {
       var rotationX = context.hingedDoor.geometry.parameters.width / 2;
@@ -1696,8 +1790,10 @@ export default class ProductRenderer {
    * Represents the action that occurs when the mouse's left button is released, which is
    * setting the selected object as null, since it is no longer being picked, and enabling
    * the rotation control
+   * @param {MouseEvent} event - MouseEvent being triggered.
    */
   onMouseUp(event) {
+    event.preventDefault();
     //Enables rotation again
     this.controls.enabled = true;
     //Sets the selected slot to null (the slot stops being selected)
@@ -1800,26 +1896,26 @@ export default class ProductRenderer {
    */
   moveSlot() {
 
-    
-  /* moveSlot() {
+
+    /* moveSlot() {
+      if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+        var newPosition = this.intersection.x - this.offset; //Subtracts the offset to the x coordinate of the intersection point
+        var valueCloset = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
+        if (Math.abs(newPosition) < Math.abs(valueCloset)) { //Doesn't allow the slot to overlap the faces of the closet
+          this.selected_slot.position.x = newPosition;
+        }
+      }
+    } */
+    /*  var information = { idSlot : 0, 
+     newValue: 0}; */
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
       var newPosition = this.intersection.x - this.offset; //Subtracts the offset to the x coordinate of the intersection point
       var valueCloset = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
       if (Math.abs(newPosition) < Math.abs(valueCloset)) { //Doesn't allow the slot to overlap the faces of the closet
         this.selected_slot.position.x = newPosition;
-      }
-    }
-  } */
-    /*  var information = { idSlot : 0, 
-     newValue: 0}; */
-     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
-       var newPosition = this.intersection.x - this.offset; //Subtracts the offset to the x coordinate of the intersection point
-       var valueCloset = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
-       if (Math.abs(newPosition) < Math.abs(valueCloset)) { //Doesn't allow the slot to overlap the faces of the closet
-         this.selected_slot.position.x = newPosition;
-         for (let i = 0; i < this.closet_slots_faces_ids.length; i++) {
-           if (this.group.getObjectById(this.closet_slots_faces_ids[i]) == this.selected_slot) {
-             this.group.getObjectById(this.closet_slots_faces_ids[i]).position.x = newPosition;
+        for (let i = 0; i < this.closet_slots_faces_ids.length; i++) {
+          if (this.group.getObjectById(this.closet_slots_faces_ids[i]) == this.selected_slot) {
+            this.group.getObjectById(this.closet_slots_faces_ids[i]).position.x = newPosition;
             /*  var v1 = this.group.getObjectById(this.closet_faces_ids[3]).position.x;
              var v2 = this.closet.getClosetWidth() * 2;
              var v3 = Math.abs(this.group.getObjectById(this.closet_faces_ids[3]).position.x);
@@ -1827,29 +1923,29 @@ export default class ProductRenderer {
              var conversion = ((newPosition + v1) * v2) / (v3 + v4); */
             /*  information.idSlot = i + 1;
              information.newValue = conversion; */
-           }
-         }
-       }
-     }
-     /* return information; */
-   }
-       
-   /**
-    * Move slot with slider
-    */
-   moveSlotSlider(index, newWidth) {
-     /* alert("antes" + this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x); */
-     var left_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
-     this.selected_slot = this.group.getObjectById(this.closet_slots_faces_ids[index]);
-     if (index == 0) {
-       let newPosition = left_closet_face_x_value + newWidth;
-       this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x = newPosition;
-     } else {
-       this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x = this.group.getObjectById(this.closet_slots_faces_ids[index - 1]).position.x + (newWidth);
-     }
-     this.updateClosetGV()
-     /* alert("depois" + this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x); */
-   }
+          }
+        }
+      }
+    }
+    /* return information; */
+  }
+
+  /**
+   * Move slot with slider
+   */
+  moveSlotSlider(index, newWidth) {
+    /* alert("antes" + this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x); */
+    var left_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
+    this.selected_slot = this.group.getObjectById(this.closet_slots_faces_ids[index]);
+    if (index == 0) {
+      let newPosition = left_closet_face_x_value + newWidth;
+      this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x = newPosition;
+    } else {
+      this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x = this.group.getObjectById(this.closet_slots_faces_ids[index - 1]).position.x + (newWidth);
+    }
+    this.updateClosetGV()
+    /* alert("depois" + this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x); */
+  }
 
 
   /**
@@ -1884,21 +1980,24 @@ export default class ProductRenderer {
   }
 
   /**
-   * Returns the current closet width
+   * Returns the current closet width.
+   * @returns {number} closet's current width.
    */
   getCurrentClosetWidth() {
     return this.closet.getClosetWidth();
   }
 
   /**
-   * Returns the current closet height
+   * Returns the current closet height.
+   * @returns {number} closet's current height.
    */
   getCurrentClosetHeight() {
     return this.closet.getClosetHeight();
   }
 
   /**
-   * Returns the current closet depth
+   * Returns the current closet depth.
+   * @returns {number} closet's current depth.
    */
   getCurrentClosetDepth() {
     return this.closet.getClosetDepth();
