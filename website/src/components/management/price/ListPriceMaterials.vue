@@ -45,6 +45,7 @@
         
         <price-materials-table
             :data="data"
+            @refreshData="fetchRequests"
         />
     </div>
 </template>
@@ -59,6 +60,9 @@ import MaterialRequests from './../../../services/mycm_api/requests/materials.js
 import CurrenciesPerAreaRequests from './../../../services/mycm_api/requests/currenciesperarea.js';
 
 export default {
+
+    name:"ListPriceMaterials",
+
     components:{
         PriceMaterialsTable,
         CreatePriceMaterial,

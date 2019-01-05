@@ -5,7 +5,8 @@
     <class>cdiomyc.core.domain.User</class>
     <class>cdiomyc.core.domain.auth.Auth</class>
     <class>cdiomyc.core.domain.auth.Session</class>
-    <class>cdiomyc.core.domain.auth.credentials.CredentialsAuth</class>
+    <class>cdiomyc.core.domain.auth.credentials.EmailCredentialsAuth</class>
+    <class>cdiomyc.core.domain.auth.credentials.UsernameCredentialsAuth</class>
     <properties>
       <!--property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:/home/freitas/Development/db/myca"/-->
       <!--property name="javax.persistence.jdbc.url" value="jdbc:sqlite:/home/freitas/Development/db/myca"/-->

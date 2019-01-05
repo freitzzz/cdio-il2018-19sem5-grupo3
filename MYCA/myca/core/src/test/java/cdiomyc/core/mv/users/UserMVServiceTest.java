@@ -1,7 +1,7 @@
 package cdiomyc.core.mv.users;
 
 import cdiomyc.core.domain.auth.Auth;
-import cdiomyc.core.domain.auth.credentials.CredentialsAuth;
+import cdiomyc.core.domain.auth.credentials.UsernameCredentialsAuth;
 import cdiomyc.core.mv.authentication.CredentialsAuthenticationMV;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -51,7 +51,7 @@ public class UserMVServiceTest {
      * Ensure createdUserFromAuth works properly
      */
     public void ensureCreatedUserFromMVSucceeds() {
-        Auth auth = new CredentialsAuth("username", "password");
+        Auth auth = new UsernameCredentialsAuth("username", "password");
         CreatedUserMV created = UserMVService.createdUserMVFromAuth(auth);
         assertEquals(auth.id(), created.token);
     }

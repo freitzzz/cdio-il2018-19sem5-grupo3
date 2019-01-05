@@ -1934,11 +1934,25 @@ export default class ProductRenderer {
              var conversion = ((newPosition + v1) * v2) / (v3 + v4); */
             /*  information.idSlot = i + 1;
              information.newValue = conversion; */
-          }
-        }
-      }
-    }
-    /* return information; */
+           }
+         }
+       }
+     }
+     /* return information; */
+   }
+       
+  /**
+  * Move slot with slider
+  */
+  moveSlotSlider(index, newWidth) {
+     var left_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
+     this.selected_slot = this.group.getObjectById(this.closet_slots_faces_ids[index]);
+     if (index == 0) {
+       let newPosition = left_closet_face_x_value + newWidth;
+       this.selected_slot.position.x = newPosition;
+     } else {
+      this.selected_slot.position.x = this.group.getObjectById(this.closet_slots_faces_ids[index - 1]).position.x + (newWidth);
+     }
   }
 
   /**

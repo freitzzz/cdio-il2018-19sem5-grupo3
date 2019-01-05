@@ -249,7 +249,7 @@ export default {
     parseDateTimeToGeneralIsoFormatString(date, time){
       let dateToIso = date == null ? null : date.toISOString();
       let timeToIso = time == null ? null : time.toISOString();
-      return dateToIso == null && timeToIso == null ? null : dateToIso.split("T")[0] + "T" + timeToIso.split("T")[1].split(".")[0];
+      return dateToIso == null || timeToIso == null ? "" : dateToIso.split("T")[0] + "T" + timeToIso.split("T")[1].split(".")[0];
     }
   },
 

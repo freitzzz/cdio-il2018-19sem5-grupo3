@@ -96,8 +96,8 @@ namespace core.services
 
                     LocalDateTime currentTime = NodaTime.LocalDateTime.FromDateTime(SystemClock.Instance.GetCurrentInstant().ToDateTimeUtc());
 
-                    if (tableEntryToUpdate.timePeriod.startingDate.CompareTo(currentTime) > 0
-                        || tableEntryToUpdate.timePeriod.endingDate.CompareTo(currentTime) < 0)
+                    if (tableEntryToUpdate.timePeriod.startingDate.CompareTo(currentTime) < 0
+                        && tableEntryToUpdate.timePeriod.endingDate.CompareTo(currentTime) < 0)
                     {
                         throw new InvalidOperationException(PAST_ENTRY);
                     }

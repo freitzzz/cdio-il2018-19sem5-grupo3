@@ -2,160 +2,197 @@
   <div>
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
-          <p class="modal-card-title">Edit Price Material</p>
+        <p class="modal-card-title">Edit Material Price Table Entry</p>
       </header>
       <section class="modal-card-body">
-          <b-field label="Reference">
-            <b-input v-model="material.reference" disabled="true" type="String" icon="pound"></b-input>
-          </b-field>
+        <b-field label="Reference">
+          <b-input v-model="material.reference" disabled="true" type="String" icon="pound"></b-input>
+        </b-field>
         <b-field label="Designation">
           <b-input v-model="material.designation" disabled="true" type="String" icon="pound"></b-input>
         </b-field>
-         <div>
-        <b-field>
-          <b-field label="Value">
-            <b-input
-              type="number"
-              min="0"
-              icon="cash-multiple"
-              :placeholder= material.value
-              v-model="selectedValue"
-            ></b-input>
+        <div>
+          <b-field>
+            <b-field label="Value">
+              <b-input
+                type="number"
+                min="0"
+                icon="cash-multiple"
+                placeholder="Insert value here"
+                v-model="selectedValue"
+              ></b-input>
+            </b-field>
+            <b-field label="Currency">
+              <b-select icon="coin" placeholder="Currency" v-model="selectedCurrency">
+                <option
+                  v-for="currency in this.currencies"
+                  :key="currency.currency"
+                  :value="currency"
+                >{{currency.currency}}</option>
+              </b-select>
+            </b-field>
+            <b-field label="Area">
+              <b-select
+                icon="move-resize-variant"
+                placeholder="Area"
+                v-model="selectedArea"
+              >
+                <option v-for="area in this.areas" :key="area.area" :value="area">{{area.area}}</option>
+              </b-select>
+            </b-field>
           </b-field>
-           <b-field label="Currency">
-            <b-select icon="coin" :placeholder= material.currency v-model="selectedCurrency">
-              <option
-                v-for="currency in this.currencies"
-                :key="currency.currency"
-                :value="currency"
-              >{{currency.currency}}</option>
-            </b-select>
-          </b-field>
-           <b-field label="Area">
-            <b-select icon="move-resize-variant" :placeholder= material.area v-model="selectedArea">
-              <option v-for="area in this.areas" :key="area.area" :value="area">{{area.area}}</option>
-            </b-select>
-          </b-field>
-         </b-field>
-        <b-field>
-          <b-field label="Starting Date & Time">
-            <b-field>
+          <b-field>
+            <b-field label="Starting Date & Time">
               <b-field>
-                <b-datepicker
-                  icon="calendar"
-                  :placeholder= material.startingDate
-                  v-model="startingDate"
-                >
-                  <button class="btn-primary" @click="startingDate= new Date()">
-                    <b-icon icon="calendar-today"></b-icon>
-                    <span>Today</span>
-                  </button>
-                  <button class="btn-primary" @click="startingDate = null">
-                    <b-icon icon="close"></b-icon>
-                    <span>Clear</span>
-                  </button>
-                </b-datepicker>
-              </b-field>
-              <b-field>
-                <b-timepicker
-                  icon="clock"
-                  :placeholder= material.startingTime
-                  v-model="startingTime"
-                >
-                  <button class="btn-primary" @click="startingTime = new Date()">
-                    <b-icon icon="clock"></b-icon>
-                    <span>Now</span>
-                  </button>
-                  <button class="btn-primary" @click="startingTime = null">
-                    <b-icon icon="close"></b-icon>
-                    <span>Clear</span>
-                  </button>
-                </b-timepicker>
+                <b-field>
+                  <b-datepicker
+                    icon="calendar"
+                    placeholder="Click to choose date"
+                    v-model="startingDate"
+                  >
+                    <button class="btn-primary" @click="startingDate= new Date()">
+                      <b-icon icon="calendar-today"></b-icon>
+                      <span>Today</span>
+                    </button>
+                    <button class="btn-primary" @click="startingDate = null">
+                      <b-icon icon="close"></b-icon>
+                      <span>Clear</span>
+                    </button>
+                  </b-datepicker>
+                </b-field>
+                <b-field>
+                  <b-timepicker
+                    icon="clock"
+                    placeholder="Click to choose time"
+                    v-model="startingTime"
+                  >
+                    <button class="btn-primary" @click="startingTime = new Date()">
+                      <b-icon icon="clock"></b-icon>
+                      <span>Now</span>
+                    </button>
+                    <button class="btn-primary" @click="startingTime = null">
+                      <b-icon icon="close"></b-icon>
+                      <span>Clear</span>
+                    </button>
+                  </b-timepicker>
+                </b-field>
               </b-field>
             </b-field>
           </b-field>
-        </b-field>
-        <b-field>
-          <b-field label="Ending Date & Time">
-            <b-field>
+          <b-field>
+            <b-field label="Ending Date & Time">
               <b-field>
-                <b-datepicker
-                  icon="calendar"
-                  placeholder= material.endingDate
-                  v-model="endingDate"
-                >
-                  <button class="btn-primary" @click="endingDate= new Date()">
-                    <b-icon icon="calendar-today"></b-icon>
-                    <span>Today</span>
-                  </button>
-                  <button class="btn-primary" @click="endingDate = null">
-                    <b-icon icon="close"></b-icon>
-                    <span>Clear</span>
-                  </button>
-                </b-datepicker>
-              </b-field>
-              <b-field>
-                <b-timepicker icon="clock" placeholder= material.endingTme v-model="endingTime">
-                  <button class="btn-primary" @click="endingTime = new Date()">
-                    <b-icon icon="clock"></b-icon>
-                    <span>Now</span>
-                  </button>
-                  <button class="btn-primary" @click="endingTime = null">
-                    <b-icon icon="close"></b-icon>
-                    <span>Clear</span>
-                  </button>
-                </b-timepicker>
+                <b-field>
+                  <b-datepicker
+                    icon="calendar"
+                    placeholder="Click to choose date"
+                    v-model="endingDate"
+                  >
+                    <button class="btn-primary" @click="endingDate= new Date()">
+                      <b-icon icon="calendar-today"></b-icon>
+                      <span>Today</span>
+                    </button>
+                    <button class="btn-primary" @click="endingDate = null">
+                      <b-icon icon="close"></b-icon>
+                      <span>Clear</span>
+                    </button>
+                  </b-datepicker>
+                </b-field>
+                <b-field>
+                  <b-timepicker icon="clock" placeholder="Click to choose time" v-model="endingTime">
+                    <button class="btn-primary" @click="endingTime = new Date()">
+                      <b-icon icon="clock"></b-icon>
+                      <span>Now</span>
+                    </button>
+                    <button class="btn-primary" @click="endingTime = null">
+                      <b-icon icon="close"></b-icon>
+                      <span>Clear</span>
+                    </button>
+                  </b-timepicker>
+                </b-field>
               </b-field>
             </b-field>
           </b-field>
-        </b-field>
-      </div>
+        </div>
       </section>
       <footer class="modal-card-foot">
-        <button class="btn-primary" @click="updateBasicInformation()">Edit</button>
+        <button class="btn-primary" @click="updateMaterialPriceTableEntry()">Save</button>
       </footer>
     </div>
   </div>
 </template> 
+
 <script>
 import Axios from "axios";
-import Config,{ MYCM_API_URL } from '../../../config.js';
-import PriceTables from './../../../services/mycm_api/requests/pricetables.js';
-import materials from '../../../services/mycm_api/requests/materials.js';
+import Config, { MYCM_API_URL } from "../../../config.js";
+import PriceTablesRequests from "./../../../services/mycm_api/requests/pricetables.js";
+import CurrenciesPerAreaRequests from "./../../../services/mycm_api/requests/currenciesperarea.js";
+import materials from "../../../services/mycm_api/requests/materials.js";
 export default {
-  name: "EditMaterial",
-  created(){
-   
-      Axios.get(MYCM_API_URL+`/currenciesperarea/currencies`)
+
+  name: "EditPriceMaterial",
+
+  async created() {
+
+    await CurrenciesPerAreaRequests.getCurrencies()
       .then(response => {
-        this.currencies = response.data
+        this.currencies = response.data;
       })
-       .catch((error)=>{
-                //throw error?
-            });
-    Axios.get(MYCM_API_URL+`/currenciesperarea/areas`)
+      .catch(error => {
+        this.$toast.open(error.response.data.message);
+      });
+    await CurrenciesPerAreaRequests.getAreas()
       .then(response => {
-        this.areas = response.data
+        this.areas = response.data;
       })
-      .catch((error)=>{
-                //throw error?
-            });  
-    },
+      .catch(error => {
+        this.$toast.open(error.response.data.message);
+      });
+      
+    this.selectedValue = this.material.value;
+    for(let i=0; i < this.currencies.length; i++){
+      if(this.material.currency === this.currencies[i].currency){
+        this.selectedCurrency = {...this.currencies[i]};
+        break;
+      }
+    }
+    for(let i=0; i < this.areas.length; i++){
+      if(this.material.area === this.areas[i].area){
+        this.selectedArea = {...this.areas[i]};
+        break;
+      }
+    }
+    this.startingDate = new Date(this.material.startingDate);
+    this.endingDate = new Date(this.material.endingDate);
+    this.startingTime = new Date(this.material.startingDate + "T" + this.material.startingTime);
+    this.endingTime = new Date(this.material.endingDate + "T" + this.material.endingTime);
+  },
+
   data() {
+
     return {
-      currencies:Array,
-      areas:Array,
+      currencies: Array,
+      areas: Array,
       selectedValue: null,
       selectedCurrency: null,
       selectedArea: null,
-      startingDate: new Date(),
-      endingDate: new Date(),
-      startingTime: new Date(),
-      endingTime: new Date()
+      startingDate: null,
+      endingDate: null,
+      startingTime: null,
+      endingTime: null
     };
+
   },
+
   methods: {
-    updateBasicInformation() {
+
+    updateMaterialPriceTableEntry() {
+      if(this.selectedCurrency == null || this.selectedArea == null){
+        this.$toast.open({
+          message : "Choose a currency and an area before you save your update!"
+        });
+        return;
+      }
       var updatedEntry = {
         tableEntry: {
           price: {
@@ -163,16 +200,27 @@ export default {
             currency: this.selectedCurrency.currency,
             area: this.selectedArea.area
           },
-          //startingDate: this.selectedInitialData,
-          //endingDate: this.selectedFinalData
-          startingDate: "2019-01-04T18:12:00",
-          endingDate: "2019-01-22T12:07:00"
+          startingDate: this.parseDateTimeToGeneralIsoFormatString(
+            this.startingDate,
+            this.startingTime
+          ),
+          endingDate: this.parseDateTimeToGeneralIsoFormatString(
+            this.endingDate,
+            this.endingTime
+          )
         }
-      }
-      PriceTables.putMaterialPriceTableEntry(this.material.id, this.material.tableEntryId, updatedEntry)
-        .then(this.$toast.open("Update te price of the material with success!"))
-        .catch();
-      }
+      };
+      this.$emit("updateMaterialPriceTableEntry", this.material.id, this.material.tableEntryId, updatedEntry);
+    },
+
+    parseDateTimeToGeneralIsoFormatString(date, time) {
+      let dateToIso = date == null ? null : date.toISOString();
+      let timeToIso = time == null ? null : time.toISOString();
+      return dateToIso == null || timeToIso == null
+        ? ""
+        : dateToIso.split("T")[0] + "T" + timeToIso.split("T")[1].split(".")[0];
+    }
+
   },
   props: {
     /**
@@ -183,5 +231,6 @@ export default {
       required: true
     }
   }
+
 };
 </script>

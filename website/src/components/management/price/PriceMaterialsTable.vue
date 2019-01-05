@@ -35,7 +35,7 @@
                 </button>
                 <button
                     class="btn-primary"
-                    @click="editMaterialDetails(props.rowData)"
+                    @click="editMaterialPriceTableEntry(props.rowData)"
                 >
                     <b-icon icon="pencil"/>
                 </button>
@@ -47,10 +47,10 @@
                     />
                 </b-modal>
             </div>                    
-            <div v-if="showEditMaterialDetails">
-                <b-modal :active.sync="showEditMaterialDetails" has-modal-card scroll="keep">
+            <div v-if="showEditMaterialPriceTableEntry">
+                <b-modal :active.sync="showEditMaterialPriceTableEntry" has-modal-card scroll="keep">
                     <edit-price-material
-                        @emitMaterial="updateMaterial"
+                        @updateMaterialPriceTableEntry="updateMaterialPriceTableEntry"
                         :material="currentSelectedMaterial"
                     />
                 </b-modal>
@@ -87,11 +87,13 @@ import EditPriceMaterial from './EditPriceMaterial';
 import Config,{MYCM_API_URL} from '../../../config';
 
 import MaterialRequest from './../../../services/mycm_api/requests/materials';
-import PriceTable from './../../../services/mycm_api/requests/pricetables.js';
+import PriceTablesRequests from './../../../services/mycm_api/requests/pricetables.js';
 
 
 export default {
    
+    name:"PriceMaterialsTable",
+
     /**
      * Components exported components
      */
@@ -143,7 +145,7 @@ export default {
                     dataClass: "center aligned"
                 }
             ],
-            showEditMaterialDetails:false,
+            showEditMaterialPriceTableEntry:false,
             showListFinishes:false,
             showMaterialPriceHistoryModal:false
         }
@@ -187,7 +189,7 @@ export default {
                     .then((response)=>{
 
                                 for(let i=0; i<response.data.finishes.length; i++){
-                                    PriceTable.getCurrentMaterialFinishPrice(response.data.id, response.data.finishes[i].id, "", "")
+                                    PriceTablesRequests.getCurrentMaterialFinishPrice(response.data.id, response.data.finishes[i].id, "", "")
                                     .then((finishData) => {
                                         this.finishes.push({
                                             id: response.data.finishes[i].id,
@@ -226,30 +228,26 @@ export default {
         /**
          * Edits the details of a material
          */
-        editMaterialDetails(materialId, price){
+        editMaterialPriceTableEntry(materialId, price){
             this.getMaterialDetails(materialId, price)
-                .then((matrial)=>{this.showEditMaterialDetails=true;});
+                .then((material)=>{this.showEditMaterialPriceTableEntry=true;});
         },
         /**
-         * Updates a given material
+         * Updates a price table entry of a material
          */
-        updateMaterial(materialDetails){
-            this
-                .updateMaterialProperties(materialDetails)
-                .then(()=>{
-                    this.$emit('refreshData');
-                    this.$toast.open({message:"Material was updated with success!"});      
+        updateMaterialPriceTableEntry(materialId, tableEntryId, updatedEntry){
+            PriceTablesRequests.putMaterialPriceTableEntry(materialId, tableEntryId, updatedEntry)
+                .then(response =>{
+                    this.$toast.open({
+                        message: "Update was successful!"
+                    })
+                    this.$emit("refreshData");
+                    this.showEditMaterialPriceTableEntry = false;
                 })
-                .catch((error_message)=>{
-                    this.$toast.open({message:error_message});
+                .catch(error =>{
+                    this.$toast.open(error.response.data.message);
                 });
-        },
-        /**
-         * Updates a given material properties (PUT) in a promise way
-         */
-        updateMaterialProperties(materialDetails){
-            
-        },
+        }
     },
       props:{
         data:Array

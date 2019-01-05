@@ -38,17 +38,17 @@ public class UserController {
         try {
             CreateUserMV createUserMV;
             createUserMV = (CreateUserMV) new Gson().fromJson(userCreationDetails, UserMVService.classFromType(new Gson().fromJson(userCreationDetails, CreateUserType.class).type));
-            CreatedUserMV created = new cdiomyc.core.application.users.UserController().createUser(createUserMV);
+            CreatedUserMV createdUserMV = cdiomyc.core.application.users.UserController.createUser(createUserMV);
             if(createUserMV instanceof CreateCredentialsUserMV){
                 if(((CreateCredentialsUserMV) createUserMV).phoneNumber!=null && !((CreateCredentialsUserMV) createUserMV).phoneNumber.trim().isEmpty()){
                     SendUserActivationCodeSMSDetails sendUserActivationCodeSMSDetails=new SendUserActivationCodeSMSDetails();
-                    sendUserActivationCodeSMSDetails.name=((CreateCredentialsUserMV) createUserMV).username;
+                    sendUserActivationCodeSMSDetails.name=createdUserMV.name;
                     sendUserActivationCodeSMSDetails.phoneNumber=((CreateCredentialsUserMV) createUserMV).phoneNumber;
-                    sendUserActivationCodeSMSDetails.activationCode=created.activationCode;
+                    sendUserActivationCodeSMSDetails.activationCode=createdUserMV.activationCode;
                     UserActivationCodeSenderService.sendUserActivationCode(sendUserActivationCodeSMSDetails);
                 }
             }
-            return Response.ok().entity(new Gson().toJson(created)).build();
+            return Response.ok().entity(new Gson().toJson(createdUserMV)).build();
         } catch(IllegalArgumentException | IllegalStateException illegalArgumentException){
             return Response.status(Status.BAD_REQUEST).entity(new Gson().toJson(new SimpleJSONMessageService(illegalArgumentException.getMessage()))).build();
         } catch(Exception notCapturedException){

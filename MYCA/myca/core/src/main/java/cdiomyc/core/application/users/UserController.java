@@ -1,12 +1,12 @@
 package cdiomyc.core.application.users;
 
-import cdiomyc.core.domain.Role;
 import cdiomyc.core.domain.User;
 import cdiomyc.core.domain.auth.Auth;
 import cdiomyc.core.domain.auth.AuthFactory;
 import cdiomyc.core.mv.authentication.AuthenticationMV;
 import cdiomyc.core.mv.users.ActivateUserMV;
 import cdiomyc.core.mv.users.AddUserRolesMV;
+import cdiomyc.core.mv.users.CreateCredentialsUserMV;
 import cdiomyc.core.mv.users.CreateUserMV;
 import cdiomyc.core.mv.users.CreatedUserMV;
 import cdiomyc.core.mv.users.UserMVService;
@@ -27,14 +27,14 @@ public class UserController {
      * @return instance of CreatedUserMV containing the auth token
      */
     public static CreatedUserMV createUser(CreateUserMV userCreationDetails) {
-        Auth auth = AuthFactory.createAuth((AuthenticationMV) userCreationDetails);
+        User user=buildUserWhetherAuthenticationType(userCreationDetails);
         UserRepository userRepo = PersistenceContext.repositories().createUserRepository();
         try {
-            userRepo.findEID(auth);
+            userRepo.findEID(user.id());
         } catch (IllegalStateException ex) {
-            User user = new User(auth);
             userRepo.save(user);
-            CreatedUserMV createdUserMV=UserMVService.createdUserMVFromAuth(auth);
+            CreatedUserMV createdUserMV=UserMVService.createdUserMVFromAuth(user.id());
+            createdUserMV.name=user.name();
             createdUserMV.activationCode=user.activationCode();
             return createdUserMV;
         }
@@ -63,5 +63,20 @@ public class UserController {
         User userToAddRoles=userRepo.findEID(userAuth);
         userToAddRoles.addRoles(addUserRolesMV.userRoles);
         userRepo.update(userToAddRoles);
+    }
+    
+    /**
+     * Builds a user whether the authentication type
+     * @param createUserMV CreateUserMV with the user creation details
+     * @return User with the built user
+     */
+    private static User buildUserWhetherAuthenticationType(CreateUserMV createUserMV){
+        Auth auth = AuthFactory.createAuth((AuthenticationMV)createUserMV);
+        User.UserBuilder userBuilder=User.UserBuilder.createUserBuilder(auth);
+        if(createUserMV instanceof CreateCredentialsUserMV){
+            CreateCredentialsUserMV createCredentialsUserMV=(CreateCredentialsUserMV)createUserMV;
+            if(createCredentialsUserMV.name!=null)userBuilder.withName(createCredentialsUserMV.name);
+        }
+        return userBuilder.build();
     }
 }
