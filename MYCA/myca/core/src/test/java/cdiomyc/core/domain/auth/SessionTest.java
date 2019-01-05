@@ -1,6 +1,6 @@
 package cdiomyc.core.domain.auth;
 
-import cdiomyc.core.domain.auth.credentials.CredentialsAuth;
+import cdiomyc.core.domain.auth.credentials.UsernameCredentialsAuth;
 import cdiomyc.support.utils.JWTUtils;
 import java.time.LocalDateTime;
 import org.junit.Test;
@@ -112,7 +112,7 @@ public class SessionTest {
     public void ensureEqualsFailsIfDifferentClass() {
         String token = "Sarastro";
         Session instance = new Session(LocalDateTime.now().plusMinutes(60), token,"secretetoken");
-        assertFalse(instance.equals(new CredentialsAuth("username", "password")));
+        assertFalse(instance.equals(new UsernameCredentialsAuth("username", "password")));
     }
 
     /**

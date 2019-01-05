@@ -1,6 +1,7 @@
 package cdiomyc.core.domain.auth;
 
-import cdiomyc.core.domain.auth.credentials.CredentialsAuth;
+import cdiomyc.core.domain.auth.credentials.EmailCredentialsAuth;
+import cdiomyc.core.domain.auth.credentials.UsernameCredentialsAuth;
 import cdiomyc.core.mv.authentication.AuthenticationMV;
 import cdiomyc.core.mv.authentication.CredentialsAuthenticationMV;
 
@@ -23,7 +24,10 @@ public class AuthFactory {
     public static Auth createAuth(AuthenticationMV authDetails) {
         if (authDetails instanceof CredentialsAuthenticationMV) {
             CredentialsAuthenticationMV credentialDetails = (CredentialsAuthenticationMV) authDetails;
-            return (Auth) new CredentialsAuth(credentialDetails.username, credentialDetails.password);
+            if(credentialDetails.email!=null){
+                return new EmailCredentialsAuth(credentialDetails.email,credentialDetails.password);
+            }
+            return (Auth) new UsernameCredentialsAuth(credentialDetails.username, credentialDetails.password);
         }
         throw new IllegalStateException("Invalid authentication details!");
     }

@@ -89,6 +89,8 @@ public class User implements AggregateRoot<Auth>,Serializable{
         this.activationCode=generateActivationCode();
     }
     
+    //Needs unit tests to be updated
+    
     /**
      * Changes the current user name
      * @param name String with the new user name
@@ -99,6 +101,12 @@ public class User implements AggregateRoot<Auth>,Serializable{
             throw new IllegalArgumentException("Both old and new user names are equal");
         this.name=newUserName;
     }
+    
+    /**
+     * Returns the current user name
+     * @return String with the user name
+     */
+    public String name(){return name!=null ? name.name : "Anonymous";}
     
     /**
      * Creates a new session
