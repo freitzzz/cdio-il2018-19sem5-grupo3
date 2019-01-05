@@ -993,14 +993,15 @@ export default class ProductRenderer {
   }
   /**
    * Applies the texture to the closet.
+   * @param {string} texture - URL of the texture being loaded.
    */
   applyTexture(texture) {
-    this.material.map = THREE.ImageUtils.loadTexture(texture);
+    this.material.map = new THREE.TextureLoader().load(texture);
   }
 
   /**
    * Changes the closet's material's finish.
-   * @param {*} shininess The new shininess value
+   * @param {number} shininess The new shininess value
    */
   applyFinish(shininess) {
     this.material.shininess = shininess;
