@@ -132,13 +132,14 @@ namespace backend.Controllers
         }
 
         [HttpGet("{customizedProductId}/slots/{slotId}", Name = "GetSlot")]
-        public ActionResult findSlotById(long customizedProductId, long slotId)
+        public ActionResult findSlotById(long customizedProductId, long slotId, [FromQuery]string unit)
         {
             try
             {
                 FindSlotModelView findSlotModelView = new FindSlotModelView();
                 findSlotModelView.customizedProductId = customizedProductId;
                 findSlotModelView.slotId = slotId;
+                findSlotModelView.options.unit = unit;
 
                 GetSlotModelView slotModelView = new core.application.CustomizedProductController().findSlot(findSlotModelView);
                 return Ok(slotModelView);

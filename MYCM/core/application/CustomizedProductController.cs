@@ -131,7 +131,7 @@ namespace core.application
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_SLOT, findSlotModelView.slotId));
             }
 
-            return SlotModelViewService.fromEntity(slot);
+            return SlotModelViewService.fromEntity(slot, findSlotModelView.options.unit);
         }
 
         /// <summary>
