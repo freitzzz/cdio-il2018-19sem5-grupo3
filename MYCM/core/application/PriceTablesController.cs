@@ -98,7 +98,7 @@ namespace core.application
         {
             IEnumerable<FinishPriceTableEntry> materialFinishPriceHistory = PersistenceContext.repositories().createFinishPriceTableRepository().fetchMaterialFinishPriceHistory(fetchMaterialFinishPriceHistoryDTO);
             FetchEnsurance.ensureMaterialFinishPriceHistoryFetchWasSuccessful(materialFinishPriceHistory);
-            if (fetchMaterialFinishPriceHistoryDTO.currency != null && fetchMaterialFinishPriceHistoryDTO.area == null)
+            if (fetchMaterialFinishPriceHistoryDTO.currency != null && fetchMaterialFinishPriceHistoryDTO.area != null)
             {
                 CurrenciesService.checkCurrencySupport(fetchMaterialFinishPriceHistoryDTO.currency);
                 AreasService.checkAreaSupport(fetchMaterialFinishPriceHistoryDTO.area);
