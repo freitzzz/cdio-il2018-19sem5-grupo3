@@ -159,6 +159,7 @@ export default {
           this.$toast.open(error.response.data);
         }
       }
+      this.plotTimeSeriesChart();
     },
 
     async convertValuesToArea() {
@@ -189,6 +190,7 @@ export default {
           this.$toast.open(error.response.data);
         }
       }
+      this.plotTimeSeriesChart();
     },
 
     fetchRequests() {
