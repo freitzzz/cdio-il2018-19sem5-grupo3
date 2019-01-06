@@ -27,7 +27,11 @@ const routes = [
                 { path: "customization", component: Customizer }
             ]
     },
-<<<<<<< HEAD:website/src/router.js
+    {
+        path: "/administration", component: AdministrationTopBar, children: [
+            { path: "orders", component: ListOrders }
+        ]
+    },
     { path: "*", redirect: "/home" }
 ];
 
@@ -38,11 +42,3 @@ const routes = [
 export const router = new VueRouter({
     routes
 });
-=======
-    {
-        path: "/administration", component: AdministrationTopBar, children: [
-            { path: "orders", component: ListOrders}
-        ]
-    }
-];
->>>>>>> development:website/src/routes.js
