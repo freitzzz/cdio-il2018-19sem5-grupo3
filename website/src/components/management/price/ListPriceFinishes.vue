@@ -36,16 +36,10 @@
           </b-field>
           <div v-if="showPlotTimeSeriesChartModal">
             <b-modal :active.sync="showPlotTimeSeriesChartModal" has-modal-card scroll="keep">
-              <template>
-                <div class="modal-card" style="width:auto">
-                  <header class="modal-card-head">
-                    <p class="modal-card-title">Comparison between all finishes's price histories</p>
-                  </header>
-                  <section class="modal-card-body">
-                    <div style="width:100%" ref="timeSeriesChart"></div>
-                  </section>
-                </div>
-              </template>
+              <all-finish-price-histories
+                :active="showPlotTimeSeriesChartModal"
+                :materialFinishes="materialFinishes"
+              ></all-finish-price-histories>
             </b-modal>
           </div>
           <b-field>
@@ -124,6 +118,7 @@ import CreatePriceFinish from "./CreatePriceFinish.vue";
 import EditPriceFinish from "./EditPriceFinish.vue";
 import FinishPriceHistory from "./FinishPriceHistory";
 import PriceTableRequests from "./../../../services/mycm_api/requests/pricetables.js";
+import AllFinishPriceHistories from "./AllFinishPriceHistories";
 
 export default {
   name: "ListFinishes",
@@ -157,6 +152,7 @@ export default {
       selectedCurrency: null,
       selectedArea: null,
       currentSelectedFinish: null,
+      materialFinishes: null,
       data: []
     };
   },
@@ -164,7 +160,8 @@ export default {
   components: {
     CreatePriceFinish,
     EditPriceFinish,
-    FinishPriceHistory
+    FinishPriceHistory,
+    AllFinishPriceHistories
   },
 
   methods: {
@@ -369,6 +366,20 @@ export default {
     },
 
     showPlotTimeSeriesChart() {
+      this.materialFinishes = null;
+      this.materialFinishes = {
+        material: {
+          id: this.material.id,
+          designation: this.material.designation
+        },
+        finishes: []
+      };
+      for (let i = 0; i < this.data.length; i++) {
+        this.materialFinishes.finishes.push({
+          id: this.data[i].id,
+          description: this.data[i].description
+        });
+      }
       this.showPlotTimeSeriesChartModal = true;
     }
   },
