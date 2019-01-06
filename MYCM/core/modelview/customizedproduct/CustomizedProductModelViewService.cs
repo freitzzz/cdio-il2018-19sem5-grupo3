@@ -5,6 +5,7 @@ using core.modelview.customizeddimensions;
 using core.modelview.customizedmaterial;
 using core.modelview.product;
 using core.modelview.slot;
+using core.services;
 
 namespace core.modelview.customizedproduct
 {
@@ -28,12 +29,12 @@ namespace core.modelview.customizedproduct
         /// </summary>
         /// <param name="customizedProduct">Instance of CustomizedProduct being converted.</param>
         /// <returns>Instance of GetBasicCustomizedProductModelView.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown when the provided instance of CustomizedProduct is null.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when the provided instance of CustomizedProduct is null.</exception>
         public static GetBasicCustomizedProductModelView fromEntityAsBasic(CustomizedProduct customizedProduct)
         {
             if (customizedProduct == null)
             {
-                throw new ArgumentNullException(ERROR_NULL_CUSTOMIZED_PRODUCT);
+                throw new ArgumentException(ERROR_NULL_CUSTOMIZED_PRODUCT);
             }
 
             GetBasicCustomizedProductModelView basicModelView = new GetBasicCustomizedProductModelView();
@@ -46,11 +47,30 @@ namespace core.modelview.customizedproduct
             return basicModelView;
         }
 
+
+        /// <summary>
+        /// Converts an instance of CustomizedProduct into an instance of GetCustomizedProductModelView.
+        /// </summary>
+        /// <param name="customizedProduct">Instance of CustomizedProduct being converted.</param>
+        /// <returns>Instance of GetCustomizedProductModelView.</returns>
+        /// <exception cref="System.ArgumentException">Thrown when the provided instance of CustomizedProduct is null.</exception>
         public static GetCustomizedProductModelView fromEntity(CustomizedProduct customizedProduct)
+        {
+            return fromEntity(customizedProduct, MeasurementUnitService.getMinimumUnit());
+        }
+
+        /// <summary>
+        /// Converts an instance of CustomizedProduct into an instance of GetCustomizedProductModelView.
+        /// </summary>
+        /// <param name="customizedProduct">Instance of CustomizedProduct being converted.</param>
+        /// <param name="unit">String representing the unit to which the CustomizedProduct's dimensions will be converted to.</param>
+        /// <returns>Instance of GetCustomizedProductModelView.</returns>
+        /// <exception cref="System.ArgumentException">Thrown when the provided instance of CustomizedProduct is null.</exception>
+        public static GetCustomizedProductModelView fromEntity(CustomizedProduct customizedProduct, string unit)
         {
             if (customizedProduct == null)
             {
-                throw new ArgumentNullException(ERROR_NULL_CUSTOMIZED_PRODUCT);
+                throw new ArgumentException(ERROR_NULL_CUSTOMIZED_PRODUCT);
             }
 
             GetCustomizedProductModelView customizedProductModelView = new GetCustomizedProductModelView();
@@ -58,7 +78,7 @@ namespace core.modelview.customizedproduct
             customizedProductModelView.reference = customizedProduct.reference;
             customizedProductModelView.designation = customizedProduct.designation;
             customizedProductModelView.status = customizedProduct.status;
-            customizedProductModelView.customizedDimensions = CustomizedDimensionsModelViewService.fromEntity(customizedProduct.customizedDimensions);
+            customizedProductModelView.customizedDimensions = CustomizedDimensionsModelViewService.fromEntity(customizedProduct.customizedDimensions, unit);
 
             if (customizedProduct.customizedMaterial != null)
             {
@@ -66,23 +86,24 @@ namespace core.modelview.customizedproduct
             }
 
             customizedProductModelView.product = ProductModelViewService.fromEntityAsBasic(customizedProduct.product);
-            customizedProductModelView.slots = SlotModelViewService.fromCollection(customizedProduct.slots);
+            customizedProductModelView.slots = SlotModelViewService.fromCollection(customizedProduct.slots, unit);
 
 
             return customizedProductModelView;
         }
+
 
         /// <summary>
         /// Converts an IEnumerable of CustomizedProduct into an instance of GetAllCustomizedProductsModelView.
         /// </summary>
         /// <param name="customizedProducts">IEnumerable containing the CustomizedProducts being converted.</param>
         /// <returns>Instance of GetAllCustomizedProductsModelView.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown when the provided IEnumerable of CustomizedProduct is null.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when the provided IEnumerable of CustomizedProduct is null.</exception>
         public static GetAllCustomizedProductsModelView fromCollection(IEnumerable<CustomizedProduct> customizedProducts)
         {
             if (customizedProducts == null)
             {
-                throw new ArgumentNullException(nameof(customizedProducts));
+                throw new ArgumentException(ERROR_NULL_CUSTOMIZED_PRODUCT_COLLECTION);
             }
 
             GetAllCustomizedProductsModelView allCustomizedProductsModelView = new GetAllCustomizedProductsModelView();

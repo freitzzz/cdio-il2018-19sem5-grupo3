@@ -104,7 +104,7 @@ namespace core.application
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, findCustomizedProductModelView.customizedProductId));
             }
 
-            return CustomizedProductModelViewService.fromEntity(customizedProduct);
+            return CustomizedProductModelViewService.fromEntity(customizedProduct, findCustomizedProductModelView.options.unit);
         }
 
         /// <summary>

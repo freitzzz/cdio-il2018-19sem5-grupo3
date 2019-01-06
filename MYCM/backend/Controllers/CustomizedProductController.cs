@@ -107,14 +107,17 @@ namespace backend.Controllers
         /// Fetches the information of a customized product by its resource id
         /// </summary>
         /// <param name="id">Long with the customized products resource id</param>
+        /// <param name="unit">String representing the unit in which the CustomizedProduct's dimensions will be retrieved in.</param>
         /// <returns>ActionResult with the customized product information</returns>
         [HttpGet("{id}", Name = "GetCustomizedProduct")]
-        public ActionResult findByID(long id)
+        public ActionResult findByID(long id, [FromQuery]string unit)
         {
             try
             {
                 FindCustomizedProductModelView findCustomizedProductModelView = new FindCustomizedProductModelView();
                 findCustomizedProductModelView.customizedProductId = id;
+                findCustomizedProductModelView.options.unit = unit;
+
                 GetCustomizedProductModelView fetchedCustomizedProduct = new core.application.CustomizedProductController().findCustomizedProduct(findCustomizedProductModelView);
                 return Ok(fetchedCustomizedProduct);
             }
