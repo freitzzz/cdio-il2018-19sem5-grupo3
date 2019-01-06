@@ -42,7 +42,6 @@ namespace core.modelview.customizedproduct
             basicModelView.productId = customizedProduct.product.Id;
             basicModelView.designation = customizedProduct.designation;
             basicModelView.reference = customizedProduct.reference;
-            basicModelView.serialNumber = customizedProduct.serialNumber;
 
             return basicModelView;
         }
