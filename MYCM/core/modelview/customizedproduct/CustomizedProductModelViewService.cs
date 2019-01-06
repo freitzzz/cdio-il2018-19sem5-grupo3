@@ -57,8 +57,8 @@ namespace core.modelview.customizedproduct
             GetCustomizedProductModelView customizedProductModelView = new GetCustomizedProductModelView();
             customizedProductModelView.customizedProductId = customizedProduct.Id;
             customizedProductModelView.reference = customizedProduct.reference;
-            customizedProductModelView.serialNumber = customizedProduct.serialNumber;
             customizedProductModelView.designation = customizedProduct.designation;
+            customizedProductModelView.status = customizedProduct.status;
             customizedProductModelView.customizedDimensions = CustomizedDimensionsModelViewService.fromEntity(customizedProduct.customizedDimensions);
 
             if (customizedProduct.customizedMaterial != null)
