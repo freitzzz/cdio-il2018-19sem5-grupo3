@@ -22,6 +22,25 @@
                 </b-modal>
             </div>
             <b-field>
+                <button class="btn-primary" @click="showPlotTimeSeriesChart">
+                    <b-icon icon="chart-line-stacked"></b-icon>
+                </button>
+            </b-field>
+            <div v-if="showPlotTimeSeriesChartModal">
+                <b-modal :active.sync="showPlotTimeSeriesChartModal" has-modal-card scroll="keep">
+                    <template>
+                        <div class="modal-card" style="width:auto">
+                            <header class="modal-card-head">
+                                <p class="modal-card-title">Comparison between all material's price histories</p>
+                            </header>
+                            <section class="modal-card-body">
+                                <div style="width:100%" ref="timeSeriesChart"></div>
+                            </section>
+                        </div>
+                    </template>
+                </b-modal>
+            </div>
+            <b-field>
                 <b-field>
                     <b-field> 
                         <b-select icon="coin" placeholder="Currency" v-model="selectedCurrency" @input="convertValuesToCurrency">
@@ -103,7 +122,8 @@ export default {
             data:[],
             dataMaterial:null,
             total:Number,
-            failedToFetchMaterialsNotification:false
+            failedToFetchMaterialsNotification:false,
+            showPlotTimeSeriesChartModal:false
         }
     },
     methods:{
@@ -213,7 +233,7 @@ export default {
                         endingDate: data.timePeriod.endingDate
                     });
                 }catch(error){
-                    this.$toast.open(error.response.data.message);
+                    this.$toast.open(error.response.data);
                 }
             }
         },
@@ -248,6 +268,43 @@ export default {
                     this.$toast.open(error.response.data.message);
                 }
             }
+        },
+
+        showPlotTimeSeriesChart(){
+            this.showPlotTimeSeriesChartModal=true;
+            /*let xAxisArray = [];
+            let yAxisArray = [];
+
+            for (let i = 0; i < this.data.length; i++) {
+                xAxisArray.push(this.data[i].startingDateTime);
+                xAxisArray.push(this.data[i].endingDateTime);
+                yAxisArray.push(this.data[i].value.split(" ")[0]);
+                yAxisArray.push(this.data[i].value.split(" ")[0]);
+            }
+
+            var trace = {
+                type: "scatter",
+                mode: "lines",
+                name: "Material " + this.materialId,
+                x: xAxisArray,
+                y: yAxisArray,
+                line: { color: "#17BECF" }
+            };
+
+            var data = [trace];
+
+            let minValue = 0;
+            let maxValue = Math.max(yAxisArray);
+
+            var layout = {
+                title: "Price Evolution Time Series",
+                width: 750,
+                height: 500,
+                xaxis: {range: [minValue, maxValue]},
+                yaxis: {range: [minValue, maxValue]},
+            };
+
+            Plotly.newPlot(this.$refs.timeSeriesChart, data, layout); */
         }
     }
 }

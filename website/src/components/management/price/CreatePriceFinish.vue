@@ -14,7 +14,7 @@
             field="description"
             :clean-on-select="true"
             @select="option => selectFinish(option)"
-            placeholder="Search by Material description"
+            placeholder="Search by Finish description"
             icon="magnify"
           >
             <template slot="empty">No finishes found</template>
@@ -146,6 +146,7 @@
 </template>
 
 <script>
+
 import MaterialRequests from "./../../../services/mycm_api/requests/materials.js";
 import CurrenciesPerAreaRequests from "./../../../services/mycm_api/requests/currenciesperarea.js";
 
@@ -178,19 +179,20 @@ export default {
         this.currencies = response.data;
       })
       .catch(error => {
-        this.$toast.open(error.response.data.message);
+        this.$toast.open(error.response.data);
       });
     CurrenciesPerAreaRequests.getAreas()
       .then(response => {
         this.areas = response.data;
       })
       .catch(error => {
-        this.$toast.open(error.response.data.message);
+        this.$toast.open(error.response.data);
       });
   },
 
   methods: {
     getAvailableFinishes() {
+      //TODO After materials.js is updated put flag to false when calling getMaterial
       MaterialRequests.getMaterial(this.material.id)
         .then(response => {
           this.finishes.push(...response.data.finishes);
@@ -245,7 +247,7 @@ export default {
     parseDateTimeToGeneralIsoFormatString(date, time){
       let dateToIso = date == null ? null : date.toISOString();
       let timeToIso = time == null ? null : time.toISOString();
-      return dateToIso == null && timeToIso == null ? null : dateToIso.split("T")[0] + "T" + timeToIso.split("T")[1].split(".")[0];
+      return dateToIso == null || timeToIso == null ? "" : dateToIso.split("T")[0] + "T" + timeToIso.split("T")[1].split(".")[0];
     }
   },
 

@@ -15,8 +15,8 @@
                 </button>
                
             </div>
-            <div v-if="showListFinishes">
-                <b-modal :active.sync="showListFinishes" has-modal-card scroll="keep">
+            <div v-if="showCurrentMaterialFinishesPriceList">
+                <b-modal :active.sync="showCurrentMaterialFinishesPriceList" has-modal-card scroll="keep">
                     <list-price-finishes
                         :material="currentSelectedMaterial"
                     />
@@ -146,7 +146,7 @@ export default {
                 }
             ],
             showEditMaterialPriceTableEntry:false,
-            showListFinishes:false,
+            showCurrentMaterialFinishesPriceList:false,
             showMaterialPriceHistoryModal:false
         }
     },
@@ -168,7 +168,7 @@ export default {
             this
                 .getMaterialDetails(material)
                 .then((material)=>{
-                    this.showListFinishes=true;
+                    this.showCurrentMaterialFinishesPriceList=true;
                 });
         },
         /**
@@ -187,33 +187,19 @@ export default {
             return new Promise((accept,reject)=>{
                 MaterialRequest.getMaterial(material.id)
                     .then((response)=>{
-
-                                for(let i=0; i<response.data.finishes.length; i++){
-                                    PriceTablesRequests.getCurrentMaterialFinishPrice(response.data.id, response.data.finishes[i].id, "", "")
-                                    .then((finishData) => {
-                                        this.finishes.push({
-                                            id: response.data.finishes[i].id,
-                                            description: response.data.finishes[i].description,
-                                            shininess: response.data.finishes[i].shininess,
-                                            value: finishData.data.currentPrice.value + " " + finishData.data.currentPrice.currency + "/" + finishData.data.currentPrice.area,
-                                        })
-                                    })
-                                    .catch(); 
-                                };
                                 this.currentSelectedMaterial= {
-                                id: response.data.id,
-                                tableEntryId: material.tableEntryId,
-                                reference: response.data.reference,
-                                designation: response.data.designation,
-                                //finishes: this.finishes,
-                                finishes: response.data.finishes,
-                                value: value,
-                                currency: currency,
-                                area: area,
-                                startingDate: initialDate,
-                                endingDate: endDate,
-                                startingTime: initalTime,
-                                endingTime: endTime
+                                    id: response.data.id,
+                                    tableEntryId: material.tableEntryId,
+                                    reference: response.data.reference,
+                                    designation: response.data.designation,
+                                    finishes: response.data.finishes,
+                                    value: value,
+                                    currency: currency,
+                                    area: area,
+                                    startingDate: initialDate,
+                                    endingDate: endDate,
+                                    startingTime: initalTime,
+                                    endingTime: endTime
                                 };
                                 accept(response);
                              
@@ -245,7 +231,7 @@ export default {
                     this.showEditMaterialPriceTableEntry = false;
                 })
                 .catch(error =>{
-                    this.$toast.open(error.response.data.message);
+                    this.$toast.open(error.response.data);
                 });
         }
     },
