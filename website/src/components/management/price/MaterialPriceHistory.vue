@@ -235,7 +235,6 @@ export default {
         this.data = sortEntriesByStartingDateTime;
         this.plotTimeSeriesChart();
       } catch (error) {
-        console.log(error);
         this.$toast.open(error.response.data);
       }
     },
@@ -298,7 +297,7 @@ export default {
         yAxisArray.push(this.data[i].value.split(" ")[0]);
       }
 
-      var trace = {
+      let trace = {
         type: "scatter",
         mode: "lines",
         name: "Material " + this.materialId,
@@ -307,12 +306,12 @@ export default {
         line: { color: "#17BECF" }
       };
 
-      var data = [trace];
+      let data = [trace];
 
       let minValue = 0;
       let maxValue = Math.max(yAxisArray);
 
-      var layout = {
+      let layout = {
         title: "Price Evolution Time Series",
         width: 750,
         height: 500,
