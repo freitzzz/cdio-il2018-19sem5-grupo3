@@ -12,12 +12,12 @@
             </button>
             <div v-if="createMaterialFinishPriceTableEntryModal">
               <b-modal
-                :active.sync="createMaterialFinishPriceTableEntryModal"
+                :active="createMaterialFinishPriceTableEntryModal"
                 has-modal-card
                 scroll="keep"
+                :onCancel="confirmClose"
               >
                 <create-price-finish
-                  :active="createMaterialFinishPriceTableEntryModal"
                   :material="this.material"
                   @createMaterialFinishPriceTableEntry="createMaterialFinishPriceTableEntry"
                 />
@@ -381,6 +381,19 @@ export default {
         });
       }
       this.showPlotTimeSeriesChartModal = true;
+    },
+
+    confirmClose() {
+      this.$dialog.confirm({
+        title: "Confirm Close",
+        message: `Are you sure you want exit?`,
+        cancelText: "Cancel",
+        confirmText: "OK",
+        type: "is-info",
+        onConfirm: () =>
+          (this.createMaterialFinishPriceTableEntryModal = false),
+        onCancel: () => (this.createMaterialFinishPriceTableEntryModal = true)
+      });
     }
   },
 
