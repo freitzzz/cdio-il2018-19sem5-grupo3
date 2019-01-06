@@ -25,7 +25,6 @@ namespace backend.persistence.ef
         public IEnumerable<FinishPriceTableEntry> fetchMaterialFinishPriceHistory(FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO)
         {
             return (from finishPriceTableEntry in base.dbContext.FinishPriceTable
-                    from materialPriceTableEntry in dbContext.MaterialPriceTable
                     where finishPriceTableEntry.entity.Id == fetchMaterialFinishPriceHistoryDTO.finishID
                     select finishPriceTableEntry);
         }

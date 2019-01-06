@@ -21,7 +21,6 @@ var Dimensions=require('./Dimensions');
 var packageSchema = new Schema({
     size: {
         type: String,
-        enum: PackageSize.values,
         default: PackageSize.MEDIUM,
         required: true
     },

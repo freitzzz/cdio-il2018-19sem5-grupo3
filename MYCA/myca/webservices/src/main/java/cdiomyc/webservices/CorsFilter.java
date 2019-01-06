@@ -13,14 +13,15 @@ public class CorsFilter implements ContainerResponseFilter {
     @Override
     public void filter(ContainerRequestContext requestContext, 
       ContainerResponseContext responseContext) throws IOException {
-          System.out.println("!!!!");
+          String requestOrigin=requestContext.getHeaderString("ORIGIN");
+          System.out.println(requestOrigin);
           responseContext.getHeaders().add(
-            "Access-Control-Allow-Origin", "*");
+            "Access-Control-Allow-Origin", requestOrigin);
           responseContext.getHeaders().add(
             "Access-Control-Allow-Credentials", "true");
           responseContext.getHeaders().add(
            "Access-Control-Allow-Headers",
-           "origin, content-type, accept, authorization, secrete, cookie");
+           "origin, content-type, accept, authorization, secrete, set-cookie");
           responseContext.getHeaders().add(
             "Access-Control-Allow-Methods", 
             "GET, POST, PUT, DELETE, OPTIONS, HEAD");
