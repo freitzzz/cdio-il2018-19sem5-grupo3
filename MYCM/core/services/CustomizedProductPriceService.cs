@@ -213,7 +213,6 @@ namespace core.services
 
             customizedProductPriceModelView.customizedProductId = customizedProduct.Id;
             customizedProductPriceModelView.reference = customizedProduct.reference;
-            customizedProductPriceModelView.serialNumber = customizedProduct.serialNumber;
             customizedProductPriceModelView.productId = customizedProduct.product.Id;
             string requestedMeasurementUnit = null;
             if (convertCurrencyPerArea)
