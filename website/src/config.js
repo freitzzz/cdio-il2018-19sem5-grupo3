@@ -6,7 +6,7 @@ if (process.env.NODE_ENV === 'production') {
 
 } else {
     mycm = "http://localhost:5000/mycm/api";
-    myco = "http://localhost:4000/myco/api";
+    myco = "http://localhost:4001/myco/api";
     myca = "http://localhost:8080/myca/api";
 }
 

@@ -1,6 +1,8 @@
 import Home from "./components/Home.vue";
 import Customizer from "./components/Customizer.vue";
 import ManagementTopBar from "./components/ManagementTopBar.vue";
+import AdministrationTopBar from "./components/administration/AdministrationTopBar.vue";
+import ListOrders from "./components/administration/orders/ListOrders.vue";
 import ListCategories from "./components/management/category/ListCategories.vue";
 import ListPriceMaterials from "./components/management/price/ListPriceMaterials.vue";
 import ListMaterials from "./components/management/material/ListMaterials.vue";
@@ -23,5 +25,9 @@ export const routes = [
             { path: "customization", component: Customizer }
         ]
     },
-
+    {
+        path: "/administration", component: AdministrationTopBar, children: [
+            { path: "orders", component: ListOrders}
+        ]
+    }
 ];
