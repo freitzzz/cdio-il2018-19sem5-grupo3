@@ -7,16 +7,16 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
 /**
- * Represents a credentials based authentication
+ * Represents an email credentials based authentication
  * @author <a href="https://github.com/freitzzz">freitzzz</a>
  */
 @Entity
-public class CredentialsAuth extends Auth{
+public class EmailCredentialsAuth extends Auth{
     /**
-     * Username with the credentials username
+     * Email with the credentials email
      */
     @Embedded
-    private Username username;
+    private Email email;
     /**
      * Password with the credentials password
      */
@@ -25,30 +25,30 @@ public class CredentialsAuth extends Auth{
     
     /**
      * Builds a new CredentialsAuth
-     * @param username String with the credentials username
+     * @param email String with the credentials email
      * @param password String with the credentials password
      */
-    public CredentialsAuth(String username,String password){
-        super(generateToken(Username.valueOf(username).username,Password.valueOf(password).password));
-        this.username=Username.valueOf(username);
+    public EmailCredentialsAuth(String email,String password){
+        super(generateToken(Email.valueOf(email).email,Password.valueOf(password).password));
+        this.email=Email.valueOf(email);
         this.password=Password.valueOf(password);
     }
     
     /**
      * Generates an authentication token based on credentials
-     * @param username String with the credentials username
+     * @param email String with the credentials email
      * @param password String with the credentials password
      * @return String with the generated authentication token
      */
-    private static String generateToken(String username,String password){
+    private static String generateToken(String email,String password){
         return OperatorsEncryption
-                .encrypt(username,
-                        Application.settings().getUsernameOperatorsEncryptionAlgorithm(),
+                .encrypt(email,
+                        Application.settings().getEmailOperatorsEncryptionAlgorithm(),
                         Application.settings().getPasswordOperatorsEncryptionValue());
     }
     
     /**
      * Protected constructor to allow JPA persistence
      */
-    protected CredentialsAuth(){}
+    protected EmailCredentialsAuth(){}
 }

@@ -2,14 +2,24 @@
   <div>
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
-        <p class="modal-card-title">Edit Material Price Table Entry</p>
+        <p class="modal-card-title">Edit Material Finish Price Table Entry</p>
       </header>
       <section class="modal-card-body">
-        <b-field label="Reference">
-          <b-input v-model="material.reference" disabled="true" type="String" icon="pound"></b-input>
+        <b-field label="Description">
+          <b-input
+            v-model="materialFinishPrice.description"
+            disabled="true"
+            type="String"
+            icon="pound"
+          ></b-input>
         </b-field>
-        <b-field label="Designation">
-          <b-input v-model="material.designation" disabled="true" type="String" icon="pound"></b-input>
+        <b-field label="Shininess">
+          <b-input
+            v-model="materialFinishPrice.shininess"
+            disabled="true"
+            type="String"
+            icon="pound"
+          ></b-input>
         </b-field>
         <div>
           <b-field>
@@ -32,11 +42,7 @@
               </b-select>
             </b-field>
             <b-field label="Area">
-              <b-select
-                icon="move-resize-variant"
-                placeholder="Area"
-                v-model="selectedArea"
-              >
+              <b-select icon="move-resize-variant" placeholder="Area" v-model="selectedArea">
                 <option v-for="area in this.areas" :key="area.area" :value="area">{{area.area}}</option>
               </b-select>
             </b-field>
@@ -85,7 +91,7 @@
                 <b-field>
                   <b-datepicker
                     icon="calendar"
-                    placeholder="Click to choose date"
+                    placeholder="Click to choose time"
                     v-model="endingDate"
                   >
                     <button class="btn-primary" @click="endingDate= new Date()">
@@ -99,7 +105,11 @@
                   </b-datepicker>
                 </b-field>
                 <b-field>
-                  <b-timepicker icon="clock" placeholder="Click to choose time" v-model="endingTime">
+                  <b-timepicker
+                    icon="clock"
+                    placeholder="Click to choose time"
+                    v-model="endingTime"
+                  >
                     <button class="btn-primary" @click="endingTime = new Date()">
                       <b-icon icon="clock"></b-icon>
                       <span>Now</span>
@@ -116,7 +126,7 @@
         </div>
       </section>
       <footer class="modal-card-foot">
-        <button class="btn-primary" @click="updateMaterialPriceTableEntry()">Save</button>
+        <button class="btn-primary" @click="updateMaterialFinishPriceTableEntry()">Edit</button>
       </footer>
     </div>
   </div>
@@ -125,51 +135,56 @@
 <script>
 import Axios from "axios";
 import Config, { MYCM_API_URL } from "../../../config.js";
-import PriceTablesRequests from "./../../../services/mycm_api/requests/pricetables.js";
-import CurrenciesPerAreaRequests from "./../../../services/mycm_api/requests/currenciesperarea.js";
+import PriceTables from "./../../../services/mycm_api/requests/pricetables.js";
 import materials from "../../../services/mycm_api/requests/materials.js";
-export default {
 
-  name: "EditPriceMaterial",
+export default {
+  name: "EditPriceFinish",
 
   async created() {
-
-    await CurrenciesPerAreaRequests.getCurrencies()
+    await Axios.get(MYCM_API_URL + `/currenciesperarea/currencies`)
       .then(response => {
         this.currencies = response.data;
       })
       .catch(error => {
-        this.$toast.open(error.response.data.message);
+        //throw error?
       });
-    await CurrenciesPerAreaRequests.getAreas()
+    await Axios.get(MYCM_API_URL + `/currenciesperarea/areas`)
       .then(response => {
         this.areas = response.data;
       })
       .catch(error => {
-        this.$toast.open(error.response.data.message);
+        //throw error?
       });
-      
-    this.selectedValue = this.material.value;
-    for(let i=0; i < this.currencies.length; i++){
-      if(this.material.currency === this.currencies[i].currency){
-        this.selectedCurrency = {...this.currencies[i]};
+
+    this.selectedValue = this.materialFinishPrice.value;
+    for (let i = 0; i < this.currencies.length; i++) {
+      if (this.materialFinishPrice.currency === this.currencies[i].currency) {
+        this.selectedCurrency = { ...this.currencies[i] };
         break;
       }
     }
-    for(let i=0; i < this.areas.length; i++){
-      if(this.material.area === this.areas[i].area){
-        this.selectedArea = {...this.areas[i]};
+    for (let i = 0; i < this.areas.length; i++) {
+      if (this.materialFinishPrice.area === this.areas[i].area) {
+        this.selectedArea = { ...this.areas[i] };
         break;
       }
     }
-    this.startingDate = new Date(this.material.startingDate);
-    this.endingDate = new Date(this.material.endingDate);
-    this.startingTime = new Date(this.material.startingDate + "T" + this.material.startingTime);
-    this.endingTime = new Date(this.material.endingDate + "T" + this.material.endingTime);
+    this.startingDate = new Date(this.materialFinishPrice.startingDate);
+    this.endingDate = new Date(this.materialFinishPrice.endingDate);
+    this.startingTime = new Date(
+      this.materialFinishPrice.startingDate +
+        "T" +
+        this.materialFinishPrice.startingTime
+    );
+    this.endingTime = new Date(
+      this.materialFinishPrice.endingDate +
+        "T" +
+        this.materialFinishPrice.endingTime
+    );
   },
 
   data() {
-
     return {
       currencies: Array,
       areas: Array,
@@ -181,18 +196,10 @@ export default {
       startingTime: null,
       endingTime: null
     };
-
   },
 
   methods: {
-
-    updateMaterialPriceTableEntry() {
-      if(this.selectedCurrency == null || this.selectedArea == null){
-        this.$toast.open({
-          message : "Choose a currency and an area before you save your update!"
-        });
-        return;
-      }
+    updateMaterialFinishPriceTableEntry() {
       var updatedEntry = {
         tableEntry: {
           price: {
@@ -210,7 +217,13 @@ export default {
           )
         }
       };
-      this.$emit("updateMaterialPriceTableEntry", this.material.id, this.material.tableEntryId, updatedEntry);
+      this.$emit(
+        "updateMaterialFinishPriceTableEntry",
+        this.materialFinishPrice.materialId,
+        this.materialFinishPrice.finishId,
+        this.materialFinishPrice.tableEntryId,
+        updatedEntry
+      );
     },
 
     parseDateTimeToGeneralIsoFormatString(date, time) {
@@ -220,17 +233,16 @@ export default {
         ? ""
         : dateToIso.split("T")[0] + "T" + timeToIso.split("T")[1].split(".")[0];
     }
-
   },
+
   props: {
     /**
      * Current Material details
      */
-    material: {
+    materialFinishPrice: {
       type: Object,
       required: true
     }
   }
-
 };
 </script>

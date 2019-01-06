@@ -9,7 +9,7 @@ public enum Role {
     /**
      * Represents the "Administrator" role
      */
-    ADMINISTRATOR_MANAGER{@Override public String toString(){return "Administrator";}},
+    ADMINISTRATOR{@Override public String toString(){return "Administrator";}},
     
     /**
      * Represents the "Client" role

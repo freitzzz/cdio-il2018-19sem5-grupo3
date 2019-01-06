@@ -1,16 +1,28 @@
 <template>
-    <div class="modal-card" style="width: auto">
-        <signup-form @emitSignup="signup" />
-    </div>
+    <b-modal :active.sync="active">
+        <div class="modal-card" style="width: auto">
+            <signup-form @emitSignup="signup" />
+        </div>
+    </b-modal>
 </template>
 
 <script>
+
     /**
      * Requires SignupForm component
      */
     import SignupForm from '../UIComponents/SignupForm';
+
+    /**
+     * Requires Axios for HTTP requests
+     */
     import Axios from 'axios';
     
+    /**
+     * Requires MYCA_API_URL
+     */
+    import Config,{MYCA_API_URL} from '../../config';
+
     export default {
     
         /**
@@ -20,35 +32,23 @@
             SignupForm
         },
         /**
-         * Component data
+         * Component Props
          */
-        data() {
-            return {
-                active: true
-            }
+        props:{
+            active:Boolean
         },
         /**
          * Component methods
          */
         methods: {
-    
-          
             /**
              * Signups into MYC API's
              */
             signup(details) {
-                let authenticationRequestData = {
-                    type: "credentials",
-                    mame: details.name,
-                    email: details.email,
-                    password: details.password,
-                };
-                let authenticationRequestHeaders = {
-                    Secrete: "Secrete"
-                };
-                Axios.post("http://localhost:2000/myca/api/users", authenticationRequestData, {
-                        headers: authenticationRequestHeaders
-                    })
+                let authenticationRequestData = Object.assign({},details);
+                authenticationRequestData.type="credentials";
+
+                Axios.post(MYCA_API_URL+"/users", authenticationRequestData)
                     .then((authenticationData) => {
                         let apiToken = authenticationData.data.token;
                         this.$toast.open({

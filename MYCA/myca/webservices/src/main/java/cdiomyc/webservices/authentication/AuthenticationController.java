@@ -74,7 +74,7 @@ public final class AuthenticationController {
      * @param authenticationDetails String with the authentication details
      * @return AuthenticationMV with the deserialized authentication model view
      */
-    private static AuthenticationMV deserializeAuthenticationDetails(String authenticationDetails){
+    public static AuthenticationMV deserializeAuthenticationDetails(String authenticationDetails){
         return (AuthenticationMV)new Gson()
                 .fromJson(authenticationDetails
                         ,AuthenticationMVService
@@ -86,7 +86,7 @@ public final class AuthenticationController {
     /**
      * Simple inner static class to deserialize the type of an authentication request body
      */
-    private static class AuthenticationType{
+    public static class AuthenticationType{
         public String type;
     }
 }

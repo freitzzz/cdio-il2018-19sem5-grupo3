@@ -26,7 +26,9 @@ public class AuthorizationController {
      * @param userAgent String with the user User Agent
      * @param secrete String with the user secrete identifier
      * @param sessionCookie String with the session cookie
+     * @param asAdministrator boolean true if the user is an administrator
      * @param asContentManager boolean true if the user is a content manager
+     * @param asLogisticManager boolean true if the user is a logistic manager
      * @return HTTP Response 204; No Content if the user is authorized
      * <br>    HTTP Response 401; Unauthorized if the user is not authorized
      */
@@ -35,11 +37,15 @@ public class AuthorizationController {
     public Response isAuthorized(@HeaderParam(value="User-Agent") String userAgent,
             @HeaderParam(value = "Secrete") String secrete,
             @CookieParam(value = "MYCASESSION") String sessionCookie,
-            @QueryParam(value = "contentmanager") boolean asContentManager){
+            @QueryParam(value = "administrator") boolean asAdministrator,
+            @QueryParam(value = "contentmanager") boolean asContentManager,
+            @QueryParam(value = "logisticmanager") boolean asLogisticManager){
         IsUserAuthorizedMV userAuthorizationDetails=new IsUserAuthorizedMV();
         Cookie userSessionCookie=SessionCookieService.toSessionCookie(sessionCookie);
         userAuthorizationDetails.sessionAPIToken=userSessionCookie.getValue();
+        userAuthorizationDetails.isAdministrator=asAdministrator;
         userAuthorizationDetails.isContentManager=asContentManager;
+        userAuthorizationDetails.isLogisticManager=asLogisticManager;
         userAuthorizationDetails.userAgent=userAgent;
         userAuthorizationDetails.secreteKey=secrete;
         try{

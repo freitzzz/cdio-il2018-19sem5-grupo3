@@ -15,6 +15,7 @@ import {
 
 export default class ProductRenderer {
 
+
   /* Flags used to interact with the graphical representation on certain steps of the wizard */
 
   /**
@@ -225,6 +226,8 @@ export default class ProductRenderer {
 
   /**Number of dimensions in question */
   NUMBER_DIMENSIONS;
+
+
   // ---------------- End of resize control --------------------------
 
   /**
@@ -240,8 +243,8 @@ export default class ProductRenderer {
     this.DEPTH = 2;
     this.resizeVec = [];
 
-    /* Create vector for initial values of height,width and depth */
-    this.initialDimensions = [404.5, 300, 100];
+    /* Create vector for initial values of width,height and depth */
+    this.initialDimensions = [404.5, 300, 245];
 
     this.NUMBER_DIMENSIONS = 3;
 
@@ -340,7 +343,7 @@ export default class ProductRenderer {
       [404.5, thickness, 100, 0, 90, -195], //Top
       [thickness, 300, 100, -200, -60, -195], //Left
       [thickness, 300, 100, 200, -60, -195], //Right
-      [404.5, 300, 0, 0, -60, -245.8], 0); //Back
+      [404.5, 300, 0, 0, -60, -245], 0); //Back POsition: 195 + width of lateral wall /2
 
     var faces = this.closet.closet_faces;
     this.textureLoader = new THREE.TextureLoader();
@@ -923,9 +926,12 @@ export default class ProductRenderer {
    * @param {number} depth Number with the closet depth
    */
   changeClosetDimensions(width, height, depth) {
-    this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
-    this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
-    this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth) - 250.8);
+   
+      this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
+      this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
+      this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth));
+
+ 
 
     this.updateClosetGV();
   }
@@ -936,7 +942,7 @@ export default class ProductRenderer {
   resizeFactor() {
     var i;
     for (i = 0; i < this.NUMBER_DIMENSIONS; i++) {
-      this.resizeVec[i] = this.initialDimensions[i] / this.websiteDimensions[i];
+      this.resizeVec[i] = (this.initialDimensions[i] / this.websiteDimensions[i]);
 
     }/* 
     alert(this.resizeVec[this.WIDTH]);
@@ -1829,22 +1835,19 @@ export default class ProductRenderer {
      /* return information; */
    }
        
-   /**
-    * Move slot with slider
-    */
-   moveSlotSlider(index, newWidth) {
-     /* alert("antes" + this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x); */
+  /**
+  * Move slot with slider
+  */
+  moveSlotSlider(index, newWidth) {
      var left_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
      this.selected_slot = this.group.getObjectById(this.closet_slots_faces_ids[index]);
      if (index == 0) {
        let newPosition = left_closet_face_x_value + newWidth;
-       this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x = newPosition;
+       this.selected_slot.position.x = newPosition;
      } else {
-       this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x = this.group.getObjectById(this.closet_slots_faces_ids[index - 1]).position.x + (newWidth);
+      this.selected_slot.position.x = this.group.getObjectById(this.closet_slots_faces_ids[index - 1]).position.x + (newWidth);
      }
-     this.updateClosetGV()
-     /* alert("depois" + this.group.getObjectById(this.closet_slots_faces_ids[index]).position.x); */
-   }
+  }
 
 
   /**

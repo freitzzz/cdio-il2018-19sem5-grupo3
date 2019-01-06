@@ -5,8 +5,18 @@
     <class>cdiomyc.core.domain.User</class>
     <class>cdiomyc.core.domain.auth.Auth</class>
     <class>cdiomyc.core.domain.auth.Session</class>
-    <class>cdiomyc.core.domain.auth.credentials.CredentialsAuth</class>
+    <class>cdiomyc.core.domain.auth.credentials.EmailCredentialsAuth</class>
+    <class>cdiomyc.core.domain.auth.credentials.UsernameCredentialsAuth</class>
     <properties>
+      <!--property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:/home/freitas/Development/db/myca"/-->
+      <!--property name="javax.persistence.jdbc.url" value="jdbc:sqlite:/home/freitas/Development/db/myca"/-->
+      <!--property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/-->
+      <!--property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+        <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://makeyourclosetauth.database.windows.net;DatabaseName=users"/>
+        <property name="javax.persistence.jdbc.user" value="myca"/>
+        <property name="javax.persistence.jdbc.password" value="kerokeroBONITO123"/>
+        <property name="javax.persistence.schema-generation.database.action" value="create"/-->
+      <property name="eclipselink.logging.level" value="OFF"/>
       <property name="javax.persistence.jdbc.url" value="jdbc:h2:/home/freitas/Development/db/myca"/>
       <property name="javax.persistence.jdbc.user" value=""/>
       <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>

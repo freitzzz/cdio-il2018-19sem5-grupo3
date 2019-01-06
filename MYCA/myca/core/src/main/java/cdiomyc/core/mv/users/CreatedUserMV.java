@@ -16,4 +16,9 @@ public class CreatedUserMV {
      * String with the created user activation code
      */
     public String activationCode;
+    
+    /**
+     * String with the created user name
+     */
+    public String name;
 }
