@@ -55,6 +55,7 @@ namespace backend
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseSerilogMiddleware();
+            app.UseCustomExceptionHandlerMiddleware();
 
 /*             if (!env.IsDevelopment())
             {

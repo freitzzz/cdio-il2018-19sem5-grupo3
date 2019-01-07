@@ -5,7 +5,6 @@ import cdiomyc.support.domain.ddd.ValueObject;
 import cdiomyc.support.encryptions.DigestUtils;
 import cdiomyc.support.encryptions.OperatorsEncryption;
 import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
@@ -22,7 +21,7 @@ public class Username implements Serializable,ValueObject {
     /**
      * Constant that represents the regular expression used to validate an username
      */
-    private static final String USERNAME_REGEX_VALIDATOR="[a-zA-z0-9]{5,24}";
+    private static final String USERNAME_REGEX_VALIDATOR="[a-zA-z0-9]{3,24}";
     /**
      * String that represents the username value
      */

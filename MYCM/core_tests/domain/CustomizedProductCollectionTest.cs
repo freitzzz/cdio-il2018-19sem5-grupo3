@@ -250,7 +250,7 @@ namespace core_tests.domain
 
 
             CustomizedProduct cp = CustomizedProductBuilder
-                .createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions)
+                .createCustomizedProduct("reference", product, customizedDimensions)
                 .withMaterial(mat).build();
             cp.finalizeCustomization();
             List<CustomizedProduct> products = new List<CustomizedProduct>();
@@ -412,13 +412,13 @@ namespace core_tests.domain
 
         private CustomizedProduct buildFinishedCustomizedProductInstance()
         {
-            string serialNumber = "123";
+            string reference = "123";
 
             CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
 
             CustomizedDimensions selectedDimensions = buildCustomizedDimensions();
 
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, buildValidProduct(), selectedDimensions).build();
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct(reference, buildValidProduct(), selectedDimensions).build();
 
             customizedProduct.changeCustomizedMaterial(customizedMaterial);
 
@@ -429,13 +429,13 @@ namespace core_tests.domain
 
         private CustomizedProduct buildUnfinishedCustomizedProductInstance()
         {
-            string serialNumber = "123";
+            string reference = "123";
 
             CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
 
             CustomizedDimensions selectedDimensions = buildCustomizedDimensions();
 
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, buildValidProduct(), selectedDimensions).build();
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct(reference, buildValidProduct(), selectedDimensions).build();
 
             customizedProduct.changeCustomizedMaterial(customizedMaterial);
 

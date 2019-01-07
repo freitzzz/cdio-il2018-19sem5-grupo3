@@ -2,15 +2,18 @@ package cdiomyc.core.domain;
 
 import cdiomyc.core.domain.auth.Auth;
 import cdiomyc.core.domain.auth.Session;
+import cdiomyc.core.domain.exceptions.UserNotEnabledException;
 import cdiomyc.support.domain.ddd.AggregateRoot;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -47,6 +50,12 @@ public class User implements AggregateRoot<Auth>,Serializable{
     private Auth auth;
     
     /**
+     * Name with the user name
+     */
+    @Embedded
+    private Name name;
+    
+    /**
      * List with the user API sessions
      */
     @OneToMany(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
@@ -58,6 +67,16 @@ public class User implements AggregateRoot<Auth>,Serializable{
     private Set<Role> roles;
     
     /**
+     * Short with the user activation code
+     */
+    private short activationCode;
+    
+    /**
+     * Boolean with the user enableness
+     */
+    private boolean enabled;
+    
+    /**
      * Builds a new User
      * @param auth Auth with the user authentication
      */
@@ -67,7 +86,28 @@ public class User implements AggregateRoot<Auth>,Serializable{
         this.sessions=new ArrayList<>();
         this.roles=new HashSet<>();
         this.roles.add(Role.CLIENT);
+        this.enabled=false;
+        this.activationCode=generateActivationCode();
     }
+    
+    //Needs unit tests to be updated
+    
+    /**
+     * Changes the current user name
+     * @param name String with the new user name
+     */
+    public void changeName(String name){
+        Name newUserName=Name.valueOf(name);
+        if(newUserName.equals(this.name))
+            throw new IllegalArgumentException("Both old and new user names are equal");
+        this.name=newUserName;
+    }
+    
+    /**
+     * Returns the current user name
+     * @return String with the user name
+     */
+    public String name(){return name!=null ? name.name : "Anonymous";}
     
     /**
      * Creates a new session
@@ -81,6 +121,7 @@ public class User implements AggregateRoot<Auth>,Serializable{
      * @return Session with the new user session
      */
     public Session createNewSession(String secreteIdentifier){
+        grantUserIsEnabled();
         if(hasActiveSession())
             throw new IllegalArgumentException("User already has an active session!");
         Session createdSession=new Session(LocalDateTime.now().plusMinutes(DEFAULT_SESSION_TIME),auth.id()
@@ -116,6 +157,16 @@ public class User implements AggregateRoot<Auth>,Serializable{
     }
     
     /**
+     * Adds a set of roles to the user
+     * @param roles Iterable with the roles being added to the user
+     */
+    public void addRoles(Iterable<Role> roles){
+        if(roles==null||!roles.iterator().hasNext())
+            throw new IllegalArgumentException("Roles to add are invalid");
+        roles.forEach(role->{this.addRole(role);});
+    }
+    
+    /**
      * Removes a role from the user
      * @param role Role with the role being removed
      */
@@ -135,6 +186,33 @@ public class User implements AggregateRoot<Auth>,Serializable{
         checkRole(role);
         return this.roles.contains(role);
     }
+    
+    //TODO: Requires Unit Tests updates
+    
+    /**
+     * Activates the current user
+     * @param activationCode String with the user activation code
+     */
+    public void activate(String activationCode){
+        if(this.enabled)
+            throw new IllegalStateException("User is already enabled");
+        if(this.activationCode!=Short.parseShort(activationCode))
+            throw new IllegalArgumentException("Activation code is invalid!");
+        this.enabled=true;
+    }
+    
+    public String newActivationCode(){
+        if(this.enabled)
+            throw new IllegalStateException("User is already enabled");
+        this.activationCode=generateActivationCode();
+        return activationCode();
+    }
+    
+    /**
+     * Returns the current user activation code
+     * @return String with the user activation code
+     */
+    public String activationCode(){return this.activationCode>999 ? Short.toString(this.activationCode) : String.format("0%s",this.activationCode);}
     
     /**
      * Returns the current user identifier
@@ -173,6 +251,12 @@ public class User implements AggregateRoot<Auth>,Serializable{
     }
     
     /**
+     * Generates a random activation code
+     * @return Short with the generated activation code
+     */
+    private short generateActivationCode(){return (short)new Random().nextInt(9999);}
+    
+    /**
      * Checks if an user authentication is valid
      * @param auth Auth with the user authentication being checked
      */
@@ -191,7 +275,59 @@ public class User implements AggregateRoot<Auth>,Serializable{
     }
     
     /**
+     * Grants that the currrent user is enabled
+     */
+    private void grantUserIsEnabled(){
+        if(!this.enabled)
+            throw new UserNotEnabledException("User is not enabled");
+    }
+    
+    /**
      * Protected constructor in order to allow JPA persistence
      */
     protected User(){}
+    
+    /**
+     * Buider class for simplifying the creation of a user
+     */
+    public static class UserBuilder{
+        
+        /**
+         * User with the user being build
+         */
+        private final User userBeingBuild;
+        
+        /**
+         * Builds a new UserBuilder
+         * @param auth Auth with the user auth
+         */
+        private UserBuilder(Auth auth){this.userBeingBuild=new User(auth);}
+        
+        /**
+         * Creates a new UserBuilder
+         * @param auth Auth with the user auth
+         * @return UserBuilder with the created UserBuilder
+         */
+        public static UserBuilder createUserBuilder(Auth auth){
+            return new UserBuilder(auth);
+        }
+        
+        /**
+         * Adds a name to the user being build
+         * @param name String with the user name
+         * @return UserBuilder with the refreshed user builder
+         */
+        public UserBuilder withName(String name){
+            this.userBeingBuild.changeName(name);
+            return this;
+        }
+        
+        /**
+         * Builds the user
+         * @return User with the built user
+         */
+        public User build(){return userBeingBuild;}
+        
+    }
+    
 }

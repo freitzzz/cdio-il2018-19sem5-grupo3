@@ -16,7 +16,7 @@ namespace core_tests.domain
     public class CommercialCatalogueTest
     {
 
-        private CustomizedProduct buildCustomizedProduct(string serialNumber)
+        private CustomizedProduct buildCustomizedProduct(string customizedProductReference)
         {
             var category = new ProductCategory("Drawers");
             //Creating Dimensions
@@ -53,7 +53,7 @@ namespace core_tests.domain
             //Customized Material
             CustomizedMaterial custMaterial1 = CustomizedMaterial.valueOf(material, color, finish);
 
-            return CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, product, customizedDimensions).withMaterial(custMaterial1).build();
+            return CustomizedProductBuilder.createCustomizedProduct(customizedProductReference, product, customizedDimensions).withMaterial(custMaterial1).build();
         }
 
         private CustomizedProductCollection buildCustomizedProductCollection(string collectionName)

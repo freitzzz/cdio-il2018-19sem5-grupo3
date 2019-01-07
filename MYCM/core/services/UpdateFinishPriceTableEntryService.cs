@@ -50,6 +50,11 @@ namespace core.services
         private const string DATES_WRONG_FORMAT = "Make sure all dates follow the General ISO Format: ";
 
         /// <summary>
+        /// Message that occurs if one the entry trying to be update is past its time period
+        /// </summary>
+        private const string PAST_ENTRY = "Unable to edit past price entries!";
+
+        /// <summary>
         /// Updates a finish's price table entry
         /// </summary>
         /// <param name="modelView">model view containing updatable information</param>
@@ -87,6 +92,14 @@ namespace core.services
                     if (tableEntryToUpdate.entity.Id != modelView.finishId)
                     {
                         throw new InvalidOperationException(ENTRY_DOESNT_BELONG_TO_FINISH);
+                    }
+
+                    LocalDateTime currentTime = NodaTime.LocalDateTime.FromDateTime(SystemClock.Instance.GetCurrentInstant().ToDateTimeUtc());
+
+                    if (tableEntryToUpdate.timePeriod.startingDate.CompareTo(currentTime) < 0
+                        && tableEntryToUpdate.timePeriod.endingDate.CompareTo(currentTime) < 0)
+                    {
+                        throw new InvalidOperationException(PAST_ENTRY);
                     }
 
                     if (modelView.priceTableEntry.price != null)

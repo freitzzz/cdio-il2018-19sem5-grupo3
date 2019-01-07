@@ -1579,7 +1579,7 @@ namespace core_tests.domain {
 
             CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
             CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material, white, matte);
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("reference", product, customDimension).build();
 
             customizedProduct.changeCustomizedMaterial(customMaterial);
             customizedProduct.finalizeCustomization();
@@ -1614,7 +1614,7 @@ namespace core_tests.domain {
 
             CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
             CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material, white, matte);
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("reference", product, customDimension).build();
 
             customizedProduct.changeCustomizedMaterial(customMaterial);
 
@@ -1653,7 +1653,7 @@ namespace core_tests.domain {
 
             CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
             CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material, white, matte);
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("reference", product, customDimension).build();
 
             customizedProduct.changeCustomizedMaterial(customMaterial);
 
@@ -1692,7 +1692,7 @@ namespace core_tests.domain {
 
             CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
             CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material, white, matte);
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("reference", product, customDimension).build();
 
             customizedProduct.changeCustomizedMaterial(customMaterial);
 
@@ -1734,7 +1734,7 @@ namespace core_tests.domain {
 
             CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
             CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material, white, matte);
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("reference", product, customDimension).build();
 
             customizedProduct.changeCustomizedMaterial(customMaterial);
 
@@ -1773,7 +1773,7 @@ namespace core_tests.domain {
             product.addComplementaryProduct(product2);
             CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
             CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material2, white, matte);
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("reference", product, customDimension).build();
 
             customizedProduct.changeCustomizedMaterial(customMaterial);
 
@@ -1807,7 +1807,7 @@ namespace core_tests.domain {
             product.addComplementaryProduct(product2);
             CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
             CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material2, white, matte);
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("reference", product, customDimension).build();
 
             customizedProduct.changeCustomizedMaterial(customMaterial);
 
@@ -1842,7 +1842,7 @@ namespace core_tests.domain {
 
             CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
             CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material2, white, matte);
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("reference", product, customDimension).build();
 
             customizedProduct.changeCustomizedMaterial(customMaterial);
 

@@ -1,13 +1,16 @@
 <template>
   <div>
+    <div ref="componentsSideCustomizer" class="components-side-customizer">
+      <i class="closebtn material-icons md-18 md-grey" @click="closeNav()">close</i>
+    </div>
     <div v-if="getComponentsOk">
       <div class="icon-div-top">
         <i class="material-icons md-12 md-blue btn">help</i>
-        <span class="tooltiptext">In this step, you can add components to the structure.</span>
+        <span class="tooltiptext">In this step, you can drag components to the closet's structure.</span>
       </div>
       <div class="text-entry">Choose components to add:</div>
       <div class="padding-div">
-        <div class="scrollable-div" style="height: 200px; width: 100%;">
+        <div class="scrollable-div" style="height: 300px; width: 100%;">
           <ul class="image-list" v-for="component in components" :key="component.id">
             <li class="image-icon-div">
               <div class="image-btn">
@@ -21,37 +24,6 @@
             </li>
           </ul>
         </div>
-        <!-- <div class="scrollable-div" style="height: 100px; width: 100%;">
-          <div class="small-padding-div border" v-for="(divElement, index) in div_elements" :key="index"> -->
-            <!-- <div v-if="hasSlots()">
-              <div v-if="canAddComponentToSlot(divElement.model)">
-                <div class="small-padding-div" align="center">
-                  <b>{{divElement.designation}}</b>
-                </div>
-                <div class="small-padding-div" align="center">
-                  Slot:
-                  <input type="number" value="1" min="1" style="width:50px" v-model="div_inputs[index]">
-                  <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="addDivElement(divElement, index)">check_circle_outline</i>
-                  <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="removeDivElement(divElement, index)">highlight_off</i>
-                </div>
-              </div>
-              <div v-else class="small-padding-div" align="center">
-                  <b>{{divElement.designation}}</b>
-                  <div class="small-padding-div" align="center">
-                    <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="addDivElement(divElement)">check_circle_outline</i>
-                    <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="removeDivElement(divElement)">highlight_off</i>
-                  </div>
-              </div>
-            </div>
-            <div v-else class="small-padding-div" align="center">
-                <b>{{divElement.designation}}</b>
-                <div class="small-padding-div" align="center">
-                  <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="addDivElement(divElement)">check_circle_outline</i>
-                  <i class="material-icons md-24 md-blue btn" style="padding:0px" @click="removeDivElement(divElement)">highlight_off</i>
-                </div>
-            </div> -->
-          <!-- </div>
-        </div> -->
       </div>
     </div>
     <div v-else>
@@ -71,26 +43,19 @@
 </template>
 
 <script>
-import Vue from "vue";
-import Axios from "axios";
-import { error } from "three";
+import ProductRequests from "./../services/mycm_api/requests/products.js";
 import store from "./../store";
-import Toasted from "vue-toasted";
-import { MYCM_API_URL } from "./../config.js";
 import { SET_CUSTOMIZED_PRODUCT_COMPONENTS,
         REMOVE_CUSTOMIZED_PRODUCT_COMPONENT,
         ACTIVATE_CAN_MOVE_COMPONENTS }
         from "./../store/mutation-types.js";
-
-Vue.use(Toasted);
 
 export default {
   name: "CustomizerSideBarComponentsPanel",
   data() {
     return {
       components: [],
-      div_elements: [],
-      div_inputs: [],
+      addedComponents: [],
       httpCode: null
     };
   },
@@ -101,7 +66,7 @@ export default {
   },
   methods: {
     getProductComponents() {
-      Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/components`)
+      ProductRequests.getProductComponents(store.state.product.id)
         .then(response => {
           this.components = [];
           this.components.push(...response.data);
@@ -121,52 +86,48 @@ export default {
     findComponentImage(filename) {
       return "./src/assets/products/" + filename.split(".")[0] + ".png";
     },
-    // createDivElements(component) {
-    //   this.div_elements.push(component);
-    // },
-    // canAddComponentToSlot(model){
-    //   return model.split(".")[0] != "sliding-door";
-    // },
     isComponentMandatory(componentId){
       for(let i = 0; i < this.components.length; i++){
         if(this.components[i].id == componentId) return this.components[i].mandatory == true;
       }
     },
-    // addDivElement(component, index) {
-    //   //If the product has slots and the chosen component can be added to a slot, checks if the 
-    //   if (this.hasSlots() && this.canAddComponentToSlot(component.model)){
-    //     if(this.div_inputs[index] == undefined) {
-    //       this.$toast.open("You must choose a slot to apply the component!");
-    //     } else if(this.div_inputs[index] < 1 || this.div_inputs[index] > store.state.customizedProduct.slots.length + 1){
-    //         this.$toast.open("You must choose a valid slot to apply the component!");
-    //     } else {
-    //         component.slot = this.div_inputs[index];
-    //         store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
-    //         //TODO! DISABLE apply button
-    //     }
-    //   } else if(!this.hasSlots() || !this.canAddComponentToSlot(component.model)){
-    //     component.slot = 0;
-    //     store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, { component: component });
-    //       //TODO! DISABLE apply button
-    //   }
-    // },
-    // removeDivElement(component, index) {
-    //   component.slot = this.div_inputs[index];
-
-    //   //TODO! only remove from graphical representation and store if DELETE request returns 204
-    //   store.dispatch(REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, { component: component });
-    //   this.div_inputs.splice(index, 1);
-    //   this.div_elements.splice(index, 1);
-    //   this.$toast.open("The component was sucessfully removed!");
-    // },
+    closeNav() {
+      this.$refs.componentsSideCustomizer.style.width = "0";
+    },
     nextPanel(){
       //TODO! POST components
-      this.$emit("advance");
+      
+       this.$dialog.confirm({
+          title: 'Important Information',
+          cancelText:'Payment',
+          confirmText:'Save Closet',
+          hasIcon: true,
+          type: 'is-info',
+          icon: 'fas fa-exclamation-circle size:5px',
+          iconPack: 'fa',
+          message: 'Do you want to proceed to payment or do you want to save the closet?',
+          onConfirm: () => {
+            alert("queque");           
+          },
+          onCancel:()=>{
+            this.$emit("advance");
+          }
+        })
     },
     previousPanel(){
       //TODO! DELETE ALL components
-      store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS);
-      this.$emit("back");
+       this.$dialog.confirm({
+        title: 'Return',
+        hasIcon: true,
+        type: 'is-info',
+        icon: 'fas fa-exclamation-circle size:5px',
+        iconPack: 'fa',
+        message: 'Are you sure you want to return? All progress made in this step will be lost.',
+        onConfirm: () => {
+          store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS);
+          this.$emit("back");
+        }
+      })
     }
   },
   created() {
@@ -177,14 +138,15 @@ export default {
 </script>
 
 <style>
+/* Required component icon */
 .image-icon-div {
   position: relative;
   overflow-x: hidden;
 }
 
 .image-icon-div .image-icon {
- position: absolute;
- top: 10%;
+  position: absolute;
+  top: 10%;
   left: 90%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
@@ -214,6 +176,7 @@ export default {
   visibility: visible;
 }
 
+/* Tool tip text icon */
 .icon-div-top .tooltiptext {
   visibility: hidden;
   width: 100px;
@@ -238,5 +201,51 @@ export default {
   margin-left: 130px;
   position: absolute;
 }
-</style>
 
+/* Sidenav for component customization */
+.components-side-customizer {
+    height: 100%;
+    /* Full height */
+    width: 300px;
+    /*Full width on initial load, changed with Vue*/
+    position: fixed;
+    /*Stay in place*/
+    z-index: 1;
+    /*Stay on top*/
+    top: 20%;
+    /*Display from top left corner*/
+    left: 78%;
+    overflow-x: hidden;
+    /*Disable horizontal scroll*/
+    padding-top: 60px;
+    margin: 2%;
+    transition: 0.3s;
+    background-color: #e9e9e9a0;
+}
+  
+.components-side-customizer h3 {
+    font-size: 24px;
+    color: #797979 !important;
+    cursor: default;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    margin-right: 50px;
+    cursor: pointer;
+}  
+  
+/*Center primary buttons on the side bar*/
+.components-side-customizer .components-side-customizer-controls {
+    text-align: center;
+    margin: auto;
+}
+    
+/* Position and style the close button (top right corner) */
+.components-side-customizer .closebtn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    margin-left: 50px;
+    cursor: pointer;
+}
+</style>

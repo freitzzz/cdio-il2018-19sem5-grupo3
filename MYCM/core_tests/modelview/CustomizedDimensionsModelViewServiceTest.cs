@@ -15,7 +15,7 @@ namespace core_tests.modelview
 
             Action fromModelView = () => CustomizedDimensionsModelViewService.fromModelView(addCustomizedDimensionsModelView);
 
-            Assert.Throws<ArgumentNullException>(fromModelView);
+            Assert.Throws<ArgumentException>(fromModelView);
         }
 
         [Fact]
@@ -62,13 +62,13 @@ namespace core_tests.modelview
 
             Action fromEntity = () => CustomizedDimensionsModelViewService.fromEntity(customizedDimensions);
 
-            Assert.Throws<ArgumentNullException>(fromEntity);
+            Assert.Throws<ArgumentException>(fromEntity);
 
 
             //Make sure overload has the same behaviour
             fromEntity = () => CustomizedDimensionsModelViewService.fromEntity(customizedDimensions, "m");
 
-            Assert.Throws<ArgumentNullException>(fromEntity);
+            Assert.Throws<ArgumentException>(fromEntity);
         }
 
 

@@ -15,15 +15,16 @@ const state = {
         canMoveSlots: "false",
         canMoveComponents: "false",
         doorsFlag: "",
-        componentToRemove: {}
+        componentToRemove: {},
+        slostSlider: []
     },
 
     product: {},
 
     customizedProduct: {
         id: "",
-        designation: "",
         reference: "",
+        designation: "",
         components: [],
         product: {
             id: ""
@@ -102,10 +103,16 @@ export const getters = {
     customizedProductId: state => {
         return state.customizedProduct.id;
     },
+    customizedProductReference: state => {
+        return state.customizedProduct.reference;
+    },
+    customizedProductDesignation: state => {
+        return state.customizedProduct.designation;
+    },
     customizedProductDimensions: state => {
         return state.customizedProduct.customizedDimensions;
     },
-    customizedProductSlotWidth: state => index => {
+    customizedProductSlot: state => index => {
         return state.customizedProduct.slots[index];
     },
     customizedProductComponents: state => {

@@ -92,6 +92,12 @@ public final class ApplicationSettings {
     public String getUsernameSalt(){return applicationSettings.getProperty(USERNAME_DIGEST_SALT_KEY);}
     
     /**
+     * Method that gets the current email digest salt being used
+     * @return String with the current email digest salt being used
+     */
+    public String getEmailSalt(){return applicationSettings.getProperty(USERNAME_DIGEST_SALT_KEY);}
+    
+    /**
      * Method that gets the current password digest salt being used
      * @return String with the current password digest salt being used
      */
@@ -102,6 +108,12 @@ public final class ApplicationSettings {
      * @return String with the current username digest algorithm being used
      */
     public String getUsernameAlgorithm(){return applicationSettings.getProperty(USERNAME_DIGEST_ALGORITHM_KEY);}
+    
+    /**
+     * Method that gets the current email digest algorithm being used
+     * @return String with the current email digest algorithm being used
+     */
+    public String getEmailAlgorithm(){return applicationSettings.getProperty(USERNAME_DIGEST_ALGORITHM_KEY);}
     
     /**
      * Method that gets the current password digest algorithm being used
@@ -116,6 +128,12 @@ public final class ApplicationSettings {
     public String getUsernameOperatorsEncryptionAlgorithm(){return applicationSettings.getProperty(USERNAME_OPERATORS_ALGORITHM_KEY);}
     
     /**
+     * Method that gets the current email operators encryption algorithm being used
+     * @return String with the current email operators encryption algorithm being used
+     */
+    public String getEmailOperatorsEncryptionAlgorithm(){return applicationSettings.getProperty(USERNAME_OPERATORS_ALGORITHM_KEY);}
+    
+    /**
      * Method that gets the current password operators encryption algorithm being used
      * @return String with the current password operators encryption algorithm being used
      */
@@ -126,6 +144,12 @@ public final class ApplicationSettings {
      * @return Integer with the current username operators encryption value being used
      */
     public int getUsernameOperatorsEncryptionValue(){return Integer.parseInt(applicationSettings.getProperty(USERNAME_OPERATORS_VALUE_KEY));}
+    
+    /**
+     * Method that gets the current email operators encryption value being used
+     * @return Integer with the current email operators encryption value being used
+     */
+    public int getEmailOperatorsEncryptionValue(){return Integer.parseInt(applicationSettings.getProperty(USERNAME_OPERATORS_VALUE_KEY));}
     
     /**
      * Method that gets the current password operators encryption value being used

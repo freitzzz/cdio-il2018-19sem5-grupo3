@@ -20,7 +20,7 @@ const city=require('../models/City');
 /**
  * Routes the GET of all available factories
  */
-factoriesRoute.route('/factories').get(function(request,response){
+factoriesRoute.route('/factories').get(function(request, response){
     factory
         .find({available:true})
         .then(function(factories){

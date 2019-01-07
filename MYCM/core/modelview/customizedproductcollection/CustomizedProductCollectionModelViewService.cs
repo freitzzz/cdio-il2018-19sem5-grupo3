@@ -51,14 +51,9 @@ namespace core.modelview.customizedproductcollection
 
                 foreach (CollectionProduct collectionProduct in customizedProductCollection.collectionProducts)
                 {
-                    GetBasicCustomizedProductModelView basicCustomizedProductModelView = new GetBasicCustomizedProductModelView();
-
-                    basicCustomizedProductModelView.customizedProductId = collectionProduct.customizedProduct.Id;
-                    basicCustomizedProductModelView.designation = collectionProduct.customizedProduct.designation;
-                    basicCustomizedProductModelView.reference = collectionProduct.customizedProduct.reference;
-                    basicCustomizedProductModelView.serialNumber = collectionProduct.customizedProduct.serialNumber;
-                    basicCustomizedProductModelView.productId = collectionProduct.customizedProduct.product.Id;
-
+                    GetBasicCustomizedProductModelView basicCustomizedProductModelView = 
+                        CustomizedProductModelViewService.fromEntityAsBasic(collectionProduct.customizedProduct);
+                        
                     customizedProductCollectionModelView.customizedProducts.Add(basicCustomizedProductModelView);
                 }
             }

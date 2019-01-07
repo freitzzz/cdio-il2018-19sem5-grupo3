@@ -1,7 +1,18 @@
 <template>
     <div>
-        <login-form  v-if="!activateManager"  @emitLogin="login" @signUp="signUp" />
-        <management-top-bar v-if="activateManager"  :active.sync="activateManager"></management-top-bar>
+        <login-form  v-if="!activateManager"  @emitLogin="login" @signUp="activateSignupComponent" />
+        <management-top-bar v-if="activateManager"  :active.sync="activateManager"/>
+        <signup
+            :active="activateSignup"
+            @closeSignup="closeSignupComponent"
+        />
+        <b-modal :active.sync="activateAccount">
+            <activate-account
+                :userInfo="userInfo"
+                @closeActivationModal="closeActivateAccountComponent"
+            >
+            </activate-account>
+        </b-modal>
     </div>
 </template>
 
@@ -13,11 +24,41 @@
     import Axios from 'axios';
     import Vue from 'vue';
     import ManagementTopBar from '../ManagementTopBar.vue';
+    import ActivateAccount from './ActivateAccount.vue';
+
+    /**
+     * Requires Signup component
+     */
+    import Signup from './Signup';
+    
+    /**
+     * Requires MYCA API URL
+     */
+    import { MYCA_API_URL } from '../../config';
+    
+    /**
+     * Requires APIGrantsService for granting that MYCA API is available
+     */
+    import APIGrantsService from '../../APIGrantsService';
+
+    /**
+     * Requires authorization services
+     */
+    import {getUserAuthorizations} from '../../AuthorizationService';
+
     /*    Vue.use(Router); */
     
     export default {
+        /**
+         * Component data
+         */
         data(){
-           activateManager:false;
+            return{
+                activateManager:false,
+                activateSignup:false,
+                activateAccount:false,
+                userInfo:null
+            }
         },
         /* routes: {
             
@@ -31,7 +72,9 @@
          */
         components: {
             LoginForm,
-            ManagementTopBar
+            ManagementTopBar,
+            Signup,
+            ActivateAccount
         },
         /**
          * Component methods
@@ -49,52 +92,65 @@
                 let authenticationRequestHeaders = {
                     Secrete: "Secrete"
                 };
-                Axios.post("http://localhost:2000/myca/api/auth", authenticationRequestData, {
-                        headers: authenticationRequestHeaders,
-                    })
-                    .then((authenticationData) => {
-                        console.log(authenticationData.status);
-                        let sessionCookie = authenticationData.headers.cookie;
-                        this.$cookies.set("asdasd", sessionCookie);
-                        this.$toast.open({
-                            message: "Succesful Login!\nWe have stored a session cookie in your browser :)"
-                        });
-                        this.isManagerCredentials(sessionCookie);
-                        emitCloseLogin();
-                    })
-                    .catch((_error_message) => {
-                        let message = _error_message.response.data.message;
-                        this.$toast.open({
-                            message: message
-                        });
-                    });
-            },
-            isManagerCredentials(token) {
-                return new Promise((accept, reject) => {
-                    Axios.get("http://localhost:2000/myca/api/autho?contentmanager=true")
-                        .then((tokenManager) => {
-                            if (tokenManager == token) {
-                                this.activateManager = true;
-                                accept();
-                            }
+                document.cookie="myca=cookie!";
+                APIGrantsService
+                    .grantAuthenticationAPIIsAvailable()
+                    .then(()=>{
+                        Axios.post(MYCA_API_URL+"/auth", authenticationRequestData, {
+                            headers: authenticationRequestHeaders,
+                            maxRedirects:0,
+                            withCredentials:true
                         })
-                        .catch((error_message) => {
-    
+                        .then((authenticationData) => {
+                            let sessionCookie = authenticationData.headers.cookie;
                             this.$toast.open({
-                                message: error_message
+                                message: "Succesful Login!\nWe have stored a session cookie in your browser :)"
                             });
-                            reject();
+                            getUserAuthorizations()
+                                .then((userAuthorizations)=>{this.emitCloseLogin(userAuthorizations)})
+                                .catch((userAuthorizations)=>{this.emitCloseLogin(userAuthorizations)});
+                        })
+                        .catch((_error_message) => {
+                            let message = _error_message.response.data.message;
+                            let accountActivationRequired = _error_message.response.data.requiresActivation;
+                            if(accountActivationRequired){
+                                this.userInfo = {...authenticationRequestData};
+                                this.activateAccount = true;
+                            }else{
+                                this.$toast.open({
+                                    message: message
+                                });
+                            }
                         });
-                });
+                    })
+                    .catch(()=>{
+                        this.$toast.open({message:'Our autentication service is currently down! Please hold on :('});
+                    });
             },
             /**
              * Emits close login action
              */
-            emitCloseLogin() {
-                this.$emit("closeLogin");
+            emitCloseLogin(userAuthorizations) {
+                this.$emit("closeLogin",userAuthorizations);
             },
-            signUp() {
-                this.$emit("signUp");
+            /**
+             * Activates signup component
+             */
+            activateSignupComponent() {
+                this.activateSignup=true;
+            },
+            /**
+             * Closes signup action
+             */
+            closeSignupComponent(){
+                this.activateSignup=false;
+            },
+            /**
+             * Closes activate account component
+             */
+            closeActivateAccountComponent(){
+                this.activateAccount=false;
+                this.login(this.userInfo);
             }
         }
     }

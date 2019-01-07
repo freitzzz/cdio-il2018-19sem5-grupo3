@@ -2,57 +2,90 @@
   <div>
     <div v-if="showLogInModal">
       <b-modal :active.sync="showLogInModal">
-      <Login @closeLogin="closeLogin()" @signUp="signUp()"/>
+      <Login @closeLogin="closeLogin" @signUp="signUp()"/>
       </b-modal>
     </div>
-    <div v-if="showSignUpModal">
-      <b-modal :active.sync="showSignUpModal">
-      <Signup @closeSignUp="closeSignUp()"/>
-      </b-modal>
-    </div>
-    <component :is="currentComp" @switch-to-customizer="switchPage()" @switch-to-sign-in-form="logIn()"
+    <management-top-bar
+      v-if="userAuthorizations.contentManager"
+    />
+    <component v-if="!userAuthorizations.client" :is="currentComp" @switch-to-sign-in-form="logIn()"
     @switch-to-sign-up-form="signUp()"></component>
   </div>
 </template>
 
 <script>
-import Customizer from "./Customizer.vue";
 import Intro from "./Intro.vue";
 import Login from "./authentication/Login.vue";
-import Signup from "./authentication/Signup.vue";
+import AccountDetails from './UIComponents/AccountDetails.vue';
+
+/**
+ * Requires ManagementTopBar
+ */
+import ManagementTopBar from './ManagementTopBar.vue';
+
+/**
+ * Requires authorization services
+ */
+import {getUserAuthorizations} from '../AuthorizationService'; 
 
 export default {
+  created(){
+    getUserAuthorizations()
+      .then((authorizationDetails)=>{
+        this.updateUserAuthorizations(authorizationDetails);
+      }).catch((authorizationDetails)=>{
+        this.updateUserAuthorizations(authorizationDetails);
+      });
+  },
   name: "home",
   data() {
     return {
       currentComp: Intro,
       showLogInModal: false,
-      showSignUpModal: false
+      showSignUpModal: false,
+      userAuthorizations:{
+        administrator:false,
+        client:false,
+        contentManager:false,
+        logisticManager:false
+      }
     };
   },
   methods: {
-    switchPage() {
-      this.currentComp = Customizer;
-    },
     logIn() {
       this.showLogInModal = true;
     },
-    closeLogIn(){
+    /**
+     * Event that is triggered when login component is closed
+     */
+    closeLogIn(authorizationDetails){
       this.showLogInModal = false;
+      this.updateUserAuthorizations(authorizationDetails);
+      if(this.userAuthorizations.contentManager)
+        this.currentComp=ManagementTopBar;
     },
     signUp(){
       this.showLogInModal = false;
       this.showSignUpModal = true;
     },
-    closeSignUp(){
-      this.showSignUpModal = false;
+    /**
+     * Updates the current user authorizations based on given user authorization details
+     */
+    updateUserAuthorizations(authorizationDetails){
+        this.userAuthorizations.administrator=authorizationDetails.administrator;
+        this.userAuthorizations.client=authorizationDetails.client;
+        this.userAuthorizations.contentManager=authorizationDetails.contentManager;
+        this.userAuthorizations.logisticManager=authorizationDetails.logisticManager;
     }
   },
+  /**
+   * Component used components
+   */
   components: {
-    Customizer,
+    AccountDetails,
     Intro,
     Login,
-    Signup
+    ManagementTopBar
   }
 };
 </script>

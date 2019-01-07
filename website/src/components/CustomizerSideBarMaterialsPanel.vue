@@ -73,20 +73,16 @@
 </template>
 
 <script>
-import Vue from "vue";
-import Axios from "axios";
-import { error } from "three";
+import ProductRequests from "./../services/mycm_api/requests/products.js";
+import MaterialRequests from "./../services/mycm_api/requests/materials.js";
+import CustomizedProductRequests from "./../services/mycm_api/requests/customizedproducts.js";
 import store from "./../store";
-import Toasted from "vue-toasted";
-import { MYCM_API_URL } from "./../config.js";
 import Swatches from "vue-swatches";
 import "vue-swatches/dist/vue-swatches.min.css";
 import { SET_CUSTOMIZED_PRODUCT_MATERIAL, SET_CUSTOMIZED_PRODUCT_FINISH,
          SET_CUSTOMIZED_PRODUCT_COLOR, DEACTIVATE_CAN_MOVE_CLOSET,
          DEACTIVATE_CAN_MOVE_SLOTS
         } from "./../store/mutation-types.js";
-
-Vue.use(Toasted);
 
 export default {
   name: "CustomizerSideBarMaterialsPanel",
@@ -117,7 +113,7 @@ export default {
   },
   methods: {
     getProductMaterials() {
-      Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/materials`)
+      ProductRequests.getProductMaterials(store.state.product.id)
         .then(response => {
           this.materials = [];
           this.materials.push(...response.data);
@@ -132,7 +128,8 @@ export default {
         });
     },
     getMaterialInformation(materialId) {
-      Axios.get(`${MYCM_API_URL}/materials/${materialId}`)
+
+      MaterialRequests.getMaterial(materialId, {pricedFinishesOnly: true})
         .then(response => {
           this.finishes = [];
           this.finishes.push(...response.data.finishes);
@@ -213,11 +210,11 @@ export default {
     nextPanel() {
       var hasColor = store.getters.customizedMaterialColorName != "None";
       var hasFinish = store.getters.customizedMaterialFinishDescription != "None";
-
       if(!hasColor && !hasFinish){
         this.$toast.open("You must choose at least one finish or color!");
       } else if(hasColor && !hasFinish){
-         Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
+
+         CustomizedProductRequests.putCustomizedProduct(store.state.customizedProduct.id,
             {
 	            customizedMaterial: {
 		            materialId: store.state.customizedProduct.customizedMaterial.id,
@@ -230,15 +227,14 @@ export default {
 		            } 
 	            },
             })
-          .then(response => {
+          .then(() => {
             this.$emit("advance");
           })
-          .catch(error_message => {
+          .catch(() => {
             this.$toast.open("Unable to upload color.");
           });
       } else if(hasFinish && !hasColor){
-        Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
-          {
+        CustomizedProductRequests.putCustomizedProduct(store.state.customizedProduct.id, {
 	          customizedMaterial: {
 		          materialId: store.state.customizedProduct.customizedMaterial.id,
               finish: {
@@ -247,14 +243,14 @@ export default {
               }
             }
           })
-        .then(response => {
+        .then(() => {
           this.$emit("advance");
         })
-        .catch(error_message => {
+        .catch(() => {
           this.$toast.open("Unable to upload finish.");
         });
       } else if(hasFinish && hasColor){
-        Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
+        CustomizedProductRequests.putCustomizedProduct(store.state.customizedProduct.id,
           {
 	          customizedMaterial: {
               materialId: store.state.customizedProduct.customizedMaterial.id,
@@ -271,39 +267,59 @@ export default {
               }
             }
           })
-        .then(response => {
+        .then(() => {
           this.$emit("advance")
         })
-        .catch(error_message => {
+        .catch(() => {
           this.$toast.open("Unable to upload color or finish.");
         });
       }
     },
     previousPanel() {
-      Axios.put(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}`,
-      {
-        customizedMaterial: {
-		      materialId: store.state.customizedProduct.customizedMaterial.id,
-          finish: {
-              description: store.state.customizedProduct.customizedMaterial.finish.description,
-              shininess: store.state.customizedProduct.customizedMaterial.finish.shininess,
-          }
+      this.$dialog.confirm({
+        title: 'Return',
+        hasIcon: true,
+        type: 'is-info',
+        icon: 'fas fa-exclamation-circle size:5px',
+        iconPack: 'fa',
+        message: 'Are you sure you want to return? All progress made in this step will be lost.',
+        onConfirm: () => {          
+          this.discardChanges();
         }
       })
-      .then(response => {
-        this.removeFinish();
-        this.removeColor();
-        this.$emit("back");
-      })
-      .catch(error_message => {
-        this.$toast.open("Unable to remove the material.");
-      });
-    
-      this.deleteSlots().then(() => {
-        this.$emit("back");
-      }).catch((error_message)=>{
-        this.$toast.open({message: error_message}); 
-      });
+    },
+    discardChanges(){
+      var defaultMaterial = this.materials[0];
+      MaterialRequests.getMaterial(defaultMaterial.id)
+        .then(response => {
+          var defaultFinish = response.data.finishes[0];
+          CustomizedProductRequests.putCustomizedProduct(store.state.customizedProduct.id,
+          {
+            customizedMaterial: {
+              materialId: defaultMaterial.id,
+              finish: {
+                description: defaultFinish.description,
+                shininess: defaultFinish.shininess,
+              }
+            }
+          })
+          .then(() => {
+            this.deleteSlots().then(() => {
+              this.$emit("back");
+              this.applyMaterial(defaultMaterial);
+              this.removeFinish();
+              this.removeColor();
+            }).catch(() => {
+              this.$toast.open("An error has occurred while returning to the divisions step.");
+            });
+          })
+          .catch(() => {
+          this.$toast.open("An error has occurred while removing the material from the closet.");
+          });
+        })
+        .catch(() => {
+          this.$toast.open("An error has occurred while removing the material from the closet.");
+        });
     },
     deleteSlots(){
       let slotsToDelete = [];
@@ -323,8 +339,7 @@ export default {
     deleteSlot(slotsToDelete){
       return new Promise((accept, reject) => {
         let slotToDelete = slotsToDelete.pop();
-        Axios.delete(MYCM_API_URL + 
-        `/customizedproducts/${store.state.customizedProduct.id}/slots/${slotToDelete}`)
+        CustomizedProductRequests.deleteCustomizedProductSlot(store.state.customizedProduct.id, slotToDelete)
         .then(() => {
           if(slotsToDelete.length > 0 ){
             return this.deleteSlot(slotsToDelete)

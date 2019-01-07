@@ -24,5 +24,12 @@ namespace core.persistence {
         /// </summary>
         /// <returns>An IEnumerable of Product containing all base products.</returns>
         IEnumerable<Product> findBaseProducts();
+
+        /// <summary>
+        /// Checks if a Product with the given identifier is a base.
+        /// </summary>
+        /// <param name="productId">Product's identifier persistence identifier.</param>
+        /// <returns>true, if the Product with the given identifier is a base; false, otherwise.</returns>
+        bool isBaseProduct(long productId);
     }
 }

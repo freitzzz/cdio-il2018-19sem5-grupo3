@@ -1,6 +1,6 @@
 package cdiomyc.core.domain.auth;
 
-import cdiomyc.core.domain.auth.credentials.CredentialsAuth;
+import cdiomyc.core.domain.auth.credentials.UsernameCredentialsAuth;
 import cdiomyc.core.mv.authentication.CredentialsAuthenticationMV;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -13,14 +13,14 @@ import static org.junit.Assert.*;
 public class AuthFactoryTest {
 
     /**
-     * Ensures createAuth creates proper instances of CredentialsAuth
+     * Ensures createAuth creates proper instances of UsernameCredentialsAuth
      */
     @Test
     public void ensureCreateAuthCreatesCredentialAuthenticationMV() {
         CredentialsAuthenticationMV authDetails = new CredentialsAuthenticationMV();
         authDetails.username = "user1";
         authDetails.password = "user1";
-        Auth expResult = new CredentialsAuth(authDetails.username, authDetails.password);
+        Auth expResult = new UsernameCredentialsAuth(authDetails.username, authDetails.password);
         Auth result = AuthFactory.createAuth(authDetails);
         assertEquals(expResult, result);
     }

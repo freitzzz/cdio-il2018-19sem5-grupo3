@@ -1,7 +1,7 @@
 package cdiomyc.core.domain.auth;
 
 import cdiomyc.core.domain.User;
-import cdiomyc.core.domain.auth.credentials.CredentialsAuth;
+import cdiomyc.core.domain.auth.credentials.UsernameCredentialsAuth;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -15,8 +15,8 @@ public class AuthTest {
      */
     @Test
     public void ensureIdWorks() {
-        Auth instance = new CredentialsAuth("username", "password");
-        Auth instance2 = new CredentialsAuth("username", "password");
+        Auth instance = new UsernameCredentialsAuth("username", "password");
+        Auth instance2 = new UsernameCredentialsAuth("username", "password");
         assertEquals(instance2.id(), instance.id());
     }
 
@@ -25,7 +25,7 @@ public class AuthTest {
      */
     @Test
     public void ensureHashCodeWorks() {
-        Auth instance = new CredentialsAuth("username", "password");
+        Auth instance = new UsernameCredentialsAuth("username", "password");
         assertEquals(instance.id().hashCode(), instance.hashCode());
     }
 
@@ -34,7 +34,7 @@ public class AuthTest {
      */
     @Test
     public void ensureEqualsReturnsTrueIfSameInstance() {
-        Auth instance = new CredentialsAuth("username", "password");
+        Auth instance = new UsernameCredentialsAuth("username", "password");
         assertTrue(instance.equals(instance));
     }
 
@@ -43,7 +43,7 @@ public class AuthTest {
      */
     @Test
     public void ensureEqualsReturnsFalseIfArgumentIsNull() {
-        Auth instance = new CredentialsAuth("username", "password");
+        Auth instance = new UsernameCredentialsAuth("username", "password");
         Auth instance2 = null;
         assertFalse(instance.equals(instance2));
     }
@@ -53,7 +53,7 @@ public class AuthTest {
      */
     @Test
     public void ensureEqualsReturnsFalseIfArgumentNotSameClass() {
-        Auth instance = new CredentialsAuth("username", "password");
+        Auth instance = new UsernameCredentialsAuth("username", "password");
         User instance2 = new User(instance);
         assertFalse(instance.equals(instance2));
     }
@@ -63,8 +63,8 @@ public class AuthTest {
      */
     @Test
     public void ensureEqualsReturnsFalseIfArgumentNotEqual() {
-        Auth instance = new CredentialsAuth("username", "password");
-        Auth instance2 = new CredentialsAuth("username1", "password1");
+        Auth instance = new UsernameCredentialsAuth("username", "password");
+        Auth instance2 = new UsernameCredentialsAuth("username1", "password1");
         assertFalse(instance.equals(instance2));
     }
 }

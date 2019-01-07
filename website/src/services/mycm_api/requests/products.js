@@ -26,47 +26,75 @@ export default {
 
     /**
      * Retrieves the Product with a matching identifier.
-     * @param {Number} productId - Product's identifier.
-     * @param {"mm" | "cm" | "dm" | "m"} unit - Dimension unit.
+     * @param {number} productId - Product's identifier.
+     * @param {"mm" | "cm" | "dm" | "m"=} unit - Dimension unit.
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved Product. 
      */
     getProductById(productId, unit) {
-        return Axios.get(`${PRODUCTS_URL}/${productId}/?unit=${unit}`);
+
+        var requestUrl = `${PRODUCTS_URL}/${productId}`;
+
+        if (unit !== undefined) {
+          requestUrl = requestUrl.concat(`/?unit=${unit}`);
+        }
+
+        return Axios.get(requestUrl);
     },
 
     /**
      * Retrieves the Product with a matching reference.
-     * @param {String} productReference - Product's reference.
-     * @param {"mm" | "cm" | "dm" | "m"} unit - Dimension unit.
+     * @param {string} productReference - Product's reference.
+     * @param {"mm" | "cm" | "dm" | "m"=} unit - Dimension unit.
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved Product.
      */
     getProductByReference(productReference, unit) {
-        return Axios.get(`${PRODUCTS_URL}/?reference=${productReference}&unit=${unit}`)
+
+        var requestUrl = `${PRODUCTS_URL}/?reference=${productReference}`;
+
+        if (unit !== undefined) {
+           requestUrl = requestUrl.concat(`&unit=${unit}`);
+        }
+
+        return Axios.get(requestUrl);
     },
 
     /**
      * Retrieves the Product's dimensions.
-     * @param {String} productId - Product's identifier.
-     * @param {"mm" | "cm" | "dm" | "m"} unit - Dimension unit.
+     * @param {number} productId - Product's identifier.
+     * @param {"mm" | "cm" | "dm" | "m"=} unit - Dimension unit.
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved Product's dimensions.
      */
     getProductDimensions(productId, unit) {
-        return Axios.get(`${PRODUCTS_URL}/${productId}/dimensions/?unit=${unit}`);
+
+        var requestUrl = `${PRODUCTS_URL}/${productId}/dimensions`;
+
+        if (unit !== undefined) {
+            requestUrl = requestUrl.concat(`/?unit=${unit}`);
+        }
+
+        return Axios.get(requestUrl);
     },
 
     /**
      * Retrieves the Product's components.
-     * @param {Number} productId - Product's identifier.
-     * @param {"default" | "category"} groupOption - Option defining how the components will be grouped together.
+     * @param {number} productId - Product's identifier.
+     * @param {"default" | "category"=} groupOption - Option defining how the components will be grouped together.
      * @returns {AxiosPromise<any>} Axios Promise representing the Product's components.
      */
     getProductComponents(productId, groupOption) {
-        return Axios.get(`${PRODUCTS_URL}/${productId}/?groupby=${groupOption}`);
+
+        var requestUrl = `${PRODUCTS_URL}/${productId}/components`;
+
+        if(groupOption !== undefined){
+            requestUrl = requestUrl.concat(`/?groupby=${groupOption}`);
+        }
+
+        return Axios.get(requestUrl);
     },
 
     /**
      * Retrieves the Product's materials.
-     * @param {Number} productId - Product's identifier.
+     * @param {number} productId - Product's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved Product's materials.
      */
     getProductMaterials(productId) {
@@ -75,19 +103,26 @@ export default {
 
     /**
      * Retrieves the Product's slot widths.
-     * @param {*} productId - Product's identifier.
-     * @param {"mm" | "cm" | "dm" | "m"} unit - Dimension unit.
+     * @param {number} productId - Product's identifier.
+     * @param {"mm" | "cm" | "dm" | "m"=} unit - Dimension unit.
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved Product's slot widths.
      */
     getProductSlotWidths(productId, unit) {
-        return Axios.get(`${PRODUCTS_URL}/slotwidths/?unit=${unit}`);
+
+        var requestUrl = `{PRODUCTS_URL}/${productId}/slotwidths`;
+
+        if(unit !== undefined){
+            requestUrl = requestUrl.concat(`?unit=${unit}`);
+        }
+
+        return Axios.get(requestUrl);
     },
 
 
     /**
      * Retrieves a Product's component.
-     * @param {*} productId - Product's identifier.
-     * @param {*} componentId - Component's identifier.
+     * @param {number} productId - Product's identifier.
+     * @param {number} componentId - Component's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved component.
      */
     getProductComponent(productId, componentId) {
@@ -96,8 +131,8 @@ export default {
 
     /**
      * Retrieves the restrictions from a Product's dimension.
-     * @param {Number} productId - Product identifier.
-     * @param {Number} dimensionId - Dimension identifier. 
+     * @param {number} productId - Product identifier.
+     * @param {number} dimensionId - Dimension identifier. 
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved dimension's restrictions.
      */
     getProductDimensionRestrictions(productId, dimensionId) {
@@ -106,8 +141,8 @@ export default {
 
     /**
      * Retrieves the restrictions from a Product's component.
-     * @param {Number} productId - Product's identifier.
-     * @param {Number} componentId - Component's identifier.
+     * @param {number} productId - Product's identifier.
+     * @param {number} componentId - Component's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the component's restrictions.
      */
     getProductComponentRestrictions(productId, componentId) {
@@ -116,8 +151,8 @@ export default {
 
     /**
      * Retrieves the restrictions from a Product's material.
-     * @param {Number} productId - Product's identifier.
-     * @param {*} materialId - Material's identifier.
+     * @param {number} productId - Product's identifier.
+     * @param {number} materialId - Material's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the material's restrictions.
      */
     getProductMaterialRestrictions(productId, materialId) {
@@ -135,7 +170,7 @@ export default {
 
     /**
      * Adds a new dimension to a Product.
-     * @param {Number} productId - Product's identifier.
+     * @param {number} productId - Product's identifier.
      * @param {*} dimension - Dimension being added.
      * @returns {AxiosPromise<any>} Axios Promise representing the added dimension.
      */
@@ -145,7 +180,7 @@ export default {
 
     /**
      * Adds a new component to a Product.
-     * @param {Number} productId - Product's identifier.
+     * @param {number} productId - Product's identifier.
      * @param {*} component - Component being added.
      * @returns {AxiosPromise<any>} Axios Promise representing the added component.
      */
@@ -156,7 +191,7 @@ export default {
 
     /**
      * Adds a new material to a Product.
-     * @param {Number} productId - Product's identifier.
+     * @param {number} productId - Product's identifier.
      * @param {*} material - Material being added.
      * @returns {AxiosPromise<any>} Axios Promise representing the added material.
      */
@@ -167,8 +202,8 @@ export default {
 
     /**
      * Adds a new restriction to a Product's dimension.
-     * @param {Number} productId - Product's identifier.
-     * @param {Number} dimensionId - Dimension's identifier.
+     * @param {number} productId - Product's identifier.
+     * @param {number} dimensionId - Dimension's identifier.
      * @param {*} restriction - Restriction being added.
      * @returns {AxiosPromise<any>} Axios Promise representing the added restriction.
      */
@@ -178,8 +213,8 @@ export default {
 
     /**
      * Adds a new restriction to a Product's component.
-     * @param {Number} productId - Product's identifier.
-     * @param {Number} componentId - Component's identifier.
+     * @param {number} productId - Product's identifier.
+     * @param {number} componentId - Component's identifier.
      * @param {*} restriction - Restriction being added.
      * @returns {AxiosPromise<any>} Axios Promise representing the added restriction.
      */
@@ -189,8 +224,8 @@ export default {
 
     /**
      * Adds a new restriction to a Product's material.
-     * @param {Number} productId - Product's identifier.
-     * @param {Number} materialId - Material's identifier.
+     * @param {number} productId - Product's identifier.
+     * @param {number} materialId - Material's identifier.
      * @param {*} restriction - Restriction being added.
      * @returns {AxiosPromise<any>} Axios Promise representing the added restriction.
      */
@@ -200,7 +235,7 @@ export default {
 
     /**
      * Updates a Product.
-     * @param {Number} productId - Product's identifier. 
+     * @param {number} productId - Product's identifier. 
      * @param {*} product - Product's updated data.
      * @returns {AxiosPromise<any>} Axios Promise representing the updated Product.
      */
@@ -210,7 +245,7 @@ export default {
 
     /**
      * Deletes a Product.
-     * @param {Number} productId - Product's identifier.
+     * @param {number} productId - Product's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the deleted Product.
      */
     deleteProduct(productId) {
@@ -219,8 +254,8 @@ export default {
 
     /**
      * Deletes a Product's dimension.
-     * @param {Number} productId - Product's identifier.
-     * @param {Number} dimensionId - Dimensions' identifier.
+     * @param {number} productId - Product's identifier.
+     * @param {number} dimensionId - Dimensions' identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the deleted dimension.
      */
     deleteProductDimension(productId, dimensionId) {
@@ -229,8 +264,8 @@ export default {
 
     /**
      * Deletes a Product's component.
-     * @param {Number} productId - Product's identifier.
-     * @param {Number} componentId - Component's identifier.
+     * @param {number} productId - Product's identifier.
+     * @param {number} componentId - Component's identifier.
      * @returns {AxiosPromise<any>}  Axios Promise representing the deleted component.
      */
     deleteProductComponent(productId, componentId) {
@@ -239,8 +274,8 @@ export default {
 
     /**
      * Deletes a Product's material.
-     * @param {Number} productId - Product's identifier.
-     * @param {Number} materialId - Material's identifier.
+     * @param {number} productId - Product's identifier.
+     * @param {number} materialId - Material's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the deleted material.
      */
     deleteProductMaterial(productId, materialId) {
@@ -250,9 +285,9 @@ export default {
 
     /**
      * Deletes a restriction from a Product's dimension.
-     * @param {Number} productId - Product's identifier.
-     * @param {Number} dimensionId - Dimension's identifier.
-     * @param {Number} restrictionId - Restriction's identifier.
+     * @param {number} productId - Product's identifier.
+     * @param {number} dimensionId - Dimension's identifier.
+     * @param {number} restrictionId - Restriction's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the deleted restriction.
      */
     deleteProductDimensionRestriction(productId, dimensionId, restrictionId) {
@@ -262,9 +297,9 @@ export default {
 
     /**
      * Deletes a restriction from a Product's component.
-     * @param {Number} productId - Product's identifier.
-     * @param {Number} componentId - Component's identifier.
-     * @param {Number} restrictionId - Restriction's identifier.
+     * @param {number} productId - Product's identifier.
+     * @param {number} componentId - Component's identifier.
+     * @param {number} restrictionId - Restriction's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the deleted restriction.
      */
     deleteProductComponentRestriction(productId, componentId, restrictionId) {
@@ -273,9 +308,9 @@ export default {
 
     /**
      * Deletes a restriction from a Product's material.
-     * @param {Number} productId - Product's identifier.
-     * @param {Number} materialId - Material's identifier.
-     * @param {Number} restrictionId - Restriction's identifier.
+     * @param {number} productId - Product's identifier.
+     * @param {number} materialId - Material's identifier.
+     * @param {number} restrictionId - Restriction's identifier.
      * @returns {AxiosPromise<any>} Axios Promise representing the deleted restriction.
      */
     deleteProductMaterialRestriction(productId, materialId, restrictionId) {

@@ -16,11 +16,6 @@ namespace core.services
     public static class CreateCustomizedProductService
     {
         /// <summary>
-        /// Constant representing th error message presented when the CustomizedProduct is attempted to be created a reference but without a auth token.
-        /// </summary>
-        private const string ERROR_MISSING_AUTH_TOKEN = "Unable to create a customized product with a reference without providing an authentication token.";
-
-        /// <summary>
         /// Constant representing the error message presented when the Product is not found.
         /// </summary>
         private const string ERROR_UNABLE_TO_FIND_PRODUCT = "Unable to find a product with an identifier of: {0}";
@@ -32,12 +27,19 @@ namespace core.services
         /// <summary>
         /// Constant representing the error message presented when the CustomizedProduct could not be saved.
         /// </summary>
-        private const string ERROR_UNABLE_TO_SAVE_CUSTOMIZED_PRODUCT = "Unable to save the customized product. Please, make sure the reference/serial number is unique";
+        private const string ERROR_UNABLE_TO_SAVE_CUSTOMIZED_PRODUCT = "Unable to save the customized product. Please, make sure the reference is unique";
 
         /// <summary>
         /// Constant representing the error message presented when a CustomizedProduct is attempted to be created without dimensions.
         /// </summary>
         private const string ERROR_NO_CUSTOMIZED_DIMENSIONS = "Unable to create a customized product without dimensions.";
+
+        /// <summary>
+        /// Constant representing the message presented when a CustomizedProduct is attempted to be created for a 
+        /// </summary>
+        private const string ERROR_CUSTOMIZING_COMPONENT_WITHOUT_PARENT = "Unable to customize this product without adding it to another product.";
+
+        //TODO: Change reference based on user's role
 
         /// <summary>
         /// Creates an instance of CustomizedProduct.
@@ -60,7 +62,7 @@ namespace core.services
                 throw new ArgumentException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT, addCustomizedProductModelView.productId));
             }
 
-            CustomizedProduct customizedProduct = buildCustomizedProduct(addCustomizedProductModelView, product);
+            CustomizedProduct customizedProduct = null;
 
             if (addCustomizedProductModelView.insertedInSlotId.HasValue && addCustomizedProductModelView.parentCustomizedProductId.HasValue)
             {
@@ -78,18 +80,19 @@ namespace core.services
                     throw new ArgumentException(string.Format(ERROR_UNABLE_TO_FIND_SLOT, addCustomizedProductModelView.insertedInSlotId.Value));
                 }
 
-                customizedProduct = customizedProductRepository.save(customizedProduct);
+                customizedProduct = buildSubCustomizedProduct(addCustomizedProductModelView, product, parentCustomizedProduct, slot);
 
-                if (customizedProduct == null)
-                {
-                    throw new ArgumentException(ERROR_UNABLE_TO_SAVE_CUSTOMIZED_PRODUCT);
-                }
-
-                parentCustomizedProduct.addCustomizedProduct(customizedProduct, slot);
                 customizedProductRepository.update(parentCustomizedProduct);
             }
             else
             {
+                //this occurs if, for example, a drawer is attempted to be customized without adding it to a closet
+                if (!productRepository.isBaseProduct(product.Id))
+                {
+                    throw new ArgumentException(ERROR_CUSTOMIZING_COMPONENT_WITHOUT_PARENT);
+                }
+
+                customizedProduct = buildCustomizedProduct(addCustomizedProductModelView, product);
                 customizedProduct = customizedProductRepository.save(customizedProduct);
 
                 if (customizedProduct == null)
@@ -110,6 +113,7 @@ namespace core.services
         /// <exception cref="System.ArgumentException">
         /// Thrown when the Material referenced by the CustomizedMaterial is not found or when no CustomizedDimensions are provided.
         /// </exception>
+        /// <returns>A new instance of CustomizedProduct.</returns>
         private static CustomizedProduct buildCustomizedProduct(AddCustomizedProductModelView addCustomizedProductModelView, Product product)
         {
             CustomizedProductBuilder customizedProductBuilder = null;
@@ -121,40 +125,14 @@ namespace core.services
 
             CustomizedDimensions customizedProductDimensions = CustomizedDimensionsModelViewService.fromModelView(addCustomizedProductModelView.customizedDimensions);
 
-            if (addCustomizedProductModelView.reference == null && addCustomizedProductModelView.userAuthToken == null)
+            if (addCustomizedProductModelView.userAuthToken == null)
             {
-                CustomizedProductSerialNumberRepository serialNumberRepository = PersistenceContext.repositories().createCustomizedProductSerialNumberRepository();
-
-                string serialNumber = serialNumberRepository.findSerialNumber().serialNumber;
-
-                customizedProductBuilder = CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, product, customizedProductDimensions);
-
-                serialNumberRepository.increment();
+                customizedProductBuilder = CustomizedProductBuilder.createCustomizedProduct(addCustomizedProductModelView.reference, product, customizedProductDimensions);
             }
-            else if (addCustomizedProductModelView.reference == null && addCustomizedProductModelView.userAuthToken != null)
+            else
             {
-                CustomizedProductSerialNumberRepository serialNumberRepository = PersistenceContext.repositories().createCustomizedProductSerialNumberRepository();
-
-                string serialNumber = serialNumberRepository.findSerialNumber().serialNumber;
-
                 customizedProductBuilder = CustomizedProductBuilder
-                    .createRegisteredUserCustomizedProduct(serialNumber, addCustomizedProductModelView.userAuthToken,
-                         product, customizedProductDimensions);
-
-                serialNumberRepository.increment();
-            }
-            else if (addCustomizedProductModelView.reference != null)
-            {
-                if (addCustomizedProductModelView.userAuthToken != null)
-                {
-                    customizedProductBuilder = CustomizedProductBuilder
-                    .createManagerCustomizedProduct(addCustomizedProductModelView.reference, addCustomizedProductModelView.userAuthToken,
-                        product, customizedProductDimensions);
-                }
-                else
-                {
-                    throw new ArgumentException(ERROR_MISSING_AUTH_TOKEN);
-                }
+                    .createCustomizedProduct(addCustomizedProductModelView.userAuthToken, addCustomizedProductModelView.reference, product, customizedProductDimensions);
             }
 
             //build customized product with optional properties if they're defined
@@ -169,6 +147,52 @@ namespace core.services
             {
                 customizedProductBuilder.withDesignation(addCustomizedProductModelView.designation);
             }
+
+            return customizedProductBuilder.build();
+        }
+
+
+        /// <summary>
+        /// Builds an instance of CustomizedProduct based on the given Product with the data in the given instance of AddCustomizedProductModelView. 
+        /// </summary>
+        /// <param name="addCustomizedProductModelView">AddCustomizedProductModelView containing the CustomizedProduct's information.</param>
+        /// <param name="product">Instance of Product.</param>
+        /// <param name="parentCustomizedProduct">Parent CustomizedProduct.</param>
+        /// <param name="insertedInSlot">Slot in which the CustomizedProduct will be inserted.</param>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown when the Material referenced by the CustomizedMaterial is not found or when no CustomizedDimensions are provided.
+        /// </exception>
+        /// <returns>A new instance of CustomizedProduct.</returns>
+        private static CustomizedProduct buildSubCustomizedProduct(AddCustomizedProductModelView addCustomizedProductModelView, Product product, 
+            CustomizedProduct parentCustomizedProduct, Slot insertedInSlot)
+        {
+            CustomizedProductBuilder customizedProductBuilder = null;
+
+            if (addCustomizedProductModelView.customizedDimensions == null)
+            {
+                throw new ArgumentException(ERROR_NO_CUSTOMIZED_DIMENSIONS);
+            }
+
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensionsModelViewService.fromModelView(addCustomizedProductModelView.customizedDimensions);
+
+            if (addCustomizedProductModelView.userAuthToken == null)
+            {
+                customizedProductBuilder = CustomizedProductBuilder.createCustomizedProduct(product, customizedProductDimensions, parentCustomizedProduct, insertedInSlot);
+            }
+            else
+            {
+                customizedProductBuilder = CustomizedProductBuilder
+                    .createCustomizedProduct(addCustomizedProductModelView.userAuthToken, product, customizedProductDimensions, parentCustomizedProduct, insertedInSlot);
+            }
+
+            if (addCustomizedProductModelView.customizedMaterial != null)
+            {
+                CustomizedMaterial customizedMaterial = CreateCustomizedMaterialService.create(addCustomizedProductModelView.customizedMaterial);
+
+                customizedProductBuilder.withMaterial(customizedMaterial);
+            }
+
+            //ignore designation since only the base customized products can set the designation
 
             return customizedProductBuilder.build();
         }

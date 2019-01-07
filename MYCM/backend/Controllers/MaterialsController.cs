@@ -76,14 +76,21 @@ namespace backend.Controllers
         [HttpGet]
         public ActionResult<List<MaterialDTO>> findAll()
         {
-            List<MaterialDTO> materials = new core.application.MaterialsController().findAllMaterials();
-
-            if (Collections.isListEmpty(materials))
+            try
             {
-                return BadRequest(new SimpleJSONMessageService(NO_MATERIALS_FOUND));
-            }
+                List<MaterialDTO> materials = new core.application.MaterialsController().findAllMaterials();
 
-            return Ok(materials);
+                if (Collections.isListEmpty(materials))
+                {
+                    return NotFound(new SimpleJSONMessageService(NO_MATERIALS_FOUND));
+                }
+
+                return Ok(materials);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, UNEXPECTED_ERROR);
+            }
         }
 
         /// <summary>
@@ -95,11 +102,11 @@ namespace backend.Controllers
         /// <br>HTTP Response 200 Ok with the info of the Material in JSON format.
         /// </returns>
         [HttpGet("{id}", Name = "GetMaterial")]
-        public ActionResult<MaterialDTO> findById(long id)
+        public ActionResult<MaterialDTO> findById(long id, [FromQuery] bool pricedFinishesOnly)
         {
             try
             {
-                MaterialDTO materialDTO = new core.application.MaterialsController().findMaterialByID(id);
+                MaterialDTO materialDTO = new core.application.MaterialsController().findMaterialByID(id, pricedFinishesOnly);
                 if (materialDTO == null)
                 {
                     return BadRequest(new SimpleJSONMessageService(MATERIAL_NOT_FOUND));
@@ -107,9 +114,17 @@ namespace backend.Controllers
 
                 return Ok(materialDTO);
             }
-            catch (NullReferenceException)
+            catch (ResourceNotFoundException e)
             {
-                return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (NullReferenceException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, UNEXPECTED_ERROR);
             }
         }
 
@@ -143,6 +158,10 @@ namespace backend.Controllers
             catch (ArgumentException argumentException)
             {
                 return BadRequest(new SimpleJSONMessageService(argumentException.Message));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, UNEXPECTED_ERROR);
             }
         }
 
@@ -196,6 +215,10 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
+            catch (Exception)
+            {
+                return StatusCode(500, UNEXPECTED_ERROR);
+            }
             return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }
 
@@ -220,6 +243,10 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
+            catch (Exception)
+            {
+                return StatusCode(500, UNEXPECTED_ERROR);
+            }
             return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }
         /// <summary>
@@ -241,6 +268,10 @@ namespace backend.Controllers
             catch (NullReferenceException)
             {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, UNEXPECTED_ERROR);
             }
             return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }
@@ -266,6 +297,10 @@ namespace backend.Controllers
             {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
+            catch (Exception)
+            {
+                return StatusCode(500, UNEXPECTED_ERROR);
+            }
             return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }
         /// <summary>
@@ -287,6 +322,10 @@ namespace backend.Controllers
             catch (NullReferenceException)
             {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, UNEXPECTED_ERROR);
             }
             return BadRequest(new SimpleJSONMessageService(UNABLE_TO_UPDATE_MATERIAL));
         }

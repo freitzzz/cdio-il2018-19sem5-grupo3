@@ -1,12 +1,13 @@
 <template>
-  <div class="modal-card" style="width: auto">
+  <div>
+  
     <header class="modal-card-head">
       <p class="modal-card-title">Signup</p>
     </header>
     <section class="model-card-body">
       <div class="padding-div">
         <b-field label="Name">
-          <b-input type="String" v-model="name" :placeholder="placeholder.name" icon="account" required></b-input>
+          <b-input type="String" v-model="name" :placeholder="placeholder.name" icon="account"/>
         </b-field>
         <b-field label="E-mail">
           <b-input type="String" v-model="email" :placeholder="placeholder.email" icon="email" required></b-input>
@@ -14,16 +15,28 @@
         <b-field label="Password">
           <b-input type="password" v-model="password" :placeholder="placeholder.password" icon="key" password-reveal required></b-input>
         </b-field>
-  
-        <b-checkbox type="is-info" @input="iHaveReadThePolicy"> </b-checkbox>
-        <a @click="activateModalPrivacy">I have read the <u>Privacy Policy</u></a>
+        <b-field label="Phone Number">
+          <telephone-input
+            :enabledFlags="true"
+            v-model="phoneNumber.value"
+            @onInput="onPhoneNumberInput"
+          />
+        </b-field>
+
+
+        <b-checkbox 
+          v-model="openedPrivacyPolicy.value"
+          type="is-info" 
+          @input="confirmOpenedPrivacyPolicy"
+          />
+        <a @click="openPrivacyPolicy()">I have read the <u>Privacy Policy</u></a>
+        <b-modal
+          :active.sync="openedPrivacyPolicy.opened"
+        >
+          <privacy-policy/>
+        </b-modal>
+
       </div>
-    <div v-if="activateModal">  
-      <b-modal :active.sync="activateModal" has-modal-card scroll="keep">
-        <privacy-policy-modal></privacy-policy-modal>
-      </b-modal>
-    
-    </div>
       <!-- Create check box + form  -->
     </section>
     <footer class="modal-card-foot">
@@ -31,13 +44,21 @@
         <button class="btn-primary" @click="emitSignup()">Sign Up</button>
       </div>
     </footer>
- 
-  
   </div>
 </template>
 
 <script>
-  import PrivacyPolicyModal from './PrivacyPolicyModal.vue';
+
+  /**
+   * Requires PrivacyPolicy component
+   */
+  import PrivacyPolicy from './PrivacyPolicy.vue';
+  
+  /**
+   * Requires vue-tel-input for the phone number input
+   */
+  import TelephoneInput from 'vue-tel-input';
+  
   export default {
     /**
      * Component Data
@@ -45,85 +66,113 @@
     data() {
       return {
         placeholder: {
-          email: "superemail@email.com",
-          password: "superpassword",
-          name: "supername"
+          email: "sarahbonito@kkb.com",
+          name: "Sarah Bonito",
+          password: "*******",
+          
         },
         email: "",
         password: "",
+        phoneNumber:{
+          value:"",
+          valid:Boolean
+        },
         name: "",
-        privacyCheckBox: false,
+        openedPrivacyPolicy:{
+          opened:false,
+          value:false,
+          times:0
+        },
         checkBox: "",
-        activateModal: false
-  
       };
+    },
+    components: {
+      PrivacyPolicy,
+      TelephoneInput
     },
     /**
      * Component methods
      */
     methods: {
-      activateModalPrivacy() {
-        if (this.activateModal) {
-          this.activateModal = false;
-        }else{
-          this.activateModal = true;
+
+      /**
+       * Confirms that the user has opened the signup form
+       */
+      confirmOpenedPrivacyPolicy(){
+        if(this.openedPrivacyPolicy.times==0){
+          this.openPrivacyPolicy();
         }
       },
-  
-      iHaveReadThePolicy: function() {
-        if (this.privacyCheckBox) {
-          this.privacyCheckBox = false;
-        } else {
-          this.privacyCheckBox = true;
-        }
+
+      /**
+       * Opens the privacy policy
+       */
+      openPrivacyPolicy(){
+        this.openedPrivacyPolicy.opened=true;
+        this.openedPrivacyPolicy.value=true;
+        this.openedPrivacyPolicy.times++;
       },
   
       /**
        * Emits the signup action
        */
       emitSignup() {
-        if (this.privacyCheckBox) {
-          var invalidEmail = !this.email || this.email.trim() == "";
-          var invalidName = !this.name || this.name.trim() == "";
-          var invalidPassword = !this.password || this.password.trim() == "";
-  
-          if (invalidEmail && invalidPassword && invalidName) {
-            this.$toasted.show(
-              "Please, insert the required information to log in.", {
-                position: "top-center",
-                duration: 2000
-              }
-            );
-          } else if (invalidName) {
-            this.$toasted.show("Please, insert a valid name.", {
-              position: "top-center",
-              duration: 2000
-            });
-          } else if (invalidEmail) {
-            this.$toasted.show("Please, insert a valid e-mail.", {
-              position: "top-center",
-              duration: 2000
-            });
-          } else if (invalidPassword) {
-            this.$toasted.show("Please, insert a valid password.", {
-              position: "top-center",
-              duration: 2000
-            });
-          } else {
-            let signupDetails = {
-              email: this.email,
-              password: this.password,
-              name: this.name
+        this
+          .grantSignupDetailsAreValid()
+          .then(()=>{
+            let signupDetails={
+              name:this.name,
+              email:this.email,
+              password:this.password,
+              phoneNumber:this.phoneNumber.value
             };
-            this.$emit("emitSignup", signupDetails);
+
+            if(signupDetails.name.trim().length==0)
+              delete signupDetails.name;
+            
+            if(signupDetails.phoneNumber.trim().length==0)
+              delete signupDetails.phoneNumber;
+
+            this.$emit('emitSignup',signupDetails);
+            })
+          .catch((message)=>{
+            this.$toast.open({message:message});
+          });
+      },
+      
+      /**
+       * Callback function that is called when phone number input is triggered
+       */
+      onPhoneNumberInput(phoneNumberInput){
+        this.phoneNumber.valid=phoneNumberInput.isValid;
+      },
+
+      /**
+       * Grants that the signup details are valid
+       */
+      grantSignupDetailsAreValid(){
+
+        return new Promise((accept,reject)=>{
+
+          if(this.email.trim().length==0){
+            reject("Please provide an email!");
           }
-        } else {
-          this.$toast.open('Please confirm that you have read our privacy policy');
-        }
+          
+          if(this.password.trim().length==0){
+            reject("Please provide a password!");
+          }
+
+          if(this.phoneNumber.value.trim().length!=0&&!this.phoneNumber.valid){
+            reject("Please provide a valid phone number!");
+          }
+
+          if(!this.openedPrivacyPolicy.value){
+            reject("You must confirm that you've read the privacy policy!");
+          }
+
+          accept();
+        });
       }
-    },
-    components: {
-      PrivacyPolicyModal
     }
   
   };

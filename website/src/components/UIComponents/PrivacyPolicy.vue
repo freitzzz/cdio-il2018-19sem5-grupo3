@@ -1,12 +1,6 @@
 <template>
-    <b-modal :active.sync="activateModal" class="modal-card" style="width:100% overflow-y: auto  overflow-x: hidden">
-        <header class="modal-card-head">
-            <p class="modal-card-title">New Product</p>
-        </header>
-    
-        <div>
-    
-    
+    <div>
+        <div>  
             <p class="p0 ft0">MAKE YOUR CLOSET</p>
             <p class="p1 ft1">Privacy Policy</p>
             <p class="p2 ft5">
@@ -215,30 +209,29 @@
             <p class="p44 ft20">To answer any questions you might have regarding your privacy and personal data, you can contact us via
                 <nobr>e-mail</nobr> to the address
                 <a href="mailto:helpdesk@myc.pt"><span class="ft27">helpdesk@myc.pt</span></a>. We will gladly help as best and as soon as possible.</p>
-            <p class="p45 ft28">© 2018 Make Your Closet, porto, portugal</p>
+            <p class="p45 ft28">© 2018 Make Your Closet, Porto, Portugal</p>
         </div>
-        <div style="padding: 50px 0px 15px 20px; font-family: Arial, Helvetica, sans-serif; font-size: 8px; color: #c8c8c8;">
-            <p>
-                <a href="https://www.pdfonline.com/convert-pdf/" style="color: #c8c8c8; text-decoration: none;">Word to pDF</a> Converted By BCLTechnologies</p>
-        </div>
-    </b-modal>
+        
+    </div>
 </template>
 
 <script>
-    import Signup from "./SignupForm.vue";
-    export default {
-        props: {
-            activateModal: Boolean
-        }
-    
-    }
+
+export default{
+
+    /**
+     * Component name
+     */
+    name:"PrivacyPolicy"
+}
+
 </script>
 
 <style>
-    body {
-        margin-top: 0px;
-        margin-left: 0px;
-    }
+   /*  body {
+         margin:10%;
+         padding: 10%;
+    } */
     
     #page_1 {
         position: relative;

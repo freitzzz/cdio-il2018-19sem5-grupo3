@@ -1,68 +1,125 @@
 <template>
-        <signup-form @emitSignup="signup"/>
-   
+    <section>
+        <b-modal :active.sync="active">
+            <div class="modal-card" style="width: auto">
+                <signup-form @emitSignup="signup" />
+            </div>
+        </b-modal>
+        <account-details
+            v-if="successfulSignup.show"
+            :custom-message="successfulSignup.customMessage"
+            :custom-title="successfulSignup.customTitle"
+            :details="successfulSignup.details"
+            @onClose="emitCloseSignup"
+        />
+    </section>
 </template>
 
 <script>
 
-/**
- * Requires SignupForm component
- */
-import SignupForm from '../UIComponents/SignupForm';
-import Axios from 'axios';
+    /**
+     * Requires SignupForm component
+     */
+    import SignupForm from '../UIComponents/SignupForm';
 
-export default {
     /**
-     * Component imported components
+     * Requires Axios for HTTP requests
      */
-    components:{
-        SignupForm
-    },
+    import Axios from 'axios';
+    
     /**
-     * Component data
+     * Requires MYCA_API_URL
      */
-    data(){
-        return{
-            active:true
-        }
-    },
+    import Config,{MYCA_API_URL} from '../../config';
+
     /**
-     * Component methods
+     * Requires MYC APIs grants service
      */
-    methods:{
+    import APIGrantsService from '../../APIGrantsService.js';
+
+    /**
+     * Requires AccountDetails component
+     */
+    import AccountDetails from '../UIComponents/AccountDetails';
+
+    export default {
+    
         /**
-         * Signups into MYC API's
+         * Component imported components
          */
-        signup(details){
-            let authenticationRequestData={
-                type:"credentials",
-                mame:details.name,
-                email:details.email,
-                password:details.password,
-            };
-            let authenticationRequestHeaders={
-                Secrete:"Secrete"
-            };
-            Axios.post("http://localhost:2000/myca/api/users",authenticationRequestData,{
-                headers:authenticationRequestHeaders
-            })
-            .then((authenticationData)=>{
-                let apiToken=authenticationData.data.token;
-                this.$toast.open({message:"Here's your API token\nDon't lose it!\n"+apiToken});
-                this.active=false;
-                emitCloseSignup();
-            })
-            .catch((_error_message)=>{
-                let message=_error_message.response.data.message;
-                this.$toast.open({message:message});
-            });
+        components: {
+            AccountDetails,
+            SignupForm
         },
         /**
-         * Emits close signup action
+         * Component data
          */
-        emitCloseSignup(){
-            this.$emit("closeSignup");
+        data(){
+            return{
+                successfulSignup:{
+                    customMessage:"Thank you for signing up on MYC!\nPlease save the following details as they will be required in the future",
+                    customTitle:"Successful Signup",
+                    details:{
+                        activationCode:String
+                    },
+                    show:false
+                }
+            }
+        },
+        /**
+         * Component Props
+         */
+        props:{
+            active:Boolean
+        },
+        /**
+         * Component methods
+         */
+        methods: {
+            /**
+             * Signups into MYC API's
+             */
+            signup(details) {
+                let authenticationRequestData = Object.assign({},details);
+                authenticationRequestData.type="credentials";
+                APIGrantsService
+                    .grantAuthenticationAPIIsAvailable()
+                    .then(()=>{
+                        Axios.post(MYCA_API_URL+"/users", authenticationRequestData)
+                        .then((authenticationData) => {
+                            let signupData=authenticationData.data;
+                            this.successfulSignup.details.activationCode=signupData.activationCode;
+                            this.successfulSignup.show=true;
+                        })
+                        .catch((_error_message) => {
+                            let message = _error_message.response.data.message;
+                            this.$toast.open({
+                                message: message
+                            });
+                        });
+                    })
+                    .catch(()=>{
+                        this.$toast.open({message:'Our autentication service is currently down! Please hold on :('});
+                    });
+            },
+            /**
+             * Emits close signup action
+             */
+            emitCloseSignup() {
+                this.active ? this.active=false : this.$emit("closeSignup");
+            }
+        },
+        /**
+         * Component watched values
+         */
+        watch:{
+            /**
+             * Watches the active value 
+             */
+            active(){
+                if(!this.active)
+                    this.emitCloseSignup();
+            }
         }
     }
-}
 </script>

@@ -80,6 +80,10 @@ namespace core.application
         /// Constant representing the message presented when none of the Product's properties are updated.
         /// </summary>
         private const string ERROR_NO_UPDATE_PERFORMED = "The request did not perform any update.";
+        /// <summary>
+        /// Constant representing the message presented when no materials of a product have a current price
+        /// </summary>
+        private const string NO_PRICED_MATERIALS = "The requested product doesn't have any currently priced materials";
 
         /// <summary>
         /// Builds a new ProductController
@@ -227,6 +231,21 @@ namespace core.application
             if(product == null){
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_PRODUCT_BY_ID, fetchProductDTO.id));
             }
+
+            List<Material> pricedMaterials = new List<Material>();
+            if(fetchProductDTO.pricedMaterialsOnly){
+                MaterialPriceTableRepository materialPriceTableRepository = PersistenceContext.repositories().createMaterialPriceTableRepository();
+                foreach(ProductMaterial productMaterial in product.productMaterials){
+                    if(materialPriceTableRepository.fetchCurrentMaterialPrice(productMaterial.materialId) != null){
+                        pricedMaterials.Add(productMaterial.material);
+                    }
+                }
+            }
+
+            if(fetchProductDTO.pricedMaterialsOnly){
+                return pricedMaterials.Count == 0 ? throw new ResourceNotFoundException(NO_PRICED_MATERIALS) : MaterialModelViewService.fromCollection(pricedMaterials);
+            }
+
             return MaterialModelViewService.fromCollection(product.productMaterials.Select(pm => pm.material));
         }
 
