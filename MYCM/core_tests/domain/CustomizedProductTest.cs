@@ -143,16 +143,12 @@ namespace core_tests.domain
                 .createCustomizedProduct("reference", product, customizedProductDimensions).build();
 
             CustomizedProduct customizedComponent = CustomizedProductBuilder
-                .createCustomizedProduct("reference", component, customizedProductDimensions).build();
+                .createCustomizedProduct(component, customizedProductDimensions, customizedProduct, customizedProduct.slots[0]).build();
 
             CustomizedProduct otherCustomizedComponent = CustomizedProductBuilder
-                .createCustomizedProduct("reference", otherComponent, customizedProductDimensions).build();
+                .createCustomizedProduct(otherComponent, customizedProductDimensions, customizedComponent, customizedComponent.slots[0]).build();
 
             customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
-
-            customizedComponent.addCustomizedProduct(otherCustomizedComponent, customizedComponent.slots[0]);
-
-            customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
 
             return customizedProduct;
         }
@@ -184,13 +180,10 @@ namespace core_tests.domain
             CustomizedProduct customizedProduct = CustomizedProductBuilder
                 .createCustomizedProduct("reference", product, customizedProductDimensions).build();
 
-            CustomizedProduct customizedComponent = CustomizedProductBuilder
-                .createCustomizedProduct("reference", component, customizedProductDimensions).build();
+            CustomizedProduct customizedComponent = CustomizedProductBuilder.createCustomizedProduct(component, customizedProductDimensions, customizedProduct, customizedProduct.slots[0]).build();
 
             customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
             customizedComponent.changeCustomizedMaterial(buildCustomizedMaterial());
-
-            customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
 
             customizedProduct.finalizeCustomization();
 
@@ -224,17 +217,13 @@ namespace core_tests.domain
             CustomizedProduct customizedProduct = CustomizedProductBuilder
                 .createCustomizedProduct("reference", product, customizedProductDimensions).build();
 
-            CustomizedDimensions customizedComponentDimensions = CustomizedDimensions.valueOf(60, 60, 60);
-
-            CustomizedProduct customizedComponent = CustomizedProductBuilder
-                .createCustomizedProduct("reference", component, customizedComponentDimensions).build();
-
             customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
-            customizedComponent.changeCustomizedMaterial(buildCustomizedMaterial());
-
             customizedProduct.addSlot(CustomizedDimensions.valueOf(60, 60, 60));
 
-            customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[1]);
+            CustomizedDimensions customizedComponentDimensions = CustomizedDimensions.valueOf(60, 60, 60);
+            CustomizedProduct customizedComponent = CustomizedProductBuilder
+                .createCustomizedProduct(component, customizedComponentDimensions, customizedProduct, customizedProduct.slots[1]).build();
+            customizedComponent.changeCustomizedMaterial(buildCustomizedMaterial());
 
             return customizedProduct;
         }
@@ -421,6 +410,36 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureChangingSubCustomizedProductReferenceThrowsException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
+
+            CustomizedProduct subCustomizedProduct = customizedProduct.slots[0].customizedProducts[0];
+
+            Action changeReference = () => subCustomizedProduct.changeReference("New reference");
+
+            Assert.Throws<InvalidOperationException>(changeReference);
+        }
+
+        [Fact]
+        public void ensureChangingSubCustomizedProductReferenceDoesNotChangeReference()
+        {
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
+
+            string expectedReference = customizedProduct.reference + "-CP1";
+
+            CustomizedProduct subCustomizedProduct = customizedProduct.slots[0].customizedProducts[0];
+
+            try
+            {
+                subCustomizedProduct.changeReference("a new reference");
+            }
+            catch (Exception) { }
+
+            Assert.Equal(expectedReference, subCustomizedProduct.reference);
+        }
+
+        [Fact]
         public void ensureChangingReferenceToValidReferenceDoesNotThrowException()
         {
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("auth token", "this is a reference",
@@ -445,6 +464,45 @@ namespace core_tests.domain
             customizedProduct.changeReference(newReference);
 
             Assert.Equal(newReference, customizedProduct.reference);
+        }
+
+        [Fact]
+        public void ensureChangingReferenceChangesSubCustomizedProductsReference()
+        {
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
+
+            //Building a component similar to one alredy added in order to check if reference is generated correctly
+            CustomizedProduct childCustomizedProduct = customizedProduct.slots[0].customizedProducts[0];
+            CustomizedProduct grandChildCustomizedProduct = childCustomizedProduct.slots[0].customizedProducts[0];
+             
+            customizedProduct.changeReference("new reference");
+
+            string expectedChildReference = "new reference-CP1";
+            string expectedGrandChildReference = "new reference-CP1-CP1";
+
+            Assert.Equal(expectedChildReference, childCustomizedProduct.reference);
+            Assert.Equal(expectedGrandChildReference, grandChildCustomizedProduct.reference);
+        }
+
+        [Fact]
+        public void ensureChangingReferenceChangesSlotIdentifiers()
+        {
+            CustomizedProduct customizedProduct = buildValidInstanceWithSlotsAndSubCustomizedProducts();
+
+            customizedProduct.changeReference("new reference");
+
+            string expectedSlotIdentifier = "new reference-S1";
+            string expectedOtherSlotIdentifier = "new reference-S2";
+            string expectedChildSlotIdentifier = "new reference-CP1-S1";
+
+            Slot slot = customizedProduct.slots[0];
+            Slot otherSlot = customizedProduct.slots[1];
+            Slot childSlot = otherSlot.customizedProducts[0].slots[0];
+
+
+            Assert.Equal(expectedSlotIdentifier, slot.identifier);
+            Assert.Equal(expectedOtherSlotIdentifier, otherSlot.identifier);
+            Assert.Equal(expectedChildSlotIdentifier, childSlot.identifier);
         }
 
         [Fact]
@@ -538,6 +596,38 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureChangingSubCustomizedProductDesignationThrowsException()
+        {
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
+
+            CustomizedProduct subCustomizedProduct = customizedProduct.slots[0].customizedProducts[0];
+
+            Action changeDesignation = () => subCustomizedProduct.changeDesignation("my magnificent creation");
+
+            Assert.Throws<InvalidOperationException>(changeDesignation);
+        }
+
+        [Fact]
+        public void ensureChangingSubCustomizedProductDesignationDoesNotChangeDesignation()
+        {
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
+
+            CustomizedProduct subCustomizedProduct = customizedProduct.slots[0].customizedProducts[0];
+
+            string expectedDesignation = customizedProduct.designation;
+
+            try
+            {
+                subCustomizedProduct.changeDesignation("new designation");
+            }
+            catch (Exception) { }
+
+            //sub customized products inherit their designation from the parent
+            Assert.Equal(expectedDesignation, subCustomizedProduct.designation);
+        }
+
+
+        [Fact]
         public void ensureChangingDesignationToValidDesignationDoesNotThrowException()
         {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
@@ -560,6 +650,25 @@ namespace core_tests.domain
 
             Assert.Equal(designation, customizedProduct.designation);
         }
+
+
+        [Fact]
+        public void ensureChangingDesignationChangesSubCustomizedProductDesignation()
+        {
+            CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts();
+
+            string designation = "new designation";
+
+            customizedProduct.changeDesignation(designation);
+
+            CustomizedProduct childProduct = customizedProduct.slots[0].customizedProducts[0];
+            CustomizedProduct grandChildProduct = childProduct.slots[0].customizedProducts[0];
+
+            Assert.Equal(designation, customizedProduct.designation);
+            Assert.Equal(designation, childProduct.designation);
+            Assert.Equal(designation, grandChildProduct.designation);
+        }
+
 
         [Fact]
         public void ensureChangingMaterialIfCustomizationIsFinishedThrowsException()
@@ -1078,9 +1187,8 @@ namespace core_tests.domain
             CustomizedDimensions childCustomizedDimensions = CustomizedDimensions.valueOf(30, 30, 30);
 
             CustomizedProduct childCustomizedProduct = CustomizedProductBuilder
-                .createCustomizedProduct("reference 1", childProduct, childCustomizedDimensions).build();
-
-            customizedProduct.addCustomizedProduct(childCustomizedProduct, customizedProduct.slots.First());
+                .createCustomizedProduct(childProduct, childCustomizedDimensions, customizedProduct, customizedProduct.slots.First())
+                .build();
 
             CustomizedDimensions otherSlotDimensions = CustomizedDimensions.valueOf(60, 100, 60);
 
@@ -2175,23 +2283,17 @@ namespace core_tests.domain
         {
             string reference = "reference";
 
-            CustomizedProduct customizedProduct = buildValidFinishedInstance(reference);
+            CustomizedProduct customizedProduct = buildValidFinishedInstanceWithSubCustomizedProducts(reference);
 
-            Action act = () => customizedProduct.addCustomizedProduct(buildValidInstance(reference), customizedProduct.slots[0]);
+            //Build a customized product similar to the one already added
+            Slot slot = customizedProduct.slots[0];
+            CustomizedProduct child = slot.customizedProducts[0];
+            Product product = child.product;
+            CustomizedDimensions dimensions = child.customizedDimensions;
+
+            Action act = () => CustomizedProductBuilder.createCustomizedProduct(product, dimensions, customizedProduct, slot);
 
             Assert.Throws<InvalidOperationException>(act);
-        }
-
-        [Fact]
-        public void ensureAddingNullCustomizedProductThrowsException()
-        {
-            string reference = "reference";
-
-            CustomizedProduct customizedProduct = buildValidInstance(reference);
-
-            Action act = () => customizedProduct.addCustomizedProduct(null, customizedProduct.slots[0]);
-
-            Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
@@ -2201,7 +2303,7 @@ namespace core_tests.domain
 
             CustomizedProduct customizedProduct = buildValidInstance(reference);
 
-            Action act = () => customizedProduct.addCustomizedProduct(buildValidInstance(reference), null);
+            Action act = () => CustomizedProductBuilder.createCustomizedProduct(customizedProduct.product, customizedProduct.customizedDimensions, customizedProduct, null).build();
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -2213,8 +2315,12 @@ namespace core_tests.domain
 
             CustomizedProduct customizedProduct = buildValidInstance(reference);
 
-            Action act = () => customizedProduct.addCustomizedProduct(buildValidInstance(reference),
-                                 new Slot("hey i'm a slot identifier", CustomizedDimensions.valueOf(100, 100, 100)));
+            CustomizedDimensions customizedDimensions = buildCustomizedDimensions();
+            Product product = buildValidProduct();
+
+            Slot nonMatchingSlot = new Slot("hey i'm a slot identifier", CustomizedDimensions.valueOf(100, 100, 100));
+
+            Action act = () => CustomizedProductBuilder.createCustomizedProduct(product, customizedDimensions, customizedProduct, nonMatchingSlot).build();
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -2248,12 +2354,9 @@ namespace core_tests.domain
             CustomizedProduct customizedProduct = CustomizedProductBuilder
                 .createCustomizedProduct("reference", product, customizedProductDimensions).build();
 
-            CustomizedProduct customizedComponent = CustomizedProductBuilder
-                .createCustomizedProduct("reference", component, customizedProductDimensions).build();
-
             customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
 
-            Action act = () => customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
+            Action act = () => CustomizedProductBuilder.createCustomizedProduct(component, customizedProductDimensions, customizedProduct, customizedProduct.slots[0]).build();
 
             Assert.Throws<ArgumentException>(act);
         }
@@ -2286,12 +2389,10 @@ namespace core_tests.domain
             CustomizedProduct customizedProduct = CustomizedProductBuilder
                 .createCustomizedProduct("reference", product, customizedProductDimensions).build();
 
-            CustomizedProduct customizedComponent = CustomizedProductBuilder
-                .createCustomizedProduct("reference", component, customizedProductDimensions).build();
-
             customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
 
-            customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
+            CustomizedProduct customizedComponent = CustomizedProductBuilder
+                .createCustomizedProduct(component, customizedProductDimensions, customizedProduct, customizedProduct.slots[0]).build();
 
             Assert.Equal(customizedProduct.slots[0].customizedProducts[0], customizedComponent);
         }
@@ -2356,15 +2457,13 @@ namespace core_tests.domain
             CustomizedProduct customizedProduct = CustomizedProductBuilder
                 .createCustomizedProduct("reference", product, customizedProductDimensions).build();
 
-            CustomizedProduct customizedComponent = CustomizedProductBuilder
-                .createCustomizedProduct("reference", component, CustomizedDimensions.valueOf(5, 5, 5)).build();
-
             customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(10, 10, 10));
             customizedProduct.addSlot(CustomizedDimensions.valueOf(10, 10, 10));
 
-            customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
+            CustomizedProduct customizedComponent = CustomizedProductBuilder
+                .createCustomizedProduct(component, CustomizedDimensions.valueOf(5, 5, 5), customizedProduct, customizedProduct.slots[0]).build();
 
             Action act = () => customizedProduct.removeCustomizedProduct(customizedProduct.slots[0].customizedProducts[0], customizedProduct.slots[1]);
 

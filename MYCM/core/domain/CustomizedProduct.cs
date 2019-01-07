@@ -378,7 +378,10 @@ namespace core.domain
             if (this.insertedInSlot != null) throw new InvalidOperationException(CHANGE_CHILD_CUSTOMIZED_PRODUCT_REFERENCE);
             checkString(reference, INVALID_REFERENCE);
 
-            changeReferenceRec(this.reference, reference);
+            string previousReference = this.reference;
+            this.reference = reference;
+
+            changeReferenceRec(previousReference, reference);
         }
 
 
@@ -389,8 +392,6 @@ namespace core.domain
         /// <param name="reference">New reference.</param>
         private void changeReferenceRec(string previousReference, string reference)
         {
-            this.reference = reference;
-
             foreach (Slot slot in this.slots)
             {
                 string previousSlotIdentifier = slot.identifier;
@@ -404,6 +405,8 @@ namespace core.domain
                     string previousSubCustomizedProductReference = subCustomizedProduct.reference;
 
                     string newSubCustomizedProductReference = subCustomizedProduct.reference.Replace(previousReference, reference);
+
+                    subCustomizedProduct.reference = newSubCustomizedProductReference;
 
                     subCustomizedProduct.changeReferenceRec(previousReference, reference);
                 }
