@@ -1,17 +1,18 @@
 <template>
   <div>
     <nav class="navbar" role="navigation" aria-label="main navigation">
-        <div id="adminNavBar" class="navbar-menu">
+      <div id="adminNavBar" class="navbar-menu">
         <div class="navbar-start">
           <router-link class="navbar-item" tag="li" to="/administration/orders">Orders</router-link>
+          <router-link class="navbar-item" tag="li" to="/administration/prices">Prices</router-link>
         </div>
-        </div>
-        <div class="navbar-end">
-            <a class="navbar-text">Welcome, Admin</a>
-            <a class="navbar-icon">
-                <i class="far fa-user-circle" style="font-size:30px"/>
-            </a>
-        </div>
+      </div>
+      <div class="navbar-end">
+        <a class="navbar-text">Welcome, Admin</a>
+        <a class="navbar-icon">
+          <i class="far fa-user-circle" style="font-size:30px"/>
+        </a>
+      </div>
     </nav>
     <router-view/>
   </div>
