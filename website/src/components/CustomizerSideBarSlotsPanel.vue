@@ -94,13 +94,6 @@ export default {
     }
   },
   methods: {
-    createMoreSliders() {
-      this.ceateNewSlider = true;
-      this.recommendedNumberSlots++;
-    },
-    deactivateSliderCreation() {
-      this.createNewSlider = false;
-    },
     convert(from, to, value) {
       UnitRequests.convertValue(from, to, value)
         .then(response => (this.valueConverted = response.data))
@@ -273,17 +266,8 @@ export default {
               var heightCloset = store.state.customizedProduct.customizedDimensions.height;
               
               var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
-              var unitSlots = store.getters.productSlotWidths.unit;
-
-             /*  if(unitCloset != unitSlots){
-                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
-                recommendedSlotWidth = this.valueConvertedSlotsWidth;
-                this.convert(unitSlots,unitCloset,minSlotWidth);
-                minSlotWidth = this.valueConvertedSlotsWidth;
-              } */
+             
              var reasonW = store.state.resizeVectorGlobal.width;
-              var reasonD = 100 / depthCloset;
-              var reasonH = 300 / heightCloset;
 
               for (let i = 0; i < this.listMinSlots.length; i++) {
                 store.dispatch(ADD_SLOT_DIMENSIONS, {
@@ -319,16 +303,9 @@ export default {
               var heightCloset = store.state.customizedProduct.customizedDimensions.height;
               
               var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
-              var unitSlots = store.getters.productSlotWidths.unit;
-
+             
               var min = store.getters.minSlotWidth;
 
-             /*  if(unitCloset != unitSlots){
-                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
-                recommendedSlotWidth = this.valueConvertedSlotsWidth;
-                this.convert(unitSlots,unitCloset,minSlotWidth);
-                minSlotWidth = this.valueConvertedSlotsWidth;
-              }  */
               var reasonW = store.state.resizeVectorGlobal.width;
               
                 store.dispatch(ADD_SLOT_DIMENSIONS, {
@@ -367,15 +344,13 @@ export default {
       } 
     },
     updateWidthSlot(index){
-      var widthCloset = store.state.customizedProduct.customizedDimensions.width;
-      var depthCloset = 0; //store.state.customizedProduct.customizedDimensions.depth;
-      var heightCloset = 0; //store.state.customizedProduct.customizedDimensions.height;
-      var id = 0 ; 
+      var depthCloset = 0;
+      var heightCloset = 0;
       var unitCloset = store.state.customizedProduct.customizedDimensions.unit; 
       var reasonW = store.state.resizeVectorGlobal.width;
       store.dispatch(ADD_SLOT_DIMENSIONS, {
-                  idSlot: id,
-                  width: this.sliderValues[id] * reasonW,
+                  idSlot: index,
+                  width: this.sliderValues[index] * reasonW,
                   height: heightCloset,
                   depth: depthCloset,
                   unit: unitCloset
