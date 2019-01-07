@@ -4,7 +4,7 @@ import ManagementTopBar from "./components/ManagementTopBar.vue";
 import AdministrationTopBar from "./components/administration/AdministrationTopBar.vue";
 import ListOrders from "./components/administration/orders/ListOrders.vue";
 import ListCategories from "./components/management/category/ListCategories.vue";
-import ListPriceMaterials from "./components/management/price/ListPriceMaterials.vue";
+import ListPriceMaterials from "./components/administration/price/ListPriceMaterials.vue";
 import ListMaterials from "./components/management/material/ListMaterials.vue";
 import ListProducts from "./components/management/product/ListProducts.vue";
 import ListCustomizedProductCollections from "./components/management/customizedproductcollections/ListCustomizedProductCollections.vue";
