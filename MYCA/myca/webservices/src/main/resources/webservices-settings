@@ -1,4 +1,5 @@
 CURRENT_SMS_CARRIER=Nexmo
+CURRENT_EMAIL_CARRIER=SendGrid
 
 # Uncomment to use Nexmo SMS service
 # But be careful we only have like ~38 messages left to use
@@ -7,3 +8,5 @@ CURRENT_SMS_CARRIER=Nexmo
 # NEXMO_API_KEY=52231b1d
 
 # NEXMO_API_SECRET=MmInnYh4XFDz8Bmo
+
+SEND_GRID_API_KEY=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

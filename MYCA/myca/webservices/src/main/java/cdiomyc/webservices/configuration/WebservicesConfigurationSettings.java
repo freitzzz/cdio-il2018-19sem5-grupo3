@@ -17,9 +17,16 @@ public final class WebservicesConfigurationSettings {
     
     /**
      * Constant that represents the name of the depedency that holds the current 
+     * email services carrier name
+     */
+    private static final String CURRENT_EMAIL_CARRIER="CURRENT_EMAIL_CARRIER";
+    
+    /**
+     * Constant that represents the name of the depedency that holds the current 
      * SMS services carrier name
      */
     private static final String CURRENT_SMS_CARRIER="CURRENT_SMS_CARRIER";
+    
     
     /**
      * Constant that represents the name of the depedency that holds Nexmo API key 
@@ -34,6 +41,12 @@ public final class WebservicesConfigurationSettings {
     private static final String NEXMO_API_SECRET="NEXMO_API_SECRET";
     
     /**
+     * Constant that represents the name of the depedency that holds SendGrid API key 
+     * to be used on email services using SendGrid as the 
+     */
+    private static final String SEND_GRID_API_KEY="SEND_GRID_API_KEY";
+    
+    /**
      * Properties with the holder of the current application settings
      */
     private final Properties webservicesSettings;
@@ -43,6 +56,12 @@ public final class WebservicesConfigurationSettings {
     //Constructor is protected in order to allow settings to be refreshed by the 
     //application caller
     protected WebservicesConfigurationSettings(){webservicesSettings=injectSettings();}
+    
+    /**
+     * Returns the current email carrier to be used email services
+     * @return String with the current email carrier
+     */
+    public String getCurrentEmailCarrier(){return (String)webservicesSettings.getProperty(CURRENT_EMAIL_CARRIER);}
     
     /**
      * Returns the current SMS carrier to be used SMS services
@@ -61,6 +80,12 @@ public final class WebservicesConfigurationSettings {
      * @return String with the current Nexmo API secret
      */
     public String getNexmoAPISecret(){return (String)webservicesSettings.getProperty(NEXMO_API_SECRET);}
+    
+    /**
+     * Returns the current SendGrid API key to be used on email services with SendGrid email carrying services
+     * @return String with the current SendGrid API key
+     */
+    public String getSendGridAPIKey(){return (String)webservicesSettings.getProperty(SEND_GRID_API_KEY);}
     
     /**
      * Method that injects the current application settings
