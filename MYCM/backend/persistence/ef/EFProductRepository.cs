@@ -35,5 +35,10 @@ namespace backend.persistence.ef
 
             return dbContext.Product.Where(p => p.activated).Where(p => !childrenIdentifiers.Contains(p.Id)).Distinct();
         }
+
+        public bool isBaseProduct(long productId)
+        {
+            return !dbContext.Set<Component>().Select(c => c.complementaryProductId).ToList().Contains(productId);
+        }
     }
 }

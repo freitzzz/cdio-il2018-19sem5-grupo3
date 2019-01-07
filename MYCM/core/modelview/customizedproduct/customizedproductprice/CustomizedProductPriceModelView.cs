@@ -36,15 +36,8 @@ namespace core.modelview.customizedproduct.customizedproductprice
         /// CustomizedProduct's reference
         /// </summary>
         /// <value>Gets/Sets the reference</value>
-        [DataMember(EmitDefaultValue = false)]  //if serial number is set, reference is null
+        [DataMember]
         public string reference { get; set; }
-
-        /// <summary>
-        /// CustomizedProduct's serial number.
-        /// </summary>
-        /// <value>Gets/Sets the serial number</value>
-        [DataMember(EmitDefaultValue = false)]  //if reference is set, serial number is null
-        public string serialNumber { get; set; }
 
         /// <summary>
         /// CustomizedProduct's customized dimensions

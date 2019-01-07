@@ -88,8 +88,6 @@ namespace backend_tests.Controllers {
                         createdCustomizedProductModelView.designation);
             Assert.Equal(getAllBasesModelView[0].productId,
                         createdCustomizedProductModelView.product.productId);
-            Assert.Equal(getAllBasesModelView[0].serialNumber,
-                        createdCustomizedProductModelView.serialNumber);
 
             await httpClient.DeleteAsync
                 (
@@ -129,16 +127,12 @@ namespace backend_tests.Controllers {
                         createdCustomizedProductModelView.designation);
             Assert.Equal(getAll[0].productId,
                         createdCustomizedProductModelView.product.productId);
-            Assert.Equal(getAll[0].serialNumber,
-                        createdCustomizedProductModelView.serialNumber);
             Assert.Equal(getAll[1].customizedProductId,
                         otherCreatedCustomizedProductModelView.customizedProductId);
             Assert.Equal(getAll[1].designation,
                         otherCreatedCustomizedProductModelView.designation);
             Assert.Equal(getAll[1].productId,
                         otherCreatedCustomizedProductModelView.product.productId);
-            Assert.Equal(getAll[1].serialNumber,
-                        otherCreatedCustomizedProductModelView.serialNumber);
 
             await httpClient.DeleteAsync
                 (
@@ -656,7 +650,7 @@ namespace backend_tests.Controllers {
             //TODO Compare message
         }
 
-        [Fact, TestPriority(16)]
+       /*  [Fact, TestPriority(16)]
         public async void ensureAddingCustomizedProductWithValidReferenceButNoTokenReturnsBadRequest() {
             string testNumber = "16";
 
@@ -706,7 +700,7 @@ namespace backend_tests.Controllers {
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
             //TODO Compare message
-        }
+        } */
 
         [Fact, TestPriority(19)]
         public async void ensureAddingCustomizedProductWithColorOnlyReturnsCreated() {
@@ -1500,8 +1494,8 @@ namespace backend_tests.Controllers {
             Assert.NotEmpty(updatedFather.slots[0].customizedProducts);
             Assert.Equal(getAfterPostContent.designation,
                         updatedFather.slots[0].customizedProducts[0].designation);
-            Assert.Equal(getAfterPostContent.serialNumber,
-                        updatedFather.slots[0].customizedProducts[0].serialNumber);
+            Assert.Equal(getAfterPostContent.reference,
+                        updatedFather.slots[0].customizedProducts[0].reference);
             Assert.Equal(getAfterPostContent.customizedProductId,
                         updatedFather.slots[0].customizedProducts[0].customizedProductId);
         }
@@ -2624,6 +2618,7 @@ namespace backend_tests.Controllers {
             customizedMaterialModelView.materialId = productModelViewFromPost.materials[0].id;
             modelView.customizedMaterial = customizedMaterialModelView;
             modelView.productId = productModelViewFromPost.productId;
+            modelView.reference = "this is a reference for test " + testNumber;
             modelView.customizedDimensions = new AddCustomizedDimensionsModelView();
             modelView.customizedDimensions.depth = 500;
             modelView.customizedDimensions.width = 1000;

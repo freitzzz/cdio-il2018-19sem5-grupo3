@@ -101,7 +101,7 @@ namespace core_tests.domain {
 
             CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(200, 100, 50);
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("12345", product, customizedProductDimensions).withMaterial(customizedMaterial).build();
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("12345", product, customizedProductDimensions).withMaterial(customizedMaterial).build();
 
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = Input.valueOf("Minimum Percentage", "From 0 to 1");
@@ -138,7 +138,7 @@ namespace core_tests.domain {
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(200, 120, 50);
-            CustomizedProduct custom = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("12345", product, customizedProductDimensions).withMaterial(customizedMaterial).build();
+            CustomizedProduct custom = CustomizedProductBuilder.createCustomizedProduct("12345", product, customizedProductDimensions).withMaterial(customizedMaterial).build();
 
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = Input.valueOf("Minimum Percentage", "From 0 to 1");
@@ -169,7 +169,7 @@ namespace core_tests.domain {
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(200, 100, 50);
-            CustomizedProduct custom = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("12345", product, customizedDimensions).withMaterial(customizedMaterial).build();
+            CustomizedProduct custom = CustomizedProductBuilder.createCustomizedProduct("12345", product, customizedDimensions).withMaterial(customizedMaterial).build();
 
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = Input.valueOf("Minimum Percentage", "From 0 to 1");
@@ -201,7 +201,7 @@ namespace core_tests.domain {
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(200, 100, 50);
-            CustomizedProduct custom = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("1235", product, customizedDimensions).withMaterial(customizedMaterial).build();
+            CustomizedProduct custom = CustomizedProductBuilder.createCustomizedProduct("1235", product, customizedDimensions).withMaterial(customizedMaterial).build();
 
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = Input.valueOf("Minimum Percentage", "From 0 to 1");
@@ -236,7 +236,7 @@ namespace core_tests.domain {
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(200, 110, 50);
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custom = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("12345", product, customizedDimensions).withMaterial(customizedMaterial).build();
+            CustomizedProduct custom = CustomizedProductBuilder.createCustomizedProduct("12345", product, customizedDimensions).withMaterial(customizedMaterial).build();
 
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = Input.valueOf("Minimum Percentage", "From 0 to 1");
@@ -267,7 +267,7 @@ namespace core_tests.domain {
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(200, 100, 50);
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custom = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("12345", product, customizedDimensions).withMaterial(customizedMaterial).build();
+            CustomizedProduct custom = CustomizedProductBuilder.createCustomizedProduct("12345", product, customizedDimensions).withMaterial(customizedMaterial).build();
 
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = Input.valueOf("Minimum Percentage", "From 0 to 1");
@@ -299,7 +299,7 @@ namespace core_tests.domain {
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(200, 100, 50);
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custom = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("12345", product, customizedDimensions).withMaterial(customizedMaterial).build();
+            CustomizedProduct custom = CustomizedProductBuilder.createCustomizedProduct("12345", product, customizedDimensions).withMaterial(customizedMaterial).build();
 
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = Input.valueOf("Minimum Percentage", "From 0 to 1");
@@ -338,7 +338,7 @@ namespace core_tests.domain {
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(110, 110, 110);
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custom = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("12345", product, customizedDimensions).withMaterial(customizedMaterial).build();
+            CustomizedProduct custom = CustomizedProductBuilder.createCustomizedProduct("12345", product, customizedDimensions).withMaterial(customizedMaterial).build();
 
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Input minInput = Input.valueOf("Minimum Percentage", "From 0 to 1");
@@ -372,7 +372,7 @@ namespace core_tests.domain {
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(110, 110, 110);
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
-            CustomizedProduct custom = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("12345", product, customizedDimensions).withMaterial(customizedMaterial).build();
+            CustomizedProduct custom = CustomizedProductBuilder.createCustomizedProduct("12345", product, customizedDimensions).withMaterial(customizedMaterial).build();
 
             WidthPercentageAlgorithm algorithm = new WidthPercentageAlgorithm();
             Action action = () => algorithm.apply(custom, component);

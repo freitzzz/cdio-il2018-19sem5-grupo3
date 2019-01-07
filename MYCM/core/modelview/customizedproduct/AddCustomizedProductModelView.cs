@@ -47,8 +47,6 @@ namespace core.modelview.customizedproduct
         [DataMember(Name = "reference")]
         public string reference { get; set; }
 
-        //*Serial number should not be here, since it's generated */
-
         /// <summary>
         /// String with the CustomizedProduct's designation
         /// </summary>

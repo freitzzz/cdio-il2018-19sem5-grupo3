@@ -28,5 +28,12 @@ namespace core.modelview.commercialcatalogue
         /// <value>Gets/Sets the designation.</value>
         [DataMember]
         public string designation { get; set; }
+
+        /// <summary>
+        /// Flag used for indicating whether the CommercialCatalogue has any CustomizedProductCollection.
+        /// </summary>
+        /// <value>Gets/Sets the flag.</value>
+        [DataMember]
+        public bool hasCollections { get; set; }
     }
 }

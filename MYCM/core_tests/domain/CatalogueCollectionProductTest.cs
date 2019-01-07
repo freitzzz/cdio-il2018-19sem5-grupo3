@@ -73,7 +73,7 @@ namespace core_tests.domain
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21.0, 19, 15.6);
 
-            return CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions).withMaterial(customizedMaterial).build();
+            return CustomizedProductBuilder.createCustomizedProduct("reference", product, customizedDimensions).withMaterial(customizedMaterial).build();
         }
     }
 }

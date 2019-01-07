@@ -50,13 +50,13 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(0)]
-        public async Task ensureGetAllMaterialsSendsBadRequestWhenListIsEmpty()
+        public async Task ensureGetAllMaterialsSendsNotFoundWhenListIsEmpty()
         {
             var response = await client.GetAsync(urlBase);
 
             var responseString = await response.Content.ReadAsStringAsync();
 
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             Assert.NotNull(responseString);
         }
 
@@ -134,11 +134,11 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(5)]
-        public async Task ensureGetMaterialSendsBadRequestWithNonExistingMaterial()
+        public async Task ensureGetMaterialSendsNotFoundWithNonExistingMaterial()
         {
             var response = await client.GetAsync(String.Format(urlBase + "/{0}", -1));
 
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             Assert.NotNull(response.Content.ReadAsStringAsync());
         }
 

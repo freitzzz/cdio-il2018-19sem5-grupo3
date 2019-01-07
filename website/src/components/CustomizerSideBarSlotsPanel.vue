@@ -45,10 +45,9 @@
 <script>
 import vueSlider from "vue-slider-component";
 import store from "./../store";
-import Axios from "axios";
-import {MYCM_API_URL} from "./../config.js";
+import UnitRequests from "./../services/mycm_api/requests/units.js";
+import CustomizedProductRequests from "./../services/mycm_api/requests/customizedproducts.js";
 import { ADD_SLOT_DIMENSIONS,SET_ID_SLOT, DEACTIVATE_CAN_MOVE_CLOSET, ACTIVATE_CAN_MOVE_SLOTS, DEACTIVATE_CAN_MOVE_SLOTS } from "./../store/mutation-types.js";
-import { Store } from 'vuex';
 
 export default {
   name: "CustomizerSideBarSlotsPanel",
@@ -95,17 +94,8 @@ export default {
     }
   },
   methods: {
-    createMoreSliders() {
-      this.ceateNewSlider = true;
-      this.recommendedNumberSlots++;
-    },
-    deactivateSliderCreation() {
-      this.createNewSlider = false;
-    },
     convert(from, to, value) {
-      Axios.get(
-        `http://localhost:5000/mycm/api/units/convert/?from=${from}&to=${to}&value=${value}`
-      )
+      UnitRequests.convertValue(from, to, value)
         .then(response => (this.valueConverted = response.data))
         .catch(error => {});
     },
@@ -178,7 +168,7 @@ export default {
     postSlot(slotsToPost1){
       return new Promise((accept, reject) => {
         let slotToPost = slotsToPost1.pop();
-        Axios.post(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}/slots`,
+        CustomizedProductRequests.postCustomizedProductSlot(store.state.customizedProduct.id,
               {
                 height: slotToPost.height,
                 depth: slotToPost.depth,
@@ -225,8 +215,8 @@ export default {
     },
     getRecommendedSlots(){
       this.listRecommendedSlots = []
-      Axios.get(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}/recommendedSlots`)
-          .then(response => {
+       CustomizedProductRequests.getCustomizedProductRecommendedSlots(store.state.customizedProduct.id)
+            .then(response => {
               this.listRecommendedSlots = response.data;
               this.drawRecommendedSlots();
           })
@@ -256,8 +246,8 @@ export default {
               });
         }
     },
-    getMinSlots(){
-        Axios.get(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}/minSlots`)
+     getMinSlots(){
+       CustomizedProductRequests.getCustomizedProductMinimumSlots(store.state.customizedProduct.id)
             .then(response => {
               this.listMinSlots = response.data;
               this.drawMinSlots();
@@ -276,17 +266,8 @@ export default {
               var heightCloset = store.state.customizedProduct.customizedDimensions.height;
               
               var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
-              var unitSlots = store.getters.productSlotWidths.unit;
-
-             /*  if(unitCloset != unitSlots){
-                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
-                recommendedSlotWidth = this.valueConvertedSlotsWidth;
-                this.convert(unitSlots,unitCloset,minSlotWidth);
-                minSlotWidth = this.valueConvertedSlotsWidth;
-              } */
+             
              var reasonW = store.state.resizeVectorGlobal.width;
-              var reasonD = 100 / depthCloset;
-              var reasonH = 300 / heightCloset;
 
               for (let i = 0; i < this.listMinSlots.length; i++) {
                 store.dispatch(ADD_SLOT_DIMENSIONS, {
@@ -305,13 +286,13 @@ export default {
             
     },
     drawOneSlot(){
-      /*  Axios.post(MYCM_API_URL + `/customizedproducts/${store.state.customizedProduct.id}/slots`,
+      /*CustomizedProductRequests.postCustomizedProductSlot(store.state.customizedProduct.id,
               {
                 height: this.slotsToPost[0].height,
                 depth: this.slotsToPost[0].depth,
                 width: store.getters.minSlotWidth,
                 unit: this.slotsToPost[0].unit,
-              }).then(() => {
+              }).then(response => {
                     this.drawCustomizedSlots = response.data
                 })
               .catch((error_message) => {
@@ -322,16 +303,9 @@ export default {
               var heightCloset = store.state.customizedProduct.customizedDimensions.height;
               
               var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
-              var unitSlots = store.getters.productSlotWidths.unit;
-
+             
               var min = store.getters.minSlotWidth;
 
-             /*  if(unitCloset != unitSlots){
-                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
-                recommendedSlotWidth = this.valueConvertedSlotsWidth;
-                this.convert(unitSlots,unitCloset,minSlotWidth);
-                minSlotWidth = this.valueConvertedSlotsWidth;
-              }  */
               var reasonW = store.state.resizeVectorGlobal.width;
               
                 store.dispatch(ADD_SLOT_DIMENSIONS, {
@@ -370,15 +344,13 @@ export default {
       } 
     },
     updateWidthSlot(index){
-      var widthCloset = store.state.customizedProduct.customizedDimensions.width;
-      var depthCloset = 0; //store.state.customizedProduct.customizedDimensions.depth;
-      var heightCloset = 0; //store.state.customizedProduct.customizedDimensions.height;
-      var id = 0 ; 
+      var depthCloset = 0;
+      var heightCloset = 0;
       var unitCloset = store.state.customizedProduct.customizedDimensions.unit; 
       var reasonW = store.state.resizeVectorGlobal.width;
       store.dispatch(ADD_SLOT_DIMENSIONS, {
-                  idSlot: id,
-                  width: this.sliderValues[id] * reasonW,
+                  idSlot: index,
+                  width: this.sliderValues[index] * reasonW,
                   height: heightCloset,
                   depth: depthCloset,
                   unit: unitCloset

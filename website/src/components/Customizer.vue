@@ -17,15 +17,11 @@
 </template>
 
 <script>
-import Vue from "vue";
 import Store from "./../store/index.js";
 import CustomizerSideBar from "./CustomizerSideBar";
 import ProductRenderer from "./../3d/ProductRendererTemp.js";
 import { SET_DOORS_FLAG } from "./../store/mutation-types.js";
 import CustomizerProgressBar from "./CustomizerProgressBar.vue";
-import Toasted from "vue-toasted";
-
-Vue.use(Toasted);
 
 export default {
   name: "Customizer",
@@ -176,7 +172,7 @@ export default {
      * Mouse move event handler propagated to the instance of ProductRenderer.
      */
     onMouseMove: function(event) {
-      this.productRenderer.onMouseMove(event);
+      this.productRenderer.onMouseMove(event, this.$refs.threeCanvas);
     },
     /**
      * Mouse click release event handler propagated to the instance of ProductRenderer.
@@ -194,6 +190,8 @@ export default {
      * Keyboard click event handler propagated to the instance of ProductRenderer.
      */
     onKeyDown: function(event) {
+      //*This doesn't seem to work since the canvas is currently not focusable, 
+      //*so the keydown is detected by the window instead
       alert("keydown");
       this.productRenderer.onKeyDown(event);
       event.preventDefault();
