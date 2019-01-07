@@ -1,5 +1,6 @@
 package cdiomyc.webservices.users;
 
+import cdiomyc.webservices.sms.mv.SendUserActivationCodeSMSDetailsMV;
 import cdiomyc.core.mv.authentication.AuthenticationMV;
 import cdiomyc.core.mv.users.ActivateUserMV;
 import cdiomyc.core.mv.users.CreateCredentialsUserMV;
@@ -8,6 +9,7 @@ import cdiomyc.core.mv.users.CreatedUserMV;
 import cdiomyc.core.mv.users.UserMVService;
 import cdiomyc.webservices.authentication.AuthenticationController;
 import cdiomyc.webservices.dataservices.json.SimpleJSONMessageService;
+import cdiomyc.webservices.emails.mv.SendUserActivationCodeEmailDetailsMV;
 import com.google.gson.Gson;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -41,11 +43,19 @@ public class UserController {
             CreatedUserMV createdUserMV = cdiomyc.core.application.users.UserController.createUser(createUserMV);
             if(createUserMV instanceof CreateCredentialsUserMV){
                 if(((CreateCredentialsUserMV) createUserMV).phoneNumber!=null && !((CreateCredentialsUserMV) createUserMV).phoneNumber.trim().isEmpty()){
-                    SendUserActivationCodeSMSDetails sendUserActivationCodeSMSDetails=new SendUserActivationCodeSMSDetails();
+                    SendUserActivationCodeSMSDetailsMV sendUserActivationCodeSMSDetails=new SendUserActivationCodeSMSDetailsMV();
                     sendUserActivationCodeSMSDetails.name=createdUserMV.name;
                     sendUserActivationCodeSMSDetails.phoneNumber=((CreateCredentialsUserMV) createUserMV).phoneNumber;
                     sendUserActivationCodeSMSDetails.activationCode=createdUserMV.activationCode;
                     UserActivationCodeSenderService.sendUserActivationCode(sendUserActivationCodeSMSDetails);
+                }
+                
+                if(((CreateCredentialsUserMV) createUserMV).email!=null && !((CreateCredentialsUserMV) createUserMV).email.trim().isEmpty()){
+                    SendUserActivationCodeEmailDetailsMV sendUserActivationCodeEmailDetailsMV=new SendUserActivationCodeEmailDetailsMV();
+                    sendUserActivationCodeEmailDetailsMV.email=((CreateCredentialsUserMV) createUserMV).email;
+                    sendUserActivationCodeEmailDetailsMV.name=createdUserMV.name;
+                    sendUserActivationCodeEmailDetailsMV.activationCode=createdUserMV.activationCode;
+                    UserActivationCodeSenderService.sendUserActivationCode(sendUserActivationCodeEmailDetailsMV);
                 }
             }
             return Response.ok().entity(new Gson().toJson(createdUserMV)).build();
