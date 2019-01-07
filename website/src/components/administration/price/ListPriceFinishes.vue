@@ -202,7 +202,7 @@ export default {
               data.currentPrice.area
           });
         } catch (error) {
-          this.$toast.open(error.response.data);
+          //Throw error
         }
       }
     },
