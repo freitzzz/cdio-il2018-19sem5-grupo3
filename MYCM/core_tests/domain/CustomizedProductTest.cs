@@ -8,42 +8,34 @@ using support.dto;
 using Xunit;
 using static core.domain.CustomizedProduct;
 
-namespace core_tests.domain
-{
+namespace core_tests.domain {
     /// <summary>
     /// Unit testing class for CustomizedProduct
     /// </summary>
-    public class CustomizedProductTest
-    {
+    public class CustomizedProductTest {
         //These are all seperated into their own methods in order to allow for each property to be tested
 
-        private ProductCategory buildValidCategory()
-        {
+        private ProductCategory buildValidCategory() {
             return new ProductCategory("Closets");
         }
 
-        private Finish buildGlossyFinish()
-        {
+        private Finish buildGlossyFinish() {
             return Finish.valueOf("Glossy", 90);
         }
 
-        private Finish buildMatteFinish()
-        {
+        private Finish buildMatteFinish() {
             return Finish.valueOf("Matte", 2);
         }
 
-        private Color buildRedColor()
-        {
+        private Color buildRedColor() {
             return Color.valueOf("Deep Red", 255, 0, 0, 0);
         }
 
-        private Color buildGreenColor()
-        {
+        private Color buildGreenColor() {
             return Color.valueOf("Totally Green", 0, 255, 0, 0);
         }
 
-        private Material buildValidMaterial()
-        {
+        private Material buildValidMaterial() {
 
             Finish glossy = buildGlossyFinish();
             Finish matte = buildMatteFinish();
@@ -55,8 +47,7 @@ namespace core_tests.domain
             return new Material("#123", "MDF", "ola.jpg", new List<Color>() { red, green }, new List<Finish>() { glossy, matte });
         }
 
-        private Product buildValidProduct()
-        {
+        private Product buildValidProduct() {
             Dimension firstHeightDimension = new ContinuousDimensionInterval(50, 100, 2);
             Dimension firstWidthDimension = new DiscreteDimensionInterval(new List<double>() { 75, 80, 85, 90, 95, 120 });
             Dimension firstDepthDimension = new SingleValueDimension(25);
@@ -71,28 +62,24 @@ namespace core_tests.domain
             return new Product("#429", "Fabulous Closet", "fabcloset.glb", buildValidCategory(), new List<Material>() { buildValidMaterial() }, new List<Measurement>() { firstMeasurement, secondMeasurement }, slotWidths);
         }
 
-        private CustomizedDimensions buildCustomizedDimensions()
-        {
+        private CustomizedDimensions buildCustomizedDimensions() {
             return CustomizedDimensions.valueOf(76, 80, 25);
         }
 
-        private CustomizedMaterial buildCustomizedMaterial()
-        {
+        private CustomizedMaterial buildCustomizedMaterial() {
             Material material = buildValidMaterial();
             Finish selectedFinish = buildMatteFinish();
             Color selectedColor = buildRedColor();
             return CustomizedMaterial.valueOf(material, selectedColor, selectedFinish);
         }
 
-        private CustomizedProduct buildValidInstance(string serialNumber)
-        {
+        private CustomizedProduct buildValidInstance(string serialNumber) {
             CustomizedDimensions selectedDimensions = buildCustomizedDimensions();
 
             return CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, buildValidProduct(), selectedDimensions).build();
         }
 
-        private CustomizedProduct buildValidFinishedInstance(string serialNumber)
-        {
+        private CustomizedProduct buildValidFinishedInstance(string serialNumber) {
             CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
 
             CustomizedDimensions selectedDimensions = buildCustomizedDimensions();
@@ -106,8 +93,7 @@ namespace core_tests.domain
             return customizedProduct;
         }
 
-        private CustomizedProduct buildValidInstanceWithSubCustomizedProducts(string serialNumber)
-        {
+        private CustomizedProduct buildValidInstanceWithSubCustomizedProducts(string serialNumber) {
             Dimension heightDimension = new ContinuousDimensionInterval(60, 80, 2);
             Dimension widthDimension = new SingleValueDimension(200);
             Dimension depthDimension = new SingleValueDimension(60);
@@ -144,9 +130,11 @@ namespace core_tests.domain
 
             CustomizedProduct customizedComponent = CustomizedProductBuilder
                 .createAnonymousUserCustomizedProduct("serial number", component, customizedProductDimensions).build();
+            customizedComponent.changeCustomizedMaterial(buildCustomizedMaterial());
 
             CustomizedProduct otherCustomizedComponent = CustomizedProductBuilder
                 .createAnonymousUserCustomizedProduct("serial number", otherComponent, customizedProductDimensions).build();
+            otherCustomizedComponent.changeCustomizedMaterial(buildCustomizedMaterial());
 
             customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
 
@@ -157,8 +145,7 @@ namespace core_tests.domain
             return customizedProduct;
         }
 
-        private CustomizedProduct buildValidFinishedInstanceWithSubCustomizedProducts(string serialNumber)
-        {
+        private CustomizedProduct buildValidFinishedInstanceWithSubCustomizedProducts(string serialNumber) {
             Dimension heightDimension = new ContinuousDimensionInterval(60, 80, 2);
             Dimension widthDimension = new SingleValueDimension(200);
             Dimension depthDimension = new SingleValueDimension(60);
@@ -197,8 +184,7 @@ namespace core_tests.domain
             return customizedProduct;
         }
 
-        private CustomizedProduct buildValidInstanceWithSlotsAndSubCustomizedProducts()
-        {
+        private CustomizedProduct buildValidInstanceWithSlotsAndSubCustomizedProducts() {
             Dimension heightDimension = new ContinuousDimensionInterval(60, 80, 2);
             Dimension widthDimension = new SingleValueDimension(200);
             Dimension depthDimension = new SingleValueDimension(60);
@@ -240,32 +226,28 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateAnonymousUserCustomizedProductIfSerialNumberIsNull()
-        {
+        public void ensureCustomizedProductBuilderCantCreateAnonymousUserCustomizedProductIfSerialNumberIsNull() {
             Action buildAction = () => CustomizedProductBuilder.createAnonymousUserCustomizedProduct(null, buildValidProduct(), buildCustomizedDimensions());
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateAnonymousUserCustomizedProductIfSerialNumberIsEmpty()
-        {
+        public void ensureCustomizedProductBuilderCantCreateAnonymousUserCustomizedProductIfSerialNumberIsEmpty() {
             Action buildAction = () => CustomizedProductBuilder.createAnonymousUserCustomizedProduct("", buildValidProduct(), buildCustomizedDimensions());
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateAnonymousUserCustomizedProductIfProductIsNull()
-        {
+        public void ensureCustomizedProductBuilderCantCreateAnonymousUserCustomizedProductIfProductIsNull() {
             Action buildAction = () => CustomizedProductBuilder.createAnonymousUserCustomizedProduct("1", null, buildCustomizedDimensions());
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateAnonymousUserCustomizedProductIfCustomizedDimensionsDimensionsIsNull()
-        {
+        public void ensureCustomizedProductBuilderCantCreateAnonymousUserCustomizedProductIfCustomizedDimensionsDimensionsIsNull() {
             Action buildAction = () => CustomizedProductBuilder.createAnonymousUserCustomizedProduct("1", buildValidProduct(), null);
 
             Assert.Throws<ArgumentException>(buildAction);
@@ -273,104 +255,91 @@ namespace core_tests.domain
 
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateRegisteredUserCustomizedProductIfSerialNumberIsNull()
-        {
+        public void ensureCustomizedProductBuilderCantCreateRegisteredUserCustomizedProductIfSerialNumberIsNull() {
             Action buildAction = () => CustomizedProductBuilder.createRegisteredUserCustomizedProduct(null, "user auth token", buildValidProduct(), buildCustomizedDimensions());
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateRegisteredUserCustomizedProductIfSerialNumberIsEmpty()
-        {
+        public void ensureCustomizedProductBuilderCantCreateRegisteredUserCustomizedProductIfSerialNumberIsEmpty() {
             Action buildAction = () => CustomizedProductBuilder.createRegisteredUserCustomizedProduct("", "user auth token", buildValidProduct(), buildCustomizedDimensions());
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateRegisteredUserCustomizedProductIfAuthenticationTokenIsNull()
-        {
+        public void ensureCustomizedProductBuilderCantCreateRegisteredUserCustomizedProductIfAuthenticationTokenIsNull() {
             Action buildAction = () => CustomizedProductBuilder.createRegisteredUserCustomizedProduct("1234", null, buildValidProduct(), buildCustomizedDimensions());
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateRegisteredUserCustomizedProductIfAuthenticationTokenIsEmpty()
-        {
+        public void ensureCustomizedProductBuilderCantCreateRegisteredUserCustomizedProductIfAuthenticationTokenIsEmpty() {
             Action buildAction = () => CustomizedProductBuilder.createRegisteredUserCustomizedProduct("1234", "", buildValidProduct(), buildCustomizedDimensions());
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateRegisteredUserCustomizedProductIfProductIsNull()
-        {
+        public void ensureCustomizedProductBuilderCantCreateRegisteredUserCustomizedProductIfProductIsNull() {
             Action buildAction = () => CustomizedProductBuilder.createRegisteredUserCustomizedProduct("1234", "user auth token", null, buildCustomizedDimensions());
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateRegisteredUserCustomizedProductIfCustomizedDimensionsIsNull()
-        {
+        public void ensureCustomizedProductBuilderCantCreateRegisteredUserCustomizedProductIfCustomizedDimensionsIsNull() {
             Action buildAction = () => CustomizedProductBuilder.createRegisteredUserCustomizedProduct("1234", "user auth token", buildValidProduct(), null);
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateManagerCustomizedProductIfReferenceIsNull()
-        {
+        public void ensureCustomizedProductBuilderCantCreateManagerCustomizedProductIfReferenceIsNull() {
             Action buildAction = () => CustomizedProductBuilder.createManagerCustomizedProduct(null, "manager auth token", buildValidProduct(), buildCustomizedDimensions());
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateManagerCustomizedProductIfReferenceIsEmpty()
-        {
+        public void ensureCustomizedProductBuilderCantCreateManagerCustomizedProductIfReferenceIsEmpty() {
             Action buildAction = () => CustomizedProductBuilder.createManagerCustomizedProduct("", "manager auth token", buildValidProduct(), buildCustomizedDimensions());
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateManagerCustomizedProductIfAuthenticationTokenIsNull()
-        {
+        public void ensureCustomizedProductBuilderCantCreateManagerCustomizedProductIfAuthenticationTokenIsNull() {
             Action buildAction = () => CustomizedProductBuilder.createManagerCustomizedProduct("1234", null, buildValidProduct(), buildCustomizedDimensions());
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateManagerCustomizedProductIfAuthenticationTokenIsEmpty()
-        {
+        public void ensureCustomizedProductBuilderCantCreateManagerCustomizedProductIfAuthenticationTokenIsEmpty() {
             Action buildAction = () => CustomizedProductBuilder.createManagerCustomizedProduct("1234", "", buildValidProduct(), buildCustomizedDimensions());
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateManagerCustomizedProductIfProductIsNull()
-        {
+        public void ensureCustomizedProductBuilderCantCreateManagerCustomizedProductIfProductIsNull() {
             Action buildAction = () => CustomizedProductBuilder.createManagerCustomizedProduct("1234", "manager auth token", null, buildCustomizedDimensions());
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantCreateManagerCustomizedProductIfCustomizedDimensionsIsNull()
-        {
+        public void ensureCustomizedProductBuilderCantCreateManagerCustomizedProductIfCustomizedDimensionsIsNull() {
             Action buildAction = () => CustomizedProductBuilder.createManagerCustomizedProduct("1234", "manager auth token", buildValidProduct(), null);
 
             Assert.Throws<ArgumentException>(buildAction);
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantBuildCustomizedProductWithDesignationIfDesignationIsNull()
-        {
+        public void ensureCustomizedProductBuilderCantBuildCustomizedProductWithDesignationIfDesignationIsNull() {
             CustomizedProductBuilder builder = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("1234", buildValidProduct(), buildCustomizedDimensions());
 
             Action buildWithNullDesignation = () => builder.withDesignation(null);
@@ -379,8 +348,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantBuildCustomizedProductWithDesignationIfDesignationIsEmpty()
-        {
+        public void ensureCustomizedProductBuilderCantBuildCustomizedProductWithDesignationIfDesignationIsEmpty() {
             CustomizedProductBuilder builder = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("1234", buildValidProduct(), buildCustomizedDimensions());
 
             Action buildWithNullDesignation = () => builder.withDesignation("");
@@ -389,8 +357,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureCustomizedProductBuilderCantBuildCustomizedProductWithCustomizedMaterialIfCustomizedMaterialIsNull()
-        {
+        public void ensureCustomizedProductBuilderCantBuildCustomizedProductWithCustomizedMaterialIfCustomizedMaterialIsNull() {
             CustomizedProductBuilder builder = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("1234", buildValidProduct(), buildCustomizedDimensions());
 
             Action buildWithNullMaterial = () => builder.withMaterial(null);
@@ -399,8 +366,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureSlotMatchingCustomizedProductDimensionsIsCreatedWhenCustomizedProductIsBuilt()
-        {
+        public void ensureSlotMatchingCustomizedProductDimensionsIsCreatedWhenCustomizedProductIsBuilt() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             Assert.Single(customizedProduct.slots);
@@ -408,8 +374,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingReferenceIfCustomizedProductHasSerialNumberThrowsException()
-        {
+        public void ensureChangingReferenceIfCustomizedProductHasSerialNumberThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             Action changeReference = () => customizedProduct.changeReference("this is a reference");
@@ -418,22 +383,18 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingReferenceIfCustomizedProductHasSerialNumberDoesNotChangeReference()
-        {
+        public void ensureChangingReferenceIfCustomizedProductHasSerialNumberDoesNotChangeReference() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
-            try
-            {
+            try {
                 customizedProduct.changeReference("this is a reference");
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Null(customizedProduct.reference);
         }
 
         [Fact]
-        public void ensureChangingReferenceIfCustomizationIsFinishedThrowsException()
-        {
+        public void ensureChangingReferenceIfCustomizationIsFinishedThrowsException() {
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createManagerCustomizedProduct("this is a reference", "manager auth token",
                 buildValidProduct(), buildCustomizedDimensions()).build();
 
@@ -449,8 +410,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingReferenceIfCustomizationIsFinishedDoesNotChangeReference()
-        {
+        public void ensureChangingReferenceIfCustomizationIsFinishedDoesNotChangeReference() {
             string reference = "this is a reference";
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createManagerCustomizedProduct(reference, "manager auth token",
@@ -462,18 +422,15 @@ namespace core_tests.domain
             //the CustomizedProduct needs a CustomizedMaterial prior to finishing customization
             customizedProduct.finalizeCustomization();
 
-            try
-            {
+            try {
                 customizedProduct.changeReference("this is another reference");
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(reference, customizedProduct.reference);
         }
 
         [Fact]
-        public void ensureChangingReferenceToNullReferenceThrowsException()
-        {
+        public void ensureChangingReferenceToNullReferenceThrowsException() {
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createManagerCustomizedProduct("this is a reference", "manager auth token",
                 buildValidProduct(), buildCustomizedDimensions()).build();
 
@@ -483,25 +440,21 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingReferenceToNullReferenceDoesNotChangeReference()
-        {
+        public void ensureChangingReferenceToNullReferenceDoesNotChangeReference() {
             string reference = "this is a reference";
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createManagerCustomizedProduct(reference, "manager auth token",
                 buildValidProduct(), buildCustomizedDimensions()).build();
 
-            try
-            {
+            try {
                 customizedProduct.changeReference(null);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(reference, customizedProduct.reference);
         }
 
         [Fact]
-        public void ensureChangingReferenceToEmptyReferenceThrowsException()
-        {
+        public void ensureChangingReferenceToEmptyReferenceThrowsException() {
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createManagerCustomizedProduct("this is a reference", "manager auth token",
                 buildValidProduct(), buildCustomizedDimensions()).build();
 
@@ -511,25 +464,21 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingReferenceToEmptyReferenceDoesNotChangeReference()
-        {
+        public void ensureChangingReferenceToEmptyReferenceDoesNotChangeReference() {
             string reference = "this is a reference";
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createManagerCustomizedProduct(reference, "manager auth token",
                 buildValidProduct(), buildCustomizedDimensions()).build();
 
-            try
-            {
+            try {
                 customizedProduct.changeReference("");
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(reference, customizedProduct.reference);
         }
 
         [Fact]
-        public void ensureChangingReferenceToValidReferenceDoesNotThrowException()
-        {
+        public void ensureChangingReferenceToValidReferenceDoesNotThrowException() {
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createManagerCustomizedProduct("this is a reference", "manager auth token",
                 buildValidProduct(), buildCustomizedDimensions()).build();
 
@@ -542,8 +491,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingReferenceToValidReferenceChangesValue()
-        {
+        public void ensureChangingReferenceToValidReferenceChangesValue() {
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createManagerCustomizedProduct("this is a reference", "manager auth token",
                 buildValidProduct(), buildCustomizedDimensions()).build();
 
@@ -555,8 +503,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingDesignationIfCustomizationIsFinishedThrowsException()
-        {
+        public void ensureChangingDesignationIfCustomizationIsFinishedThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
@@ -571,8 +518,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingDesignationIfCustomizationIsFinishedDoesNotChangeDesignation()
-        {
+        public void ensureChangingDesignationIfCustomizationIsFinishedDoesNotChangeDesignation() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
@@ -581,18 +527,15 @@ namespace core_tests.domain
             //the CustomizedProduct needs a CustomizedMaterial prior to finishing customization
             customizedProduct.finalizeCustomization();
 
-            try
-            {
+            try {
                 customizedProduct.changeDesignation("this is a designation");
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Null(customizedProduct.designation);
         }
 
         [Fact]
-        public void ensureChangingDesignationToNullDesignationThrowsException()
-        {
+        public void ensureChangingDesignationToNullDesignationThrowsException() {
             string designation = "this is a designation";
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createManagerCustomizedProduct("this is a reference", "manager auth token",
@@ -604,25 +547,21 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingDesignationToNullDesignationDoesNotChangeDesignation()
-        {
+        public void ensureChangingDesignationToNullDesignationDoesNotChangeDesignation() {
             string designation = "this is a designation";
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createManagerCustomizedProduct("this is a reference", "manager auth token",
                 buildValidProduct(), buildCustomizedDimensions()).withDesignation(designation).build();
 
-            try
-            {
+            try {
                 customizedProduct.changeDesignation(designation);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(designation, customizedProduct.designation);
         }
 
         [Fact]
-        public void ensureChangingDesignationToEmptyDesignationThrowsException()
-        {
+        public void ensureChangingDesignationToEmptyDesignationThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             Action changeDesignation = () => customizedProduct.changeDesignation("");
@@ -631,22 +570,18 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingDesignationToEmptyDesignationDoesNotChangeDesignation()
-        {
+        public void ensureChangingDesignationToEmptyDesignationDoesNotChangeDesignation() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
-            try
-            {
+            try {
                 customizedProduct.changeDesignation("");
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Null(customizedProduct.designation);
         }
 
         [Fact]
-        public void ensureChangingDesignationToValidDesignationDoesNotThrowException()
-        {
+        public void ensureChangingDesignationToValidDesignationDoesNotThrowException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             Action changeDesignation = () => customizedProduct.changeDesignation("this is a designation");
@@ -657,8 +592,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingDesignationToValidDesignationChangesDesignation()
-        {
+        public void ensureChangingDesignationToValidDesignationChangesDesignation() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             string designation = "this is a designation";
@@ -669,8 +603,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingMaterialIfCustomizationIsFinishedThrowsException()
-        {
+        public void ensureChangingMaterialIfCustomizationIsFinishedThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
@@ -691,8 +624,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingMaterialIfCustomizationIsFinishedDoesNotChangeMaterial()
-        {
+        public void ensureChangingMaterialIfCustomizationIsFinishedDoesNotChangeMaterial() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
@@ -709,19 +641,16 @@ namespace core_tests.domain
 
             CustomizedMaterial otherCustomizedMaterial = CustomizedMaterial.valueOf(material, selectedColor, selectedFinish);
 
-            try
-            {
+            try {
                 customizedProduct.changeCustomizedMaterial(customizedMaterial);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(customizedMaterial, customizedProduct.customizedMaterial);
             Assert.NotEqual(otherCustomizedMaterial, customizedProduct.customizedMaterial);
         }
 
         [Fact]
-        public void ensureChangingMaterialToNullCustomizedMaterialThrowsException()
-        {
+        public void ensureChangingMaterialToNullCustomizedMaterialThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             Action changeMaterial = () => customizedProduct.changeCustomizedMaterial(null);
@@ -730,25 +659,21 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingMaterialToNullCustomizedMaterialDoesNotChangeMaterial()
-        {
+        public void ensureChangingMaterialToNullCustomizedMaterialDoesNotChangeMaterial() {
             CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createRegisteredUserCustomizedProduct("serial number", "user auth token",
                buildValidProduct(), buildCustomizedDimensions()).withMaterial(customizedMaterial).build();
 
-            try
-            {
+            try {
                 customizedProduct.changeCustomizedMaterial(null);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(customizedMaterial, customizedProduct.customizedMaterial);
         }
 
         [Fact]
-        public void ensureChangingFinishIfCustomizationIsFinishedThrowsException()
-        {
+        public void ensureChangingFinishIfCustomizationIsFinishedThrowsException() {
             CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createRegisteredUserCustomizedProduct("serial number", "user auth token",
@@ -762,8 +687,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingFinishIfCustomizationIsFinishedDoesNotChangeFinish()
-        {
+        public void ensureChangingFinishIfCustomizationIsFinishedDoesNotChangeFinish() {
             CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createRegisteredUserCustomizedProduct("serial number", "user auth token",
@@ -771,18 +695,15 @@ namespace core_tests.domain
 
             customizedProduct.finalizeCustomization();
 
-            try
-            {
+            try {
                 customizedProduct.changeFinish(buildGlossyFinish());
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(buildMatteFinish(), customizedProduct.customizedMaterial.finish);
         }
 
         [Fact]
-        public void ensureChangingFinishIfCustomizedMaterialIsNullThrowsException()
-        {
+        public void ensureChangingFinishIfCustomizedMaterialIsNullThrowsException() {
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createRegisteredUserCustomizedProduct("serial number", "user auth token",
                buildValidProduct(), buildCustomizedDimensions()).build();
 
@@ -792,23 +713,19 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingFinishIfCustomizedMaterialIsNullDoesNotChangeFinish()
-        {
+        public void ensureChangingFinishIfCustomizedMaterialIsNullDoesNotChangeFinish() {
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createRegisteredUserCustomizedProduct("serial number", "user auth token",
                 buildValidProduct(), buildCustomizedDimensions()).build();
 
-            try
-            {
+            try {
                 customizedProduct.changeFinish(buildGlossyFinish());
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Null(customizedProduct.customizedMaterial);
         }
 
         [Fact]
-        public void ensureChangingFinishIfCustomizedMaterialIsDefinedDoesNotThrowException()
-        {
+        public void ensureChangingFinishIfCustomizedMaterialIsDefinedDoesNotThrowException() {
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createRegisteredUserCustomizedProduct("serial number", "user auth token",
                 buildValidProduct(), buildCustomizedDimensions()).withMaterial(buildCustomizedMaterial()).build();
 
@@ -819,8 +736,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingFinishIfCustomizedMaterialIsDefinedChangesFinish()
-        {
+        public void ensureChangingFinishIfCustomizedMaterialIsDefinedChangesFinish() {
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createRegisteredUserCustomizedProduct("serial number", "user auth token",
                  buildValidProduct(), buildCustomizedDimensions()).withMaterial(buildCustomizedMaterial()).build();
 
@@ -832,8 +748,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingColorIfCustomizationIsFinishedThrowsException()
-        {
+        public void ensureChangingColorIfCustomizationIsFinishedThrowsException() {
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createRegisteredUserCustomizedProduct("serial number", "user auth token",
                 buildValidProduct(), buildCustomizedDimensions()).withMaterial(buildCustomizedMaterial()).build();
 
@@ -845,25 +760,21 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingColorIfCustomizationIsFinishedDoesNotChangeFinish()
-        {
+        public void ensureChangingColorIfCustomizationIsFinishedDoesNotChangeFinish() {
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createRegisteredUserCustomizedProduct("serial number", "user auth token",
                 buildValidProduct(), buildCustomizedDimensions()).withMaterial(buildCustomizedMaterial()).build();
 
             customizedProduct.finalizeCustomization();
 
-            try
-            {
+            try {
                 customizedProduct.changeColor(buildGreenColor());
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(buildRedColor(), customizedProduct.customizedMaterial.color);
         }
 
         [Fact]
-        public void ensureChangingColorIfCustomizedMaterialIsNotDefinedThrowsException()
-        {
+        public void ensureChangingColorIfCustomizedMaterialIsNotDefinedThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             Color green = buildGreenColor();
@@ -874,24 +785,20 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingColorIfCustomizedMaterialIsNotDefinedDoesNotChangeColor()
-        {
+        public void ensureChangingColorIfCustomizedMaterialIsNotDefinedDoesNotChangeColor() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             Color green = buildGreenColor();
 
-            try
-            {
+            try {
                 customizedProduct.changeColor(green);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Null(customizedProduct.customizedMaterial);
         }
 
         [Fact]
-        public void ensureAddingSlotAfterCustomizationIsFinishedThrowsException()
-        {
+        public void ensureAddingSlotAfterCustomizationIsFinishedThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
@@ -908,8 +815,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotAfterCustomizationIsFinishedDoesNotAddSlot()
-        {
+        public void ensureAddingSlotAfterCustomizationIsFinishedDoesNotAddSlot() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             CustomizedMaterial customizedMaterial = buildCustomizedMaterial();
@@ -920,11 +826,9 @@ namespace core_tests.domain
 
             CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 35, 35);
 
-            try
-            {
+            try {
                 customizedProduct.addSlot(slotDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             //Make sure that there's only one slot
             //And that that slot is the one matching the customized product's dimensions
@@ -933,8 +837,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotIfProductDoesNotSupportSlotsThrowsException()
-        {
+        public void ensureAddingSlotIfProductDoesNotSupportSlotsThrowsException() {
             Dimension firstHeightDimension = new ContinuousDimensionInterval(50, 100, 2);
             Dimension firstWidthDimension = new DiscreteDimensionInterval(new List<double>() { 75, 80, 85, 90, 95, 120 });
             Dimension firstDepthDimension = new SingleValueDimension(25);
@@ -958,8 +861,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotIfProductDoesNotSupportSlotsDoesNotAddSlot()
-        {
+        public void ensureAddingSlotIfProductDoesNotSupportSlotsDoesNotAddSlot() {
             Dimension firstHeightDimension = new ContinuousDimensionInterval(50, 100, 2);
             Dimension firstWidthDimension = new DiscreteDimensionInterval(new List<double>() { 75, 80, 85, 90, 95, 120 });
             Dimension firstDepthDimension = new SingleValueDimension(25);
@@ -977,11 +879,9 @@ namespace core_tests.domain
 
             CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 35, 35);
 
-            try
-            {
+            try {
                 customizedProduct.addSlot(slotDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             //Make sure that there's only one slot
             //And that that slot is the one matching the customized product's dimensions
@@ -990,8 +890,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotWithNullDimensionsThrowsException()
-        {
+        public void ensureAddingSlotWithNullDimensionsThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             Action addSlotWithNullDimensions = () => customizedProduct.addSlot(null);
@@ -1000,15 +899,12 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotWithNullDimensionsDoesNotAddSlot()
-        {
+        public void ensureAddingSlotWithNullDimensionsDoesNotAddSlot() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
-            try
-            {
+            try {
                 customizedProduct.addSlot(null);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             //Make sure that there's only one slot
             //And that that slot is the one matching the customized product's dimensions
@@ -1017,8 +913,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotWithDimensionsNotFollowingSpecificationThrowsException()
-        {
+        public void ensureAddingSlotWithDimensionsNotFollowingSpecificationThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             //the width is smaller than the minimum of 25
@@ -1030,18 +925,15 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotWithDimensionsNotFollowingSpecificationDoesNotAddSlot()
-        {
+        public void ensureAddingSlotWithDimensionsNotFollowingSpecificationDoesNotAddSlot() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             //the width is smaller than the minimum of 25
             CustomizedDimensions invalidDimensions = CustomizedDimensions.valueOf(76, 23, 25);
 
-            try
-            {
+            try {
                 customizedProduct.addSlot(invalidDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             //Make sure that there's only one slot
             //And that that slot is the one matching the customized product's dimensions
@@ -1050,8 +942,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotHigherThanCustomizedProductThrowsException()
-        {
+        public void ensureAddingSlotHigherThanCustomizedProductThrowsException() {
             CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
@@ -1064,19 +955,16 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotHigherThanCustomizedProductDoesNotAddCustomizedProduct()
-        {
+        public void ensureAddingSlotHigherThanCustomizedProductDoesNotAddCustomizedProduct() {
             CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
 
             CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(70, 40, 60);
 
-            try
-            {
+            try {
                 customizedProduct.addSlot(slotDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             //Make sure that there's only one slot
             //And that that slot is the one matching the customized product's dimensions
@@ -1085,8 +973,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotWiderThanCustomizedProductThrowsException()
-        {
+        public void ensureAddingSlotWiderThanCustomizedProductThrowsException() {
             CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
@@ -1099,19 +986,16 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotWiderThanCustomizedProductDoesNotAddSlot()
-        {
+        public void ensureAddingSlotWiderThanCustomizedProductDoesNotAddSlot() {
             CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
 
             CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(60, 70, 60);
 
-            try
-            {
+            try {
                 customizedProduct.addSlot(slotDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             //Make sure that there's only one slot
             //And that that slot is the one matching the customized product's dimensions
@@ -1120,8 +1004,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotDeeperThanCustomizedProductThrowsException()
-        {
+        public void ensureAddingSlotDeeperThanCustomizedProductThrowsException() {
             CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
@@ -1134,19 +1017,16 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotDeeperThanCustomizedProductDoesNotAddSlot()
-        {
+        public void ensureAddingSlotDeeperThanCustomizedProductDoesNotAddSlot() {
             CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
 
             CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(60, 60, 70);
 
-            try
-            {
+            try {
                 customizedProduct.addSlot(slotDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             //Make sure that there's only one slot
             //And that that slot is the one matching the customized product's dimensions
@@ -1155,8 +1035,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotWhenCustomizedProductsHaveBeenAddedThrowsException()
-        {
+        public void ensureAddingSlotWhenCustomizedProductsHaveBeenAddedThrowsException() {
             Dimension heightDimension = new SingleValueDimension(60);
             Dimension widthDimension = new ContinuousDimensionInterval(70, 200, 1);
             Dimension depthDimension = new SingleValueDimension(60);
@@ -1187,6 +1066,7 @@ namespace core_tests.domain
             CustomizedProduct childCustomizedProduct = CustomizedProductBuilder
                 .createAnonymousUserCustomizedProduct("serial number 1", childProduct, childCustomizedDimensions).build();
 
+            childCustomizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
             customizedProduct.addCustomizedProduct(childCustomizedProduct, customizedProduct.slots.First());
 
             CustomizedDimensions otherSlotDimensions = CustomizedDimensions.valueOf(60, 100, 60);
@@ -1197,8 +1077,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotThatInvalidatesMainSlotThrowsException()
-        {
+        public void ensureAddingSlotThatInvalidatesMainSlotThrowsException() {
             CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
@@ -1214,8 +1093,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotThatInvalidatesMainSlotDoesNotAddSlot()
-        {
+        public void ensureAddingSlotThatInvalidatesMainSlotDoesNotAddSlot() {
             CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
@@ -1225,11 +1103,9 @@ namespace core_tests.domain
 
             CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(60, 40, 60);
 
-            try
-            {
+            try {
                 customizedProduct.addSlot(slotDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             //Make sure that there's only one slot
             //And that that slot is the one matching the customized product's dimensions
@@ -1238,8 +1114,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotThatDoesNotInvalidateMainSlotDoesNotThrowException()
-        {
+        public void ensureAddingSlotThatDoesNotInvalidateMainSlotDoesNotThrowException() {
             CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
@@ -1257,8 +1132,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotThatDoesNotInvalidateMainSlotAddsSlot()
-        {
+        public void ensureAddingSlotThatDoesNotInvalidateMainSlotAddsSlot() {
             CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
@@ -1274,8 +1148,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotThatDoesNotInvalidateMainSlotResizesMainSlot()
-        {
+        public void ensureAddingSlotThatDoesNotInvalidateMainSlotResizesMainSlot() {
             CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 60, 60);
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("serial number", buildValidProduct(), customizedProductDimensions).build();
@@ -1293,8 +1166,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotThatMakesTheMainSlotNotFollowTheSlotSpecificationsThrowsException()
-        {
+        public void ensureAddingSlotThatMakesTheMainSlotNotFollowTheSlotSpecificationsThrowsException() {
             Dimension heightDimension = new SingleValueDimension(60);
             Dimension widthDimension = new SingleValueDimension(200);
             Dimension depthDimension = new SingleValueDimension(60);
@@ -1319,8 +1191,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotThatMakesTheMainSlotNotFollowTheSlotSpecificationsDoesNotAddSlot()
-        {
+        public void ensureAddingSlotThatMakesTheMainSlotNotFollowTheSlotSpecificationsDoesNotAddSlot() {
             Dimension heightDimension = new SingleValueDimension(60);
             Dimension widthDimension = new SingleValueDimension(200);
             Dimension depthDimension = new SingleValueDimension(60);
@@ -1339,19 +1210,16 @@ namespace core_tests.domain
                 .createAnonymousUserCustomizedProduct("serial number", product, customizedProductDimensions).build();
 
             //Adding a slot with a width of 60 makes the main slot have a width of 140, which exceeds the maximum
-            try
-            {
+            try {
                 customizedProduct.addSlot(CustomizedDimensions.valueOf(60, 60, 60));
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Single(customizedProduct.slots);
             Assert.Equal(customizedProductDimensions, customizedProduct.slots.First().slotDimensions);
         }
 
         [Fact]
-        public void ensureAddingSlotThatHasValidWidthWithPreviouslyAddedSlotsDoesNotThrowException()
-        {
+        public void ensureAddingSlotThatHasValidWidthWithPreviouslyAddedSlotsDoesNotThrowException() {
             Dimension heightDimension = new SingleValueDimension(60);
             Dimension widthDimension = new SingleValueDimension(200);
             Dimension depthDimension = new SingleValueDimension(60);
@@ -1381,8 +1249,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingSlotThatHasValidWidthWithPreviouslyAddedSlotsAddsSlot()
-        {
+        public void ensureAddingSlotThatHasValidWidthWithPreviouslyAddedSlotsAddsSlot() {
             Dimension heightDimension = new SingleValueDimension(60);
             Dimension widthDimension = new SingleValueDimension(200);
             Dimension depthDimension = new SingleValueDimension(60);
@@ -1415,8 +1282,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingRecommendedNumberOfSlotsDoesNotThrowException()
-        {
+        public void ensureAddingRecommendedNumberOfSlotsDoesNotThrowException() {
             Dimension heightDimension = new SingleValueDimension(60);
             Dimension widthDimension = new SingleValueDimension(200);
             Dimension depthDimension = new SingleValueDimension(60);
@@ -1440,8 +1306,7 @@ namespace core_tests.domain
                 CustomizedDimensions.valueOf(60, productSlotWidths.recommendedWidth, 60);
 
 
-            Action addSlots = () =>
-            {
+            Action addSlots = () => {
                 customizedProduct.addSlot(CustomizedDimensions.valueOf(60, productSlotWidths.maxWidth, 60));
                 customizedProduct.addSlot(slotDimensions);
                 customizedProduct.addSlot(slotDimensions);
@@ -1454,8 +1319,7 @@ namespace core_tests.domain
 
 
         [Fact]
-        public void ensureResizingSlotAfterCustomizationIsFinishedThrowsException()
-        {
+        public void ensureResizingSlotAfterCustomizationIsFinishedThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 40, 25);
@@ -1478,8 +1342,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureResizingSlotAfterCustomizationIsFinishedDoesNotResizeSlot()
-        {
+        public void ensureResizingSlotAfterCustomizationIsFinishedDoesNotResizeSlot() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 40, 25);
@@ -1496,19 +1359,16 @@ namespace core_tests.domain
 
             CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 50, 25);
 
-            try
-            {
+            try {
                 customizedProduct.resizeSlot(slot, newSlotDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(2, customizedProduct.slots.Count);
             Assert.Equal(slotDimensions, customizedProduct.slots.LastOrDefault().slotDimensions);
         }
 
         [Fact]
-        public void ensureResizingNullSlotThrowsException()
-        {
+        public void ensureResizingNullSlotThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 40, 25);
@@ -1523,8 +1383,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureResizingNullSlotDoesNotResizeOtherSlots()
-        {
+        public void ensureResizingNullSlotDoesNotResizeOtherSlots() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 40, 25);
@@ -1533,19 +1392,16 @@ namespace core_tests.domain
 
             CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 50, 25);
 
-            try
-            {
+            try {
                 customizedProduct.resizeSlot(null, newSlotDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(slotDimensions, customizedProduct.slots.FirstOrDefault().slotDimensions);
             Assert.Equal(slotDimensions, customizedProduct.slots.LastOrDefault().slotDimensions);
         }
 
         [Fact]
-        public void ensureResizingOnlyExistingSlotThrowsException()
-        {
+        public void ensureResizingOnlyExistingSlotThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             Slot slot = customizedProduct.slots.SingleOrDefault();
@@ -1558,19 +1414,16 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureResizingOnlyExistingSlotDoesNotResizeSlot()
-        {
+        public void ensureResizingOnlyExistingSlotDoesNotResizeSlot() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             Slot slot = customizedProduct.slots.SingleOrDefault();
 
             CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 50, 25);
 
-            try
-            {
+            try {
                 customizedProduct.resizeSlot(slot, newSlotDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             CustomizedDimensions expectedDimensions = buildCustomizedDimensions();
 
@@ -1578,8 +1431,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureResizingSlotWithWidthLessThanMinimumThrowsException()
-        {
+        public void ensureResizingSlotWithWidthLessThanMinimumThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 40, 25));
@@ -1594,8 +1446,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureResizingSlotWithWidthLessThanMinimumDoesNotResizeSlot()
-        {
+        public void ensureResizingSlotWithWidthLessThanMinimumDoesNotResizeSlot() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 40, 25);
@@ -1606,18 +1457,15 @@ namespace core_tests.domain
 
             CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 20, 25);
 
-            try
-            {
+            try {
                 customizedProduct.resizeSlot(slot, newSlotDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(slotDimensions, slot.slotDimensions);
         }
 
         [Fact]
-        public void ensureResizingSlotWithWidthGreaterThanMaximumThrowsException()
-        {
+        public void ensureResizingSlotWithWidthGreaterThanMaximumThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 40, 25));
@@ -1632,8 +1480,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureResizingSlotWithWidthGreaterThanMaximumDoesNotResizeSlot()
-        {
+        public void ensureResizingSlotWithWidthGreaterThanMaximumDoesNotResizeSlot() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 40, 25);
@@ -1644,18 +1491,15 @@ namespace core_tests.domain
 
             CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 60, 25);
 
-            try
-            {
+            try {
                 customizedProduct.resizeSlot(slot, newSlotDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(slotDimensions, slot.slotDimensions);
         }
 
         [Fact]
-        public void ensureResizingNotAddedSlotThrowsException()
-        {
+        public void ensureResizingNotAddedSlotThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 40, 25));
@@ -1670,8 +1514,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureResizingNotAddedSlotDoesNotResizeOtherSlots()
-        {
+        public void ensureResizingNotAddedSlotDoesNotResizeOtherSlots() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             CustomizedDimensions slotDimensions = CustomizedDimensions.valueOf(76, 40, 25);
@@ -1682,19 +1525,16 @@ namespace core_tests.domain
 
             CustomizedDimensions newSlotDimensions = CustomizedDimensions.valueOf(76, 30, 25);
 
-            try
-            {
+            try {
                 customizedProduct.resizeSlot(slot, newSlotDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(slotDimensions, customizedProduct.slots.FirstOrDefault().slotDimensions);
             Assert.Equal(slotDimensions, customizedProduct.slots.LastOrDefault().slotDimensions);
         }
 
         [Fact]
-        public void ensureResizingValidSlotDoesNotThrowException()
-        {
+        public void ensureResizingValidSlotDoesNotThrowException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 30, 25));
@@ -1711,8 +1551,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureResizingValidSlotResizesSlot()
-        {
+        public void ensureResizingValidSlotResizesSlot() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 30, 25));
@@ -1735,8 +1574,7 @@ namespace core_tests.domain
 
 
         [Fact]
-        public void ensureResizingSlotAffectsOtherSlots()
-        {
+        public void ensureResizingSlotAffectsOtherSlots() {
             Dimension heightDimension = new ContinuousDimensionInterval(50, 100, 2);
             Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 75, 80, 85, 90, 95, 120 });
             Dimension depthDimension = new SingleValueDimension(25);
@@ -1768,16 +1606,14 @@ namespace core_tests.domain
                 CustomizedDimensions.valueOf(76, 25, 25)
             };
 
-            for (int i = 0; i < 4; i++)
-            {
+            for (int i = 0; i < 4; i++) {
                 Assert.Equal(expectedDimensions[i].width, customizedProduct.slots[i].slotDimensions.width, 1);
             }
         }
 
 
         [Fact]
-        public void ensureIncreasingSlotThrowsExceptionIfUnableToDecreaseOtherSlots()
-        {
+        public void ensureIncreasingSlotThrowsExceptionIfUnableToDecreaseOtherSlots() {
 
             Dimension heightDimension = new ContinuousDimensionInterval(50, 100, 2);
             Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 75, 80, 85, 90, 95, 120 });
@@ -1808,8 +1644,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureDecreasingSlotThrowsExceptionIfUnableToIncreaseOtherSlots()
-        {
+        public void ensureDecreasingSlotThrowsExceptionIfUnableToIncreaseOtherSlots() {
             Dimension heightDimension = new ContinuousDimensionInterval(50, 100, 2);
             Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 75, 80, 85, 90, 95, 120 });
             Dimension depthDimension = new SingleValueDimension(25);
@@ -1838,8 +1673,7 @@ namespace core_tests.domain
 
 
         [Fact]
-        public void ensureRemovingSlotWhenCustomizationIsFinishedThrowsException()
-        {
+        public void ensureRemovingSlotWhenCustomizationIsFinishedThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
@@ -1856,8 +1690,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingSlotWhenCustomizationIsFinishedDoesNotRemoveSlot()
-        {
+        public void ensureRemovingSlotWhenCustomizationIsFinishedDoesNotRemoveSlot() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
@@ -1868,18 +1701,15 @@ namespace core_tests.domain
 
             customizedProduct.finalizeCustomization();
 
-            try
-            {
+            try {
                 customizedProduct.removeSlot(customizedProduct.slots.LastOrDefault());
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(2, customizedProduct.slots.Count);
         }
 
         [Fact]
-        public void ensureRemovingNullSlotThrowsException()
-        {
+        public void ensureRemovingNullSlotThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
@@ -1890,24 +1720,20 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingNullSlotDoesNotRemoveOtherSlots()
-        {
+        public void ensureRemovingNullSlotDoesNotRemoveOtherSlots() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
 
-            try
-            {
+            try {
                 customizedProduct.removeSlot(null);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(2, customizedProduct.slots.Count);
         }
 
         [Fact]
-        public void ensureRemovingNotAddedSlotThrowsException()
-        {
+        public void ensureRemovingNotAddedSlotThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
@@ -1920,26 +1746,22 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingNotAddedSlotDoesNotRemoveOtherSlots()
-        {
+        public void ensureRemovingNotAddedSlotDoesNotRemoveOtherSlots() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
 
             Slot unknownSlot = new Slot("I'm not in the customized product", CustomizedDimensions.valueOf(76, 30, 25));
 
-            try
-            {
+            try {
                 customizedProduct.removeSlot(unknownSlot);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(2, customizedProduct.slots.Count);
         }
 
         [Fact]
-        public void ensureRemovingSingleSlotThrowsException()
-        {
+        public void ensureRemovingSingleSlotThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             Action removeSlot = () => customizedProduct.removeSlot(customizedProduct.slots.SingleOrDefault());
@@ -1948,24 +1770,20 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingSingleSlotDoesNotRemoveSlot()
-        {
+        public void ensureRemovingSingleSlotDoesNotRemoveSlot() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             Slot slot = customizedProduct.slots.SingleOrDefault();
 
-            try
-            {
+            try {
                 customizedProduct.removeSlot(slot);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Single(customizedProduct.slots);
         }
 
         [Fact]
-        public void ensureRemovingSlotIfCustomizedProductHasSubCustomizedProductsThrowsException()
-        {
+        public void ensureRemovingSlotIfCustomizedProductHasSubCustomizedProductsThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstanceWithSlotsAndSubCustomizedProducts();
 
             Action removeSlot = () => customizedProduct.removeSlot(customizedProduct.slots.LastOrDefault());
@@ -1975,23 +1793,19 @@ namespace core_tests.domain
 
 
         [Fact]
-        public void ensureRemovingSlotIfCustomizedProductHasSubCustomizedProductsDoesNotRemoveSlot()
-        {
+        public void ensureRemovingSlotIfCustomizedProductHasSubCustomizedProductsDoesNotRemoveSlot() {
             CustomizedProduct customizedProduct = buildValidInstanceWithSlotsAndSubCustomizedProducts();
 
-            try
-            {
+            try {
                 customizedProduct.removeSlot(customizedProduct.slots.LastOrDefault());
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(2, customizedProduct.slots.Count);
         }
 
 
         [Fact]
-        public void ensureRemovingPenultimateSlotResizesRemainingSlotToMatchCustomizedProduct()
-        {
+        public void ensureRemovingPenultimateSlotResizesRemainingSlotToMatchCustomizedProduct() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
@@ -2004,8 +1818,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingValidSlotDoesNotThrowException()
-        {
+        public void ensureRemovingValidSlotDoesNotThrowException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
@@ -2018,8 +1831,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingValidSlotRemovesSlot()
-        {
+        public void ensureRemovingValidSlotRemovesSlot() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
@@ -2030,8 +1842,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingSlotResizesOtherSlots()
-        {
+        public void ensureRemovingSlotResizesOtherSlots() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(76, 50, 25)); //<-30-> | <-50->
@@ -2052,8 +1863,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingDimensionsAfterCustomizationIsFinishedThrowsException()
-        {
+        public void ensureChangingDimensionsAfterCustomizationIsFinishedThrowsException() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             //specify a material before finalizing customization
@@ -2070,8 +1880,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingDimensionsAfterCustomizationIsFinishedDoesNotChangeDimensions()
-        {
+        public void ensureChangingDimensionsAfterCustomizationIsFinishedDoesNotChangeDimensions() {
             CustomizedProduct customizedProduct = buildValidInstance("1234");
 
             //specify a material before finalizing customization
@@ -2082,19 +1891,16 @@ namespace core_tests.domain
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(81, 90, 25);
 
-            try
-            {
+            try {
                 customizedProduct.changeDimensions(customizedDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.NotEqual(customizedDimensions, customizedProduct.customizedDimensions);
             Assert.Equal(buildCustomizedDimensions(), customizedProduct.customizedDimensions);
         }
 
         [Fact]
-        public void ensureChangingDimensionsIfSlotsHaveBeenAddedThrowsException()
-        {
+        public void ensureChangingDimensionsIfSlotsHaveBeenAddedThrowsException() {
             Dimension heightDimension = new ContinuousDimensionInterval(60, 80, 2);
             Dimension widthDimension = new SingleValueDimension(200);
             Dimension depthDimension = new SingleValueDimension(60);
@@ -2120,8 +1926,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingDimensionsIfSlotsHaveBeenAddedDoesNotChangeDimensions()
-        {
+        public void ensureChangingDimensionsIfSlotsHaveBeenAddedDoesNotChangeDimensions() {
             Dimension heightDimension = new ContinuousDimensionInterval(60, 80, 2);
             Dimension widthDimension = new SingleValueDimension(200);
             Dimension depthDimension = new SingleValueDimension(60);
@@ -2141,18 +1946,15 @@ namespace core_tests.domain
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(60, 60, 60));
 
-            try
-            {
+            try {
                 customizedProduct.changeDimensions(CustomizedDimensions.valueOf(72, 200, 60));
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(customizedProductDimensions, customizedProduct.customizedDimensions);
         }
 
         [Fact]
-        public void ensureIdMatchesReferenceIfCustomizedProductIsCreatedWithAReference()
-        {
+        public void ensureIdMatchesReferenceIfCustomizedProductIsCreatedWithAReference() {
             string reference = "this is a reference";
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder
@@ -2162,8 +1964,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureIdMatchesSerialNumberIfCustomizedProductIsCreatedWithASerialNumber()
-        {
+        public void ensureIdMatchesSerialNumberIfCustomizedProductIsCreatedWithASerialNumber() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
@@ -2172,8 +1973,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureCustomizedProductSameAsItsReference()
-        {
+        public void ensureCustomizedProductSameAsItsReference() {
             string reference = "this is a reference";
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder
@@ -2183,8 +1983,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureCustomizedProductSameAsItsSerialNumber()
-        {
+        public void ensureCustomizedProductSameAsItsSerialNumber() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
@@ -2193,8 +1992,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureActivatingAnActivatedCustomizedProductReturnsFalse()
-        {
+        public void ensureActivatingAnActivatedCustomizedProductReturnsFalse() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
@@ -2205,8 +2003,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureActivatingAnActivatedCustomizedProductDoesntActivateItAndItsChildren()
-        {
+        public void ensureActivatingAnActivatedCustomizedProductDoesntActivateItAndItsChildren() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
@@ -2215,15 +2012,13 @@ namespace core_tests.domain
 
             Assert.False(customizedProduct.activate());
             Assert.True(customizedProduct.activated);
-            foreach (CustomizedProduct child in customizedProduct.slots[0].customizedProducts)
-            {
+            foreach (CustomizedProduct child in customizedProduct.slots[0].customizedProducts) {
                 Assert.True(child.activated);
             }
         }
 
         [Fact]
-        public void ensureActivatingADeactivatedCustomizedProductReturnsTrue()
-        {
+        public void ensureActivatingADeactivatedCustomizedProductReturnsTrue() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
@@ -2234,23 +2029,20 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureActivatingADeactivatedCustomizedProductActivatesItAndItsChildren()
-        {
+        public void ensureActivatingADeactivatedCustomizedProductActivatesItAndItsChildren() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
             customizedProduct.deactivate();
             Assert.True(customizedProduct.activate());
             Assert.True(customizedProduct.activated);
-            foreach (CustomizedProduct child in customizedProduct.slots[0].customizedProducts)
-            {
+            foreach (CustomizedProduct child in customizedProduct.slots[0].customizedProducts) {
                 Assert.True(child.activated);
             }
         }
 
         [Fact]
-        public void ensureDeactivatingADeactivatedCustomizedProductReturnsFalse()
-        {
+        public void ensureDeactivatingADeactivatedCustomizedProductReturnsFalse() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
@@ -2260,8 +2052,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureDeactivatingAnActivatedCustomizedProductReturnsTrue()
-        {
+        public void ensureDeactivatingAnActivatedCustomizedProductReturnsTrue() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
@@ -2273,8 +2064,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureDeactivatingAnActivatedCustomizedProductDeactivatesItAndItsChildren()
-        {
+        public void ensureDeactivatingAnActivatedCustomizedProductDeactivatesItAndItsChildren() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
@@ -2283,15 +2073,13 @@ namespace core_tests.domain
 
             Assert.True(customizedProduct.deactivate());
             Assert.False(customizedProduct.activated);
-            foreach (CustomizedProduct child in customizedProduct.slots[0].customizedProducts)
-            {
+            foreach (CustomizedProduct child in customizedProduct.slots[0].customizedProducts) {
                 Assert.False(child.activated);
             }
         }
 
         [Fact]
-        public void ensureDeactivatingADeactivatedCustomizedProductDoesntDeactivateItAndItsChildren()
-        {
+        public void ensureDeactivatingADeactivatedCustomizedProductDoesntDeactivateItAndItsChildren() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
@@ -2299,15 +2087,13 @@ namespace core_tests.domain
 
             Assert.False(customizedProduct.deactivate());
             Assert.False(customizedProduct.activated);
-            foreach (CustomizedProduct child in customizedProduct.slots[0].customizedProducts)
-            {
+            foreach (CustomizedProduct child in customizedProduct.slots[0].customizedProducts) {
                 Assert.False(child.activated);
             }
         }
 
         [Fact]
-        public void ensureAddingCustomizedProductToFinishedCustomizedProductThrowsException()
-        {
+        public void ensureAddingCustomizedProductToFinishedCustomizedProductThrowsException() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidFinishedInstance(serialNumber);
@@ -2318,8 +2104,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingNullCustomizedProductThrowsException()
-        {
+        public void ensureAddingNullCustomizedProductThrowsException() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
@@ -2330,8 +2115,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingCustomizedProductToNullSlotThrowsException()
-        {
+        public void ensureAddingCustomizedProductToNullSlotThrowsException() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
@@ -2342,8 +2126,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingCustomizedProductToNonMatchingSlotThrowsException()
-        {
+        public void ensureAddingCustomizedProductToNonMatchingSlotThrowsException() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
@@ -2355,8 +2138,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingCustomizedProductThatIsntAPossibleComponentThrowsException()
-        {
+        public void ensureAddingCustomizedProductThatIsntAPossibleComponentThrowsException() {
             Dimension heightDimension = new ContinuousDimensionInterval(60, 80, 2);
             Dimension widthDimension = new SingleValueDimension(200);
             Dimension depthDimension = new SingleValueDimension(60);
@@ -2394,8 +2176,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingValidCustomizedProductAddsCustomizedProductToASlot()
-        {
+        public void ensureAddingCustomizedProductWithNoCustomizedMaterialThrowsException() {
             Dimension heightDimension = new ContinuousDimensionInterval(60, 80, 2);
             Dimension widthDimension = new SingleValueDimension(200);
             Dimension depthDimension = new SingleValueDimension(60);
@@ -2425,6 +2206,43 @@ namespace core_tests.domain
                 .createAnonymousUserCustomizedProduct("serial number", component, customizedProductDimensions).build();
 
             customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
+            Action act = () => customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
+        public void ensureAddingValidCustomizedProductAddsCustomizedProductToASlot() {
+            Dimension heightDimension = new ContinuousDimensionInterval(60, 80, 2);
+            Dimension widthDimension = new SingleValueDimension(200);
+            Dimension depthDimension = new SingleValueDimension(60);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            ProductSlotWidths productSlotWidths = ProductSlotWidths.valueOf(40, 140, 60);
+
+            Dimension componentHeightDimension = new SingleValueDimension(60);
+            Dimension componentWidthDimension = new SingleValueDimension(200);
+            Dimension componentDepthDimension = new SingleValueDimension(60);
+
+            Measurement componentMeasurement = new Measurement(componentHeightDimension, componentWidthDimension, componentDepthDimension);
+
+            Product component = new Product("This is another reference", "This is another Designation", "component.gltf", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { componentMeasurement });
+
+            Product product = new Product("This is A Reference", "This is A Designation", "model.obj", buildValidCategory(),
+                new List<Material>() { buildValidMaterial() }, new List<Measurement>() { measurement }, complementaryProducts: new List<Product> { component }, slotWidths: productSlotWidths);
+
+            CustomizedDimensions customizedProductDimensions = CustomizedDimensions.valueOf(60, 200, 60);
+
+            CustomizedProduct customizedProduct = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", product, customizedProductDimensions).build();
+
+            CustomizedProduct customizedComponent = CustomizedProductBuilder
+                .createAnonymousUserCustomizedProduct("serial number", component, customizedProductDimensions).build();
+            customizedComponent.changeCustomizedMaterial(buildCustomizedMaterial());
+
+            customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
 
             customizedProduct.addCustomizedProduct(customizedComponent, customizedProduct.slots[0]);
 
@@ -2432,8 +2250,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingCustomizedProductFromFinishedCustomizedProductThrowsException()
-        {
+        public void ensureRemovingCustomizedProductFromFinishedCustomizedProductThrowsException() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidFinishedInstanceWithSubCustomizedProducts(serialNumber);
@@ -2444,8 +2261,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingNullCustomizedProductThrowsException()
-        {
+        public void ensureRemovingNullCustomizedProductThrowsException() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
@@ -2456,8 +2272,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingCustomizedProductFromNullSlotThrowsException()
-        {
+        public void ensureRemovingCustomizedProductFromNullSlotThrowsException() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
@@ -2468,8 +2283,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingCustomizedProductFromSlotThatDoesntHaveItThrowsException()
-        {
+        public void ensureRemovingCustomizedProductFromSlotThatDoesntHaveItThrowsException() {
             Dimension heightDimension = new SingleValueDimension(30);
             Dimension widthDimension = new SingleValueDimension(30);
             Dimension depthDimension = new SingleValueDimension(30);
@@ -2499,6 +2313,7 @@ namespace core_tests.domain
                 .createAnonymousUserCustomizedProduct("serial number", component, CustomizedDimensions.valueOf(5, 5, 5)).build();
 
             customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
+            customizedComponent.changeCustomizedMaterial(buildCustomizedMaterial());
 
             customizedProduct.addSlot(CustomizedDimensions.valueOf(10, 10, 10));
             customizedProduct.addSlot(CustomizedDimensions.valueOf(10, 10, 10));
@@ -2511,8 +2326,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingCustomizedProductFromSlotRemovesIt()
-        {
+        public void ensureRemovingCustomizedProductFromSlotRemovesIt() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
@@ -2523,8 +2337,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureSubCustomizedProductsFinalizingTheCustomizationProcessThrowsException()
-        {
+        public void ensureSubCustomizedProductsFinalizingTheCustomizationProcessThrowsException() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);
@@ -2535,8 +2348,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureFinalizingCustomizationOfCustomizedProductWithoutCustomizedMaterialThrowsException()
-        {
+        public void ensureFinalizingCustomizationOfCustomizedProductWithoutCustomizedMaterialThrowsException() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstance(serialNumber);
@@ -2547,8 +2359,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureFinalizingCustomizationOfAValidCustomizedProductSetsStatusToFinished()
-        {
+        public void ensureFinalizingCustomizationOfAValidCustomizedProductSetsStatusToFinished() {
             string serialNumber = "serial number";
 
             CustomizedProduct customizedProduct = buildValidInstanceWithSubCustomizedProducts(serialNumber);

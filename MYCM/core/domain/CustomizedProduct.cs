@@ -7,13 +7,11 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using support.domain;
 
-namespace core.domain
-{
+namespace core.domain {
     /// <summary>
     /// Class that represents a Customized Product.
     /// </summary>
-    public class CustomizedProduct : Activatable, AggregateRoot<string>, DTOAble<CustomizedProductDTO>
-    {
+    public class CustomizedProduct : Activatable, AggregateRoot<string>, DTOAble<CustomizedProductDTO> {
 
         /// <summary>
         /// Constant that represents the message that occurs if the CustomizedProduct's material is not valid
@@ -171,6 +169,31 @@ namespace core.domain
         private const string UNABLE_TO_RESIZE_SLOT = "Unable to resize the slot, since it would invalidate other slots.";
 
         /// <summary>
+        /// Constant that represents the message presented when trying to add a customized product with and invalid finish
+        /// </summary>
+        private const string CHILD_FINISH_INAVLID = "The Product's finish does not fulfill the restrictions!";
+
+        /// <summary>
+        /// Constant that represents the message presented when trying to add a customized product with and invalid color
+        /// </summary>
+        private const string CHILD_COLOR_INVALID = "The Product's color does not fulfill the restrictions!";
+
+        /// <summary>
+        /// Constant that represents the message presented when trying to add a customized product with and invalid material
+        /// </summary>
+        private const string CHILD_MATERIAL_INVALID = "The Product's material does not fulfill the restrictions!";
+
+        /// <summary>
+        /// Constant that represents the message presented when trying to add a customized product with and invalid dimension
+        /// </summary>
+        private const string CHILD_DIMENSION_INVALID = "The Product's dimension does not fulfill the restrictions!";
+
+        /// <summary>
+        /// Constant that represents the message presented when trying to add a customized product with a null customized material
+        /// </summary>
+        private const string ADD_NULL_CUSTOMIZED_MATERIAL = "The Product does not have a customized material!";
+
+        /// <summary>
         /// Long that represents the CustomizedProduct's persistence ID.
         /// </summary>
         public long Id { get; internal set; }
@@ -253,8 +276,7 @@ namespace core.domain
         /// Private constructor used for injecting the LazyLoader.
         /// </summary>
         /// <param name="lazyLoader">LazyLoader being injected.</param>
-        private CustomizedProduct(ILazyLoader lazyLoader)
-        {
+        private CustomizedProduct(ILazyLoader lazyLoader) {
             this.LazyLoader = lazyLoader;
         }
 
@@ -269,8 +291,7 @@ namespace core.domain
         /// <param name="serialNumber">Serial number assigned to this CustomizedProduct.</param>
         /// <param name="product">Product defining the specification for this CustomizedProduct.</param>
         /// <param name="customizedDimensions">Instance of CustomizedDimensions detailing the CustomizedProduct's dimensions.</param>
-        protected CustomizedProduct(string serialNumber, Product product, CustomizedDimensions customizedDimensions)
-        {
+        protected CustomizedProduct(string serialNumber, Product product, CustomizedDimensions customizedDimensions) {
             checkString(serialNumber, INVALID_SERIAL_NUMBER);
             checkProduct(product);
             checkCustomizedDimensions(customizedDimensions, product);
@@ -291,8 +312,7 @@ namespace core.domain
         /// <param name="authToken">Authentication token of the user creating this CustomizedProduct.</param>
         /// <param name="product">Product defining the specification for this CustomizedProduct.</param>
         /// <param name="customizedDimensions">Instance of CustomizedDimensions detailing the CustomizedProduct's dimensions.</param>
-        protected CustomizedProduct(string serialNumber, string authToken, Product product, CustomizedDimensions customizedDimensions) : this(serialNumber, product, customizedDimensions)
-        {
+        protected CustomizedProduct(string serialNumber, string authToken, Product product, CustomizedDimensions customizedDimensions) : this(serialNumber, product, customizedDimensions) {
             checkString(authToken, INVALID_AUTH_TOKEN);
             this.authToken = authToken;
         }
@@ -305,8 +325,7 @@ namespace core.domain
         /// <param name="customizedDimensions">Instance of CustomizedDimensions detailing the CustomizedProduct's dimensions.</param>
         /// <param name="reference">Reference assigned to this CustomizedProduct.</param>
         /// <param name="authToken">Authentication token of the user creating this CustomizedProduct.</param>
-        protected CustomizedProduct(Product product, CustomizedDimensions customizedDimensions, string reference, string authToken)
-        {
+        protected CustomizedProduct(Product product, CustomizedDimensions customizedDimensions, string reference, string authToken) {
             checkString(reference, INVALID_PRODUCT_REFERENCE);
             checkString(authToken, INVALID_AUTH_TOKEN);
             checkProduct(product);
@@ -327,8 +346,7 @@ namespace core.domain
         /// Changes the CustomizedProduct's reference.
         /// </summary>
         /// <param name="reference">New reference.</param>
-        public void changeReference(string reference)
-        {
+        public void changeReference(string reference) {
             if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
             //if a serial number was assigned to the customized product, then it shouldn't be possible to define a reference
             if (serialNumber != null) throw new InvalidOperationException(CHANGE_REFERENCE_WITH_SERIAL_NUMBER);
@@ -340,8 +358,7 @@ namespace core.domain
         /// Changes the CustomizedProduct's designation.
         /// </summary>
         /// <param name="designation">New designation.</param>
-        public void changeDesignation(string designation)
-        {
+        public void changeDesignation(string designation) {
             if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
             if (String.IsNullOrEmpty(designation)) throw new ArgumentException(INVALID_PRODUCT_DESIGNATION);
             this.designation = designation;
@@ -357,8 +374,7 @@ namespace core.domain
         /// <exception cref="System.ArgumentException">
         /// Thrown when the provided instance of CustomizedDimensions do not represent values available in the Product's collection of Measurement.
         /// <exception>
-        public void changeDimensions(CustomizedDimensions customizedDimensions)
-        {
+        public void changeDimensions(CustomizedDimensions customizedDimensions) {
             if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
             //check if any more slots have been added besides the one matching the CustomizedProduct's dimensions
             if (this.slots.Count > 1) throw new InvalidOperationException(CHANGE_DIMENSIONS_AFTER_ADDING_SLOTS);
@@ -376,8 +392,7 @@ namespace core.domain
         /// Changes the CustomizedProduct's customized material
         /// </summary>
         /// <param name="customizedMaterial">New customized material</param>
-        public void changeCustomizedMaterial(CustomizedMaterial customizedMaterial)
-        {
+        public void changeCustomizedMaterial(CustomizedMaterial customizedMaterial) {
             if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
             checkCustomizedMaterial(customizedMaterial);
             this.customizedMaterial = customizedMaterial;
@@ -387,8 +402,7 @@ namespace core.domain
         /// Changes the Finish of a CustomizedProduct's customized material
         /// </summary>
         /// <param name="finish">new finish</param>
-        public void changeFinish(Finish finish)
-        {
+        public void changeFinish(Finish finish) {
             if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
             if (this.customizedMaterial == null) throw new InvalidOperationException(CHANGE_FINISH_BEFORE_DEFINING_MATERIAL);
             //TODO: inform why it was not changed
@@ -399,8 +413,7 @@ namespace core.domain
         /// Changes the Color of a CustomizedProduct's customized material
         /// </summary>
         /// <param name="color">new color</param>
-        public void changeColor(Color color)
-        {
+        public void changeColor(Color color) {
             if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
             if (this.customizedMaterial == null) throw new InvalidOperationException(CHANGE_COLOR_BEFORE_DEFINING_MATERIAL);
             //TODO: inform why it was not changed
@@ -419,8 +432,7 @@ namespace core.domain
         /// <exception cref="System.ArgumentException">
         /// Thrown when the provided CustomizedDimensions are null, exceed the Product's ProductSlotWidths or is larger than the CustomizedProduct itself.
         /// </exception>
-        public void addSlot(CustomizedDimensions slotDimensions)
-        {
+        public void addSlot(CustomizedDimensions slotDimensions) {
             if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
 
             if (!this.product.supportsSlots) throw new InvalidOperationException(PRODUCT_DOES_NOT_SUPPORT_SLOTS);
@@ -434,8 +446,7 @@ namespace core.domain
             if (hasCustomizedProducts()) throw new InvalidOperationException(ADD_SLOT_AFTER_ADDING_CUSTOMIZED_PRODUCTS);
 
             //check if there's only the slot matching the CustomizedProduct's dimensions
-            if (this.slots.Count == 1)
-            {
+            if (this.slots.Count == 1) {
                 //the initial slot must be resized
                 Slot fullSizeSlot = this.slots.FirstOrDefault();
 
@@ -447,9 +458,7 @@ namespace core.domain
                 fullSizeSlot.changeDimensions(CustomizedDimensions.valueOf(customizedDimensions.height, updatedWidth, customizedDimensions.depth));
 
                 slots.Add(new Slot(id() + slots.Count, slotDimensions));
-            }
-            else
-            {
+            } else {
                 addSubsequentSlot(slotDimensions);
             }
         }
@@ -458,8 +467,7 @@ namespace core.domain
         /// Adds a new Slot after having added other Slots.
         /// </summary>
         /// <param name="slotDimensions">New Slot's CustomizedDimensions.</param>
-        private void addSubsequentSlot(CustomizedDimensions slotDimensions)
-        {
+        private void addSubsequentSlot(CustomizedDimensions slotDimensions) {
             double minPossibleWidth = this.product.slotWidths.minWidth;
 
             double idealSlotWidth = slotDimensions.width / (double)numberOfSlots();
@@ -471,8 +479,7 @@ namespace core.domain
             Dictionary<Slot, double[]> slotDictionary = new Dictionary<Slot, double[]>();
 
             //build dictionary
-            foreach (Slot slot in this.slots)
-            {
+            foreach (Slot slot in this.slots) {
                 double maxExpendableValue = slot.slotDimensions.width - minPossibleWidth;
                 slotDictionary.Add(slot, new double[] { slot.slotDimensions.width, maxExpendableValue });
             }
@@ -489,8 +496,7 @@ namespace core.domain
             //start attempting to add with the largest slot
             addSubsequentSlotRec(minPossibleWidth, idealSlotWidth, availableWidth, slotDimensions, largestSlot, slotDictionary);
 
-            foreach (Slot slot in this.slots)
-            {
+            foreach (Slot slot in this.slots) {
                 double oldHeight = slot.slotDimensions.height;
                 double updatedWidth = slotDictionary[slot][0];
                 double oldDepth = slot.slotDimensions.depth;
@@ -518,14 +524,12 @@ namespace core.domain
         /// the first position is the slot's width and the second position is the value that can be expended.
         /// </param>
         private void addSubsequentSlotRec(double minPossibleWidth, double idealSlotWidth, double availableWidth, CustomizedDimensions newSlotDimensions, Slot largestSlot,
-            Dictionary<Slot, double[]> slotDictionary)
-        {
+            Dictionary<Slot, double[]> slotDictionary) {
             double currentSlotWidth = slotDictionary[largestSlot][0];
 
             double widthThatSlotCanExpended = idealSlotWidth;
 
-            if (currentSlotWidth - idealSlotWidth < minPossibleWidth)
-            {
+            if (currentSlotWidth - idealSlotWidth < minPossibleWidth) {
                 widthThatSlotCanExpended = currentSlotWidth - minPossibleWidth;
             }
 
@@ -536,8 +540,7 @@ namespace core.domain
 
             availableWidth += widthThatSlotCanExpended;
 
-            if (availableWidth == newSlotDimensions.width)
-            {
+            if (availableWidth == newSlotDimensions.width) {
                 return;
             }
 
@@ -557,8 +560,7 @@ namespace core.domain
         /// <exception cref="System.ArgumentException">
         /// Thrown when the provided Slot is null or has not been added to the CustomizedProduct.
         /// </exception>
-        public void removeSlot(Slot slot)
-        {
+        public void removeSlot(Slot slot) {
             if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
 
             if (slot == null) throw new ArgumentException(NULL_SLOT);
@@ -571,30 +573,23 @@ namespace core.domain
 
             if (hasCustomizedProducts()) throw new InvalidOperationException(ADD_SLOT_AFTER_ADDING_CUSTOMIZED_PRODUCTS);
 
-            if (this.slots.Count == 2)
-            {
+            if (this.slots.Count == 2) {
                 //the last slot has to match the product's dimensions
                 this.slots.Remove(slotBeingRemoved);
 
                 Slot mainSlot = this.slots.SingleOrDefault();
 
                 mainSlot.changeDimensions(this.customizedDimensions);
-            }
-            else
-            {
+            } else {
                 double previousSlotWidth = slotBeingRemoved.slotDimensions.width;
 
                 IDictionary<Slot, double> slotWidthMap = buildSlotLayoutDictionary(previousSlotWidth, 0, slotBeingRemoved, this.slots);
 
-                foreach (KeyValuePair<Slot, double> entry in slotWidthMap)
-                {
+                foreach (KeyValuePair<Slot, double> entry in slotWidthMap) {
                     //remove the desired slot and resize all the others
-                    if (entry.Key.Equals(slotBeingRemoved))
-                    {
+                    if (entry.Key.Equals(slotBeingRemoved)) {
                         this.slots.Remove(slotBeingRemoved);
-                    }
-                    else
-                    {
+                    } else {
                         double height = entry.Key.slotDimensions.height;
                         double width = entry.Value;
                         double depth = entry.Key.slotDimensions.depth;
@@ -618,8 +613,7 @@ namespace core.domain
         /// <exception cref="System.ArgumentException">
         /// Thrown when the provided Slot is null or has not been added to the CustomizedProduct.
         /// </exception>
-        public void resizeSlot(Slot slot, CustomizedDimensions newSlotDimensions)
-        {
+        public void resizeSlot(Slot slot, CustomizedDimensions newSlotDimensions) {
             if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
 
             if (slot == null) throw new ArgumentException(NULL_SLOT);
@@ -638,8 +632,7 @@ namespace core.domain
             IDictionary<Slot, double> slotWidthMap = buildSlotLayoutDictionary(slotBeingResized.slotDimensions.width, newSlotDimensions.width, slotBeingResized, this.slots);
 
             //resize all the slots with the values in the Dictionary
-            foreach (KeyValuePair<Slot, double> entry in slotWidthMap)
-            {
+            foreach (KeyValuePair<Slot, double> entry in slotWidthMap) {
                 double height = entry.Key.slotDimensions.height;
                 double width = entry.Value;
                 double depth = entry.Key.slotDimensions.depth;
@@ -662,19 +655,14 @@ namespace core.domain
         /// <param name="slots">List containing instances of Slot.</param>
         /// <returns>A Dictionary detailing how the slots will be structured.</returns>
         /// <exception cref="System.ArgumentException">Thrown when the Slot can't be resized.</exception>
-        private IDictionary<Slot, double> buildSlotLayoutDictionary(double currentSlotWidth, double newSlotWidth, Slot slotBeingResized, List<Slot> slots)
-        {
+        private IDictionary<Slot, double> buildSlotLayoutDictionary(double currentSlotWidth, double newSlotWidth, Slot slotBeingResized, List<Slot> slots) {
             Dictionary<Slot, double> slotWidthMap = new Dictionary<Slot, double>();
 
             //build dictionary with slots and their current widths
-            foreach (Slot slot in slots)
-            {
-                if (slot.Equals(slotBeingResized))
-                {
+            foreach (Slot slot in slots) {
+                if (slot.Equals(slotBeingResized)) {
                     slotWidthMap.Add(slot, newSlotWidth);
-                }
-                else
-                {
+                } else {
                     slotWidthMap.Add(slot, slot.slotDimensions.width);
                 }
             }
@@ -693,22 +681,17 @@ namespace core.domain
             //width that has been resized so far
             double resizedWidth = 0;
 
-            while (true)
-            {
+            while (true) {
                 //if the end is reached, go to the beginning of the list
-                if (currentIndex == lastIndex)
-                {
+                if (currentIndex == lastIndex) {
                     currentIndex = 0;
-                }
-                else
-                {
+                } else {
                     //otherwise, iterate normally
                     currentIndex++;
                 }
 
                 //exit if it has looped around or has finished resizing
-                if (currentIndex == slotIndex || resizedWidth == Math.Abs(widthToBeResized))
-                {
+                if (currentIndex == slotIndex || resizedWidth == Math.Abs(widthToBeResized)) {
                     break;
                 }
 
@@ -718,18 +701,13 @@ namespace core.domain
 
                 double newOtherSlotWidth = currentOtherSlotWidth - (widthToBeResized - resizedWidth);
 
-                if (newOtherSlotWidth <= minPossibleWidth)
-                {
+                if (newOtherSlotWidth <= minPossibleWidth) {
                     resizedWidth += (currentOtherSlotWidth - minPossibleWidth);
                     slotWidthMap[otherSlot] = minPossibleWidth;
-                }
-                else if (newOtherSlotWidth >= maxPossibleWidth)
-                {
+                } else if (newOtherSlotWidth >= maxPossibleWidth) {
                     resizedWidth += (currentOtherSlotWidth - maxPossibleWidth);
                     slotWidthMap[otherSlot] = maxPossibleWidth;
-                }
-                else
-                {
+                } else {
                     resizedWidth += (newOtherSlotWidth - currentOtherSlotWidth);
 
                     //if it's in the allowed value range, change the value
@@ -742,8 +720,7 @@ namespace core.domain
             double customizedProductWidth = this.customizedDimensions.width;
 
             //check if the widths match
-            if (customizedProductWidth == totalWidthAfterResize)
-            {
+            if (customizedProductWidth == totalWidthAfterResize) {
                 return slotWidthMap;
             }
 
@@ -757,8 +734,7 @@ namespace core.domain
         /// </summary>
         /// <param name="customizedDimensions">Instance of CustomizedDimensions being checked.</param>
         /// <returns>true if none of the three dimensional components are greater than those of the CustomizedProduct; false, otherwise.</returns>
-        private bool smallerThanCustomizedProduct(CustomizedDimensions customizedDimensions)
-        {
+        private bool smallerThanCustomizedProduct(CustomizedDimensions customizedDimensions) {
             return this.customizedDimensions.height >= customizedDimensions.height
                 && this.customizedDimensions.depth >= customizedDimensions.depth
                 && this.customizedDimensions.width >= customizedDimensions.width;
@@ -769,8 +745,7 @@ namespace core.domain
         /// </summary>
         /// <param name="width">Double representing the width value being checked.</param>
         /// <returns>true if the provided width is within range of values; false, otherwise.</returns>
-        private bool isWithinProductSlotWidthsRange(double width)
-        {
+        private bool isWithinProductSlotWidthsRange(double width) {
             return width >= this.product.slotWidths.minWidth && width <= this.product.slotWidths.maxWidth;
         }
 
@@ -785,13 +760,14 @@ namespace core.domain
         /// <exception cref="System.ArgumentException">
         /// Thrown when the provided CustomizedProduct or Slot are null or the provided CustomizedProduct does not reference one of the Product's components.
         /// </exception>
-        public void addCustomizedProduct(CustomizedProduct childCustomizedProduct, Slot slot)
-        {
+        public void addCustomizedProduct(CustomizedProduct childCustomizedProduct, Slot slot) {
             if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
 
             if (childCustomizedProduct == null) throw new ArgumentException(ADD_NULL_CUSTOMIZED_PRODUCT);
 
             if (slot == null) throw new ArgumentException(NULL_SLOT);
+
+            if (childCustomizedProduct.customizedMaterial == null) throw new ArgumentException(ADD_NULL_CUSTOMIZED_MATERIAL);
 
             //search for a slot that matches the given slot
             Slot equivalentSlot = this.slots.Where(s => s.Equals(slot)).SingleOrDefault();
@@ -804,6 +780,11 @@ namespace core.domain
             bool matchesComponent = availableChildProducts.Contains(childCustomizedProduct.product);
 
             if (!matchesComponent) throw new ArgumentException(CUSTOMIZED_PRODUCT_DOES_NOT_MATCH_CHILDREN);
+
+            //check if customized product fulfills all of the restrictions of its father
+            Product childProduct = childCustomizedProduct.product;
+            Product restrictedProduct = this.product.applyRestrictionsToProduct(this, childProduct);
+            checkIfChildFulfillsRestrictions(childCustomizedProduct, restrictedProduct);
 
             equivalentSlot.addCustomizedProduct(childCustomizedProduct);
             //update child's reference to the slot in which it's inserted
@@ -822,8 +803,7 @@ namespace core.domain
         /// <exception cref="System.ArgumentException">
         /// Thrown when the provided CustomizedProduct or Slot are null or when the provided Slot could not be found in the CustomizedProduct's slots.
         /// </exception>
-        public void removeCustomizedProduct(CustomizedProduct childCustomizedProduct, Slot slot)
-        {
+        public void removeCustomizedProduct(CustomizedProduct childCustomizedProduct, Slot slot) {
             if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
 
             if (childCustomizedProduct == null) throw new ArgumentException(ADD_NULL_CUSTOMIZED_PRODUCT);
@@ -843,13 +823,10 @@ namespace core.domain
         /// Checks if the CustomizedProduct has had other instances of CustomizedProduct added to its slots.
         /// </summary>
         /// <returns>true if the CustomizedProduct has sub CustomizedProducts; false, otherwise.</returns>
-        public bool hasCustomizedProducts()
-        {
-            foreach (Slot addedSlot in this.slots)
-            {
+        public bool hasCustomizedProducts() {
+            foreach (Slot addedSlot in this.slots) {
                 //check if any of the slots already have customized products
-                if (addedSlot.hasCustomizedProducts())
-                {
+                if (addedSlot.hasCustomizedProducts()) {
                     return true;
                 }
             }
@@ -860,11 +837,9 @@ namespace core.domain
         /// <summary>
         /// Finalizes the CustomizedProduct.
         /// </summary>
-        public void finalizeCustomization()
-        {
+        public void finalizeCustomization() {
             //sub customized products can't finalize the customization process
-            if (this.insertedInSlot != null)
-            {
+            if (this.insertedInSlot != null) {
                 throw new InvalidOperationException(CHILD_STARTING_FINALIZATION);
             }
 
@@ -875,18 +850,15 @@ namespace core.domain
         /// Recursively sets the customization's status for its children.
         /// </summary>
         /// <param name="currentCustomizedProduct">CustomizedProduct being finalized.</param>
-        private void finalizeCustomization(CustomizedProduct currentCustomizedProduct)
-        {
+        private void finalizeCustomization(CustomizedProduct currentCustomizedProduct) {
             //hashset with all the mandatory child products
             HashSet<Product> mandatoryProducts = currentCustomizedProduct.product
                 .components.Where(cmp => cmp.mandatory).Select(cmp => cmp.complementaryProduct).ToHashSet();
 
             HashSet<Product> addedProducts = new HashSet<Product>();
 
-            foreach (Slot slot in currentCustomizedProduct.slots)
-            {
-                foreach (CustomizedProduct childCustomizedProduct in slot.customizedProducts)
-                {
+            foreach (Slot slot in currentCustomizedProduct.slots) {
+                foreach (CustomizedProduct childCustomizedProduct in slot.customizedProducts) {
                     addedProducts.Add(childCustomizedProduct.product);
                     finalizeCustomization(childCustomizedProduct);
                 }
@@ -905,80 +877,79 @@ namespace core.domain
         /// Returns the number of Slots in the CustomizedProduct's Slot list
         /// </summary>
         /// <returns>Number of Slots within the CustomizedProduct</returns>
-        public int numberOfSlots()
-        {
+        public int numberOfSlots() {
             return slots.Count;
         }
         /// <summary>
         /// Returns the recommended slots
         /// </summary>
         /// <returns>List with the recommended slots</returns>
-        public List<CustomizedDimensions> recommendedSlots(){
-            
+        public List<CustomizedDimensions> recommendedSlots() {
+
             List<CustomizedDimensions> recommendedSlots = new List<CustomizedDimensions>();
 
             var widthCloset = //customizedDimensions.width; 
             6000;
             /*store.state.customizedProduct.customizedDimensions.width;*/ ///404.5;
-              var depthCloset = //customizedDimensions.depth; 
-              2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
-              var heightCloset = //customizedDimensions.height; 
-              5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;   
-              var unitCloset = "mm";//customizedDimensions.unit;
-              //store.state.customizedProduct.customizedDimensions.unit;
-              var unitSlots = "mm"; 
-              //store.getters.productSlotWidths.unit;
-              var recommendedSlotWidth = product.slotWidths.recommendedWidth;
-              ///store.getters.recommendedSlotWidth;
-              var minSlotWidth = product.slotWidths.minWidth;
-              ///store.getters.minSlotWidth;
+            var depthCloset = //customizedDimensions.depth; 
+            2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
+            var heightCloset = //customizedDimensions.height; 
+            5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;   
+            var unitCloset = "mm";//customizedDimensions.unit;
+                                  //store.state.customizedProduct.customizedDimensions.unit;
+            var unitSlots = "mm";
+            //store.getters.productSlotWidths.unit;
+            var recommendedSlotWidth = product.slotWidths.recommendedWidth;
+            ///store.getters.recommendedSlotWidth;
+            var minSlotWidth = product.slotWidths.minWidth;
+            ///store.getters.minSlotWidth;
 
-              /* if(unitCloset != unitSlots){
-                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
-                recommendedSlotWidth = this.valueConvertedSlotsWidth;
-                this.convert(unitSlots,unitCloset,minSlotWidth);
-                minSlotWidth = this.valueConvertedSlotsWidth;
-              }  */
+            /* if(unitCloset != unitSlots){
+              this.convert(unitSlots,unitCloset,recommendedSlotWidth);
+              recommendedSlotWidth = this.valueConvertedSlotsWidth;
+              this.convert(unitSlots,unitCloset,minSlotWidth);
+              minSlotWidth = this.valueConvertedSlotsWidth;
+            }  */
 
-              var reasonW = 404.5 / widthCloset;
-              var reasonD = 100 / depthCloset;
-              var reasonH = 300 / heightCloset;
+            var reasonW = 404.5 / widthCloset;
+            var reasonD = 100 / depthCloset;
+            var reasonH = 300 / heightCloset;
 
-              var recommendedNumberSlots = (int) (widthCloset / recommendedSlotWidth);
-              var remainder = widthCloset % recommendedSlotWidth;
-              var remainderWidth =
-                widthCloset - recommendedNumberSlots * recommendedSlotWidth;
+            var recommendedNumberSlots = (int)(widthCloset / recommendedSlotWidth);
+            var remainder = widthCloset % recommendedSlotWidth;
+            var remainderWidth =
+              widthCloset - recommendedNumberSlots * recommendedSlotWidth;
             for (var i = 0; i < recommendedNumberSlots; i++) {
-                recommendedSlots.Add( 
+                recommendedSlots.Add(
                     CustomizedDimensions.valueOf(
                         heightCloset,
-                        recommendedSlotWidth,  
+                        recommendedSlotWidth,
                         depthCloset));
             }
-            if(remainderWidth>0){
-                if(remainder>minSlotWidth){
-                    recommendedSlots.Add( 
+            if (remainderWidth > 0) {
+                if (remainder > minSlotWidth) {
+                    recommendedSlots.Add(
                         CustomizedDimensions.valueOf(
                             heightCloset,
-                            remainderWidth ,  
+                            remainderWidth,
                             depthCloset));
-                }else{
+                } else {
                     var lackToMin = minSlotWidth - remainderWidth;
                     var takeRecommended = lackToMin / recommendedNumberSlots;
-                    
-                    if((recommendedSlotWidth - takeRecommended) > minSlotWidth){
-                        recommendedSlots = new List<CustomizedDimensions>();    
-                        for (var i = 0; i < recommendedNumberSlots ; i++) {
-                        recommendedSlots.Add( 
-                            CustomizedDimensions.valueOf(
-                            heightCloset,
-                            (recommendedSlotWidth - takeRecommended),  
-                            depthCloset));
+
+                    if ((recommendedSlotWidth - takeRecommended) > minSlotWidth) {
+                        recommendedSlots = new List<CustomizedDimensions>();
+                        for (var i = 0; i < recommendedNumberSlots; i++) {
+                            recommendedSlots.Add(
+                                CustomizedDimensions.valueOf(
+                                heightCloset,
+                                (recommendedSlotWidth - takeRecommended),
+                                depthCloset));
                         }
-                        recommendedSlots.Add( 
+                        recommendedSlots.Add(
                             CustomizedDimensions.valueOf(
                             heightCloset,
-                            (minSlotWidth),  
+                            (minSlotWidth),
                             depthCloset));
                     }
                 }
@@ -989,72 +960,72 @@ namespace core.domain
         /// Returns the min slots
         /// </summary>
         /// <returns>List with the min slots</returns>
-        public List<CustomizedDimensions> minSlots(){
-            
+        public List<CustomizedDimensions> minSlots() {
+
             List<CustomizedDimensions> minSlots = new List<CustomizedDimensions>();
 
             var widthCloset = //customizedDimensions.width; 
             6000;
             /*store.state.customizedProduct.customizedDimensions.width;*/ ///404.5;
-              var depthCloset = //customizedDimensions.depth; 
-              2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
-              var heightCloset = //customizedDimensions.height; 
-              5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;   
-              var unitCloset = "mm";//customizedDimensions.unit;
-              //store.state.customizedProduct.customizedDimensions.unit;
-              var unitSlots = "mm"; 
-              //store.getters.productSlotWidths.unit;
-              var maxSlotWidth = product.slotWidths.maxWidth;
-              ///store.getters.recommendedSlotWidth;
-              var minSlotWidth = product.slotWidths.minWidth;
-              ///store.getters.minSlotWidth;
+            var depthCloset = //customizedDimensions.depth; 
+            2500;/*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
+            var heightCloset = //customizedDimensions.height; 
+            5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;   
+            var unitCloset = "mm";//customizedDimensions.unit;
+                                  //store.state.customizedProduct.customizedDimensions.unit;
+            var unitSlots = "mm";
+            //store.getters.productSlotWidths.unit;
+            var maxSlotWidth = product.slotWidths.maxWidth;
+            ///store.getters.recommendedSlotWidth;
+            var minSlotWidth = product.slotWidths.minWidth;
+            ///store.getters.minSlotWidth;
 
-              /* if(unitCloset != unitSlots){
-                this.convert(unitSlots,unitCloset,recommendedSlotWidth);
-                recommendedSlotWidth = this.valueConvertedSlotsWidth;
-                this.convert(unitSlots,unitCloset,minSlotWidth);
-                minSlotWidth = this.valueConvertedSlotsWidth;
-              }  */
+            /* if(unitCloset != unitSlots){
+              this.convert(unitSlots,unitCloset,recommendedSlotWidth);
+              recommendedSlotWidth = this.valueConvertedSlotsWidth;
+              this.convert(unitSlots,unitCloset,minSlotWidth);
+              minSlotWidth = this.valueConvertedSlotsWidth;
+            }  */
 
-              var reasonW = 404.5 / widthCloset;
-              var reasonD = 100 / depthCloset;
-              var reasonH = 300 / heightCloset;
+            var reasonW = 404.5 / widthCloset;
+            var reasonD = 100 / depthCloset;
+            var reasonH = 300 / heightCloset;
 
-              var maxNumberSlots = (int) (widthCloset / maxSlotWidth);
-              var remainder = widthCloset % maxSlotWidth;
-              var remainderWidth =
-                widthCloset - maxNumberSlots * maxSlotWidth;
+            var maxNumberSlots = (int)(widthCloset / maxSlotWidth);
+            var remainder = widthCloset % maxSlotWidth;
+            var remainderWidth =
+              widthCloset - maxNumberSlots * maxSlotWidth;
             for (var i = 0; i < maxNumberSlots; i++) {
-                minSlots.Add( 
+                minSlots.Add(
                     CustomizedDimensions.valueOf(
                         heightCloset,
-                        maxSlotWidth,  
+                        maxSlotWidth,
                         depthCloset));
             }
-            if(remainderWidth>0){
-                if(remainder>minSlotWidth){
-                    minSlots.Add( 
+            if (remainderWidth > 0) {
+                if (remainder > minSlotWidth) {
+                    minSlots.Add(
                         CustomizedDimensions.valueOf(
                             heightCloset,
-                            remainderWidth ,  
+                            remainderWidth,
                             depthCloset));
-                }else{
+                } else {
                     var lackToMin = minSlotWidth - remainderWidth;
                     var takeRecommended = lackToMin / maxNumberSlots;
-                    
-                    if((maxSlotWidth - takeRecommended) > minSlotWidth){
-                        minSlots = new List<CustomizedDimensions>();    
-                        for (var i = 0; i < maxNumberSlots ; i++) {
-                        minSlots.Add( 
-                            CustomizedDimensions.valueOf(
-                            heightCloset,
-                            (maxSlotWidth - takeRecommended),  
-                            depthCloset));
+
+                    if ((maxSlotWidth - takeRecommended) > minSlotWidth) {
+                        minSlots = new List<CustomizedDimensions>();
+                        for (var i = 0; i < maxNumberSlots; i++) {
+                            minSlots.Add(
+                                CustomizedDimensions.valueOf(
+                                heightCloset,
+                                (maxSlotWidth - takeRecommended),
+                                depthCloset));
                         }
-                        minSlots.Add( 
+                        minSlots.Add(
                             CustomizedDimensions.valueOf(
                             heightCloset,
-                            (minSlotWidth),  
+                            (minSlotWidth),
                             depthCloset));
                     }
                 }
@@ -1066,8 +1037,7 @@ namespace core.domain
         /// Checks if the Product is valid (not null)
         /// </summary>
         /// <param name="product">Product to check</param>
-        private void checkProduct(Product product)
-        {
+        private void checkProduct(Product product) {
             if (product == null) throw new ArgumentException(INVALID_PRODUCT);
         }
 
@@ -1075,8 +1045,7 @@ namespace core.domain
         /// Checks if the CustomizedMaterial is valid
         /// </summary>
         /// <param name="customizedMaterial">CustomizedMaterial to check</param>
-        private void checkCustomizedMaterial(CustomizedMaterial customizedMaterial)
-        {
+        private void checkCustomizedMaterial(CustomizedMaterial customizedMaterial) {
             if (customizedMaterial == null) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_MATERIAL);
             if (!this.product.containsMaterial(customizedMaterial.material)) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_MATERIAL);
         }
@@ -1090,22 +1059,19 @@ namespace core.domain
         /// <exception cref="System.ArgumentException">
         /// Thrown when the provided instance of CustomizedDimensions do not represent values available in the Product's collection of Measurement.
         /// </exception>
-        private void checkCustomizedDimensions(CustomizedDimensions customizedDimensions, Product product)
-        {
+        private void checkCustomizedDimensions(CustomizedDimensions customizedDimensions, Product product) {
             if (customizedDimensions == null) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_DIMENSIONS);
 
             List<Measurement> possibleMeasurements = product.productMeasurements.Select(m => m.measurement).ToList();
 
-            foreach (Measurement measurement in possibleMeasurements)
-            {
+            foreach (Measurement measurement in possibleMeasurements) {
                 double height = customizedDimensions.height;
                 double width = customizedDimensions.width;
                 double depth = customizedDimensions.depth;
 
                 bool hasDimensionValues = measurement.hasValues(height, width, depth);
 
-                if (hasDimensionValues)
-                {
+                if (hasDimensionValues) {
                     return; //return immediately if all the values match
                 }
             }
@@ -1117,17 +1083,53 @@ namespace core.domain
         /// Checks if a given string is valid
         /// </summary>
         /// <param name="obj">String to check</param>
-        private void checkString(string obj, string message)
-        {
+        private void checkString(string obj, string message) {
             if (String.IsNullOrEmpty(obj)) throw new ArgumentException(message);
+        }
+
+        /// <summary>
+        /// Checks if a CustomizedProduct fulfills all restrictions
+        /// </summary>
+        /// <param name="childCustomizedProduct"></param>
+        /// <param name="restrictedChild"></param>
+        private void checkIfChildFulfillsRestrictions(CustomizedProduct childCustomizedProduct, Product restrictedChild) {
+            bool containsMaterial = false;
+            foreach (ProductMaterial pmat in restrictedChild.productMaterials) {
+                if (pmat.material.Equals(childCustomizedProduct.customizedMaterial.material)) {
+                    containsMaterial = true;
+                    Material mat = pmat.material;
+                    if (!mat.Finishes.Contains(childCustomizedProduct.customizedMaterial.finish)) {
+                        throw new ArgumentException(CHILD_FINISH_INAVLID);
+                    }
+                    if (!mat.Colors.Contains(childCustomizedProduct.customizedMaterial.color)) {
+                        throw new ArgumentException(CHILD_COLOR_INVALID);
+                    }
+                }
+            }
+            if (!containsMaterial) {
+                throw new ArgumentException(CHILD_MATERIAL_INVALID);
+            }
+            bool containsDimension = false;
+            foreach (ProductMeasurement pmeas in restrictedChild.productMeasurements) {
+                Measurement measurement = pmeas.measurement;
+                double height = childCustomizedProduct.customizedDimensions.height;
+                double width = childCustomizedProduct.customizedDimensions.width;
+                double depth = childCustomizedProduct.customizedDimensions.depth;
+                if (measurement.hasValues(height, width, depth)) {
+                    containsDimension = true;
+                    break;
+                }
+            }
+            if (!containsDimension) {
+                throw new ArgumentException(CHILD_DIMENSION_INVALID);
+            }
         }
 
         /// <summary>
         /// Returns the CustomizedProduct's identity
         /// </summary>
         /// <returns>String with the CustomizedProduct's identity</returns>
-        public string id()
-        {
+        public string id() {
             return reference == null ? serialNumber : reference;
         }
 
@@ -1136,29 +1138,23 @@ namespace core.domain
         /// </summary>
         /// <param name="comparingEntity">Entity to compare to the CustomizedProduct</param>
         /// <returns>true if the given identifier is equal to the CustomizedProduct's identity; false, otherwise.</returns>
-        public bool sameAs(string comparingEntity)
-        {
-            if (reference == null)
-            {
+        public bool sameAs(string comparingEntity) {
+            if (reference == null) {
                 return serialNumber.Equals(comparingEntity, StringComparison.InvariantCultureIgnoreCase);
             }
             return reference.Equals(comparingEntity, StringComparison.InvariantCultureIgnoreCase);
         }
 
 
-        public override bool activate()
-        {
-            if (activated)
-            {
+        public override bool activate() {
+            if (activated) {
                 return false;
             }
 
             activated = true;
 
-            foreach (Slot slot in this.slots)
-            {
-                foreach (CustomizedProduct customizedProduct in slot.customizedProducts)
-                {
+            foreach (Slot slot in this.slots) {
+                foreach (CustomizedProduct customizedProduct in slot.customizedProducts) {
                     return customizedProduct.activate();
                 }
             }
@@ -1166,19 +1162,15 @@ namespace core.domain
             return true;
         }
 
-        public override bool deactivate()
-        {
-            if (!activated)
-            {
+        public override bool deactivate() {
+            if (!activated) {
                 return false;
             }
 
             activated = false;
 
-            foreach (Slot slot in this.slots)
-            {
-                foreach (CustomizedProduct customizedProduct in slot.customizedProducts)
-                {
+            foreach (Slot slot in this.slots) {
+                foreach (CustomizedProduct customizedProduct in slot.customizedProducts) {
                     return customizedProduct.deactivate();
                 }
             }
@@ -1190,8 +1182,7 @@ namespace core.domain
         /// Returns a textual description of the CustomizedProduct
         /// </summary>
         /// <returns>String that describes the CustomizedProduct</returns>
-        public override string ToString()
-        {
+        public override string ToString() {
             return string.Format("Designation: {0}, Reference {1}", designation, reference);
         }
 
@@ -1199,15 +1190,11 @@ namespace core.domain
         /// Returns the generated hash code of the CustomizedProduct
         /// </summary>
         /// <returns>Generated hash code</returns>
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             int hashCode = 17;
-            if (reference == null)
-            {
+            if (reference == null) {
                 hashCode = hashCode * 23 + this.serialNumber.GetHashCode();
-            }
-            else
-            {
+            } else {
                 hashCode = hashCode * 23 + this.reference.GetHashCode();
             }
             return hashCode;
@@ -1218,19 +1205,14 @@ namespace core.domain
         /// </summary>
         /// <param name="obj">Object to compare with the CustomizedProduct</param>
         /// <returns>true if both objects are equal, false if not</returns>
-        public override bool Equals(object obj)
-        {
+        public override bool Equals(object obj) {
             //Check for null and compare run-time types.
-            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
-            {
+            if ((obj == null) || !this.GetType().Equals(obj.GetType())) {
                 return false;
-            }
-            else
-            {
+            } else {
                 CustomizedProduct other = (CustomizedProduct)obj;
 
-                if (this.reference == null && other.reference == null)
-                {
+                if (this.reference == null && other.reference == null) {
                     return this.serialNumber.Equals(other.serialNumber);
                 }
 
@@ -1242,8 +1224,7 @@ namespace core.domain
         /// Returns the current CustomizedProduct as a DTO
         /// </summary>
         /// <returns>CustomizedProductDTO with the current representation of the CustomizedProduct</returns>
-        public CustomizedProductDTO toDTO()
-        {
+        public CustomizedProductDTO toDTO() {
             CustomizedProductDTO dto = new CustomizedProductDTO();
             dto.reference = this.reference;
             dto.designation = this.designation;
@@ -1259,8 +1240,7 @@ namespace core.domain
         /// <summary>
         /// Enumerate of values describing the CustomizedProduct's customization status.
         /// </summary>
-        public enum CustomizationStatus
-        {
+        public enum CustomizationStatus {
             PENDING,
             FINISHED
         }
@@ -1268,8 +1248,7 @@ namespace core.domain
         /// <summary>
         /// CustomizedProduct's Builder.
         /// </summary>
-        public class CustomizedProductBuilder
-        {
+        public class CustomizedProductBuilder {
             /// <summary>
             /// Instance of CustomizedProduct being built.
             /// </summary>
@@ -1288,8 +1267,7 @@ namespace core.domain
             /// <param name="product">Product defining the specification for the CustomizedProduct.</param>
             /// <param name="customizedDimensions">Instance of CustomizedDimensions detailing the CustomizedProduct's dimensions.</param>
             /// <returns>An instance of CustomizedProductBuilder.</returns>
-            public static CustomizedProductBuilder createAnonymousUserCustomizedProduct(string serialNumber, Product product, CustomizedDimensions customizedDimensions)
-            {
+            public static CustomizedProductBuilder createAnonymousUserCustomizedProduct(string serialNumber, Product product, CustomizedDimensions customizedDimensions) {
                 CustomizedProductBuilder builder = new CustomizedProductBuilder();
                 builder.customizedProduct = new CustomizedProduct(serialNumber, product, customizedDimensions);
                 return builder;
@@ -1303,8 +1281,7 @@ namespace core.domain
             /// <param name="product">Product defining the specification for the CustomizedProduct</param>
             /// <param name="customizedDimensions">Instance of CustomizedDimensions detailing the CustomizedProduct's dimensions.</param>
             /// <returns>An instance of CustomizedProductBuilder.</returns>
-            public static CustomizedProductBuilder createRegisteredUserCustomizedProduct(string serialNumber, string authToken, Product product, CustomizedDimensions customizedDimensions)
-            {
+            public static CustomizedProductBuilder createRegisteredUserCustomizedProduct(string serialNumber, string authToken, Product product, CustomizedDimensions customizedDimensions) {
                 CustomizedProductBuilder builder = new CustomizedProductBuilder();
                 builder.customizedProduct = new CustomizedProduct(serialNumber, authToken, product, customizedDimensions);
                 return builder;
@@ -1318,8 +1295,7 @@ namespace core.domain
             /// <param name="product">Product defining the specification for the CustomizedProduct</param>
             /// <param name="customizedDimensions">Instance of CustomizedDimensions detailing the CustomizedProduct's dimensions.</param>
             /// <returns>An instance of CustomizedProductBuilder.</returns>
-            public static CustomizedProductBuilder createManagerCustomizedProduct(string reference, string authToken, Product product, CustomizedDimensions customizedDimensions)
-            {
+            public static CustomizedProductBuilder createManagerCustomizedProduct(string reference, string authToken, Product product, CustomizedDimensions customizedDimensions) {
                 CustomizedProductBuilder builder = new CustomizedProductBuilder();
                 builder.customizedProduct = new CustomizedProduct(product, customizedDimensions, reference, authToken);
                 return builder;
@@ -1330,8 +1306,7 @@ namespace core.domain
             /// </summary>
             /// <param name="designation">The CustomizedProduct's designation.</param>
             /// <returns>An instance of CustomizedProductBuilder.</returns>
-            public CustomizedProductBuilder withDesignation(string designation)
-            {
+            public CustomizedProductBuilder withDesignation(string designation) {
                 this.customizedProduct.changeDesignation(designation);
                 return this;
             }
@@ -1341,8 +1316,7 @@ namespace core.domain
             /// </summary>
             /// <param name="customizedMaterial">Instance of CustomizedMaterial that will be assigned to the built CustomizedProduct.</param>
             /// <returns>An instance of CustomizedProductBuilder.</returns>
-            public CustomizedProductBuilder withMaterial(CustomizedMaterial customizedMaterial)
-            {
+            public CustomizedProductBuilder withMaterial(CustomizedMaterial customizedMaterial) {
                 this.customizedProduct.changeCustomizedMaterial(customizedMaterial);
                 return this;
             }
@@ -1351,8 +1325,7 @@ namespace core.domain
             /// Builds the instance of CustomizedProduct.
             /// </summary>
             /// <returns>Built instance of CustomizedProduct</returns>
-            public CustomizedProduct build()
-            {
+            public CustomizedProduct build() {
                 return this.customizedProduct;
             }
         }
