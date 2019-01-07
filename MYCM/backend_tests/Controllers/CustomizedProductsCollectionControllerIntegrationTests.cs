@@ -709,7 +709,6 @@ namespace backend_tests.Controllers
 
             nonExistingCustomizedProductModelView.reference = "nonexisting reference";
             nonExistingCustomizedProductModelView.designation = "nonexisting designation";
-            nonExistingCustomizedProductModelView.serialNumber = "nonexisting serial number";
             nonExistingCustomizedProductModelView.productId = createdCustomizedProductModelView.productId;
             nonExistingCustomizedProductModelView.customizedProductId = createdCustomizedProductModelView.customizedProductId + 1;
 
@@ -1561,7 +1560,6 @@ namespace backend_tests.Controllers
             customizedProductModelView.productId = 1;
             customizedProductModelView.customizedProductId = 1;
             customizedProductModelView.reference = "reference";
-            customizedProductModelView.serialNumber = "serialnumber";
             modelView.customizedProducts = new List<GetBasicCustomizedProductModelView>()
             {
                 customizedProductModelView

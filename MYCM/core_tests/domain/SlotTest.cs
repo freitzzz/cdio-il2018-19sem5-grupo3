@@ -54,14 +54,14 @@ namespace core_tests.domain
             return product;
         }
 
-        private CustomizedProduct buildCustomizedProduct(string serialNumber, CustomizedDimensions customizedDimensions)
+        private CustomizedProduct buildCustomizedProduct(string reference, CustomizedDimensions customizedDimensions)
         {
             Finish matte = Finish.valueOf("Matte", 30);
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(buildMaterial(), red, matte);
 
-            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct(serialNumber, buildProduct(), customizedDimensions)
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct(reference, buildProduct(), customizedDimensions)
                 .withMaterial(customizedMaterial).build();
 
             return customizedProduct;
@@ -364,6 +364,86 @@ namespace core_tests.domain
 
             Assert.False(instance.hasCustomizedProducts());
         }
+
+        [Fact]
+        public void ensureChangingToNullIdentifierThrowsException()
+        {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+
+            Action changeIdentifier = () => instance.changeIdentifier(null);
+
+            Assert.Throws<ArgumentException>(changeIdentifier);
+        }
+
+        [Fact]
+        public void ensureChangingToNullIdentifierDoesNotChangeIdentifier()
+        {
+            string identifier = "identifier 0";
+
+            Slot instance = new Slot(identifier, CustomizedDimensions.valueOf(100, 200, 300));
+
+            try
+            {
+                instance.changeIdentifier(null);
+            }
+            catch (Exception) { }
+
+            Assert.Equal(identifier, instance.identifier);
+        }
+
+
+        [Fact]
+        public void ensureCahngingToEmptyIdentifierThrowsException()
+        {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+
+            Action changeIdentifier = () => instance.changeIdentifier("    ");
+
+            Assert.Throws<ArgumentException>(changeIdentifier);
+        }
+
+        [Fact]
+        public void ensureChangingToEmptyIdentifierDoesNotChangeIdentifier()
+        {
+            string identifier = "identifier 0";
+
+            Slot instance = new Slot(identifier, CustomizedDimensions.valueOf(100, 200, 300));
+
+            try
+            {
+                instance.changeIdentifier("    ");
+            }
+            catch (Exception) { }
+
+            Assert.Equal(identifier, instance.identifier);
+        }
+
+
+        [Fact]
+        public void ensureChangingToValidIdentifierDoesNotThrowException()
+        {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+
+            Action changeIdentifier = () => instance.changeIdentifier("different identifier");
+
+            Exception exception = Record.Exception(changeIdentifier);
+
+            Assert.Null(exception);
+        }
+
+
+        [Fact]
+        public void ensurChangingToValidIdentifierChangesIdentifier()
+        {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+
+            string newIdentifier = "different identifier";
+
+            instance.changeIdentifier(newIdentifier);
+
+            Assert.Equal(newIdentifier, instance.identifier);
+        }
+
 
         [Fact]
         public void ensureChangingToNullDimensionsThrowsException()

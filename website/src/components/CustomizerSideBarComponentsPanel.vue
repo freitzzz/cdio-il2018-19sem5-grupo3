@@ -40,18 +40,12 @@
 </template>
 
 <script>
-import Vue from "vue";
-import Axios from "axios";
-import { error } from "three";
+import ProductRequests from "./../services/mycm_api/requests/products.js";
 import store from "./../store";
-import Toasted from "vue-toasted";
-import { MYCM_API_URL } from "./../config.js";
 import { SET_CUSTOMIZED_PRODUCT_COMPONENTS,
         REMOVE_CUSTOMIZED_PRODUCT_COMPONENT,
         ACTIVATE_CAN_MOVE_COMPONENTS }
         from "./../store/mutation-types.js";
-
-Vue.use(Toasted);
 
 export default {
   name: "CustomizerSideBarComponentsPanel",
@@ -70,7 +64,7 @@ export default {
   },
   methods: {
     getProductComponents() {
-      Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/components`)
+      ProductRequests.getProductComponents(store.state.product.id)
         .then(response => {
           this.components = [];
           this.components.push(...response.data);

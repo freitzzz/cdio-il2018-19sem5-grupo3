@@ -39,6 +39,7 @@ namespace core.modelview.commercialcatalogue
             basicCommercialCatalogueModelView.commercialCatalogueId = commercialCatalogue.Id;
             basicCommercialCatalogueModelView.reference = commercialCatalogue.reference;
             basicCommercialCatalogueModelView.designation = commercialCatalogue.designation;
+            basicCommercialCatalogueModelView.hasCollections = commercialCatalogue.catalogueCollectionList.Any();
 
             return basicCommercialCatalogueModelView;
         }

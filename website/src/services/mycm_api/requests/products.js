@@ -60,7 +60,7 @@ export default {
 
     /**
      * Retrieves the Product's dimensions.
-     * @param {string} productId - Product's identifier.
+     * @param {number} productId - Product's identifier.
      * @param {"mm" | "cm" | "dm" | "m"=} unit - Dimension unit.
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved Product's dimensions.
      */
@@ -83,7 +83,7 @@ export default {
      */
     getProductComponents(productId, groupOption) {
 
-        var requestUrl = `${PRODUCTS_URL}/${productId}`;
+        var requestUrl = `${PRODUCTS_URL}/${productId}/components`;
 
         if(groupOption !== undefined){
             requestUrl = requestUrl.concat(`/?groupby=${groupOption}`);

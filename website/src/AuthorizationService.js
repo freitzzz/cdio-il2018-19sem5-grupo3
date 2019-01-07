@@ -2,7 +2,12 @@
 /**
  * Requires Axios for HTTP requests
  */
-import Axios from "axios";
+import AxiosDependency from "axios";
+
+/**
+ * Axios instance used for submitting MYCA's requests.
+ */
+const Axios = AxiosDependency.create();
 
 /**
  * Sets all Axios requests to include cookies

@@ -17,5 +17,27 @@ namespace core.modelview.slot
         /// </summary>
         /// <value>Gets/Sets the Slot's persistence identifier.</value>
         public long slotId { get; set; }
+
+        /// <summary>
+        /// Additional options used for retrieving a Slot.
+        /// </summary>
+        /// <returns>Get/Sets the options.</returns>
+        public FindSlotModelViewOptions options { get; set; } = new FindSlotModelViewOptions();
+
     }
+
+
+    /// <summary>
+    /// Class representing additional options used for retrieving an instance of Slot.
+    /// </summary>
+    public class FindSlotModelViewOptions
+    {
+        /// <summary>
+        /// Unit to which the Slot's dimensions will be converted.
+        /// </summary>
+        /// <value>Gets/Sets the unit.</value>
+        public string unit { get; set; }
+
+    }
+
 }

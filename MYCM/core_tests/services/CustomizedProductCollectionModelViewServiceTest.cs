@@ -62,8 +62,6 @@ namespace core_tests.services
                 customizedProductCollection.collectionProducts[0].customizedProduct.designation;
             expectedModelView.customizedProducts[0].reference =
                 customizedProductCollection.collectionProducts[0].customizedProduct.reference;
-            expectedModelView.customizedProducts[0].serialNumber =
-                customizedProductCollection.collectionProducts[0].customizedProduct.serialNumber;
             expectedModelView.customizedProducts[0].productId =
                 customizedProductCollection.collectionProducts[0].customizedProduct.product.Id;
 
@@ -75,8 +73,6 @@ namespace core_tests.services
                         actualModelView.customizedProducts[0].designation);
             Assert.Equal(expectedModelView.customizedProducts[0].reference,
                         actualModelView.customizedProducts[0].reference);
-            Assert.Equal(expectedModelView.customizedProducts[0].serialNumber,
-                        actualModelView.customizedProducts[0].serialNumber);
             Assert.Equal(expectedModelView.customizedProducts[0].productId,
                         actualModelView.customizedProducts[0].productId);
         }
@@ -176,9 +172,9 @@ namespace core_tests.services
             CustomizedMaterial mat = CustomizedMaterial.valueOf(material, color1, finish2);
 
             CustomizedProduct customizedProduct =
-                 CustomizedProductBuilder.createAnonymousUserCustomizedProduct
+                 CustomizedProductBuilder.createCustomizedProduct
                     (
-                     "serial number 123", product, customizedDimensions
+                     "123", product, customizedDimensions
                     ).withMaterial(mat).build();
             
             customizedProduct.finalizeCustomization();

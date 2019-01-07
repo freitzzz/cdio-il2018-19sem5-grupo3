@@ -133,6 +133,18 @@ namespace core.domain
             }
         }
 
+
+        /// <summary>
+        /// Changes the Slot's identifier.
+        /// </summary>
+        /// <param name="identifier">Slot's new identifier.</param>
+        /// <exception cref="System.ArgumentException">Thrown when the provided identifier is invalid(null or empty).</exception>
+        public void changeIdentifier(string identifier)
+        {
+            checkIdentifier(identifier);
+            this.identifier = identifier;
+        }
+
         /// <summary>
         /// Changes the Slot's dimensions.
         /// </summary>

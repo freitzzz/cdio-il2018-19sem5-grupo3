@@ -48,14 +48,10 @@
 
 
 <script>
-  import Vue from "vue";
-  import Toasted from "vue-toasted";
-  Vue.use(Toasted);
+  import ProductRequests from "./../services/mycm_api/requests/products.js";
+  import UnitRequests from "./../services/mycm_api/requests/units.js";
+  import CustomizedProductRequests from "./../services/mycm_api/requests/customizedproducts.js";
   import store from "./../store";
-  import Axios from "axios";
-  import {
-    MYCM_API_URL
-  } from "./../config.js";
   import vueSlider from "vue-slider-component";
   import {
     SET_CUSTOMIZED_PRODUCT_WIDTH,
@@ -69,10 +65,6 @@
     SET_ID_CUSTOMIZED_PRODUCT,
     SET_RESIZE_FACTOR_DIMENSIONS
   } from "./../store/mutation-types.js";
-  
-  import {
-    error
-  } from "three";
   const MIN_DEFAULT = 1;
   const MAX_DEFAULT = 2;
   const INCREMENT_DEFAULT = 1;
@@ -173,14 +165,13 @@
       store.dispatch(ACTIVATE_CAN_MOVE_CLOSET);
       store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS);
       /*Get all available dimensions of the given product of the array*/
-   
-      Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions`)
+      ProductRequests.getProductDimensions(store.state.product.id)
         .then(response => this.availableOptionsDimensions.push(...response.data))
         .catch(error => {
           this.$toast.open(error.response.status + "An error occurred");
         });
       /*Get all available units of measurement*/
-      Axios.get(`${MYCM_API_URL}/units`)
+      UnitRequests.getUnits()
         .then(response => this.availableOptionsUnits.push(...response.data))
         .catch(error => {
           this.$toast.open(error.response.status + "An error occurred");
@@ -208,7 +199,7 @@
         }, */
       undoDimensionConversion: function() {
   
-        Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions?unit=${DEFAULT_UNIT}`)
+        ProductRequests.getProductDimensions(store.state.product.id, DEFAULT_UNIT)
           .then(response => {
             let index;
             this.storeDimensions.push(...response.data);
@@ -447,8 +438,9 @@
         //Post of product
   
         if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
-          Axios.post(MYCM_API_URL + '/customizedproducts', {
+          CustomizedProductRequests.postCustomizedProduct({
               productId: store.state.product.id,
+              reference: store.state.customizedProduct.reference,
               customizedDimensions: {
                 height: this.height,
                 width: this.width,
@@ -520,7 +512,7 @@
             if (this.height == undefined || this.width == undefined || this.depth == undefined || this.unit == undefined) {
               this.$emit("back")
             } else {
-              Axios.delete(`${MYCM_API_URL}/customizedproducts/${store.state.product.id}`)
+              CustomizedProductRequests.deleteCustomizedProduct(store.state.product.id)
                 .then(this.$emit("back"))
                 .catch(this.$toast.open("There was an error, please try again."));
   
@@ -531,8 +523,8 @@
   
       },
       getRecommendedSlots() {
-  
-        Axios.get(MYCM_API_URL + `/customizedproducts/${this.idCustomizedProduct}/recommendedSlots`)
+        
+        CustomizedProductRequests.getCustomizedProductRecommendedSlots(this.idCustomizedProduct)
           .then(response => {
             this.listRecommendedSlots = response.data;
             this.drawRecommendedSlots();
@@ -572,9 +564,7 @@
         }
       },
       convert(from, to, value) {
-        Axios.get(
-            `http://localhost:5000/mycm/api/units/convert/?from=${from}&to=${to}&value=${value}`
-          )
+        UnitRequests.convertValue(from, to, value)
           .then(response => (this.valueConvertedSlotsWidth = response.data))
           .catch(error => {});
       },
@@ -608,6 +598,7 @@
   
   .icon-div-top:hover .tooltiptext {
     visibility: visible;
+    z-index: 1;
   }
   
   .icon-div-top {
