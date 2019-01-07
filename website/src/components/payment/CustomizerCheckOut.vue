@@ -1,78 +1,81 @@
 <template>
-  <div class="row">
-    <!-- <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
-    <div class="col-75">
-      <div class="container">
-        <form action="/action_page.php">
+<div>
   
-          <div class="row">
-            <div class="col-50">
-              <h3>Billing Address</h3>
-              <label for="fname"><i class="fa fa-user"></i> Full Name</label>
-              <input type="text" id="fname" name="firstname" placeholder="John M. Doe">
-              <label for="email"><i class="fa fa-envelope"></i> Email</label>
-              <input type="text" id="email" name="email" placeholder="john@example.com">
-              <label for="adr"> <!-- <i class="fa fa-address-card-o"></i>  -->Address</label>
-              <input type="text" id="adr" name="address" placeholder="542 W. 15th Street">
-              <label for="city"><!-- <i class="fa fa-institution"> --><!-- </i> --> City</label>
-              <input type="text" id="city" name="city" placeholder="New York">
-              <label for="zip">Zip</label>
-              <input type="text" id="zip" name="zip" placeholder="10001">
-  
-  
-            </div>
-  
-            <div class="col-50">
-  
-              <label for="cname">Name on Card</label>
-              <input type="text" id="cname" name="cardname" placeholder="John More Doe">
-              <label for="ccnum">Credit card number</label>
-              <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444">
-              <label for="expmonth">Exp Month</label>
-              <input type="text" id="expmonth" name="expmonth" placeholder="September">
-  
-              <div class="row">
-                <div class="col-50">
-                  <label for="expyear">Exp Year</label>
-                  <input type="text" id="expyear" name="expyear" placeholder="2018">
-                </div>
-                <div class="col-50">
-                  <label for="cvv">CVV</label>
-                  <input type="text" id="cvv" name="cvv" placeholder="352">
+</div>
+
+  <!-- <div class="row">
+      <div class="col-75">
+        <div class="container">
+          <form action="/action_page.php">
+    
+            <div class="row">
+              <div class="col-50">
+                <h3>Billing Address</h3>
+                <label for="fname"><i class="fa fa-user"></i> Full Name</label>
+                <input type="text" id="fname" name="firstname" placeholder="John M. Doe">
+                <label for="email"><i class="fa fa-envelope"></i> Email</label>
+                <input type="text" id="email" name="email" placeholder="john@example.com">
+                <label for="adr"> Address</label>
+                <input type="text" id="adr" name="address" placeholder="542 W. 15th Street">
+                <label for="city"><!-City</label>
+                <input type="text" id="city" name="city" placeholder="New York">
+                <label for="zip">Zip</label>
+                <input type="text" id="zip" name="zip" placeholder="10001">
+    
+    
+              </div>
+    
+              <div class="col-50">
+    
+                <label for="cname">Name on Card</label>
+                <input type="text" id="cname" name="cardname" placeholder="John More Doe">
+                <label for="ccnum">Credit card number</label>
+                <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444">
+                <label for="expmonth">Exp Month</label>
+                <input type="text" id="expmonth" name="expmonth" placeholder="September">
+    
+                <div class="row">
+                  <div class="col-50">
+                    <label for="expyear">Exp Year</label>
+                    <input type="text" id="expyear" name="expyear" placeholder="2018">
+                  </div>
+                  <div class="col-50">
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" name="cvv" placeholder="352">
+                  </div>
                 </div>
               </div>
+    
             </div>
-  
-          </div>
-  
-        </form>
-  
- 
+    
+          </form>
+    
+   
+        </div>
+       
       </div>
-     
-    </div>
+    
+      <div class="col-25">
+        <div class="container">
+          <h4>Cart
+            <span class="price" style="color:black">
+                  <i class="fa fa-shopping-cart"></i>
+                  <b>4</b>
+                </span>
+          </h4>
+          <p><a>Pole By Stephano</a> <span class="price">$499.99</span></p>
+          <p><a>Drawer</a> <span class="price">$5</span></p>
+          <p><a>Closet</a> <span class="price">$5</span></p>
+          <p><a>Matte Finish</a> <span class="price">$1.99</span></p>
+          <hr>
+          <p>Total <span class="price" style="color:black"><b>$511.98</b></span></p>
+        </div>
+            <input type="checkbox" name="checkbox" value="check" id="agree" /> I have read and agree to the Terms and Conditions and Privacy Policy
+          <p></p>
+          <i class="btn btn-primary">Continue to checkout</i>
   
-    <div class="col-25">
-      <div class="container">
-        <h4>Cart
-          <span class="price" style="color:black">
-                <i class="fa fa-shopping-cart"></i>
-                <b>4</b>
-              </span>
-        </h4>
-        <p><a>Pole By Stephano</a> <span class="price">$499.99</span></p>
-        <p><a>Drawer</a> <span class="price">$5</span></p>
-        <p><a>Closet</a> <span class="price">$5</span></p>
-        <p><a>Matte Finish</a> <span class="price">$1.99</span></p>
-        <hr>
-        <p>Total <span class="price" style="color:black"><b>$511.98</b></span></p>
       </div>
-          <input type="checkbox" name="checkbox" value="check" id="agree" /> I have read and agree to the Terms and Conditions and Privacy Policy
-        <p></p>
-        <i class="btn btn-primary">Continue to checkout</i>
-
-    </div>
-  </div>
+    </div> -->
 </template>
 
 <script>
@@ -81,13 +84,15 @@
   import { faCoffee } from '@fortawesome/free-solid-svg-icons';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'; */
   import store from "./../../store";
-  import { DEACTIVATE_CAN_MOVE_COMPONENTS } from "./../../store/mutation-types.js";
-
+  import {
+    DEACTIVATE_CAN_MOVE_COMPONENTS
+  } from "./../../store/mutation-types.js";
+  
   export default {
     name: "CustomizerCheckOut",
-    created(){
+    created() {
       store.dispatch(DEACTIVATE_CAN_MOVE_COMPONENTS);
-    }  
+    }
   }
 </script>
 
@@ -101,7 +106,8 @@
     flex-wrap: wrap;
     margin: 13px;
     font-size: 10px;
-    height:70%;
+    height: 70%;
+    width: 100%;
   }
   
   .col-25 {
@@ -119,7 +125,7 @@
   .col-75 {
     -ms-flex: 75%;
     /* IE10 */
-    flex: 75%;
+    flex: 70%;
   }
   
   .col-25,

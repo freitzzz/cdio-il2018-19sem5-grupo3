@@ -91,7 +91,18 @@ export default {
     },
     nextPanel(){
       //TODO! POST components
-      this.$emit("advance");
+      
+       this.$dialog.confirm({
+          title: 'Important Information',
+          hasIcon: true,
+          type: 'is-info',
+          icon: 'fas fa-exclamation-circle size:5px',
+          iconPack: 'fa',
+          message: 'Do you want to proceed to payment?',
+          onConfirm: () => {
+           this.$emit("advance");
+          }
+        })
     },
     previousPanel(){
       //TODO! DELETE ALL components

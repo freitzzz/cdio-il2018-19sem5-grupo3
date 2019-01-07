@@ -286,7 +286,7 @@
   .sidenavSpecial {
     height: 100%;
     /* Full height */
-    width: 1000px;
+    width: 5000px;
     /*full width on initial load, changed with Vue*/
     position: fixed;
     
