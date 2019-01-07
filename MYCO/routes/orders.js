@@ -82,7 +82,7 @@ function getCustomizedProduct(customizedProductId) {
 
     return new Promise((resolve, reject) => {
 
-        var req = http.get('http://localhost:5000/myc/api/customizedproducts/' + customizedProductId, (resp) => {
+        var req = http.get('http://localhost:5000/mycm/api/customizedproducts/' + customizedProductId, (resp) => {
             let data = '';
 
             resp.on('data', (chunk) => {
