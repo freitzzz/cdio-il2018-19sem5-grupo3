@@ -15,7 +15,7 @@
     <div v-if="displaySliders" class="slidersSection">
       <i class="btn btn-primary material-icons" @click="removeLine(index)">remove</i>
       <i class="btn btn-primary material-icons" @click="addLine()">add</i>
-        <span v-for="n in (minNumberSlots - 1 )" :key="n">
+        <!-- <span v-for="n in (minNumberSlots - 1 )" :key="n">
           <vue-slider
             class="slidersEspecification" 
             :min="minSizeSlot"
@@ -24,14 +24,13 @@
             v-model="sliderValues[n]"
             @callback="updateWidthSlot(n)"
           ></vue-slider>
-        </span>
+        </span> -->
       <div v-for="(line, index) in lines.slice(0, maxNumberSlots)" v-bind:key="index">
           <vue-slider
             class="slidersEspecification"
             :min="minSizeSlot"
             :max="maxSizeSlot"
-            :value="slotWidthChange"
-             v-model="sliderValues[index]"
+            v-model="sliderValues[index]"
             @callback="updateWidthSlot(index)"
           ></vue-slider>
       </div>
@@ -55,7 +54,6 @@ export default {
     return {
       picked: "recommendedSlots",
       numberSlots: 0,
-      sliderValue: this.minSizeSlot,
       sliderValues: [],
       lines: [],
       freeSpace: "",
@@ -68,7 +66,6 @@ export default {
       listMinSlots: [],
       drawCustomizedSlots: [],
       slotsID: [],
-      slotWidthChange: 0
     };
   },
   components: {
@@ -100,15 +97,14 @@ export default {
         .catch(error => {});
     },
     addLine() {
-      /*  let checkEmptyLines = this.lines.filter(line => line.number === null);
+        let checkEmptyLines = this.lines.filter(line => line.number === null);
        if (checkEmptyLines.length >= 1 && this.lines.length > 0){
          return;
-       }  */
+       } 
       if(this.lines.length > this.maxNumberSlots - this.minNumberSlots){
         this.$toast.open("You have already reached the maximum number of slots");
       }else{
-        //this.addSlot(this.lines.length);
-        this.drawOneSlot();
+        this.drawOneSlot(/* this.lines.length */);
         this.lines.push({
         slider: null
         })
@@ -142,11 +138,9 @@ export default {
     postSlots(){
       var reasonW = store.state.resizeVectorGlobal.width;
       if(this.slotsToPost.length==0){
-        alert(store.state.customizedProduct.slots.length);
         for(let a = 0 ; a<store.state.customizedProduct.slots.length; a++){
-          
           this.slotsToPost.push({
-            height: store.state.customizedProduct.slots[a].height,
+                    height: store.state.customizedProduct.slots[a].height,
                     depth: store.state.customizedProduct.slots[a].depth,
                     width: store.state.customizedProduct.slots[a].width / reasonW,
                     unit: store.state.customizedProduct.customizedDimensions.unit});
@@ -252,7 +246,7 @@ export default {
               });
         } 
     },
-     getMinSlots(){
+    getMinSlots(){
         CustomizedProductRequests.getCustomizedProductMinimumSlots(store.state.customizedProduct.id)
             .then(response => {
               this.listMinSlots = response.data;
@@ -283,6 +277,11 @@ export default {
                   depth: depthCloset,
                   unit: unitCloset
                 });
+                if(i < this.listMinSlots.length - 1){
+                  this.lines.push({
+                  slider: null
+                }) 
+                this.sliderValues[i] = this.maxSizeSlot}
               this.slotsToPost.push({
                     height: heightCloset,
                     depth: depthCloset,
@@ -314,20 +313,20 @@ export default {
 
               var reasonW = store.state.resizeVectorGlobal.width;
               
-                store.dispatch(ADD_SLOT_DIMENSIONS, {
+                 store.dispatch(ADD_SLOT_DIMENSIONS, {
                   idSlot: this.slotsToPost.length + 1,
                   width: min * reasonW,
                   height: heightCloset,
                   depth: depthCloset,
                   unit: unitCloset
-                });
-              /*this.slotsToPost.push({
+                }); 
+              this.slotsToPost.push({
                     height: heightCloset,
                     depth: depthCloset,
                     width: min,
-                    unit: unitCloset}); */
+                    unit: unitCloset});
               
-  },
+    },
     removeOneSlot(){
       store.dispatch(ADD_SLOT_DIMENSIONS);
       this.slotsToPost.pop();
@@ -365,12 +364,7 @@ export default {
       this.blockRemoval = this.lines.length <= 1;
     }
   },
-  mounted() {
-    this.addLine();
-  },
   created() {
-    //this.slotsToPost = [];
-    store.dispatch(ADD_SLOT_DIMENSIONS);
     store.dispatch(DEACTIVATE_CAN_MOVE_CLOSET);
   },
 }

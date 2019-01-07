@@ -121,7 +121,7 @@ export default {
     },
     addComponent: function(newValue, oldValue) {
       if (oldValue.length <= newValue.length) {
-        this.productRenderer.addComponent(newValue[newValue.length - 1]);
+        //this.productRenderer.addComponent(newValue[newValue.length - 1]);
       } else if (newValue.length == 0) {
         this.productRenderer.removeAllComponents();
       }

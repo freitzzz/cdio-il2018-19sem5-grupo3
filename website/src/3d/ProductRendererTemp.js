@@ -1916,6 +1916,7 @@ export default class ProductRenderer {
             this.group.getObjectById(this.closet_slots_faces_ids[i]).position.x = newPosition;
            }
          }
+
        }
      } 
   }
