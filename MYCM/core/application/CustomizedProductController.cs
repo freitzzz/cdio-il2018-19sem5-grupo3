@@ -108,6 +108,50 @@ namespace core.application
         }
 
         /// <summary>
+        /// Gets recommended slots from a certain customized product
+        /// </summary>
+        /// <param name="findCustomizedProductModelView">Instance of FindCustomizedProductModelView.</param>
+        /// <exception cref="ResourceNotFoundException">Thrown when no CustomizedProduct could be found with the given identifier.</exception>
+        /// <returns>Instance of GetAllCustomizedDimensions representing the recommended Slots.</returns>
+        public GetAllCustomizedDimensionsModelView getRecommendedSlots(FindCustomizedProductModelView findCustomizedProductModelView)
+        {
+            CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
+            CustomizedProduct customizedProduct = customizedProductRepository.find(findCustomizedProductModelView.customizedProductId);
+
+            if (customizedProduct == null)
+            {
+                throw new ResourceNotFoundException(
+                    string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, findCustomizedProductModelView.customizedProductId)
+                );
+            }
+
+            List<CustomizedDimensions> customizedDimensions = customizedProduct.recommendedSlots();
+            return CustomizedDimensionsModelViewService.fromCollection(customizedDimensions, findCustomizedProductModelView.options.unit);
+        }
+
+        /// <summary>
+        /// Gets min slots from a certain customized product
+        /// </summary>
+        /// <param name="findCustomizedProductModelView">Instance of FindCustomizedProductModelView.</param>
+        /// <exception cref="ResourceNotFoundException">Thrown when no CustomizedProduct could be found with the given identifier.</exception>
+        /// <returns>Instance of GetAllCustomizedDimensionsModelView representing the minimum Slots.</returns>
+        public GetAllCustomizedDimensionsModelView getMinSlots(FindCustomizedProductModelView findCustomizedProductModelView)
+        {
+            CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
+            CustomizedProduct customizedProduct = customizedProductRepository.find(findCustomizedProductModelView.customizedProductId);
+
+            if (customizedProduct == null)
+            {
+                throw new ResourceNotFoundException(
+                    string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, findCustomizedProductModelView.customizedProductId)
+                );
+            }
+
+            List<CustomizedDimensions> customizedDimensions = customizedProduct.minSlots();
+            return CustomizedDimensionsModelViewService.fromCollection(customizedDimensions, findCustomizedProductModelView.options.unit);
+        }
+
+        /// <summary>
         /// Retrieves an instance of Slot associated to an instance of CustomizedProduct.
         /// </summary>
         /// <param name="findSlotModelView">Instance of FindSlotModelView containing the CustomizedProduct's and the Slot's persistence identifiers.</param>
@@ -242,7 +286,8 @@ namespace core.application
 
             customizedProduct = customizedProductRepository.update(customizedProduct);
 
-            if(customizedProduct == null){
+            if (customizedProduct == null)
+            {
                 throw new ArgumentException(ERROR_UNABLE_TO_SAVE_CUSTOMIZED_PRODUCT);
             }
 
@@ -358,48 +403,6 @@ namespace core.application
             customizedProduct.removeSlot(slot);
 
             customizedProductRepository.update(customizedProduct);
-        }
-
-        /// <summary>
-        /// Gets recommended slots from a certain customized product
-        /// </summary>
-        /// <param name="customizedProductID">id of the customized product to get the information from</param>
-        /// <returns>list of recommended slots</returns>
-        public GetAllCustomizedDimensionsModelView getRecommendedSlots(long customizedProductID)
-        {
-            CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
-            CustomizedProduct customizedProduct = customizedProductRepository.find(customizedProductID);
-
-            if (customizedProduct == null)
-            {
-                throw new ResourceNotFoundException(
-                    string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, customizedProductID)
-                );
-            }
-
-            List<CustomizedDimensions> customizedDimensions = customizedProduct.recommendedSlots();
-            return CustomizedDimensionsModelViewService.fromCollection(customizedDimensions);
-        }
-        
-        /// <summary>
-        /// Gets min slots from a certain customized product
-        /// </summary>
-        /// <param name="customizedProductID">id of the customized product to get the information from</param>
-        /// <returns>list of min slots</returns>
-        public GetAllCustomizedDimensionsModelView getMinSlots(long customizedProductID)
-        {
-            CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
-            CustomizedProduct customizedProduct = customizedProductRepository.find(customizedProductID);
-
-            if (customizedProduct == null)
-            {
-                throw new ResourceNotFoundException(
-                    string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, customizedProductID)
-                );
-            }
-
-            List<CustomizedDimensions> customizedDimensions = customizedProduct.minSlots();
-            return CustomizedDimensionsModelViewService.fromCollection(customizedDimensions);
         }
     }
 }

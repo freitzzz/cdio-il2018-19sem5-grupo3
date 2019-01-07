@@ -131,6 +131,52 @@ namespace backend.Controllers
             }
         }
 
+        [HttpGet("{customizedProductId}/recommendedslots")]
+        public ActionResult getRecommendedSlots(long customizedProductId, [FromQuery]string unit)
+        {
+            try
+            {
+                FindCustomizedProductModelView findCustomizedProductModelView = new FindCustomizedProductModelView();
+                findCustomizedProductModelView.customizedProductId = customizedProductId;
+                findCustomizedProductModelView.options.unit = unit;
+
+                GetAllCustomizedDimensionsModelView allCustomDimensionsMV = new core.application.CustomizedProductController().getRecommendedSlots(findCustomizedProductModelView);
+                return Ok(allCustomDimensionsMV);
+            }
+            catch (ResourceNotFoundException ex)
+            {
+                return NotFound(new SimpleJSONMessageService(ex.Message));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+
+        [HttpGet("{customizedProductId}/minimumslots")]
+        public ActionResult getMinSlots(long customizedProductId, [FromQuery]string unit)
+        {
+            try
+            {
+                FindCustomizedProductModelView findCustomizedProductModelView = new FindCustomizedProductModelView();
+                findCustomizedProductModelView.customizedProductId = customizedProductId;
+                findCustomizedProductModelView.options.unit = unit;
+
+                GetAllCustomizedDimensionsModelView allCustomDimensionsMV = new core.application.CustomizedProductController().getMinSlots(findCustomizedProductModelView);
+                return Ok(allCustomDimensionsMV);
+            }
+            catch (ResourceNotFoundException ex)
+            {
+                return NotFound(new SimpleJSONMessageService(ex.Message));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+
         [HttpGet("{customizedProductId}/slots/{slotId}", Name = "GetSlot")]
         public ActionResult findSlotById(long customizedProductId, long slotId, [FromQuery]string unit)
         {
@@ -394,40 +440,6 @@ namespace backend.Controllers
             catch (InvalidOperationException e)
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
-            }
-        }
-        [HttpGet("{customizedProductId}/recommendedslots")]
-        public ActionResult getRecommendedSlots(long customizedProductId)
-        {
-            try
-            {
-                GetAllCustomizedDimensionsModelView allCustomDimensionsMV = new core.application.CustomizedProductController().getRecommendedSlots(customizedProductId);
-                return Ok(allCustomDimensionsMV);
-            }
-            catch (ResourceNotFoundException ex)
-            {
-                return NotFound(new SimpleJSONMessageService(ex.Message));
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
-            }
-        }
-        [HttpGet("{customizedProductId}/minslots")]
-        public ActionResult getMinSlots(long customizedProductId)
-        {
-            try
-            {
-                GetAllCustomizedDimensionsModelView allCustomDimensionsMV = new core.application.CustomizedProductController().getMinSlots(customizedProductId);
-                return Ok(allCustomDimensionsMV);
-            }
-            catch (ResourceNotFoundException ex)
-            {
-                return NotFound(new SimpleJSONMessageService(ex.Message));
             }
             catch (Exception)
             {
