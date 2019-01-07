@@ -7,10 +7,16 @@ import javax.ws.rs.core.NewCookie;
  * @author <a href="https://github.com/freitzzz">freitzzz</a>
  */
 public final class SessionCookieService {
+    
     /**
      * Constant that represents the session cookie name
      */
     public static final String COOKIE_NAME="MYCASESSION";
+    
+    /**
+     * Constant that represents the session cookie path
+     */
+    public static final String COOKIE_PATH="/";
     
     /**
      * Constant that represents the session cookie name identifier
@@ -23,7 +29,16 @@ public final class SessionCookieService {
      * @return NewCookie with the created session cookie
      */
     public static NewCookie createSessionCookie(String sessionToken){
-        return new NewCookie(COOKIE_NAME,sessionToken);
+        NewCookie placeholderCookie=new NewCookie(COOKIE_NAME,sessionToken);
+        return new NewCookie(COOKIE_NAME,
+                sessionToken,
+                COOKIE_PATH,
+                placeholderCookie.getDomain(),
+                placeholderCookie.getComment(),
+                placeholderCookie.getMaxAge(),
+                placeholderCookie.isSecure(),
+                placeholderCookie.isHttpOnly()
+        );
     }
     
     /**

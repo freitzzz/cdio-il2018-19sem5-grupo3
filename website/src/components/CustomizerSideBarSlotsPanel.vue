@@ -14,7 +14,7 @@
     </div>
     <div v-if="displaySliders" class="slidersSection">
       <i class="btn btn-primary material-icons" @click="removeLine(index)">remove</i>
-      <i class="btn btn-primary material-icons" @click="addLine">add</i>
+      <i class="btn btn-primary material-icons" @click="addLine()">add</i>
         <span v-for="n in (minNumberSlots - 1 )" :key="n">
           <vue-slider
             class="slidersEspecification" 
@@ -100,15 +100,19 @@ export default {
         .catch(error => {});
     },
     addLine() {
-
-      let checkEmptyLines = this.lines.filter(line => line.number === null);
+      /*  let checkEmptyLines = this.lines.filter(line => line.number === null);
        if (checkEmptyLines.length >= 1 && this.lines.length > 0){
          return;
-       } 
-      this.lines.push({
+       }  */
+      if(this.lines.length > this.maxNumberSlots - this.minNumberSlots){
+        this.$toast.open("You have already reached the maximum number of slots");
+      }else{
+        //this.addSlot(this.lines.length);
+        this.drawOneSlot();
+        this.lines.push({
         slider: null
-      });
-      this.addSlot(this.lines.length);
+        })
+      } 
     },
     addSlot(index){
       if(index <= this.maxNumberSlots){
@@ -138,7 +142,9 @@ export default {
     postSlots(){
       var reasonW = store.state.resizeVectorGlobal.width;
       if(this.slotsToPost.length==0){
+        alert(store.state.customizedProduct.slots.length);
         for(let a = 0 ; a<store.state.customizedProduct.slots.length; a++){
+          
           this.slotsToPost.push({
             height: store.state.customizedProduct.slots[a].height,
                     depth: store.state.customizedProduct.slots[a].depth,
@@ -196,7 +202,7 @@ export default {
           type: 'is-info',
           icon: 'fas fa-exclamation-circle size:5px',
           iconPack: 'fa',
-          message: 'Do you want to go back? This will remove all slots!',
+          message: 'Are you sure you want to return? All progress made in this step will be lost.',
           onConfirm: () => {
             store.dispatch(ADD_SLOT_DIMENSIONS); 
             this.$emit("back");
@@ -214,7 +220,7 @@ export default {
       store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS)
     },
     getRecommendedSlots(){
-      this.listRecommendedSlots = []
+       this.listRecommendedSlots = [];
        CustomizedProductRequests.getCustomizedProductRecommendedSlots(store.state.customizedProduct.id)
             .then(response => {
               this.listRecommendedSlots = response.data;
@@ -225,7 +231,7 @@ export default {
           });
     },
     drawRecommendedSlots(){
-      this.slotsToPost = [];
+       this.slotsToPost = [];
       var depthCloset = store.state.customizedProduct.customizedDimensions.depth;
       var heightCloset = store.state.customizedProduct.customizedDimensions.height;
       var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
@@ -244,10 +250,10 @@ export default {
                   width: this.listRecommendedSlots[i].width,
                   unit: unitCloset
               });
-        }
+        } 
     },
      getMinSlots(){
-       CustomizedProductRequests.getCustomizedProductMinimumSlots(store.state.customizedProduct.id)
+        CustomizedProductRequests.getCustomizedProductMinimumSlots(store.state.customizedProduct.id)
             .then(response => {
               this.listMinSlots = response.data;
               this.drawMinSlots();
@@ -260,7 +266,7 @@ export default {
     },
     drawMinSlots(){
 
-      this.slotsToPost = [];
+       this.slotsToPost = [];
               var widthCloset = store.state.customizedProduct.customizedDimensions.width;
               var depthCloset = store.state.customizedProduct.customizedDimensions.depth;
               var heightCloset = store.state.customizedProduct.customizedDimensions.height;
@@ -282,7 +288,7 @@ export default {
                     depth: depthCloset,
                     width: this.listMinSlots[i].width,
                     unit: unitCloset});
-              }
+              } 
             
     },
     drawOneSlot(){
@@ -298,7 +304,7 @@ export default {
               .catch((error_message) => {
                   error_message.response.data.message
               }); */
-              var widthCloset = store.state.customizedProduct.customizedDimensions.width;
+                var widthCloset = store.state.customizedProduct.customizedDimensions.width;
               var depthCloset = store.state.customizedProduct.customizedDimensions.depth;
               var heightCloset = store.state.customizedProduct.customizedDimensions.height;
               
@@ -315,24 +321,21 @@ export default {
                   depth: depthCloset,
                   unit: unitCloset
                 });
-              this.slotsToPost.push({
+              /*this.slotsToPost.push({
                     height: heightCloset,
                     depth: depthCloset,
                     width: min,
-                    unit: unitCloset});
+                    unit: unitCloset}); */
               
   },
     removeOneSlot(){
       store.dispatch(ADD_SLOT_DIMENSIONS);
       this.slotsToPost.pop();
-             var depthCloset = store.state.customizedProduct.customizedDimensions.depth;
-              var heightCloset = store.state.customizedProduct.customizedDimensions.height;
-              
-              var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
-
-              var min = store.getters.minSlotWidth;
-
-              var reasonW = store.state.resizeVectorGlobal.width;
+      var depthCloset = store.state.customizedProduct.customizedDimensions.depth;
+      var heightCloset = store.state.customizedProduct.customizedDimensions.height;
+      var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
+      var min = store.getters.minSlotWidth;
+      var reasonW = store.state.resizeVectorGlobal.width;
       for(let i=0; i<this.slotsToPost.length; i++){
         store.dispatch(ADD_SLOT_DIMENSIONS, {
                   idSlot: i,
@@ -354,11 +357,11 @@ export default {
                   height: heightCloset,
                   depth: depthCloset,
                   unit: unitCloset
-      });              
+      });             
     }
   },
   watch: {
-    lines() {
+  lines() {
       this.blockRemoval = this.lines.length <= 1;
     }
   },
@@ -366,7 +369,8 @@ export default {
     this.addLine();
   },
   created() {
-    this.slotsToPost=[];
+    //this.slotsToPost = [];
+    store.dispatch(ADD_SLOT_DIMENSIONS);
     store.dispatch(DEACTIVATE_CAN_MOVE_CLOSET);
   },
 }

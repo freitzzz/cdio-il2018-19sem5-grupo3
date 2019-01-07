@@ -96,7 +96,7 @@ public class Session implements DomainEntity<String>, Serializable {
      * @return boolean true if the session is active, false if not
      */
     public boolean isActive() {
-        return this.active && this.sessionEndDateTime.isAfter(this.sessionStartDateTime);
+        return this.active && this.sessionEndDateTime.isAfter(LocalDateTime.now());
     }
     
     /**

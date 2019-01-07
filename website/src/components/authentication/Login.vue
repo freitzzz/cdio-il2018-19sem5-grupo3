@@ -6,6 +6,13 @@
             :active="activateSignup"
             @closeSignup="closeSignupComponent"
         />
+        <b-modal :active.sync="activateAccount">
+            <activate-account
+                :userInfo="userInfo"
+                @closeActivationModal="closeActivateAccountComponent"
+            >
+            </activate-account>
+        </b-modal>
     </div>
 </template>
 
@@ -17,6 +24,7 @@
     import Axios from 'axios';
     import Vue from 'vue';
     import ManagementTopBar from '../ManagementTopBar.vue';
+    import ActivateAccount from './ActivateAccount.vue';
 
     /**
      * Requires Signup component
@@ -47,7 +55,9 @@
         data(){
             return{
                 activateManager:false,
-                activateSignup:false
+                activateSignup:false,
+                activateAccount:false,
+                userInfo:null
             }
         },
         /* routes: {
@@ -63,7 +73,8 @@
         components: {
             LoginForm,
             ManagementTopBar,
-            Signup
+            Signup,
+            ActivateAccount
         },
         /**
          * Component methods
@@ -101,9 +112,15 @@
                         })
                         .catch((_error_message) => {
                             let message = _error_message.response.data.message;
-                            this.$toast.open({
-                                message: message
-                            });
+                            let accountActivationRequired = _error_message.response.data.requiresActivation;
+                            if(accountActivationRequired){
+                                this.userInfo = {...authenticationRequestData};
+                                this.activateAccount = true;
+                            }else{
+                                this.$toast.open({
+                                    message: message
+                                });
+                            }
                         });
                     })
                     .catch(()=>{
@@ -127,6 +144,13 @@
              */
             closeSignupComponent(){
                 this.activateSignup=false;
+            },
+            /**
+             * Closes activate account component
+             */
+            closeActivateAccountComponent(){
+                this.activateAccount=false;
+                this.login(this.userInfo);
             }
         }
     }

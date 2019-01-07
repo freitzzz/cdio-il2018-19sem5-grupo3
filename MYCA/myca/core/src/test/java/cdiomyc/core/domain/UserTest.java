@@ -20,6 +20,7 @@ public class UserTest {
     @Test
     public void ensureNewSessionIsCreatedIfUserDoesNotHaveActiveSession() {
         User user = new User(new UsernameCredentialsAuth("username", "password"));
+        user.activate(user.activationCode());
         Session session = user.createNewSession();
         assertTrue(user.getLastSession().equals(session));
     }
@@ -27,6 +28,7 @@ public class UserTest {
     @Test(expected = IllegalArgumentException.class)
     public void ensureNewSessionIsNotCreatedIfUserHasActiveSession() {
         User user = new User(new UsernameCredentialsAuth("username", "password"));
+        user.activate(user.activationCode());
         user.createNewSession();
         user.createNewSession();
     }
@@ -34,6 +36,7 @@ public class UserTest {
     @Test
     public void ensureGetLastSessionWorks() {
         User user = new User(new UsernameCredentialsAuth("username", "password"));
+        user.activate(user.activationCode());
         Session session = user.createNewSession();
         assertTrue(user.getLastSession().equals(session));
     }
@@ -47,18 +50,21 @@ public class UserTest {
     @Test(expected = IllegalArgumentException.class)
     public void ensureAddRoleFailsIfRoleIsNull() {
         User user = new User(new UsernameCredentialsAuth("username", "password"));
+        user.activate(user.activationCode());
         user.addRole(null);
     }
 
     @Test(expected = IllegalStateException.class)
     public void ensureAddRoleFailsIfUserHasRole() {
         User user = new User(new UsernameCredentialsAuth("username", "password"));
+        user.activate(user.activationCode());
         user.addRole(Role.CLIENT);
     }
 
     @Test
     public void ensureAddRoleSucceeds() {
         User user = new User(new UsernameCredentialsAuth("username", "password"));
+        user.activate(user.activationCode());
         user.addRole(Role.CONTENT_MANAGER);
         assertTrue(user.hasRole(Role.CONTENT_MANAGER));
     }
@@ -66,18 +72,21 @@ public class UserTest {
     @Test(expected = IllegalArgumentException.class)
     public void ensureRemoveRoleFailsIfRoleIsNull() {
         User user = new User(new UsernameCredentialsAuth("username", "password"));
+        user.activate(user.activationCode());
         user.removeRole(null);
     }
 
     @Test(expected = IllegalStateException.class)
     public void ensureRemoveRoleFailsIfUserDoesNotHaveRole() {
         User user = new User(new UsernameCredentialsAuth("username", "password"));
+        user.activate(user.activationCode());
         user.removeRole(Role.CONTENT_MANAGER);
     }
 
     @Test
     public void ensureRemoveRoleSucceeds() {
         User user = new User(new UsernameCredentialsAuth("username", "password"));
+        user.activate(user.activationCode());
         user.removeRole(Role.CLIENT);
         assertFalse(user.hasRole(Role.CLIENT));
     }

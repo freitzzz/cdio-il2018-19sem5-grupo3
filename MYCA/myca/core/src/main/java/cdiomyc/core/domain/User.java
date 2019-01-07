@@ -2,6 +2,7 @@ package cdiomyc.core.domain;
 
 import cdiomyc.core.domain.auth.Auth;
 import cdiomyc.core.domain.auth.Session;
+import cdiomyc.core.domain.exceptions.UserNotEnabledException;
 import cdiomyc.support.domain.ddd.AggregateRoot;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -120,6 +121,7 @@ public class User implements AggregateRoot<Auth>,Serializable{
      * @return Session with the new user session
      */
     public Session createNewSession(String secreteIdentifier){
+        grantUserIsEnabled();
         if(hasActiveSession())
             throw new IllegalArgumentException("User already has an active session!");
         Session createdSession=new Session(LocalDateTime.now().plusMinutes(DEFAULT_SESSION_TIME),auth.id()
@@ -270,6 +272,14 @@ public class User implements AggregateRoot<Auth>,Serializable{
     private void checkRole(Role role){
         if(role==null)
             throw new IllegalArgumentException("Role is invalid!");
+    }
+    
+    /**
+     * Grants that the currrent user is enabled
+     */
+    private void grantUserIsEnabled(){
+        if(!this.enabled)
+            throw new UserNotEnabledException("User is not enabled");
     }
     
     /**

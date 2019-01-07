@@ -537,19 +537,11 @@
       },
       drawRecommendedSlots() {
         store.dispatch(ADD_SLOT_DIMENSIONS)
-        var widthCloset = 6000; /*store.state.customizedProduct.customizedDimensions.width;*/ ///404.5;
-        var depthCloset = 2500; /*store.state.customizedProduct.customizedDimensions.depth;*/ ///100;
-        var heightCloset = 5000; /*store.state.customizedProduct.customizedDimensions.height;*/ ///300;
+        var widthCloset = store.state.customizedProduct.customizedDimensions.width;
+        var depthCloset = store.state.customizedProduct.customizedDimensions.depth;
+        var heightCloset = store.state.customizedProduct.customizedDimensions.height;
   
         var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
-        var unitSlots = store.getters.productSlotWidths.unit;
-  
-        /*  if(unitCloset != unitSlots){
-           this.convert(unitSlots,unitCloset,recommendedSlotWidth);
-           recommendedSlotWidth = this.valueConvertedSlotsWidth;
-           this.convert(unitSlots,unitCloset,minSlotWidth);
-           minSlotWidth = this.valueConvertedSlotsWidth;
-         }  */
   
         var reasonW = store.state.resizeVectorGlobal.width;
   
