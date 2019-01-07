@@ -84,11 +84,9 @@ export default {
 
   methods: {
     async showPlotTimeSeriesChart() {
-        alert(this.selectedArea.area);
       let plotData = [];
       for (let i = 0; i < this.materialFinishes.finishes.length; i++) {
         try {
-            alert(this.selectedCurrency.currency);
           let { data } = await PriceTableRequests.getMaterialFinishPriceHistory(
             this.materialFinishes.material.id,
             this.materialFinishes.finishes[i].id,
