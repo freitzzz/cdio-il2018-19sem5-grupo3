@@ -32,8 +32,8 @@ public class SendGridEmailSenderService {
                         .post(Entity
                                 .json(deserializedSMSSendDetails));
         
-        if(emailSendResponse.getStatus()!=Response.Status.ACCEPTED.getStatusCode())
-            throw new IllegalStateException("An error occurd while sendind the SMS to the receptor");
+        if(emailSendResponse.getStatus()!=Response.Status.ACCEPTED.getStatusCode()||emailSendResponse.getStatus()!=Response.Status.OK.getStatusCode())
+            throw new IllegalStateException("An error occurd while sendind the email to the receptor");
     }
     
 }
