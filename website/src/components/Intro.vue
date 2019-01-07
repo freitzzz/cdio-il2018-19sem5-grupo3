@@ -4,10 +4,7 @@
     <div class="intro">
       <div class="topnav">
         <div class="title-container">
-          <span class="small-text">
-            <i class="material-icons md-12 md-blue btn no-hover">build</i>
-            Make your closet
-          </span>
+          <span class="small-text">Make your closet</span>
         </div>
         <div class="login-container">
           <button type="submit" class="btn btn-custom-2 page-scroll" @click="signIn()">
