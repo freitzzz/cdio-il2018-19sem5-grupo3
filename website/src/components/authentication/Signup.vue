@@ -8,7 +8,7 @@
         <account-details
             v-if="successfulSignup.show"
             :custom-message="successfulSignup.customMessage"
-            :custom-details="successfulSignup.customDetails"
+            :custom-title="successfulSignup.customTitle"
             :details="successfulSignup.details"
             @onClose="emitCloseSignup"
         />
@@ -60,8 +60,7 @@
                     customMessage:"Thank you for signing up on MYC!\nPlease save the following details as they will be required in the future",
                     customTitle:"Successful Signup",
                     details:{
-                        activationCode:String,
-                        apiToken:String
+                        activationCode:String
                     },
                     show:false
                 }
@@ -90,7 +89,6 @@
                         .then((authenticationData) => {
                             let signupData=authenticationData.data;
                             this.successfulSignup.details.activationCode=signupData.activationCode;
-                            this.successfulSignup.details.apiToken=signupData.token;
                             this.successfulSignup.show=true;
                         })
                         .catch((_error_message) => {
