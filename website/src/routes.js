@@ -17,7 +17,6 @@ export const routes = [
     {
         path: "/management", component: ManagementTopBar, children: [
             { path: "categories", component: ListCategories },
-            { path: "prices", component: ListPriceMaterials },
             { path: "materials", component: ListMaterials },
             { path: "products", component: ListProducts },
             { path: "collections", component: ListCustomizedProductCollections },
@@ -27,7 +26,8 @@ export const routes = [
     },
     {
         path: "/administration", component: AdministrationTopBar, children: [
-            { path: "orders", component: ListOrders}
+            { path: "orders", component: ListOrders},
+            { path: "prices", component: ListPriceMaterials}
         ]
     }
 ];
