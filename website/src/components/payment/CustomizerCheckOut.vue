@@ -107,7 +107,6 @@
     margin: 13px;
     font-size: 10px;
     height: 70%;
-    width: 100%;
   }
   
   .col-25 {
