@@ -294,7 +294,7 @@ namespace core.domain
             this.slots = new List<Slot>();
 
             //Add slot matching the CustomizedProduct's dimensions
-            string slotIdentifier = buildSlotIdentifier(this, numberOfSlots() + 1);
+            string slotIdentifier = buildSlotIdentifier(this);
             this.slots.Add(new Slot(slotIdentifier, customizedDimensions));
         }
 
@@ -329,7 +329,7 @@ namespace core.domain
             checkParentCustomizedProduct(parentCustomizedProduct);
             checkInsertedInSlot(insertedInSlot);
 
-            this.reference = buildSubCustomizedProductReference(parentCustomizedProduct, parentCustomizedProduct.numberOfSubCustomizedProducts() + 1);
+            this.reference = buildSubCustomizedProductReference(parentCustomizedProduct);
             this.designation = parentCustomizedProduct.designation;
             this.product = product;
             this.customizedDimensions = customizedDimensions;
@@ -337,7 +337,7 @@ namespace core.domain
             this.slots = new List<Slot>();
 
             //Add slot matching the CustomizedProduct's dimensions
-            string slotIdentifier = buildSlotIdentifier(this, numberOfSlots() + 1);
+            string slotIdentifier = buildSlotIdentifier(this);
             this.slots.Add(new Slot(slotIdentifier, customizedDimensions));
 
             //add it to the parent
@@ -378,35 +378,34 @@ namespace core.domain
             if (this.insertedInSlot != null) throw new InvalidOperationException(CHANGE_CHILD_CUSTOMIZED_PRODUCT_REFERENCE);
             checkString(reference, INVALID_REFERENCE);
 
-            changeReferenceRec(reference);
+            changeReferenceRec(this.reference, reference);
         }
 
 
         /// <summary>
         /// Recursively changes the reference for all the sub CustomizedProducts.
         /// </summary>
+        /// <param name="previousReference">Previous reference.</param>
         /// <param name="reference">New reference.</param>
-        private void changeReferenceRec(string reference)
+        private void changeReferenceRec(string previousReference, string reference)
         {
             this.reference = reference;
 
-            int currentSubCustomizedProduct = 1;
-            int currentSlot = 1;
-
             foreach (Slot slot in this.slots)
             {
-                string newSlotIdentifier = buildSlotIdentifier(this, currentSlot);
-                currentSlot++;
+                string previousSlotIdentifier = slot.identifier;
+
+                string newSlotIdentifier = slot.identifier.Replace(previousReference, reference);
 
                 slot.changeIdentifier(newSlotIdentifier);
 
                 foreach (CustomizedProduct subCustomizedProduct in slot.customizedProducts)
                 {
-                    string newSubCustomizedProductReference =
-                        buildSubCustomizedProductReference(this, currentSubCustomizedProduct);
-                    currentSubCustomizedProduct++;
+                    string previousSubCustomizedProductReference = subCustomizedProduct.reference;
 
-                    subCustomizedProduct.changeReferenceRec(newSubCustomizedProductReference);
+                    string newSubCustomizedProductReference = subCustomizedProduct.reference.Replace(previousReference, reference);
+
+                    subCustomizedProduct.changeReferenceRec(previousReference, reference);
                 }
             }
         }
@@ -545,7 +544,7 @@ namespace core.domain
 
                 fullSizeSlot.changeDimensions(CustomizedDimensions.valueOf(customizedDimensions.height, updatedWidth, customizedDimensions.depth));
 
-                string slotIdentifier =  buildSlotIdentifier(this, numberOfSlots() + 1);
+                string slotIdentifier = buildSlotIdentifier(this);
 
                 slots.Add(new Slot(slotIdentifier, slotDimensions));
             }
@@ -601,7 +600,7 @@ namespace core.domain
                 slot.changeDimensions(newDimensions);
             }
 
-            string slotIdentifier = buildSlotIdentifier(this, numberOfSlots() + 1);
+            string slotIdentifier = buildSlotIdentifier(this);
 
             Slot newSlot = new Slot(slotIdentifier, slotDimensions);
 
@@ -1497,9 +1496,10 @@ namespace core.domain
         /// e.g.: CPIdentifier-S4, which means it's the 4th slot in that CustomizedProduct.
         /// </summary>
         /// <param name="customizedProduct">CustomizedProduct.</param>
-        /// <param name="number">Number being appended to the CustomizedProduct's identifier.</param>
-        private static string buildSlotIdentifier(CustomizedProduct customizedProduct, int number)
+        private static string buildSlotIdentifier(CustomizedProduct customizedProduct)
         {
+            int number = customizedProduct.numberOfSlots() + 1;
+
             return string.Concat(customizedProduct.reference, SLOT_IDENTIFIER_DELIMITER, number);
         }
 
@@ -1508,10 +1508,11 @@ namespace core.domain
         /// e.g.: ParentReference-CP5, which means it's the 5th direct child of that parent.
         /// </summary>
         /// <param name="parentCustomizedProduct">Parent CustomizedProduct, on which the reference will be based on.</param>
-        /// <param name="number">Number being appended to the parent's reference.</param>
         /// <returns>string representing the sub CustomizedProduct's reference.</returns>
-        private static string buildSubCustomizedProductReference(CustomizedProduct parentCustomizedProduct, int number)
+        private static string buildSubCustomizedProductReference(CustomizedProduct parentCustomizedProduct)
         {
+            int number = parentCustomizedProduct.numberOfSubCustomizedProducts() + 1;
+
             return string.Concat(parentCustomizedProduct.reference, REFERENCE_DELIMITER, number);
         }
     }
