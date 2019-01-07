@@ -209,12 +209,9 @@
             <p class="p44 ft20">To answer any questions you might have regarding your privacy and personal data, you can contact us via
                 <nobr>e-mail</nobr> to the address
                 <a href="mailto:helpdesk@myc.pt"><span class="ft27">helpdesk@myc.pt</span></a>. We will gladly help as best and as soon as possible.</p>
-            <p class="p45 ft28">© 2018 Make Your Closet, porto, portugal</p>
+            <p class="p45 ft28">© 2018 Make Your Closet, Porto, Portugal</p>
         </div>
-        <div style="padding: 50px 0px 15px 20px; font-family: Arial, Helvetica, sans-serif; font-size: 8px; color: #c8c8c8;">
-            <p>
-                <a href="https://www.pdfonline.com/convert-pdf/" style="color: #c8c8c8; text-decoration: none;">Word to pDF</a> Converted By BCLTechnologies</p>
-        </div>
+        
     </div>
 </template>
 
@@ -231,10 +228,10 @@ export default{
 </script>
 
 <style>
-    body {
-        margin-top: 0px;
-        margin-left: 0px;
-    }
+   /*  body {
+         margin:10%;
+         padding: 10%;
+    } */
     
     #page_1 {
         position: relative;
