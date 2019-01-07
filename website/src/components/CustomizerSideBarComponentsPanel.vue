@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div ref="componentsSideCustomizer" class="components-side-customizer">
+      <i class="closebtn material-icons md-18 md-grey" @click="closeNav()">close</i>
+    </div>
     <div v-if="getComponentsOk">
       <div class="icon-div-top">
         <i class="material-icons md-12 md-blue btn">help</i>
@@ -52,8 +55,7 @@ export default {
   data() {
     return {
       components: [],
-      div_elements: [],
-      div_inputs: [],
+      addedComponents: [],
       httpCode: null
     };
   },
@@ -89,6 +91,9 @@ export default {
         if(this.components[i].id == componentId) return this.components[i].mandatory == true;
       }
     },
+    closeNav() {
+      this.$refs.componentsSideCustomizer.style.width = "0";
+    },
     nextPanel(){
       //TODO! POST components
       this.$emit("advance");
@@ -117,6 +122,7 @@ export default {
 </script>
 
 <style>
+/* Required component icon */
 .image-icon-div {
   position: relative;
   overflow-x: hidden;
@@ -154,6 +160,7 @@ export default {
   visibility: visible;
 }
 
+/* Tool tip text icon */
 .icon-div-top .tooltiptext {
   visibility: hidden;
   width: 100px;
@@ -178,5 +185,51 @@ export default {
   margin-left: 130px;
   position: absolute;
 }
-</style>
 
+/* Sidenav for component customization */
+.components-side-customizer {
+    height: 100%;
+    /* Full height */
+    width: 300px;
+    /*Full width on initial load, changed with Vue*/
+    position: fixed;
+    /*Stay in place*/
+    z-index: 1;
+    /*Stay on top*/
+    top: 20%;
+    /*Display from top left corner*/
+    left: 78%;
+    overflow-x: hidden;
+    /*Disable horizontal scroll*/
+    padding-top: 60px;
+    margin: 2%;
+    transition: 0.3s;
+    background-color: #e9e9e9a0;
+}
+  
+.components-side-customizer h3 {
+    font-size: 24px;
+    color: #797979 !important;
+    cursor: default;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    margin-right: 50px;
+    cursor: pointer;
+}  
+  
+/*Center primary buttons on the side bar*/
+.components-side-customizer .components-side-customizer-controls {
+    text-align: center;
+    margin: auto;
+}
+    
+/* Position and style the close button (top right corner) */
+.components-side-customizer .closebtn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    margin-left: 50px;
+    cursor: pointer;
+}
+</style>
