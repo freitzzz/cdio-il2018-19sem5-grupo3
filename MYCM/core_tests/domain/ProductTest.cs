@@ -1851,6 +1851,38 @@ namespace core_tests.domain {
             Assert.Empty(product.getRestrictedComponents(customizedProduct));
         }
         [Fact]
+        public void ensureApplyRestrictionsToProductReturnsNullIfArgumentNull() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product2 = new Product("Test2", "Shelf2", "shelf.glb", cat, new List<Material>() { material }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            product.addComplementaryProduct(product2);
+
+            CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
+            CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material2, white, matte);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createAnonymousUserCustomizedProduct("sn", product, customDimension).build();
+
+            customizedProduct.changeCustomizedMaterial(customMaterial);
+            Assert.Null(product.applyRestrictionsToProduct(customizedProduct, null));
+        }
+        [Fact]
         public void ensureGetAllComponentsAsProductsReturnsEmptyIfProductDoesNotHaveComponents() {
             ProductCategory cat = new ProductCategory("All Products");
 

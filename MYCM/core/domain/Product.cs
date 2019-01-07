@@ -682,39 +682,47 @@ namespace core.domain {
             }
             List<Product> componentAsProduct = getAllComponentsAsProducts();
             foreach (Product product in componentAsProduct) {
-                Product currentProduct = product;
-                bool flag = true;
-                foreach (ProductMeasurement measurement in productMeasurements) {
-                    currentProduct = measurement.measurement.applyAllRestrictions(customizedProduct, currentProduct);
+                Product currentProduct = applyRestrictionsToProduct(customizedProduct, product);
+                if (currentProduct != null) {
+                    restrictedComponents.Add(currentProduct);
+                }
+            }
+            return restrictedComponents;
+        }
+
+        public Product applyRestrictionsToProduct(CustomizedProduct customizedProduct, Product product) {
+            if (product == null ) {
+                return null;
+            }
+            Product currentProduct = product;
+            bool flag = true;
+            foreach (ProductMeasurement measurement in productMeasurements) {
+                currentProduct = measurement.measurement.applyAllRestrictions(customizedProduct, currentProduct);
+                if (currentProduct == null) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                foreach (ProductMaterial material in productMaterials) {
+                    currentProduct = material.applyAllRestrictions(customizedProduct, currentProduct);
                     if (currentProduct == null) {
                         flag = false;
                         break;
                     }
                 }
                 if (flag) {
-                    foreach (ProductMaterial material in productMaterials) {
-                        currentProduct = material.applyAllRestrictions(customizedProduct, currentProduct);
-                        if (currentProduct == null) {
-                            flag = false;
-                            break;
-                        }
-                    }
-                    if (flag) {
-                        foreach (Component component in components) {
-                            if (component.complementaryProduct.Equals(currentProduct)) {
-                                currentProduct = component.applyAllRestrictions(customizedProduct, currentProduct);
-                                if (currentProduct == null) {
-                                    break;
-                                }
+                    foreach (Component component in components) {
+                        if (component.complementaryProduct.Equals(currentProduct)) {
+                            currentProduct = component.applyAllRestrictions(customizedProduct, currentProduct);
+                            if (currentProduct == null) {
+                                break;
                             }
                         }
                     }
                 }
-                if (currentProduct != null) {
-                    restrictedComponents.Add(currentProduct);
-                }
             }
-            return restrictedComponents;
+            return currentProduct;
         }
 
         /// <summary>
