@@ -94,13 +94,18 @@ export default {
       
        this.$dialog.confirm({
           title: 'Important Information',
+          cancelText:'Payment',
+          confirmText:'Save Closet',
           hasIcon: true,
           type: 'is-info',
           icon: 'fas fa-exclamation-circle size:5px',
           iconPack: 'fa',
-          message: 'Do you want to proceed to payment?',
+          message: 'Do you want to proceed to payment or do you want to save the closet?',
           onConfirm: () => {
-           this.$emit("advance");
+            alert("queque");           
+          },
+          onCancel:()=>{
+            this.$emit("advance");
           }
         })
     },
