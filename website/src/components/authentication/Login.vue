@@ -138,7 +138,7 @@
              */
             activateSignupComponent() {
                 this.activateSignup=true;
-            },
+            },￼￼￼￼
             /**
              * Closes signup action
              */
@@ -150,6 +150,7 @@
              */
             closeActivateAccountComponent(){
                 this.activateAccount=false;
+                this.login(this.userInfo);
             }
         }
     }
