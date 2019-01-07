@@ -1,24 +1,32 @@
 <template>
   <div>
     <i ref="menuButton" @click="openNav()" class="material-icons md-36 md-grey btn" style="visibility:hidden">menu</i>
-    <div ref="customizerSidenav" class="sidenav" :v-model="sideNav"  v-if="currentPanelIndex != 5">
-      <i class="closebtn material-icons md-18 md-grey" @click="closeNav()">close</i>
-      <h3>{{panels[currentPanelIndex].title}}</h3>
-      <!--The child component changes dinamically depending on tthe currently selected component.-->
-      <!--The Sidebar component listens out for any event that the child may trigger-->
-      <customizer-side-bar-products-panel v-if="currentPanelIndex == 0" @advance="selectProduct"></customizer-side-bar-products-panel>
-      <customizer-side-bar-dimensions-panel v-if="currentPanelIndex == 1" @advance="nextPanel" @back="previousPanel"></customizer-side-bar-dimensions-panel>
-      <customizer-side-bar-slots-panel v-if="currentPanelIndex == 2" @advance="nextPanel" @back="previousPanel"></customizer-side-bar-slots-panel>
-      <customizer-side-bar-materials-panel v-if="currentPanelIndex == 3" @advance="nextPanel" @back="previousPanel"></customizer-side-bar-materials-panel>
-      <customizer-side-bar-components-panel v-if="currentPanelIndex == 4" @advance="nextPanel" @back="previousPanel"></customizer-side-bar-components-panel>
-      
-      
-    </div>
-    <div v-if="currentPanelIndex == 5"  class="sidenavSpecial">
-      <h3>{{panels[currentPanelIndex].title}}</h3>
-      <customizer-check-out v-if="currentPanelIndex == 5" ></customizer-check-out>
-    </div>
+    <div ref="customizerSidenav" :class="[(currentPanelIndex != 5) ? 'sidenav' : 'sidenavSpecial']">
+        <i class="closebtn material-icons md-18 md-grey" @click="closeNav()">close</i>
 
+        <transition name="fade">
+          <div v-if="canDisplayEditButton">
+            <i class="editbtn material-icons md-18 md-grey" @click="togglePopup">edit</i>
+              <transition name="fade">
+                <div class="editpopup" v-show="popupEnabled">
+                <input type="text" placeholder="Reference" v-model="customizedProductReference">
+                <input type="text" placeholder="Designation" v-model="customizedProductDesignation">
+                <button class="btn-primary" @click="togglePopup">OK</button>
+              </div>
+            </transition>
+          </div>
+        </transition>
+        
+        <h3>{{panels[currentPanelIndex].title}}</h3>
+        <!--The child component changes dinamically depending on tthe currently selected component.-->
+        <!--The Sidebar component listens out for any event that the child may trigger-->
+        <customizer-side-bar-products-panel v-if="currentPanelIndex == 0" @advance="selectProduct"/>
+        <customizer-side-bar-dimensions-panel v-if="currentPanelIndex == 1" @advance="nextPanel" @back="previousPanel"/>
+        <customizer-side-bar-slots-panel v-if="currentPanelIndex == 2" @advance="nextPanel" @back="previousPanel"/>
+        <customizer-side-bar-materials-panel v-if="currentPanelIndex == 3" @advance="nextPanel" @back="previousPanel"/>
+        <customizer-side-bar-components-panel v-if="currentPanelIndex == 4" @advance="nextPanel" @back="previousPanel"/>
+        <customizer-check-out v-if="currentPanelIndex == 5" />
+    </div>
   </div>
 </template>
 
@@ -29,13 +37,16 @@
   import CustomizerSideBarSlotsPanel from "./CustomizerSideBarSlotsPanel";
   import CustomizerSideBarComponentsPanel from "./CustomizerSideBarComponentsPanel";
   import CustomizerCheckOut from "./payment/CustomizerCheckOut.vue";
+  import { SET_CUSTOMIZED_PRODUCT_REFERENCE, SET_CUSTOMIZED_PRODUCT_DESIGNATION } from "./../store/mutation-types.js";
   import Store from "./../store/index.js";
+  import CustomizedProductRequests from "./../services/mycm_api/requests/customizedproducts.js";
   
   export default {
     name: "CustomizerSideBar",
     data() {
       return {
-        sideNav:"",
+        popupEnabled: false,
+        hasPressedEditButton: false,
         currentPanelIndex: 0,
         panels: [{
             title: "Structures",
@@ -89,15 +100,80 @@
           this.currentPanelIndex > 0 &&
           this.currentPanelIndex < this.panels.length - 1
         );
+      },
+      /**
+       * Checks if the edit button can be displayed.
+       * The edit button should only be displayed in the stages after the product selection and before the payment.
+       */
+      canDisplayEditButton(){
+        return this.currentPanelIndex > 0 && this.currentPanelIndex < 5;
+      },
+
+      /**
+       * Computed property used for binding the CustomizedProduct's reference directly to the store.
+       */
+      customizedProductReference: {
+        get(){
+          return Store.getters.customizedProductReference;
+        },
+        set(value){
+          return Store.dispatch(SET_CUSTOMIZED_PRODUCT_REFERENCE, value);
+        }
+      },
+
+      /**
+       * Computed property used for binding the CustomizedProduct's designation directly to the store.
+       */
+      customizedProductDesignation: {
+        get(){
+          return Store.getters.customizedProductDesignation;
+        },
+        set(value){
+          return Store.dispatch(SET_CUSTOMIZED_PRODUCT_DESIGNATION, value);
+        }
       }
     },
     methods: {
+      /**
+       * Toggles the edit popup.
+       */
+      togglePopup(){
+        //only perform a request if the popup was previously enabled
+        if(this.currentPanelIndex > 1 && this.currentPanelIndex < 5 && this.popupEnabled){
+
+          var putBody = {
+            reference: this.customizedProductReference
+          };
+
+          if(this.customizedProductDesignation.length > 0){
+            putBody.designation = this.customizedProductDesignation;
+          }
+
+          CustomizedProductRequests.putCustomizedProduct(Store.getters.customizedProductId,putBody)
+          .then(() => {
+            //only disable pop-up if promise resolved successfully
+            this.popupEnabled = !this.popupEnabled;
+          }).catch(error => {
+            this.$toast.open(error.response.data);
+          });
+
+
+        }else{
+          this.popupEnabled = !this.popupEnabled;
+        }
+      },
+
       /**
        * Fades out the menu button and opens the sidenav
        */
       openNav() {
         this.$refs.menuButton.style.visibility = "hidden";
-        this.$refs.customizerSidenav.style.width = "250px";
+
+        if(this.currentPanelIndex == 5){
+          this.$refs.customizerSidenav.style.width = "1000px";
+        }else{
+          this.$refs.customizerSidenav.style.width = "300px";
+        }
       },
       /**
        * Closes the sidenav and fades in the menu button
@@ -198,7 +274,16 @@
     cursor: pointer;
   }
 
-    .sidenavSpecial{
+  .sidenav .editbtn {
+    position: absolute;
+    top: 15px;
+    right: 50px;
+    margin-left: 50px;
+    margin-bottom: 15px;
+    cursor: pointer;
+  }
+
+  .sidenavSpecial {
     height: 100%;
     /* Full height */
     width: 1000px;
@@ -219,7 +304,7 @@
     background-color: #e9e9e9a0;
   }
 
-.sidenavSpecial h3{
+.sidenavSpecial h3 {
    font-size: 24px;
     color: #797979 !important;
     cursor: default;
@@ -229,5 +314,44 @@
     margin-right: 50px;
     cursor: pointer;
 }
+
+.editpopup {
+  text-align: center;
+  margin-left: 10%;
+  margin-right: 10%;
+  padding: 4%;
+  background-color: #e9e9e9d2;
+  position: absolute;
+  z-index: 6;
+  border-radius: 6px;
+}
+
+.editpopup::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;
+  left: 85%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #e9e9e9d2 transparent;
+}
+
+.editpopup input {
+  padding: 3%;
+  border-color: #e9e9e9d2;
+  border-style:solid;
+  border-radius: 6px;
+  margin-bottom: 3%;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
 </style>
 
