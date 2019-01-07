@@ -138,7 +138,7 @@
              */
             activateSignupComponent() {
                 this.activateSignup=true;
-            },￼￼￼￼
+            },
             /**
              * Closes signup action
              */
