@@ -192,7 +192,6 @@ export default {
 
   methods: {
     getAvailableFinishes() {
-      //TODO After materials.js is updated put flag to false when calling getMaterial
       MaterialRequests.getMaterial(this.material.id)
         .then(response => {
           this.finishes.push(...response.data.finishes);
