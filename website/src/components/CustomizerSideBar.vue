@@ -6,7 +6,10 @@
 
         <transition name="fade">
           <div v-if="canDisplayEditButton">
-            <i class="editbtn material-icons md-18 md-grey" @click="togglePopup">edit</i>
+            <div>
+              <i class="editbtn material-icons md-18 md-grey" @click="togglePopup">edit</i>
+              <span v-if="!hasPressedEditButton" class="notification-dot"></span>
+            </div>
               <transition name="fade">
                 <div class="editpopup" v-show="popupEnabled">
                 <input type="text" placeholder="Reference" v-model="customizedProductReference">
@@ -138,6 +141,8 @@
        * Toggles the edit popup.
        */
       togglePopup(){
+        this.hasPressedEditButton = true;
+
         //only perform a request if the popup was previously enabled
         if(this.currentPanelIndex > 1 && this.currentPanelIndex < 5 && this.popupEnabled){
 
@@ -281,6 +286,23 @@
     margin-left: 50px;
     margin-bottom: 15px;
     cursor: pointer;
+  }
+
+  .notification-dot {
+    border-radius: 5px;
+    background-color: #0ba4db9b;
+
+    height: 25px;
+    width: 25px;
+
+    border-radius: 50%;
+
+    position: absolute;
+    top: 12px;
+    right: 47px;
+
+    /*Position the notification dot behind the edit button*/
+    z-index: -1;
   }
 
   .sidenavSpecial {
