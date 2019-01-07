@@ -1,8 +1,10 @@
 package cdiomyc.webservices.authentication;
 
+import cdiomyc.core.domain.exceptions.UserNotEnabledException;
 import cdiomyc.core.mv.authentication.AuthenticationMV;
 import cdiomyc.core.mv.authentication.AuthenticationMVService;
 import cdiomyc.core.mv.authentication.session.GetAuthenticationSessionDetailsMV;
+import cdiomyc.core.mv.users.RequiresUserActivationMV;
 import cdiomyc.webservices.cookieservices.SessionCookieService;
 import cdiomyc.webservices.dataservices.json.SimpleJSONMessageService;
 import com.google.gson.Gson;
@@ -51,6 +53,11 @@ public final class AuthenticationController {
                             .createSessionCookie(authenticationSessionDetailsMV.token))
                     .entity(new Gson().toJson(authenticationSessionDetailsMV))
                     .build();
+        }catch(UserNotEnabledException userNotEnabledException){
+            RequiresUserActivationMV requiresUserActivationMV=new RequiresUserActivationMV();
+            return Response
+                    .status(Status.UNAUTHORIZED)
+                    .entity(new Gson().toJson(requiresUserActivationMV)).build();
         }catch(IllegalArgumentException|IllegalStateException invalidOperation){
             return Response
                     .status(Status.UNAUTHORIZED)
