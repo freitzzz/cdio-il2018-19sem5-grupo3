@@ -138,7 +138,7 @@ export const mutations = {
   [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS](state, payload) {
     if (payload && state.customizedProduct.slots.length >= payload.slot) {
       let copiedArray = state.customizedProduct.components.slice(0);
-      copiedArray.push(payload.component);
+      copiedArray.push(payload);
       state.customizedProduct.components = copiedArray;
     } else if (!payload) {
       state.customizedProduct.components = [];
