@@ -39,14 +39,13 @@ namespace core.services
         /// </summary>
         /// <param name="modelView">material price table entry to transform and persist</param>
         /// <returns>created instance or null in case the creation wasn't successfull</returns>
-        public static async Task<GetMaterialPriceModelView> create(AddPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public static GetMaterialPriceModelView create(AddPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
             string defaultCurrency = CurrencyPerAreaConversionService.getBaseCurrency();
             string defaultArea = CurrencyPerAreaConversionService.getBaseArea();
-            MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
             long materialId = modelView.entityId;
 
-            Material material = materialRepository.find(materialId);
+            Material material = PersistenceContext.repositories().createMaterialRepository().find(materialId);
 
             if (material == null)
             {
@@ -97,11 +96,13 @@ namespace core.services
                 }
                 else
                 {
-                    double convertedValue = await new CurrencyPerAreaConversionService(clientFactory)
+                    Task<double> convertedValueTask = new CurrencyPerAreaConversionService(clientFactory)
                                                     .convertCurrencyPerAreaToDefaultCurrencyPerArea(
                                                         modelView.priceTableEntry.price.currency,
                                                         modelView.priceTableEntry.price.area,
                                                         modelView.priceTableEntry.price.value);
+                    convertedValueTask.Wait();
+                    double convertedValue = convertedValueTask.Result;
                     price = Price.valueOf(convertedValue);
                 }
             }

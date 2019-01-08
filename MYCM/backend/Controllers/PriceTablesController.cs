@@ -73,11 +73,11 @@ namespace backend.Controllers
         ///          HTTP Response 404; Not Found if no materials have price histories
         /// </returns>
         [HttpGet("materials")]
-        public async Task<ActionResult> fetchAllMaterialsPriceHistory([FromQuery] string currency, [FromQuery] string area)
+        public ActionResult fetchAllMaterialsPriceHistory([FromQuery] string currency, [FromQuery] string area)
         {
             try
             {
-                GetAllMaterialPriceHistoryModelView modelView = await new core.application.PriceTablesController().fetchPriceHistoryOfAllMaterials(currency, area, clientFactory);
+                GetAllMaterialPriceHistoryModelView modelView = new core.application.PriceTablesController().fetchPriceHistoryOfAllMaterials(currency, area, clientFactory);
                 return Ok(modelView);
             }
             catch (ResourceNotFoundException e)
@@ -103,7 +103,7 @@ namespace backend.Controllers
         /// <returns>Action Result with HTTP Code 200 and the price history of all material finishes
         ///         Or Action Result with HTTP Code 404 if no material finishes have a price history</returns>
         [HttpGet("materials/{materialID}/finishes")]
-        public async Task<ActionResult> fetchAllMaterialFinishesPriceHistory(long materialID, [FromQuery] string currency, [FromQuery] string area)
+        public ActionResult fetchAllMaterialFinishesPriceHistory(long materialID, [FromQuery] string currency, [FromQuery] string area)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace backend.Controllers
                 priceHistoryDTO.materialID = materialID;
                 priceHistoryDTO.currency = currency;
                 priceHistoryDTO.area = area;
-                GetAllMaterialFinishPriceHistoryModelView allMaterialFinishesPriceHistoryModelView = await new core.application.PriceTablesController().fetchPriceHistoryOfAllMaterialFinishes(priceHistoryDTO, clientFactory);
+                GetAllMaterialFinishPriceHistoryModelView allMaterialFinishesPriceHistoryModelView = new core.application.PriceTablesController().fetchPriceHistoryOfAllMaterialFinishes(priceHistoryDTO, clientFactory);
                 return Ok(allMaterialFinishesPriceHistoryModelView);
             }
             catch (ResourceNotFoundException e)
@@ -138,7 +138,7 @@ namespace backend.Controllers
         ///      <br>HTTP Response 404; Not Found if there is no price history for the given material
         /// </returns>
         [HttpGet("materials/{materialID}")]
-        public async Task<ActionResult> fetchMaterialPriceHistory(long materialID, [FromQuery] string currency, [FromQuery] string area)
+        public ActionResult fetchMaterialPriceHistory(long materialID, [FromQuery] string currency, [FromQuery] string area)
         {
             FetchMaterialPriceHistoryDTO fetchMaterialPriceHistoryDTO = new FetchMaterialPriceHistoryDTO();
             fetchMaterialPriceHistoryDTO.materialID = materialID;
@@ -146,7 +146,7 @@ namespace backend.Controllers
             fetchMaterialPriceHistoryDTO.area = area;
             try
             {
-                GetAllMaterialPriceHistoryModelView materialPriceHistoryModelView = await new core.application.PriceTablesController().fetchMaterialPriceHistory(fetchMaterialPriceHistoryDTO, clientFactory);
+                GetAllMaterialPriceHistoryModelView materialPriceHistoryModelView = new core.application.PriceTablesController().fetchMaterialPriceHistory(fetchMaterialPriceHistoryDTO, clientFactory);
                 return Ok(materialPriceHistoryModelView);
             }
             catch (ResourceNotFoundException e)
@@ -174,7 +174,7 @@ namespace backend.Controllers
         ///      <br>HTTP Response 404; Not Found if there is no price history for the given material
         /// </returns>
         [HttpGet("materials/{materialID}/finishes/{finishID}")]
-        public async Task<ActionResult> fetchMaterialFinishPriceHistory(long materialID, long finishID, [FromQuery] string currency, [FromQuery] string area)
+        public ActionResult fetchMaterialFinishPriceHistory(long materialID, long finishID, [FromQuery] string currency, [FromQuery] string area)
         {
             FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO = new FetchMaterialFinishPriceHistoryDTO();
             fetchMaterialFinishPriceHistoryDTO.materialID = materialID;
@@ -183,7 +183,7 @@ namespace backend.Controllers
             fetchMaterialFinishPriceHistoryDTO.area = area;
             try
             {
-                GetAllMaterialFinishPriceHistoryModelView materialFinishPriceHistoryModelView = await new core.application.PriceTablesController().fetchMaterialFinishPriceHistory(fetchMaterialFinishPriceHistoryDTO, clientFactory);
+                GetAllMaterialFinishPriceHistoryModelView materialFinishPriceHistoryModelView = new core.application.PriceTablesController().fetchMaterialFinishPriceHistory(fetchMaterialFinishPriceHistoryDTO, clientFactory);
                 return Ok(materialFinishPriceHistoryModelView);
             }
             catch (ResourceNotFoundException e)
@@ -210,7 +210,7 @@ namespace backend.Controllers
         ///         Or Action Result with HTTP Code 404 if the requested material isn't found
         ///         Or Action Result with HTTP Code 500 if an unexpected error happens </returns>
         [HttpGet("materials/{materialId}/currentprice")]
-        public async Task<ActionResult> fetchCurrentMaterialPrice(long materialId, [FromQuery] string currency, [FromQuery] string area)
+        public ActionResult fetchCurrentMaterialPrice(long materialId, [FromQuery] string currency, [FromQuery] string area)
         {
             GetCurrentMaterialPriceModelView fetchCurrentMaterialPrice = new GetCurrentMaterialPriceModelView();
             fetchCurrentMaterialPrice.material = new GetBasicMaterialModelView();
@@ -220,7 +220,7 @@ namespace backend.Controllers
             fetchCurrentMaterialPrice.currentPrice.area = area;
             try
             {
-                GetCurrentMaterialPriceModelView currentMaterialPrice = await new core.application.PriceTablesController().fetchCurrentMaterialPrice(fetchCurrentMaterialPrice, clientFactory);
+                GetCurrentMaterialPriceModelView currentMaterialPrice = new core.application.PriceTablesController().fetchCurrentMaterialPrice(fetchCurrentMaterialPrice, clientFactory);
                 return Ok(currentMaterialPrice);
             }
             catch (ResourceNotFoundException e)
@@ -248,7 +248,7 @@ namespace backend.Controllers
         ///         Or Action Result with HTTP Code 404 if one of the requested resources isn't found
         ///         Or Action Result with HTTP Code 500 if an unexpected error happens</returns>
         [HttpGet("materials/{materialId}/finishes/{finishId}/currentprice")]
-        public async Task<ActionResult> fetchCurrentMaterialFinishPrice(long materialId, long finishId, [FromQuery] string currency, [FromQuery] string area)
+        public ActionResult fetchCurrentMaterialFinishPrice(long materialId, long finishId, [FromQuery] string currency, [FromQuery] string area)
         {
             GetCurrentMaterialFinishPriceModelView fetchCurrentMaterialFinishPrice = new GetCurrentMaterialFinishPriceModelView();
             fetchCurrentMaterialFinishPrice.finish = new GetMaterialFinishModelView();
@@ -259,7 +259,7 @@ namespace backend.Controllers
             fetchCurrentMaterialFinishPrice.currentPrice.area = area;
             try
             {
-                GetCurrentMaterialFinishPriceModelView currentMaterialFinishPrice = await new core.application.PriceTablesController().fetchCurrentMaterialFinishPrice(fetchCurrentMaterialFinishPrice, clientFactory);
+                GetCurrentMaterialFinishPriceModelView currentMaterialFinishPrice = new core.application.PriceTablesController().fetchCurrentMaterialFinishPrice(fetchCurrentMaterialFinishPrice, clientFactory);
                 return Ok(currentMaterialFinishPrice);
             }
             catch (ResourceNotFoundException e)
@@ -284,12 +284,12 @@ namespace backend.Controllers
         /// <returns>ActionResult with HTTP Code 201 if the creation is successful
         ///         Or ActionResult with HTTP Code 400 if an error happens</returns>
         [HttpPost("materials/{id}")]
-        public async Task<ActionResult> addMaterialPriceTableEntry(long id, [FromBody] AddPriceTableEntryModelView modelView)
+        public ActionResult addMaterialPriceTableEntry(long id, [FromBody] AddPriceTableEntryModelView modelView)
         {
             try
             {
                 modelView.entityId = id;
-                GetMaterialPriceModelView createdPrice = await new core.application.PriceTablesController().addMaterialPriceTableEntry(modelView, clientFactory);
+                GetMaterialPriceModelView createdPrice = new core.application.PriceTablesController().addMaterialPriceTableEntry(modelView, clientFactory);
                 if (createdPrice == null)
                 {
                     return BadRequest(new SimpleJSONMessageService(PRICE_ENTRY_NOT_CREATED));
@@ -330,13 +330,13 @@ namespace backend.Controllers
         /// <returns>ActionResult with HTTP Code 201 if the creation is successful
         ///         Or ActionResult with HTTP Code 400 if an error happens</returns>
         [HttpPost("materials/{materialid}/finishes/{finishid}")]
-        public async Task<ActionResult> addFinishPriceTableEntry(long materialid, long finishid, [FromBody] AddFinishPriceTableEntryModelView modelView)
+        public ActionResult addFinishPriceTableEntry(long materialid, long finishid, [FromBody] AddFinishPriceTableEntryModelView modelView)
         {
             try
             {
                 modelView.entityId = materialid;
                 modelView.finishId = finishid;
-                GetMaterialFinishPriceModelView createdPrice = await new core.application.PriceTablesController().addFinishPriceTableEntry(modelView, clientFactory);
+                GetMaterialFinishPriceModelView createdPrice = new core.application.PriceTablesController().addFinishPriceTableEntry(modelView, clientFactory);
                 if (createdPrice == null)
                 {
                     return BadRequest(new SimpleJSONMessageService(PRICE_ENTRY_NOT_CREATED));
@@ -378,13 +378,13 @@ namespace backend.Controllers
         /// <returns>ActionResult with HTTP Code 200 if the update is successful
         ///         Or ActionResult with HTTP Code 400 if the update isn't successful</returns>
         [HttpPut("materials/{materialid}/entries/{entryid}")]
-        public async Task<ActionResult> updateMaterialPriceTableEntry(long materialid, long entryid, [FromBody] UpdatePriceTableEntryModelView modelView)
+        public ActionResult updateMaterialPriceTableEntry(long materialid, long entryid, [FromBody] UpdatePriceTableEntryModelView modelView)
         {
             try
             {
                 modelView.entityId = materialid;
                 modelView.tableEntryId = entryid;
-                GetMaterialPriceModelView updatedEntry = await new core.application.PriceTablesController().updateMaterialPriceTableEntry(modelView, clientFactory);
+                GetMaterialPriceModelView updatedEntry = new core.application.PriceTablesController().updateMaterialPriceTableEntry(modelView, clientFactory);
                 if (updatedEntry == null)
                 {
                     return BadRequest(new SimpleJSONMessageService(ENTRY_NOT_UPDATED));
@@ -427,14 +427,14 @@ namespace backend.Controllers
         /// <returns>ActionResult with HTTP Code 200 if the update is successful
         ///         Or ActionResult with HTTP Code 400 if the update isn't successful</returns>
         [HttpPut("materials/{materialid}/finishes/{finishid}/entries/{entryid}")]
-        public async Task<ActionResult> updateFinishPriceTableEntry(long materialid, long finishid, long entryid, [FromBody] UpdateFinishPriceTableEntryModelView modelView)
+        public ActionResult updateFinishPriceTableEntry(long materialid, long finishid, long entryid, [FromBody] UpdateFinishPriceTableEntryModelView modelView)
         {
             try
             {
                 modelView.entityId = materialid;
                 modelView.finishId = finishid;
                 modelView.tableEntryId = entryid;
-                GetMaterialFinishPriceModelView updatedEntry = await new core.application.PriceTablesController().updateFinishPriceTableEntry(modelView, clientFactory);
+                GetMaterialFinishPriceModelView updatedEntry = new core.application.PriceTablesController().updateFinishPriceTableEntry(modelView, clientFactory);
                 if (updatedEntry == null)
                 {
                     return BadRequest(new { error = ENTRY_NOT_UPDATED });

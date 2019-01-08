@@ -59,7 +59,7 @@ namespace core.services
         /// </summary>
         /// <param name="modelView">model view containing updatable information</param>
         /// <returns>True if the update is successful</returns>
-        public static async Task<GetMaterialFinishPriceModelView> update(UpdateFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public static GetMaterialFinishPriceModelView update(UpdateFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
             string defaultCurrency = CurrencyPerAreaConversionService.getBaseCurrency();
             string defaultArea = CurrencyPerAreaConversionService.getBaseArea();
@@ -121,11 +121,13 @@ namespace core.services
                             }
                             else
                             {
-                                double convertedValue = await new CurrencyPerAreaConversionService(clientFactory)
+                                Task<double> convertedValueTask = new CurrencyPerAreaConversionService(clientFactory)
                                                                 .convertCurrencyPerAreaToDefaultCurrencyPerArea(
                                                                     modelView.priceTableEntry.price.currency,
                                                                     modelView.priceTableEntry.price.area,
                                                                     modelView.priceTableEntry.price.value);
+                                convertedValueTask.Wait();
+                                double convertedValue = convertedValueTask.Result;
                                 newPrice = Price.valueOf(convertedValue);
                             }
                         }
@@ -138,22 +140,6 @@ namespace core.services
                         performedAtLeastOneUpdate = true;
                     }
 
-                    if (modelView.priceTableEntry.startingDate != null)
-                    {
-                        LocalDateTime newStartingDate;
-                        try
-                        {
-                            string newStartingDateAsString = modelView.priceTableEntry.startingDate;
-                            newStartingDate = LocalDateTimePattern.GeneralIso.Parse(newStartingDateAsString).GetValueOrThrow();
-                            tableEntryToUpdate.changeTimePeriod(TimePeriod.valueOf(newStartingDate, tableEntryToUpdate.timePeriod.endingDate));
-                            performedAtLeastOneUpdate = true;
-                        }
-                        catch (UnparsableValueException)
-                        {
-                            throw new UnparsableValueException(DATES_WRONG_FORMAT + LocalDateTimePattern.GeneralIso.PatternText);
-                        }
-                    }
-
                     if (modelView.priceTableEntry.endingDate != null)
                     {
                         LocalDateTime newEndingDate;
@@ -162,6 +148,22 @@ namespace core.services
                             string newEndingDateAsString = modelView.priceTableEntry.endingDate;
                             newEndingDate = LocalDateTimePattern.GeneralIso.Parse(newEndingDateAsString).GetValueOrThrow();
                             tableEntryToUpdate.changeTimePeriod(TimePeriod.valueOf(tableEntryToUpdate.timePeriod.startingDate, newEndingDate));
+                            performedAtLeastOneUpdate = true;
+                        }
+                        catch (UnparsableValueException)
+                        {
+                            throw new UnparsableValueException(DATES_WRONG_FORMAT + LocalDateTimePattern.GeneralIso.PatternText);
+                        }
+                    }
+
+                    if (modelView.priceTableEntry.startingDate != null)
+                    {
+                        LocalDateTime newStartingDate;
+                        try
+                        {
+                            string newStartingDateAsString = modelView.priceTableEntry.startingDate;
+                            newStartingDate = LocalDateTimePattern.GeneralIso.Parse(newStartingDateAsString).GetValueOrThrow();
+                            tableEntryToUpdate.changeTimePeriod(TimePeriod.valueOf(newStartingDate, tableEntryToUpdate.timePeriod.endingDate));
                             performedAtLeastOneUpdate = true;
                         }
                         catch (UnparsableValueException)
