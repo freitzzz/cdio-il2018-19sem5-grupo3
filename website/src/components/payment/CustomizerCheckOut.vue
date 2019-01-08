@@ -8,23 +8,29 @@
         </div>
         <div class="section-spacer">
           <p><strong>Bill to:</strong></p>
-          <textarea v-model="clientData" readonly></textarea>
+          <!-- client data it will not be a text area -->
+          <input v-model="clientData" readonly>
         </div>
-  
       </div>
-      <div></div>
+      <div>
+        <label for="currency-picker">Currency:</label>
+        <select v-model="currency">
+          <option v-for="currencyValue in currencies" :key="currencyValue.currency" :value="currencyValue">{{currencyValue.currency}}</option>
+        </select>
+      </div>
       <table class="responsive-table"></table>
       <!-- button add new item (not necessary) -->
       <table></table>
     </div>
-    <div class="center-controls">
-      <i class="btn btn-primary material-icons" @click="previousPanel()">arrow_back</i>
+    <div class="btn-section">
+      <i class="btn btn-primary" @click="previousPanel()">Go back</i>
       <i class="btn btn-primary" @click="payment()">Payment</i>
     </div>
   </main>
 </template>
 
 <script>
+  import CurrencyPerArea from './../../services/mycm_api/requests/currenciesperarea.js'
   import Vue from 'vue';
   /* import { library } from '@fortawesome/fontawesome-svg-core';
   import { faCoffee } from '@fortawesome/free-solid-svg-icons';
@@ -45,7 +51,7 @@
       return {
         currentDate: this.getCurrentDate(),
         taxRate: TAX_RATE_PORTUGAL, //TODO:
-        clientData: "test",
+        clientData: "Fernando Mendes",
         /* Client data is: name, address and phone number */
         currency: "",
         currencies: [],
@@ -55,7 +61,13 @@
     },
     created() {
       store.dispatch(DEACTIVATE_CAN_MOVE_COMPONENTS);
-  
+      
+      /**Get list of all the currencies */
+      CurrencyPerArea.getCurrencies()
+      .then(response =>this.currencies.push(...response.data))
+      .catch(error =>{
+        this.$toast.open("An error occured trying to fetch the currencies.");
+      });
     },
     methods: {
       getCurrentDate() {
@@ -82,6 +94,10 @@
 </script>
 
 <style>
+  .btn-section {
+    width:300px;
+
+  }
   .center-controls {
     text-align: center;
     margin: auto;
@@ -89,7 +105,7 @@
   
   .main-content {
     min-height: 100vh;
-    padding: 15px;
+    padding: 3%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -97,8 +113,9 @@
   
   .invoice-app {
     background-color: white;
-    padding: 2rem;
+    padding: 2%;
     border-radius: 0.5rem;
+    width: 350px;
   }
   
   
