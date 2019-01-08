@@ -83,6 +83,7 @@ import { SET_CUSTOMIZED_PRODUCT_MATERIAL, SET_CUSTOMIZED_PRODUCT_FINISH,
          SET_CUSTOMIZED_PRODUCT_COLOR, DEACTIVATE_CAN_MOVE_CLOSET,
          DEACTIVATE_CAN_MOVE_SLOTS
         } from "./../store/mutation-types.js";
+import { AlwaysDepth } from 'three';
 
 export default {
   name: "CustomizerSideBarMaterialsPanel",
