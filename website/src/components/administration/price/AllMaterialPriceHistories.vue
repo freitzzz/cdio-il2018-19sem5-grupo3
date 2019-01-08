@@ -33,11 +33,13 @@
         </b-field>
       </b-field>
       <div style="width:100%" ref="timeSeriesChart"></div>
+      <loading-dialog :active="loadingDialogState.value" :message="loadingDialogState.message"></loading-dialog>
     </section>
   </div>
 </template>
 
 <script>
+import LoadingDialog from "./../../UIComponents/LoadingDialog";
 import Plotly from "plotly.js-finance-dist";
 import PriceTableRequests from "./../../../services/mycm_api/requests/pricetables.js";
 import MaterialRequests from "./../../../services/mycm_api/requests/materials.js";
@@ -45,6 +47,10 @@ import CurrenciesPerAreaRequests from "./../../../services/mycm_api/requests/cur
 
 export default {
   name: "AllMaterialPriceHistories",
+
+  components: {
+    LoadingDialog
+  },
 
   async created() {
     await CurrenciesPerAreaRequests.getCurrencies()
@@ -61,9 +67,9 @@ export default {
       .catch(error => {
         //throw error?
       });
-      this.selectedCurrency = {...this.currencies[0]};
-      this.selectedArea = {...this.areas[0]};
-      this.showPlotTimeSeriesChart();
+    this.selectedCurrency = { ...this.currencies[0] };
+    this.selectedArea = { ...this.areas[0] };
+    this.showPlotTimeSeriesChart();
   },
 
   data() {
@@ -71,7 +77,11 @@ export default {
       currencies: Array,
       areas: Array,
       selectedCurrency: null,
-      selectedArea: null
+      selectedArea: null,
+      loadingDialogState: {
+        value: false,
+        message: String
+      }
     };
   },
 
@@ -84,6 +94,8 @@ export default {
 
   methods: {
     async showPlotTimeSeriesChart() {
+      this.loadingDialogState.message = "Loading graph";
+      this.loadingDialogState.value = true;
       let plotData = [];
       for (let i = 0; i < this.materials.length; i++) {
         try {
@@ -117,11 +129,11 @@ export default {
       let layout = {
         title: "Price Evolution Time Series",
         width: 750,
-        height: 500,
+        height: 500
       };
-      Plotly.newPlot(this.$refs.timeSeriesChart,plotData,layout);
+      Plotly.newPlot(this.$refs.timeSeriesChart, plotData, layout);
+      this.loadingDialogState.value = false;
     }
-
   }
 };
 </script>
