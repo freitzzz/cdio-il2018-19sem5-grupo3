@@ -128,6 +128,40 @@ export default {
     },
 
     /**
+     * Adds the recommended Slot layout to a CustomizedProduct.
+     * @param {*} customizedProductId - CustomizedProduct's identifier.
+     * @param {"mm" | "cm" | "dm" | "m" | "in"=} unit - Dimension unit
+     * @returns {AxiosPromise<any>} Axios Promise representing the updated CustomizedProduct with the recommended slots.
+     */
+    postCustomizedProductRecommendedSlots(customizedProductId, unit) {
+
+        var requestURL = `${CUSTOMIZED_PRODUCTS_URL}/${customizedProductId}/recommendedslots`;
+
+        if (unit !== undefined) {
+            requestURL = requestURL.concat(`?unit=${unit}`);
+        }
+
+        return Axios.post(requestURL);
+    },
+
+    /**
+     * Adds the minimum Slot layout to a CustomizedProduct.
+     * @param {*} customizedProductId - CustomizedProduct's identifier.
+     * @param {"mm" | "cm" | "dm" | "m" | "in"=} unit - Dimension unit
+     * @returns {AxiosPromise<any>} Axios Promise representing the updated CustomizedProduct with minimum slots.
+     */
+    postCustomizedProductMinimumSlots(customizedProductId, unit) {
+
+        var requestURL = `${CUSTOMIZED_PRODUCTS_URL}/${customizedProductId}/minimumslots`;
+
+        if (unit !== undefined) {
+            requestURL = requestURL.concat(`?unit=${unit}`);
+        }
+
+        return Axios.post(requestURL);
+    },
+
+    /**
      * Updates a CustomizedProduct.
      * @param {number} customizedProductId - CustomizedProduct's identifier.
      * @param {*} customizedProduct - CustomizedProduct's updated data.
