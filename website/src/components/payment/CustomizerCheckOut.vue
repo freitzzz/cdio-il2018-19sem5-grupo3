@@ -3,8 +3,14 @@
     <div class="invoice-app">
       <div class="header">
         <div>
+          <!-- h1 with the name of the company ??? -->
           <p>Date: <input readonly v-model="currentDate"></p>
         </div>
+        <div class="section-spacer">
+          <p><strong>Bill to:</strong></p>
+          <textarea v-model="clientData" readonly></textarea>
+        </div>
+  
       </div>
       <div></div>
       <table class="responsive-table"></table>
@@ -39,7 +45,7 @@
       return {
         currentDate: this.getCurrentDate(),
         taxRate: TAX_RATE_PORTUGAL, //TODO:
-        clientData: "",
+        clientData: "test",
         /* Client data is: name, address and phone number */
         currency: "",
         currencies: [],
@@ -76,5 +82,134 @@
 </script>
 
 <style>
+  .center-controls {
+    text-align: center;
+    margin: auto;
+  }
   
+  .main-content {
+    min-height: 100vh;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .invoice-app {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+  }
+  
+  
+  /* 
+  .header {
+  
+  
+       div {
+          &:nth-child(-n+1){
+              @media (min-width: 761px) {
+                  order: 1;
+                  flex: 1;
+                  text-align: right;
+                  padding-left: 1rem;
+              }
+          }
+      }
+  } */
+  
+  .section-spacer {
+    margin: 1rem 0;
+  }
+  
+  input,
+  select,
+  textarea {
+    background-color: transparentize(color=white, amount=0.7);
+    border: none;
+    display: inline-block;
+    transition: background-color 0.3s ease-in-out;
+    width: 100%;
+  }
+  
+  textarea {
+    width: 100%;
+    min-height: 80px;
+  }
+  
+  
+  /* select {
+      only screen and (max-width: 760px) {
+          width: 100%;
+      }
+  
+      @media print {
+          appearance: none;
+      }
+  } */
+  
+  table {
+    width: auto;
+    border-collapse: collapse;
+    margin: 2rem 0;
+  }
+  
+  
+  /* 
+  .responsive-table {
+      width: 100%;
+      @media 
+      only screen and (max-width: 760px) {
+  
+          table, thead, tbody, th, td, tr { 
+              display: block; 
+          }
+  
+          thead tr { 
+              position: absolute;
+              top: -9999px;
+              left: -9999px;
+          }
+  
+          tr {
+              padding: 2rem 0;
+          }
+  
+          
+          td[data-label] {
+              position: relative;
+              padding-left: 40%; 
+              display: flex;
+              align-items: center;
+  
+              &:before { 
+                  content: attr(data-label);
+                  position: absolute;
+                  top: 0.5rem;
+                  left: 0;
+                  width: 35%; 
+                  padding-right: 10px; 
+                  white-space: nowrap;
+                  font-weight: bold;
+              }
+          }
+      }
+  } */
+  
+  button {
+    background-color: green;
+    border: none;
+    border-radius: 100px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .text-right {
+    text-align: right;
+  }
+  
+  .text-bold {
+    font-weight: bold;
+  }
 </style>
