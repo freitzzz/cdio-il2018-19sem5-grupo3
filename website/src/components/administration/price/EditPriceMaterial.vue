@@ -32,11 +32,7 @@
               </b-select>
             </b-field>
             <b-field label="Area">
-              <b-select
-                icon="move-resize-variant"
-                placeholder="Area"
-                v-model="selectedArea"
-              >
+              <b-select icon="move-resize-variant" placeholder="Area" v-model="selectedArea">
                 <option v-for="area in this.areas" :key="area.area" :value="area">{{area.area}}</option>
               </b-select>
             </b-field>
@@ -99,7 +95,11 @@
                   </b-datepicker>
                 </b-field>
                 <b-field>
-                  <b-timepicker icon="clock" placeholder="Click to choose time" v-model="endingTime">
+                  <b-timepicker
+                    icon="clock"
+                    placeholder="Click to choose time"
+                    v-model="endingTime"
+                  >
                     <button class="btn-primary" @click="endingTime = new Date()">
                       <b-icon icon="clock"></b-icon>
                       <span>Now</span>
@@ -129,11 +129,9 @@ import PriceTablesRequests from "./../../../services/mycm_api/requests/pricetabl
 import CurrenciesPerAreaRequests from "./../../../services/mycm_api/requests/currenciesperarea.js";
 import materials from "../../../services/mycm_api/requests/materials.js";
 export default {
-
   name: "EditPriceMaterial",
 
   async created() {
-
     await CurrenciesPerAreaRequests.getCurrencies()
       .then(response => {
         this.currencies = response.data;
@@ -148,28 +146,31 @@ export default {
       .catch(error => {
         this.$toast.open(error.response.data.message);
       });
-      
+
     this.selectedValue = this.material.value;
-    for(let i=0; i < this.currencies.length; i++){
-      if(this.material.currency === this.currencies[i].currency){
-        this.selectedCurrency = {...this.currencies[i]};
+    for (let i = 0; i < this.currencies.length; i++) {
+      if (this.material.currency === this.currencies[i].currency) {
+        this.selectedCurrency = { ...this.currencies[i] };
         break;
       }
     }
-    for(let i=0; i < this.areas.length; i++){
-      if(this.material.area === this.areas[i].area){
-        this.selectedArea = {...this.areas[i]};
+    for (let i = 0; i < this.areas.length; i++) {
+      if (this.material.area === this.areas[i].area) {
+        this.selectedArea = { ...this.areas[i] };
         break;
       }
     }
     this.startingDate = new Date(this.material.startingDate);
     this.endingDate = new Date(this.material.endingDate);
-    this.startingTime = new Date(this.material.startingDate + "T" + this.material.startingTime);
-    this.endingTime = new Date(this.material.endingDate + "T" + this.material.endingTime);
+    this.startingTime = new Date(
+      this.material.startingDate + "T" + this.material.startingTime
+    );
+    this.endingTime = new Date(
+      this.material.endingDate + "T" + this.material.endingTime
+    );
   },
 
   data() {
-
     return {
       currencies: Array,
       areas: Array,
@@ -181,15 +182,28 @@ export default {
       startingTime: null,
       endingTime: null
     };
-
   },
 
   methods: {
-
     updateMaterialPriceTableEntry() {
-      if(this.selectedCurrency == null || this.selectedArea == null){
+      if (this.selectedCurrency == null || this.selectedArea == null) {
         this.$toast.open({
-          message : "Choose a currency and an area before you save your update!"
+          message:
+            "Choose a currency and an area before you save your update!"
+        });
+        return;
+      }
+      if (this.startingDate == null || this.endingDate == null) {
+        this.$toast.open({
+          message:
+            "Make sure you choose a starting date and an ending date before you save your update!"
+        });
+        return;
+      }
+      if (this.startingTime == null || this.endingTime == null) {
+        this.$toast.open({
+          message:
+            "Make sure you choose a starting time and an ending time before you save your update!"
         });
         return;
       }
@@ -210,7 +224,12 @@ export default {
           )
         }
       };
-      this.$emit("updateMaterialPriceTableEntry", this.material.id, this.material.tableEntryId, updatedEntry);
+      this.$emit(
+        "updateMaterialPriceTableEntry",
+        this.material.id,
+        this.material.tableEntryId,
+        updatedEntry
+      );
     },
 
     parseDateTimeToGeneralIsoFormatString(date, time) {
@@ -220,7 +239,6 @@ export default {
         ? ""
         : dateToIso.split("T")[0] + "T" + timeToIso.split("T")[1].split(".")[0];
     }
-
   },
   props: {
     /**
@@ -231,6 +249,5 @@ export default {
       required: true
     }
   }
-
 };
 </script>

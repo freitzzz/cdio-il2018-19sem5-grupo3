@@ -191,11 +191,11 @@ namespace backend_tests.Controllers
             //TODO Compare message
         }
 
-        [Fact, TestPriority(0)]
+        /* [Fact, TestPriority(0)]
         public async void testCRUDOperations()
         {
 
-        }
+        } */
 
         [Fact, TestPriority(1)]
         public async void ensureGetAllProductsReturnsNotFoundWhenNoProductsAreAvailable()
@@ -449,10 +449,10 @@ namespace backend_tests.Controllers
                     Assert.Equal(productModelViewFromGet.id, getAllResponseContent[0].id);
                 } */
 
-        [Fact, TestPriority(13)]
+        /* [Fact, TestPriority(13)]
         public async void ensureCantAddNewProductComponentsIfThereAreNoProductsAvailable()
         {
-        }
+        } */
 
         [Fact, TestPriority(14)]
         public async void ensureGetProductByReferenceReturnsNotFoundWhenProductsWithMatchingReferenceAreNotFound()
