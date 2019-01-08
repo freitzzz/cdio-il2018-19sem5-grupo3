@@ -42,8 +42,14 @@ export default {
     getCustomizedProductRecommendedSlots(customizedProductId) {
         return Axios.get(`${CUSTOMIZED_PRODUCTS_URL}/${customizedProductId}/recommendedslots`);
     },
-
-
+    /**
+     * Adds the recommended slot layout to the CustomizedProduct
+     * @param {number} customizedProductId - CustomizedProduct's identifier.
+     * @returns {AxiosPromise<any>} Axios Promise representing the updated CustomizedProduct
+     */
+    createRecommendedSlots(customizedProductId){
+        return Axios.get(`${CUSTOMIZED_PRODUCTS_URL}/${customizedProductId}/recommendedslots/create`);
+    },
     /**
      * Retrieves a CustomizedProduct's minimum slot layout.
      * @param {number} customizedProductId - CustomizedProduct's identifier.
