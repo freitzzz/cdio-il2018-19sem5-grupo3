@@ -99,13 +99,20 @@ namespace core.services
 
             LocalDateTime currentTime = NodaTime.LocalDateTime.FromDateTime(SystemClock.Instance.GetCurrentInstant().ToDateTimeUtc());
 
-            if (tableEntryToUpdate.timePeriod.startingDate.CompareTo(currentTime) < 0)
+            if (modelView.priceTableEntry.endingDate != null && !LocalDateTimePattern.GeneralIso.Format(tableEntryToUpdate.timePeriod.startingDate).Equals(modelView.priceTableEntry.startingDate))
             {
-                throw new InvalidOperationException(PAST_DATE);
+                if (tableEntryToUpdate.timePeriod.startingDate.CompareTo(currentTime) < 0)
+                {
+                    throw new InvalidOperationException(PAST_DATE);
+                }
             }
 
-            if(tableEntryToUpdate.timePeriod.endingDate.CompareTo(currentTime) < 0){
-                throw new InvalidOperationException(PAST_DATE);
+            if (modelView.priceTableEntry.startingDate != null && !LocalDateTimePattern.GeneralIso.Format(tableEntryToUpdate.timePeriod.endingDate).Equals(modelView.priceTableEntry.endingDate))
+            {
+                if (tableEntryToUpdate.timePeriod.endingDate.CompareTo(currentTime) < 0)
+                {
+                    throw new InvalidOperationException(PAST_DATE);
+                }
             }
 
             if (modelView.priceTableEntry.price != null)
