@@ -1,5 +1,5 @@
 CURRENT_SMS_CARRIER=Nexmo
-CURRENT_EMAIL_CARRIER=SendGrid
+CURRENT_EMAIL_CARRIER=Gmail
 
 # Uncomment to use Nexmo SMS service
 # But be careful we only have like ~38 messages left to use
