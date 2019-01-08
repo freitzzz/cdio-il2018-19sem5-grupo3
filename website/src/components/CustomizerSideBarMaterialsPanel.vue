@@ -301,7 +301,7 @@ export default {
               finish: {
                 description: defaultFinish.description,
                 shininess: defaultFinish.shininess,
-              }
+              },
             }
           })
           .then(() => {
@@ -325,8 +325,15 @@ export default {
     deleteSlots(){
       let slotsToDelete = [];
       var size = store.state.customizedProduct.slots.length;
-      for(let i = 0; i< size-1; i++){
-        slotsToDelete.unshift(store.state.customizedProduct.slots[i].idSlot);
+      CustomizedProductRequests.getCustomizedProducts(store.state.customizedProduct.id)
+        .then(() => {
+          custProducSlots = response.data.slots;
+        })
+        .catch((error_message) => {
+        });
+      for(let i = 0; i< custProducSlots.length-1; i++){
+        alert(custProducSlots[i].id);
+        slotsToDelete.unshift(custProducSlots[i].id);
       }
       return new Promise((accept,reject)=>{
         this.deleteSlot(slotsToDelete)
