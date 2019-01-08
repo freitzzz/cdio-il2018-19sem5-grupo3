@@ -52,7 +52,7 @@ namespace core.services
         /// <summary>
         /// Message that occurs if one the entry trying to be update is past its time period
         /// </summary>
-        private const string PAST_ENTRY = "Unable to edit past price entries!";
+        private const string PAST_DATE = "Unable to edit past price entries!";
 
         /// <summary>
         /// Updates a finish's price table entry
@@ -96,10 +96,14 @@ namespace core.services
 
                     LocalDateTime currentTime = NodaTime.LocalDateTime.FromDateTime(SystemClock.Instance.GetCurrentInstant().ToDateTimeUtc());
 
-                    if (tableEntryToUpdate.timePeriod.startingDate.CompareTo(currentTime) < 0
-                        && tableEntryToUpdate.timePeriod.endingDate.CompareTo(currentTime) < 0)
+                    if (tableEntryToUpdate.timePeriod.startingDate.CompareTo(currentTime) < 0)
                     {
-                        throw new InvalidOperationException(PAST_ENTRY);
+                        throw new InvalidOperationException(PAST_DATE);
+                    }
+
+                    if (tableEntryToUpdate.timePeriod.endingDate.CompareTo(currentTime) < 0)
+                    {
+                        throw new InvalidOperationException(PAST_DATE);
                     }
 
                     if (modelView.priceTableEntry.price != null)

@@ -47,12 +47,12 @@ namespace core.services
         /// <summary>
         /// Message that occurs if one of the dates of the time period doesn't follow the General ISO format
         /// </summary>
-        private const string DATES_WRONG_FORMAT = "Make sure all dates follow the General ISO Format: ";
+        private const string DATES_WRONG_FORMAT = "Make sure all dates follow the format: ";
 
         /// <summary>
         /// Message that occurs if the entry trying to be updated is past its time period
         /// </summary>
-        private const string PAST_ENTRY = "Unable to edit past price entries!";
+        private const string PAST_DATE = "Unable to edit past dates!";
 
         /// <summary>
         /// Updates a material's price table entry
@@ -99,10 +99,13 @@ namespace core.services
 
             LocalDateTime currentTime = NodaTime.LocalDateTime.FromDateTime(SystemClock.Instance.GetCurrentInstant().ToDateTimeUtc());
 
-            if (tableEntryToUpdate.timePeriod.startingDate.CompareTo(currentTime) < 0
-                && tableEntryToUpdate.timePeriod.endingDate.CompareTo(currentTime) < 0)
+            if (tableEntryToUpdate.timePeriod.startingDate.CompareTo(currentTime) < 0)
             {
-                throw new InvalidOperationException(PAST_ENTRY);
+                throw new InvalidOperationException(PAST_DATE);
+            }
+
+            if(tableEntryToUpdate.timePeriod.endingDate.CompareTo(currentTime) < 0){
+                throw new InvalidOperationException(PAST_DATE);
             }
 
             if (modelView.priceTableEntry.price != null)
