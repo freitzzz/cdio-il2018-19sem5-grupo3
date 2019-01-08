@@ -33,11 +33,13 @@
         </b-field>
       </b-field>
       <div style="width:100%" ref="timeSeriesChart"></div>
+      <loading-dialog :active="loadingDialogState.value" :message="loadingDialogState.message"></loading-dialog>
     </section>
   </div>
 </template>
 
 <script>
+import LoadingDialog from "./../../UIComponents/LoadingDialog";
 import Plotly from "plotly.js-finance-dist";
 import PriceTableRequests from "./../../../services/mycm_api/requests/pricetables.js";
 import MaterialRequests from "./../../../services/mycm_api/requests/materials.js";
@@ -71,7 +73,11 @@ export default {
       currencies: Array,
       areas: Array,
       selectedCurrency: null,
-      selectedArea: null
+      selectedArea: null,
+      loadingDialogState: {
+        value: false,
+        message: String
+      }
     };
   },
 
@@ -84,6 +90,8 @@ export default {
 
   methods: {
     async showPlotTimeSeriesChart() {
+      this.loadingDialogState.message = "Loading graph";
+      this.loadingDialogState.value = true;
       let plotData = [];
       for (let i = 0; i < this.materialFinishes.finishes.length; i++) {
         try {
@@ -105,7 +113,10 @@ export default {
           let trace = {
             type: "scatter",
             mode: "lines",
-            name: this.materialFinishes.material.designation + " " + this.materialFinishes.finishes[i].description,
+            name:
+              this.materialFinishes.material.designation +
+              " " +
+              this.materialFinishes.finishes[i].description,
             x: xAxisArray,
             y: yAxisArray
           };
@@ -121,6 +132,7 @@ export default {
         height: 500
       };
       Plotly.newPlot(this.$refs.timeSeriesChart, plotData, layout);
+      this.loadingDialogState.value = false;
     }
   }
 };
