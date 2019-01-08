@@ -239,7 +239,7 @@ export default class ProductRenderer {
     this.resizeVec = [];
 
     /* Create vector for initial values of width,height and depth */
-    this.initialDimensions = [404.5, 300, 245];
+    this.initialDimensions = [404.5, 300, 100];
 
     this.NUMBER_DIMENSIONS = 3;
 
