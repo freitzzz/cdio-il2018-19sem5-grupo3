@@ -49,7 +49,7 @@ namespace core.services
         /// <param name="modelView">model view with the necessary info to create a finish price table entry</param>
         /// <param name="clientFactory">injected client factory</param>
         /// <returns></returns>
-        public static async Task<GetMaterialFinishPriceModelView> create(AddFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public static GetMaterialFinishPriceModelView create(AddFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
             string defaultCurrency = CurrencyPerAreaConversionService.getBaseCurrency();
             string defaultArea = CurrencyPerAreaConversionService.getBaseArea();
@@ -119,11 +119,13 @@ namespace core.services
                         }
                         else
                         {
-                            double convertedValue = await new CurrencyPerAreaConversionService(clientFactory)
+                            Task<double> convertedValueTask = new CurrencyPerAreaConversionService(clientFactory)
                                                             .convertCurrencyPerAreaToDefaultCurrencyPerArea(
                                                                 modelView.priceTableEntry.price.currency,
                                                                 modelView.priceTableEntry.price.area,
                                                                 modelView.priceTableEntry.price.value);
+                            convertedValueTask.Wait();
+                            double convertedValue = convertedValueTask.Result;
                             price = Price.valueOf(convertedValue);
                         }
                     }

@@ -200,6 +200,26 @@ export default {
 
   methods: {
     updateMaterialFinishPriceTableEntry() {
+      if (this.selectedCurrency == null || this.selectedArea == null) {
+        this.$toast.open({
+          message: "Choose a currency and an area before you save your update!"
+        });
+        return;
+      }
+      if (this.startingDate == null || this.endingDate == null) {
+        this.$toast.open({
+          message:
+            "Make sure you choose a starting date and an ending date before you save your update!"
+        });
+        return;
+      }
+      if (this.startingTime == null || this.endingTime == null) {
+        this.$toast.open({
+          message:
+            "Make sure you choose a starting time and an ending time before you save your update!"
+        });
+        return;
+      }
       var updatedEntry = {
         tableEntry: {
           price: {

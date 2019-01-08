@@ -314,8 +314,13 @@ namespace core.domain {
             this.slots = new List<Slot>();
 
             //Add slot matching the CustomizedProduct's dimensions
-            string slotIdentifier = buildSlotIdentifier(this);
-            this.slots.Add(new Slot(slotIdentifier, customizedDimensions));
+            string slotIdentifier = buildSlotIdentifier();
+
+            //create a copy of the CustomizedProduct's dimensions
+            CustomizedDimensions slotDimensions =
+                CustomizedDimensions.valueOf(customizedDimensions.height, customizedDimensions.width, customizedDimensions.depth);
+
+            this.slots.Add(new Slot(slotIdentifier, slotDimensions));
         }
 
         /// <summary>
@@ -356,8 +361,13 @@ namespace core.domain {
             this.slots = new List<Slot>();
 
             //Add slot matching the CustomizedProduct's dimensions
-            string slotIdentifier = buildSlotIdentifier(this);
-            this.slots.Add(new Slot(slotIdentifier, customizedDimensions));
+            string slotIdentifier = buildSlotIdentifier();
+
+            //create a copy of the CustomizedProduct's dimensions
+            CustomizedDimensions slotDimensions =
+                CustomizedDimensions.valueOf(customizedDimensions.height, customizedDimensions.width, customizedDimensions.depth);
+
+            this.slots.Add(new Slot(slotIdentifier, slotDimensions));
 
             //add it to the parent
             parentCustomizedProduct.addCustomizedProduct(this, insertedInSlot);
@@ -550,7 +560,8 @@ namespace core.domain {
                 if (!isWithinProductSlotWidthsRange(updatedWidth)) throw new ArgumentException(SLOT_DIMENSIONS_NOT_RESPECTING_SPECIFICATION);
 
                 fullSizeSlot.changeDimensions(CustomizedDimensions.valueOf(customizedDimensions.height, updatedWidth, customizedDimensions.depth));
-                string slotIdentifier = buildSlotIdentifier(this);
+
+                string slotIdentifier = buildSlotIdentifier();
 
                 slots.Add(new Slot(slotIdentifier, slotDimensions));
             } else {
@@ -601,7 +612,7 @@ namespace core.domain {
                 slot.changeDimensions(newDimensions);
             }
 
-            string slotIdentifier = buildSlotIdentifier(this);
+            string slotIdentifier = buildSlotIdentifier();
 
             Slot newSlot = new Slot(slotIdentifier, slotDimensions);
 
@@ -647,6 +658,31 @@ namespace core.domain {
             addSubsequentSlotRec(minPossibleWidth, idealSlotWidth, availableWidth, newSlotDimensions, largestSlot, slotDictionary);
         }
 
+
+        /// <summary>
+        /// Adds the the recommended slot layout to the CustomizedProduct.
+        /// </summary>
+        /// <exception cref="System.InvalidOperationException">
+        /// Thrown when the customization process has finished or when if the product does not support slots.
+        /// </exception>
+        public void addRecommendedSlots() {
+            if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
+
+            if (!this.product.supportsSlots) throw new InvalidOperationException(PRODUCT_DOES_NOT_SUPPORT_SLOTS);
+
+            List<CustomizedDimensions> recommendedSlotDimensions = recommendedSlots();
+
+            this.slots.Clear();
+
+            List<Slot> newSlots = new List<Slot>();
+
+            foreach (CustomizedDimensions slotDimensions in recommendedSlotDimensions) {
+                Slot slot = new Slot(buildSlotIdentifier(), slotDimensions);
+
+                this.slots.Add(slot);
+            }
+        }
+
         /// <summary>
         /// Removes a given Slot from the CustomizedProduct's Slot list
         /// </summary>
@@ -676,7 +712,11 @@ namespace core.domain {
 
                 Slot mainSlot = this.slots.SingleOrDefault();
 
-                mainSlot.changeDimensions(this.customizedDimensions);
+                //create a copy of the CustomizedProduct's dimensions
+                CustomizedDimensions slotDimensions =
+                    CustomizedDimensions.valueOf(customizedDimensions.height, customizedDimensions.width, customizedDimensions.depth);
+
+                mainSlot.changeDimensions(slotDimensions);
             } else {
                 double previousSlotWidth = slotBeingRemoved.slotDimensions.width;
 
@@ -1000,89 +1040,84 @@ namespace core.domain {
         public List<CustomizedDimensions> recommendedSlots() {
 
             List<CustomizedDimensions> recommendedSlots = new List<CustomizedDimensions>();
+            double customizedProductHeight = customizedDimensions.height;
+            double customizedProductWidth = customizedDimensions.width;
+            double customizedProductDepth = customizedDimensions.depth;
 
-            var widthCloset = customizedDimensions.width;
-            var depthCloset = customizedDimensions.depth;
-            var heightCloset = customizedDimensions.height;
-            var unitCloset = "mm"; //customizedDimensions.unit;
-            var unitSlots = "mm";
-            var recommendedSlotWidth = product.slotWidths.recommendedWidth;
-            var minSlotWidth = product.slotWidths.minWidth;
+            double recommendedSlotWidth = product.slotWidths.recommendedWidth;
+            double minSlotWidth = product.slotWidths.minWidth;
 
-            var reasonW = 404.5 / widthCloset;
-            var reasonD = 100 / depthCloset;
-            var reasonH = 300 / heightCloset;
+            int recommendedNumberSlots = (int)(customizedProductWidth / recommendedSlotWidth);
+            double remainder = customizedProductWidth % recommendedSlotWidth;
+            double remainderWidth = customizedProductWidth - recommendedNumberSlots * recommendedSlotWidth;
 
-            var recommendedNumberSlots = (int)(widthCloset / recommendedSlotWidth);
-            var remainder = widthCloset % recommendedSlotWidth;
-            var remainderWidth =
-              widthCloset - recommendedNumberSlots * recommendedSlotWidth;
-            for (var i = 0; i < recommendedNumberSlots; i++) {
+            for (int i = 0; i < recommendedNumberSlots; i++) {
                 recommendedSlots.Add(
                     CustomizedDimensions.valueOf(
-                        heightCloset,
+                        customizedProductHeight,
                         recommendedSlotWidth,
-                        depthCloset));
+                        customizedProductDepth));
             }
+
             if (remainderWidth > 0) {
                 if (remainder > minSlotWidth) {
                     recommendedSlots.Add(
                         CustomizedDimensions.valueOf(
-                            heightCloset,
+                            customizedProductHeight,
                             remainderWidth,
-                            depthCloset));
+                            customizedProductDepth));
                 } else {
-                    var lackToMin = minSlotWidth - remainderWidth;
-                    var takeRecommended = lackToMin / recommendedNumberSlots;
+                    double lackToMin = minSlotWidth - remainderWidth;
+                    double takeRecommended = lackToMin / recommendedNumberSlots;
 
                     if ((recommendedSlotWidth - takeRecommended) > minSlotWidth) {
                         recommendedSlots = new List<CustomizedDimensions>();
-                        for (var i = 0; i < recommendedNumberSlots; i++) {
+                        for (int i = 0; i < recommendedNumberSlots; i++) {
                             recommendedSlots.Add(
                                 CustomizedDimensions.valueOf(
-                                heightCloset,
+                                customizedProductHeight,
                                 (recommendedSlotWidth - takeRecommended),
-                                depthCloset));
+                                customizedProductDepth));
                         }
+
                         recommendedSlots.Add(
                             CustomizedDimensions.valueOf(
-                            heightCloset,
+                            customizedProductHeight,
                             (minSlotWidth),
-                            depthCloset));
+                            customizedProductDepth));
                     }
                 }
             }
+
             return recommendedSlots;
         }
+
         /// <summary>
         /// Returns the min slots
         /// </summary>
         /// <returns>List with the min slots</returns>
-        public List<CustomizedDimensions> minSlots() {
 
+        public List<CustomizedDimensions> minSlots() {
             List<CustomizedDimensions> minSlots = new List<CustomizedDimensions>();
 
-            var widthCloset = customizedDimensions.width;
-            var depthCloset = customizedDimensions.depth;
-            var heightCloset = customizedDimensions.height;
-            var unitCloset = "mm"; //customizedDimensions.unit;
-            var unitSlots = "mm";
-            var maxSlotWidth = product.slotWidths.maxWidth;
-            var minSlotWidth = product.slotWidths.minWidth;
+            double heightCloset = customizedDimensions.height;
+            double widthCloset = customizedDimensions.width;
+            double depthCloset = customizedDimensions.depth;
 
-            var reasonW = 404.5 / widthCloset;
-            var reasonD = 100 / depthCloset;
-            var reasonH = 300 / heightCloset;
+            double maxSlotWidth = product.slotWidths.maxWidth;
+            double minSlotWidth = product.slotWidths.minWidth;
 
-            var maxNumberSlots = (int)(widthCloset / maxSlotWidth);
-            var remainder = widthCloset % maxSlotWidth;
-            var remainderWidth =
-              widthCloset - maxNumberSlots * maxSlotWidth;
-            minSlots.Add(
-                CustomizedDimensions.valueOf(
-                    heightCloset,
-                    maxSlotWidth,
-                    depthCloset));
+            int maxNumberSlots = (int)(widthCloset / maxSlotWidth);
+            double remainder = widthCloset % maxSlotWidth;
+            double remainderWidth = widthCloset - maxNumberSlots * maxSlotWidth;
+
+            for (int i = 0; i < maxNumberSlots; i++) {
+                minSlots.Add(
+                    CustomizedDimensions.valueOf(
+                        heightCloset,
+                        maxSlotWidth,
+                        depthCloset));
+            }
 
             if (remainderWidth > 0) {
                 if (remainder > minSlotWidth) {
@@ -1092,18 +1127,20 @@ namespace core.domain {
                             remainderWidth,
                             depthCloset));
                 } else {
-                    var lackToMin = minSlotWidth - remainderWidth;
-                    var takeRecommended = lackToMin / maxNumberSlots;
+                    double lackToMin = minSlotWidth - remainderWidth;
+                    double takeRecommended = lackToMin / maxNumberSlots;
 
                     if ((maxSlotWidth - takeRecommended) > minSlotWidth) {
                         minSlots = new List<CustomizedDimensions>();
-                        for (var i = 0; i < maxNumberSlots; i++) {
+
+                        for (int i = 0; i < maxNumberSlots; i++) {
                             minSlots.Add(
                                 CustomizedDimensions.valueOf(
                                 heightCloset,
                                 (maxSlotWidth - takeRecommended),
                                 depthCloset));
                         }
+
                         minSlots.Add(
                             CustomizedDimensions.valueOf(
                             heightCloset,
@@ -1112,6 +1149,7 @@ namespace core.domain {
                     }
                 }
             }
+
             return minSlots;
         }
 
@@ -1448,10 +1486,10 @@ namespace core.domain {
         /// e.g.: CPIdentifier-S4, which means it's the 4th slot in that CustomizedProduct.
         /// </summary>
         /// <param name="customizedProduct">CustomizedProduct.</param>
-        private static string buildSlotIdentifier(CustomizedProduct customizedProduct) {
-            int number = customizedProduct.numberOfSlots() + 1;
+        private string buildSlotIdentifier() {
+            int number = this.numberOfSlots() + 1;
 
-            return string.Concat(customizedProduct.reference, SLOT_IDENTIFIER_DELIMITER, number);
+            return string.Concat(this.reference, SLOT_IDENTIFIER_DELIMITER, number);
         }
 
         /// <summary>

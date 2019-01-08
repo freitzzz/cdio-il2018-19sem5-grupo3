@@ -22,7 +22,7 @@ namespace core.application
         /// Fetches the price history of all materials
         /// </summary>
         /// <returns>GetAllMaterialPriceHistoryModelView with the price history of all materials</returns>
-        public async Task<GetAllMaterialPriceHistoryModelView> fetchPriceHistoryOfAllMaterials(string currency, string area, IHttpClientFactory clientFactory)
+        public GetAllMaterialPriceHistoryModelView fetchPriceHistoryOfAllMaterials(string currency, string area, IHttpClientFactory clientFactory)
         {
             IEnumerable<MaterialPriceTableEntry> materialPriceTableEntries = PersistenceContext.repositories().createMaterialPriceTableRepository().findAll();
             FetchEnsurance.ensureMaterialPriceHistoryFetchWasSuccessful(materialPriceTableEntries);
@@ -32,9 +32,11 @@ namespace core.application
                 AreasService.checkAreaSupport(area);
                 foreach (MaterialPriceTableEntry materialPriceTableEntry in materialPriceTableEntries)
                 {
-                    materialPriceTableEntry.price.value =
-                        await new CurrencyPerAreaConversionService(clientFactory)
+                    Task<double> convertedValueTask =
+                        new CurrencyPerAreaConversionService(clientFactory)
                             .convertDefaultCurrencyPerAreaToCurrencyPerArea(materialPriceTableEntry.price.value, currency, area);
+                    convertedValueTask.Wait();
+                    materialPriceTableEntry.price.value = convertedValueTask.Result;
                 }
                 return PriceTableModelViewService.fromMaterialCollection(materialPriceTableEntries, currency, area);
             }
@@ -46,7 +48,7 @@ namespace core.application
         /// </summary>
         /// <param name="materialFinishPriceHistoryDTO">FetchMaterialFinishPriceHistoryDTO containing the material's PID</param>
         /// <returns>GetAllMaterialFinishPriceHistoryModelView with the price history of all finishes of the material</returns>
-        public async Task<GetAllMaterialFinishPriceHistoryModelView> fetchPriceHistoryOfAllMaterialFinishes(FetchMaterialFinishPriceHistoryDTO materialFinishPriceHistoryDTO, IHttpClientFactory clientFactory)
+        public GetAllMaterialFinishPriceHistoryModelView fetchPriceHistoryOfAllMaterialFinishes(FetchMaterialFinishPriceHistoryDTO materialFinishPriceHistoryDTO, IHttpClientFactory clientFactory)
         {
             IEnumerable<FinishPriceTableEntry> materialFinishPriceHistory = PersistenceContext.repositories().createFinishPriceTableRepository().fetchAllMaterialFinishesPriceHistory(materialFinishPriceHistoryDTO);
             FetchEnsurance.ensureMaterialFinishPriceHistoryFetchWasSuccessful(materialFinishPriceHistory);
@@ -56,9 +58,11 @@ namespace core.application
                 AreasService.checkAreaSupport(materialFinishPriceHistoryDTO.area);
                 foreach (FinishPriceTableEntry finishPriceTableEntry in materialFinishPriceHistory)
                 {
-                    finishPriceTableEntry.price.value =
-                        await new CurrencyPerAreaConversionService(clientFactory)
+                    Task<double> convertedValueTask =
+                        new CurrencyPerAreaConversionService(clientFactory)
                             .convertDefaultCurrencyPerAreaToCurrencyPerArea(finishPriceTableEntry.price.value, materialFinishPriceHistoryDTO.currency, materialFinishPriceHistoryDTO.area);
+                    convertedValueTask.Wait();
+                    finishPriceTableEntry.price.value = convertedValueTask.Result;
                 }
                 return PriceTableModelViewService.fromMaterialFinishCollection(materialFinishPriceHistory, materialFinishPriceHistoryDTO.currency, materialFinishPriceHistoryDTO.area);
             }
@@ -70,7 +74,7 @@ namespace core.application
         /// </summary>
         /// <param name="fetchMaterialFinishPriceHistoryDTO">FetchMaterialPriceHistoryDTO with the information about the fetch</param>
         /// <returns>GetAllMaterialPriceHistoryModelView with the material price history fetch information</returns>
-        public async Task<GetAllMaterialPriceHistoryModelView> fetchMaterialPriceHistory(FetchMaterialPriceHistoryDTO fetchMaterialPriceHistoryDTO, IHttpClientFactory clientFactory)
+        public GetAllMaterialPriceHistoryModelView fetchMaterialPriceHistory(FetchMaterialPriceHistoryDTO fetchMaterialPriceHistoryDTO, IHttpClientFactory clientFactory)
         {
             IEnumerable<MaterialPriceTableEntry> materialPriceHistory = PersistenceContext.repositories().createMaterialPriceTableRepository().fetchMaterialPriceHistory(fetchMaterialPriceHistoryDTO);
             FetchEnsurance.ensureMaterialPriceHistoryFetchWasSuccessful(materialPriceHistory);
@@ -80,9 +84,11 @@ namespace core.application
                 AreasService.checkAreaSupport(fetchMaterialPriceHistoryDTO.area);
                 foreach (MaterialPriceTableEntry materialPriceTableEntry in materialPriceHistory)
                 {
-                    materialPriceTableEntry.price.value =
-                        await new CurrencyPerAreaConversionService(clientFactory)
+                    Task<double> convertedValueTask =
+                        new CurrencyPerAreaConversionService(clientFactory)
                             .convertDefaultCurrencyPerAreaToCurrencyPerArea(materialPriceTableEntry.price.value, fetchMaterialPriceHistoryDTO.currency, fetchMaterialPriceHistoryDTO.area);
+                    convertedValueTask.Wait();
+                    materialPriceTableEntry.price.value = convertedValueTask.Result;
                 }
                 return PriceTableModelViewService.fromMaterialCollection(materialPriceHistory, fetchMaterialPriceHistoryDTO.currency, fetchMaterialPriceHistoryDTO.area);
             }
@@ -94,7 +100,7 @@ namespace core.application
         /// </summary>
         /// <param name="fetchMaterialFinishPriceHistoryDTO">FetchMaterialFinishPriceHistoryDTO with the information about the fetch</param>
         /// <returns>GetAllMaterialFinishPriceHistoryModelView with the material finish price history fetch information</returns>
-        public async Task<GetAllMaterialFinishPriceHistoryModelView> fetchMaterialFinishPriceHistory(FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO, IHttpClientFactory clientFactory)
+        public GetAllMaterialFinishPriceHistoryModelView fetchMaterialFinishPriceHistory(FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO, IHttpClientFactory clientFactory)
         {
             IEnumerable<FinishPriceTableEntry> materialFinishPriceHistory = PersistenceContext.repositories().createFinishPriceTableRepository().fetchMaterialFinishPriceHistory(fetchMaterialFinishPriceHistoryDTO);
             FetchEnsurance.ensureMaterialFinishPriceHistoryFetchWasSuccessful(materialFinishPriceHistory);
@@ -104,9 +110,11 @@ namespace core.application
                 AreasService.checkAreaSupport(fetchMaterialFinishPriceHistoryDTO.area);
                 foreach (FinishPriceTableEntry finishPriceTableEntry in materialFinishPriceHistory)
                 {
-                    finishPriceTableEntry.price.value =
-                        await new CurrencyPerAreaConversionService(clientFactory)
+                    Task<double> convertedValueTask =
+                        new CurrencyPerAreaConversionService(clientFactory)
                             .convertDefaultCurrencyPerAreaToCurrencyPerArea(finishPriceTableEntry.price.value, fetchMaterialFinishPriceHistoryDTO.currency, fetchMaterialFinishPriceHistoryDTO.area);
+                    convertedValueTask.Wait();
+                    finishPriceTableEntry.price.value = convertedValueTask.Result;
                 }
                 return PriceTableModelViewService.fromMaterialFinishCollection(materialFinishPriceHistory, fetchMaterialFinishPriceHistoryDTO.currency, fetchMaterialFinishPriceHistoryDTO.area);
             }
@@ -118,9 +126,9 @@ namespace core.application
         /// </summary>
         /// <param name="modelView">GetCurrentMaterialPriceModelView with info to fetch the current price</param>
         /// <returns>GetCurrentMaterialPriceModelView with the material's current price</returns>
-        public async Task<GetCurrentMaterialPriceModelView> fetchCurrentMaterialPrice(GetCurrentMaterialPriceModelView modelView, IHttpClientFactory clientFactory)
+        public GetCurrentMaterialPriceModelView fetchCurrentMaterialPrice(GetCurrentMaterialPriceModelView modelView, IHttpClientFactory clientFactory)
         {
-            return await CurrentPriceService.fromMaterial(modelView, clientFactory);
+            return CurrentPriceService.fromMaterial(modelView, clientFactory);
         }
 
         /// <summary>
@@ -128,45 +136,45 @@ namespace core.application
         /// </summary>
         /// <param name="modelView">GetCurrentMaterialFinishPriceModelView with info to fetch the current price</param>
         /// <returns>GetCurrentMaterialFinishPriceModelView with the material's finish current price</returns>
-        public async Task<GetCurrentMaterialFinishPriceModelView> fetchCurrentMaterialFinishPrice(GetCurrentMaterialFinishPriceModelView modelView, IHttpClientFactory clientFactory)
+        public GetCurrentMaterialFinishPriceModelView fetchCurrentMaterialFinishPrice(GetCurrentMaterialFinishPriceModelView modelView, IHttpClientFactory clientFactory)
         {
-            return await CurrentPriceService.fromMaterialFinish(modelView, clientFactory);
+            return CurrentPriceService.fromMaterialFinish(modelView, clientFactory);
         }
 
         /// <summary>
         /// Adds a new price table entry for a material
         /// </summary>
         /// <param name="modelView">model view with the price table entry's information</param>
-        public async Task<GetMaterialPriceModelView> addMaterialPriceTableEntry(AddPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public GetMaterialPriceModelView addMaterialPriceTableEntry(AddPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
-            return await AddMaterialPriceTableEntryService.create(modelView, clientFactory);
+            return AddMaterialPriceTableEntryService.create(modelView, clientFactory);
         }
 
         /// <summary>
         /// Adds new price table entry for a material's finish
         /// </summary>
         /// <param name="modelView">model view with the price table entry's information</param>
-        public async Task<GetMaterialFinishPriceModelView> addFinishPriceTableEntry(AddFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public GetMaterialFinishPriceModelView addFinishPriceTableEntry(AddFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
-            return await AddFinishPriceTableEntryService.create(modelView, clientFactory);
+            return AddFinishPriceTableEntryService.create(modelView, clientFactory);
         }
 
         /// <summary>
         /// Updates a material's price table entry
         /// </summary>
         /// <param name="modelView">model view with the necessary update information</param>
-        public async Task<GetMaterialPriceModelView> updateMaterialPriceTableEntry(UpdatePriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public GetMaterialPriceModelView updateMaterialPriceTableEntry(UpdatePriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
-            return await UpdateMaterialPriceTableEntryService.update(modelView, clientFactory);
+            return UpdateMaterialPriceTableEntryService.update(modelView, clientFactory);
         }
 
         /// <summary>
         /// Updates a finish's price table entry
         /// </summary>
         /// <param name="modelView">model view with the necessary update information</param>
-        public async Task<GetMaterialFinishPriceModelView> updateFinishPriceTableEntry(UpdateFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public GetMaterialFinishPriceModelView updateFinishPriceTableEntry(UpdateFinishPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
-            return await UpdateFinishPriceTableEntryService.update(modelView, clientFactory);
+            return UpdateFinishPriceTableEntryService.update(modelView, clientFactory);
         }
     }
 }

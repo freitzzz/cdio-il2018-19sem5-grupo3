@@ -289,6 +289,7 @@ export default class ProductRenderer {
     this.initControls();
     this.initLighting();
     this.initPanorama();
+    this.initFloor();
 
     //Creates the intersection plane
     this.plane = new THREE.Plane();
@@ -429,8 +430,26 @@ export default class ProductRenderer {
   }
 
   /**
-   * Initializes the scene's lighting.
+   * Creates an invisible plane representing the floor, on which the shadows will be cast.
    */
+  initFloor() {
+    var planeMaterial = new THREE.ShadowMaterial();
+    planeMaterial.opacity = 0.5;
+
+    var floorPlaneGeo = new THREE.PlaneGeometry(600, 600, 10, 10);
+    floorPlaneGeo.rotateX(-Math.PI / 2);
+    floorPlaneGeo.translate(0, -225, 0);
+
+    var floorPlaneMesh = new THREE.Mesh(floorPlaneGeo, planeMaterial);
+    floorPlaneMesh.visible = true;
+    floorPlaneMesh.receiveShadow = true;
+
+    this.scene.add(floorPlaneMesh);
+  }
+
+  /**
+ * Initializes the scene's lighting.
+ */
   initLighting() {
 
     //*Turn on the helpers below for debugging purposes if needed
@@ -440,10 +459,11 @@ export default class ProductRenderer {
     this.scene.add(hemisphereLight);
 
     //light bulb positioned on the right of the camera's initial position
-    var lightBulbRight = new THREE.PointLight(0x404040, 0.2);
+    var lightBulbRight = new THREE.PointLight(0x404040, 1, 0, 2);
     lightBulbRight.position.set(280, 175, 280);
     lightBulbRight.castShadow = true;
     lightBulbRight.shadow.mapSize.set(512, 512);
+    lightBulbRight.shadow.camera.far = 1000;
     this.scene.add(lightBulbRight);
 
     /*     var lightBulbRightHelper = new THREE.PointLightHelper(lightBulbRight, 10);
@@ -451,10 +471,11 @@ export default class ProductRenderer {
         this.scene.add(lightBulbRightHelper); */
 
     //light bulb positioned on the left of the camera's initial position
-    var lightBulbLeft = new THREE.PointLight(0x404040, 0.2);
+    var lightBulbLeft = new THREE.PointLight(0x404040, 1, 0, 2);
     lightBulbLeft.position.set(-280, 175, 280);
     lightBulbLeft.castShadow = true;
     lightBulbLeft.shadow.mapSize.set(512, 512);
+    lightBulbLeft.shadow.camera.far = 1000;
     this.scene.add(lightBulbLeft);
 
     /*     var lightBulbLeftHelper = new THREE.PointLightHelper(lightBulbLeft, 10);
@@ -468,7 +489,7 @@ export default class ProductRenderer {
     sunLightCenter.castShadow = true;
     sunLightCenter.shadow.mapSize.set(512, 512);
     sunLightCenter.shadow.camera.near = 0.5;
-    sunLightCenter.shadow.camera.far = 500;
+    sunLightCenter.shadow.camera.far = 1200000;
     this.scene.add(sunLightCenter);
 
     /*     var sunLightCenterHelper = new THREE.DirectionalLightHelper(sunLightCenter, 5);
@@ -1902,9 +1923,9 @@ export default class ProductRenderer {
       }
     }
   }
-   /**
-   * Moves the slot across the defined plan that intersects the closet, without overlapping the closet's faces
-   */
+  /**
+  * Moves the slot across the defined plan that intersects the closet, without overlapping the closet's faces
+  */
   moveSlot() {
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
       var newPosition = this.intersection.x - this.offset; //Subtracts the offset to the x coordinate of the intersection point
@@ -1912,33 +1933,32 @@ export default class ProductRenderer {
       if (Math.abs(newPosition) < Math.abs(valueCloset)) { //Doesn't allow the slot to overlap the faces of the closet
         this.selected_slot.position.x = newPosition;
         for (let i = 0; i < this.closet_slots_faces_ids.length; i++) {
-           if (this.group.getObjectById(this.closet_slots_faces_ids[i]) == this.selected_slot) {
+          if (this.group.getObjectById(this.closet_slots_faces_ids[i]) == this.selected_slot) {
             this.group.getObjectById(this.closet_slots_faces_ids[i]).position.x = newPosition;
-           }
-         }
-
-       }
-     } 
+          }
+        }
+      }
+    }
   }
+
   /**
    * Move slot with slider
    */
   moveSlotSlider(index, newWidth) {
-      var left_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
-      var rigth_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[3]).position.x;
-      alert(rigth_closet_face_x_value);
-      this.selected_slot = this.group.getObjectById(this.closet_slots_faces_ids[index]);
-      if (index == 0) {
-        let newPosition = left_closet_face_x_value + newWidth;
-        this.selected_slot.position.x = newPosition;
-      }else {
-        var positionLefthSlot = this.group.getObjectById(this.closet_slots_faces_ids[index - 1]).position.x;
-      if(positionLefthSlot + newWidth > rigth_closet_face_x_value){
+    var left_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
+    var rigth_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[3]).position.x;
+    this.selected_slot = this.group.getObjectById(this.closet_slots_faces_ids[index]);
+    if (index == 0) {
+      let newPosition = left_closet_face_x_value + newWidth;
+      this.selected_slot.position.x = newPosition;
+    } else {
+      var positionLefthSlot = this.group.getObjectById(this.closet_slots_faces_ids[index - 1]).position.x;
+      if (positionLefthSlot + newWidth >= rigth_closet_face_x_value) {
         this.selected_slot.position.x = positionLefthSlot;
-      }else{
-        this.selected_slot.position.x = positionLefthSlot  + newWidth;
+      } else {
+        this.selected_slot.position.x = positionLefthSlot + newWidth;
       }
-      }
+    }
   }
 
   /**

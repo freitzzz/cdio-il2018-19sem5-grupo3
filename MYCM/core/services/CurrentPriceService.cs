@@ -40,7 +40,7 @@ namespace core.services
         /// </summary>
         /// <param name="modelView">ModelView with the necessary information to fetch a material's current price</param>
         /// <returns>GetCurrentMaterialPriceModelView with a material's current price</returns>
-        public static async Task<GetCurrentMaterialPriceModelView> fromMaterial(GetCurrentMaterialPriceModelView modelView, IHttpClientFactory clientFactory)
+        public static GetCurrentMaterialPriceModelView fromMaterial(GetCurrentMaterialPriceModelView modelView, IHttpClientFactory clientFactory)
         {
             Material material = PersistenceContext.repositories().createMaterialRepository().find(modelView.material.id);
 
@@ -76,9 +76,11 @@ namespace core.services
             }
             else
             {
-                currentMaterialPriceModelView.currentPrice.value =
-                    await new CurrencyPerAreaConversionService(clientFactory)
+                Task<double> convertedValueTask =
+                    new CurrencyPerAreaConversionService(clientFactory)
                         .convertDefaultCurrencyPerAreaToCurrencyPerArea(currentPrice.price.value, modelView.currentPrice.currency, modelView.currentPrice.area);
+                convertedValueTask.Wait();
+                currentMaterialPriceModelView.currentPrice.value = convertedValueTask.Result;
                 currentMaterialPriceModelView.currentPrice.currency = modelView.currentPrice.currency;
                 currentMaterialPriceModelView.currentPrice.area = modelView.currentPrice.area;
             }
@@ -86,7 +88,7 @@ namespace core.services
             return currentMaterialPriceModelView;
         }
 
-        public static async Task<GetCurrentMaterialFinishPriceModelView> fromMaterialFinish(GetCurrentMaterialFinishPriceModelView modelView, IHttpClientFactory clientFactory)
+        public static GetCurrentMaterialFinishPriceModelView fromMaterialFinish(GetCurrentMaterialFinishPriceModelView modelView, IHttpClientFactory clientFactory)
         {
             Material material = PersistenceContext.repositories().createMaterialRepository().find(modelView.finish.materialId);
 
@@ -132,9 +134,11 @@ namespace core.services
                     }
                     else
                     {
-                        currentMaterialFinishPriceModelView.currentPrice.value =
-                            await new CurrencyPerAreaConversionService(clientFactory)
+                        Task<double> convertedValueTask =
+                            new CurrencyPerAreaConversionService(clientFactory)
                                 .convertDefaultCurrencyPerAreaToCurrencyPerArea(currentMaterialFinishPrice.price.value, modelView.currentPrice.currency, modelView.currentPrice.area);
+                        convertedValueTask.Wait();
+                        currentMaterialFinishPriceModelView.currentPrice.value = convertedValueTask.Result;
                         currentMaterialFinishPriceModelView.currentPrice.currency = modelView.currentPrice.currency;
                         currentMaterialFinishPriceModelView.currentPrice.area = modelView.currentPrice.area;
                     }

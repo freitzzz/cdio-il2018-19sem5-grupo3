@@ -146,7 +146,6 @@
 </template>
 
 <script>
-
 import MaterialRequests from "./../../../services/mycm_api/requests/materials.js";
 import CurrenciesPerAreaRequests from "./../../../services/mycm_api/requests/currenciesperarea.js";
 
@@ -216,10 +215,25 @@ export default {
     },
 
     createPriceTableEntries() {
-       let entries = [];
-      if(this.selectedCurrency == null || this.selectedArea == null){
+      let entries = [];
+      if (this.selectedCurrency == null || this.selectedArea == null) {
         this.$toast.open({
-          message : "Choose a currency and an area before you schedule the price!"
+          message:
+            "Make sure you choose a currency and an area before you schedule the price!"
+        });
+        return;
+      }
+      if (this.startingDate == null || this.endingDate == null) {
+        this.$toast.open({
+          message:
+            "Make sure you choose a starting date and an ending date before you schedule the price!"
+        });
+        return;
+      }
+      if (this.startingTime == null || this.endingTime == null) {
+        this.$toast.open({
+          message:
+            "Make sure you choose a starting time and an ending time before you schedule the price!"
         });
         return;
       }
@@ -234,8 +248,14 @@ export default {
                 currency: this.selectedCurrency.currency,
                 area: this.selectedArea.area
               },
-              startingDate: this.parseDateTimeToGeneralIsoFormatString(this.startingDate, this.startingTime),
-              endingDate: this.parseDateTimeToGeneralIsoFormatString(this.endingDate, this.endingTime)
+              startingDate: this.parseDateTimeToGeneralIsoFormatString(
+                this.startingDate,
+                this.startingTime
+              ),
+              endingDate: this.parseDateTimeToGeneralIsoFormatString(
+                this.endingDate,
+                this.endingTime
+              )
             }
           }
         });
@@ -243,10 +263,12 @@ export default {
       this.$emit("createMaterialFinishPriceTableEntry", entries);
     },
 
-    parseDateTimeToGeneralIsoFormatString(date, time){
+    parseDateTimeToGeneralIsoFormatString(date, time) {
       let dateToIso = date == null ? null : date.toISOString();
       let timeToIso = time == null ? null : time.toISOString();
-      return dateToIso == null || timeToIso == null ? "" : dateToIso.split("T")[0] + "T" + timeToIso.split("T")[1].split(".")[0];
+      return dateToIso == null || timeToIso == null
+        ? ""
+        : dateToIso.split("T")[0] + "T" + timeToIso.split("T")[1].split(".")[0];
     }
   },
 
