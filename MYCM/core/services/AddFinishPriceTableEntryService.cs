@@ -44,6 +44,11 @@ namespace core.services
         private const string PRICE_TABLE_ENTRY_NOT_CREATED = "A price table entry with the same values already exists for this finish. Please try again with different values";
 
         /// <summary>
+        /// Message that occurs if the price table entry's time period has past dates
+        /// </summary>
+        private const string PAST_DATE = "Can't create time periods with past dates!";
+
+        /// <summary>
         /// Transforms and creates a finish price table entry
         /// </summary>
         /// <param name="modelView">model view with the necessary info to create a finish price table entry</param>
@@ -79,10 +84,17 @@ namespace core.services
                     string endingDateAsString = modelView.priceTableEntry.endingDate;
 
                     LocalDateTime startingDate;
+                    LocalDateTime endingDate;
+                    LocalDateTime currentTime = NodaTime.LocalDateTime.FromDateTime(SystemClock.Instance.GetCurrentInstant().ToDateTimeUtc());
 
                     try
                     {
                         startingDate = LocalDateTimePattern.GeneralIso.Parse(startingDateAsString).GetValueOrThrow();
+
+                        if (startingDate.CompareTo(currentTime) < 0)
+                        {
+                            throw new InvalidOperationException(PAST_DATE);
+                        }
                     }
                     catch (UnparsableValueException)
                     {
@@ -95,7 +107,14 @@ namespace core.services
                     {
                         try
                         {
-                            timePeriod = TimePeriod.valueOf(startingDate, LocalDateTimePattern.GeneralIso.Parse(endingDateAsString).GetValueOrThrow());
+                            endingDate = LocalDateTimePattern.GeneralIso.Parse(endingDateAsString).GetValueOrThrow();
+
+                            if (endingDate.CompareTo(currentTime) < 0)
+                            {
+                                throw new InvalidOperationException(PAST_DATE);
+                            }
+
+                            timePeriod = TimePeriod.valueOf(startingDate, endingDate);
                         }
                         catch (UnparsableValueException)
                         {
