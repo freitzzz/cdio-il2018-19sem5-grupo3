@@ -87,7 +87,6 @@ namespace backend.Controllers
         [HttpGet("base")]
         public ActionResult findBaseCustomizedProducts()
         {
-
             try
             {
                 GetAllCustomizedProductsModelView getAllModelView = new core.application.CustomizedProductController().findAllBaseCustomizedProducts();
@@ -146,6 +145,29 @@ namespace backend.Controllers
             catch (ResourceNotFoundException ex)
             {
                 return NotFound(new SimpleJSONMessageService(ex.Message));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+        [HttpGet("{customizedProductId}/recommendedslots/create")]
+        public ActionResult createRecommendedSlots(long customizedProductId, [FromQuery]string unit)
+        {
+            try
+            {
+                FindCustomizedProductModelView findCustomizedProductModelView = new FindCustomizedProductModelView();
+                findCustomizedProductModelView.customizedProductId = customizedProductId;
+                findCustomizedProductModelView.options.unit = unit;
+
+                GetCustomizedProductModelView customizedProductModelView = new core.application.CustomizedProductController().addRecommendedSlots(findCustomizedProductModelView);
+
+                return Ok(customizedProductModelView);
+            }
+            catch (ResourceNotFoundException e)
+            {
+                return NotFound(new SimpleJSONMessageService(e.Message));
             }
             catch (Exception)
             {
@@ -247,7 +269,6 @@ namespace backend.Controllers
         public ActionResult addCustomizedProduct(long? customizedProductId, long? slotId, [FromHeader]string userAuthToken,
             [FromBody]AddCustomizedProductModelView customizedProductModelView)
         {
-
             if (customizedProductModelView == null)
             {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
@@ -281,7 +302,6 @@ namespace backend.Controllers
         [HttpPost("{id}/slots")]
         public ActionResult addSlotToCustomizedProduct(long id, [FromBody] AddCustomizedDimensionsModelView slotDimensions)
         {
-
             if (slotDimensions == null)
             {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
@@ -353,7 +373,6 @@ namespace backend.Controllers
         [HttpPut("{customizedProductId}/slots/{slotId}")]
         public ActionResult updateSlot(long customizedProductId, long slotId, [FromBody] UpdateSlotModelView updateSlotModelView)
         {
-
             if (updateSlotModelView == null)
             {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
