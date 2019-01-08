@@ -15,24 +15,18 @@
     <div v-if="displaySliders" class="slidersSection">
       <i class="btn btn-primary material-icons" @click="removeLine(index)">remove</i>
       <i class="btn btn-primary material-icons" @click="addLine()">add</i>
-        <!-- <span v-for="n in (minNumberSlots - 1 )" :key="n">
-          <vue-slider
-            class="slidersEspecification" 
-            :min="minSizeSlot"
-            :max="maxSizeSlot"
-            :value="slotWidthChange"
-            v-model="sliderValues[n]"
-            @callback="updateWidthSlot(n)"
-          ></vue-slider>
-        </span> -->
-      <div v-for="(line, index) in lines.slice(0, maxNumberSlots)" v-bind:key="index">
-          <vue-slider
-            class="slidersEspecification"
-            :min="minSizeSlot"
-            :max="maxSizeSlot"
-            v-model="sliderValues[index]"
-            @callback="updateWidthSlot(index)"
-          ></vue-slider>
+      <div class="scroll">
+        <div class="scrollable-div" style="height: 215px; width: 270px;">
+          <div v-for="(line, index) in lines.slice(0, maxNumberSlots)" v-bind:key="index">
+            <vue-slider
+              class="slidersEspecification"
+              :min="minSizeSlot"
+              :max="maxSizeSlot"
+              v-model="sliderValues[index]"
+              @callback="updateWidthSlot(index)"
+            ></vue-slider>
+          </div>
+        </div>
       </div>
     </div>
     <div class="center-controls">
@@ -79,11 +73,11 @@ export default {
        return store.getters.minSlotWidth
     },
     minNumberSlots(){
-      var number = parseInt(store.state.customizedProduct.customizedDimensions.width / store.getters.maxSlotWidth)
+      var number = parseInt(store.state.customizedProduct.customizedDimensions.width / this.maxSizeSlot);
       return number;
     },
     maxNumberSlots(){
-      var number = parseInt(store.state.customizedProduct.customizedDimensions.width/ store.getters.minSlotWidth) -1;
+      var number = parseInt(store.state.customizedProduct.customizedDimensions.width/ this.minSizeSlot) - 1;
       return number;
     },
     displaySliders() {
@@ -101,39 +95,30 @@ export default {
        if (checkEmptyLines.length >= 1 && this.lines.length > 0){
          return;
        } 
-      if(this.lines.length > this.maxNumberSlots - this.minNumberSlots){
+       alert("sliders     " + this.lines.length);
+       alert("max    " + this.maxNumberSlots);
+      if(this.lines.length >= this.maxNumberSlots ){
         this.$toast.open("You have already reached the maximum number of slots");
       }else{
-        this.drawOneSlot(/* this.lines.length */);
+        this.drawOneSlot();
         this.lines.push({
         slider: null
         })
       } 
     },
-    addSlot(index){
-      if(index <= this.maxNumberSlots){
-        this.drawOneSlot();
-      }else{
-         this.$toast.open("Already reached the maximum number of slots"); 
-      }
-    },
     removeLine(lineId) {
       if (!this.blockRemoval){
          this.lines.splice(lineId, 1); 
-         this.removeSlot(this.lines.length);
-      }
-    },
-    removeSlot(index){
-      if(index >= this.minNumberSlots){
-        this.removeOneSlot();
+         this.removeOneSlot();
       }
     },
     nextPanel(){
-      this.postSlots().then(() => {
+     /*  this.postSlots().then(() => {
         this.$emit("advance");
       }).catch((error_message)=>{
            this.$toast.open("There was an error adding slots, please try again"); 
-      });
+      }); */
+      this.$emit("advance");
     },
     postSlots(){
       var reasonW = store.state.resizeVectorGlobal.width;
@@ -146,7 +131,7 @@ export default {
                     unit: store.state.customizedProduct.customizedDimensions.unit});
         }
       }
-      let slotsToPost1 = [];
+       let slotsToPost1 = [];
       for(let i = 0; i< this.slotsToPost.length - 1; i++){
         slotsToPost1.unshift(this.slotsToPost[i]);
       }
@@ -168,6 +153,7 @@ export default {
     postSlot(slotsToPost1){
       return new Promise((accept, reject) => {
         let slotToPost = slotsToPost1.pop();
+        alert(slotToPost.width);
         CustomizedProductRequests.postCustomizedProductSlot(store.state.customizedProduct.id,
               {
                 height: slotToPost.height,
@@ -218,6 +204,7 @@ export default {
        CustomizedProductRequests.getCustomizedProductRecommendedSlots(store.state.customizedProduct.id)
             .then(response => {
               this.listRecommendedSlots = response.data;
+              
               this.drawRecommendedSlots();
           })
           .catch((error_message) => {
@@ -231,6 +218,7 @@ export default {
       var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
       var reasonW = store.state.resizeVectorGlobal.width;
         for (let i = 0; i < this.listRecommendedSlots.length; i++) {
+          alert(this.listRecommendedSlots[i].width);
             store.dispatch(ADD_SLOT_DIMENSIONS, {
               idSlot: i,
               width: this.listRecommendedSlots[i].width * reasonW,
@@ -249,8 +237,10 @@ export default {
     getMinSlots(){
         CustomizedProductRequests.getCustomizedProductMinimumSlots(store.state.customizedProduct.id)
             .then(response => {
-              this.listMinSlots = response.data;
+              this.slotsToPost = response.data;
               this.drawMinSlots();
+              this.postSlots();
+              return this.slotsToPost.length;
             })
             .catch((error_message) => {
               this.$toast.open({
@@ -260,7 +250,8 @@ export default {
     },
     drawMinSlots(){
 
-       this.slotsToPost = [];
+      this.lines =  [];
+      this.sliderValues = [];
               var widthCloset = store.state.customizedProduct.customizedDimensions.width;
               var depthCloset = store.state.customizedProduct.customizedDimensions.depth;
               var heightCloset = store.state.customizedProduct.customizedDimensions.height;
@@ -269,25 +260,26 @@ export default {
              
              var reasonW = store.state.resizeVectorGlobal.width;
 
-              for (let i = 0; i < this.listMinSlots.length; i++) {
+              for (let i = 0; i < this.slotsToPost.length; i++) {
                 store.dispatch(ADD_SLOT_DIMENSIONS, {
                   idSlot: i,
-                  width: this.listMinSlots[i].width * reasonW,
+                  width: this.slotsToPost[i].width * reasonW,
                   height: heightCloset,
                   depth: depthCloset,
                   unit: unitCloset
                 });
-                if(i < this.listMinSlots.length - 1){
+                if(i < this.slotsToPost.length - 1){
                   this.lines.push({
                   slider: null
-                }) 
-                this.sliderValues[i] = this.maxSizeSlot}
-              this.slotsToPost.push({
+                  }) 
+                  this.sliderValues[i] = this.maxSizeSlot}
+               /*  this.slotsToPost.push({
                     height: heightCloset,
                     depth: depthCloset,
                     width: this.listMinSlots[i].width,
-                    unit: unitCloset});
-              } 
+                    unit: unitCloset}); */
+              }
+
             
     },
     drawOneSlot(){
@@ -320,11 +312,11 @@ export default {
                   depth: depthCloset,
                   unit: unitCloset
                 }); 
-              this.slotsToPost.push({
+             /*  this.slotsToPost.push({
                     height: heightCloset,
                     depth: depthCloset,
                     width: min,
-                    unit: unitCloset});
+                    unit: unitCloset}); */
               
     },
     removeOneSlot(){
@@ -346,7 +338,7 @@ export default {
       } 
     },
     updateWidthSlot(index){
-      var depthCloset = 0;
+     /*  var depthCloset = 0;
       var heightCloset = 0;
       var unitCloset = store.state.customizedProduct.customizedDimensions.unit; 
       var reasonW = store.state.resizeVectorGlobal.width;
@@ -356,16 +348,21 @@ export default {
                   height: heightCloset,
                   depth: depthCloset,
                   unit: unitCloset
-      });             
-    }
+      });    */         
+    } 
   },
   watch: {
   lines() {
-      this.blockRemoval = this.lines.length <= 1;
+      this.blockRemoval = this.lines.length <= this.minNumberSlots;
     }
   },
   created() {
+    if(this.minNumberSlots <= 0){
+        this.nextPanel();
+    }else{
+    this.createNewSlider = true;
     store.dispatch(DEACTIVATE_CAN_MOVE_CLOSET);
+    }
   },
 }
 </script>
@@ -385,6 +382,9 @@ export default {
   margin-left: 5%;
   margin-right: 5%;
   margin-top: 15%
+}
+.scroll {
+  margin-top: 5%
 }
 .component {
   margin-bottom: 31%;
