@@ -93,6 +93,10 @@ namespace backend.persistence.ef
             builder.Entity<DiscreteDimensionInterval>().HasBaseType<Dimension>();
             builder.Entity<SingleValueDimension>().HasBaseType<Dimension>();
 
+            builder.Entity<Algorithm>().HasMany(a => a.inputValues).WithOne();
+            builder.Entity<InputValue>().Property<long>("inputId");
+            builder.Entity<InputValue>().HasOne(iv => iv.input).WithOne().HasForeignKey<InputValue>("inputId");
+
             //Algorithm inheritance mapping
             builder.Entity<WidthPercentageAlgorithm>().HasBaseType<Algorithm>();
             builder.Entity<SameMaterialAndFinishAlgorithm>().HasBaseType<Algorithm>();
@@ -100,24 +104,28 @@ namespace backend.persistence.ef
             //PriceTableEntry inheritance mapping
             /* builder.Entity<MaterialPriceTableEntry>().HasBaseType<PriceTableEntry>();
             builder.Entity<FinishPriceTableEntry>().HasBaseType<PriceTableEntry>(); */
-            builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values); //one-to-many relationship
+            builder.Entity<DiscreteDimensionInterval>().HasMany(i => i.values).WithOne(); //one-to-many relationship
 
-            builder.Entity<Measurement>().HasOne(m => m.height);        //one-to-one relationship
-            builder.Entity<Measurement>().HasOne(m => m.depth);         //one-to-one relationship
-            builder.Entity<Measurement>().HasOne(m => m.width);         //one-to-one relationship
-            builder.Entity<Measurement>().HasMany(m => m.restrictions); //one-to-many relationship
+            builder.Entity<Measurement>().Property<long>("heightDimensionId");
+            builder.Entity<Measurement>().Property<long>("widthDimensionId");
+            builder.Entity<Measurement>().Property<long>("depthDimensionId");
+
+            builder.Entity<Measurement>().HasOne(m => m.height).WithOne().HasForeignKey<Measurement>("heightDimensionId").OnDelete(DeleteBehavior.Cascade);        //one-to-one relationship
+            builder.Entity<Measurement>().HasOne(m => m.width).WithOne().HasForeignKey<Dimension>("depthDimensionId").OnDelete(DeleteBehavior.Cascade);         //one-to-one relationship
+            builder.Entity<Measurement>().HasOne(m => m.depth).WithOne().HasForeignKey<Dimension>("widthDimensionId").OnDelete(DeleteBehavior.Cascade);         //one-to-one relationship
+            builder.Entity<Measurement>().HasMany(m => m.restrictions).WithOne().OnDelete(DeleteBehavior.Cascade); //one-to-many relationship
 
             //Configure many-to-one relationship between parent and child ProductCategory
             builder.Entity<ProductCategory>().HasOne(c => c.parent).WithMany().HasForeignKey(c => c.parentId);
 
-            builder.Entity<Material>().HasMany(m => m.Colors);                  //one-to-many relationship
-            builder.Entity<Material>().HasMany(m => m.Finishes);                //one-to-many relationship
+            builder.Entity<Material>().HasMany(m => m.Colors).WithOne().OnDelete(DeleteBehavior.Cascade);                  //one-to-many relationship
+            builder.Entity<Material>().HasMany(m => m.Finishes).WithOne().OnDelete(DeleteBehavior.Cascade);                //one-to-many relationship
 
             //Configure many-to-many relationship between Product and Material
             builder.Entity<ProductMaterial>().HasKey(pm => new { pm.productId, pm.materialId });
             builder.Entity<ProductMaterial>().HasOne(pm => pm.product).WithMany(p => p.productMaterials).HasForeignKey(pm => pm.productId);
             builder.Entity<ProductMaterial>().HasOne(pm => pm.material).WithMany().HasForeignKey(pm => pm.materialId);
-            builder.Entity<ProductMaterial>().HasMany(pm => pm.restrictions);
+            builder.Entity<ProductMaterial>().HasMany(pm => pm.restrictions).WithOne().OnDelete(DeleteBehavior.Cascade);
 
             //TODO: remove join class, if possible
             //NOTE: This "join class" is only here as a workaround for now
@@ -125,25 +133,30 @@ namespace backend.persistence.ef
             builder.Entity<ProductMeasurement>().HasOne(pm => pm.product).WithMany(p => p.productMeasurements).HasForeignKey(pm => pm.productId);
             builder.Entity<ProductMeasurement>().HasOne(pm => pm.measurement);
 
-            builder.Entity<Product>().HasOne(p => p.productCategory);           //many-to-one relationship
+            builder.Entity<Product>().HasOne(p => p.productCategory).WithMany();//many-to-one relationship
             builder.Entity<Product>().OwnsOne(p => p.slotWidths);               //embedded ProductSlotWidths
 
             builder.Entity<Component>().HasKey(c => new { c.fatherProductId, c.complementaryProductId });
             builder.Entity<Component>().HasOne(c => c.fatherProduct).WithMany(p => p.components).HasForeignKey(cp => cp.fatherProductId);
             builder.Entity<Component>().HasOne(c => c.complementaryProduct).WithMany().HasForeignKey(cp => cp.complementaryProductId);
-            builder.Entity<Component>().HasMany(c => c.restrictions);
+            builder.Entity<Component>().HasMany(c => c.restrictions).WithOne().OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<CustomizedProduct>().Property<long>("customizedDimensionsId");
+            builder.Entity<CustomizedProduct>().Property<long?>("customizedMaterialId");
             builder.Entity<CustomizedProduct>().HasOne(cp => cp.product);       //one-to-one relationship
-            builder.Entity<CustomizedProduct>().HasOne(cp => cp.customizedDimensions); //one-to-one relationship
-            builder.Entity<CustomizedProduct>().HasOne(cp => cp.customizedMaterial);
+            builder.Entity<CustomizedProduct>().HasOne(cp => cp.customizedDimensions).WithOne().HasForeignKey<CustomizedProduct>("customizedDimensionsId").OnDelete(DeleteBehavior.Cascade); //one-to-one relationship
+            builder.Entity<CustomizedProduct>().HasOne(cp => cp.customizedMaterial).WithOne().HasForeignKey<CustomizedProduct>("customizedMaterialId").OnDelete(DeleteBehavior.Cascade);
             builder.Entity<CustomizedProduct>().HasMany(cp => cp.slots).WithOne().OnDelete(DeleteBehavior.Cascade);        //one-to-many relationship
 
+            builder.Entity<CustomizedMaterial>().Property<long?>("finishId");
+            builder.Entity<CustomizedMaterial>().Property<long?>("colorId");
             builder.Entity<CustomizedMaterial>().HasOne(cm => cm.material).WithMany();
-            builder.Entity<CustomizedMaterial>().HasOne(cm => cm.finish);
-            builder.Entity<CustomizedMaterial>().HasOne(cm => cm.color);
+            builder.Entity<CustomizedMaterial>().HasOne(cm => cm.finish).WithOne().HasForeignKey<CustomizedMaterial>("finishId").OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<CustomizedMaterial>().HasOne(cm => cm.color).WithOne().HasForeignKey<CustomizedMaterial>("colorId").OnDelete(DeleteBehavior.Cascade);
 
 
-            builder.Entity<Slot>().HasOne(s => s.slotDimensions);              //one-to-one relationship
+            builder.Entity<Slot>().Property<long>("customizedDimensionsId");
+            builder.Entity<Slot>().HasOne(s => s.slotDimensions).WithOne().HasForeignKey<Slot>("customizedDimensionsId").OnDelete(DeleteBehavior.Cascade);              //one-to-one relationship
             builder.Entity<Slot>().HasMany(s => s.customizedProducts).WithOne(cp => cp.insertedInSlot).HasForeignKey(cp => cp.insertedInSlotId).OnDelete(DeleteBehavior.Cascade);          //one-to-many relationship
 
             //Compound key for CollectionProduct
@@ -187,8 +200,6 @@ namespace backend.persistence.ef
             builder.Entity<FinishPriceTableEntry>().HasOne(fpte => fpte.entity);
             builder.Entity<FinishPriceTableEntry>().OwnsOne(fpte => fpte.price);
             builder.Entity<FinishPriceTableEntry>().HasOne(fpte => fpte.timePeriod);
-
-            //TODO: DISABLE CASCADE DELETION FROM JOIN TABLES
         }
     }
 }
