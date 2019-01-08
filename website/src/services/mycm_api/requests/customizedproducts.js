@@ -47,20 +47,36 @@ export default {
     /**
      * Retrieves a CustomizedProduct's minimum slot layout.
      * @param {number} customizedProductId - CustomizedProduct's identifier.
+     * @param {"mm" | "cm" | "dm" | "m" | "in"=} unit - Dimension unit
      * @returns {AxiosPromise<any>} Axios Promise representing the CustomizedProduct's minimum slot layout.
      */
-    getCustomizedProductMinimumSlots(customizedProductId) {
-        return Axios.get(`${CUSTOMIZED_PRODUCTS_URL}/${customizedProductId}/minimumslots`);
+    getCustomizedProductMinimumSlots(customizedProductId, unit) {
+
+        var requestURL = `${CUSTOMIZED_PRODUCTS_URL}/${customizedProductId}/minimumslots`;
+
+        if (unit !== undefined) {
+            requestURL = requestURL.concat(`?unit=${unit}`);
+        }
+
+        return Axios.get(requestURL);
     },
 
     /**
      * Retrieves a CustomizedProduct's Slot.
      * @param {number} customizedProductId - CustomizedProduct's identifier.
      * @param {number} slotId - Slot's identifier.
+     * @param {"mm" | "cm" | "dm" | "m" | "in"=} unit - Dimension unit.
      * @returns {AxiosPromise<any>} Axios Promise representing the CustomizedProduct's Slot.
      */
-    getCustomizedProductSlot(customizedProductId, slotId) {
-        return Axios.get(`${CUSTOMIZED_PRODUCTS_URL}/${customizedProductId}/slots/${slotId}`);
+    getCustomizedProductSlot(customizedProductId, slotId, unit) {
+
+        var requestURL = `${CUSTOMIZED_PRODUCTS_URL}/${customizedProductId}/slots/${slotId}`;
+
+        if (unit !== undefined) {
+            requestURL = requestURL.concat(`?unit=${unit}`);
+        }
+
+        return Axios.get(requestURL);
     },
 
     /**
@@ -91,13 +107,13 @@ export default {
 
         var requestUrl = `${CUSTOMIZED_PRODUCTS_URL}`;
 
-        if(postOptions !== undefined){
+        if (postOptions !== undefined) {
 
             const { customizedProductId, slotId } = postOptions;
 
             requestUrl = requestUrl.concat(`/${customizedProductId}/slots/${slotId}/customizedproducts`);
         }
-        
+
         return Axios.post(requestUrl, customizedProduct);
     },
 
