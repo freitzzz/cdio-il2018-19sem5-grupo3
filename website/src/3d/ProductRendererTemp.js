@@ -1939,35 +1939,26 @@ export default class ProductRenderer {
         }
       }
     }
-     } 
-       }
-     } 
-    }
-     } 
-       }
-     } 
-    }
-     } 
-    }
   }
+
   /**
    * Move slot with slider
    */
   moveSlotSlider(index, newWidth) {
-      var left_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
-      var rigth_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[3]).position.x;
-      this.selected_slot = this.group.getObjectById(this.closet_slots_faces_ids[index]);
-      if (index == 0) {
-        let newPosition = left_closet_face_x_value + newWidth;
-        this.selected_slot.position.x = newPosition;
-      }else {
-        var positionLefthSlot = this.group.getObjectById(this.closet_slots_faces_ids[index - 1]).position.x;
-        if(positionLefthSlot + newWidth >= rigth_closet_face_x_value){
-          this.selected_slot.position.x = positionLefthSlot;
-        }else{
-          this.selected_slot.position.x = positionLefthSlot  + newWidth;
-       }
+    var left_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
+    var rigth_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[3]).position.x;
+    this.selected_slot = this.group.getObjectById(this.closet_slots_faces_ids[index]);
+    if (index == 0) {
+      let newPosition = left_closet_face_x_value + newWidth;
+      this.selected_slot.position.x = newPosition;
+    } else {
+      var positionLefthSlot = this.group.getObjectById(this.closet_slots_faces_ids[index - 1]).position.x;
+      if (positionLefthSlot + newWidth >= rigth_closet_face_x_value) {
+        this.selected_slot.position.x = positionLefthSlot;
+      } else {
+        this.selected_slot.position.x = positionLefthSlot + newWidth;
       }
+    }
   }
 
   /**
