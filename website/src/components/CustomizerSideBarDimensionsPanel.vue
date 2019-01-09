@@ -6,12 +6,12 @@
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
     <select class="dropdown" v-model="dimensionOp" @change="populateDimensions">
-                                                      <option
-                                                        v-for="option in availableOptionsDimensions"
-                                                        :key="option.id"
-                                                        :value="option"
-                                                      >{{"Option: "+option.id}}</option>
-                                                    </select>
+                                                        <option
+                                                          v-for="option in availableOptionsDimensions"
+                                                          :key="option.id"
+                                                          :value="option"
+                                                        >{{"Option: "+option.id}}</option>
+                                                      </select>
   
     <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
@@ -33,12 +33,12 @@
   
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="this.updateUnit">
-                                                      <option
-                                                        v-for="optionUnit in availableOptionsUnits"
-                                                        :key="optionUnit.id"
-                                                        :value="optionUnit.unit"
-                                                      >{{optionUnit.unit}}</option>
-                                                    </select>
+                                                        <option
+                                                          v-for="optionUnit in availableOptionsUnits"
+                                                          :key="optionUnit.id"
+                                                          :value="optionUnit.unit"
+                                                        >{{optionUnit.unit}}</option>
+                                                      </select>
     <div class="center-controls">
       <i class="btn btn-primary material-icons" @click="previousPanel()">arrow_back</i>
       <i class="btn btn-primary material-icons" @click="nextPanel()">arrow_forward</i>
@@ -211,11 +211,19 @@
         ProductRequests.getProductDimensions(store.state.product.id, this.unit)
           .then(response => {
             this.availableOptionsDimensions.push(...response.data);
+            this.getDimensionWithUnits();
             this.populateDimensions();
           })
           .catch(error => {
             this.$toast.open("An error occurred.");
           });
+      },
+      getDimensionWithUnits: function() {
+        for(var i = 0; i < this.availableOptionsDimensions.length;i++){
+          if(this.dimensionOp.id == this.availableOptionsDimensions[i].id){
+            this.dimensionOp = this.availableOptionsDimensions[i];
+          }
+        }
       },
       /**
        * Sends the choosen dimension to the store.
@@ -278,10 +286,10 @@
         //Populate Height:
         this.heightType = this.identifyTypeDimensions(op.height);
         if (this.heightType == DISCRETE_INTERVAL) {
-
+  
           this.discreteIntervalHeight = op.height.values;
           this.height = op.height.values[0];
-
+  
           this.discreteIntervalFlags[this.HEIGHT] = true;
           this.continousIntervalFlags[this.HEIGHT] = false;
           this.discreteValueFlags[this.HEIGHT] = false;
@@ -303,9 +311,9 @@
             op.height
           );
           this.heightIncrement = this.determineIncrementOfInterval(op.height);
-          mean = 2*(this.heightMax - this.heightMin)/3;
-          this.height =  mean.toFixed(2);         
-        
+          mean = 2 * (this.heightMax - this.heightMin) / 3;
+          this.height = mean.toFixed(2);
+  
           this.continousIntervalFlags[this.HEIGHT] = true;
           this.discreteIntervalFlags[this.HEIGHT] = false;
           this.discreteValueFlags[this.HEIGHT] = false;
@@ -329,11 +337,11 @@
           this.continousIntervalFlags[this.WIDTH] = false;
           this.discreteIntervalFlags[this.WIDTH] = false;
         } else {
-
+  
           this.widthMin = this.determineMinOfInterval(this.widthType, op.width);
           this.widthMax = this.determineMaxOfInterval(this.widthType, op.width);
           this.widthIncrement = this.determineIncrementOfInterval(op.width);
-          mean = 2*(this.widthMax - this.widthMin)/3;
+          mean = 2 * (this.widthMax - this.widthMin) / 3;
           this.width = mean.toFixed(2);
   
   
@@ -363,8 +371,8 @@
           this.depthMin = this.determineMinOfInterval(this.depthType, op.depth);
           this.depthIncrement = this.determineIncrementOfInterval(op.depth);
   
-          mean = 2*(this.depthMax - this.depthMin)/3;
-          this.depth =  mean.toFixed(2);         
+          mean = 2 * (this.depthMax - this.depthMin) / 3;
+          this.depth = mean.toFixed(2);
           this.continousIntervalFlags[this.DEPTH] = true;
           this.discreteValueFlags[this.DEPTH] = false;
           this.discreteIntervalFlags[this.DEPTH] = false;
@@ -398,8 +406,8 @@
       determineIncrementOfInterval: function(dimensionJson) {
         return dimensionJson.increment;
       },
-      getMinMaxOfInterval(){
-
+      getMinMaxOfInterval() {
+  
       },
       nextPanel() {
         //!TODO POST product
