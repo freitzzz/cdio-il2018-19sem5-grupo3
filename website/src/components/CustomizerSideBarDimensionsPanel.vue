@@ -6,12 +6,12 @@
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
     <select class="dropdown" v-model="dimensionOp" @change="populateDimensions">
-                                                    <option
-                                                      v-for="option in availableOptionsDimensions"
-                                                      :key="option.id"
-                                                      :value="option"
-                                                    >{{"Option: "+option.id}}</option>
-                                                  </select>
+                                                      <option
+                                                        v-for="option in availableOptionsDimensions"
+                                                        :key="option.id"
+                                                        :value="option"
+                                                      >{{"Option: "+option.id}}</option>
+                                                    </select>
   
     <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
@@ -33,12 +33,12 @@
   
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="this.updateUnit">
-                                                    <option
-                                                      v-for="optionUnit in availableOptionsUnits"
-                                                      :key="optionUnit.id"
-                                                      :value="optionUnit.unit"
-                                                    >{{optionUnit.unit}}</option>
-                                                  </select>
+                                                      <option
+                                                        v-for="optionUnit in availableOptionsUnits"
+                                                        :key="optionUnit.id"
+                                                        :value="optionUnit.unit"
+                                                      >{{optionUnit.unit}}</option>
+                                                    </select>
     <div class="center-controls">
       <i class="btn btn-primary material-icons" @click="previousPanel()">arrow_back</i>
       <i class="btn btn-primary material-icons" @click="nextPanel()">arrow_forward</i>
@@ -145,23 +145,6 @@
       vueSlider
     },
     created() {
-      /* if (this.dimensionOp == undefined) {
-        this.undoDimensionConversion();
-        //Transform 
-        store.dispatch(SET_RESIZE_FACTOR_DIMENSIONS, {
-          width: this.storeDispatchVec.width,
-          height: this.storeDispatchVec.height,
-          depth: this.storeDispatchVec.depth,
-        });
-      } else {
-        store.dispatch(SET_RESIZE_FACTOR_DIMENSIONS, {
-          width: this.width,
-          height: this.height,
-          depth: this.depth,
-        });
-      } */
-  
-  
       store.dispatch(ACTIVATE_CAN_MOVE_CLOSET);
       store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS);
       /*Get all available dimensions of the given product of the array*/
@@ -176,7 +159,7 @@
         .catch(error => {
           this.$toast.open("It wasn't possible to create the available units. Please try again.");
         });
-      this.initialPopulate(); 
+      this.initialPopulate();
   
   
     },
@@ -211,7 +194,7 @@
               }
             }
             /* =this.storeDimensions[controlIndex].slice();
-            
+              
               this.storeDispatchVec[HEIGHT] = this.storeDimensions[this.dimensionOp].height;
               this.storeDispatchVec[DEPTH] = this.storeDimensions[this.dimensionOp].depth; */
   
@@ -220,28 +203,23 @@
             this.$toast.open("An error occurred trying to convert the units");
           });
       },
+      /**
+       * Shows on the screen the changed dimensions 
+       */
       updateUnit: function() {
-        /*  new Promise((accept, reject) => {
-           Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions?unit=${this.unit}`)
-             .then(response => {
-               let controlIndex;
-               this.storeDimensions.push(...response.data);
-               accept(this.storeDimensions);
-               for (let i = 0; i < this.storeDimensions.length(); i++) {
-                 if (this.storeDimensions[i].id == this.dimensionOp) {
-                   controlIndex = i;
-                 }
-               }
-               this.height = storeDimensions[controlIndex].height;
-               this.width = storeDimensions[controlIndex].width;
-               this.depth = storeDimensions[controlIndex].depth;
-             })
-             .catch(error => {
-               this.$toast.open(error.response.status + "An error occurred");
-               reject();
-             });
-         }); */
+        this.availableOptionsDimensions = [];
+        ProductRequests.getProductDimensions(store.state.product.id, this.unit)
+          .then(response => {
+            this.availableOptionsDimensions.push(...response.data);
+            this.populateDimensions();
+          })
+          .catch(error => {
+            this.$toast.open("An error occurred.")
+          });
       },
+      /**
+       * Sends the choosen dimension to the store.
+       */
       updateDimensions() {
   
         this.storeDispatchVec.width = this.width;
@@ -252,7 +230,7 @@
           width: this.storeDispatchVec.width,
           height: this.storeDispatchVec.height,
           depth: this.storeDispatchVec.depth,
-          unit: DEFAULT_UNIT
+          unit: this.unit
         });
   
       },
@@ -288,13 +266,13 @@
           height: this.height,
           depth: this.depth
         });
-        
+  
         //Send to store the first values for the dimensions
         this.updateDimensions();
       },
       //Populate
       populateDimensions: function() {
-
+  
         this.resetFlags();
         //Get information of the chosed option
         var op = this.dimensionOp;
@@ -324,7 +302,7 @@
             op.height
           );
           this.heightIncrement = this.determineIncrementOfInterval(op.height);
-
+  
           this.height = this.heightMin;
           this.continousIntervalFlags[this.HEIGHT] = true;
           this.discreteIntervalFlags[this.HEIGHT] = false;
@@ -349,12 +327,12 @@
           this.continousIntervalFlags[this.WIDTH] = false;
           this.discreteIntervalFlags[this.WIDTH] = false;
         } else {
-          
+  
           this.widthMin = this.determineMinOfInterval(this.widthType, op.width);
           this.widthMax = this.determineMaxOfInterval(this.widthType, op.width);
           this.widthIncrement = this.determineIncrementOfInterval(op.width);
-          this.width=this.widthMin;
-          
+          this.width = this.widthMin;
+  
   
           this.continousIntervalFlags[this.WIDTH] = true;
           this.discreteValueFlags[this.WIDTH] = false;
@@ -380,7 +358,7 @@
           this.depthMax = this.determineMaxOfInterval(this.depthType, op.depth);
           this.depthMin = this.determineMinOfInterval(this.depthType, op.depth);
           this.depthIncrement = this.determineIncrementOfInterval(op.depth);
-
+  
           this.depth = this.depthMin;
           this.continousIntervalFlags[this.DEPTH] = true;
           this.discreteValueFlags[this.DEPTH] = false;
@@ -521,7 +499,7 @@
   
       },
       getRecommendedSlots() {
-        
+  
         CustomizedProductRequests.getCustomizedProductRecommendedSlots(this.idCustomizedProduct)
           .then(response => {
             this.listRecommendedSlots = response.data;
