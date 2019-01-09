@@ -10,7 +10,7 @@ import Shelf from './Shelf'
 import HingedDoor from './HingedDoor'
 import store from "./../store";
 import {
-  SET_RESIZE_VECTOR_GLOBAL, SET_CUSTOMIZED_PRODUCT_COMPONENTS, REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, SET_COMPONENT_TO_REMOVE, SET_DOORS_FLAG
+  SET_RESIZE_VECTOR_GLOBAL, REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, SET_COMPONENT_TO_REMOVE, SET_COMPONENT_TO_ADD, SET_DOORS_FLAG
 } from "./../store/mutation-types.js";
 
 export default class ProductRenderer {
@@ -239,7 +239,7 @@ export default class ProductRenderer {
     this.resizeVec = [];
 
     /* Create vector for initial values of width,height and depth */
-    this.initialDimensions = [40450, 30000, 10000];
+    this.initialDimensions = [404.50, 300.00, 100.00];
 
     this.NUMBER_DIMENSIONS = 3;
 
@@ -522,21 +522,29 @@ export default class ProductRenderer {
   }
 
   /**
-   * Adds components to the current closet
-   * @param {*} component Component to add
+   * Commits the action to the mutation SET_COMPONENT_TO_ADD to the store
+   * @param {*} component Component to add (model and slot obtained through drag and drop)
    */
   addComponent(component) {
     if (!component) return;
+    store.dispatch(SET_COMPONENT_TO_ADD, {
+      model: component.model,
+      slot: component.slot
+    });
+  }
+
+  /**
+   * Generates the component to de added on the canvas 
+   * @param {*} component Component to add
+   */
+  generateComponent(component){
+    if(!component) return;
     var designation = component.model.split(".")[0];
     if (designation == "shelf") this.generateShelf(component);
     if (designation == "pole") this.generatePole(component);
     if (designation == "drawer") this.checkAddDrawerTriggers(component);
     if (designation == "hinged-door") this.checkAddHingedDoorTriggers(component);
     if (designation == "sliding-door") this.checkAddSlidingDoorTriggers(component);
-    store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, {
-      model: component.model,
-      slot: component.slot
-    });
   }
 
   /**
@@ -984,8 +992,7 @@ export default class ProductRenderer {
    * @param {number} depth Number with the closet depth
    */
   changeClosetDimensions(width, height, depth) {
-
-    this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width*0.0001);
+    this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
     this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
     this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth));
 
@@ -999,11 +1006,7 @@ export default class ProductRenderer {
     var i;
     for (i = 0; i < this.NUMBER_DIMENSIONS; i++) {
       this.resizeVec[i] = (this.initialDimensions[i] / this.websiteDimensions[i]);
-
-    }/* 
-    alert(this.resizeVec[this.WIDTH]);
-    alert(this.resizeVec[this.HEIGHT]);
-    alert(this.resizeVec[this.DEPTH]); */
+    }
 
     store.dispatch(SET_RESIZE_VECTOR_GLOBAL, {
       width: this.resizeVec[this.WIDTH],

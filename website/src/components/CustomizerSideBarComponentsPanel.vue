@@ -47,6 +47,7 @@ import ProductRequests from "./../services/mycm_api/requests/products.js";
 import store from "./../store";
 import { SET_CUSTOMIZED_PRODUCT_COMPONENTS,
         REMOVE_CUSTOMIZED_PRODUCT_COMPONENT,
+        SET_COMPONENT_TO_ADD,
         ACTIVATE_CAN_MOVE_COMPONENTS }
         from "./../store/mutation-types.js";
 
@@ -62,7 +63,27 @@ export default {
   computed: {
     getComponentsOk() {
       return this.httpCode === 200;
-    }
+    },
+    addComponent() {
+      return store.getters.componentToAdd;
+    },
+  },
+  watch: {
+    addComponent: function(newValue) {
+      if(!newValue) return;
+      for(let i = 0; i < this.components.length; i++){
+        if(this.components[i].model.split(".")[0] + ".png" == newValue.model){
+          var component = this.components[i];
+          component.slot = newValue.slot;
+          this.addedComponents.push(component);
+
+          store.dispatch(SET_COMPONENT_TO_ADD);
+          store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, {
+            component: component
+          });
+        }
+      }
+    },
   },
   methods: {
     getProductComponents() {
@@ -95,24 +116,23 @@ export default {
       this.$refs.componentsSideCustomizer.style.width = "0";
     },
     nextPanel(){
-      //TODO! POST components
-      
-       this.$dialog.confirm({
-          title: 'Important Information',
-          cancelText:'Payment',
-          confirmText:'Save Closet',
-          hasIcon: true,
-          type: 'is-info',
-          icon: 'fas fa-exclamation-circle size:5px',
-          iconPack: 'fa',
-          message: 'Do you want to proceed to payment or do you want to save the closet?',
-          onConfirm: () => {
-            alert("queque");           
-          },
-          onCancel:()=>{
-            this.$emit("advance");
-          }
-        })
+      this.$dialog.confirm({
+        title: 'Proceed to Checkout',
+        cancelText:'Payment',
+        confirmText:'Save',
+        hasIcon: true,
+        type: 'is-info',
+        icon: 'fas fa-exclamation-circle size:5px',
+        iconPack: 'fa',
+        message: 'Do you wish to proceed to checkout or do you want to save the closet?',
+        onConfirm: () => {
+          //Save closet on profile
+        },
+        onCancel: () => {
+          //Proceed to payment
+          this.$emit("advance");
+        }
+      })
     },
     previousPanel(){
       //TODO! DELETE ALL components
@@ -198,7 +218,7 @@ export default {
 .icon-div-top {
   top: 15px;
   left: 15px;
-  margin-left: 130px;
+  margin-left: 130px !important;
   position: absolute;
 }
 

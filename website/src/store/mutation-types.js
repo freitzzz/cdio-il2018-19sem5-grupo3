@@ -16,6 +16,8 @@ export const REMOVE_CUSTOMIZED_PRODUCT_COMPONENT = "remove_slot_component";
 
 //CanvasControls mutations
 export const SET_COMPONENT_TO_REMOVE = "set_component_to_remove";
+export const SET_COMPONENT_TO_ADD = "set_component_to_add";
+export const SET_COMPONENT_TO_EDIT = "set_component_to_edit";
 export const SET_DOORS_FLAG = "set_doors_flag";
 export const ACTIVATE_CAN_MOVE_SLOTS = "activate_can_move_slots";
 export const DEACTIVATE_CAN_MOVE_SLOTS = "deactivate_can_move_slots";
