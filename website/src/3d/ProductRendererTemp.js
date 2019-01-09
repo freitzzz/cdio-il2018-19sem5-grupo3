@@ -167,6 +167,8 @@ export default class ProductRenderer {
    */
   selected_component;
 
+  selected_module;
+
   /**
    * Instance variable that represents the object being hovered (null if none)
    */
@@ -225,6 +227,8 @@ export default class ProductRenderer {
   /**Number of dimensions in question */
   NUMBER_DIMENSIONS;
 
+  module_group;
+
 
   // ---------------- End of resize control --------------------------
 
@@ -233,6 +237,8 @@ export default class ProductRenderer {
    * @param {HTMLCanvasElement} htmlCanvasElement - HTMLCanvasElement to which the renderer will be attached.
    */
   constructor(htmlCanvasElement) {
+
+    this.module_group = new THREE.Group();
 
     /* Create vector for resizing purposes: */
 
@@ -268,6 +274,7 @@ export default class ProductRenderer {
     this.selected_slot = null;
     this.selected_face = null;
     this.selected_component = null;
+    this.selected_module = null;
     this.hovered_object = null;
     this.plane = null;
     this.mouse = new THREE.Vector2();
@@ -564,6 +571,7 @@ export default class ProductRenderer {
     if (designation == "sliding-door") this.removeSlidingDoor();
     store.dispatch(SET_COMPONENT_TO_REMOVE);
     this.selected_component = null;
+    this.selected_module = null;
     this.controls.enabled = true;
   }
 
@@ -1199,6 +1207,24 @@ export default class ProductRenderer {
             this.offset = this.intersection.x - this.selected_slot.position.x;
           }
         }
+      }
+      //Move drawer
+      
+      for (let j = 0; j < this.closet_modules_ids.length; j++) {
+        let top_module = this.group.getObjectById(this.closet_modules_ids[j]);
+        if (top_module == intersected_object) {
+              this.controls.enabled = false;
+              this.selected_component = intersected_object;
+              this.selected_module = intersected_object;
+               if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+                this.offset = this.intersection.y - this.selected_component.position.y;
+                /* for(let a = 0; a< this.closet_drawers_ids.length; a++){
+                    //this.controls.enabled = false;
+                    this.selected_component = this.group.getObjectById(this.closet_drawers_ids[a]);
+                    this.offset = this.intersection.y - this.selected_component.position.y;
+                }   */
+              }
+          }
       }
 
       //Checks if the selected object is a shelf
@@ -1852,6 +1878,7 @@ export default class ProductRenderer {
     this.selected_face = null;
     //Sets the selected closet component to null (the component stops being selected)
     this.selected_component = null;
+    this.selected_module = null;
   }
 
   /**
@@ -1993,13 +2020,22 @@ export default class ProductRenderer {
         computedYPosition >= this.group.getObjectById(this.closet_faces_ids[0]).position.y &&
         computedXPosition < this.group.getObjectById(this.closet_faces_ids[3]).position.x &&
         computedXPosition >= this.group.getObjectById(this.closet_faces_ids[2]).position.x) {
-        this.selected_component.position.y = computedYPosition; //Sets the new position as long as the component stays within the closet boundaries
+          if(this.selected_component == this.selected_module){
+            for(let i = 0; i < this.closet_drawers_ids.length; i++){
+              this.group.getObjectById(this.closet_drawers_ids[i]).position.y = computedYPosition;
+            }
+            for(let i = 0; i < this.closet_modules_ids.length; i++){
+              var old_position = this.group.getObjectById(this.closet_modules_ids[i]).position.y;
+              this.group.getObjectById(this.closet_modules_ids[i]).position.y = old_position+computedYPosition;
+            }
+          } else this.selected_component.position.y = computedYPosition; //Sets the new position as long as the component stays within the closet boundaries
       } else {
         store.dispatch(SET_COMPONENT_TO_REMOVE, {
           model: this.selected_component.userData.model,
           slot: this.selected_component.userData.slot
         });
       }
+
     }
 
     var intersects = this.raycaster.intersectObjects(this.scene.children[0].children);
