@@ -675,14 +675,14 @@ namespace core.domain {
         /// </summary>
         /// <param name="customizedProduct">customized product to base restrictions on</param>
         /// <returns>list of restricted components</returns>
-        public IEnumerable<Product> getRestrictedComponents(CustomizedProduct customizedProduct) {
+        public IEnumerable<Product> getRestrictedComponents(CustomizedProduct customizedProduct, Slot slot) {
             List<Product> restrictedComponents = new List<Product>();
-            if (customizedProduct == null) {
+            if (customizedProduct == null || slot == null) {
                 return restrictedComponents;
             }
             List<Product> componentAsProduct = getAllComponentsAsProducts();
             foreach (Product product in componentAsProduct) {
-                Product currentProduct = applyRestrictionsToProduct(customizedProduct, product);
+                Product currentProduct = applyRestrictionsToProduct(customizedProduct, product, slot);
                 if (currentProduct != null) {
                     restrictedComponents.Add(currentProduct);
                 }
@@ -690,11 +690,22 @@ namespace core.domain {
             return restrictedComponents;
         }
 
-        public Product applyRestrictionsToProduct(CustomizedProduct customizedProduct, Product product) {
-            if (product == null ) {
+        /// <summary>
+        /// Applies all restrictions of this product to another product and returns a restricted copy
+        /// </summary>
+        /// <param name="customizedProduct">customized product to base restrictions on</param>
+        /// <param name="product">product to apply restrictions to</param>
+        /// <returns>restricted copy</returns>
+        public Product applyRestrictionsToProduct(CustomizedProduct customizedProduct, Product product, Slot slot) {
+            if (customizedProduct == null || product == null || slot == null) {
                 return null;
             }
-            Product currentProduct = product;
+
+            Product currentProduct = slot.restrictProductDimensionsToFitInSlot(product);
+            if (currentProduct == null) {
+                return null;
+            }
+            //restrict dimensions to slot dimensions
             bool flag = true;
             foreach (ProductMeasurement measurement in productMeasurements) {
                 currentProduct = measurement.measurement.applyAllRestrictions(customizedProduct, currentProduct);

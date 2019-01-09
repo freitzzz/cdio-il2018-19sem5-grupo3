@@ -1584,8 +1584,43 @@ namespace core_tests.domain {
             customizedProduct.changeCustomizedMaterial(customMaterial);
             customizedProduct.finalizeCustomization();
 
-            Assert.Empty(product.getRestrictedComponents(null));
+            Assert.Empty(product.getRestrictedComponents(null, new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300))));
         }
+
+        [Fact]
+        public void ensureGetRestrictedComponentsReturnsEmptyListIfSlotArgumentIsNull() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product2 = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+
+            CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
+            CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material, white, matte);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("reference", product, customDimension).build();
+
+            customizedProduct.changeCustomizedMaterial(customMaterial);
+            customizedProduct.finalizeCustomization();
+
+            Assert.Empty(product.getRestrictedComponents(customizedProduct, null));
+        }
+
         [Fact]
         public void ensureGetRestrictedComponentsAppliesProductMeasurementRestriction() {
             ProductCategory cat = new ProductCategory("All Products");
@@ -1620,7 +1655,10 @@ namespace core_tests.domain {
 
             customizedProduct.finalizeCustomization();
             product.productMeasurements[0].measurement.addRestriction(new Restriction("same material", new SameMaterialAndFinishAlgorithm()));
-            List<Product> returnedList = (List<Product>)product.getRestrictedComponents(customizedProduct);
+
+            Slot slot = new Slot("identifier 0", CustomizedDimensions.valueOf(500, 80, 500));
+
+            List<Product> returnedList = (List<Product>)product.getRestrictedComponents(customizedProduct, slot);
             Product returned = returnedList[0];
             Assert.True(returned.productMaterials.Count == 1);
             Assert.True(returned.productMaterials[0].material.Equals(material));
@@ -1659,7 +1697,10 @@ namespace core_tests.domain {
 
             customizedProduct.finalizeCustomization();
             product.productMaterials[0].addRestriction(new Restriction("same material", new SameMaterialAndFinishAlgorithm()));
-            List<Product> returnedList = (List<Product>)product.getRestrictedComponents(customizedProduct);
+
+            Slot slot = new Slot("identifier 0", CustomizedDimensions.valueOf(500, 80, 500));
+
+            List<Product> returnedList = (List<Product>)product.getRestrictedComponents(customizedProduct, slot);
             Product returned = returnedList[0];
             Assert.True(returned.productMaterials.Count == 1);
             Assert.True(returned.productMaterials[0].material.Equals(material));
@@ -1698,7 +1739,10 @@ namespace core_tests.domain {
 
             customizedProduct.finalizeCustomization();
             product.components[0].addRestriction(new Restriction("same material", new SameMaterialAndFinishAlgorithm()));
-            List<Product> returnedList = (List<Product>)product.getRestrictedComponents(customizedProduct);
+
+            Slot slot = new Slot("identifier 0", CustomizedDimensions.valueOf(500, 80, 500));
+
+            List<Product> returnedList = (List<Product>)product.getRestrictedComponents(customizedProduct, slot);
             Product returned = returnedList[0];
             Assert.True(returned.productMaterials.Count == 1);
             Assert.True(returned.productMaterials[0].material.Equals(material));
@@ -1740,7 +1784,10 @@ namespace core_tests.domain {
 
             customizedProduct.finalizeCustomization();
             product.components[0].addRestriction(new Restriction("same material", new SameMaterialAndFinishAlgorithm()));
-            List<Product> returnedList = (List<Product>)product.getRestrictedComponents(customizedProduct);
+
+            Slot slot = new Slot("identifier 0", CustomizedDimensions.valueOf(500, 80, 500));
+
+            List<Product> returnedList = (List<Product>)product.getRestrictedComponents(customizedProduct, slot);
             Product firstComponent = returnedList[0];
             Product secondComponent = returnedList[1];
             Assert.True(firstComponent.productMaterials.Count == 1);
@@ -1779,7 +1826,10 @@ namespace core_tests.domain {
 
             customizedProduct.finalizeCustomization();
             product.productMeasurements[0].measurement.addRestriction(new Restriction("same material", new SameMaterialAndFinishAlgorithm()));
-            Assert.Empty(product.getRestrictedComponents(customizedProduct));
+
+            Slot slot = new Slot("identifier 0", CustomizedDimensions.valueOf(500, 80, 500));
+
+            Assert.Empty(product.getRestrictedComponents(customizedProduct, slot));
         }
         [Fact]
         public void ensureGetRestrictedComponentsDoesNotReturnsProductsThatDontObeyMaterialRestrictions() {
@@ -1813,7 +1863,10 @@ namespace core_tests.domain {
 
             customizedProduct.finalizeCustomization();
             product.productMaterials[0].addRestriction(new Restriction("same material", new SameMaterialAndFinishAlgorithm()));
-            Assert.Empty(product.getRestrictedComponents(customizedProduct));
+
+            Slot slot = new Slot("identifier 0", CustomizedDimensions.valueOf(500, 80, 500));
+
+            Assert.Empty(product.getRestrictedComponents(customizedProduct, slot));
         }
         [Fact]
         public void ensureGetRestrictedComponentsDoesNotReturnsProductsThatDontObeyComponentRestrictions() {
@@ -1848,10 +1901,13 @@ namespace core_tests.domain {
 
             customizedProduct.finalizeCustomization();
             product.components[0].addRestriction(new Restriction("same material", new SameMaterialAndFinishAlgorithm()));
-            Assert.Empty(product.getRestrictedComponents(customizedProduct));
+
+            Slot slot = new Slot("identifier 0", CustomizedDimensions.valueOf(500, 80, 500));
+
+            Assert.Empty(product.getRestrictedComponents(customizedProduct, slot));
         }
         [Fact]
-        public void ensureApplyRestrictionsToProductReturnsNullIfArgumentNull() {
+        public void ensureApplyRestrictionsToProductReturnsNullIfProductArgumentNull() {
             ProductCategory cat = new ProductCategory("All Products");
 
             Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
@@ -1880,8 +1936,112 @@ namespace core_tests.domain {
             CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("sn", product, customDimension).build();
 
             customizedProduct.changeCustomizedMaterial(customMaterial);
-            Assert.Null(product.applyRestrictionsToProduct(customizedProduct, null));
+            Slot slot = new Slot("identifier 0", CustomizedDimensions.valueOf(500, 80, 500));
+            Assert.Null(product.applyRestrictionsToProduct(customizedProduct, null, slot));
         }
+
+        [Fact]
+        public void ensureApplyRestrictionsToProductReturnsNullIfSlotArgumentNull() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product2 = new Product("Test2", "Shelf2", "shelf.glb", cat, new List<Material>() { material }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            product.addComplementaryProduct(product2);
+
+            CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
+            CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material2, white, matte);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("sn", product, customDimension).build();
+
+            customizedProduct.changeCustomizedMaterial(customMaterial);
+            Slot slot = new Slot("identifier 0", CustomizedDimensions.valueOf(500, 80, 500));
+            Assert.Null(product.applyRestrictionsToProduct(customizedProduct, product, null));
+        }
+
+        [Fact]
+        public void ensureApplyRestrictionsToProductReturnsNullIfCustomProductArgumentNull() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product2 = new Product("Test2", "Shelf2", "shelf.glb", cat, new List<Material>() { material }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            product.addComplementaryProduct(product2);
+
+            CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
+            CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material2, white, matte);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("sn", product, customDimension).build();
+
+            customizedProduct.changeCustomizedMaterial(customMaterial);
+            Slot slot = new Slot("identifier 0", CustomizedDimensions.valueOf(500, 80, 500));
+            Assert.Null(product.applyRestrictionsToProduct(null, product, slot));
+        }
+
+        [Fact]
+        public void ensureApplyRestrictionsToProductReturnsNullIfProductDoesNotHaveValidMeasurements() {
+            ProductCategory cat = new ProductCategory("All Products");
+
+            Color black = Color.valueOf("Deep Black", 0, 0, 0, 0);
+            Color white = Color.valueOf("Blinding White", 255, 255, 255, 0);
+            List<Color> colors = new List<Color>() { black, white };
+
+            Finish glossy = Finish.valueOf("Glossy", 100);
+            Finish matte = Finish.valueOf("Matte", 0);
+            List<Finish> finishes = new List<Finish>() { glossy, matte };
+
+            Material material = new Material("#001", "Really Expensive Wood", "ola.jpg", colors, finishes);
+            Material material2 = new Material("#002", "Expensive Wood", "ola.jpg", colors, finishes);
+
+            Dimension heightDimension = new SingleValueDimension(50);
+            Dimension widthDimension = new DiscreteDimensionInterval(new List<double>() { 60, 65, 70, 80, 90, 105 });
+            Dimension depthDimension = new ContinuousDimensionInterval(10, 25, 5);
+
+            Measurement measurement = new Measurement(heightDimension, widthDimension, depthDimension);
+
+            Product product = new Product("Test", "Shelf", "shelf.glb", cat, new List<Material>() { material, material2 }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            Product product2 = new Product("Test2", "Shelf2", "shelf.glb", cat, new List<Material>() { material }, new List<Measurement>() { measurement }, ProductSlotWidths.valueOf(4, 4, 4));
+            product.addComplementaryProduct(product2);
+
+            CustomizedDimensions customDimension = CustomizedDimensions.valueOf(50, 80, 25);
+            CustomizedMaterial customMaterial = CustomizedMaterial.valueOf(material2, white, matte);
+            CustomizedProduct customizedProduct = CustomizedProductBuilder.createCustomizedProduct("sn", product, customDimension).build();
+
+            customizedProduct.changeCustomizedMaterial(customMaterial);
+            Slot slot = new Slot("identifier 0", CustomizedDimensions.valueOf(500, 80000, 500));
+            Assert.Null(product.applyRestrictionsToProduct(customizedProduct, product, slot));
+        }
+
         [Fact]
         public void ensureGetAllComponentsAsProductsReturnsEmptyIfProductDoesNotHaveComponents() {
             ProductCategory cat = new ProductCategory("All Products");
