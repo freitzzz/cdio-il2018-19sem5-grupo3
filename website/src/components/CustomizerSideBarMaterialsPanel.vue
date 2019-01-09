@@ -84,6 +84,7 @@ import { SET_CUSTOMIZED_PRODUCT_MATERIAL, SET_CUSTOMIZED_PRODUCT_FINISH,
          DEACTIVATE_CAN_MOVE_SLOTS
         } from "./../store/mutation-types.js";
 import { AlwaysDepth } from 'three';
+import customizedproducts from './../services/mycm_api/requests/customizedproducts.js';
 
 export default {
   name: "CustomizerSideBarMaterialsPanel",
@@ -284,15 +285,16 @@ export default {
         icon: 'fas fa-exclamation-circle size:5px',
         iconPack: 'fa',
         message: 'Are you sure you want to return? All progress made in this step will be lost.',
-        onConfirm: () => {          
+        onConfirm: () => {        
           this.discardChanges();
+          this.$emit("back");
         }
       })
     },
     discardChanges(){
       var defaultMaterial = this.materials[0];
       MaterialRequests.getMaterial(defaultMaterial.id, {pricedFinishesOnly: true})
-        .then(response => {
+        .then((response) => {
           var defaultFinish = response.data.finishes[0];
           CustomizedProductRequests.putCustomizedProduct(store.state.customizedProduct.id,
           {
@@ -305,35 +307,74 @@ export default {
             }
           })
           .then(() => {
-            this.deleteSlots().then(() => {
-              this.$emit("back");
+              this.deleteSlots()
               this.applyMaterial(defaultMaterial);
               this.removeFinish();
               this.removeColor();
-            }).catch(() => {
+            /*  }).catch(() => {
               this.$toast.open("An error has occurred while returning to the divisions step.");
-            });
-          })
+            }); */
+           })
           .catch(() => {
           this.$toast.open("An error has occurred while removing the material from the closet.");
-          });
-        })
+          }); 
+         })
         .catch(() => {
           this.$toast.open("An error has occurred while removing the material from the closet.");
         });
     },
     deleteSlots(){
       let slotsToDelete = [];
-      var size = store.state.customizedProduct.slots.length;
-      CustomizedProductRequests.getCustomizedProducts(store.state.customizedProduct.id)
-        .then(() => {
-          custProducSlots = response.data.slots;
+      let custProducSlots = [];
+      let size = -1
+      CustomizedProductRequests.getCustomizedProducts()
+        .then((response) => {
+          custProducSlots = response.data;
+          size = custProducSlots[custProducSlots.length - 1].id;
+          CustomizedProductRequests.getCustomizedProduct(size)
+          .then((product) => {
+            custProducSlots = product.data.slots;
+            for(let i = 0; i< custProducSlots.length-1; i++){
+              slotsToDelete.unshift(custProducSlots[i].id);
+            }
+              this.deleteSlot(slotsToDelete)
+              .then(() => {})
+              .catch((error_message) => {
+              });
+          })
+          .catch((error_message) => {
+          });
         })
         .catch((error_message) => {
         });
-      for(let i = 0; i< custProducSlots.length-1; i++){
-        alert(custProducSlots[i].id);
-        slotsToDelete.unshift(custProducSlots[i].id);
+    },
+    deleteSlot(slotsToDelete){
+      return new Promise((accept, reject) => {
+        let slotToDelete = slotsToDelete.pop();
+        CustomizedProductRequests.deleteCustomizedProductSlot(store.state.customizedProduct.id, slotToDelete)
+        .then(() => {
+          if(slotsToDelete.length > 0 ){
+            return this.deleteSlot(slotsToDelete)
+            .then(()=>{
+              accept()})
+            .catch((error_message) => {  
+             reject(error_message)});
+          } else {
+             accept();
+          }
+        })
+        .catch((error_message) => {
+          reject(error_message.response.data.message);
+        });
+      })
+    }, 
+  },
+    /*deleteSlots(){
+      let slotsToDelete = [];
+      var size = store.state.customizedProduct.slots.length;
+      for(let i = 0; i< size-1; i++){
+        alert(store.state.customizedProduct.slots[i].idSlot);
+        slotsToDelete.unshift(store.state.customizedProduct.slots[i].idSlot);
       }
       return new Promise((accept,reject)=>{
         this.deleteSlot(slotsToDelete)
@@ -363,7 +404,7 @@ export default {
         });
       })
     },
-  },
+  }, */
   created() {
     this.getProductMaterials();
     store.dispatch(DEACTIVATE_CAN_MOVE_CLOSET);
