@@ -977,7 +977,7 @@ namespace core.domain {
 
             //check if customized product fulfills all of the restrictions of its father
             Product childProduct = childCustomizedProduct.product;
-            Product restrictedProduct = this.product.applyRestrictionsToProduct(this, childProduct);
+            Product restrictedProduct = this.product.applyRestrictionsToProduct(this, childProduct, slot);
             checkIfChildFulfillsRestrictions(childCustomizedProduct, restrictedProduct);
 
             equivalentSlot.addCustomizedProduct(childCustomizedProduct);
