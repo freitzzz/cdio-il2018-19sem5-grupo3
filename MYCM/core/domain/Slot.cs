@@ -207,19 +207,98 @@ namespace core.domain {
         /// <param name="componentDimensions">customized dimensions to check</param>
         /// <returns>true if dimensions fit, false if not</returns>
         public bool customizedDimensionsFit(CustomizedDimensions componentDimensions) {
-            if (componentDimensions.height > slotDimensions.height || componentDimensions.width > slotDimensions.width || componentDimensions.depth > slotDimensions.depth) {
+            if (componentDimensions.height > slotDimensions.height || componentDimensions.width != slotDimensions.width || componentDimensions.depth > slotDimensions.depth) {
                 return false;
             }
-            double remainingVolume = slotDimensions.height * slotDimensions.width * slotDimensions.depth;
-            foreach (CustomizedProduct custom in customizedProducts) {
-                CustomizedDimensions customDimensions = custom.customizedDimensions;
-                remainingVolume -= (customDimensions.height * customDimensions.width * customDimensions.depth);
-            }
+            double remainingVolume = calculateRemainingVolume();
             double componentVolume = componentDimensions.height * componentDimensions.width * componentDimensions.depth;
             if (componentVolume <= remainingVolume) {
                 return true;
             }
             return false;
+        }
+        /// <summary>
+        /// Restricts a product's measurements to only the ones that fit in the slot
+        /// </summary>
+        /// <param name="product">Product to restrict</param>
+        /// <returns>restricted product</returns>
+        public Product restrictProductDimensionsToFitInSlot(Product product) {
+            if (product == null) {
+                return null;
+            }
+            double slotHeight = slotDimensions.height;
+            double slotWidth = slotDimensions.width;
+            double slotDepth = slotDimensions.depth;
+
+            double remainingVolume = calculateRemainingVolume();
+            List<Measurement> measurementsToRemove = new List<Measurement>();
+            List<Measurement> measurementsToAdd = new List<Measurement>();
+            foreach (ProductMeasurement pMeasurement in product.productMeasurements) {
+                Measurement measurement = pMeasurement.measurement;
+                double[] heightValues = measurement.height.getValuesAsArray();
+                double[] widthValues = measurement.width.getValuesAsArray();
+                double[] depthValues = measurement.depth.getValuesAsArray();
+                List<double> newHeightValues = new List<double>();
+                List<double> newWidthValues = new List<double>();
+                List<double> newDepthValues = new List<double>();
+                for (int h = 0; h < heightValues.Length; h++) {
+                    for (int w = 0; w < widthValues.Length; w++) {
+                        for (int d = 0; d < depthValues.Length; d++) {
+                            double height = heightValues[h];
+                            double width = widthValues[w];
+                            double depth = depthValues[d];
+                            CustomizedDimensions custom = CustomizedDimensions.valueOf(height, width, depth);
+                            if (customizedDimensionsFit(custom)) {
+                                if (!newHeightValues.Contains(height)) {
+                                    newHeightValues.Add(height);
+                                }
+                                if (!newWidthValues.Contains(width)) {
+                                    newWidthValues.Add(width);
+                                }
+                                if (!newDepthValues.Contains(depth)) {
+                                    newDepthValues.Add(depth);
+                                }
+                            }
+                        }
+                    }
+                }
+                measurementsToRemove.Add(measurement);
+                if (newHeightValues.Count != 0 && newWidthValues.Count != 0 && newDepthValues.Count != 0) {
+                    Dimension heightDimension;
+                    Dimension widthDimension;
+                    Dimension depthDimension;
+                    if (newHeightValues.Count == 1) heightDimension = new SingleValueDimension(newHeightValues[0]); else heightDimension = new DiscreteDimensionInterval(newHeightValues);
+                    if (newWidthValues.Count == 1) widthDimension = new SingleValueDimension(newWidthValues[0]); else widthDimension = new DiscreteDimensionInterval(newWidthValues);
+                    if (newDepthValues.Count == 1) depthDimension = new SingleValueDimension(newDepthValues[0]); else depthDimension = new DiscreteDimensionInterval(newDepthValues);
+                    measurementsToAdd.Add(new Measurement(heightDimension, widthDimension, depthDimension));
+                }
+            }
+            foreach (Measurement measurement in measurementsToAdd) {
+                product.addMeasurement(measurement);
+            }
+            foreach (Measurement measurement in measurementsToRemove) {
+                try {
+                    product.removeMeasurement(measurement);
+                } catch (InvalidOperationException) {
+                    return null;
+                } catch (ArgumentException) {
+                    return null;
+                }
+            }
+            return product;
+        }
+
+        /// <summary>
+        /// Calculates slot's remaining volume
+        /// </summary>
+        /// <returns></returns>
+        private double calculateRemainingVolume() {
+            double remainingVolume = slotDimensions.height * slotDimensions.width * slotDimensions.depth;
+            foreach (CustomizedProduct custom in customizedProducts) {
+                CustomizedDimensions customDimensions = custom.customizedDimensions;
+                remainingVolume -= (customDimensions.height * customDimensions.width * customDimensions.depth);
+            }
+            return remainingVolume;
         }
 
         public string id() {

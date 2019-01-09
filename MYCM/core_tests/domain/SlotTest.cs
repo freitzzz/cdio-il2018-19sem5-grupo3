@@ -115,7 +115,7 @@ namespace core_tests.domain {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             //dimensions that match the values available to the Product
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
 
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
@@ -131,7 +131,7 @@ namespace core_tests.domain {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             //dimensions that match the values available to the Product
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
 
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
@@ -146,7 +146,7 @@ namespace core_tests.domain {
         public void ensureAddingCustomizedProductBiggerThanSlotThrowsException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(50, 50, 50));
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
 
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
@@ -159,7 +159,7 @@ namespace core_tests.domain {
         public void ensureAddingCustomizedProductBiggerThanSlotDoesNotAddCustomizedProduct() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(50, 50, 50));
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
 
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
@@ -175,7 +175,7 @@ namespace core_tests.domain {
         public void ensureAddCustomizedProductThrowsExceptionIfProductDoesNotFit() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 70));
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
             instance.addCustomizedProduct(customizedProduct);
@@ -193,7 +193,7 @@ namespace core_tests.domain {
         public void ensureAddCustomizedProductDoesNotAddCustomizedProductIfProductDoesNotFit() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 70));
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
             instance.addCustomizedProduct(customizedProduct);
@@ -212,12 +212,12 @@ namespace core_tests.domain {
         public void ensureAddingDuplicateCustomizedProductThrowsException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 70));
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
             instance.addCustomizedProduct(customizedProduct);
 
-            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(40, 50, 40);
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(40, 200, 40);
             CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1234", otherCustomizedDimensions);
 
             Action addDuplicateCustomizedProductAction = () => instance.addCustomizedProduct(otherCustomizedProduct);
@@ -229,12 +229,12 @@ namespace core_tests.domain {
         public void ensureAddingDuplicateCustomizedDoesNotAddCustomizedProduct() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 70));
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
             instance.addCustomizedProduct(customizedProduct);
 
-            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(40, 50, 40);
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(40, 200, 40);
             CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1234", otherCustomizedDimensions);
 
             try {
@@ -501,7 +501,7 @@ namespace core_tests.domain {
 
             instance.addCustomizedProduct(customizedProduct);
 
-            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 150, 250);
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 200, 250);
 
             Action changeDimensionsAction = () => instance.changeDimensions(otherCustomizedDimensions);
 
@@ -517,7 +517,7 @@ namespace core_tests.domain {
 
             instance.addCustomizedProduct(customizedProduct);
 
-            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 150, 250);
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 200, 250);
             try {
                 instance.changeDimensions(otherCustomizedDimensions);
             } catch (Exception) { }
@@ -535,7 +535,7 @@ namespace core_tests.domain {
             instance.addCustomizedProduct(customizedProduct);
             instance.removeCustomizedProduct(customizedProduct);
 
-            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 150, 250);
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 200, 250);
 
             Action changeDimensionsAction = () => instance.changeDimensions(otherCustomizedDimensions);
 
@@ -554,10 +554,48 @@ namespace core_tests.domain {
             instance.addCustomizedProduct(customizedProduct);
             instance.removeCustomizedProduct(customizedProduct);
 
-            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 150, 250);
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 200, 250);
             instance.changeDimensions(otherCustomizedDimensions);
 
             Assert.Equal(instance.slotDimensions, otherCustomizedDimensions);
+        }
+
+        [Fact]
+        public void ensureRestrictProductDimensionsToFitInSlotReturnsNullIfArgumentIsNull() {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+            Assert.Null(instance.restrictProductDimensionsToFitInSlot(null));
+        }
+
+        [Fact]
+        public void ensureRestrictProductDimensionsToFitInSlotRemovesMeasurementsThatDontFitInSlot() {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+            Product product = buildProduct();
+            product.addMeasurement(new Measurement(new SingleValueDimension(110), new SingleValueDimension(210), new SingleValueDimension(310)));
+            Product returned = instance.restrictProductDimensionsToFitInSlot(product);
+            Assert.True(returned.productMeasurements.Count == 1);
+        }
+
+        [Fact]
+        public void ensureRestrictProductDimensionsToFitInSlotReturnsNullIfProductDoesNotContainValidMeasurements() {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+            Product product = buildProduct();
+            product.addMeasurement(new Measurement(new SingleValueDimension(110), new SingleValueDimension(200), new SingleValueDimension(310)));
+            product.removeMeasurement(product.productMeasurements[0].measurement);
+            product.addMeasurement(new Measurement(new SingleValueDimension(111), new SingleValueDimension(200), new SingleValueDimension(310)));
+            Assert.Null(instance.restrictProductDimensionsToFitInSlot(product));
+        }
+
+        [Fact]
+        public void ensureRestrictProductDimensionsToFitInSlotAdaptsMeasurementsToFitInSlot() {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+            Product product = buildProduct();
+            product.addMeasurement(new Measurement(new DiscreteDimensionInterval(new List<Double> { 100.0, 110.0 }), new DiscreteDimensionInterval(new List<Double> { 200.0, 110.0 }), new ContinuousDimensionInterval(290, 310, 5)));
+            product.removeMeasurement(product.productMeasurements[0].measurement);
+            Product returned = instance.restrictProductDimensionsToFitInSlot(product);
+            Assert.True(returned.productMeasurements.Count == 1);
+            Assert.Equal(new SingleValueDimension(100.0), returned.productMeasurements[0].measurement.height);
+            Assert.Equal(new SingleValueDimension(200.0), returned.productMeasurements[0].measurement.width);
+            Assert.Equal(new DiscreteDimensionInterval(new List<Double> { 290.0, 295.0, 300.0 }), returned.productMeasurements[0].measurement.depth);
         }
 
         [Fact]
