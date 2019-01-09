@@ -72,10 +72,10 @@ export const actions = {
     },
 
     /**
-     * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_COMPONENTS
+     * Action used to commit the mutation ADD_CUSTOMIZED_PRODUCT_COMPONENT
      */
-    [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS]: ({ commit }, payload) => {
-        commit(types.SET_CUSTOMIZED_PRODUCT_COMPONENTS, payload);
+    [types.ADD_CUSTOMIZED_PRODUCT_COMPONENT]: ({ commit }, payload) => {
+        commit(types.ADD_CUSTOMIZED_PRODUCT_COMPONENT, payload);
     },
 
     /**

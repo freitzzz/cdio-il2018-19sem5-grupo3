@@ -130,7 +130,7 @@ export const mutations = {
    * @param {*} state The store's state
    * @param {*} payload Payload with the component to add
    */
-  [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS](state, payload) {
+  [types.ADD_CUSTOMIZED_PRODUCT_COMPONENT](state, payload) {
     if(!payload) state.customizedProduct.components = [];
     else if (state.customizedProduct.slots.length >= payload.component.slot) {
       let copiedArray = state.customizedProduct.components.slice(0);
@@ -145,9 +145,8 @@ export const mutations = {
    * @param {*} payload Payload with the component to remove
    */
   [types.REMOVE_CUSTOMIZED_PRODUCT_COMPONENT](state, payload) {
-    let index = state.customizedProduct.components.indexOf(payload.component);
     let copiedArray = state.customizedProduct.components.slice(0);
-    copiedArray.splice(index, 1);
+    copiedArray.splice(payload.index, 1);
 
     state.customizedProduct.components = copiedArray;
   },
@@ -178,7 +177,7 @@ export const mutations = {
    * @param {*} payload Payload with the component to be edited
    */
   [types.SET_COMPONENT_TO_EDIT](state, payload){
-    state.canvasControls.componentToAdd = payload;
+    state.canvasControls.componentToEdit = payload;
   },
 
   /**
