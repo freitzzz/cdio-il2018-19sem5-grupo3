@@ -120,8 +120,8 @@ export default {
       );
     },
     addComponent: function(newValue, oldValue) {
-      if (oldValue.length <= newValue.length) {
-        //this.productRenderer.addComponent(newValue[newValue.length - 1]);
+      if(newValue.length > oldValue.length){
+        this.productRenderer.generateComponent(newValue[newValue.length - 1].component);
       } else if (newValue.length == 0) {
         this.productRenderer.removeAllComponents();
       }
