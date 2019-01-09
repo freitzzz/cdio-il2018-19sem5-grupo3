@@ -168,13 +168,13 @@
       ProductRequests.getProductDimensions(store.state.product.id)
         .then(response => this.availableOptionsDimensions.push(...response.data))
         .catch(error => {
-          this.$toast.open(error.response.status + "An error occurred");
+          this.$toast.open("It wasn't possible to create the available dimensions. Please try again.");
         });
       /*Get all available units of measurement*/
       UnitRequests.getUnits()
         .then(response => this.availableOptionsUnits.push(...response.data))
         .catch(error => {
-          this.$toast.open(error.response.status + "An error occurred");
+          this.$toast.open("It wasn't possible to create the available units. Please try again.");
         });
       this.initialPopulate(); 
   
@@ -217,7 +217,7 @@
   
           })
           .catch(error => {
-            this.$toast.open(error.response.status + "An error occurred");
+            this.$toast.open("An error occurred trying to convert the units");
           });
       },
       updateUnit: function() {
@@ -288,7 +288,7 @@
           height: this.height,
           depth: this.depth
         });
-
+        
         //Send to store the first values for the dimensions
         this.updateDimensions();
       },
@@ -455,9 +455,7 @@
               this.$emit("advance");
             })
             .catch((error_message) => {
-              this.$toast.open({
-                message: error_message.response.data.message
-              });
+              this.$toast.open("It wasn't possible to save the product dimensios. Please try again.");
             });
         } else {
           this.$toast.open("Please select an option!");
@@ -530,9 +528,7 @@
             this.drawRecommendedSlots();
           })
           .catch((error_message) => {
-            this.$toast.open({
-              message: error_message.response.data.message
-            });
+            this.$toast.open("An error occurred.");
           });
       },
       drawRecommendedSlots() {
