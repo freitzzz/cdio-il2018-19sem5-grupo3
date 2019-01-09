@@ -612,20 +612,23 @@ export default class ProductRenderer {
    */
   removeDrawer(slot) {
     for (let i = 0; i < this.closet.drawers.length; i++) {
+     
       if (this.closet.drawers[i].slotId == slot) {
-        var closet_drawer_face_id = this.closet_drawers_ids.splice(i * 5, i * 5 + 5);
-        var closet_module_face_id = this.closet_modules_ids.splice(i * 4, i * 4 + 4);
-
+        var closet_drawer_face_id = this.closet_drawers_ids.splice(i * 5, 5);
+        var closet_module_face_id = this.closet_modules_ids.splice(i * 4, 4);
         for (let j = 0; j < closet_drawer_face_id.length; j++) {
           this.group.remove(this.group.getObjectById(closet_drawer_face_id[j]));
-          this.group.remove(this.group.getObjectById(closet_module_face_id[j]));
         }
+        for(let k=0; k< closet_module_face_id.length; k++){
+          this.group.remove(this.group.getObjectById(closet_module_face_id[k]));
+        }
+        this.closet.drawers.splice(i,1);
+        this.closet.modules.splice(i,1);
         this.updateClosetGV();
         return;
       }
-    }
+    }    
   }
-
   /**
 * Removes a hinged door in the given slot from the current closet
 * @param {*} slot 
@@ -984,10 +987,6 @@ export default class ProductRenderer {
    * Populate vector website dimensions
   */
   populateWebsiteDimensions(websiteDimensions) {
-    /* alert(websiteDimensions.width);
-    alert(websiteDimensions.height);
-    alert(websiteDimensions.depth); */
-
     if (websiteDimensions.width != undefined || websiteDimensions.height != undefined || websiteDimensions.depth != undefined) {
 
       this.websiteDimensions = [websiteDimensions.width, websiteDimensions.height, websiteDimensions.depth];
@@ -2019,7 +2018,7 @@ export default class ProductRenderer {
           if(this.selected_component == this.selected_module){
             for(let i = 0; i < this.closet_modules_ids.length; i++){
               let module_increment = i*4;
-              if(this.closet_modules_ids[module_increment + 1] == this.selected_component.id){
+              if(this.closet_modules_ids[module_increment + 1] == this.selected_component.id || this.closet_modules_ids[module_increment] == this.selected_component.id){
                 // Move module
                 this.group.getObjectById(this.closet_modules_ids[module_increment+1]).position.y = computedYPosition + this.difference_module_move;
                 this.group.getObjectById(this.closet_modules_ids[module_increment]).position.y = computedYPosition - this.difference_module_move;
