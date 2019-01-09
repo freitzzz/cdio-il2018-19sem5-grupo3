@@ -129,22 +129,22 @@ export default {
         });
     },
     getMaterialInformation(materialId) {
-
       MaterialRequests.getMaterial(materialId, {pricedFinishesOnly: true})
         .then(response => {
-          this.finishes = [];
-          this.finishes.push(...response.data.finishes);
-
           this.colors = [];
           this.colors.push(...response.data.colors);
+
+          this.finishes = [];
+          this.finishes.push(...response.data.finishes);
 
           this.httpCode = response.status;
         })
         .catch(error => {
           if (error.response === undefined) {
             this.httpCode = 500;
-          } else {
-            this.httpCode = error.response.status;
+            this.$toast.open("There was an error while fetching the selected material's data. Try reloading the page.");
+          } else if(error.response.status == 404){
+            this.finishes = [];
           }
         });
     },
@@ -291,7 +291,7 @@ export default {
     },
     discardChanges(){
       var defaultMaterial = this.materials[0];
-      MaterialRequests.getMaterial(defaultMaterial.id)
+      MaterialRequests.getMaterial(defaultMaterial.id, {pricedFinishesOnly: true})
         .then(response => {
           var defaultFinish = response.data.finishes[0];
           CustomizedProductRequests.putCustomizedProduct(store.state.customizedProduct.id,
