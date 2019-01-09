@@ -1,20 +1,23 @@
 //@ts-check
 import 'three/examples/js/controls/OrbitControls'
 import * as THREE from 'three'
+import store from "./../store"
+import SlidingDoor from './SlidingDoor'
+import HingedDoor from './HingedDoor'
 import Closet from './Closet'
-import Pole from './Pole'
 import Drawer from './Drawer'
 import Module from './Module'
-import SlidingDoor from './SlidingDoor'
 import Shelf from './Shelf'
-import HingedDoor from './HingedDoor'
-import store from "./../store";
+import Pole from './Pole'
 import {
-  SET_RESIZE_VECTOR_GLOBAL, SET_CUSTOMIZED_PRODUCT_COMPONENTS, REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, SET_COMPONENT_TO_REMOVE, SET_DOORS_FLAG
-} from "./../store/mutation-types.js";
+  SET_RESIZE_VECTOR_GLOBAL,
+  SET_COMPONENT_TO_REMOVE,
+  SET_COMPONENT_TO_EDIT,
+  SET_COMPONENT_TO_ADD,
+  SET_DOORS_FLAG
+} from "./../store/mutation-types.js"
 
 export default class ProductRenderer {
-
 
   /* Flags used to interact with the graphical representation on certain steps of the wizard */
 
@@ -164,6 +167,8 @@ export default class ProductRenderer {
    */
   selected_component;
 
+  selected_module;
+
   /**
    * Instance variable that represents the object being hovered (null if none)
    */
@@ -222,6 +227,9 @@ export default class ProductRenderer {
   /**Number of dimensions in question */
   NUMBER_DIMENSIONS;
 
+  difference_module_move;
+  difference_drawer_move;
+
 
   // ---------------- End of resize control --------------------------
 
@@ -265,6 +273,7 @@ export default class ProductRenderer {
     this.selected_slot = null;
     this.selected_face = null;
     this.selected_component = null;
+    this.selected_module = null;
     this.hovered_object = null;
     this.plane = null;
     this.mouse = new THREE.Vector2();
@@ -522,21 +531,29 @@ export default class ProductRenderer {
   }
 
   /**
-   * Adds components to the current closet
-   * @param {*} component Component to add
+   * Commits the action to the mutation SET_COMPONENT_TO_ADD to the store
+   * @param {*} component Component to add (model and slot obtained through drag and drop)
    */
   addComponent(component) {
     if (!component) return;
+    store.dispatch(SET_COMPONENT_TO_ADD, {
+      model: component.model,
+      slot: component.slot
+    });
+  }
+
+  /**
+   * Generates the component to de added on the canvas 
+   * @param {*} component Component to add
+   */
+  generateComponent(component){
+    if(!component) return;
     var designation = component.model.split(".")[0];
     if (designation == "shelf") this.generateShelf(component);
     if (designation == "pole") this.generatePole(component);
     if (designation == "drawer") this.checkAddDrawerTriggers(component);
     if (designation == "hinged-door") this.checkAddHingedDoorTriggers(component);
     if (designation == "sliding-door") this.checkAddSlidingDoorTriggers(component);
-    store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, {
-      model: component.model,
-      slot: component.slot
-    });
   }
 
   /**
@@ -551,11 +568,9 @@ export default class ProductRenderer {
     if (designation == "drawer") this.removeDrawer(component.slot);
     if (designation == "hinged-door") this.removeHingedDoor(component.slot);
     if (designation == "sliding-door") this.removeSlidingDoor();
-    store.dispatch(REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, {
-      model: component.model,
-      slot: component.slot
-    });
+    store.dispatch(SET_COMPONENT_TO_REMOVE);
     this.selected_component = null;
+    this.selected_module = null;
     this.controls.enabled = true;
   }
 
@@ -597,20 +612,23 @@ export default class ProductRenderer {
    */
   removeDrawer(slot) {
     for (let i = 0; i < this.closet.drawers.length; i++) {
+     
       if (this.closet.drawers[i].slotId == slot) {
-        var closet_drawer_face_id = this.closet_drawers_ids.splice(i * 5, i * 5 + 5);
-        var closet_module_face_id = this.closet_modules_ids.splice(i * 4, i * 4 + 4);
-
+        var closet_drawer_face_id = this.closet_drawers_ids.splice(i * 5, 5);
+        var closet_module_face_id = this.closet_modules_ids.splice(i * 4, 4);
         for (let j = 0; j < closet_drawer_face_id.length; j++) {
           this.group.remove(this.group.getObjectById(closet_drawer_face_id[j]));
-          this.group.remove(this.group.getObjectById(closet_module_face_id[j]));
         }
+        for(let k=0; k< closet_module_face_id.length; k++){
+          this.group.remove(this.group.getObjectById(closet_module_face_id[k]));
+        }
+        this.closet.drawers.splice(i,1);
+        this.closet.modules.splice(i,1);
         this.updateClosetGV();
         return;
       }
-    }
+    }    
   }
-
   /**
 * Removes a hinged door in the given slot from the current closet
 * @param {*} slot 
@@ -941,6 +959,11 @@ export default class ProductRenderer {
       var closet_poles_id = this.closet_poles_ids.pop();
       this.group.remove(this.group.getObjectById(closet_poles_id));
     }
+
+    store.dispatch(SET_COMPONENT_TO_REMOVE);
+    this.selected_component = null;
+    this.controls.enabled = true;
+
     this.updateClosetGV();
   }
 
@@ -964,10 +987,6 @@ export default class ProductRenderer {
    * Populate vector website dimensions
   */
   populateWebsiteDimensions(websiteDimensions) {
-    /* alert(websiteDimensions.width);
-    alert(websiteDimensions.height);
-    alert(websiteDimensions.depth); */
-
     if (websiteDimensions.width != undefined || websiteDimensions.height != undefined || websiteDimensions.depth != undefined) {
 
       this.websiteDimensions = [websiteDimensions.width, websiteDimensions.height, websiteDimensions.depth];
@@ -984,7 +1003,6 @@ export default class ProductRenderer {
    * @param {number} depth Number with the closet depth
    */
   changeClosetDimensions(width, height, depth) {
-
     this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
     this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
     this.closet.changeClosetDepth(this.resizeVec[this.DEPTH] * depth);
@@ -999,11 +1017,7 @@ export default class ProductRenderer {
     var i;
     for (i = 0; i < this.NUMBER_DIMENSIONS; i++) {
       this.resizeVec[i] = (this.initialDimensions[i] / this.websiteDimensions[i]);
-
-    }/* 
-    alert(this.resizeVec[this.WIDTH]);
-    alert(this.resizeVec[this.HEIGHT]);
-    alert(this.resizeVec[this.DEPTH]); */
+    }
 
     store.dispatch(SET_RESIZE_VECTOR_GLOBAL, {
       width: this.resizeVec[this.WIDTH],
@@ -1192,6 +1206,22 @@ export default class ProductRenderer {
           }
         }
       }
+      //Move drawer
+      
+      for (let j = 0; j < this.closet_modules_ids.length; j++) {
+        let top_module = this.group.getObjectById(this.closet_modules_ids[j]);
+        if (top_module == intersected_object) {
+              this.controls.enabled = false;
+              this.selected_component = intersected_object;
+              this.selected_module = intersected_object;
+              this.difference_module_move = this.group.getObjectById(this.closet_modules_ids[1]).position.y - this.group.getObjectById(this.closet_drawers_ids[1]).position.y;
+              this.difference_drawer_move = this.group.getObjectById(this.closet_drawers_ids[1]).position.y - this.group.getObjectById(this.closet_drawers_ids[0]).position.y;
+
+              if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+                this.offset = this.intersection.y - this.selected_component.position.y;
+              }
+          }
+      } 
 
       //Checks if the selected object is a shelf
       for (let j = 0; j < this.closet_shelves_ids.length; j++) {
@@ -1199,6 +1229,12 @@ export default class ProductRenderer {
         if (shelf == intersected_object) {
           this.controls.enabled = false;
           this.selected_component = intersected_object;
+
+          store.dispatch(SET_COMPONENT_TO_EDIT, {
+            model: this.selected_component.userData.model,
+            slot: this.selected_component.userData.slot
+          });
+
           if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
             this.offset = this.intersection.y - this.selected_component.position.y;
           }
@@ -1211,6 +1247,12 @@ export default class ProductRenderer {
         if (pole == intersected_object) {
           this.controls.enabled = false;
           this.selected_component = intersected_object;
+
+          store.dispatch(SET_COMPONENT_TO_EDIT, {
+            model: this.selected_component.userData.model,
+            slot: this.selected_component.userData.slot
+          });
+
           if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
             this.offset = this.intersection.y - this.selected_component.position.y;
           }
@@ -1832,6 +1874,7 @@ export default class ProductRenderer {
     this.selected_face = null;
     //Sets the selected closet component to null (the component stops being selected)
     this.selected_component = null;
+    this.selected_module = null;
   }
 
   /**
@@ -1968,18 +2011,38 @@ export default class ProductRenderer {
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
       var computedYPosition = this.intersection.y - this.offset; //The component's new computed position on the yy axis
       var computedXPosition = this.intersection.x - this.offset; //The component's new computed position on the xx axis
-
       if (computedYPosition < this.group.getObjectById(this.closet_faces_ids[1]).position.y &&
         computedYPosition >= this.group.getObjectById(this.closet_faces_ids[0]).position.y &&
         computedXPosition < this.group.getObjectById(this.closet_faces_ids[3]).position.x &&
         computedXPosition >= this.group.getObjectById(this.closet_faces_ids[2]).position.x) {
-        this.selected_component.position.y = computedYPosition; //Sets the new position as long as the component stays within the closet boundaries
-      } else {
+          if(this.selected_component == this.selected_module){
+            for(let i = 0; i < this.closet_modules_ids.length; i++){
+              let module_increment = i*4;
+              if(this.closet_modules_ids[module_increment + 1] == this.selected_component.id || this.closet_modules_ids[module_increment] == this.selected_component.id){
+                // Move module
+                this.group.getObjectById(this.closet_modules_ids[module_increment+1]).position.y = computedYPosition + this.difference_module_move;
+                this.group.getObjectById(this.closet_modules_ids[module_increment]).position.y = computedYPosition - this.difference_module_move;
+                this.group.getObjectById(this.closet_modules_ids[module_increment+2]).position.y = computedYPosition;
+                this.group.getObjectById(this.closet_modules_ids[module_increment+3]).position.y = computedYPosition;
+                // Move drawer
+                let drawer_increment = i*5;
+                this.group.getObjectById(this.closet_drawers_ids[drawer_increment]).position.y = computedYPosition - this.difference_drawer_move;
+                this.group.getObjectById(this.closet_drawers_ids[drawer_increment+1]).position.y = computedYPosition;
+                this.group.getObjectById(this.closet_drawers_ids[drawer_increment+2]).position.y = computedYPosition;
+                this.group.getObjectById(this.closet_drawers_ids[drawer_increment+3]).position.y = computedYPosition;
+                this.group.getObjectById(this.closet_drawers_ids[drawer_increment+4]).position.y = computedYPosition;
+              }
+          }
+          } else{
+            this.selected_component.position.y = computedYPosition; //Sets the new position as long as the component stays within the closet boundaries
+          }
+        } else {
         store.dispatch(SET_COMPONENT_TO_REMOVE, {
           model: this.selected_component.userData.model,
           slot: this.selected_component.userData.slot
         });
       }
+
     }
 
     var intersects = this.raycaster.intersectObjects(this.scene.children[0].children);
