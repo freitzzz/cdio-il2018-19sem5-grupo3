@@ -6,39 +6,39 @@
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
     <select class="dropdown" v-model="dimensionOp" @change="populateDimensions">
-                                                        <option
-                                                          v-for="option in availableOptionsDimensions"
-                                                          :key="option.id"
-                                                          :value="option"
-                                                        >{{"Option: "+option.id}}</option>
-                                                      </select>
+                                                                              <option
+                                                                                v-for="option in availableOptionsDimensions"
+                                                                                :key="option.id"
+                                                                                :value="option"
+                                                                              >{{"Option: "+option.id}}</option>
+                                                                            </select>
   
     <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.HEIGHT]" v-model="height" @callback="updateDimensions" :interval="this.heightIncrement" :data="this.discreteIntervalHeight"></vue-slider>
-    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.HEIGHT]" :min="this.heightMin" :max="this.heightMax" :interval="this.heightIncrement" v-model="height" @callback="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.HEIGHT]" v-model="height" @drag-end="updateDimensions" :interval="this.heightIncrement" :data="this.discreteIntervalHeight"></vue-slider>
+    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.HEIGHT]" :min="this.heightMin" :max="this.heightMax" :interval="this.heightIncrement" v-model="height"  @drag-end="updateDimensions"></vue-slider>
     <input class="slider" v-if="this.discreteValueFlags[this.HEIGHT]" type="text" :readonly="true" v-model="height">
   
     <!-- WIDTH: -->
     <div class="text-entry">Width:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.WIDTH]" :interval="this.widthIncrement" :data="this.discreteIntervalWidth" v-model="width" @callback="updateDimensions"></vue-slider>
-    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.WIDTH]" :min="this.widthMin" :max="this.widthMax" :interval="this.widthIncrement" v-model="width" @callback="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.WIDTH]" :interval="this.widthIncrement" :data="this.discreteIntervalWidth" v-model="width" @drag-end="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.WIDTH]" :min="this.widthMin" :max="this.widthMax" :interval="this.widthIncrement" v-model="width" @drag-end="updateDimensions"></vue-slider>
     <input class="slider" v-if="this.discreteValueFlags[this.WIDTH]" type="text" :readonly="true" v-model="this.width">
   
     <!-- DEPTH: -->
     <div class="text-entry">Depth:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.DEPTH]" :interval="this.depthIncrement" :data="this.discreteIntervalDepth" v-model="depth" @callback="updateDimensions"></vue-slider>
-    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.DEPTH]" :min="this.depthMin" :max="this.depthMax" :interval="this.depthIncrement" v-model="depth" @callback="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.DEPTH]" :interval="this.depthIncrement" :data="this.discreteIntervalDepth" v-model="depth"  @drag-end="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.DEPTH]" :min="this.depthMin" :max="this.depthMax" :interval="this.depthIncrement" v-model="depth"  @drag-end="updateDimensions"></vue-slider>
     <input class="slider" v-if="this.discreteValueFlags[this.DEPTH]" type="text" :readonly="true" v-model="depth">
   
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="this.updateUnit">
-                                                        <option
-                                                          v-for="optionUnit in availableOptionsUnits"
-                                                          :key="optionUnit.id"
-                                                          :value="optionUnit.unit"
-                                                        >{{optionUnit.unit}}</option>
-                                                      </select>
+                                                                              <option
+                                                                                v-for="optionUnit in availableOptionsUnits"
+                                                                                :key="optionUnit.id"
+                                                                                :value="optionUnit.unit"
+                                                                              >{{optionUnit.unit}}</option>
+                                                                            </select>
     <div class="center-controls">
       <i class="btn btn-primary material-icons" @click="previousPanel()">arrow_back</i>
       <i class="btn btn-primary material-icons" @click="nextPanel()">arrow_forward</i>
@@ -173,36 +173,6 @@
         }
       },
   
-      /*   convertDimensions(){
-          Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions?unit=${this.unit}`)
-          .then(response => this.storeDispatchVec.push(...response.data))
-          .catch(error => {
-            this.$toast.open(error.response.status + "An error occurred");
-          });
-        }, */
-      undoDimensionConversion: function() {
-  
-        ProductRequests.getProductDimensions(store.state.product.id, DEFAULT_UNIT)
-          .then(response => {
-            let index;
-            this.storeDimensions.push(...response.data);
-  
-  
-            for (let i = 0; i < this.storeDimensions.length(); i++) {
-              if (this.storeDimensions[i].id == this.dimensionOp) {
-                index = i;
-              }
-            }
-            /* =this.storeDimensions[controlIndex].slice();
-              
-              this.storeDispatchVec[HEIGHT] = this.storeDimensions[this.dimensionOp].height;
-              this.storeDispatchVec[DEPTH] = this.storeDimensions[this.dimensionOp].depth; */
-  
-          })
-          .catch(error => {
-            this.$toast.open("An error occurred trying to convert the units");
-          });
-      },
       /**
        * Shows on the screen the changed dimensions 
        */
@@ -219,8 +189,8 @@
           });
       },
       getDimensionWithUnits: function() {
-        for(var i = 0; i < this.availableOptionsDimensions.length;i++){
-          if(this.dimensionOp.id == this.availableOptionsDimensions[i].id){
+        for (var i = 0; i < this.availableOptionsDimensions.length; i++) {
+          if (this.dimensionOp.id == this.availableOptionsDimensions[i].id) {
             this.dimensionOp = this.availableOptionsDimensions[i];
           }
         }
@@ -228,17 +198,26 @@
       /**
        * Sends the choosen dimension to the store.
        */
-      updateDimensions() {
-        this.storeDispatchVec.width = this.width;
-        this.storeDispatchVec.height = this.height;
-        this.storeDispatchVec.depth = this.depth;
+      async updateDimensions() {
+        try {
+          var responseWidth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.width);
+          var responseHeight = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.height);
+          var responseDepth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.depth);
   
-        store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS, {
-          width: this.storeDispatchVec.width,
-          height: this.storeDispatchVec.height,
-          depth: this.storeDispatchVec.depth,
-          unit: this.unit
-        });
+  
+          store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS, {
+            width: this.storeDispatchVec.width,
+            height: this.storeDispatchVec.height,
+            depth: this.storeDispatchVec.depth,
+            unit: this.unit
+          });
+  
+  
+          //Send to store the first values for the dimensions
+          this.updateDimensions();
+        } catch (error){
+          this.$toast.open("It wasn't possible to create the available units. Please try again.")
+        }
   
       },
       //Method that identifies different types of dimensios
@@ -267,15 +246,50 @@
   
       },
       //sends to product renderer the resize factor
-      createResizeFactor() {
-        store.dispatch(SET_RESIZE_FACTOR_DIMENSIONS, {
-          width: this.width,
-          height: this.height,
-          depth: this.depth
-        });
+      async createResizeFactor() {
+        try {
+          var responseWidth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.width);
+          var responseHeight = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.height);
+          var responseDepth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.depth);
   
-        //Send to store the first values for the dimensions
-        this.updateDimensions();
+          store.dispatch(SET_RESIZE_FACTOR_DIMENSIONS, {
+            width: this.storeDispatchVec.width,
+            height: this.storeDispatchVec.height,
+            depth: this.storeDispatchVec.depth,
+          });
+  
+          //Send to store the first values for the dimensions
+          this.updateDimensions();
+        } catch (error){
+          this.$toast.open("It wasn't possible to create the available units. Please try again.")
+        }
+        // /* Width Promise */
+        // UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.width)
+        //   .then(responseWidth => {
+        //     this.storeDispatchVec.width = responseWidth.data.value;
+        //   })
+        //   .catch((error_message) => {
+        //     this.$toast.open("It wasn't possible to create the available units. Please try again.")
+        //   });
+        // /* Height Promise */
+        // UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.height)
+        //   .then(responseHeight => {
+        //     this.storeDispatchVec.height = responseHeight.data.value;
+        //   })
+        //   .catch((error_message) => {
+        //     this.$toast.open("It wasn't possible to create the available units. Please try again.")
+        //   });
+  
+        // UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.depth)
+        //   .then(responseDepth => {
+        //     this.storeDispatchVec.depth = responseDepth.data.value;
+  
+        //   })
+        //   .catch((error_message) => {
+        //     this.$toast.open("It wasn't possible to create the available units. Please try again.")
+        //   });
+  
+  
       },
       //Populate
       populateDimensions: function() {
