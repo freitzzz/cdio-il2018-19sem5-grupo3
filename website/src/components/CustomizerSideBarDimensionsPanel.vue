@@ -221,7 +221,6 @@
        * Sends the choosen dimension to the store.
        */
       updateDimensions() {
-  
         this.storeDispatchVec.width = this.width;
         this.storeDispatchVec.height = this.height;
         this.storeDispatchVec.depth = this.depth;
@@ -279,8 +278,10 @@
         //Populate Height:
         this.heightType = this.identifyTypeDimensions(op.height);
         if (this.heightType == DISCRETE_INTERVAL) {
+
           this.discreteIntervalHeight = op.height.values;
-  
+          this.height = op.height.values[0];
+
           this.discreteIntervalFlags[this.HEIGHT] = true;
           this.continousIntervalFlags[this.HEIGHT] = false;
           this.discreteValueFlags[this.HEIGHT] = false;
@@ -315,7 +316,7 @@
         this.widthType = this.identifyTypeDimensions(op.width);
         if (this.widthType == DISCRETE_INTERVAL) {
           this.discreteIntervalWidth = op.width.values;
-  
+          this.width = op.width.values[0];
           this.discreteIntervalFlags[this.WIDTH] = true;
           this.continousIntervalFlags[this.WIDTH] = false;
           this.discreteValueFlags[this.WIDTH] = false;
@@ -344,6 +345,7 @@
         this.depthType = this.identifyTypeDimensions(op.depth);
         if (this.depthType == DISCRETE_INTERVAL) {
           this.discreteIntervalDepth = op.depth.values;
+          this.depth = op.depth.values[0];
   
           this.discreteIntervalFlags[this.DEPTH] = true;
           this.continousIntervalFlags[this.DEPTH] = false;
@@ -396,24 +398,9 @@
       determineIncrementOfInterval: function(dimensionJson) {
         return dimensionJson.increment;
       },
-      /*  //Organizes vector to crescent order.
-          organizeCrescentOrder: function(vec) {
-            var tmp, minTmp;
-        
-            for (var i = 0; i < vec.length; i++) {
-              tmp = this.vec[i];
-              for (var j = i + 1; j < this.vec.length; j++) {
-                if (tmp > this.vec[j]) {
-                  tmp = this.vec[j];
-                }
-              }
-              if (tmp != this.vec[i]) {
-                minTmp = this.vec[i];
-                this.vec[i] = tmp;
-                this.vec[j] = minTmp;
-              }
-            }
-          } */
+      getMinMaxOfInterval(){
+
+      },
       nextPanel() {
         //!TODO POST product
         //Post of product
