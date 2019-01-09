@@ -283,7 +283,7 @@ namespace core_tests.domain {
         }
 
         [Fact]
-        public void ensureProductFitsReturnsFalseIfProductHeightLargerThanSlotHeight() {
+        public void ensureCustomizedDimensionsFitReturnsFalseIfProductHeightLargerThanSlotHeight() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
@@ -294,10 +294,10 @@ namespace core_tests.domain {
             CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(110, 200, 300);
             CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1235", otherCustomizedDimensions);
 
-            Assert.False(instance.productFits(otherCustomizedProduct));
+            Assert.False(instance.customizedDimensionsFit(otherCustomizedProduct.customizedDimensions));
         }
         [Fact]
-        public void ensureProductFitsReturnsFalseIfProductWidthLargerThanSlotWidth() {
+        public void ensureCustomizedDimensionsFitReturnsFalseIfProductWidthLargerThanSlotWidth() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
@@ -308,10 +308,10 @@ namespace core_tests.domain {
             CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(40, 210, 300);
             CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1235", otherCustomizedDimensions);
 
-            Assert.False(instance.productFits(otherCustomizedProduct));
+            Assert.False(instance.customizedDimensionsFit(otherCustomizedProduct.customizedDimensions));
         }
         [Fact]
-        public void ensureProductFitsReturnsFalseIfProductDepthLargerThanSlotDepth() {
+        public void ensureCustomizedDimensionsFitReturnsFalseIfProductDepthLargerThanSlotDepth() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
@@ -322,10 +322,10 @@ namespace core_tests.domain {
             CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(40, 200, 320);
             CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1235", otherCustomizedDimensions);
 
-            Assert.False(instance.productFits(otherCustomizedProduct));
+            Assert.False(instance.customizedDimensionsFit(otherCustomizedProduct.customizedDimensions));
         }
         [Fact]
-        public void ensureProductFitsReturnsFalseIfProductVolumeLargerThanRemainingVolume() {
+        public void ensureCustomizedDimensionsFitReturnsFalseIfProductVolumeLargerThanRemainingVolume() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
@@ -336,10 +336,10 @@ namespace core_tests.domain {
             CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(60, 200, 300);
             CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1235", otherCustomizedDimensions);
 
-            Assert.False(instance.productFits(otherCustomizedProduct));
+            Assert.False(instance.customizedDimensionsFit(otherCustomizedProduct.customizedDimensions));
         }
         [Fact]
-        public void ensureProductFitsReturnsTrueIfProductVolumeIsEqualOrLessThanRemainingVolume() {
+        public void ensureCustomizedDimensionsFitReturnsTrueIfProductVolumeIsEqualOrLessThanRemainingVolume() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
@@ -350,7 +350,7 @@ namespace core_tests.domain {
             CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(40, 200, 300);
             CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1235", otherCustomizedDimensions);
 
-            Assert.True(instance.productFits(otherCustomizedProduct));
+            Assert.True(instance.customizedDimensionsFit(otherCustomizedProduct.customizedDimensions));
         }
 
         [Fact]

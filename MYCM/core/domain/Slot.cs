@@ -166,7 +166,7 @@ namespace core.domain {
             if (this.customizedProducts.Contains(productToAdd)) {
                 throw new ArgumentException(ERROR_ADD_DUPLICATE_CUSTOMIZED_PRODUCT);
             }
-            if (!productFits(productToAdd)) {
+            if (!customizedDimensionsFit(productToAdd.customizedDimensions)) {
                 throw new ArgumentException(ERROR_ADD_CUSTOMIZED_PRODUCT_DOES_NOT_FIT);
             }
 
@@ -202,12 +202,11 @@ namespace core.domain {
         }
 
         /// <summary>
-        /// Checks if customized product fits into the slot
+        /// Checks if customized dimensions fit into the slot
         /// </summary>
-        /// <param name="component">customized product to check</param>
-        /// <returns>true if product fits, false if not</returns>
-        public bool productFits(CustomizedProduct component) {
-            CustomizedDimensions componentDimensions = component.customizedDimensions;
+        /// <param name="componentDimensions">customized dimensions to check</param>
+        /// <returns>true if dimensions fit, false if not</returns>
+        public bool customizedDimensionsFit(CustomizedDimensions componentDimensions) {
             if (componentDimensions.height > slotDimensions.height || componentDimensions.width > slotDimensions.width || componentDimensions.depth > slotDimensions.depth) {
                 return false;
             }
