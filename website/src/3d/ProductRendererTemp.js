@@ -239,7 +239,7 @@ export default class ProductRenderer {
     this.resizeVec = [];
 
     /* Create vector for initial values of width,height and depth */
-    this.initialDimensions = [404.5, 300, 245];
+    this.initialDimensions = [40450, 30000, 10000];
 
     this.NUMBER_DIMENSIONS = 3;
 
@@ -361,7 +361,7 @@ export default class ProductRenderer {
       [404.5, thickness, 100, 0, 90, -195], //Top
       [thickness, 300, 100, -200, -60, -195], //Left
       [thickness, 300, 100, 200, -60, -195], //Right
-      [404.5, 300, 0, 0, -60, -245], 0); //Back POsition: 195 + width of lateral wall /2
+      [404.5, 300, thickness, 0, -60, -245], 0); //Back POsition: 195 + width of lateral wall /2
 
     var faces = this.closet.closet_faces;
 
@@ -985,7 +985,7 @@ export default class ProductRenderer {
    */
   changeClosetDimensions(width, height, depth) {
 
-    this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
+    this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width*0.0001);
     this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
     this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth));
 

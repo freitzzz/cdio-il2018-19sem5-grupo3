@@ -677,15 +677,71 @@ namespace core.domain
 
             List<CustomizedDimensions> recommendedSlotDimensions = recommendedSlots();
 
-            this.slots.Clear();
+            replaceSlotList(recommendedSlotDimensions);
+        }
 
-            List<Slot> newSlots = new List<Slot>();
+        /// <summary>
+        /// Adds the minimun slot layout to the CustomizedProduct.
+        /// </summary>
+        /// <exception cref="System.InvalidOperationException">
+        /// Thrown when the customization process has finished or when if the product does not support slots.
+        /// </exception>
+        public void addMinimumSlots()
+        {
+            if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
 
-            foreach (CustomizedDimensions slotDimensions in recommendedSlotDimensions)
+            if (!this.product.supportsSlots) throw new InvalidOperationException(PRODUCT_DOES_NOT_SUPPORT_SLOTS);
+
+            List<CustomizedDimensions> minimumSlotDimensions = minSlots();
+
+            replaceSlotList(minimumSlotDimensions);
+        }
+
+        /// <summary>
+        /// Private method used for changing all of the CustomizedProduct's Slots' list.
+        /// </summary>
+        /// <param name="newSlotDimensions">List of CustomizedDimensions representing the Slot's dimensions.</param>
+        private void replaceSlotList(List<CustomizedDimensions> newSlotDimensions)
+        {
+            int recommendedSlotsNumber = newSlotDimensions.Count;
+            int currentSlotsNumber = this.slots.Count;
+
+            if (currentSlotsNumber > recommendedSlotsNumber)
             {
-                Slot slot = new Slot(buildSlotIdentifier(), slotDimensions);
+                for (int i = 0; i < currentSlotsNumber; i++)
+                {
+                    if (i < recommendedSlotsNumber)
+                    {
+                        this.slots[i].changeDimensions(newSlotDimensions[i]);
+                    }
+                    else
+                    {
+                        this.slots.RemoveAt(i);
+                    }
+                }
+            }
+            else if (currentSlotsNumber == recommendedSlotsNumber)
+            {
+                for (int i = 0; i < currentSlotsNumber; i++)
+                {
+                    this.slots[i].changeDimensions(newSlotDimensions[i]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < recommendedSlotsNumber; i++)
+                {
+                    if (i >= currentSlotsNumber)
+                    {
+                        Slot slot = new Slot(buildSlotIdentifier(), newSlotDimensions[i]);
 
-                this.slots.Add(slot);
+                        this.slots.Add(slot);
+                    }
+                    else
+                    {
+                        this.slots[i].changeDimensions(newSlotDimensions[i]);
+                    }
+                }
             }
         }
 

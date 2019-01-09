@@ -27,7 +27,7 @@ export default {
     /**
      * Retrieves the Product with a matching identifier.
      * @param {number} productId - Product's identifier.
-     * @param {"mm" | "cm" | "dm" | "m"=} unit - Dimension unit.
+     * @param {"mm" | "cm" | "dm" | "m" | "in"=} unit - Dimension unit.
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved Product. 
      */
     getProductById(productId, unit) {
@@ -44,7 +44,7 @@ export default {
     /**
      * Retrieves the Product with a matching reference.
      * @param {string} productReference - Product's reference.
-     * @param {"mm" | "cm" | "dm" | "m"=} unit - Dimension unit.
+     * @param {"mm" | "cm" | "dm" | "m" | "in"=} unit - Dimension unit.
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved Product.
      */
     getProductByReference(productReference, unit) {
@@ -61,7 +61,7 @@ export default {
     /**
      * Retrieves the Product's dimensions.
      * @param {number} productId - Product's identifier.
-     * @param {"mm" | "cm" | "dm" | "m"=} unit - Dimension unit.
+     * @param {"mm" | "cm" | "dm" | "m" | "in"=} unit - Dimension unit.
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved Product's dimensions.
      */
     getProductDimensions(productId, unit) {
@@ -104,7 +104,7 @@ export default {
     /**
      * Retrieves the Product's slot widths.
      * @param {number} productId - Product's identifier.
-     * @param {"mm" | "cm" | "dm" | "m"=} unit - Dimension unit.
+     * @param {"mm" | "cm" | "dm" | "m" | "in"=} unit - Dimension unit.
      * @returns {AxiosPromise<any>} Axios Promise representing the retrieved Product's slot widths.
      */
     getProductSlotWidths(productId, unit) {
