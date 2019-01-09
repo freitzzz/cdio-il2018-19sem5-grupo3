@@ -423,7 +423,7 @@
               this.$emit("advance");
             })
             .catch((error_message) => {
-              this.$toast.open("It wasn't possible to save the product dimensios. Please try again.");
+              this.$toast.open("It wasn't possible to save the product dimensions. Please try again.");
             });
         } else {
           this.$toast.open("Please select an option!");
