@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div ref="componentsSideCustomizer" class="components-side-customizer">
+    <div v-if="showSidePanel" ref="componentsSideCustomizer" class="components-side-customizer">
       <i class="closebtn material-icons md-18 md-grey" @click="closeNav()">close</i>
     </div>
     <div v-if="getComponentsOk">
@@ -43,20 +43,21 @@
 </template>
 
 <script>
-import ProductRequests from "./../services/mycm_api/requests/products.js";
 import store from "./../store";
-import { SET_CUSTOMIZED_PRODUCT_COMPONENTS,
-        REMOVE_CUSTOMIZED_PRODUCT_COMPONENT,
-        SET_COMPONENT_TO_ADD,
-        ACTIVATE_CAN_MOVE_COMPONENTS }
-        from "./../store/mutation-types.js";
+import ProductRequests from "./../services/mycm_api/requests/products.js";
+import { REMOVE_CUSTOMIZED_PRODUCT_COMPONENT,
+        ADD_CUSTOMIZED_PRODUCT_COMPONENT,
+        ACTIVATE_CAN_MOVE_COMPONENTS,
+        SET_COMPONENT_TO_EDIT,
+        SET_COMPONENT_TO_ADD } from "./../store/mutation-types.js";
 
 export default {
   name: "CustomizerSideBarComponentsPanel",
   data() {
     return {
-      components: [],
+      showSidePanel: false,
       addedComponents: [],
+      components: [],
       httpCode: null
     };
   },
@@ -67,6 +68,12 @@ export default {
     addComponent() {
       return store.getters.componentToAdd;
     },
+    editComponent(){
+      return store.getters.componentToEdit;
+    },
+    removeComponent(){
+      return store.getters.componentToRemove;
+    }
   },
   watch: {
     addComponent: function(newValue) {
@@ -78,12 +85,43 @@ export default {
           this.addedComponents.push(component);
 
           store.dispatch(SET_COMPONENT_TO_ADD);
-          store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, {
+          store.dispatch(ADD_CUSTOMIZED_PRODUCT_COMPONENT, {
             component: component
           });
         }
       }
     },
+    editComponent: function(newValue){
+      if(!newValue) return;
+      this.showSidePanel = true;
+    },
+    removeComponent: function(newValue){
+      if(!newValue) return;
+      
+      var context = this;
+      this.$dialog.confirm({
+        title: 'Remove Component',
+        hasIcon: true,
+        type: 'is-info',
+        icon: 'fas fa-exclamation-circle size:5px',
+        iconPack: 'fa',
+        message: 'Do you want to remove the selected product from the closet?',
+        onConfirm: () => {
+          context.showSidePanel = false;
+          for(let i = 0; i < context.addedComponents.length; i++){
+            var componentToRemove = context.addedComponents[i]; 
+            if(componentToRemove.model == newValue.model){
+              context.addedComponents.splice(i, 1);
+              store.dispatch(REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, {
+                index: i,
+                component: componentToRemove
+              })
+              break;
+            }
+          }
+        }
+      })
+    }
   },
   methods: {
     getProductComponents() {
@@ -114,6 +152,8 @@ export default {
     },
     closeNav() {
       this.$refs.componentsSideCustomizer.style.width = "0";
+      store.dispatch(SET_COMPONENT_TO_EDIT);
+      this.showSidePanel = false;
     },
     nextPanel(){
       this.$dialog.confirm({
@@ -144,7 +184,7 @@ export default {
         iconPack: 'fa',
         message: 'Are you sure you want to return? All progress made in this step will be lost.',
         onConfirm: () => {
-          store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS);
+          store.dispatch(ADD_CUSTOMIZED_PRODUCT_COMPONENT);
           this.$emit("back");
         }
       })

@@ -1,20 +1,23 @@
 //@ts-check
 import 'three/examples/js/controls/OrbitControls'
 import * as THREE from 'three'
+import store from "./../store"
+import SlidingDoor from './SlidingDoor'
+import HingedDoor from './HingedDoor'
 import Closet from './Closet'
-import Pole from './Pole'
 import Drawer from './Drawer'
 import Module from './Module'
-import SlidingDoor from './SlidingDoor'
 import Shelf from './Shelf'
-import HingedDoor from './HingedDoor'
-import store from "./../store";
+import Pole from './Pole'
 import {
-  SET_RESIZE_VECTOR_GLOBAL, REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, SET_COMPONENT_TO_REMOVE, SET_COMPONENT_TO_ADD, SET_DOORS_FLAG
-} from "./../store/mutation-types.js";
+  SET_RESIZE_VECTOR_GLOBAL,
+  SET_COMPONENT_TO_REMOVE,
+  SET_COMPONENT_TO_EDIT,
+  SET_COMPONENT_TO_ADD,
+  SET_DOORS_FLAG
+} from "./../store/mutation-types.js"
 
 export default class ProductRenderer {
-
 
   /* Flags used to interact with the graphical representation on certain steps of the wizard */
 
@@ -565,10 +568,7 @@ export default class ProductRenderer {
     if (designation == "drawer") this.removeDrawer(component.slot);
     if (designation == "hinged-door") this.removeHingedDoor(component.slot);
     if (designation == "sliding-door") this.removeSlidingDoor();
-    store.dispatch(REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, {
-      model: component.model,
-      slot: component.slot
-    });
+    store.dispatch(SET_COMPONENT_TO_REMOVE);
     this.selected_component = null;
     this.selected_module = null;
     this.controls.enabled = true;
@@ -956,6 +956,11 @@ export default class ProductRenderer {
       var closet_poles_id = this.closet_poles_ids.pop();
       this.group.remove(this.group.getObjectById(closet_poles_id));
     }
+
+    store.dispatch(SET_COMPONENT_TO_REMOVE);
+    this.selected_component = null;
+    this.controls.enabled = true;
+
     this.updateClosetGV();
   }
 
@@ -1225,6 +1230,12 @@ export default class ProductRenderer {
         if (shelf == intersected_object) {
           this.controls.enabled = false;
           this.selected_component = intersected_object;
+
+          store.dispatch(SET_COMPONENT_TO_EDIT, {
+            model: this.selected_component.userData.model,
+            slot: this.selected_component.userData.slot
+          });
+
           if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
             this.offset = this.intersection.y - this.selected_component.position.y;
           }
@@ -1237,6 +1248,12 @@ export default class ProductRenderer {
         if (pole == intersected_object) {
           this.controls.enabled = false;
           this.selected_component = intersected_object;
+
+          store.dispatch(SET_COMPONENT_TO_EDIT, {
+            model: this.selected_component.userData.model,
+            slot: this.selected_component.userData.slot
+          });
+
           if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
             this.offset = this.intersection.y - this.selected_component.position.y;
           }
