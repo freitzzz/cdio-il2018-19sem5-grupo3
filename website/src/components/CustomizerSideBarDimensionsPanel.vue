@@ -438,7 +438,8 @@
         //Post of product
   
         if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
-          CustomizedProductRequests.postCustomizedProduct({
+
+          var postBody = {
               productId: store.state.product.id,
               reference: store.state.customizedProduct.reference,
               customizedDimensions: {
@@ -447,7 +448,16 @@
                 depth: this.depth,
                 unit: this.unit
               }
-            })
+          };
+
+          const designation = store.getters.customizedProductDesignation;
+
+          //since the designation is optional, only set if it's been defined
+          if(designation != undefined && designation.length > 0){
+            postBody.designation = designation;
+          }
+
+          CustomizedProductRequests.postCustomizedProduct(postBody)
             .then(response => {
               this.idCustomizedProduct = response.data.id;
               store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
