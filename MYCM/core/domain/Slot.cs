@@ -7,13 +7,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using support.domain.ddd;
 using support.utils;
 
-namespace core.domain
-{
+namespace core.domain {
     /// <summary>
     /// Represents a product slot
     /// </summary>
-    public class Slot : DomainEntity<string>, DTOAble<SlotDTO>
-    {
+    public class Slot : DomainEntity<string>, DTOAble<SlotDTO> {
         /// <summary>
         /// Constant that represents the message presented when the provided identifier is invalid.
         /// </summary>
@@ -82,8 +80,7 @@ namespace core.domain
         /// Constructor used for injecting the LazyLoader.
         /// </summary>
         /// <param name="lazyLoader">LazyLoader being injected.</param>
-        private Slot(ILazyLoader lazyLoader)
-        {
+        private Slot(ILazyLoader lazyLoader) {
             this.LazyLoader = lazyLoader;
         }
 
@@ -98,8 +95,7 @@ namespace core.domain
         /// </summary>
         /// <param name="identifier">Slot's identifier.</param>
         /// <param name="slotDimensions">Slot's customized dimensions.</param>
-        public Slot(string identifier, CustomizedDimensions slotDimensions)
-        {
+        public Slot(string identifier, CustomizedDimensions slotDimensions) {
             checkIdentifier(identifier);
             checkSlotDimensions(slotDimensions);
             this.identifier = identifier;
@@ -112,10 +108,8 @@ namespace core.domain
         /// </summary>
         /// <param name="identifier">Identifier being checked.</param>
         /// <exception cref="System.ArgumentException">Thrown when the provided identifier is invalid(null or empty).</exception>
-        private void checkIdentifier(string identifier)
-        {
-            if (Strings.isNullOrEmpty(identifier))
-            {
+        private void checkIdentifier(string identifier) {
+            if (Strings.isNullOrEmpty(identifier)) {
                 throw new ArgumentException(ERROR_INVALID_IDENTIFIER);
             }
         }
@@ -125,10 +119,8 @@ namespace core.domain
         /// </summary>
         /// <param name="slotDimensions">Instance of CustomizedDimensions representing the Slot's dimensions.</param>
         /// <exception cref="System.ArgumentException">Thrown when the provided instance of CustomizedDimensions is null.</exception>
-        private void checkSlotDimensions(CustomizedDimensions slotDimensions)
-        {
-            if (slotDimensions == null)
-            {
+        private void checkSlotDimensions(CustomizedDimensions slotDimensions) {
+            if (slotDimensions == null) {
                 throw new ArgumentException(ERROR_NULL_DIMENSIONS);
             }
         }
@@ -139,8 +131,7 @@ namespace core.domain
         /// </summary>
         /// <param name="identifier">Slot's new identifier.</param>
         /// <exception cref="System.ArgumentException">Thrown when the provided identifier is invalid(null or empty).</exception>
-        public void changeIdentifier(string identifier)
-        {
+        public void changeIdentifier(string identifier) {
             checkIdentifier(identifier);
             this.identifier = identifier;
         }
@@ -151,10 +142,8 @@ namespace core.domain
         /// <param name="slotDimensions">Instance of CustomizedDimensions.</param>
         /// <exception cref="System.InvalidOperationException">Thrown when the Slot already has instances of CustomizedProduct.</exception>
         /// <exception cref="System.ArgumentException">Thrown when the instance of CustomizedDimensions is null.</exception>
-        public void changeDimensions(CustomizedDimensions slotDimensions)
-        {
-            if (hasCustomizedProducts())
-            {
+        public void changeDimensions(CustomizedDimensions slotDimensions) {
+            if (hasCustomizedProducts()) {
                 //can't resize slot if it already holds products
                 throw new InvalidOperationException(ERROR_CHANGE_DIMENSIONS_AFTER_ADDING_CUSTOMIZED_PRODUCTS);
             }
@@ -169,19 +158,15 @@ namespace core.domain
         /// <exception cref="System.ArgumentException">
         /// Thrown when the provided instance of CustomizedProduct is null, a duplicate or does not fit in the Slot.
         /// </exception>
-        public void addCustomizedProduct(CustomizedProduct productToAdd)
-        {
+        public void addCustomizedProduct(CustomizedProduct productToAdd) {
             //TODO take restrictions into account
-            if (productToAdd == null)
-            {
+            if (productToAdd == null) {
                 throw new ArgumentException(ERROR_ADD_NULL_CUSTOMIZED_PRODUCT);
             }
-            if (this.customizedProducts.Contains(productToAdd))
-            {
+            if (this.customizedProducts.Contains(productToAdd)) {
                 throw new ArgumentException(ERROR_ADD_DUPLICATE_CUSTOMIZED_PRODUCT);
             }
-            if (!productFits(productToAdd))
-            {
+            if (!productFits(productToAdd)) {
                 throw new ArgumentException(ERROR_ADD_CUSTOMIZED_PRODUCT_DOES_NOT_FIT);
             }
 
@@ -193,10 +178,8 @@ namespace core.domain
         /// </summary>
         /// <param name="productToRemove">customized product to be removed</param>
         /// <exception cref="System.ArgumentException">Thrown when the provided instance can not be removed.</exception>
-        public void removeCustomizedProduct(CustomizedProduct productToRemove)
-        {
-            if (!customizedProducts.Remove(productToRemove))
-            {
+        public void removeCustomizedProduct(CustomizedProduct productToRemove) {
+            if (!customizedProducts.Remove(productToRemove)) {
                 throw new ArgumentException(ERROR_REMOVE_CUSTOMIZED_PRODUCT);
             }
         }
@@ -205,8 +188,7 @@ namespace core.domain
         /// Checks if the Slot holds any instance of CustomizedProduct.
         /// </summary>
         /// <returns>true if the Slot has any CustomizedProduct; false, otherwise.</returns>
-        public bool hasCustomizedProducts()
-        {
+        public bool hasCustomizedProducts() {
             return this.customizedProducts.Any();
         }
 
@@ -215,8 +197,7 @@ namespace core.domain
         /// </summary>
         /// <param name="customizedProduct">Instance of CustomizedProduct being checked.</param>
         /// <returns>true if the Slot contains the CustomizedProduct; false, otherwise.</returns>
-        public bool hasCustomizedProduct(CustomizedProduct customizedProduct)
-        {
+        public bool hasCustomizedProduct(CustomizedProduct customizedProduct) {
             return this.customizedProducts.Contains(customizedProduct);
         }
 
@@ -225,30 +206,28 @@ namespace core.domain
         /// </summary>
         /// <param name="component">customized product to check</param>
         /// <returns>true if product fits, false if not</returns>
-        private bool productFits(CustomizedProduct component)
-        {
+        public bool productFits(CustomizedProduct component) {
             CustomizedDimensions componentDimensions = component.customizedDimensions;
+            if (componentDimensions.height > slotDimensions.height || componentDimensions.width > slotDimensions.width || componentDimensions.depth > slotDimensions.depth) {
+                return false;
+            }
             double remainingVolume = slotDimensions.height * slotDimensions.width * slotDimensions.depth;
-            foreach (CustomizedProduct custom in customizedProducts)
-            {
+            foreach (CustomizedProduct custom in customizedProducts) {
                 CustomizedDimensions customDimensions = custom.customizedDimensions;
                 remainingVolume -= (customDimensions.height * customDimensions.width * customDimensions.depth);
             }
             double componentVolume = componentDimensions.height * componentDimensions.width * componentDimensions.depth;
-            if (componentVolume <= remainingVolume)
-            {
+            if (componentVolume <= remainingVolume) {
                 return true;
             }
             return false;
         }
 
-        public string id()
-        {
+        public string id() {
             return this.identifier;
         }
 
-        public bool sameAs(string comparingEntity)
-        {
+        public bool sameAs(string comparingEntity) {
             return this.identifier.Equals(comparingEntity);
         }
 
@@ -257,15 +236,12 @@ namespace core.domain
         /// </summary>
         /// <param name="obj">object to be compared</param>
         /// <returns>true if the objects are equal, false if otherwise</returns>
-        public override bool Equals(object obj)
-        {
-            if (this == obj)
-            {
+        public override bool Equals(object obj) {
+            if (this == obj) {
                 return true;
             }
 
-            if (obj == null || !obj.GetType().Equals(this.GetType()))
-            {
+            if (obj == null || !obj.GetType().Equals(this.GetType())) {
                 return false;
             }
 
@@ -278,8 +254,7 @@ namespace core.domain
         /// Hash Code of Slot
         /// </summary>
         /// <returns>hash code of a slot instance</returns>
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             int hash = 21;
             hash = hash * 97 + identifier.GetHashCode();
             return hash;
@@ -289,19 +264,16 @@ namespace core.domain
         /// ToString of Slot
         /// </summary>
         /// <returns>string description of a slot instance</returns>
-        public override string ToString()
-        {
+        public override string ToString() {
             return String.Format("Identifier: {0}\nSlot Dimensions: {1}\nSlot Products:{2}", identifier, slotDimensions.ToString(), customizedProducts.ToString());
         }
 
-        public SlotDTO toDTO()
-        {
+        public SlotDTO toDTO() {
             SlotDTO slotDTO = new SlotDTO();
             slotDTO.Id = Id;
             slotDTO.customizedDimensions = slotDimensions.toDTO();
             slotDTO.customizedProducts = new List<CustomizedProductDTO>();
-            foreach (CustomizedProduct customizedProduct in customizedProducts)
-            {
+            foreach (CustomizedProduct customizedProduct in customizedProducts) {
                 slotDTO.customizedProducts.Add(customizedProduct.toDTO());
             }
             return slotDTO;
