@@ -224,7 +224,8 @@ export default class ProductRenderer {
   /**Number of dimensions in question */
   NUMBER_DIMENSIONS;
 
-  module_group;
+  difference_module_move;
+  difference_drawer_move;
 
 
   // ---------------- End of resize control --------------------------
@@ -234,8 +235,6 @@ export default class ProductRenderer {
    * @param {HTMLCanvasElement} htmlCanvasElement - HTMLCanvasElement to which the renderer will be attached.
    */
   constructor(htmlCanvasElement) {
-
-    this.module_group = new THREE.Group();
 
     /* Create vector for resizing purposes: */
 
@@ -1211,16 +1210,14 @@ export default class ProductRenderer {
               this.controls.enabled = false;
               this.selected_component = intersected_object;
               this.selected_module = intersected_object;
-               if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+              this.difference_module_move = this.group.getObjectById(this.closet_modules_ids[1]).position.y - this.group.getObjectById(this.closet_drawers_ids[1]).position.y;
+              this.difference_drawer_move = this.group.getObjectById(this.closet_drawers_ids[1]).position.y - this.group.getObjectById(this.closet_drawers_ids[0]).position.y;
+
+              if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
                 this.offset = this.intersection.y - this.selected_component.position.y;
-                /* for(let a = 0; a< this.closet_drawers_ids.length; a++){
-                    //this.controls.enabled = false;
-                    this.selected_component = this.group.getObjectById(this.closet_drawers_ids[a]);
-                    this.offset = this.intersection.y - this.selected_component.position.y;
-                }   */
               }
           }
-      }
+      } 
 
       //Checks if the selected object is a shelf
       for (let j = 0; j < this.closet_shelves_ids.length; j++) {
@@ -1998,21 +1995,32 @@ export default class ProductRenderer {
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
       var computedYPosition = this.intersection.y - this.offset; //The component's new computed position on the yy axis
       var computedXPosition = this.intersection.x - this.offset; //The component's new computed position on the xx axis
-
       if (computedYPosition < this.group.getObjectById(this.closet_faces_ids[1]).position.y &&
         computedYPosition >= this.group.getObjectById(this.closet_faces_ids[0]).position.y &&
         computedXPosition < this.group.getObjectById(this.closet_faces_ids[3]).position.x &&
         computedXPosition >= this.group.getObjectById(this.closet_faces_ids[2]).position.x) {
           if(this.selected_component == this.selected_module){
-            for(let i = 0; i < this.closet_drawers_ids.length; i++){
-              this.group.getObjectById(this.closet_drawers_ids[i]).position.y = computedYPosition;
-            }
             for(let i = 0; i < this.closet_modules_ids.length; i++){
-              var old_position = this.group.getObjectById(this.closet_modules_ids[i]).position.y;
-              this.group.getObjectById(this.closet_modules_ids[i]).position.y = old_position+computedYPosition;
-            }
-          } else this.selected_component.position.y = computedYPosition; //Sets the new position as long as the component stays within the closet boundaries
-      } else {
+              let module_increment = i*4;
+              if(this.closet_modules_ids[module_increment + 1] == this.selected_component.id){
+                // Move module
+                this.group.getObjectById(this.closet_modules_ids[module_increment+1]).position.y = computedYPosition + this.difference_module_move;
+                this.group.getObjectById(this.closet_modules_ids[module_increment]).position.y = computedYPosition - this.difference_module_move;
+                this.group.getObjectById(this.closet_modules_ids[module_increment+2]).position.y = computedYPosition;
+                this.group.getObjectById(this.closet_modules_ids[module_increment+3]).position.y = computedYPosition;
+                // Move drawer
+                let drawer_increment = i*5;
+                this.group.getObjectById(this.closet_drawers_ids[drawer_increment]).position.y = computedYPosition - this.difference_drawer_move;
+                this.group.getObjectById(this.closet_drawers_ids[drawer_increment+1]).position.y = computedYPosition;
+                this.group.getObjectById(this.closet_drawers_ids[drawer_increment+2]).position.y = computedYPosition;
+                this.group.getObjectById(this.closet_drawers_ids[drawer_increment+3]).position.y = computedYPosition;
+                this.group.getObjectById(this.closet_drawers_ids[drawer_increment+4]).position.y = computedYPosition;
+              }
+          }
+          } else{
+            this.selected_component.position.y = computedYPosition; //Sets the new position as long as the component stays within the closet boundaries
+          }
+        } else {
         store.dispatch(SET_COMPONENT_TO_REMOVE, {
           model: this.selected_component.userData.model,
           slot: this.selected_component.userData.slot
