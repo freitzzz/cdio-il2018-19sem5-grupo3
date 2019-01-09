@@ -4,33 +4,28 @@ using Xunit;
 using core.domain;
 using core.dto;
 
-namespace core_tests.domain
-{
+namespace core_tests.domain {
     /// <summary>
     /// Unit testing class for DiscreteDimensionInterval
     /// </summary>
-    public class DiscreteDimensionIntervalTest
-    {
+    public class DiscreteDimensionIntervalTest {
 
         [Fact]
-        public void ensureConstructorDetectsEmptyList()
-        {
+        public void ensureConstructorDetectsEmptyList() {
             Action act = () => new DiscreteDimensionInterval(new List<double>());
 
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
-        public void ensureConstructorDetectsNullValue()
-        {
+        public void ensureConstructorDetectsNullValue() {
             Action act = () => new DiscreteDimensionInterval(null);
 
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
-        public void ensureConstructorDetectsNaNValue()
-        {
+        public void ensureConstructorDetectsNaNValue() {
             var list = new List<double>();
             list.Add(1.0);
             list.Add(Double.NaN);
@@ -41,8 +36,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureConstructorDetectsInfinityValue()
-        {
+        public void ensureConstructorDetectsInfinityValue() {
             var list = new List<double>();
             list.Add(2.0);
             list.Add(Double.PositiveInfinity);
@@ -53,8 +47,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureConstructorDetectsNegativeValue()
-        {
+        public void ensureConstructorDetectsNegativeValue() {
             var list = new List<double>();
             list.Add(2.0);
             list.Add(-1.0);
@@ -65,8 +58,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureConstructorDetectsZeroValue()
-        {
+        public void ensureConstructorDetectsZeroValue() {
             var list = new List<double>();
             list.Add(2.0);
             list.Add(0);
@@ -77,8 +69,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureInstanceIsCreated()
-        {
+        public void ensureInstanceIsCreated() {
             var list = new List<double>();
             list.Add(1.0);
 
@@ -86,8 +77,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureDiscreteDimensionIntervalDoesNotHaveValue()
-        {
+        public void ensureDiscreteDimensionIntervalDoesNotHaveValue() {
             List<double> values = new List<double>();
             values.Add(12);
             values.Add(13);
@@ -100,8 +90,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureDiscretDimensioIntervalHasValue()
-        {
+        public void ensureDiscretDimensioIntervalHasValue() {
             List<double> values = new List<double>();
             values.Add(12);
             values.Add(13);
@@ -114,8 +103,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureDiscreteDimensionIntervalGetMaxValueIsTheSameAsTheLargestValueOnTheCollection()
-        {
+        public void ensureDiscreteDimensionIntervalGetMaxValueIsTheSameAsTheLargestValueOnTheCollection() {
             double maxValue = 14;
             List<double> values = new List<double>();
             values.Add(12);
@@ -130,8 +118,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureDiscreteDimensionIntervalGetMinValueIsTheSameAsTheLowestValueOnTheCollection()
-        {
+        public void ensureDiscreteDimensionIntervalGetMinValueIsTheSameAsTheLowestValueOnTheCollection() {
             double minValue = 12;
             List<double> values = new List<double>();
             values.Add(minValue);
@@ -146,8 +133,18 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureInstanceAndNullAreNotEqual()
-        {
+        public void ensureGetValuesAsArrayWorks() {
+            var values = new List<double>() { 12.5, 13, 13.5, 14, 14.5, 15, 16, 17 };
+
+            DiscreteDimensionInterval instance = new DiscreteDimensionInterval(values);
+
+            double[] expectedValues = { 12.5, 13, 13.5, 14, 14.5, 15, 16, 17 };
+
+            Assert.Equal(expectedValues, instance.getValuesAsArray());
+        }
+
+        [Fact]
+        public void ensureInstanceAndNullAreNotEqual() {
             var list = new List<double>();
             list.Add(4.0);
             DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
@@ -156,8 +153,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureInstancesOfDifferentTypesAreNotEqual()
-        {
+        public void ensureInstancesOfDifferentTypesAreNotEqual() {
             var list = new List<double>();
             list.Add(2.0);
             DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
@@ -166,8 +162,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureInstancesWithDifferentListsAreNotEqual()
-        {
+        public void ensureInstancesWithDifferentListsAreNotEqual() {
             var list = new List<double>();
             var otherList = new List<double>();
             list.Add(6.9);
@@ -179,8 +174,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureInstancesWithSameListsAreEqual()
-        {
+        public void ensureInstancesWithSameListsAreEqual() {
             var list = new List<double>();
             list.Add(33.0);
             DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
@@ -190,8 +184,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureSameInstanceIsEqual()
-        {
+        public void ensureSameInstanceIsEqual() {
             var list = new List<double>();
             list.Add(3.0);
             DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
@@ -200,8 +193,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void testGetHashCode()
-        {
+        public void testGetHashCode() {
             var list = new List<double>();
             list.Add(30.0);
             DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
@@ -211,8 +203,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void testToString()
-        {
+        public void testToString() {
             var list = new List<double>();
             list.Add(30.3);
             DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
@@ -222,8 +213,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void testToDTO()
-        {
+        public void testToDTO() {
             var list = new List<double>();
             list.Add(1.234);
             DiscreteDimensionInterval instance = new DiscreteDimensionInterval(list);
@@ -233,8 +223,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureToDTOWithNullUnitStringDefaultsToMilimetres()
-        {
+        public void ensureToDTOWithNullUnitStringDefaultsToMilimetres() {
             var values = new List<double>() { 12.5, 13, 13.5, 14, 14.5, 15, 16, 17 };
 
             DiscreteDimensionInterval instance = new DiscreteDimensionInterval(values);
@@ -244,8 +233,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureToDTOWithNullStringDoesNotConvertValues()
-        {
+        public void ensureToDTOWithNullStringDoesNotConvertValues() {
             var values = new List<double>() { 12.5, 13, 13.5, 14, 14.5, 15, 16, 17 };
 
             DiscreteDimensionInterval instance = new DiscreteDimensionInterval(values);
@@ -257,8 +245,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureToDTOConvertsValuesToGivenUnit()
-        {
+        public void ensureToDTOConvertsValuesToGivenUnit() {
             var values = new List<double>() { 12.5, 13, 13.5, 14, 14.5, 15, 16, 17 };
 
             DiscreteDimensionInterval instance = new DiscreteDimensionInterval(values);
