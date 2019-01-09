@@ -214,7 +214,7 @@
             this.populateDimensions();
           })
           .catch(error => {
-            this.$toast.open("An error occurred.")
+            this.$toast.open("An error occurred.");
           });
       },
       /**
@@ -272,7 +272,7 @@
       },
       //Populate
       populateDimensions: function() {
-  
+        var mean;
         this.resetFlags();
         //Get information of the chosed option
         var op = this.dimensionOp;
@@ -302,8 +302,9 @@
             op.height
           );
           this.heightIncrement = this.determineIncrementOfInterval(op.height);
-  
-          this.height = this.heightMin;
+          mean = 2*(this.heightMax - this.heightMin)/3;
+          this.height =  mean.toFixed(2);         
+        
           this.continousIntervalFlags[this.HEIGHT] = true;
           this.discreteIntervalFlags[this.HEIGHT] = false;
           this.discreteValueFlags[this.HEIGHT] = false;
@@ -327,11 +328,12 @@
           this.continousIntervalFlags[this.WIDTH] = false;
           this.discreteIntervalFlags[this.WIDTH] = false;
         } else {
-  
+
           this.widthMin = this.determineMinOfInterval(this.widthType, op.width);
           this.widthMax = this.determineMaxOfInterval(this.widthType, op.width);
           this.widthIncrement = this.determineIncrementOfInterval(op.width);
-          this.width = this.widthMin;
+          mean = 2*(this.widthMax - this.widthMin)/3;
+          this.width = mean.toFixed(2);
   
   
           this.continousIntervalFlags[this.WIDTH] = true;
@@ -359,7 +361,8 @@
           this.depthMin = this.determineMinOfInterval(this.depthType, op.depth);
           this.depthIncrement = this.determineIncrementOfInterval(op.depth);
   
-          this.depth = this.depthMin;
+          mean = 2*(this.depthMax - this.depthMin)/3;
+          this.depth =  mean.toFixed(2);         
           this.continousIntervalFlags[this.DEPTH] = true;
           this.discreteValueFlags[this.DEPTH] = false;
           this.discreteIntervalFlags[this.DEPTH] = false;
