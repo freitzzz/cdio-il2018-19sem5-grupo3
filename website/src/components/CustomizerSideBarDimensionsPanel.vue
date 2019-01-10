@@ -299,7 +299,7 @@
           );
           this.heightIncrement = this.determineIncrementOfInterval(op.height);
           /* mean = 2 * (this.heightMax - this.heightMin) / 3; */
-          this.height = this.heightMin + 1000 * this.heightIncrement;
+          this.height = this.heightMin + 500 * this.heightIncrement;
   
           this.continousIntervalFlags[this.HEIGHT] = true;
           this.discreteIntervalFlags[this.HEIGHT] = false;
@@ -329,7 +329,7 @@
           this.widthMax = this.determineMaxOfInterval(this.widthType, op.width);
           this.widthIncrement = this.determineIncrementOfInterval(op.width);
           /*  mean = 2 * (this.widthMax - this.widthMin) / 3; */
-          this.width = this.widthMin + 2500 * this.widthIncrement;
+          this.width = this.widthMin + 1000 * this.widthIncrement;
   
   
           this.continousIntervalFlags[this.WIDTH] = true;
@@ -359,7 +359,7 @@
           this.depthIncrement = this.determineIncrementOfInterval(op.depth);
   
           /* mean = 2 * (this.depthMax - this.depthMin) / 3; */
-          this.depth = this.depthMin + 500 * this.depthIncrement;;
+          this.depth = this.depthMin + 250 * this.depthIncrement;;
           this.continousIntervalFlags[this.DEPTH] = true;
           this.discreteValueFlags[this.DEPTH] = false;
           this.discreteIntervalFlags[this.DEPTH] = false;
