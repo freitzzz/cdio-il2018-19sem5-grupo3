@@ -29,6 +29,7 @@
                 min="0"
                 icon="cash-multiple"
                 placeholder="Insert value here"
+                step="0.01"
                 v-model="selectedValue"
               ></b-input>
             </b-field>
