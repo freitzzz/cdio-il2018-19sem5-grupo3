@@ -22,6 +22,13 @@ namespace core.modelview.customizedproduct
         public long customizedProductId { get; set; }
 
         /// <summary>
+        /// User's authentication token.
+        /// </summary>
+        /// <value>Gets/Sets the authentication token.</value>
+        [IgnoreDataMember]
+        public string userAuthToken { get; set; }
+
+        /// <summary>
         /// Updated reference of the customized product
         /// </summary>
         /// <value>Gets/Sets the reference</value>

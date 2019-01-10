@@ -17,6 +17,13 @@ namespace core.modelview.slot
         public long customizedProductId { get; set; }
 
         /// <summary>
+        /// User's authentication token.
+        /// </summary>
+        /// <value>Gets/Sets the authentication token.</value>
+        [IgnoreDataMember]
+        public string userAuthToken { get; set; }
+
+        /// <summary>
         /// AddCustomizedDimensionsModelView detailing the Slot's dimensions.
         /// </summary>
         /// <value>Gets/Sets the AddCustomizedDimensionsModelView instance.</value>

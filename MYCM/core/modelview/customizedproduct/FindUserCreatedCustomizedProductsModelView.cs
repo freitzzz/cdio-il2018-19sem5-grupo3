@@ -6,9 +6,9 @@ namespace core.modelview.customizedproduct
     public class FindUserCreatedCustomizedProductsModelView
     {
         /// <summary>
-        /// User's API token.
+        /// User's authentication token.
         /// </summary>
-        /// <value>Gets/Sets the API token.</value>
-        public string userApiToken { get; set; }
+        /// <value>Gets/Sets the authentication token.</value>
+        public string userAuthToken { get; set; }
     }
 }
