@@ -87,21 +87,20 @@ export default {
     },
     slots: function(newValue, oldValue) {
       if(newValue.length > 0){
-        /* let index = 0;
+        let index = 0;
          for(let i = 0; i< newValue.length; i++){
           if(newValue[i].height == 0){
             index = i;
           }
         }
-        console.log(newValue);
         let size = newValue.length - 1
         if(newValue[index].height == 0){
           this.productRenderer.moveSlotSlider(index, newValue[index].width)
         }
-        if(newValue[size].height > 0){ */
+        if(newValue[size].height > 0){ 
           this.productRenderer.removeAllSlots();
           this.productRenderer.addSlotNumbered(newValue);
-        /* } */
+         } 
       } else {
         this.productRenderer.removeAllSlots();
       }

@@ -117,50 +117,6 @@ export default {
           });
       }
     },
-    postSlots(){
-       let slotsToPost1 = [];
-      for(let i = 0; i< this.slotsToPost.length - 1; i++){
-        slotsToPost1.unshift(this.slotsToPost[i]);
-      }
-      return new Promise((accept,reject)=>{
-        this.postSlot(slotsToPost1.slice())
-        .then((customizedProduct) => {
-          for(let i = 0; i< this.slotsToPost.length; i++){
-              store.dispatch(SET_ID_SLOT, {
-                idSlot: customizedProduct.slots[i].id,
-                position: i});
-          }
-          accept(customizedProduct)
-        })
-        .catch((error_message) => { 
-                reject(error_message)
-        });
-      })
-    },
-    postSlot(slotsToPost1){
-      return new Promise((accept, reject) => {
-        let slotToPost = slotsToPost1.pop();
-        CustomizedProductRequests.postCustomizedProductSlot(store.state.customizedProduct.id,
-              {
-                height: slotToPost.height,
-                depth: slotToPost.depth,
-                width: slotToPost.width,
-                unit: slotToPost.unit
-              }).then((customizedProduct) => {
-                if(slotsToPost1.length > 0 ){
-                  return this.postSlot(slotsToPost1)
-                  .then((customizedProduct)=>{
-                    accept(customizedProduct)})
-                  .catch((error_message) => { reject(error_message)});
-                }else{
-                  accept(customizedProduct.data);
-                }
-              })
-              .catch((error_message) => {
-                  reject(error_message.response.data.message);
-              });
-      })
-    },
     previousPanel(){
       this.$dialog.confirm({
           title: 'Important Information',
@@ -171,12 +127,12 @@ export default {
           message: 'Are you sure you want to return? All progress made in this step will be lost.',
           onConfirm: () => {
             this.deleteSlots();
-            store.dispatch(ADD_SLOT_DIMENSIONS); 
             this.$emit("back");
           }
         })
     },
     deleteSlots(){
+      store.dispatch(ADD_SLOT_DIMENSIONS)
       let slotsToDelete = [];
       let custProducSlots = [];
       let size = -1
@@ -222,14 +178,10 @@ export default {
       })
     },
     activateCanvasControls(){
-      //await this.deleteSlots();
-      store.dispatch(ADD_SLOT_DIMENSIONS);
-       this.drawMinSlots();
+      this.drawMinSlots();
       store.dispatch(ACTIVATE_CAN_MOVE_SLOTS);
     },
      deactivateCanvasControls(){
-      //await this.deleteSlots();
-      store.dispatch(ADD_SLOT_DIMENSIONS);
       this.drawRecommendedSlots();
       store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS)
     },
@@ -254,8 +206,10 @@ export default {
         });
     },
     drawMinSlots(){
+      store.dispatch(ADD_SLOT_DIMENSIONS)
       this.slotsToPost = [];
       this.sliderValues = [];
+      this.lines = [];
        
       CustomizedProductRequests.postCustomizedProductMinimumSlots(store.state.customizedProduct.id)
         .then(response => {
