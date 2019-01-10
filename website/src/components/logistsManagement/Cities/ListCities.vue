@@ -84,7 +84,7 @@
             generateCitiesTableColumns() {
                 return [{
                         field: "id",
-                        label: "ID",
+                        label: "City ID",
                         centered: true
                     },
                     {
