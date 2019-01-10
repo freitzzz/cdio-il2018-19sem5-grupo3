@@ -111,6 +111,10 @@ public class UserController {
     @Produces(value = MediaType.APPLICATION_JSON)
     public Response getUserAuthToken(@CookieParam(value = "MYCASESSION") String sessionCookie){
         try{
+            if(sessionCookie == null || sessionCookie.trim().isEmpty()){
+                return Response.status(Status.BAD_REQUEST).entity(new Gson().toJson(new SimpleJSONMessageService("No session cookie was provided"))).build();
+            }
+
             Cookie userSessionCookie=SessionCookieService.toSessionCookie(sessionCookie);
 
             FindUserBySessionMV findUserBySessionMV = new FindUserBySessionMV();
