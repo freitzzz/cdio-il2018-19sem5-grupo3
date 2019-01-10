@@ -44,10 +44,10 @@ namespace backend.AuthorizationServices{
             try{
                 responseBody=await response.Content.ReadAsAsync<AuthorizationResponse>();
             }catch(Exception){
-                return new NotAuthorizedException("An unexpected error occurd :(",500);
+                return new NotAuthorizedException("An unexpected error occurd :(");
             }
             if(response.StatusCode!=HttpStatusCode.NoContent){
-                return new NotAuthorizedException(responseBody.message,response.StatusCode.GetHashCode());
+                return new NotAuthorizedException(responseBody.message);
             }
             return null;
         }
