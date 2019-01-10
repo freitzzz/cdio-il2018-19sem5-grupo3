@@ -409,7 +409,6 @@
               }
             })
             .then(response => {
-              alert(this.height);
               this.idCustomizedProduct = response.data.id;
               store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
               this.getRecommendedSlots();
