@@ -46,6 +46,16 @@
      */
     import {getUserAuthorizations} from '../../AuthorizationService';
 
+    /**
+     * Requires users services
+     */
+    import {getUserDetails} from '../../UsersService';
+
+    /**
+     * Requires authentication services
+     */
+    import {authenticateUser} from '../../AuthenticationService';
+
     /*    Vue.use(Router); */
     
     export default {
@@ -57,6 +67,14 @@
                 activateManager:false,
                 activateSignup:false,
                 activateAccount:false,
+                userDetails:{
+                    name:String,
+                    roles:{
+                        isAdministrator:Boolean,
+                        isContentManager:Boolean,
+                        isLogisticManager:Boolean
+                    }
+                },
                 userInfo:null
             }
         },
@@ -92,27 +110,26 @@
                 let authenticationRequestHeaders = {
                     Secrete: "Secrete"
                 };
-                document.cookie="myca=cookie!";
                 APIGrantsService
                     .grantAuthenticationAPIIsAvailable()
                     .then(()=>{
-                        Axios.post(MYCA_API_URL+"/auth", authenticationRequestData, {
-                            headers: authenticationRequestHeaders,
-                            maxRedirects:0,
-                            withCredentials:true
-                        })
-                        .then((authenticationData) => {
-                            let sessionCookie = authenticationData.headers.cookie;
+                        authenticateUser(authenticationRequestData)
+                        .then((authenticationData)=>{
                             this.$toast.open({
                                 message: "Succesful Login!\nWe have stored a session cookie in your browser :)"
                             });
-                            getUserAuthorizations()
-                                .then((userAuthorizations)=>{this.emitCloseLogin(userAuthorizations)})
-                                .catch((userAuthorizations)=>{this.emitCloseLogin(userAuthorizations)});
+                            getUserDetails()
+                            .then((userDetails)=>{
+                                this.userDetails=Object.assign({},userDetails);
+                                this.emitCloseLogin(this.userDetails);
+                            })
+                            .catch((error_message)=>{
+                                this.$toast.open({message:error_message});
+                            });
                         })
-                        .catch((_error_message) => {
-                            let message = _error_message.response.data.message;
-                            let accountActivationRequired = _error_message.response.data.requiresActivation;
+                        .catch((error_message)=>{
+                            let message = error_message.message;
+                            let accountActivationRequired = error_message.requiresActivation;
                             if(accountActivationRequired){
                                 this.userInfo = {...authenticationRequestData};
                                 this.activateAccount = true;
@@ -121,7 +138,7 @@
                                     message: message
                                 });
                             }
-                        });
+                        })
                     })
                     .catch(()=>{
                         this.$toast.open({message:'Our autentication service is currently down! Please hold on :('});
@@ -130,8 +147,8 @@
             /**
              * Emits close login action
              */
-            emitCloseLogin(userAuthorizations) {
-                this.$emit("closeLogin",userAuthorizations);
+            emitCloseLogin(userDetails) {
+                this.$emit("closeLogin",userDetails);
             },
             /**
              * Activates signup component
