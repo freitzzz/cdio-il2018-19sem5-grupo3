@@ -407,6 +407,7 @@
                 depth: this.depth,
                 unit: this.unit
               }
+              
             })
             .then(response => {
               this.idCustomizedProduct = response.data.id;
