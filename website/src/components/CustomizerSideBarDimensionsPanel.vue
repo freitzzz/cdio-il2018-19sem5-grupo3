@@ -6,17 +6,17 @@
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
     <select class="dropdown" v-model="dimensionOp" @change="populateDimensions">
-                                                                              <option
-                                                                                v-for="option in availableOptionsDimensions"
-                                                                                :key="option.id"
-                                                                                :value="option"
-                                                                              >{{"Option: "+option.id}}</option>
-                                                                            </select>
+                                                                                <option
+                                                                                  v-for="option in availableOptionsDimensions"
+                                                                                  :key="option.id"
+                                                                                  :value="option"
+                                                                                >{{"Option: "+option.id}}</option>
+                                                                              </select>
   
     <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
     <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.HEIGHT]" v-model="height" @drag-end="updateDimensions" :interval="this.heightIncrement" :data="this.discreteIntervalHeight"></vue-slider>
-    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.HEIGHT]" :min="this.heightMin" :max="this.heightMax" :interval="this.heightIncrement" v-model="height"  @drag-end="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.HEIGHT]" :min="this.heightMin" :max="this.heightMax" :interval="this.heightIncrement" v-model="height" @drag-end="updateDimensions"></vue-slider>
     <input class="slider" v-if="this.discreteValueFlags[this.HEIGHT]" type="text" :readonly="true" v-model="height">
   
     <!-- WIDTH: -->
@@ -27,18 +27,18 @@
   
     <!-- DEPTH: -->
     <div class="text-entry">Depth:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.DEPTH]" :interval="this.depthIncrement" :data="this.discreteIntervalDepth" v-model="depth"  @drag-end="updateDimensions"></vue-slider>
-    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.DEPTH]" :min="this.depthMin" :max="this.depthMax" :interval="this.depthIncrement" v-model="depth"  @drag-end="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.DEPTH]" :interval="this.depthIncrement" :data="this.discreteIntervalDepth" v-model="depth" @drag-end="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.DEPTH]" :min="this.depthMin" :max="this.depthMax" :interval="this.depthIncrement" v-model="depth" @drag-end="updateDimensions"></vue-slider>
     <input class="slider" v-if="this.discreteValueFlags[this.DEPTH]" type="text" :readonly="true" v-model="depth">
   
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="this.updateUnit">
-                                                                              <option
-                                                                                v-for="optionUnit in availableOptionsUnits"
-                                                                                :key="optionUnit.id"
-                                                                                :value="optionUnit.unit"
-                                                                              >{{optionUnit.unit}}</option>
-                                                                            </select>
+                                                                                <option
+                                                                                  v-for="optionUnit in availableOptionsUnits"
+                                                                                  :key="optionUnit.id"
+                                                                                  :value="optionUnit.unit"
+                                                                                >{{optionUnit.unit}}</option>
+                                                                              </select>
     <div class="center-controls">
       <i class="btn btn-primary material-icons" @click="previousPanel()">arrow_back</i>
       <i class="btn btn-primary material-icons" @click="nextPanel()">arrow_forward</i>
@@ -204,7 +204,6 @@
           var responseHeight = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.height);
           var responseDepth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.depth);
   
-  
           store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS, {
             width: responseWidth.data.value,
             height: responseHeight.data.value,
@@ -215,7 +214,7 @@
   
           //Send to store the first values for the dimensions
           this.updateDimensions();
-        } catch (error){
+        } catch (error) {
           this.$toast.open("It wasn't possible to create the available units. Please try again.")
         }
   
@@ -260,35 +259,9 @@
   
           //Send to store the first values for the dimensions
           this.updateDimensions();
-        } catch (error){
+        } catch (error) {
           this.$toast.open("It wasn't possible to create the available units. Please try again.")
         }
-        // /* Width Promise */
-        // UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.width)
-        //   .then(responseWidth => {
-        //     this.storeDispatchVec.width = responseWidth.data.value;
-        //   })
-        //   .catch((error_message) => {
-        //     this.$toast.open("It wasn't possible to create the available units. Please try again.")
-        //   });
-        // /* Height Promise */
-        // UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.height)
-        //   .then(responseHeight => {
-        //     this.storeDispatchVec.height = responseHeight.data.value;
-        //   })
-        //   .catch((error_message) => {
-        //     this.$toast.open("It wasn't possible to create the available units. Please try again.")
-        //   });
-  
-        // UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.depth)
-        //   .then(responseDepth => {
-        //     this.storeDispatchVec.depth = responseDepth.data.value;
-  
-        //   })
-        //   .catch((error_message) => {
-        //     this.$toast.open("It wasn't possible to create the available units. Please try again.")
-        //   });
-  
   
       },
       //Populate
@@ -325,8 +298,8 @@
             op.height
           );
           this.heightIncrement = this.determineIncrementOfInterval(op.height);
-          mean = 2 * (this.heightMax - this.heightMin) / 3;
-          this.height = mean.toFixed(2);
+          /* mean = 2 * (this.heightMax - this.heightMin) / 3; */
+          this.height = this.heightMin + 1000 * this.heightIncrement;
   
           this.continousIntervalFlags[this.HEIGHT] = true;
           this.discreteIntervalFlags[this.HEIGHT] = false;
@@ -355,8 +328,8 @@
           this.widthMin = this.determineMinOfInterval(this.widthType, op.width);
           this.widthMax = this.determineMaxOfInterval(this.widthType, op.width);
           this.widthIncrement = this.determineIncrementOfInterval(op.width);
-          mean = 2 * (this.widthMax - this.widthMin) / 3;
-          this.width = mean.toFixed(2);
+          /*  mean = 2 * (this.widthMax - this.widthMin) / 3; */
+          this.width = this.widthMin + 2500 * this.widthIncrement;
   
   
           this.continousIntervalFlags[this.WIDTH] = true;
@@ -385,8 +358,8 @@
           this.depthMin = this.determineMinOfInterval(this.depthType, op.depth);
           this.depthIncrement = this.determineIncrementOfInterval(op.depth);
   
-          mean = 2 * (this.depthMax - this.depthMin) / 3;
-          this.depth = mean.toFixed(2);
+          /* mean = 2 * (this.depthMax - this.depthMin) / 3; */
+          this.depth = this.depthMin + 500 * this.depthIncrement;;
           this.continousIntervalFlags[this.DEPTH] = true;
           this.discreteValueFlags[this.DEPTH] = false;
           this.discreteIntervalFlags[this.DEPTH] = false;
@@ -395,9 +368,6 @@
           this.createResizeFactor();
           this.controlIndex++;
         }
-  
-  
-  
       },
   
       //The following methods determine the min,max and increment to populate the height,width and depth slider
@@ -439,6 +409,7 @@
               }
             })
             .then(response => {
+              alert(this.height);
               this.idCustomizedProduct = response.data.id;
               store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
               this.getRecommendedSlots();
@@ -450,41 +421,6 @@
         } else {
           this.$toast.open("Please select an option!");
         }
-  
-        /*         return new Promise((accept, reject) => {
-                        if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
-                          Axios.post(MYCM_API_URL + '/customizedproducts', {
-                            productId: store.state.product.id,
-                            customizedDimensions: {
-                              height: this.height,
-                              width: this.width,
-                              depth: this.depth,
-                              unit: this.unit
-                            }
-                          })
-                          .then(response => {
-                            this.idCustomizedProduct=response.data.id
-                            accept
-                          })
-                          .catch((error_message) => {
-                            this.$toast.open({
-                              message: error_message.response.data.message
-                            });
-                            flag = true;
-                          });
-                          if (!flag) {
-                            alert(this.idCustomizedProduct);
-          
-                            store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
-                            this.drawRecommendedSlots();
-                            this.$emit("advance");
-                          }else{
-                            this.$toast.open("There was an error please try again!");
-                          }
-                        } else {
-                          this.$toast.open("Please select an option!");
-                        }
-                      }); */
       },
       previousPanel() {
   
