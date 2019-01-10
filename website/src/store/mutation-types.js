@@ -25,6 +25,7 @@ export const ACTIVATE_CAN_MOVE_CLOSET = "activate_can_move_closet";
 export const DEACTIVATE_CAN_MOVE_CLOSET = "deactivate_can_move_closet";
 export const ACTIVATE_CAN_MOVE_COMPONENTS = "activate_can_move_components";
 export const DEACTIVATE_CAN_MOVE_COMPONENTS = "deactivate_can_move_components";
+export const SET_COMPONENT_TO_EDIT_MATERIAL = "set_component_to_edit_material";
 
 //Resize mutations
 export const SET_RESIZE_FACTOR_DIMENSIONS = "set_resize_factor_dimensions";

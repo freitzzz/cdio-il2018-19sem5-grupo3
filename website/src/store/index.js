@@ -11,13 +11,14 @@ Vue.use(Vuex)
  */
 const state = {
     canvasControls: {
+        canMoveComponents: "false",
         canMoveCloset: "false",
         canMoveSlots: "false",
-        canMoveComponents: "false",
-        doorsFlag: "",
         componentToRemove: {},
-        componentToAdd: {},
         componentToEdit: {},
+        componentToAdd: {},
+        componentMaterial: "",
+        doorsFlag: "",
         slostSlider: []
     },
 
@@ -48,8 +49,7 @@ const state = {
                 alpha: ""
             }
         },
-        slots: [
-        ],
+        slots: [],
         customizedDimensions: {
             width: "",
             height: "",
@@ -158,6 +158,9 @@ export const getters = {
     },
     componentToEdit: state => {
         return state.canvasControls.componentToEdit;
+    },
+    componentToEditMaterial: state => {
+        return state.canvasControls.componentMaterial;
     }
 }
 

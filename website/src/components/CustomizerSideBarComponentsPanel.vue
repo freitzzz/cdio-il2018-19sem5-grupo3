@@ -2,6 +2,64 @@
   <div>
     <div v-if="showSidePanel" ref="componentsSideCustomizer" class="components-side-customizer">
       <i class="closebtn material-icons md-18 md-grey" @click="closeNav()">close</i>
+      <div class="text-title">
+        <p>{{this.componentData.designation}}</p>
+      </div>
+      <div v-if="this.componentData.materials.length > 0">
+        <div class="text-entry">Choose a material to add:</div>
+        <div class="padding-div">
+          <div class="scrollable-div" style="height: 300px; width: 100%;">
+            <a v-if="this.selectedMaterial">
+                <a v-if="hasFinishes()" class="sidepanel-entry" @click="changeShowFinishes">
+                  <p><i class="material-icons md-12 md-blue">brush</i> <b>Finishes <i class="fa fa-caret-down"></i></b></p>
+                </a>
+                <div class="dropdown-container" v-if="showFinishes">
+                  <a class="sidepanel-subentry" @click="removeFinish()">
+                    <swatches value="" :trigger-style="{ width: '10px', height: '10px', position:'absolute', left:'-16px', top:'6px'}"/>
+                    None
+                  </a>   
+                  <div v-for="finish in this.selectedMaterial.finishes" :key="finish.description">
+                    <a class="sidepanel-subentry" @click="applyFinish(finish)">{{finish.description}}</a>   
+                  </div>           
+                </div>
+                <a v-if="hasColors()" class="sidepanel-entry" @click="changeShowColors">
+                  <p><i class="material-icons md-12 md-blue">color_lens</i> <b>Colors <i class="fa fa-caret-down"></i></b></p>
+                </a>
+                <div class="dropdown-container" v-if="showColors">
+                  <a class="sidepanel-subentry" @click="removeColor()">
+                    <swatches value="" :trigger-style="{ width: '10px', height: '10px', position:'absolute', left:'-16px', top:'6px'}"/>
+                    None
+                  </a>
+                  <div v-for="color in this.selectedMaterial.colors" :key="color.name">
+                    <a class="sidepanel-subentry" @click="applyColor(color)">
+                      <swatches
+                      :value="rgbToHex(color)"
+                      :trigger-style="{ width: '10px',
+                                        height: '10px',
+                                        position: 'absolute',
+                                        left: '-16px',
+                                        top: '6px',
+                                        borderRadius: '3px',
+                                        cursor: 'pointer',
+                                        border: 'thin solid black' }"
+                      :disabled="true"/>
+                      {{color.name}}
+                    </a>   
+                  </div>                       
+                </div>
+            </a>
+            <ul class="image-list" v-for="material in this.componentData.materials" :key="material.id">
+              <li class="image-btn" @click="applyMaterial(material); getMaterialInformation(material.id)">
+                <img :src="findMaterialImage(material.image)" width="100%">
+                <p>{{material.designation}}</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+            <div class="center-controls">
+              <i class="btn btn-primary material-icons" @click="previousStep()" >arrow_back</i>
+            </div>
+      </div>
     </div>
     <div v-if="getComponentsOk">
       <div class="icon-div-top">
@@ -45,17 +103,29 @@
 <script>
 import store from "./../store";
 import ProductRequests from "./../services/mycm_api/requests/products.js";
+import MaterialRequests from "./../services/mycm_api/requests/materials.js";
+import CustomizedProductRequests from "./../services/mycm_api/requests/customizedproducts.js";
 import { REMOVE_CUSTOMIZED_PRODUCT_COMPONENT,
         ADD_CUSTOMIZED_PRODUCT_COMPONENT,
+        SET_COMPONENT_TO_EDIT_MATERIAL,
         ACTIVATE_CAN_MOVE_COMPONENTS,
         SET_COMPONENT_TO_EDIT,
         SET_COMPONENT_TO_ADD } from "./../store/mutation-types.js";
+import "vue-swatches/dist/vue-swatches.min.css";
+import Swatches from "vue-swatches";
 
 export default {
   name: "CustomizerSideBarComponentsPanel",
+  components: { Swatches }, 
   data() {
     return {
+      /* Flags to help component customization */
+      componentData: null,
       showSidePanel: false,
+      showFinishes: false,
+      showColors: false,
+      selectedMaterial: null,
+      /* Information regarding requests */
       addedComponents: [],
       components: [],
       httpCode: null
@@ -93,11 +163,17 @@ export default {
     },
     editComponent: function(newValue){
       if(!newValue) return;
-      this.showSidePanel = true;
+      for(let i = 0; i < this.components.length; i++){
+        console.log(newValue.model)
+        if(this.components[i].model == newValue.model){
+          this.getComponentData(this.components[i].id);
+          this.showFinishes = false;
+          this.showColors = false;
+        }
+      }
     },
     removeComponent: function(newValue){
       if(!newValue) return;
-      
       var context = this;
       this.$dialog.confirm({
         title: 'Remove Component',
@@ -139,21 +215,88 @@ export default {
           }
         });
     },
+    getComponentData(id){
+      ProductRequests.getProductById(id)
+      .then(response => {
+        this.componentData = response.data;
+        this.httpCode = response.status;
+        this.showSidePanel = true;
+      })
+      .catch(error => {
+        this.httpCode = error.response.status
+      });
+    },
+    async getMaterialInformation(materialId){
+     await MaterialRequests.getMaterial(materialId, {pricedFinishesOnly: true})
+        .then(response => {
+          this.selectedMaterial.colors = [];
+          this.selectedMaterial.colors.push(...response.data.colors);
+
+          this.selectedMaterial.finishes = [];
+          this.selectedMaterial.finishes.push(...response.data.finishes);
+
+          this.httpCode = response.status;
+        })
+        .catch(error => {
+          if (error.response === undefined) {
+            this.httpCode = 500;
+            this.$toast.open("There was an error while fetching the selected material's data. Try reloading the page.");
+          } else if(error.response.status == 404){
+            this.finishes = [];
+          }
+        });
+    },
     hasSlots(){
      return store.state.customizedProduct.slots.length > 0;
     },
+    async hasFinishes(){
+      return await this.selectedMaterial.finishes && this.selectedMaterial.finishes.length > 0;
+    },
+    async hasColors(){
+      return await this.selectedMaterial.colors && this.selectedMaterial.colors.length > 0;
+    },
     findComponentImage(filename) {
       return "./src/assets/products/" + filename.split(".")[0] + ".png";
+    },
+    findMaterialImage(filename) {
+      return "./src/assets/materials/" + filename;
+    },
+    applyMaterial(material) {
+      this.selectedMaterial = material;
+      store.dispatch(SET_COMPONENT_TO_EDIT_MATERIAL, {
+          material: material.image
+      });      
     },
     isComponentMandatory(componentId){
       for(let i = 0; i < this.components.length; i++){
         if(this.components[i].id == componentId) return this.components[i].mandatory == true;
       }
     },
+    changeShowColors(){
+      if(this.showColors == true) this.showColors = false;
+      else this.showColors = true;
+    },
+    changeShowFinishes(){
+      if(this.showFinishes == true) this.showFinishes = false;
+      else this.showFinishes = true;
+    },
+    rgbToHex(color){
+      var red = this.convertValue(color.red);
+      var green = this.convertValue(color.green);
+      var blue = this.convertValue(color.blue);
+      return "#" + red + green + blue;
+    },
+    convertValue(value){
+      var hex = Number(value).toString(16);
+      if (hex.length < 2) hex = "0" + hex;
+      return hex;
+    },
     closeNav() {
       this.$refs.componentsSideCustomizer.style.width = "0";
       store.dispatch(SET_COMPONENT_TO_EDIT);
       this.showSidePanel = false;
+      this.showFinishes = false;
+      this.showColors = false;
     },
     nextPanel(){
       this.$dialog.confirm({
@@ -262,6 +405,16 @@ export default {
   position: absolute;
 }
 
+/* Title text (top of the sidebar nav for component customization) */
+.text-title{
+    padding-left: 1%;
+    padding-top: 1%;
+    position: fixed;
+    z-index: 1;
+    margin: 2%;
+    left: 78%;
+    top: 20%;
+}
 /* Sidenav for component customization */
 .components-side-customizer {
     height: 100%;

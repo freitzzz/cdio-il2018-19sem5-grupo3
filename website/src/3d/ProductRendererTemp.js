@@ -381,7 +381,7 @@ export default class ProductRenderer {
     this.material.map;
 
     for (var i = 0; i < faces.length; i++) {
-      this.closet_faces_ids.push(this.generateParellepiped(faces[i][0], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], this.material, this.group, ""));
+      this.closet_faces_ids.push(this.generateParellepiped(faces[i][0], faces[i][1], faces[i][2], faces[i][3], faces[i][4], faces[i][5], this.material, ""));
     }
     this.scene.add(this.group);
     this.group.visible = false;
@@ -715,7 +715,7 @@ export default class ProductRenderer {
     poleMesh.position.y = y;
     poleMesh.position.z = z;
     poleMesh.rotation.z = Math.PI / 2;
-    poleMesh.userData = { model: component.model, slot: component.slot }
+    poleMesh.userData = { model: component.model, slot: component.slot, objectId: poleMesh.id }
 
     //Enable shadows for pole's mesh
     poleMesh.castShadow = true;
@@ -804,7 +804,7 @@ export default class ProductRenderer {
       z = this.calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
     }
     this.closet.addShelf(new Shelf([width, 3, this.closet.getClosetDepth(), x, y, z], slot));
-    this.closet_shelves_ids.push(this.generateParellepiped(width, 3, this.closet.getClosetDepth(), x, y, z, this.material, this.group, component));
+    this.closet_shelves_ids.push(this.generateParellepiped(width, 3, this.closet.getClosetDepth(), x, y, z, this.material, component));
   }
 
 
@@ -859,7 +859,7 @@ export default class ProductRenderer {
     for (let i = 0; i < borders_module.length; i++) {
       this.closet_modules_ids.push(this.generateParellepiped(borders_module[i][0],
         borders_module[i][1], borders_module[i][2], borders_module[i][3],
-        borders_module[i][4], borders_module[i][5], this.material, this.group, component));
+        borders_module[i][4], borders_module[i][5], this.material, component));
     }
 
     var drawer = new Drawer([width - spaceDrawerModule, depthDrawer, depthCloset, x, y + (depthDrawer / 2), z], //Base
@@ -872,7 +872,7 @@ export default class ProductRenderer {
     for (let i = 0; i < borders_drawer.length; i++) {
       this.closet_drawers_ids.push(this.generateParellepiped(borders_drawer[i][0],
         borders_drawer[i][1], borders_drawer[i][2], borders_drawer[i][3],
-        borders_drawer[i][4], borders_drawer[i][5], this.material, this.group, component));
+        borders_drawer[i][4], borders_drawer[i][5], this.material, component));
     }
 
     this.closet.addModule(module);
@@ -899,7 +899,7 @@ export default class ProductRenderer {
   addSlotNumbered(slotsToAdd) {
     for (var i = 0; i < slotsToAdd.length; i++) {
       var slotFace = this.closet.addSlot(slotsToAdd[i]);
-      this.closet_slots_faces_ids.push(this.generateParellepiped(slotFace[0], slotFace[1], slotFace[2], slotFace[3], slotFace[4], slotFace[5], this.material, this.group, ""));
+      this.closet_slots_faces_ids.push(this.generateParellepiped(slotFace[0], slotFace[1], slotFace[2], slotFace[3], slotFace[4], slotFace[5], this.material, ""));
     }
     this.updateClosetGV();
   }
@@ -1033,6 +1033,43 @@ export default class ProductRenderer {
     this.material.map = new THREE.TextureLoader().load(texture);
   }
 
+  applyComponentMaterial(texture){
+    var componentMaterial = new THREE.MeshPhongMaterial();
+    componentMaterial.map = new THREE.TextureLoader().load("./src/assets/materials/" + texture);
+
+    var componentToEdit = store.getters.componentToEdit;
+    var designation = componentToEdit.model.split(".")[0];
+
+    if (designation == "shelf"){
+      for(let i = 0; i < this.closet.shelves.length; i++){
+        if(this.closet_shelves_ids[i] == componentToEdit.objectId) this.group.getObjectById(this.closet_shelves_ids[i]).material = componentMaterial;
+      }
+    }
+
+    if (designation == "pole"){
+      for(let i = 0; i < this.closet.poles.length; i++){
+        if(this.closet_poles_ids[i] == componentToEdit.objectId) this.group.getObjectById(this.closet_poles_ids[i]).material = componentMaterial;
+      }
+    }
+
+    if (designation == "drawer"){
+      for(let j = 0; j < this.closet.drawers.length; j++){
+        if(this.closet_modules_ids[j * 4] == componentToEdit.objectId || this.closet_modules_ids[j * 4 + 1] == componentToEdit.objectId){
+          this.group.getObjectById(this.closet_modules_ids[j * 4]).material = componentMaterial;
+          this.group.getObjectById(this.closet_modules_ids[j * 4 + 1]).material = componentMaterial;
+          this.group.getObjectById(this.closet_modules_ids[j * 4 + 2]).material = componentMaterial;
+          this.group.getObjectById(this.closet_modules_ids[j * 4 + 3]).material = componentMaterial;
+
+          this.group.getObjectById(this.closet_drawers_ids[j * 5]).material = componentMaterial;
+          this.group.getObjectById(this.closet_drawers_ids[j * 5 + 1]).material = componentMaterial;
+          this.group.getObjectById(this.closet_drawers_ids[j * 5 + 2]).material = componentMaterial;
+          this.group.getObjectById(this.closet_drawers_ids[j * 5 + 3]).material = componentMaterial;
+          this.group.getObjectById(this.closet_drawers_ids[j * 5 + 4]).material = componentMaterial;
+        }
+    }
+    }
+  }
+
   /**
    * Changes the closet's material's finish.
    * @param {number} shininess The new shininess value
@@ -1099,10 +1136,9 @@ export default class ProductRenderer {
    * @param {number} y Number with the parellepiped position relatively to the Y axe
    * @param {number} z Number with the parellepiped position relatively to the Z axe
    * @param {THREE.Material} material THREE.Material with the parellepiped material
-   * @param {THREE.Group} group THREE.Group with the group where the parellepied will be putted
    * @param {*} component Component info
    */
-  generateParellepiped(width, height, depth, x, y, z, material, group, component) {
+  generateParellepiped(width, height, depth, x, y, z, material, component) {
     var parellepipedGeometry = new THREE.CubeGeometry(width, height, depth);
     var parellepiped = new THREE.Mesh(parellepipedGeometry, material);
     parellepiped.position.x = x;
@@ -1113,7 +1149,7 @@ export default class ProductRenderer {
     parellepiped.castShadow = true;
     parellepiped.receiveShadow = true;
 
-    if (component != "") parellepiped.userData = { model: component.model, slot: component.slot }
+    if (component != "") parellepiped.userData = { model: component.model, slot: component.slot, objectId: parellepiped.id }
     this.group.add(parellepiped);
     return parellepiped.id;
   }
@@ -1219,7 +1255,8 @@ export default class ProductRenderer {
 
               store.dispatch(SET_COMPONENT_TO_EDIT, {
                 model: this.selected_component.userData.model,
-                slot: this.selected_component.userData.slot
+                slot: this.selected_component.userData.slot,
+                objectId: this.selected_component.userData.objectId
               });
 
               if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
@@ -1237,7 +1274,8 @@ export default class ProductRenderer {
 
           store.dispatch(SET_COMPONENT_TO_EDIT, {
             model: this.selected_component.userData.model,
-            slot: this.selected_component.userData.slot
+            slot: this.selected_component.userData.slot,
+            objectId: this.selected_component.userData.objectId
           });
 
           if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
@@ -1255,7 +1293,8 @@ export default class ProductRenderer {
 
           store.dispatch(SET_COMPONENT_TO_EDIT, {
             model: this.selected_component.userData.model,
-            slot: this.selected_component.userData.slot
+            slot: this.selected_component.userData.slot,
+            objectId: this.selected_component.userData.objectId
           });
 
           if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
@@ -1595,7 +1634,7 @@ export default class ProductRenderer {
       z = this.calculateComponentPosition(lastSlot.position.z, rightFace.position.z);
     }
 
-    var meshID = this.generateParellepiped(width, height, depth, x, y, z + (depth_closet / 2), this.material, this.group, component);
+    var meshID = this.generateParellepiped(width, height, depth, x, y, z + (depth_closet / 2), this.material, component);
     var hingedDoor = new HingedDoor([width, height, depth, x, y, z + (depth_closet / 2)], slot, meshID);
     this.closet.addHingedDoor(hingedDoor);
     this.closet_hinged_doors_ids.push(meshID);
@@ -1635,7 +1674,7 @@ export default class ProductRenderer {
     for (var i = 0; i < frontFrameBorders.length; i++) {
       this.generateParellepiped(frontFrameBorders[i][0],
         frontFrameBorders[i][1], frontFrameBorders[i][2], frontFrameBorders[i][3],
-        frontFrameBorders[i][4], frontFrameBorders[i][5], this.material, this.group, component);
+        frontFrameBorders[i][4], frontFrameBorders[i][5], this.material, component);
     }
 
     //Adds front door
@@ -1646,7 +1685,7 @@ export default class ProductRenderer {
       front_door.sliding_door_axes[3],
       front_door.sliding_door_axes[4],
       front_door.sliding_door_axes[5],
-      this.material, this.group, component);
+      this.material, component);
 
     //Adds back door
     var back_door_mesh_id = this.generateParellepiped(
@@ -1656,7 +1695,7 @@ export default class ProductRenderer {
       back_door.sliding_door_axes[3],
       back_door.sliding_door_axes[4],
       back_door.sliding_door_axes[5],
-      this.material, this.group, component);
+      this.material, component);
 
     this.closet.addSlidingDoor(front_door);
     this.closet.addSlidingDoor(back_door);
@@ -1669,7 +1708,7 @@ export default class ProductRenderer {
     for (let i = 0; i < backFrameBorders.length; i++) {
       this.generateParellepiped(backFrameBorders[i][0],
         backFrameBorders[i][1], backFrameBorders[i][2], backFrameBorders[i][3],
-        backFrameBorders[i][4], backFrameBorders[i][5], this.material, this.group, component);
+        backFrameBorders[i][4], backFrameBorders[i][5], this.material, component);
     }
   }
 
@@ -2045,7 +2084,8 @@ export default class ProductRenderer {
         } else {
           store.dispatch(SET_COMPONENT_TO_REMOVE, {
             model: this.selected_component.userData.model,
-            slot: this.selected_component.userData.slot
+            slot: this.selected_component.userData.slot,
+            objectId: this.selected_component.userData.objectId
           });
         }
       } else {
@@ -2057,7 +2097,8 @@ export default class ProductRenderer {
         } else {
           store.dispatch(SET_COMPONENT_TO_REMOVE, {
             model: this.selected_component.userData.model,
-            slot: this.selected_component.userData.slot
+            slot: this.selected_component.userData.slot,
+            objectId: this.selected_component.userData.objectId
           });
         }
       }
