@@ -206,9 +206,9 @@
   
   
           store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS, {
-            width: this.storeDispatchVec.width,
-            height: this.storeDispatchVec.height,
-            depth: this.storeDispatchVec.depth,
+            width: responseWidth.data.value,
+            height: responseHeight.data.value,
+            depth: responseDepth.data.value,
             unit: this.unit
           });
   
@@ -253,9 +253,9 @@
           var responseDepth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.depth);
   
           store.dispatch(SET_RESIZE_FACTOR_DIMENSIONS, {
-            width: this.storeDispatchVec.width,
-            height: this.storeDispatchVec.height,
-            depth: this.storeDispatchVec.depth,
+            width: responseWidth.data.value,
+            height: responseHeight.data.value,
+            depth: responseDepth.data.value,
           });
   
           //Send to store the first values for the dimensions
