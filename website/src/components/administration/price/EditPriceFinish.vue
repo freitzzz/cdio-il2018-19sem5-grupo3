@@ -1,5 +1,4 @@
 <template>
-  <div>
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
         <p class="modal-card-title">Edit Material Finish Price Table Entry</p>
@@ -130,7 +129,6 @@
         <button class="btn-primary" @click="updateMaterialFinishPriceTableEntry()">Save</button>
       </footer>
     </div>
-  </div>
 </template> 
 
 <script>
