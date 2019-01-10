@@ -96,15 +96,15 @@
                         centered: true
                     },
                     {
+                        field: "latitude",
+                        label: "Latitude",
+                        centered: true
+                    },
+                    {
                         field: "longitude",
                         label: "Longitude",
                         centered: true
                     },
-                    {
-                        field: "latitude",
-                        label: "Latitude",
-                        centered: true
-                    }
                 ];
             }
         },

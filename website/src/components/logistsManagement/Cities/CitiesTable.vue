@@ -2,14 +2,14 @@
     <section>
         <vuetable :api-mode="false" :data="data" :fields="columns">
             <!-- <template slot="actions" slot-scope="props">
-                                    
-          <div class ="custom-actions">
-              <button
-              class ="btn-primary"
-              @click ="deleteCity(props.rowData.id)">
-              <b-icon icon="minus"></b-icon>
-              </button>
-          </div>
+                                        
+              <div class ="custom-actions">
+                  <button
+                  class ="btn-primary"
+                  @click ="deleteCity(props.rowData.id)">
+                  <b-icon icon="minus"></b-icon>
+                  </button>
+              </div>
 </template>-->
         </vuetable>
         <b-modal>
@@ -32,13 +32,14 @@
                         title: "Name"
                     },
                     {
-                        name: "longitude",
-                        title: "Longitude"
-                    },
-                    {
                         name: "latitude",
                         title: "Latitude"
+                    },
+                    {
+                        name: "longitude",
+                        title: "Longitude"
                     }
+                    
                 ],
             }
         },
