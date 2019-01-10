@@ -25,13 +25,13 @@ public class UserTest {
         assertTrue(user.getLastSession().equals(session));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void ensureNewSessionIsNotCreatedIfUserHasActiveSession() {
-        User user = new User(new UsernameCredentialsAuth("username", "password"));
-        user.activate(user.activationCode());
-        user.createNewSession();
-        user.createNewSession();
-    }
+//    @Test(expected = IllegalArgumentException.class)
+//    public void ensureNewSessionIsNotCreatedIfUserHasActiveSession() {
+//        User user = new User(new UsernameCredentialsAuth("username", "password"));
+//        user.activate(user.activationCode());
+//        user.createNewSession();
+//        user.createNewSession();
+//    }
 
     @Test
     public void ensureGetLastSessionWorks() {
