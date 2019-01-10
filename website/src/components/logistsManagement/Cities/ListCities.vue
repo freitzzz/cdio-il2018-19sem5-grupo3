@@ -35,6 +35,9 @@
             CitiesTable
         },
         methods: {
+            fetchRequests(){
+                this.refreshCities();
+            },
             /* Triggers creation of new City */
             createNewCity() {
                 this.createNewCityModal = true;
@@ -106,7 +109,7 @@
             }
         },
         created() {
-            this.fetchCities();
+            this.fetchRequests();
         }
     }
 </script>
