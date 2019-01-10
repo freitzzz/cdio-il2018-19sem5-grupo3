@@ -48,7 +48,7 @@
               </div>
           </a>
           <ul class="image-list" v-for="material in materials" :key="material.id">
-            <li class="image-btn" @click="applyMaterial(material), removeFinish(), removeColor(), getMaterialInformation(material.id)">
+            <li class="image-btn" @click="applyMaterial(material); getMaterialInformation(material.id); removeFinish(); removeColor()">
               <img :src="findMaterialImage(material.image)" width="100%">
               <p>{{material.designation}}</p>
             </li>
@@ -210,12 +210,11 @@ export default {
       return hex;
     },
     nextPanel() {
-      var hasColor = store.getters.customizedMaterialColorName != "None";
-      var hasFinish = store.getters.customizedMaterialFinishDescription != "None";
+      var hasColor = store.getters.customizedMaterialColorName && store.getters.customizedMaterialColorName != "None";
+      var hasFinish = store.getters.customizedMaterialFinishDescription && store.getters.customizedMaterialFinishDescription != "None";
       if(!hasColor && !hasFinish){
         this.$toast.open("You must choose at least one finish or color!");
       } else if(hasColor && !hasFinish){
-
          CustomizedProductRequests.putCustomizedProduct(store.state.customizedProduct.id,
             {
 	            customizedMaterial: {
@@ -311,9 +310,6 @@ export default {
               this.applyMaterial(defaultMaterial);
               this.removeFinish();
               this.removeColor();
-            /*  }).catch(() => {
-              this.$toast.open("An error has occurred while returning to the divisions step.");
-            }); */
            })
           .catch(() => {
           this.$toast.open("An error has occurred while removing the material from the closet.");
