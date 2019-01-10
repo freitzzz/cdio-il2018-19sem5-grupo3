@@ -32,6 +32,10 @@ namespace backend.Controllers
         /// </summary>
         private const string INVALID_REQUEST_BODY_MESSAGE = "The request body is invalid! Check documentation for more information";
 
+        /// <summary>
+        /// Constant that represents the message presented when no user token is provided while trying to retrieve the CustomizedProducts created by a user.
+        /// </summary>
+        private const string MISSING_USER_TOKEN = "No user token was provided. Please, provide a token and try again.";
 
         /// <summary>
         /// This repository attribute is only here due to entity framework injection
@@ -68,7 +72,6 @@ namespace backend.Controllers
         [HttpGet]
         public ActionResult findAll()
         {
-
             try
             {
                 GetAllCustomizedProductsModelView getAllModelView = new core.application.CustomizedProductController().findAllCustomizedProducts();
@@ -91,6 +94,34 @@ namespace backend.Controllers
             {
                 GetAllCustomizedProductsModelView getAllModelView = new core.application.CustomizedProductController().findAllBaseCustomizedProducts();
                 return Ok(getAllModelView);
+            }
+            catch (ResourceNotFoundException e)
+            {
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+        [HttpGet("usercreations")]
+        public ActionResult findUserCreatedCustomizedProducts([FromHeader(Name = "UserToken")]string userAuthToken)
+        {
+            if (userAuthToken == null)
+            {
+                return BadRequest(new SimpleJSONMessageService(MISSING_USER_TOKEN));
+            }
+
+            try
+            {
+                FindUserCreatedCustomizedProductsModelView userCreatedCustomizedProductsModelView = new FindUserCreatedCustomizedProductsModelView();
+                userCreatedCustomizedProductsModelView.userAuthToken = userAuthToken;
+
+                GetAllCustomizedProductsModelView allCustomizedProductsCreatedByUser = new core.application.CustomizedProductController()
+                    .findUserCreatedCustomizedProducts(userCreatedCustomizedProductsModelView);
+
+                return Ok(allCustomizedProductsCreatedByUser);
             }
             catch (ResourceNotFoundException e)
             {

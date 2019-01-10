@@ -88,6 +88,26 @@ namespace core.application
 
 
         /// <summary>
+        /// Retrieves all the instances of CustomizedProduct created by a given user.
+        /// </summary>
+        /// <returns>An instance of GetAllCustomizedProductsModelView representing the CustomizedProducts created by the user.</returns>
+        /// <exceptions cref="ResourceNotFoundException">Thrown when no instance of CustomizeProduct was found.</exception>
+        public GetAllCustomizedProductsModelView findUserCreatedCustomizedProducts(FindUserCreatedCustomizedProductsModelView findUserCreatedCustomizedProductsModelView)
+        {
+            IEnumerable<CustomizedProduct> userCreatedCustomizedProducts =
+                PersistenceContext.repositories().createCustomizedProductRepository()
+                    .findUserCreatedCustomizedProducts(findUserCreatedCustomizedProductsModelView.userAuthToken);
+
+            if (!userCreatedCustomizedProducts.Any())
+            {
+                throw new ResourceNotFoundException(ERROR_NO_CUSTOMIZED_PRODUCTS_FOUND);
+            }
+
+            return CustomizedProductModelViewService.fromCollection(userCreatedCustomizedProducts);
+        }
+
+
+        /// <summary>
         /// Retrieves an instance of CustomizedProduct.
         /// </summary>
         /// <param name="findCustomizedProductModelView">Instance of FindCustomizedProductModelView containing the CustomizedProduct's identifier.</param>
