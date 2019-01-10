@@ -164,7 +164,7 @@ namespace backend.Controllers {
             }
         }
 
-        [HttpGet("{customizedProductId}/slots/{slotId}/possibleComponents")]
+        [HttpGet("{customizedProductId}/slots/{slotId}/possiblecomponents")]
         public ActionResult fetchPossibleComponents(long customizedProductId, long slotId) {
             try {
                 FindPossibleComponentsModelView findPossibleComponents = new FindPossibleComponentsModelView();
