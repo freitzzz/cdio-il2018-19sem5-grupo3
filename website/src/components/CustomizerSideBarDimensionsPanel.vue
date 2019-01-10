@@ -16,19 +16,19 @@
     <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
     <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.HEIGHT]" v-model="height" @drag-end="updateDimensions" :interval="this.heightIncrement" :data="this.discreteIntervalHeight"></vue-slider>
-    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.HEIGHT]" :min="this.heightMin" :max="this.heightMax" :interval="this.heightIncrement" v-model="height" @drag-end="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.HEIGHT]" :min="this.heightMin" :max="this.heightMax" :interval="this.heightIncrement" v-model="height" @callback="updateDimensions"></vue-slider>
     <input class="slider" v-if="this.discreteValueFlags[this.HEIGHT]" type="text" :readonly="true" v-model="height">
   
     <!-- WIDTH: -->
     <div class="text-entry">Width:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.WIDTH]" :interval="this.widthIncrement" :data="this.discreteIntervalWidth" v-model="width" @drag-end="updateDimensions"></vue-slider>
-    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.WIDTH]" :min="this.widthMin" :max="this.widthMax" :interval="this.widthIncrement" v-model="width" @drag-end="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.WIDTH]" :interval="this.widthIncrement" :data="this.discreteIntervalWidth" v-model="width" @callback="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.WIDTH]" :min="this.widthMin" :max="this.widthMax" :interval="this.widthIncrement" v-model="width" @callback="updateDimensions"></vue-slider>
     <input class="slider" v-if="this.discreteValueFlags[this.WIDTH]" type="text" :readonly="true" v-model="this.width">
   
     <!-- DEPTH: -->
     <div class="text-entry">Depth:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.DEPTH]" :interval="this.depthIncrement" :data="this.discreteIntervalDepth" v-model="depth" @drag-end="updateDimensions"></vue-slider>
-    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.DEPTH]" :min="this.depthMin" :max="this.depthMax" :interval="this.depthIncrement" v-model="depth" @drag-end="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.DEPTH]" :interval="this.depthIncrement" :data="this.discreteIntervalDepth" v-model="depth" @callback="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.DEPTH]" :min="this.depthMin" :max="this.depthMax" :interval="this.depthIncrement" v-model="depth" @callback="updateDimensions"></vue-slider>
     <input class="slider" v-if="this.discreteValueFlags[this.DEPTH]" type="text" :readonly="true" v-model="depth">
   
     <div class="text-entry">Choose the available unit:</div>
@@ -263,7 +263,6 @@
             height: responseHeight.data.value,
             depth: responseDepth.data.value,
           });
-  
           //Send to store the first values for the dimensions
           this.updateDimensions();
         } catch (error) {

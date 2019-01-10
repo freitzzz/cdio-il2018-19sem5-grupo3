@@ -95,15 +95,15 @@ export default {
           if(newValue[i].height == 0){
             index = i;
           }
-        } 
+        }
         let size = newValue.length - 1
         if(newValue[index].height == 0){
           this.productRenderer.moveSlotSlider(index, newValue[index].width)
         }
-        if(newValue[size].height > 0){
+        if(newValue[size].height > 0){ 
           this.productRenderer.removeAllSlots();
           this.productRenderer.addSlotNumbered(newValue);
-        }
+         } 
       } else {
         this.productRenderer.removeAllSlots();
       }
