@@ -48,6 +48,10 @@ import CurrenciesPerAreaRequests from "./../../../services/mycm_api/requests/cur
 export default {
   name: "AllFinishPriceHistories",
 
+  components:{
+    LoadingDialog
+  },
+
   async created() {
     await CurrenciesPerAreaRequests.getCurrencies()
       .then(response => {

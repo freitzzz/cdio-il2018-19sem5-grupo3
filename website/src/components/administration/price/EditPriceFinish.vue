@@ -126,7 +126,7 @@
         </div>
       </section>
       <footer class="modal-card-foot">
-        <button class="btn-primary" @click="updateMaterialFinishPriceTableEntry()">Edit</button>
+        <button class="btn-primary" @click="updateMaterialFinishPriceTableEntry()">Save</button>
       </footer>
     </div>
   </div>
