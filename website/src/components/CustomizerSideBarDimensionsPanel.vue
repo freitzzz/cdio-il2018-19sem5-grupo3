@@ -428,7 +428,7 @@
             .then(response => {
               this.idCustomizedProduct = response.data.id;
               store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
-              this.getRecommendedSlots();
+              //this.getRecommendedSlots();
               this.$emit("advance");
             })
             .catch((error_message) => {
