@@ -1,5 +1,10 @@
 import * as types from './mutation-types'
 
+/**
+ * Requires cookie services
+ */
+import {deleteMYCASessionCookie} from '../CookieService';
+
 export const mutations = {
 
   //*Product mutations
@@ -271,5 +276,17 @@ export const mutations = {
       if(payload.isContentManager!==undefined)state.user.isContentManager=payload.isContentManager;
       if(payload.isLogisticManager!==undefined)state.user.isLogisticManager=payload.isLogisticManager;
     }
+  },
+
+  /**
+   * Logouts the current user
+   */
+  [types.LOGOUT_USER](state){
+    state.user.name=null;
+    state.user.isAdministrator=false;
+    state.user.isClient=false;
+    state.user.isContentManager=false;
+    state.user.isLogisticManager=false;
+    deleteMYCASessionCookie();
   }
 }
