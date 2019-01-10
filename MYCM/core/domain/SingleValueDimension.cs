@@ -6,14 +6,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace core.domain
-{
+namespace core.domain {
 
     /// <summary>
     /// Class that represents a dimension and its value (e.g. width - 20 cm)
     /// </summary>
-    public class SingleValueDimension : Dimension
-    {
+    public class SingleValueDimension : Dimension {
 
         /// <summary>
         /// Constant that represents the message that occurs if the value is NaN
@@ -46,28 +44,23 @@ namespace core.domain
         /// Builds a new instance of Dimension
         /// </summary>
         /// <param name="value">value that the dimension has</param>
-        public SingleValueDimension(double value)
-        {
-            if (Double.IsNaN(value))
-            {
+        public SingleValueDimension(double value) {
+            if (Double.IsNaN(value)) {
                 throw new ArgumentException(VALUE_IS_NAN_REFERENCE);
             }
 
-            if (Double.IsInfinity(value))
-            {
+            if (Double.IsInfinity(value)) {
                 throw new ArgumentException(VALUE_IS_INFINITY_REFERENCE);
             }
 
-            if (value <= 0)
-            {
+            if (value <= 0) {
                 throw new ArgumentException(NEGATIVE_OR_ZERO_VALUE_REFERENCE);
             }
 
             this.value = value;
         }
 
-        public override bool hasValue(double value)
-        {
+        public override bool hasValue(double value) {
             decimal valueAsDecimal = (decimal)this.value;
             decimal otherValueAsDecimal = (decimal)value;
 
@@ -76,14 +69,17 @@ namespace core.domain
 
 
         //*These two methods should return the same value in instances of this particular class, since there's only value. */
-        public override double getMaxValue()
-        {
+        public override double getMaxValue() {
             return value;
         }
 
-        public override double getMinValue()
-        {
+        public override double getMinValue() {
             return value;
+        }
+
+        public override double[] getValuesAsArray() {
+            double[] array = { value };
+            return array;
         }
 
         /// <summary>
@@ -92,15 +88,12 @@ namespace core.domain
         /// </summary>
         /// <param name="obj">object that is being compared</param>
         /// <returns>true if the objects are equal, false if otherwise</returns>
-        public override bool Equals(object obj)
-        {
-            if (obj == null || !obj.GetType().ToString().Equals("core.domain.SingleValueDimension"))
-            {
+        public override bool Equals(object obj) {
+            if (obj == null || !obj.GetType().ToString().Equals("core.domain.SingleValueDimension")) {
                 return false;
             }
 
-            if (this == obj)
-            {
+            if (this == obj) {
                 return true;
             }
 
@@ -113,8 +106,7 @@ namespace core.domain
         /// Hash code of Dimension
         /// </summary>
         /// <returns>hash code of a Dimension instance</returns>
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             return value.GetHashCode();
         }
 
@@ -122,8 +114,7 @@ namespace core.domain
         /// ToString method of Dimension
         /// </summary>
         /// <returns>value of the dimension</returns>
-        public override string ToString()
-        {
+        public override string ToString() {
             return string.Format("Value: {0}", value);
         }
 
@@ -131,8 +122,7 @@ namespace core.domain
         /// Builds a DimensionDTO out of a SingleValueDimension instance
         /// </summary>
         /// <returns>DimensionDTO instance</returns>
-        public override DimensionDTO toDTO()
-        {
+        public override DimensionDTO toDTO() {
             SingleValueDimensionDTO dto = new SingleValueDimensionDTO();
 
             dto.id = Id;
@@ -142,10 +132,8 @@ namespace core.domain
             return dto;
         }
 
-        public override DimensionDTO toDTO(string unit)
-        {
-            if (unit == null)
-            {
+        public override DimensionDTO toDTO(string unit) {
+            if (unit == null) {
                 return this.toDTO();
             }
             SingleValueDimensionDTO dto = new SingleValueDimensionDTO();

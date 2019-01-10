@@ -11,8 +11,8 @@ export const SET_CUSTOMIZED_PRODUCT_FINISH = "set_customized_product_finish";
 export const SET_CUSTOMIZED_PRODUCT_COLOR = "set_customized_product_color";
 export const SET_ID_SLOT = "set_id_slot";
 export const ADD_SLOT_DIMENSIONS = "add_slot_dimensions";
-export const SET_CUSTOMIZED_PRODUCT_COMPONENTS = "set_slot_components";
-export const REMOVE_CUSTOMIZED_PRODUCT_COMPONENT = "remove_slot_component";
+export const ADD_CUSTOMIZED_PRODUCT_COMPONENT = "add_customized_product_component";
+export const REMOVE_CUSTOMIZED_PRODUCT_COMPONENT = "remove_customized_product_component";
 
 //CanvasControls mutations
 export const SET_COMPONENT_TO_REMOVE = "set_component_to_remove";

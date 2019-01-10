@@ -20,7 +20,7 @@
 import Store from "./../store/index.js";
 import CustomizerSideBar from "./CustomizerSideBar";
 import ProductRenderer from "./../3d/ProductRendererTemp.js";
-import { SET_DOORS_FLAG } from "./../store/mutation-types.js";
+import { SET_DOORS_FLAG, SET_COMPONENT_TO_REMOVE } from "./../store/mutation-types.js";
 import CustomizerProgressBar from "./CustomizerProgressBar.vue";
 
 export default {
@@ -37,9 +37,8 @@ export default {
     slots() {
       var array = [];
       for (let i = 0; i < Store.state.customizedProduct.slots.length - 1; i++) {
-        //!JURO NÃO SEI COMO MACUMBA MAS ESTA LINHA TEM DE ESTAR AQUI PARA O SLOT DESLIZAR
-         Store.state.customizedProduct.slots[i].width;
-         //!JURO QUE NÃO SOU BRUXA NÃO ME EXPULSEM DO GRUPO
+        //!WARN do NOT remove this line
+        Store.state.customizedProduct.slots[i].width;
         array.push(Store.getters.customizedProductSlot(i));
       }
       return array;
@@ -50,11 +49,8 @@ export default {
     updateDimensions() {
       return Store.getters.customizedProductDimensions;
     },
-    addComponent() {
+    manageComponents() {
       return Store.getters.customizedProductComponents;
-    },
-    removeComponent() {
-      return Store.getters.componentToRemove;
     },
     applyMaterial() {
       return Store.getters.customizedMaterial;
@@ -119,25 +115,14 @@ export default {
         Store.getters.customizedProductDimensions.depth
       );
     },
-    addComponent: function(newValue, oldValue) {
-      if(newValue.length > oldValue.length){
-        this.productRenderer.generateComponent(newValue[newValue.length - 1].component);
-      } else if (newValue.length == 0) {
+    manageComponents: function(newValue, oldValue) {
+      if (newValue.length == 0) {
         this.productRenderer.removeAllComponents();
-      }
-    },
-    removeComponent: function(newValue) {
-      this.$dialog.confirm({
-        title: 'Remove component',
-        hasIcon: true,
-        type: 'is-info',
-        icon: 'fas fa-exclamation-circle size:5px',
-        iconPack: 'fa',
-        message: 'Do you want to remove the selected product from the closet?',
-        onConfirm: () => {
-          this.productRenderer.removeComponent(newValue);  
-        }
-      })
+      } else if(newValue.length > oldValue.length){ //Adds a component
+        this.productRenderer.generateComponent(newValue[newValue.length - 1].component);
+      } else if(newValue.length < oldValue.length){ //Removes a component
+        this.productRenderer.removeComponent(Store.getters.componentToRemove);
+      } 
     },
     applyMaterial: function(newValue) {
       this.productRenderer.applyTexture("./src/assets/materials/" + newValue);

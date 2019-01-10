@@ -6,13 +6,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using support.domain.ddd;
 using support.dto;
 
-namespace core.domain
-{
+namespace core.domain {
     /// <summary>
     /// Represents a Product dimension
     /// </summary>
-    public abstract class Dimension : DTOAble<DimensionDTO>
-    {
+    public abstract class Dimension : DTOAble<DimensionDTO> {
 
         private const double THRESHOLD = 0.0001;
 
@@ -33,7 +31,7 @@ namespace core.domain
         /// Constructor for injecting the LazyLoader.
         /// </summary>
         /// <param name="lazyLoader">LazyLoader being injected.</param>
-        protected Dimension(ILazyLoader lazyLoader){
+        protected Dimension(ILazyLoader lazyLoader) {
             this.LazyLoader = lazyLoader;
         }
 
@@ -60,6 +58,12 @@ namespace core.domain
         /// </summary>
         /// <returns>The maximum value.</returns>
         public abstract double getMinValue();
+
+        /// <summary>
+        /// Retrieves all values of the Dimension as an array
+        /// </summary>
+        /// <returns>values of the Dimension as an array</returns>
+        public abstract double[] getValuesAsArray();
 
         public abstract DimensionDTO toDTO();
 
