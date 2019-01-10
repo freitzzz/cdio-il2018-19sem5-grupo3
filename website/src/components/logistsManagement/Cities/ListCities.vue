@@ -2,27 +2,20 @@
     <div>
         <div>
             <button class="btn-primary" @click="createNewCity()">
-                        <b-icon icon="plus"/>
-                    </button>
+                            <b-icon icon="plus"/>
+                        </button>
             <div v-if="createNewCityModal">
                 <b-modal :active.sync="createNewCityModal" has-modal-card scroll="keep">
-                    <!--  <create-new-product 
-                                :active="createNewProductModal" 
-                                :available-materials="availableMaterials"
-                                :available-categories="availableCategories"
-                                :available-components="availableComponents"
-                                :available-units="availableUnits"
-                                @emitProduct="postProduct"
-                            /> -->
                 </b-modal>
             </div>
             <button class="btn-primary" @click="fetchRequests()">
-                        <b-icon 
-                            icon="refresh"
-                            custom-class="fa-spin"/>
-                    </button>
+                            <b-icon 
+                                icon="refresh"
+                                custom-class="fa-spin"/>
+            </button>
         </div>
-        <cities-table :data.sync="data" @refreshData="refreshCities()"></cities-table>
+        <cities-table :data.sync="data" @refreshData="refreshCities"></cities-table>
+    </div>
 </template>
 
 <script>
@@ -69,6 +62,21 @@
                     .catch(error => {
                         this.$toast.open("There was an error trying to get all the cities.");
                     });
+            },
+            /**
+             * Generates the data of a cities table by a given list of cities
+             */
+            generateCityTableData(cities) {
+                let citiesTableData = [];
+                cities.forEach((city) => {
+                    citiesTableData.push({
+                        id:city.id,
+                        name: city.name,
+                        latitude: city.location.latitude,
+                        longitude: city.location.longitude,
+                    })
+                })
+                return citiesTableData;
             },
             /* 
              * Generates the needed columns for the cities table
