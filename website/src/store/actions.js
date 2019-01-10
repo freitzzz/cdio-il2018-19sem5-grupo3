@@ -72,10 +72,10 @@ export const actions = {
     },
 
     /**
-     * Action used to commit the mutation SET_CUSTOMIZED_PRODUCT_COMPONENTS
+     * Action used to commit the mutation ADD_CUSTOMIZED_PRODUCT_COMPONENT
      */
-    [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS]: ({ commit }, payload) => {
-        commit(types.SET_CUSTOMIZED_PRODUCT_COMPONENTS, payload);
+    [types.ADD_CUSTOMIZED_PRODUCT_COMPONENT]: ({ commit }, payload) => {
+        commit(types.ADD_CUSTOMIZED_PRODUCT_COMPONENT, payload);
     },
 
     /**
@@ -84,8 +84,6 @@ export const actions = {
     [types.REMOVE_CUSTOMIZED_PRODUCT_COMPONENT]: ({ commit }, payload) => {
         commit(types.REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, payload);
     },
-
-
 
     //*CanvasControls actions
 
@@ -96,6 +94,23 @@ export const actions = {
         commit(types.SET_COMPONENT_TO_REMOVE, payload);
     },
 
+    /**
+     * Action used to commit the mutation SET_COMPONENT_TO_ADD
+     */
+    [types.SET_COMPONENT_TO_ADD]: ({commit}, payload) => {
+        commit(types.SET_COMPONENT_TO_ADD, payload);
+    },
+
+    /**
+     * Action used to commit the mutation SET_COMPONENT_TO_EDIT
+     */
+    [types.SET_COMPONENT_TO_EDIT]: ({commit}, payload) => {
+        commit(types.SET_COMPONENT_TO_EDIT, payload);
+    },
+
+    /**
+     * Action used to commit the mutation SET_DOORS_FLAG
+     */
     [types.SET_DOORS_FLAG]: ({ commit }, payload) => {
         commit(types.SET_DOORS_FLAG, payload);
     },

@@ -178,7 +178,7 @@ export default {
           this.total = this.data.length;
         })
         .catch(error_message => {
-          //Throw error?
+          this.$toast.open(error_message.response.data.message);
         });
     },
     /**

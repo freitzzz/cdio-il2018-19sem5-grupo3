@@ -3,72 +3,63 @@ using Xunit;
 using core.domain;
 using core.dto;
 
-namespace core_tests.domain
-{
+namespace core_tests.domain {
     /// <summary>
     /// Unit testing class for SingleValueDimension
     /// </summary>
-    public class SingleValueDimensionTest
-    {
+    public class SingleValueDimensionTest {
 
         [Fact]
-        public void ensureConstructorDetectsValueIsNaN()
-        {
+        public void ensureConstructorDetectsValueIsNaN() {
             Action act = () => new SingleValueDimension(Double.NaN);
 
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
-        public void ensureConstructorDetectsValueIsInfinity()
-        {
+        public void ensureConstructorDetectsValueIsInfinity() {
             Action act = () => new SingleValueDimension(Double.PositiveInfinity);
 
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
-        public void ensureConstructorDetectsNegativeValue()
-        {
+        public void ensureConstructorDetectsNegativeValue() {
             Action act = () => new SingleValueDimension(-4.0);
 
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
-        public void ensureConstructorDetectsZeroValue()
-        {
+        public void ensureConstructorDetectsZeroValue() {
             Action act = () => new SingleValueDimension(0);
 
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
-        public void ensureInstanceIsCreated()
-        {
+        public void ensureInstanceIsCreated() {
             SingleValueDimension instance = new SingleValueDimension(100.0);
 
             Assert.NotNull(instance);
         }
 
         [Fact]
-        public void ensureSingleValueDimensionDoesNotHaveDifferentValue()
-        {
+        public void ensureSingleValueDimensionDoesNotHaveDifferentValue() {
             SingleValueDimension instance = new SingleValueDimension(28);
 
             Assert.False(instance.hasValue(29));
         }
 
         [Fact]
-        public void ensureSingleValueDimensionHasValue()
-        {
+        public void ensureSingleValueDimensionHasValue() {
             SingleValueDimension instance = new SingleValueDimension(28);
 
             Assert.True(instance.hasValue(28));
         }
 
         [Fact]
-        public void ensureSingleValueDimensionGetMaxValueIsTheSameAsDefinedValue(){
+        public void ensureSingleValueDimensionGetMaxValueIsTheSameAsDefinedValue() {
             double value = 28;
             SingleValueDimension instance = new SingleValueDimension(value);
             double maxValue = instance.getMaxValue();
@@ -76,7 +67,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureSingleValueDimensionGetMinValueIsTheSameAsDefinedValue(){
+        public void ensureSingleValueDimensionGetMinValueIsTheSameAsDefinedValue() {
             double value = 28;
             SingleValueDimension instance = new SingleValueDimension(value);
             double minValue = instance.getMinValue();
@@ -85,24 +76,29 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureInstanceAndNullAreNotEqual()
-        {
+        public void ensureGetValuesAsArrayWorks() {
+            double value = 28;
+            SingleValueDimension instance = new SingleValueDimension(value);
+            double[] expectedValues = { 28 };
+            Assert.Equal(expectedValues, instance.getValuesAsArray());
+        }
+
+        [Fact]
+        public void ensureInstanceAndNullAreNotEqual() {
             SingleValueDimension instance = new SingleValueDimension(333.5);
 
             Assert.False(instance.Equals(null));
         }
 
         [Fact]
-        public void ensureInstancesOfDifferentTypesAreNotEqual()
-        {
+        public void ensureInstancesOfDifferentTypesAreNotEqual() {
             SingleValueDimension instance = new SingleValueDimension(123.4);
 
             Assert.False(instance.Equals("Lil Xan ate too many Hot Cheetos"));
         }
 
         [Fact]
-        public void ensureInstancesWithDifferentValuesAreNotEqual()
-        {
+        public void ensureInstancesWithDifferentValuesAreNotEqual() {
             SingleValueDimension instance = new SingleValueDimension(210.5);
             SingleValueDimension other = new SingleValueDimension(210.4);
 
@@ -110,8 +106,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureInstancesWithSameValueAreEqual()
-        {
+        public void ensureInstancesWithSameValueAreEqual() {
             SingleValueDimension instance = new SingleValueDimension(3.14);
             SingleValueDimension other = new SingleValueDimension(3.14);
 
@@ -119,16 +114,14 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureSameInstanceIsEqual()
-        {
+        public void ensureSameInstanceIsEqual() {
             SingleValueDimension instance = new SingleValueDimension(3);
 
             Assert.True(instance.Equals(instance));
         }
 
         [Fact]
-        public void testGetHashCode()
-        {
+        public void testGetHashCode() {
             SingleValueDimension instance = new SingleValueDimension(2.718);
             SingleValueDimension other = new SingleValueDimension(2.718);
 
@@ -136,8 +129,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void testToString()
-        {
+        public void testToString() {
             SingleValueDimension instance = new SingleValueDimension(9.8);
             SingleValueDimension other = new SingleValueDimension(9.8);
 
@@ -145,8 +137,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void testToDTO()
-        {
+        public void testToDTO() {
             SingleValueDimension instance = new SingleValueDimension(10.0);
             SingleValueDimensionDTO dto = (SingleValueDimensionDTO)instance.toDTO();
 
@@ -155,8 +146,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureToDTOWithNullUnitStringDefaultsToMilimetres()
-        {
+        public void ensureToDTOWithNullUnitStringDefaultsToMilimetres() {
             SingleValueDimension instance = new SingleValueDimension(10.0);
             SingleValueDimensionDTO dto = (SingleValueDimensionDTO)instance.toDTO(null);
 
@@ -164,8 +154,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureToDTOWithNullUnitStringDoesNotConvertValues()
-        {
+        public void ensureToDTOWithNullUnitStringDoesNotConvertValues() {
             SingleValueDimension instance = new SingleValueDimension(10.0);
             SingleValueDimensionDTO dto = (SingleValueDimensionDTO)instance.toDTO(null);
 
@@ -173,8 +162,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureToDTOConvertsValuesToGivenUnit()
-        {
+        public void ensureToDTOConvertsValuesToGivenUnit() {
             SingleValueDimension instance = new SingleValueDimension(10.0);
             SingleValueDimensionDTO dto = (SingleValueDimensionDTO)instance.toDTO("cm");
 

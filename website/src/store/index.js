@@ -16,6 +16,8 @@ const state = {
         canMoveComponents: "false",
         doorsFlag: "",
         componentToRemove: {},
+        componentToAdd: {},
+        componentToEdit: {},
         slostSlider: []
     },
 
@@ -150,6 +152,12 @@ export const getters = {
     },
     componentToRemove: state => {
         return state.canvasControls.componentToRemove;
+    },
+    componentToAdd: state => {
+        return state.canvasControls.componentToAdd;
+    },
+    componentToEdit: state => {
+        return state.canvasControls.componentToEdit;
     }
 }
 

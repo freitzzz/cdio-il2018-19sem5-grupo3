@@ -1,6 +1,6 @@
 <template>
     <div class="modal-card" style="width: auto">
-                <div v-if="panelCreateMaterial" >
+                <div class="scrollable-div" v-if="panelCreateMaterial" >
                     <header class="modal-card-head">
                         <p class="modal-card-title">Create Material</p>
                     </header>
