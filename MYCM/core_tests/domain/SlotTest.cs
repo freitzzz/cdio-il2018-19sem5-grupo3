@@ -7,21 +7,17 @@ using core.dto;
 using System.Linq;
 using static core.domain.CustomizedProduct;
 
-namespace core_tests.domain
-{
+namespace core_tests.domain {
     /// <summary>
     /// Unit testing class for Slot
     /// </summary>
-    public class SlotTest
-    {
-        private ProductCategory buildCategory()
-        {
+    public class SlotTest {
+        private ProductCategory buildCategory() {
             ProductCategory category = new ProductCategory("All Products");
             return category;
         }
 
-        private Material buildMaterial()
-        {
+        private Material buildMaterial() {
             Finish matte = Finish.valueOf("Matte", 30);
             Finish glossy = Finish.valueOf("Glossy", 60);
 
@@ -36,13 +32,12 @@ namespace core_tests.domain
             return material;
         }
 
-        private Product buildProduct()
-        {
+        private Product buildProduct() {
             List<Material> materials = new List<Material>() { buildMaterial() };
 
             Dimension height = new ContinuousDimensionInterval(40, 300, 1);
             Dimension width = new ContinuousDimensionInterval(40, 300, 1);
-            Dimension depth = new ContinuousDimensionInterval(40, 300, 1);
+            Dimension depth = new ContinuousDimensionInterval(40, 320, 1);
             Measurement measurement = new Measurement(height, width, depth);
 
             List<Measurement> measurements = new List<Measurement>() { measurement };
@@ -54,8 +49,7 @@ namespace core_tests.domain
             return product;
         }
 
-        private CustomizedProduct buildCustomizedProduct(string reference, CustomizedDimensions customizedDimensions)
-        {
+        private CustomizedProduct buildCustomizedProduct(string reference, CustomizedDimensions customizedDimensions) {
             Finish matte = Finish.valueOf("Matte", 30);
             Color red = Color.valueOf("Red", 255, 0, 0, 0);
 
@@ -68,40 +62,35 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureInstanceIsNotCreatedIfIdentifierIsNull()
-        {
+        public void ensureInstanceIsNotCreatedIfIdentifierIsNull() {
             Action act = () => new Slot(null, CustomizedDimensions.valueOf(20, 30, 10));
 
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
-        public void ensureInstanceIsNotCreatedIfIdentifierIsEmpty()
-        {
+        public void ensureInstanceIsNotCreatedIfIdentifierIsEmpty() {
             Action act = () => new Slot("", CustomizedDimensions.valueOf(20, 30, 10));
 
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
-        public void ensureInstanceIsNotCreatedIfCustomizedDimensionsAreNull()
-        {
+        public void ensureInstanceIsNotCreatedIfCustomizedDimensionsAreNull() {
             Action act = () => new Slot("identfier 1", null);
 
             Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]
-        public void ensureInstanceIsCreated()
-        {
+        public void ensureInstanceIsCreated() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(10, 20, 30));
 
             Assert.NotNull(instance);
         }
 
         [Fact]
-        public void ensureAddingNullCustomizedProductThrowsException()
-        {
+        public void ensureAddingNullCustomizedProductThrowsException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 20, 300));
 
             Action addNullCustomizedProductAction = () => instance.addCustomizedProduct(null);
@@ -110,27 +99,23 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingNullCustomizedProductDoesNotAddCustomizedProduct()
-        {
+        public void ensureAddingNullCustomizedProductDoesNotAddCustomizedProduct() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 20, 300));
 
-            try
-            {
+            try {
                 instance.addCustomizedProduct(null);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.False(instance.hasCustomizedProducts());
         }
 
 
         [Fact]
-        public void ensureAddCustomizedProductDoesNotThrowExceptionIfProductFitsAndSlotIsEmpty()
-        {
+        public void ensureAddCustomizedProductDoesNotThrowExceptionIfProductFitsAndSlotIsEmpty() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             //dimensions that match the values available to the Product
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
 
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
@@ -142,12 +127,11 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddCustomizedProductSucceedsIfProductFitsAndSlotIsEmpty()
-        {
+        public void ensureAddCustomizedProductSucceedsIfProductFitsAndSlotIsEmpty() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             //dimensions that match the values available to the Product
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
 
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
@@ -159,11 +143,10 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingCustomizedProductBiggerThanSlotThrowsException()
-        {
+        public void ensureAddingCustomizedProductBiggerThanSlotThrowsException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(50, 50, 50));
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
 
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
@@ -173,30 +156,26 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingCustomizedProductBiggerThanSlotDoesNotAddCustomizedProduct()
-        {
+        public void ensureAddingCustomizedProductBiggerThanSlotDoesNotAddCustomizedProduct() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(50, 50, 50));
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
 
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
             //Add customized product to slot
-            try
-            {
+            try {
                 instance.addCustomizedProduct(customizedProduct);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Empty(instance.customizedProducts);
         }
 
         [Fact]
-        public void ensureAddCustomizedProductThrowsExceptionIfProductDoesNotFit()
-        {
+        public void ensureAddCustomizedProductThrowsExceptionIfProductDoesNotFit() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 70));
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
             instance.addCustomizedProduct(customizedProduct);
@@ -211,11 +190,10 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddCustomizedProductDoesNotAddCustomizedProductIfProductDoesNotFit()
-        {
+        public void ensureAddCustomizedProductDoesNotAddCustomizedProductIfProductDoesNotFit() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 70));
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
             instance.addCustomizedProduct(customizedProduct);
@@ -223,26 +201,23 @@ namespace core_tests.domain
             CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 200, 70);
             CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1235", otherCustomizedDimensions);
 
-            try
-            {
+            try {
                 instance.addCustomizedProduct(otherCustomizedProduct);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.False(instance.hasCustomizedProduct(otherCustomizedProduct));
         }
 
         [Fact]
-        public void ensureAddingDuplicateCustomizedProductThrowsException()
-        {
+        public void ensureAddingDuplicateCustomizedProductThrowsException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 70));
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
             instance.addCustomizedProduct(customizedProduct);
 
-            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(40, 50, 40);
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(40, 200, 40);
             CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1234", otherCustomizedDimensions);
 
             Action addDuplicateCustomizedProductAction = () => instance.addCustomizedProduct(otherCustomizedProduct);
@@ -251,30 +226,26 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingDuplicateCustomizedDoesNotAddCustomizedProduct()
-        {
+        public void ensureAddingDuplicateCustomizedDoesNotAddCustomizedProduct() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 70));
 
-            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 180, 50);
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(80, 200, 50);
             CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
 
             instance.addCustomizedProduct(customizedProduct);
 
-            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(40, 50, 40);
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(40, 200, 40);
             CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1234", otherCustomizedDimensions);
 
-            try
-            {
+            try {
                 instance.addCustomizedProduct(otherCustomizedProduct);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Single(instance.customizedProducts);
         }
 
         [Fact]
-        public void ensureAddingCustomizedProductThatFitsInSlotDoesNotThrowException()
-        {
+        public void ensureAddingCustomizedProductThatFitsInSlotDoesNotThrowException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
@@ -293,8 +264,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureAddingCustomizedProductThatFitsInSlotAddsCustomizedProduct()
-        {
+        public void ensureAddingCustomizedProductThatFitsInSlotAddsCustomizedProduct() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
@@ -313,8 +283,78 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingNullCustomizedProductThrowsException()
-        {
+        public void ensureCustomizedDimensionsFitReturnsFalseIfProductHeightLargerThanSlotHeight() {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
+            CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
+
+            instance.addCustomizedProduct(customizedProduct);
+
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(110, 200, 300);
+            CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1235", otherCustomizedDimensions);
+
+            Assert.False(instance.customizedDimensionsFit(otherCustomizedProduct.customizedDimensions));
+        }
+        [Fact]
+        public void ensureCustomizedDimensionsFitReturnsFalseIfProductWidthLargerThanSlotWidth() {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
+            CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
+
+            instance.addCustomizedProduct(customizedProduct);
+
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(40, 210, 300);
+            CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1235", otherCustomizedDimensions);
+
+            Assert.False(instance.customizedDimensionsFit(otherCustomizedProduct.customizedDimensions));
+        }
+        [Fact]
+        public void ensureCustomizedDimensionsFitReturnsFalseIfProductDepthLargerThanSlotDepth() {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
+            CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
+
+            instance.addCustomizedProduct(customizedProduct);
+
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(40, 200, 320);
+            CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1235", otherCustomizedDimensions);
+
+            Assert.False(instance.customizedDimensionsFit(otherCustomizedProduct.customizedDimensions));
+        }
+        [Fact]
+        public void ensureCustomizedDimensionsFitReturnsFalseIfProductVolumeLargerThanRemainingVolume() {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
+            CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
+
+            instance.addCustomizedProduct(customizedProduct);
+
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(60, 200, 300);
+            CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1235", otherCustomizedDimensions);
+
+            Assert.False(instance.customizedDimensionsFit(otherCustomizedProduct.customizedDimensions));
+        }
+        [Fact]
+        public void ensureCustomizedDimensionsFitReturnsTrueIfProductVolumeIsEqualOrLessThanRemainingVolume() {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+
+            CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
+            CustomizedProduct customizedProduct = buildCustomizedProduct("1234", customizedDimensions);
+
+            instance.addCustomizedProduct(customizedProduct);
+
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(40, 200, 300);
+            CustomizedProduct otherCustomizedProduct = buildCustomizedProduct("1235", otherCustomizedDimensions);
+
+            Assert.True(instance.customizedDimensionsFit(otherCustomizedProduct.customizedDimensions));
+        }
+
+        [Fact]
+        public void ensureRemovingNullCustomizedProductThrowsException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             Action removeNullCustomProductAction = () => instance.removeCustomizedProduct(null);
@@ -323,8 +363,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingNonExistingCustomizedProductThrowsException()
-        {
+        public void ensureRemovingNonExistingCustomizedProductThrowsException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
@@ -336,8 +375,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingAddedCustomizedProductDoesNotThrowException()
-        {
+        public void ensureRemovingAddedCustomizedProductDoesNotThrowException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
@@ -352,8 +390,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureRemovingAddedCustomizedProductRemovesCustomizedProduct()
-        {
+        public void ensureRemovingAddedCustomizedProductRemovesCustomizedProduct() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
@@ -366,8 +403,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToNullIdentifierThrowsException()
-        {
+        public void ensureChangingToNullIdentifierThrowsException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             Action changeIdentifier = () => instance.changeIdentifier(null);
@@ -376,25 +412,21 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToNullIdentifierDoesNotChangeIdentifier()
-        {
+        public void ensureChangingToNullIdentifierDoesNotChangeIdentifier() {
             string identifier = "identifier 0";
 
             Slot instance = new Slot(identifier, CustomizedDimensions.valueOf(100, 200, 300));
 
-            try
-            {
+            try {
                 instance.changeIdentifier(null);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(identifier, instance.identifier);
         }
 
 
         [Fact]
-        public void ensureCahngingToEmptyIdentifierThrowsException()
-        {
+        public void ensureCahngingToEmptyIdentifierThrowsException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             Action changeIdentifier = () => instance.changeIdentifier("    ");
@@ -403,25 +435,21 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToEmptyIdentifierDoesNotChangeIdentifier()
-        {
+        public void ensureChangingToEmptyIdentifierDoesNotChangeIdentifier() {
             string identifier = "identifier 0";
 
             Slot instance = new Slot(identifier, CustomizedDimensions.valueOf(100, 200, 300));
 
-            try
-            {
+            try {
                 instance.changeIdentifier("    ");
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.Equal(identifier, instance.identifier);
         }
 
 
         [Fact]
-        public void ensureChangingToValidIdentifierDoesNotThrowException()
-        {
+        public void ensureChangingToValidIdentifierDoesNotThrowException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             Action changeIdentifier = () => instance.changeIdentifier("different identifier");
@@ -433,8 +461,7 @@ namespace core_tests.domain
 
 
         [Fact]
-        public void ensurChangingToValidIdentifierChangesIdentifier()
-        {
+        public void ensurChangingToValidIdentifierChangesIdentifier() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             string newIdentifier = "different identifier";
@@ -446,8 +473,7 @@ namespace core_tests.domain
 
 
         [Fact]
-        public void ensureChangingToNullDimensionsThrowsException()
-        {
+        public void ensureChangingToNullDimensionsThrowsException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 20, 300));
 
             Action changeNullDimensionsAction = () => instance.changeDimensions(null);
@@ -456,22 +482,18 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingToNullDimensionsDoesNotChangeDimensions()
-        {
+        public void ensureChangingToNullDimensionsDoesNotChangeDimensions() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 20, 300));
 
-            try
-            {
+            try {
                 instance.changeDimensions(null);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.NotNull(instance.slotDimensions);
         }
 
         [Fact]
-        public void ensureChangingDimensionsWhileSlotHasProductsThrowsException()
-        {
+        public void ensureChangingDimensionsWhileSlotHasProductsThrowsException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
@@ -479,7 +501,7 @@ namespace core_tests.domain
 
             instance.addCustomizedProduct(customizedProduct);
 
-            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 150, 250);
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 200, 250);
 
             Action changeDimensionsAction = () => instance.changeDimensions(otherCustomizedDimensions);
 
@@ -487,8 +509,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingDimensionsWhileSlotHasProductsDoesNotChangeDimensions()
-        {
+        public void ensureChangingDimensionsWhileSlotHasProductsDoesNotChangeDimensions() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
@@ -496,19 +517,16 @@ namespace core_tests.domain
 
             instance.addCustomizedProduct(customizedProduct);
 
-            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 150, 250);
-            try
-            {
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 200, 250);
+            try {
                 instance.changeDimensions(otherCustomizedDimensions);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
 
             Assert.NotEqual(instance.slotDimensions, otherCustomizedDimensions);
         }
 
         [Fact]
-        public void ensureChangingDimensionsAfterRemovingAllCustomizedProductsDoesNotThrowException()
-        {
+        public void ensureChangingDimensionsAfterRemovingAllCustomizedProductsDoesNotThrowException() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
@@ -517,7 +535,7 @@ namespace core_tests.domain
             instance.addCustomizedProduct(customizedProduct);
             instance.removeCustomizedProduct(customizedProduct);
 
-            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 150, 250);
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 200, 250);
 
             Action changeDimensionsAction = () => instance.changeDimensions(otherCustomizedDimensions);
 
@@ -527,8 +545,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureChangingDimensionsAfterRemovingAllCustomizedProductsChangesDimensions()
-        {
+        public void ensureChangingDimensionsAfterRemovingAllCustomizedProductsChangesDimensions() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(50, 200, 300);
@@ -537,15 +554,52 @@ namespace core_tests.domain
             instance.addCustomizedProduct(customizedProduct);
             instance.removeCustomizedProduct(customizedProduct);
 
-            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 150, 250);
+            CustomizedDimensions otherCustomizedDimensions = CustomizedDimensions.valueOf(80, 200, 250);
             instance.changeDimensions(otherCustomizedDimensions);
 
             Assert.Equal(instance.slotDimensions, otherCustomizedDimensions);
         }
 
         [Fact]
-        public void ensureIdReturnsSlotIdentifier()
-        {
+        public void ensureRestrictProductDimensionsToFitInSlotReturnsNullIfArgumentIsNull() {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+            Assert.Null(instance.restrictProductDimensionsToFitInSlot(null));
+        }
+
+        [Fact]
+        public void ensureRestrictProductDimensionsToFitInSlotRemovesMeasurementsThatDontFitInSlot() {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+            Product product = buildProduct();
+            product.addMeasurement(new Measurement(new SingleValueDimension(110), new SingleValueDimension(210), new SingleValueDimension(310)));
+            Product returned = instance.restrictProductDimensionsToFitInSlot(product);
+            Assert.True(returned.productMeasurements.Count == 1);
+        }
+
+        [Fact]
+        public void ensureRestrictProductDimensionsToFitInSlotReturnsNullIfProductDoesNotContainValidMeasurements() {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+            Product product = buildProduct();
+            product.addMeasurement(new Measurement(new SingleValueDimension(110), new SingleValueDimension(200), new SingleValueDimension(310)));
+            product.removeMeasurement(product.productMeasurements[0].measurement);
+            product.addMeasurement(new Measurement(new SingleValueDimension(111), new SingleValueDimension(200), new SingleValueDimension(310)));
+            Assert.Null(instance.restrictProductDimensionsToFitInSlot(product));
+        }
+
+        [Fact]
+        public void ensureRestrictProductDimensionsToFitInSlotAdaptsMeasurementsToFitInSlot() {
+            Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
+            Product product = buildProduct();
+            product.addMeasurement(new Measurement(new DiscreteDimensionInterval(new List<Double> { 100.0, 110.0 }), new DiscreteDimensionInterval(new List<Double> { 200.0, 110.0 }), new ContinuousDimensionInterval(290, 310, 5)));
+            product.removeMeasurement(product.productMeasurements[0].measurement);
+            Product returned = instance.restrictProductDimensionsToFitInSlot(product);
+            Assert.True(returned.productMeasurements.Count == 1);
+            Assert.Equal(new SingleValueDimension(100.0), returned.productMeasurements[0].measurement.height);
+            Assert.Equal(new SingleValueDimension(200.0), returned.productMeasurements[0].measurement.width);
+            Assert.Equal(new DiscreteDimensionInterval(new List<Double> { 290.0, 295.0, 300.0 }), returned.productMeasurements[0].measurement.depth);
+        }
+
+        [Fact]
+        public void ensureIdReturnsSlotIdentifier() {
             string slotIdentifier = "identifier 0";
 
             Slot instance = new Slot(slotIdentifier, CustomizedDimensions.valueOf(100, 200, 300));
@@ -554,8 +608,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureSameAsSlotIdentifierReturnsTrue()
-        {
+        public void ensureSameAsSlotIdentifierReturnsTrue() {
             string slotIdentifier = "identifier 0";
 
             Slot instance = new Slot(slotIdentifier, CustomizedDimensions.valueOf(100, 200, 300));
@@ -564,8 +617,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureSameAsOtherStringReturnsFalse()
-        {
+        public void ensureSameAsOtherStringReturnsFalse() {
             string slotIdentifier = "identifier 0";
 
             Slot instance = new Slot(slotIdentifier, CustomizedDimensions.valueOf(100, 200, 300));
@@ -576,24 +628,21 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureInstanceIsEqualToItself()
-        {
+        public void ensureInstanceIsEqualToItself() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             Assert.True(instance.Equals(instance));
         }
 
         [Fact]
-        public void ensureInstanceIsNotEqualToNull()
-        {
+        public void ensureInstanceIsNotEqualToNull() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             Assert.False(instance.Equals(null));
         }
 
         [Fact]
-        public void ensureInstanceIsNotEqualToObjectOfOtherType()
-        {
+        public void ensureInstanceIsNotEqualToObjectOfOtherType() {
             string slotIdentifier = "identifier 0";
 
             Slot instance = new Slot(slotIdentifier, CustomizedDimensions.valueOf(100, 200, 300));
@@ -602,8 +651,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureInstancesWithSameIdentifierAreEqual()
-        {
+        public void ensureInstancesWithSameIdentifierAreEqual() {
             string slotIdentifier = "identifier 0";
 
             Slot instance = new Slot(slotIdentifier, CustomizedDimensions.valueOf(100, 200, 300));
@@ -614,8 +662,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureHashCodeIsDifferentIfIdentifierIsDifferent()
-        {
+        public void ensureHashCodeIsDifferentIfIdentifierIsDifferent() {
             Slot instance = new Slot("identifier 0", CustomizedDimensions.valueOf(100, 200, 300));
 
             Slot other = new Slot("identifier 1", CustomizedDimensions.valueOf(150, 75, 125));
@@ -624,8 +671,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureHashCodeIsEqualIfIdentifierIsEqual()
-        {
+        public void ensureHashCodeIsEqualIfIdentifierIsEqual() {
             string slotIdentifier = "identifier 0";
 
             Slot instance = new Slot(slotIdentifier, CustomizedDimensions.valueOf(100, 200, 300));
@@ -636,8 +682,7 @@ namespace core_tests.domain
         }
 
         [Fact]
-        public void ensureToStringWorks()
-        {
+        public void ensureToStringWorks() {
             string slotIdentifier = "identifier";
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(100, 200, 300);
 
