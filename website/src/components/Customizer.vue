@@ -156,7 +156,7 @@ export default {
     },
     componentToEditMaterial(newValue){
       if(!newValue) return;
-      this.productRenderer.applyComponentMaterial(newValue);
+      this.productRenderer.applyComponentMaterial(newValue, Store.getters.componentToEdit);
     }
   },
   methods: {

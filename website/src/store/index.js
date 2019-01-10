@@ -17,7 +17,7 @@ const state = {
         componentToRemove: {},
         componentToEdit: {},
         componentToAdd: {},
-        componentMaterial: "",
+        componentMaterial: {},
         doorsFlag: "",
         slostSlider: []
     },

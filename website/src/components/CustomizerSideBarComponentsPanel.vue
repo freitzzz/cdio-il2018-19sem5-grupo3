@@ -150,6 +150,14 @@ export default {
       if(!newValue) return;
       for(let i = 0; i < this.components.length; i++){
         if(this.components[i].model.split(".")[0] + ".png" == newValue.model){
+          if(newValue.model.split(".")[0] != "hinged-door" && newValue.model.split(".")[0] != "sliding-door"){
+            this.getComponentData(this.components[i].id);
+            this.showFinishes = false;
+            this.showColors = false;
+          } else {
+            this.closeNav();
+          }
+
           var component = this.components[i];
           component.slot = newValue.slot;
           this.addedComponents.push(component);
@@ -164,11 +172,14 @@ export default {
     editComponent: function(newValue){
       if(!newValue) return;
       for(let i = 0; i < this.components.length; i++){
-        console.log(newValue.model)
         if(this.components[i].model == newValue.model){
-          this.getComponentData(this.components[i].id);
-          this.showFinishes = false;
-          this.showColors = false;
+          if(newValue.model.split(".")[0] != "hinged-door" && newValue.model.split(".")[0] != "sliding-door"){
+            this.getComponentData(this.components[i].id);
+            this.showFinishes = false;
+            this.showColors = false;
+          } else {
+            this.closeNav();
+          }
         }
       }
     },
@@ -263,14 +274,55 @@ export default {
     },
     applyMaterial(material) {
       this.selectedMaterial = material;
+      let imageFilePath = this.findMaterialImage(material.image);
       store.dispatch(SET_COMPONENT_TO_EDIT_MATERIAL, {
-          material: material.image
+          material: imageFilePath
       });      
     },
     isComponentMandatory(componentId){
       for(let i = 0; i < this.components.length; i++){
         if(this.components[i].id == componentId) return this.components[i].mandatory == true;
       }
+    },
+    applyFinish(finish){
+      store.dispatch(SET_COMPONENT_TO_EDIT_MATERIAL, {
+          material: store.getters.componentToEditMaterial.material,
+          finish: finish.shininess,
+          red: store.getters.componentToEditMaterial.red,
+          green: store.getters.componentToEditMaterial.green,
+          blue: store.getters.componentToEditMaterial.blue,
+          alpha: store.getters.componentToEditMaterial.alpha
+      }); 
+    },
+    removeFinish(){
+      store.dispatch(SET_COMPONENT_TO_EDIT_MATERIAL, {
+          material: store.getters.componentToEditMaterial.material,
+          finish: 20,
+          red: store.getters.componentToEditMaterial.red,
+          green: store.getters.componentToEditMaterial.green,
+          blue: store.getters.componentToEditMaterial.blue,
+          alpha: store.getters.componentToEditMaterial.alpha
+      }); 
+    },     
+    applyColor(color){
+      store.dispatch(SET_COMPONENT_TO_EDIT_MATERIAL, {
+        material: store.getters.componentToEditMaterial.material,
+        finish: store.getters.componentToEditMaterial.finish,
+        red: color.red,
+        green: color.green,
+        blue: color.blue,
+        alpha: color.alpha
+      })
+    },
+    removeColor(){
+      store.dispatch(SET_COMPONENT_TO_EDIT_MATERIAL, {
+        material: store.getters.componentToEditMaterial.material,
+        finish: store.getters.componentToEditMaterial.finish,
+        red: 0,
+        green: 0,
+        blue: 0,
+        alpha: "None"
+      })
     },
     changeShowColors(){
       if(this.showColors == true) this.showColors = false;

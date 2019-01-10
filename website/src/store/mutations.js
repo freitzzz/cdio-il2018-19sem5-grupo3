@@ -186,7 +186,7 @@ export const mutations = {
    * @param {*} payload Payload with the material to be applied to the component being edited
    */
   [types.SET_COMPONENT_TO_EDIT_MATERIAL](state, payload){
-    state.canvasControls.componentMaterial = payload.material;
+    state.canvasControls.componentMaterial = payload;
   },
 
   /**
