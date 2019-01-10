@@ -4,11 +4,15 @@ import cdiomyc.core.domain.User;
 import cdiomyc.core.domain.auth.Auth;
 import cdiomyc.core.domain.auth.AuthFactory;
 import cdiomyc.core.mv.authentication.AuthenticationMV;
+import cdiomyc.core.mv.authorization.AuthorizationMVService;
+import cdiomyc.core.mv.authorization.IsUserAuthorizedMV;
 import cdiomyc.core.mv.users.ActivateUserMV;
 import cdiomyc.core.mv.users.AddUserRolesMV;
 import cdiomyc.core.mv.users.CreateCredentialsUserMV;
 import cdiomyc.core.mv.users.CreateUserMV;
 import cdiomyc.core.mv.users.CreatedUserMV;
+import cdiomyc.core.mv.users.FindUserBySessionMV;
+import cdiomyc.core.mv.users.UserDetailsMV;
 import cdiomyc.core.mv.users.UserMVService;
 import cdiomyc.core.persistence.PersistenceContext;
 import cdiomyc.core.persistence.UserRepository;
@@ -63,6 +67,28 @@ public class UserController {
         User userToAddRoles=userRepo.findEID(userAuth);
         userToAddRoles.addRoles(addUserRolesMV.userRoles);
         userRepo.update(userToAddRoles);
+    }
+
+    /**
+     * Presents the details of the User with a matching session.
+     * @param findUserBySessionMV Instance of {@link FindUserBySessionMV} representing the session used for finding the User.
+     * @return Instance of {@link UserDetailsMV} representing the User's details.
+     */
+    public static UserDetailsMV getUserDetails(FindUserBySessionMV findUserBySessionMV){
+
+        IsUserAuthorizedMV isUserAuthorizedMV = new IsUserAuthorizedMV();
+        isUserAuthorizedMV.sessionAPIToken = findUserBySessionMV.sessionToken;
+
+        String sessionToken = AuthorizationMVService.getSessionAPIToken(isUserAuthorizedMV);
+
+        User user = PersistenceContext.repositories().createUserRepository()
+            .findUserBySessionAPIToken(sessionToken);
+        
+        UserDetailsMV userDetailsMV = new UserDetailsMV();
+        userDetailsMV.name = user.name();
+        userDetailsMV.apiToken = user.id().id();
+
+        return userDetailsMV;
     }
     
     /**
