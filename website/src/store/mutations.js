@@ -13,7 +13,6 @@ export const mutations = {
     state.product = payload.product;
   },
 
-
   //*CustomizedProduct mutations
 
   /**
@@ -49,10 +48,6 @@ export const mutations = {
    * @param {*} payload Payload with the CustomizedProduct's dimensions
    */
   [types.SET_CUSTOMIZED_PRODUCT_DIMENSIONS](state, payload) {
-    /*    alert(state.customizedProduct.customizedDimensions.width);
-       alert(state.customizedProduct.customizedDimensions.height);
-       alert(state.customizedProduct.customizedDimensions.depth);
-    */
     state.customizedProduct.customizedDimensions = {
       width: payload.width,
       height: payload.height,
@@ -131,17 +126,16 @@ export const mutations = {
   },
 
   /**
-   * Adds a component to the state's customized product's
+   * Adds a component to the state's customized product components
    * @param {*} state The store's state
    * @param {*} payload Payload with the component to add
    */
-  [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS](state, payload) {
-    if (payload && state.customizedProduct.slots.length >= payload.slot) {
+  [types.ADD_CUSTOMIZED_PRODUCT_COMPONENT](state, payload) {
+    if(!payload) state.customizedProduct.components = [];
+    else if (state.customizedProduct.slots.length >= payload.component.slot) {
       let copiedArray = state.customizedProduct.components.slice(0);
       copiedArray.push(payload);
       state.customizedProduct.components = copiedArray;
-    } else if (!payload) {
-      state.customizedProduct.components = [];
     }
   },
 
@@ -151,13 +145,11 @@ export const mutations = {
    * @param {*} payload Payload with the component to remove
    */
   [types.REMOVE_CUSTOMIZED_PRODUCT_COMPONENT](state, payload) {
-    let index = state.customizedProduct.components.indexOf(payload.component);
     let copiedArray = state.customizedProduct.components.slice(0);
-    copiedArray.splice(index, 1);
+    copiedArray.splice(payload.index, 1);
 
     state.customizedProduct.components = copiedArray;
   },
-
 
   //*CanvasControls mutations
 
@@ -168,6 +160,24 @@ export const mutations = {
    */
   [types.SET_COMPONENT_TO_REMOVE](state, payload) {
     state.canvasControls.componentToRemove = payload;
+  },
+
+  /**
+   * Sets the state's canvas controls product to be added 
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the component to be added
+   */
+  [types.SET_COMPONENT_TO_ADD](state, payload){
+    state.canvasControls.componentToAdd = payload;
+  },
+
+  /**
+   * Sets the state's canvas controls product to be edited 
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the component to be edited
+   */
+  [types.SET_COMPONENT_TO_EDIT](state, payload){
+    state.canvasControls.componentToEdit = payload;
   },
 
   /**
@@ -226,8 +236,6 @@ export const mutations = {
     state.canvasControls.canMoveComponents = false;
   },
 
-
-
   //*Resize mutations
 
   [types.SET_RESIZE_FACTOR_DIMENSIONS](state, payload) {
@@ -240,12 +248,6 @@ export const mutations = {
   [types.SET_RESIZE_VECTOR_GLOBAL](state, payload) {
     if (payload) {
       state.resizeVectorGlobal = payload;
-
-      /* alert(state.resizeVectorGlobal.width);
-      alert(state.resizeVectorGlobal.height);
-      alert(state.resizeVectorGlobal.depth); */
-
-
     } else {
       state.resizeVectorGlobal = [];
     }

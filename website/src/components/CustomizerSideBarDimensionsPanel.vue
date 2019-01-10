@@ -6,39 +6,39 @@
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
     <select class="dropdown" v-model="dimensionOp" @change="populateDimensions">
-                                                    <option
-                                                      v-for="option in availableOptionsDimensions"
-                                                      :key="option.id"
-                                                      :value="option"
-                                                    >{{"Option: "+option.id}}</option>
-                                                  </select>
+                                                                                <option
+                                                                                  v-for="option in availableOptionsDimensions"
+                                                                                  :key="option.id"
+                                                                                  :value="option"
+                                                                                >{{"Option: "+option.id}}</option>
+                                                                              </select>
   
     <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.HEIGHT]" v-model="height" @callback="updateDimensions" :interval="this.heightIncrement" :data="this.discreteIntervalHeight"></vue-slider>
-    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.HEIGHT]" :min="this.heightMin" :max="this.heightMax" :interval="this.heightIncrement" v-model="height" @callback="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.HEIGHT]" v-model="height" @drag-end="updateDimensions" :interval="this.heightIncrement" :data="this.discreteIntervalHeight"></vue-slider>
+    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.HEIGHT]" :min="this.heightMin" :max="this.heightMax" :interval="this.heightIncrement" v-model="height" @drag-end="updateDimensions"></vue-slider>
     <input class="slider" v-if="this.discreteValueFlags[this.HEIGHT]" type="text" :readonly="true" v-model="height">
   
     <!-- WIDTH: -->
     <div class="text-entry">Width:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.WIDTH]" :interval="this.widthIncrement" :data="this.discreteIntervalWidth" v-model="width" @callback="updateDimensions"></vue-slider>
-    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.WIDTH]" :min="this.widthMin" :max="this.widthMax" :interval="this.widthIncrement" v-model="width" @callback="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.WIDTH]" :interval="this.widthIncrement" :data="this.discreteIntervalWidth" v-model="width" @drag-end="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.WIDTH]" :min="this.widthMin" :max="this.widthMax" :interval="this.widthIncrement" v-model="width" @drag-end="updateDimensions"></vue-slider>
     <input class="slider" v-if="this.discreteValueFlags[this.WIDTH]" type="text" :readonly="true" v-model="this.width">
   
     <!-- DEPTH: -->
     <div class="text-entry">Depth:</div>
-    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.DEPTH]" :interval="this.depthIncrement" :data="this.discreteIntervalDepth" v-model="depth" @callback="updateDimensions"></vue-slider>
-    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.DEPTH]" :min="this.depthMin" :max="this.depthMax" :interval="this.depthIncrement" v-model="depth" @callback="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.discreteIntervalFlags[this.DEPTH]" :interval="this.depthIncrement" :data="this.discreteIntervalDepth" v-model="depth" @drag-end="updateDimensions"></vue-slider>
+    <vue-slider class="slider" v-if="this.continousIntervalFlags[this.DEPTH]" :min="this.depthMin" :max="this.depthMax" :interval="this.depthIncrement" v-model="depth" @drag-end="updateDimensions"></vue-slider>
     <input class="slider" v-if="this.discreteValueFlags[this.DEPTH]" type="text" :readonly="true" v-model="depth">
   
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="this.updateUnit">
-                                                    <option
-                                                      v-for="optionUnit in availableOptionsUnits"
-                                                      :key="optionUnit.id"
-                                                      :value="optionUnit.unit"
-                                                    >{{optionUnit.unit}}</option>
-                                                  </select>
+                                                                                <option
+                                                                                  v-for="optionUnit in availableOptionsUnits"
+                                                                                  :key="optionUnit.id"
+                                                                                  :value="optionUnit.unit"
+                                                                                >{{optionUnit.unit}}</option>
+                                                                              </select>
     <div class="center-controls">
       <i class="btn btn-primary material-icons" @click="previousPanel()">arrow_back</i>
       <i class="btn btn-primary material-icons" @click="nextPanel()">arrow_forward</i>
@@ -145,38 +145,21 @@
       vueSlider
     },
     created() {
-      /* if (this.dimensionOp == undefined) {
-        this.undoDimensionConversion();
-        //Transform 
-        store.dispatch(SET_RESIZE_FACTOR_DIMENSIONS, {
-          width: this.storeDispatchVec.width,
-          height: this.storeDispatchVec.height,
-          depth: this.storeDispatchVec.depth,
-        });
-      } else {
-        store.dispatch(SET_RESIZE_FACTOR_DIMENSIONS, {
-          width: this.width,
-          height: this.height,
-          depth: this.depth,
-        });
-      } */
-  
-  
       store.dispatch(ACTIVATE_CAN_MOVE_CLOSET);
       store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS);
       /*Get all available dimensions of the given product of the array*/
       ProductRequests.getProductDimensions(store.state.product.id)
         .then(response => this.availableOptionsDimensions.push(...response.data))
         .catch(error => {
-          this.$toast.open(error.response.status + "An error occurred");
+          this.$toast.open("It wasn't possible to create the available dimensions. Please try again.");
         });
       /*Get all available units of measurement*/
       UnitRequests.getUnits()
         .then(response => this.availableOptionsUnits.push(...response.data))
         .catch(error => {
-          this.$toast.open(error.response.status + "An error occurred");
+          this.$toast.open("It wasn't possible to create the available units. Please try again.");
         });
-      this.initialPopulate(); 
+      this.initialPopulate();
   
   
     },
@@ -190,70 +173,50 @@
         }
       },
   
-      /*   convertDimensions(){
-          Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions?unit=${this.unit}`)
-          .then(response => this.storeDispatchVec.push(...response.data))
-          .catch(error => {
-            this.$toast.open(error.response.status + "An error occurred");
-          });
-        }, */
-      undoDimensionConversion: function() {
-  
-        ProductRequests.getProductDimensions(store.state.product.id, DEFAULT_UNIT)
+      /**
+       * Shows on the screen the changed dimensions 
+       */
+      updateUnit: function() {
+        this.availableOptionsDimensions = [];
+        ProductRequests.getProductDimensions(store.state.product.id, this.unit)
           .then(response => {
-            let index;
-            this.storeDimensions.push(...response.data);
-  
-  
-            for (let i = 0; i < this.storeDimensions.length(); i++) {
-              if (this.storeDimensions[i].id == this.dimensionOp) {
-                index = i;
-              }
-            }
-            /* =this.storeDimensions[controlIndex].slice();
-            
-              this.storeDispatchVec[HEIGHT] = this.storeDimensions[this.dimensionOp].height;
-              this.storeDispatchVec[DEPTH] = this.storeDimensions[this.dimensionOp].depth; */
-  
+            this.availableOptionsDimensions.push(...response.data);
+            this.getDimensionWithUnits();
+            this.populateDimensions();
           })
           .catch(error => {
-            this.$toast.open(error.response.status + "An error occurred");
+            this.$toast.open("An error occurred.");
           });
       },
-      updateUnit: function() {
-        /*  new Promise((accept, reject) => {
-           Axios.get(`${MYCM_API_URL}/products/${store.state.product.id}/dimensions?unit=${this.unit}`)
-             .then(response => {
-               let controlIndex;
-               this.storeDimensions.push(...response.data);
-               accept(this.storeDimensions);
-               for (let i = 0; i < this.storeDimensions.length(); i++) {
-                 if (this.storeDimensions[i].id == this.dimensionOp) {
-                   controlIndex = i;
-                 }
-               }
-               this.height = storeDimensions[controlIndex].height;
-               this.width = storeDimensions[controlIndex].width;
-               this.depth = storeDimensions[controlIndex].depth;
-             })
-             .catch(error => {
-               this.$toast.open(error.response.status + "An error occurred");
-               reject();
-             });
-         }); */
+      getDimensionWithUnits: function() {
+        for (var i = 0; i < this.availableOptionsDimensions.length; i++) {
+          if (this.dimensionOp.id == this.availableOptionsDimensions[i].id) {
+            this.dimensionOp = this.availableOptionsDimensions[i];
+          }
+        }
       },
-      updateDimensions() {
+      /**
+       * Sends the choosen dimension to the store.
+       */
+      async updateDimensions() {
+        try {
+          var responseWidth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.width);
+          var responseHeight = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.height);
+          var responseDepth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.depth);
   
-        this.storeDispatchVec.width = this.width;
-        this.storeDispatchVec.height = this.height;
-        this.storeDispatchVec.depth = this.depth;
+          store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS, {
+            width: responseWidth.data.value,
+            height: responseHeight.data.value,
+            depth: responseDepth.data.value,
+            unit: this.unit
+          });
   
-        store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS, {
-          width: this.storeDispatchVec.width,
-          height: this.storeDispatchVec.height,
-          depth: this.storeDispatchVec.depth,
-          unit: DEFAULT_UNIT
-        });
+  
+          //Send to store the first values for the dimensions
+          this.updateDimensions();
+        } catch (error) {
+          this.$toast.open("It wasn't possible to create the available units. Please try again.")
+        }
   
       },
       //Method that identifies different types of dimensios
@@ -282,26 +245,37 @@
   
       },
       //sends to product renderer the resize factor
-      createResizeFactor() {
-        store.dispatch(SET_RESIZE_FACTOR_DIMENSIONS, {
-          width: this.width,
-          height: this.height,
-          depth: this.depth
-        });
-
-        //Send to store the first values for the dimensions
-        this.updateDimensions();
+      async createResizeFactor() {
+        try {
+          var responseWidth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.width);
+          var responseHeight = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.height);
+          var responseDepth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.depth);
+  
+          store.dispatch(SET_RESIZE_FACTOR_DIMENSIONS, {
+            width: responseWidth.data.value,
+            height: responseHeight.data.value,
+            depth: responseDepth.data.value,
+          });
+  
+          //Send to store the first values for the dimensions
+          this.updateDimensions();
+        } catch (error) {
+          this.$toast.open("It wasn't possible to create the available units. Please try again.")
+        }
+  
       },
       //Populate
       populateDimensions: function() {
-
+        var mean;
         this.resetFlags();
         //Get information of the chosed option
         var op = this.dimensionOp;
         //Populate Height:
         this.heightType = this.identifyTypeDimensions(op.height);
         if (this.heightType == DISCRETE_INTERVAL) {
+  
           this.discreteIntervalHeight = op.height.values;
+          this.height = op.height.values[0];
   
           this.discreteIntervalFlags[this.HEIGHT] = true;
           this.continousIntervalFlags[this.HEIGHT] = false;
@@ -324,8 +298,9 @@
             op.height
           );
           this.heightIncrement = this.determineIncrementOfInterval(op.height);
-
-          this.height = this.heightMin;
+          /* mean = 2 * (this.heightMax - this.heightMin) / 3; */
+          this.height = this.heightMin + 50 * this.heightIncrement;
+  
           this.continousIntervalFlags[this.HEIGHT] = true;
           this.discreteIntervalFlags[this.HEIGHT] = false;
           this.discreteValueFlags[this.HEIGHT] = false;
@@ -336,7 +311,7 @@
         this.widthType = this.identifyTypeDimensions(op.width);
         if (this.widthType == DISCRETE_INTERVAL) {
           this.discreteIntervalWidth = op.width.values;
-  
+          this.width = op.width.values[0];
           this.discreteIntervalFlags[this.WIDTH] = true;
           this.continousIntervalFlags[this.WIDTH] = false;
           this.discreteValueFlags[this.WIDTH] = false;
@@ -349,12 +324,13 @@
           this.continousIntervalFlags[this.WIDTH] = false;
           this.discreteIntervalFlags[this.WIDTH] = false;
         } else {
-          
+  
           this.widthMin = this.determineMinOfInterval(this.widthType, op.width);
           this.widthMax = this.determineMaxOfInterval(this.widthType, op.width);
           this.widthIncrement = this.determineIncrementOfInterval(op.width);
-          this.width=this.widthMin;
-          
+          /*  mean = 2 * (this.widthMax - this.widthMin) / 3; */
+          this.width = this.widthMin + 100 * this.widthIncrement;
+  
   
           this.continousIntervalFlags[this.WIDTH] = true;
           this.discreteValueFlags[this.WIDTH] = false;
@@ -364,6 +340,7 @@
         this.depthType = this.identifyTypeDimensions(op.depth);
         if (this.depthType == DISCRETE_INTERVAL) {
           this.discreteIntervalDepth = op.depth.values;
+          this.depth = op.depth.values[0];
   
           this.discreteIntervalFlags[this.DEPTH] = true;
           this.continousIntervalFlags[this.DEPTH] = false;
@@ -380,8 +357,9 @@
           this.depthMax = this.determineMaxOfInterval(this.depthType, op.depth);
           this.depthMin = this.determineMinOfInterval(this.depthType, op.depth);
           this.depthIncrement = this.determineIncrementOfInterval(op.depth);
-
-          this.depth = this.depthMin;
+  
+          /* mean = 2 * (this.depthMax - this.depthMin) / 3; */
+          this.depth = this.depthMin + 25 * this.depthIncrement;;
           this.continousIntervalFlags[this.DEPTH] = true;
           this.discreteValueFlags[this.DEPTH] = false;
           this.discreteIntervalFlags[this.DEPTH] = false;
@@ -390,9 +368,6 @@
           this.createResizeFactor();
           this.controlIndex++;
         }
-  
-  
-  
       },
   
       //The following methods determine the min,max and increment to populate the height,width and depth slider
@@ -415,30 +390,16 @@
       determineIncrementOfInterval: function(dimensionJson) {
         return dimensionJson.increment;
       },
-      /*  //Organizes vector to crescent order.
-          organizeCrescentOrder: function(vec) {
-            var tmp, minTmp;
-        
-            for (var i = 0; i < vec.length; i++) {
-              tmp = this.vec[i];
-              for (var j = i + 1; j < this.vec.length; j++) {
-                if (tmp > this.vec[j]) {
-                  tmp = this.vec[j];
-                }
-              }
-              if (tmp != this.vec[i]) {
-                minTmp = this.vec[i];
-                this.vec[i] = tmp;
-                this.vec[j] = minTmp;
-              }
-            }
-          } */
+      getMinMaxOfInterval() {
+  
+      },
       nextPanel() {
         //!TODO POST product
         //Post of product
   
         if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
-          CustomizedProductRequests.postCustomizedProduct({
+
+          var postBody = {
               productId: store.state.product.id,
               reference: store.state.customizedProduct.reference,
               customizedDimensions: {
@@ -447,7 +408,16 @@
                 depth: this.depth,
                 unit: this.unit
               }
-            })
+          };
+
+          const designation = store.getters.customizedProductDesignation;
+
+          //since the designation is optional, only set if it's been defined
+          if(designation != undefined && designation.length > 0){
+            postBody.designation = designation;
+          }
+
+          CustomizedProductRequests.postCustomizedProduct(postBody)
             .then(response => {
               this.idCustomizedProduct = response.data.id;
               store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
@@ -455,48 +425,11 @@
               this.$emit("advance");
             })
             .catch((error_message) => {
-              this.$toast.open({
-                message: error_message.response.data.message
-              });
+              this.$toast.open("It wasn't possible to save the product dimensions. Please try again.");
             });
         } else {
           this.$toast.open("Please select an option!");
         }
-  
-        /*         return new Promise((accept, reject) => {
-                        if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
-                          Axios.post(MYCM_API_URL + '/customizedproducts', {
-                            productId: store.state.product.id,
-                            customizedDimensions: {
-                              height: this.height,
-                              width: this.width,
-                              depth: this.depth,
-                              unit: this.unit
-                            }
-                          })
-                          .then(response => {
-                            this.idCustomizedProduct=response.data.id
-                            accept
-                          })
-                          .catch((error_message) => {
-                            this.$toast.open({
-                              message: error_message.response.data.message
-                            });
-                            flag = true;
-                          });
-                          if (!flag) {
-                            alert(this.idCustomizedProduct);
-          
-                            store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
-                            this.drawRecommendedSlots();
-                            this.$emit("advance");
-                          }else{
-                            this.$toast.open("There was an error please try again!");
-                          }
-                        } else {
-                          this.$toast.open("Please select an option!");
-                        }
-                      }); */
       },
       previousPanel() {
   
@@ -523,16 +456,14 @@
   
       },
       getRecommendedSlots() {
-        
+  
         CustomizedProductRequests.getCustomizedProductRecommendedSlots(this.idCustomizedProduct)
           .then(response => {
             this.listRecommendedSlots = response.data;
             this.drawRecommendedSlots();
           })
           .catch((error_message) => {
-            this.$toast.open({
-              message: error_message.response.data.message
-            });
+            this.$toast.open("An error occurred.");
           });
       },
       drawRecommendedSlots() {

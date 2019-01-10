@@ -1,5 +1,4 @@
 <template>
-  <div>
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
         <p class="modal-card-title">Edit Material Finish Price Table Entry</p>
@@ -29,6 +28,7 @@
                 min="0"
                 icon="cash-multiple"
                 placeholder="Insert value here"
+                step="0.01"
                 v-model="selectedValue"
               ></b-input>
             </b-field>
@@ -126,10 +126,9 @@
         </div>
       </section>
       <footer class="modal-card-foot">
-        <button class="btn-primary" @click="updateMaterialFinishPriceTableEntry()">Edit</button>
+        <button class="btn-primary" @click="updateMaterialFinishPriceTableEntry()">Save</button>
       </footer>
     </div>
-  </div>
 </template> 
 
 <script>

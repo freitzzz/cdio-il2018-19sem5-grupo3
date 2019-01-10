@@ -35,18 +35,22 @@ namespace core.services
         private const string PRICE_TABLE_ENTRY_NOT_CREATED = "A price table entry for the requested material with the same values already exists. Please try again";
 
         /// <summary>
+        /// Message that occurs if the price table entry's time period contains past dates
+        /// </summary>
+        private const string PAST_DATE = "Can't create time periods with past dates!";
+
+        /// <summary>
         /// Transforms an AddMaterialPriceTableEntry into a MaterialPriceTableEntry and saves it to the database
         /// </summary>
         /// <param name="modelView">material price table entry to transform and persist</param>
         /// <returns>created instance or null in case the creation wasn't successfull</returns>
-        public static async Task<GetMaterialPriceModelView> create(AddPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public static GetMaterialPriceModelView create(AddPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
             string defaultCurrency = CurrencyPerAreaConversionService.getBaseCurrency();
             string defaultArea = CurrencyPerAreaConversionService.getBaseArea();
-            MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
             long materialId = modelView.entityId;
 
-            Material material = materialRepository.find(materialId);
+            Material material = PersistenceContext.repositories().createMaterialRepository().find(materialId);
 
             if (material == null)
             {
@@ -57,10 +61,17 @@ namespace core.services
             string endingDateAsString = modelView.priceTableEntry.endingDate;
 
             LocalDateTime startingDate;
+            LocalDateTime endingDate;
+            LocalDateTime currentTime = NodaTime.LocalDateTime.FromDateTime(SystemClock.Instance.GetCurrentInstant().ToDateTimeUtc());
 
             try
             {
                 startingDate = LocalDateTimePattern.GeneralIso.Parse(startingDateAsString).GetValueOrThrow();
+
+                if (startingDate.CompareTo(currentTime) < 0)
+                {
+                    throw new InvalidOperationException(PAST_DATE);
+                }
             }
             catch (UnparsableValueException)
             {
@@ -73,7 +84,14 @@ namespace core.services
             {
                 try
                 {
-                    timePeriod = TimePeriod.valueOf(startingDate, LocalDateTimePattern.GeneralIso.Parse(endingDateAsString).GetValueOrThrow());
+                    endingDate = LocalDateTimePattern.GeneralIso.Parse(endingDateAsString).GetValueOrThrow();
+
+                    if (endingDate.CompareTo(currentTime) < 0)
+                    {
+                        throw new InvalidOperationException(PAST_DATE);
+                    }
+
+                    timePeriod = TimePeriod.valueOf(startingDate, endingDate);
                 }
                 catch (UnparsableValueException)
                 {
@@ -97,11 +115,13 @@ namespace core.services
                 }
                 else
                 {
-                    double convertedValue = await new CurrencyPerAreaConversionService(clientFactory)
+                    Task<double> convertedValueTask = new CurrencyPerAreaConversionService(clientFactory)
                                                     .convertCurrencyPerAreaToDefaultCurrencyPerArea(
                                                         modelView.priceTableEntry.price.currency,
                                                         modelView.priceTableEntry.price.area,
                                                         modelView.priceTableEntry.price.value);
+                    convertedValueTask.Wait();
+                    double convertedValue = convertedValueTask.Result;
                     price = Price.valueOf(convertedValue);
                 }
             }

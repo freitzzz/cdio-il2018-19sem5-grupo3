@@ -83,9 +83,10 @@ agrupar_encomendas([],[]):-!.
 agrupar_encomendas([H|T],EA):-
     H=cidade(Id,Nome,Latitude,Longitude),
     findall((OrderId,Id,Data),encomenda(OrderId,Id,Data),LO),
-    agrupar_encomendas(T,EA1), % #TODO: (False if no orders on a certain city !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
+	agrupar_encomendas(T,EA1),
+	(LO\==[],
     sort(2,@=<,LO,[(_,_,DM)|_]),
-    append([((Id,Nome,Latitude,Longitude),DM,LO)],EA1,EA).
+    append([((Id,Nome,Latitude,Longitude),DM,LO)],EA1,EA);true).
 
 
 % 2) Calcular peso
@@ -220,23 +221,36 @@ assert_caixas([H|T],OrderId):-
 
 
 % Plans a delivery trip using Branch & Bound heuristic
-plan(Cities,ProductionFactory,Orders,Trucks,TrucksRoute,TrucksPlan,1):-
+plan(Cities,ProductionFactory,Orders,Trucks,TruckPathList,1):-
     assert_cidades(Cities),
     (_,Initial,FLatitude,FLongitude,_)=ProductionFactory,
     get_time(X),stamp_date_time(X,Date,'UTC'),format_time(atom(RealDate),'%FT%T%z',Date,posix),
     assert_encomendas(Orders),
+	assert(city(Initial,FLatitude,FLongitude,RealDate)),
     assert_city_facts,
-    assert(city(Initial,FLatitude,FLongitude,RealDate)),
     assert_cidades([(0,Initial,FLatitude,FLongitude)]),
     (_,Initial,_,_)=ProductionFactory,
-    tspd1(Initial,L,_), % 3) Determinar caminho da rota para obtenção das prioridades
-    caminho_as_prioridades(L,LP), % 4) Inverter o caminho da rota de modo a atribuir uma prioridade a cada uma das cidades
-    associar_prioridade_pacotes(LP,LPP), % 5) Atribuir as prioridades a pacotes 
-    fill_camioes(Trucks,LPP,FilledCamioes),
-    truck_route_to_pretty_tuples(L,TrucksRoute),
-    filled_trucks_to_pretty_tuples(FilledCamioes,TrucksPlan),
+	
+    fill_truck(Initial,Trucks,[],TruckPathList),
+	
+    %fill_camioes(Trucks,LPP,FilledCamioes),
+    %filled_trucks_to_pretty_tuples(FilledCamioes,TrucksPlan),
     retractFacts,
     !. % 6) Correr o algoritmo de empacotamento (C/ Simulated Annealing)
+	
+	
+fill_truck(_,[],TPL,TPL).
+fill_truck(Initial,[Truck|T],TPL,RTPL):-tspd1(Initial,L,_), % 3) Determinar caminho da rota para obtenção das prioridades
+		caminho_as_prioridades(L,LP), % 4) Inverter o caminho da rota de modo a atribuir uma prioridade a cada uma das cidades
+		associar_prioridade_pacotes(LP,LPP), % 5) Atribuir as prioridades a pacotes 
+		(TruckId,TruckWidth,TruckHeight,TruckDepth,TruckWeight)=Truck,
+		simulated_annealing((TruckWidth,TruckHeight,TruckDepth,TruckWeight),LPP,PO,RL,NRL),
+		remove_filled_packages(RL,LPP,NewPacotes),
+		truck_route_to_pretty_tuples(L,TrucksRoute),
+		append(TPL,[(Truck,PO,RL,NRL,TrucksRoute)],PL),
+		fill_truck(Initial,T,PL,RTPL).
+		
+
 
 
 % Plans a delivery trip using Greedy heuristic

@@ -675,46 +675,65 @@ namespace core.domain {
         /// </summary>
         /// <param name="customizedProduct">customized product to base restrictions on</param>
         /// <returns>list of restricted components</returns>
-        public IEnumerable<Product> getRestrictedComponents(CustomizedProduct customizedProduct) {
+        public IEnumerable<Product> getRestrictedComponents(CustomizedProduct customizedProduct, Slot slot) {
             List<Product> restrictedComponents = new List<Product>();
-            if (customizedProduct == null) {
+            if (customizedProduct == null || slot == null) {
                 return restrictedComponents;
             }
             List<Product> componentAsProduct = getAllComponentsAsProducts();
             foreach (Product product in componentAsProduct) {
-                Product currentProduct = product;
-                bool flag = true;
-                foreach (ProductMeasurement measurement in productMeasurements) {
-                    currentProduct = measurement.measurement.applyAllRestrictions(customizedProduct, currentProduct);
+                Product currentProduct = applyRestrictionsToProduct(customizedProduct, product, slot);
+                if (currentProduct != null) {
+                    restrictedComponents.Add(currentProduct);
+                }
+            }
+            return restrictedComponents;
+        }
+
+        /// <summary>
+        /// Applies all restrictions of this product to another product and returns a restricted copy
+        /// </summary>
+        /// <param name="customizedProduct">customized product to base restrictions on</param>
+        /// <param name="product">product to apply restrictions to</param>
+        /// <returns>restricted copy</returns>
+        public Product applyRestrictionsToProduct(CustomizedProduct customizedProduct, Product product, Slot slot) {
+            if (customizedProduct == null || product == null || slot == null) {
+                return null;
+            }
+
+            Product currentProduct = slot.restrictProductDimensionsToFitInSlot(product);
+            if (currentProduct == null) {
+                return null;
+            }
+            //restrict dimensions to slot dimensions
+            bool flag = true;
+            foreach (ProductMeasurement measurement in productMeasurements) {
+                currentProduct = measurement.measurement.applyAllRestrictions(customizedProduct, currentProduct);
+                if (currentProduct == null) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                foreach (ProductMaterial material in productMaterials) {
+                    currentProduct = material.applyAllRestrictions(customizedProduct, currentProduct);
                     if (currentProduct == null) {
                         flag = false;
                         break;
                     }
                 }
                 if (flag) {
-                    foreach (ProductMaterial material in productMaterials) {
-                        currentProduct = material.applyAllRestrictions(customizedProduct, currentProduct);
-                        if (currentProduct == null) {
-                            flag = false;
-                            break;
-                        }
-                    }
-                    if (flag) {
-                        foreach (Component component in components) {
-                            if (component.complementaryProduct.Equals(currentProduct)) {
-                                currentProduct = component.applyAllRestrictions(customizedProduct, currentProduct);
-                                if (currentProduct == null) {
-                                    break;
-                                }
+                    foreach (Component component in components) {
+                        if (component.complementaryProduct.Equals(currentProduct)) {
+                            currentProduct = component.applyAllRestrictions(customizedProduct, currentProduct);
+                            if (currentProduct == null) {
+                                break;
                             }
                         }
                     }
                 }
-                if (currentProduct != null) {
-                    restrictedComponents.Add(currentProduct);
-                }
             }
-            return restrictedComponents;
+            return currentProduct;
         }
 
         /// <summary>

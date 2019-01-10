@@ -48,7 +48,7 @@
               </div>
           </a>
           <ul class="image-list" v-for="material in materials" :key="material.id">
-            <li class="image-btn" @click="applyMaterial(material), removeFinish(), removeColor(), getMaterialInformation(material.id)">
+            <li class="image-btn" @click="applyMaterial(material); getMaterialInformation(material.id); removeFinish(); removeColor()">
               <img :src="findMaterialImage(material.image)" width="100%">
               <p>{{material.designation}}</p>
             </li>
@@ -84,6 +84,7 @@ import { SET_CUSTOMIZED_PRODUCT_MATERIAL, SET_CUSTOMIZED_PRODUCT_FINISH,
          DEACTIVATE_CAN_MOVE_SLOTS
         } from "./../store/mutation-types.js";
 import { AlwaysDepth } from 'three';
+import customizedproducts from './../services/mycm_api/requests/customizedproducts.js';
 
 export default {
   name: "CustomizerSideBarMaterialsPanel",
@@ -129,22 +130,22 @@ export default {
         });
     },
     getMaterialInformation(materialId) {
-
       MaterialRequests.getMaterial(materialId, {pricedFinishesOnly: true})
         .then(response => {
-          this.finishes = [];
-          this.finishes.push(...response.data.finishes);
-
           this.colors = [];
           this.colors.push(...response.data.colors);
+
+          this.finishes = [];
+          this.finishes.push(...response.data.finishes);
 
           this.httpCode = response.status;
         })
         .catch(error => {
           if (error.response === undefined) {
             this.httpCode = 500;
-          } else {
-            this.httpCode = error.response.status;
+            this.$toast.open("There was an error while fetching the selected material's data. Try reloading the page.");
+          } else if(error.response.status == 404){
+            this.finishes = [];
           }
         });
     },
@@ -209,12 +210,11 @@ export default {
       return hex;
     },
     nextPanel() {
-      var hasColor = store.getters.customizedMaterialColorName != "None";
-      var hasFinish = store.getters.customizedMaterialFinishDescription != "None";
+      var hasColor = store.getters.customizedMaterialColorName && store.getters.customizedMaterialColorName != "None";
+      var hasFinish = store.getters.customizedMaterialFinishDescription && store.getters.customizedMaterialFinishDescription != "None";
       if(!hasColor && !hasFinish){
         this.$toast.open("You must choose at least one finish or color!");
       } else if(hasColor && !hasFinish){
-
          CustomizedProductRequests.putCustomizedProduct(store.state.customizedProduct.id,
             {
 	            customizedMaterial: {
@@ -284,15 +284,16 @@ export default {
         icon: 'fas fa-exclamation-circle size:5px',
         iconPack: 'fa',
         message: 'Are you sure you want to return? All progress made in this step will be lost.',
-        onConfirm: () => {          
+        onConfirm: () => {        
           this.discardChanges();
+          this.$emit("back");
         }
       })
     },
     discardChanges(){
       var defaultMaterial = this.materials[0];
-      MaterialRequests.getMaterial(defaultMaterial.id)
-        .then(response => {
+      MaterialRequests.getMaterial(defaultMaterial.id, {pricedFinishesOnly: true})
+        .then((response) => {
           var defaultFinish = response.data.finishes[0];
           CustomizedProductRequests.putCustomizedProduct(store.state.customizedProduct.id,
           {
@@ -301,31 +302,74 @@ export default {
               finish: {
                 description: defaultFinish.description,
                 shininess: defaultFinish.shininess,
-              }
+              },
             }
           })
           .then(() => {
-            this.deleteSlots().then(() => {
-              this.$emit("back");
+              this.deleteSlots()
               this.applyMaterial(defaultMaterial);
               this.removeFinish();
               this.removeColor();
-            }).catch(() => {
-              this.$toast.open("An error has occurred while returning to the divisions step.");
-            });
-          })
+           })
           .catch(() => {
           this.$toast.open("An error has occurred while removing the material from the closet.");
-          });
-        })
+          }); 
+         })
         .catch(() => {
           this.$toast.open("An error has occurred while removing the material from the closet.");
         });
     },
     deleteSlots(){
       let slotsToDelete = [];
+      let custProducSlots = [];
+      let size = -1
+      CustomizedProductRequests.getCustomizedProducts()
+        .then((response) => {
+          custProducSlots = response.data;
+          size = custProducSlots[custProducSlots.length - 1].id;
+          CustomizedProductRequests.getCustomizedProduct(size)
+          .then((product) => {
+            custProducSlots = product.data.slots;
+            for(let i = 0; i< custProducSlots.length-1; i++){
+              slotsToDelete.unshift(custProducSlots[i].id);
+            }
+              this.deleteSlot(slotsToDelete)
+              .then(() => {})
+              .catch((error_message) => {
+              });
+          })
+          .catch((error_message) => {
+          });
+        })
+        .catch((error_message) => {
+        });
+    },
+    deleteSlot(slotsToDelete){
+      return new Promise((accept, reject) => {
+        let slotToDelete = slotsToDelete.pop();
+        CustomizedProductRequests.deleteCustomizedProductSlot(store.state.customizedProduct.id, slotToDelete)
+        .then(() => {
+          if(slotsToDelete.length > 0 ){
+            return this.deleteSlot(slotsToDelete)
+            .then(()=>{
+              accept()})
+            .catch((error_message) => {  
+             reject(error_message)});
+          } else {
+             accept();
+          }
+        })
+        .catch((error_message) => {
+          reject(error_message.response.data.message);
+        });
+      })
+    }, 
+  },
+    /*deleteSlots(){
+      let slotsToDelete = [];
       var size = store.state.customizedProduct.slots.length;
       for(let i = 0; i< size-1; i++){
+        alert(store.state.customizedProduct.slots[i].idSlot);
         slotsToDelete.unshift(store.state.customizedProduct.slots[i].idSlot);
       }
       return new Promise((accept,reject)=>{
@@ -356,7 +400,7 @@ export default {
         });
       })
     },
-  },
+  }, */
   created() {
     this.getProductMaterials();
     store.dispatch(DEACTIVATE_CAN_MOVE_CLOSET);

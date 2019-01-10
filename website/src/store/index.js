@@ -16,6 +16,8 @@ const state = {
         canMoveComponents: "false",
         doorsFlag: "",
         componentToRemove: {},
+        componentToAdd: {},
+        componentToEdit: {},
         slostSlider: []
     },
 
@@ -182,6 +184,12 @@ export const getters = {
      */
     userDetails: state=>{
         return Object.assign({},state.user);
+    },
+    componentToAdd: state => {
+        return state.canvasControls.componentToAdd;
+    },
+    componentToEdit: state => {
+        return state.canvasControls.componentToEdit;
     }
 }
 

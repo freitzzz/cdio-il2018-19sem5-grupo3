@@ -1,20 +1,23 @@
 //@ts-check
 import 'three/examples/js/controls/OrbitControls'
 import * as THREE from 'three'
+import store from "./../store"
+import SlidingDoor from './SlidingDoor'
+import HingedDoor from './HingedDoor'
 import Closet from './Closet'
-import Pole from './Pole'
 import Drawer from './Drawer'
 import Module from './Module'
-import SlidingDoor from './SlidingDoor'
 import Shelf from './Shelf'
-import HingedDoor from './HingedDoor'
-import store from "./../store";
+import Pole from './Pole'
 import {
-  SET_RESIZE_VECTOR_GLOBAL, SET_CUSTOMIZED_PRODUCT_COMPONENTS, REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, SET_COMPONENT_TO_REMOVE, SET_DOORS_FLAG
-} from "./../store/mutation-types.js";
+  SET_RESIZE_VECTOR_GLOBAL,
+  SET_COMPONENT_TO_REMOVE,
+  SET_COMPONENT_TO_EDIT,
+  SET_COMPONENT_TO_ADD,
+  SET_DOORS_FLAG
+} from "./../store/mutation-types.js"
 
 export default class ProductRenderer {
-
 
   /* Flags used to interact with the graphical representation on certain steps of the wizard */
 
@@ -164,6 +167,8 @@ export default class ProductRenderer {
    */
   selected_component;
 
+  selected_module;
+
   /**
    * Instance variable that represents the object being hovered (null if none)
    */
@@ -222,6 +227,9 @@ export default class ProductRenderer {
   /**Number of dimensions in question */
   NUMBER_DIMENSIONS;
 
+  difference_module_move;
+  difference_drawer_move;
+
 
   // ---------------- End of resize control --------------------------
 
@@ -239,7 +247,7 @@ export default class ProductRenderer {
     this.resizeVec = [];
 
     /* Create vector for initial values of width,height and depth */
-    this.initialDimensions = [404.5, 300, 245];
+    this.initialDimensions = [404.5, 300, 100];
 
     this.NUMBER_DIMENSIONS = 3;
 
@@ -265,6 +273,7 @@ export default class ProductRenderer {
     this.selected_slot = null;
     this.selected_face = null;
     this.selected_component = null;
+    this.selected_module = null;
     this.hovered_object = null;
     this.plane = null;
     this.mouse = new THREE.Vector2();
@@ -289,6 +298,7 @@ export default class ProductRenderer {
     this.initControls();
     this.initLighting();
     this.initPanorama();
+    this.initFloor();
 
     //Creates the intersection plane
     this.plane = new THREE.Plane();
@@ -360,7 +370,7 @@ export default class ProductRenderer {
       [404.5, thickness, 100, 0, 90, -195], //Top
       [thickness, 300, 100, -200, -60, -195], //Left
       [thickness, 300, 100, 200, -60, -195], //Right
-      [404.5, 300, 0, 0, -60, -245], 0); //Back POsition: 195 + width of lateral wall /2
+      [404.5, 300, thickness, 0, -60, -245], 0); //Back POsition: 195 + width of lateral wall /2
 
     var faces = this.closet.closet_faces;
 
@@ -429,8 +439,26 @@ export default class ProductRenderer {
   }
 
   /**
-   * Initializes the scene's lighting.
+   * Creates an invisible plane representing the floor, on which the shadows will be cast.
    */
+  initFloor() {
+    var planeMaterial = new THREE.ShadowMaterial();
+    planeMaterial.opacity = 0.5;
+
+    var floorPlaneGeo = new THREE.PlaneGeometry(600, 600, 10, 10);
+    floorPlaneGeo.rotateX(-Math.PI / 2);
+    floorPlaneGeo.translate(0, -225, 0);
+
+    var floorPlaneMesh = new THREE.Mesh(floorPlaneGeo, planeMaterial);
+    floorPlaneMesh.visible = true;
+    floorPlaneMesh.receiveShadow = true;
+
+    this.scene.add(floorPlaneMesh);
+  }
+
+  /**
+ * Initializes the scene's lighting.
+ */
   initLighting() {
 
     //*Turn on the helpers below for debugging purposes if needed
@@ -440,10 +468,11 @@ export default class ProductRenderer {
     this.scene.add(hemisphereLight);
 
     //light bulb positioned on the right of the camera's initial position
-    var lightBulbRight = new THREE.PointLight(0x404040, 0.2);
+    var lightBulbRight = new THREE.PointLight(0x404040, 1, 0, 2);
     lightBulbRight.position.set(280, 175, 280);
     lightBulbRight.castShadow = true;
     lightBulbRight.shadow.mapSize.set(512, 512);
+    lightBulbRight.shadow.camera.far = 1000;
     this.scene.add(lightBulbRight);
 
     /*     var lightBulbRightHelper = new THREE.PointLightHelper(lightBulbRight, 10);
@@ -451,10 +480,11 @@ export default class ProductRenderer {
         this.scene.add(lightBulbRightHelper); */
 
     //light bulb positioned on the left of the camera's initial position
-    var lightBulbLeft = new THREE.PointLight(0x404040, 0.2);
+    var lightBulbLeft = new THREE.PointLight(0x404040, 1, 0, 2);
     lightBulbLeft.position.set(-280, 175, 280);
     lightBulbLeft.castShadow = true;
     lightBulbLeft.shadow.mapSize.set(512, 512);
+    lightBulbLeft.shadow.camera.far = 1000;
     this.scene.add(lightBulbLeft);
 
     /*     var lightBulbLeftHelper = new THREE.PointLightHelper(lightBulbLeft, 10);
@@ -468,7 +498,7 @@ export default class ProductRenderer {
     sunLightCenter.castShadow = true;
     sunLightCenter.shadow.mapSize.set(512, 512);
     sunLightCenter.shadow.camera.near = 0.5;
-    sunLightCenter.shadow.camera.far = 500;
+    sunLightCenter.shadow.camera.far = 1200000;
     this.scene.add(sunLightCenter);
 
     /*     var sunLightCenterHelper = new THREE.DirectionalLightHelper(sunLightCenter, 5);
@@ -501,21 +531,29 @@ export default class ProductRenderer {
   }
 
   /**
-   * Adds components to the current closet
-   * @param {*} component Component to add
+   * Commits the action to the mutation SET_COMPONENT_TO_ADD to the store
+   * @param {*} component Component to add (model and slot obtained through drag and drop)
    */
   addComponent(component) {
     if (!component) return;
+    store.dispatch(SET_COMPONENT_TO_ADD, {
+      model: component.model,
+      slot: component.slot
+    });
+  }
+
+  /**
+   * Generates the component to de added on the canvas 
+   * @param {*} component Component to add
+   */
+  generateComponent(component){
+    if(!component) return;
     var designation = component.model.split(".")[0];
     if (designation == "shelf") this.generateShelf(component);
     if (designation == "pole") this.generatePole(component);
     if (designation == "drawer") this.checkAddDrawerTriggers(component);
     if (designation == "hinged-door") this.checkAddHingedDoorTriggers(component);
     if (designation == "sliding-door") this.checkAddSlidingDoorTriggers(component);
-    store.dispatch(SET_CUSTOMIZED_PRODUCT_COMPONENTS, {
-      model: component.model,
-      slot: component.slot
-    });
   }
 
   /**
@@ -530,11 +568,9 @@ export default class ProductRenderer {
     if (designation == "drawer") this.removeDrawer(component.slot);
     if (designation == "hinged-door") this.removeHingedDoor(component.slot);
     if (designation == "sliding-door") this.removeSlidingDoor();
-    store.dispatch(REMOVE_CUSTOMIZED_PRODUCT_COMPONENT, {
-      model: component.model,
-      slot: component.slot
-    });
+    store.dispatch(SET_COMPONENT_TO_REMOVE);
     this.selected_component = null;
+    this.selected_module = null;
     this.controls.enabled = true;
   }
 
@@ -576,20 +612,23 @@ export default class ProductRenderer {
    */
   removeDrawer(slot) {
     for (let i = 0; i < this.closet.drawers.length; i++) {
+     
       if (this.closet.drawers[i].slotId == slot) {
-        var closet_drawer_face_id = this.closet_drawers_ids.splice(i * 5, i * 5 + 5);
-        var closet_module_face_id = this.closet_modules_ids.splice(i * 4, i * 4 + 4);
-
+        var closet_drawer_face_id = this.closet_drawers_ids.splice(i * 5, 5);
+        var closet_module_face_id = this.closet_modules_ids.splice(i * 4, 4);
         for (let j = 0; j < closet_drawer_face_id.length; j++) {
           this.group.remove(this.group.getObjectById(closet_drawer_face_id[j]));
-          this.group.remove(this.group.getObjectById(closet_module_face_id[j]));
         }
+        for(let k=0; k< closet_module_face_id.length; k++){
+          this.group.remove(this.group.getObjectById(closet_module_face_id[k]));
+        }
+        this.closet.drawers.splice(i,1);
+        this.closet.modules.splice(i,1);
         this.updateClosetGV();
         return;
       }
-    }
+    }    
   }
-
   /**
 * Removes a hinged door in the given slot from the current closet
 * @param {*} slot 
@@ -920,6 +959,11 @@ export default class ProductRenderer {
       var closet_poles_id = this.closet_poles_ids.pop();
       this.group.remove(this.group.getObjectById(closet_poles_id));
     }
+
+    store.dispatch(SET_COMPONENT_TO_REMOVE);
+    this.selected_component = null;
+    this.controls.enabled = true;
+
     this.updateClosetGV();
   }
 
@@ -943,10 +987,6 @@ export default class ProductRenderer {
    * Populate vector website dimensions
   */
   populateWebsiteDimensions(websiteDimensions) {
-    /* alert(websiteDimensions.width);
-    alert(websiteDimensions.height);
-    alert(websiteDimensions.depth); */
-
     if (websiteDimensions.width != undefined || websiteDimensions.height != undefined || websiteDimensions.depth != undefined) {
 
       this.websiteDimensions = [websiteDimensions.width, websiteDimensions.height, websiteDimensions.depth];
@@ -963,10 +1003,9 @@ export default class ProductRenderer {
    * @param {number} depth Number with the closet depth
    */
   changeClosetDimensions(width, height, depth) {
-
     this.closet.changeClosetWidth(this.resizeVec[this.WIDTH] * width);
     this.closet.changeClosetHeight(this.resizeVec[this.HEIGHT] * height);
-    this.closet.changeClosetDepth((this.resizeVec[this.DEPTH] * depth));
+    this.closet.changeClosetDepth(this.resizeVec[this.DEPTH] * depth);
 
     this.updateClosetGV();
   }
@@ -978,11 +1017,7 @@ export default class ProductRenderer {
     var i;
     for (i = 0; i < this.NUMBER_DIMENSIONS; i++) {
       this.resizeVec[i] = (this.initialDimensions[i] / this.websiteDimensions[i]);
-
-    }/* 
-    alert(this.resizeVec[this.WIDTH]);
-    alert(this.resizeVec[this.HEIGHT]);
-    alert(this.resizeVec[this.DEPTH]); */
+    }
 
     store.dispatch(SET_RESIZE_VECTOR_GLOBAL, {
       width: this.resizeVec[this.WIDTH],
@@ -1172,12 +1207,39 @@ export default class ProductRenderer {
         }
       }
 
+      //Checks if the the selected object is a drawer
+      for (let j = 0; j < this.closet_modules_ids.length; j++) {
+        let top_module = this.group.getObjectById(this.closet_modules_ids[j]);
+        if (top_module == intersected_object) {
+              this.controls.enabled = false;
+              this.selected_component = intersected_object;
+              this.selected_module = intersected_object;
+              this.difference_module_move = this.group.getObjectById(this.closet_modules_ids[1]).position.y - this.group.getObjectById(this.closet_drawers_ids[1]).position.y;
+              this.difference_drawer_move = this.group.getObjectById(this.closet_drawers_ids[1]).position.y - this.group.getObjectById(this.closet_drawers_ids[0]).position.y;
+
+              store.dispatch(SET_COMPONENT_TO_EDIT, {
+                model: this.selected_component.userData.model,
+                slot: this.selected_component.userData.slot
+              });
+
+              if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+                this.offset = this.intersection.y - this.selected_component.position.y;
+              }
+          }
+      } 
+
       //Checks if the selected object is a shelf
       for (let j = 0; j < this.closet_shelves_ids.length; j++) {
         let shelf = this.group.getObjectById(this.closet_shelves_ids[j]);
         if (shelf == intersected_object) {
           this.controls.enabled = false;
           this.selected_component = intersected_object;
+
+          store.dispatch(SET_COMPONENT_TO_EDIT, {
+            model: this.selected_component.userData.model,
+            slot: this.selected_component.userData.slot
+          });
+
           if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
             this.offset = this.intersection.y - this.selected_component.position.y;
           }
@@ -1190,6 +1252,12 @@ export default class ProductRenderer {
         if (pole == intersected_object) {
           this.controls.enabled = false;
           this.selected_component = intersected_object;
+
+          store.dispatch(SET_COMPONENT_TO_EDIT, {
+            model: this.selected_component.userData.model,
+            slot: this.selected_component.userData.slot
+          });
+
           if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
             this.offset = this.intersection.y - this.selected_component.position.y;
           }
@@ -1811,6 +1879,7 @@ export default class ProductRenderer {
     this.selected_face = null;
     //Sets the selected closet component to null (the component stops being selected)
     this.selected_component = null;
+    this.selected_module = null;
   }
 
   /**
@@ -1902,9 +1971,9 @@ export default class ProductRenderer {
       }
     }
   }
-   /**
-   * Moves the slot across the defined plan that intersects the closet, without overlapping the closet's faces
-   */
+  /**
+  * Moves the slot across the defined plan that intersects the closet, without overlapping the closet's faces
+  */
   moveSlot() {
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
       var newPosition = this.intersection.x - this.offset; //Subtracts the offset to the x coordinate of the intersection point
@@ -1912,32 +1981,32 @@ export default class ProductRenderer {
       if (Math.abs(newPosition) < Math.abs(valueCloset)) { //Doesn't allow the slot to overlap the faces of the closet
         this.selected_slot.position.x = newPosition;
         for (let i = 0; i < this.closet_slots_faces_ids.length; i++) {
-           if (this.group.getObjectById(this.closet_slots_faces_ids[i]) == this.selected_slot) {
+          if (this.group.getObjectById(this.closet_slots_faces_ids[i]) == this.selected_slot) {
             this.group.getObjectById(this.closet_slots_faces_ids[i]).position.x = newPosition;
-           }
-         }
-
-       }
-     } 
+          }
+        }
+      }
+    }
   }
+
   /**
    * Move slot with slider
    */
   moveSlotSlider(index, newWidth) {
-      var left_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
-      var rigth_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[3]).position.x;
-      this.selected_slot = this.group.getObjectById(this.closet_slots_faces_ids[index]);
-      if (index == 0) {
-        let newPosition = left_closet_face_x_value + newWidth;
-        this.selected_slot.position.x = newPosition;
-      }else {
-        var positionLefthSlot = this.group.getObjectById(this.closet_slots_faces_ids[index - 1]).position.x;
-        if(positionLefthSlot + newWidth >= rigth_closet_face_x_value){
-          this.selected_slot.position.x = positionLefthSlot;
-        }else{
-          this.selected_slot.position.x = positionLefthSlot  + newWidth;
-       }
+    var left_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[2]).position.x;
+    var rigth_closet_face_x_value = this.group.getObjectById(this.closet_faces_ids[3]).position.x;
+    this.selected_slot = this.group.getObjectById(this.closet_slots_faces_ids[index]);
+    if (index == 0) {
+      let newPosition = left_closet_face_x_value + newWidth;
+      this.selected_slot.position.x = newPosition;
+    } else {
+      var positionLefthSlot = this.group.getObjectById(this.closet_slots_faces_ids[index - 1]).position.x;
+      if (positionLefthSlot + newWidth >= rigth_closet_face_x_value) {
+        this.selected_slot.position.x = positionLefthSlot;
+      } else {
+        this.selected_slot.position.x = positionLefthSlot + newWidth;
       }
+    }
   }
 
   /**
@@ -1945,19 +2014,52 @@ export default class ProductRenderer {
    */
   moveComponent() {
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+
       var computedYPosition = this.intersection.y - this.offset; //The component's new computed position on the yy axis
       var computedXPosition = this.intersection.x - this.offset; //The component's new computed position on the xx axis
 
-      if (computedYPosition < this.group.getObjectById(this.closet_faces_ids[1]).position.y &&
+      if(this.selected_component == this.selected_module){ //Checks if the component is a drawer
+        var module_removal_offset = this.difference_module_move;
+        if(computedYPosition < 0) module_removal_offset = -module_removal_offset;
+        if (computedYPosition + module_removal_offset < this.group.getObjectById(this.closet_faces_ids[1]).position.y &&
+        computedYPosition + module_removal_offset >= this.group.getObjectById(this.closet_faces_ids[0]).position.y &&
+        computedXPosition < this.group.getObjectById(this.closet_faces_ids[3]).position.x &&
+        computedXPosition >= this.group.getObjectById(this.closet_faces_ids[2]).position.x) {
+          for(let i = 0; i < this.closet_modules_ids.length; i++){
+            let module_increment = i*4;
+            if(this.closet_modules_ids[module_increment + 1] == this.selected_component.id || this.closet_modules_ids[module_increment] == this.selected_component.id){
+              // Move module
+              this.group.getObjectById(this.closet_modules_ids[module_increment+1]).position.y = computedYPosition + this.difference_module_move;
+              this.group.getObjectById(this.closet_modules_ids[module_increment]).position.y = computedYPosition - this.difference_module_move;
+              this.group.getObjectById(this.closet_modules_ids[module_increment+2]).position.y = computedYPosition;
+              this.group.getObjectById(this.closet_modules_ids[module_increment+3]).position.y = computedYPosition;
+              // Move drawer
+              let drawer_increment = i*5;
+              this.group.getObjectById(this.closet_drawers_ids[drawer_increment]).position.y = computedYPosition - this.difference_drawer_move;
+              this.group.getObjectById(this.closet_drawers_ids[drawer_increment+1]).position.y = computedYPosition;
+              this.group.getObjectById(this.closet_drawers_ids[drawer_increment+2]).position.y = computedYPosition;
+              this.group.getObjectById(this.closet_drawers_ids[drawer_increment+3]).position.y = computedYPosition;
+              this.group.getObjectById(this.closet_drawers_ids[drawer_increment+4]).position.y = computedYPosition;
+            }
+          }
+        } else {
+          store.dispatch(SET_COMPONENT_TO_REMOVE, {
+            model: this.selected_component.userData.model,
+            slot: this.selected_component.userData.slot
+          });
+        }
+      } else {
+        if (computedYPosition < this.group.getObjectById(this.closet_faces_ids[1]).position.y &&
         computedYPosition >= this.group.getObjectById(this.closet_faces_ids[0]).position.y &&
         computedXPosition < this.group.getObjectById(this.closet_faces_ids[3]).position.x &&
         computedXPosition >= this.group.getObjectById(this.closet_faces_ids[2]).position.x) {
-        this.selected_component.position.y = computedYPosition; //Sets the new position as long as the component stays within the closet boundaries
-      } else {
-        store.dispatch(SET_COMPONENT_TO_REMOVE, {
-          model: this.selected_component.userData.model,
-          slot: this.selected_component.userData.slot
-        });
+          this.selected_component.position.y = computedYPosition; //Sets the new position as long as the component stays within the closet boundaries
+        } else {
+          store.dispatch(SET_COMPONENT_TO_REMOVE, {
+            model: this.selected_component.userData.model,
+            slot: this.selected_component.userData.slot
+          });
+        }
       }
     }
 

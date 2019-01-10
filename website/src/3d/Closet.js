@@ -15,20 +15,12 @@ import HingedDoor from './HingedDoor';
  */
 import SlidingDoor from './SlidingDoor';
 
-const WIDTH = 0;
-const HEIGHT = 1;
-const DEPTH = 2;
 
 /**
  * Represents the internal core of a Closet
  */
 export default class Closet extends SlotableProduct{
-    /**
- * Resize factor to convert slider values to three.js closet values for dimensions
- * The resize factor shoulb be as follows: closetWidth/sliderResizeDimensionsWidth...
- */
-closetResizeValues=[4.2/404.5,300/300,100/245];
-
+ 
     /**
      * Builds a new Closet with the dimensions and axes values for all faces
      * @param {Array} closet_base_face_dimensions_axes Array with the base face dimensions and axes values
@@ -99,13 +91,13 @@ closetResizeValues=[4.2/404.5,300/300,100/245];
         if (depth > 0) {
             var axesDepth = depth / 2;
      
-            this.closet_base_face_dimensions_axes[2] = depth*this.closetResizeValues[DEPTH];
-            this.closet_top_face_dimensions_axes[2] = depth*this.closetResizeValues[DEPTH]; 
-            this.closet_back_face_dimensions_axes[5] = -depth; 
-            this.closet_left_face_dimensions_axes[2] = depth*this.closetResizeValues[DEPTH]; 
-            this.closet_right_face_dimensions_axes[2] = depth*this.closetResizeValues[DEPTH];
+            this.closet_base_face_dimensions_axes[2] = depth
+            this.closet_top_face_dimensions_axes[2] = depth; 
+            this.closet_back_face_dimensions_axes[5] = this.closet_left_face_dimensions_axes[5]-axesDepth; 
+            this.closet_left_face_dimensions_axes[2] = depth; 
+            this.closet_right_face_dimensions_axes[2] = depth;
             for (var i = 0; i < this.closet_slots_faces.length; i++) {
-                this.closet_slots_faces[i][2] = depth*this.closetResizeValues[DEPTH];
+                this.closet_slots_faces[i][2] = depth;
             }
         }
     }
