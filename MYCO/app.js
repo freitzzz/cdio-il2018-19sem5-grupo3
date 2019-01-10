@@ -21,7 +21,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 var port = config.APP_PORT || 4000;
 app.listen(port);
-console.log('App listening on port ' + port);
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/myco/api', ordersRouter);
@@ -61,7 +60,6 @@ app.use(function (err, req, res, next) {
 }); */
 
 let corsMiddleware=(function(req, res, next) {
-  console.log("!!!")
   var oneof = false;
   if(req.headers.origin) {
       res.header('Access-Control-Allow-Origin', req.headers.origin);
