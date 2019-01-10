@@ -125,6 +125,7 @@ namespace core_tests.domain {
 
             CustomizedProduct customizedProduct = CustomizedProductBuilder
                 .createCustomizedProduct("reference", product, customizedProductDimensions).build();
+            customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
 
             CustomizedProduct customizedComponent = CustomizedProductBuilder
                 .createCustomizedProduct(component, customizedProductDimensions, customizedProduct, customizedProduct.slots[0]).build();
@@ -133,8 +134,6 @@ namespace core_tests.domain {
             CustomizedProduct otherCustomizedComponent = CustomizedProductBuilder
                 .createCustomizedProduct(otherComponent, customizedProductDimensions, customizedComponent, customizedComponent.slots[0]).build();
             otherCustomizedComponent.changeCustomizedMaterial(buildCustomizedMaterial());
-
-            customizedProduct.changeCustomizedMaterial(buildCustomizedMaterial());
 
             return customizedProduct;
         }
@@ -1048,9 +1047,10 @@ namespace core_tests.domain {
             Product product = new Product("This is A Reference", "This is A Designation", "model.obj", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { measurement }, productSlotWidths);
 
+            Dimension childWidthDimension = new SingleValueDimension(200);
             Dimension childDimension = new SingleValueDimension(30);
 
-            Measurement childMeasurement = new Measurement(childDimension, childDimension, childDimension);
+            Measurement childMeasurement = new Measurement(childDimension, childWidthDimension, childDimension);
 
             Product childProduct = new Product("This is a Child", "child product", "child.dae", buildValidCategory(),
                 new List<Material>() { buildValidMaterial() }, new List<Measurement>() { childMeasurement });
@@ -1062,7 +1062,7 @@ namespace core_tests.domain {
             CustomizedProduct customizedProduct = CustomizedProductBuilder
                 .createCustomizedProduct("reference", product, customizedProductDimensions).build();
 
-            CustomizedDimensions childCustomizedDimensions = CustomizedDimensions.valueOf(30, 30, 30);
+            CustomizedDimensions childCustomizedDimensions = CustomizedDimensions.valueOf(30, 200, 30);
 
             CustomizedProduct childCustomizedProduct = CustomizedProductBuilder
                 .createCustomizedProduct(childProduct, childCustomizedDimensions, customizedProduct, customizedProduct.slots.First())
@@ -2255,7 +2255,7 @@ namespace core_tests.domain {
             ProductSlotWidths productSlotWidths = ProductSlotWidths.valueOf(10, 30, 20);
 
             Dimension componentHeightDimension = new SingleValueDimension(5);
-            Dimension componentWidthDimension = new SingleValueDimension(5);
+            Dimension componentWidthDimension = new SingleValueDimension(10);
             Dimension componentDepthDimension = new SingleValueDimension(5);
 
             Measurement componentMeasurement = new Measurement(componentHeightDimension, componentWidthDimension, componentDepthDimension);
@@ -2277,7 +2277,7 @@ namespace core_tests.domain {
             customizedProduct.addSlot(CustomizedDimensions.valueOf(10, 10, 10));
 
             CustomizedProduct customizedComponent = CustomizedProductBuilder
-                .createCustomizedProduct(component, CustomizedDimensions.valueOf(5, 5, 5), customizedProduct, customizedProduct.slots[0]).build();
+                .createCustomizedProduct(component, CustomizedDimensions.valueOf(5, 10, 5), customizedProduct, customizedProduct.slots[0]).build();
             customizedComponent.changeCustomizedMaterial(buildCustomizedMaterial());
             Action act = () => customizedProduct.removeCustomizedProduct(customizedProduct.slots[0].customizedProducts[0], customizedProduct.slots[1]);
 

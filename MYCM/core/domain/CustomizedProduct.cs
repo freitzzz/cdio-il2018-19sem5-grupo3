@@ -681,8 +681,7 @@ namespace core.domain {
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when the customization process has finished or when if the product does not support slots.
         /// </exception>
-        public void addMinimumSlots()
-        {
+        public void addMinimumSlots() {
             if (this.status == CustomizationStatus.FINISHED) throw new InvalidOperationException(ACTION_AFTER_CUSTOMIZATION_FINISHED);
 
             if (!this.product.supportsSlots) throw new InvalidOperationException(PRODUCT_DOES_NOT_SUPPORT_SLOTS);
@@ -696,44 +695,29 @@ namespace core.domain {
         /// Private method used for changing all of the CustomizedProduct's Slots' list.
         /// </summary>
         /// <param name="newSlotDimensions">List of CustomizedDimensions representing the Slot's dimensions.</param>
-        private void replaceSlotList(List<CustomizedDimensions> newSlotDimensions)
-        {
+        private void replaceSlotList(List<CustomizedDimensions> newSlotDimensions) {
             int recommendedSlotsNumber = newSlotDimensions.Count;
             int currentSlotsNumber = this.slots.Count;
 
-            if (currentSlotsNumber > recommendedSlotsNumber)
-            {
-                for (int i = 0; i < currentSlotsNumber; i++)
-                {
-                    if (i < recommendedSlotsNumber)
-                    {
+            if (currentSlotsNumber > recommendedSlotsNumber) {
+                for (int i = 0; i < currentSlotsNumber; i++) {
+                    if (i < recommendedSlotsNumber) {
                         this.slots[i].changeDimensions(newSlotDimensions[i]);
-                    }
-                    else
-                    {
+                    } else {
                         this.slots.RemoveAt(i);
                     }
                 }
-            }
-            else if (currentSlotsNumber == recommendedSlotsNumber)
-            {
-                for (int i = 0; i < currentSlotsNumber; i++)
-                {
+            } else if (currentSlotsNumber == recommendedSlotsNumber) {
+                for (int i = 0; i < currentSlotsNumber; i++) {
                     this.slots[i].changeDimensions(newSlotDimensions[i]);
                 }
-            }
-            else
-            {
-                for (int i = 0; i < recommendedSlotsNumber; i++)
-                {
-                    if (i >= currentSlotsNumber)
-                    {
+            } else {
+                for (int i = 0; i < recommendedSlotsNumber; i++) {
+                    if (i >= currentSlotsNumber) {
                         Slot slot = new Slot(buildSlotIdentifier(), newSlotDimensions[i]);
 
                         this.slots.Add(slot);
-                    }
-                    else
-                    {
+                    } else {
                         this.slots[i].changeDimensions(newSlotDimensions[i]);
                     }
                 }
@@ -961,8 +945,14 @@ namespace core.domain {
 
             if (slot == null) throw new ArgumentException(ADD_CUSTOMIZED_PRODUCT_TO_NULL_SLOT);
 
-            if (childCustomizedProduct.customizedMaterial == null) throw new ArgumentException(ADD_NULL_CUSTOMIZED_MATERIAL);
+            /*
+            if (childCustomizedProduct.customizedMaterial != null) {
+                //check if customized product fulfills all of the restrictions of its father
+                Product childProduct = childCustomizedProduct.product;
+                Product restrictedProduct = this.product.applyRestrictionsToProduct(this, childProduct, slot);
+                checkIfChildFulfillsRestrictions(childCustomizedProduct, restrictedProduct);
 
+            }*/
             //search for a slot that matches the given slot
             Slot equivalentSlot = this.slots.Where(s => s.Equals(slot)).SingleOrDefault();
 
@@ -974,11 +964,6 @@ namespace core.domain {
             bool matchesComponent = availableChildProducts.Contains(childCustomizedProduct.product);
 
             if (!matchesComponent) throw new ArgumentException(CUSTOMIZED_PRODUCT_DOES_NOT_MATCH_CHILDREN);
-
-            //check if customized product fulfills all of the restrictions of its father
-            Product childProduct = childCustomizedProduct.product;
-            Product restrictedProduct = this.product.applyRestrictionsToProduct(this, childProduct, slot);
-            checkIfChildFulfillsRestrictions(childCustomizedProduct, restrictedProduct);
 
             equivalentSlot.addCustomizedProduct(childCustomizedProduct);
             //update child's reference to the slot in which it's inserted
@@ -1307,6 +1292,7 @@ namespace core.domain {
                     if (!mat.Colors.Contains(childCustomizedProduct.customizedMaterial.color)) {
                         throw new ArgumentException(CHILD_COLOR_INVALID);
                     }
+                    break;
                 }
             }
             if (!containsMaterial) {
