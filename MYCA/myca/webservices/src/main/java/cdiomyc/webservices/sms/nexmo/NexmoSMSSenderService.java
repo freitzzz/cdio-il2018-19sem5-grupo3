@@ -1,5 +1,6 @@
 package cdiomyc.webservices.sms.nexmo;
 
+import cdiomyc.webservices.sms.exceptions.SMSSendException;
 import cdiomyc.webservices.sms.mv.nexmo.NexmoSMSSendDetailsMV;
 import cdiomyc.webservices.sms.mv.nexmo.NexmoSMSSendResponseMV;
 import com.google.gson.Gson;
@@ -40,6 +41,6 @@ public final class NexmoSMSSenderService {
         
         NexmoSMSSendResponseMV nexmoSMSSendResponseMV=new Gson().fromJson(nexmoSMSSendResponse,NexmoSMSSendResponseMV.class);
         if(nexmoSMSSendResponseMV.status!=NexmoSMSSendResponseMV.SUCCESSFUL_RESPONSE_STATUS_CODE)
-            throw new IllegalStateException("An error occurd while sendind the SMS to the receptor");
+            throw new SMSSendException("An error occurd while sendind the SMS to the receptor");
     }
 }
