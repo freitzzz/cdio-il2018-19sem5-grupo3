@@ -1206,8 +1206,8 @@ export default class ProductRenderer {
           }
         }
       }
-      //Move drawer
-      
+
+      //Checks if the the selected object is a drawer
       for (let j = 0; j < this.closet_modules_ids.length; j++) {
         let top_module = this.group.getObjectById(this.closet_modules_ids[j]);
         if (top_module == intersected_object) {
@@ -1216,6 +1216,11 @@ export default class ProductRenderer {
               this.selected_module = intersected_object;
               this.difference_module_move = this.group.getObjectById(this.closet_modules_ids[1]).position.y - this.group.getObjectById(this.closet_drawers_ids[1]).position.y;
               this.difference_drawer_move = this.group.getObjectById(this.closet_drawers_ids[1]).position.y - this.group.getObjectById(this.closet_drawers_ids[0]).position.y;
+
+              store.dispatch(SET_COMPONENT_TO_EDIT, {
+                model: this.selected_component.userData.model,
+                slot: this.selected_component.userData.slot
+              });
 
               if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
                 this.offset = this.intersection.y - this.selected_component.position.y;
@@ -2009,40 +2014,53 @@ export default class ProductRenderer {
    */
   moveComponent() {
     if (this.raycaster.ray.intersectPlane(this.plane, this.intersection)) {
+
       var computedYPosition = this.intersection.y - this.offset; //The component's new computed position on the yy axis
       var computedXPosition = this.intersection.x - this.offset; //The component's new computed position on the xx axis
-      if (computedYPosition < this.group.getObjectById(this.closet_faces_ids[1]).position.y &&
+
+      if(this.selected_component == this.selected_module){ //Checks if the component is a drawer
+        var module_removal_offset = this.difference_module_move;
+        if(computedYPosition < 0) module_removal_offset = -module_removal_offset;
+        if (computedYPosition + module_removal_offset < this.group.getObjectById(this.closet_faces_ids[1]).position.y &&
+        computedYPosition + module_removal_offset >= this.group.getObjectById(this.closet_faces_ids[0]).position.y &&
+        computedXPosition < this.group.getObjectById(this.closet_faces_ids[3]).position.x &&
+        computedXPosition >= this.group.getObjectById(this.closet_faces_ids[2]).position.x) {
+          for(let i = 0; i < this.closet_modules_ids.length; i++){
+            let module_increment = i*4;
+            if(this.closet_modules_ids[module_increment + 1] == this.selected_component.id || this.closet_modules_ids[module_increment] == this.selected_component.id){
+              // Move module
+              this.group.getObjectById(this.closet_modules_ids[module_increment+1]).position.y = computedYPosition + this.difference_module_move;
+              this.group.getObjectById(this.closet_modules_ids[module_increment]).position.y = computedYPosition - this.difference_module_move;
+              this.group.getObjectById(this.closet_modules_ids[module_increment+2]).position.y = computedYPosition;
+              this.group.getObjectById(this.closet_modules_ids[module_increment+3]).position.y = computedYPosition;
+              // Move drawer
+              let drawer_increment = i*5;
+              this.group.getObjectById(this.closet_drawers_ids[drawer_increment]).position.y = computedYPosition - this.difference_drawer_move;
+              this.group.getObjectById(this.closet_drawers_ids[drawer_increment+1]).position.y = computedYPosition;
+              this.group.getObjectById(this.closet_drawers_ids[drawer_increment+2]).position.y = computedYPosition;
+              this.group.getObjectById(this.closet_drawers_ids[drawer_increment+3]).position.y = computedYPosition;
+              this.group.getObjectById(this.closet_drawers_ids[drawer_increment+4]).position.y = computedYPosition;
+            }
+          }
+        } else {
+          store.dispatch(SET_COMPONENT_TO_REMOVE, {
+            model: this.selected_component.userData.model,
+            slot: this.selected_component.userData.slot
+          });
+        }
+      } else {
+        if (computedYPosition < this.group.getObjectById(this.closet_faces_ids[1]).position.y &&
         computedYPosition >= this.group.getObjectById(this.closet_faces_ids[0]).position.y &&
         computedXPosition < this.group.getObjectById(this.closet_faces_ids[3]).position.x &&
         computedXPosition >= this.group.getObjectById(this.closet_faces_ids[2]).position.x) {
-          if(this.selected_component == this.selected_module){
-            for(let i = 0; i < this.closet_modules_ids.length; i++){
-              let module_increment = i*4;
-              if(this.closet_modules_ids[module_increment + 1] == this.selected_component.id || this.closet_modules_ids[module_increment] == this.selected_component.id){
-                // Move module
-                this.group.getObjectById(this.closet_modules_ids[module_increment+1]).position.y = computedYPosition + this.difference_module_move;
-                this.group.getObjectById(this.closet_modules_ids[module_increment]).position.y = computedYPosition - this.difference_module_move;
-                this.group.getObjectById(this.closet_modules_ids[module_increment+2]).position.y = computedYPosition;
-                this.group.getObjectById(this.closet_modules_ids[module_increment+3]).position.y = computedYPosition;
-                // Move drawer
-                let drawer_increment = i*5;
-                this.group.getObjectById(this.closet_drawers_ids[drawer_increment]).position.y = computedYPosition - this.difference_drawer_move;
-                this.group.getObjectById(this.closet_drawers_ids[drawer_increment+1]).position.y = computedYPosition;
-                this.group.getObjectById(this.closet_drawers_ids[drawer_increment+2]).position.y = computedYPosition;
-                this.group.getObjectById(this.closet_drawers_ids[drawer_increment+3]).position.y = computedYPosition;
-                this.group.getObjectById(this.closet_drawers_ids[drawer_increment+4]).position.y = computedYPosition;
-              }
-          }
-          } else{
-            this.selected_component.position.y = computedYPosition; //Sets the new position as long as the component stays within the closet boundaries
-          }
+          this.selected_component.position.y = computedYPosition; //Sets the new position as long as the component stays within the closet boundaries
         } else {
-        store.dispatch(SET_COMPONENT_TO_REMOVE, {
-          model: this.selected_component.userData.model,
-          slot: this.selected_component.userData.slot
-        });
+          store.dispatch(SET_COMPONENT_TO_REMOVE, {
+            model: this.selected_component.userData.model,
+            slot: this.selected_component.userData.slot
+          });
+        }
       }
-
     }
 
     var intersects = this.raycaster.intersectObjects(this.scene.children[0].children);
