@@ -6,12 +6,12 @@
       <span class="tooltiptext">Please choose a option for the different type of dimensions.</span>
     </div>
     <select class="dropdown" v-model="dimensionOp" @change="populateDimensions">
-                                                                                <option
-                                                                                  v-for="option in availableOptionsDimensions"
-                                                                                  :key="option.id"
-                                                                                  :value="option"
-                                                                                >{{"Option: "+option.id}}</option>
-                                                                              </select>
+                                                                                    <option
+                                                                                      v-for="option in availableOptionsDimensions"
+                                                                                      :key="option.id"
+                                                                                      :value="option"
+                                                                                    >{{"Option: "+option.id}}</option>
+                                                                                  </select>
   
     <!-- HEIGHT: -->
     <div class="text-entry">Height:</div>
@@ -33,12 +33,12 @@
   
     <div class="text-entry">Choose the available unit:</div>
     <select class="dropdown" v-model="unit" @change="this.updateUnit">
-                                                                                <option
-                                                                                  v-for="optionUnit in availableOptionsUnits"
-                                                                                  :key="optionUnit.id"
-                                                                                  :value="optionUnit.unit"
-                                                                                >{{optionUnit.unit}}</option>
-                                                                              </select>
+                                                                                    <option
+                                                                                      v-for="optionUnit in availableOptionsUnits"
+                                                                                      :key="optionUnit.id"
+                                                                                      :value="optionUnit.unit"
+                                                                                    >{{optionUnit.unit}}</option>
+                                                                                  </select>
     <div class="center-controls">
       <i class="btn btn-primary material-icons" @click="previousPanel()">arrow_back</i>
       <i class="btn btn-primary material-icons" @click="nextPanel()">arrow_forward</i>
@@ -201,8 +201,12 @@
       async updateDimensions() {
         try {
           var responseWidth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.width);
-          var responseHeight = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.height);
-          var responseDepth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.depth);
+          if (responseWidth.data != null) {
+            var responseHeight = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.height);
+            if (responseHeight.data != null) {
+              var responseDepth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.depth);  
+            }
+          }
   
           store.dispatch(SET_CUSTOMIZED_PRODUCT_DIMENSIONS, {
             width: responseWidth.data.value,
@@ -213,7 +217,7 @@
   
   
           //Send to store the first values for the dimensions
-          this.updateDimensions();
+      
         } catch (error) {
           this.$toast.open("It wasn't possible to create the available units. Please try again.")
         }
@@ -248,9 +252,12 @@
       async createResizeFactor() {
         try {
           var responseWidth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.width);
-          var responseHeight = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.height);
-          var responseDepth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.depth);
-  
+          if (responseWidth.data != null) {
+            var responseHeight = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.height);
+            if (responseHeight.data != null) {
+              var responseDepth = await UnitRequests.convertValue(this.unit, DEFAULT_UNIT, this.depth);  
+            }
+          }
           store.dispatch(SET_RESIZE_FACTOR_DIMENSIONS, {
             width: responseWidth.data.value,
             height: responseHeight.data.value,
@@ -421,7 +428,7 @@
             .then(response => {
               this.idCustomizedProduct = response.data.id;
               store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
-              this.getRecommendedSlots();
+              //this.getRecommendedSlots();
               this.$emit("advance");
             })
             .catch((error_message) => {
