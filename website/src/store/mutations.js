@@ -249,5 +249,25 @@ export const mutations = {
     } else {
       state.resizeVectorGlobal = [];
     }
+  },
+
+  /**
+   * Set's a new user name
+   */
+  [types.SET_USER_NAME](state,payload){
+    if(payload){
+      state.user.name=payload;
+    }
+  },
+
+  /**
+   * Set's a new user roles
+   */
+  [types.SET_USER_ROLES](state,payload){
+    if(payload){
+      if(payload.isAdministrator!==undefined)state.user.isAdministrator=payload.isAdministrator;
+      if(payload.isContentManager!==undefined)state.user.isContentManager=payload.isContentManager;
+      if(payload.isLogisticManager!==undefined)state.user.isLogisticManager=payload.isLogisticManager;
+    }
   }
 }

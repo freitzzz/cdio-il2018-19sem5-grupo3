@@ -157,5 +157,19 @@ export const actions = {
      */
     [types.SET_RESIZE_VECTOR_GLOBAL]: ({ commit }, payload) => {
         commit(types.SET_RESIZE_VECTOR_GLOBAL, payload)
+    },
+
+    /**
+     * Action used to mmit the mutation SET_USER_NAME
+     */
+    [types.SET_USER_NAME]: ({commit}, payload)=>{
+        commit(types.SET_USER_NAME,payload);
+    },
+
+    /**
+     * Action used to mmit the mutation SET_USER_ROLES
+     */
+    [types.SET_USER_ROLES]: ({commit}, payload)=>{
+        commit(types.SET_USER_ROLES,payload);
     }
 }
