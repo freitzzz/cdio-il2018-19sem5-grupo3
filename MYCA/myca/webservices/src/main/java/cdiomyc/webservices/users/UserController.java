@@ -13,6 +13,7 @@ import cdiomyc.webservices.authentication.AuthenticationController;
 import cdiomyc.webservices.cookieservices.SessionCookieService;
 import cdiomyc.webservices.dataservices.json.SimpleJSONMessageService;
 import cdiomyc.webservices.emails.mv.SendUserActivationCodeEmailDetailsMV;
+import cdiomyc.webservices.users.exceptions.SendException;
 import com.google.gson.Gson;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
@@ -55,7 +56,7 @@ public class UserController {
                     sendUserActivationCodeSMSDetails.name=createdUserMV.name;
                     sendUserActivationCodeSMSDetails.phoneNumber=((CreateCredentialsUserMV) createUserMV).phoneNumber;
                     sendUserActivationCodeSMSDetails.activationCode=createdUserMV.activationCode;
-                    UserActivationCodeSenderService.sendUserActivationCode(sendUserActivationCodeSMSDetails);
+                    createdUserMV.sentDetailsViaSMS=trySendUserActivationCode(sendUserActivationCodeSMSDetails);
                 }
                 
                 if(((CreateCredentialsUserMV) createUserMV).email!=null && !((CreateCredentialsUserMV) createUserMV).email.trim().isEmpty()){
@@ -63,7 +64,7 @@ public class UserController {
                     sendUserActivationCodeEmailDetailsMV.email=((CreateCredentialsUserMV) createUserMV).email;
                     sendUserActivationCodeEmailDetailsMV.name=createdUserMV.name;
                     sendUserActivationCodeEmailDetailsMV.activationCode=createdUserMV.activationCode;
-                    UserActivationCodeSenderService.sendUserActivationCode(sendUserActivationCodeEmailDetailsMV);
+                    createdUserMV.sentDetailsViaEmail=trySendUserActivationCode(sendUserActivationCodeEmailDetailsMV);
                 }
             }
             return Response.ok().entity(new Gson().toJson(createdUserMV)).build();
@@ -130,6 +131,20 @@ public class UserController {
             return Response.status(Status.UNAUTHORIZED).entity(new Gson().toJson(new SimpleJSONMessageService(illegalStateException.getMessage()))).build();
         }catch(Exception exception){
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new Gson().toJson(new SimpleJSONMessageService(UNEXPECTED_ERROR_MESSAGE))).build();
+        }
+    }
+    
+    /**
+     * Tries to send the activation code to the user via a send (Email | SMS) service
+     * @param sendUserActivationCodeDetailsMV SendUserActivationCodeDetailsMV with the user activation code send details
+     * @return boolean true if the activation code send was successful, false if not
+     */
+    private boolean trySendUserActivationCode(SendUserActivationCodeDetailsMV sendUserActivationCodeDetailsMV){
+        try{
+            UserActivationCodeSenderService.sendUserActivationCode(sendUserActivationCodeDetailsMV);
+            return true;
+        }catch(SendException sendException){
+            return false;
         }
     }
     

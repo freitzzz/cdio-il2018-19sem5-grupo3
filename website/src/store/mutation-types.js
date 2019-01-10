@@ -29,3 +29,8 @@ export const DEACTIVATE_CAN_MOVE_COMPONENTS = "deactivate_can_move_components";
 //Resize mutations
 export const SET_RESIZE_FACTOR_DIMENSIONS = "set_resize_factor_dimensions";
 export const SET_RESIZE_VECTOR_GLOBAL = "set_resize_vector_global";
+
+//User mutations
+export const SET_USER_NAME="set_user_name";
+export const SET_USER_ROLES="set_user_roles";
+export const LOGOUT_USER="logout_user";

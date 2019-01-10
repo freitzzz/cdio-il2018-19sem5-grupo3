@@ -1,5 +1,6 @@
 package cdiomyc.webservices.emails.mv.sendgrid;
 
+import cdiomyc.webservices.emails.exceptions.EmailSendException;
 import com.google.gson.Gson;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -33,7 +34,7 @@ public class SendGridEmailSenderService {
                                 .json(deserializedSMSSendDetails));
         
         if(emailSendResponse.getStatus()!=Response.Status.ACCEPTED.getStatusCode())
-            throw new IllegalStateException("An error occurd while sendind the email to the receptor");
+            throw new EmailSendException("An error occurd while sendind the email to the receptor");
     }
     
 }

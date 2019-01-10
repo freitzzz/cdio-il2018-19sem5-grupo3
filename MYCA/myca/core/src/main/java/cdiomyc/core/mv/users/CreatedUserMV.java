@@ -21,4 +21,14 @@ public class CreatedUserMV {
      * String with the created user name
      */
     public String name;
+    
+    /**
+     * Boolean if the user details was sent via email to the user
+     */
+    public boolean sentDetailsViaEmail;
+    
+    /**
+     * Boolean if the user details was sent via SMS to the user
+     */
+    public boolean sentDetailsViaSMS;
 }

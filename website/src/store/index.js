@@ -68,6 +68,32 @@ const state = {
         width: "",
         height: "",
         depth: "",
+    },
+    /**
+     * Global User details
+     */
+    user:{
+        /**
+         * User name
+         */
+        name:String,
+        /**
+         * User Roles
+         */
+        roles:{
+            /**
+             * Boolean true if the user is an administrator
+             */
+            isAdministrator:Boolean,
+            /**
+             * Boolean true if the user is a content manager
+             */
+            isContentManager:Boolean,
+            /**
+             * Boolean true if the user is a logistic manager
+             */
+            isLogisticManager:Boolean
+        }
     }
 }
 
@@ -152,6 +178,12 @@ export const getters = {
     },
     componentToRemove: state => {
         return state.canvasControls.componentToRemove;
+    },
+    /**
+     * Returns the current user details
+     */
+    userDetails: state=>{
+        return Object.assign({},state.user);
     },
     componentToAdd: state => {
         return state.canvasControls.componentToAdd;
