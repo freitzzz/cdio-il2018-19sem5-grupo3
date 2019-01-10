@@ -45,6 +45,7 @@
               min="0"
               icon="cash-multiple"
               placeholder="Insert value here"
+              step="0.01"
               v-model="priceValue"
             ></b-input>
           </b-field>

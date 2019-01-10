@@ -24,8 +24,9 @@
               :max="maxSizeSlot"
               v-model="sliderValues[index]"
               @drag-end="putWidthSlot(index)"
-              @callback="updateWidthSlot(index)"
             ></vue-slider>
+            <!-- 
+              @callback="updateWidthSlot(index)" -->
           </div>
         </div>
       </div>
@@ -42,7 +43,6 @@ import store from "./../store";
 import UnitRequests from "./../services/mycm_api/requests/units.js";
 import CustomizedProductRequests from "./../services/mycm_api/requests/customizedproducts.js";
 import { ADD_SLOT_DIMENSIONS,SET_ID_SLOT, DEACTIVATE_CAN_MOVE_CLOSET, ACTIVATE_CAN_MOVE_SLOTS, DEACTIVATE_CAN_MOVE_SLOTS } from "./../store/mutation-types.js";
-
 export default {
   name: "CustomizerSideBarSlotsPanel",
   data() {
@@ -51,16 +51,12 @@ export default {
       numberSlots: 0,
       sliderValues: [],
       lines: [],
-      freeSpace: "",
-      createNewSlider: false,
-      valueConverted: "",
       blockRemoval: true,
       slotsToPost: [],
       slotsToDelete: [],
       listRecommendedSlots: [],
-      listMinSlots: [],
       drawCustomizedSlots: [],
-      slotsID: [],
+      custUpdates: [],
     };
   },
   components: {
@@ -86,17 +82,12 @@ export default {
     }
   },
   methods: {
-    convert(from, to, value) {
-      UnitRequests.convertValue(from, to, value)
-        .then(response => (this.valueConverted = response.data))
-        .catch(error => {});
-    },
     addLine() {
-        let checkEmptyLines = this.lines.filter(line => line.number === null);
-       if (checkEmptyLines.length >= 1 && this.lines.length > 0){
+      let checkEmptyLines = this.lines.filter(line => line.number === null);
+      if (checkEmptyLines.length >= 1 && this.lines.length > 0){
          return;
       }
-       if(this.lines.length >= this.maxNumberSlots ){
+      if(this.lines.length >= this.maxNumberSlots ){
         this.$toast.open("You have already reached the maximum number of slots");
       }else{
         this.drawOneSlot();
@@ -114,22 +105,24 @@ export default {
     nextPanel(){
       if(this.minNumberSlots <= 0){
         this.$emit("advance");
-      }
+      }else{
       CustomizedProductRequests.getCustomizedProduct(store.state.customizedProduct.id)
       .then((response) => {
               if(response.data.slots.length > 1){
                 this.$emit("advance");
-              }else{
+              }/* else{
                 CustomizedProductRequests.postCustomizedProductRecommendedSlots(store.state.customizedProduct.id)
-                .then( ()=> {
+                .then((product)=> {
+                  alert(product.data.slots.length)
                   this.$emit("advance");
                 })
               .catch((error_message) => {
               });
-              }
+              } */
             })
              .catch((error_message) => {
           });
+      }
     },
     postSlots(){
        let slotsToPost1 = [];
@@ -237,21 +230,19 @@ export default {
     },
     activateCanvasControls(){
       store.dispatch(ADD_SLOT_DIMENSIONS);
-      this.deleteSlots();
       this.drawMinSlots();
       store.dispatch(ACTIVATE_CAN_MOVE_SLOTS);
     },
     deactivateCanvasControls(){
       store.dispatch(ADD_SLOT_DIMENSIONS);
-      this.deleteSlots();
-      this.drawRecommendedSlots()
       store.dispatch(DEACTIVATE_CAN_MOVE_SLOTS)
     },
     drawRecommendedSlots(){
+      store.dispatch(ADD_SLOT_DIMENSIONS);
       this.listRecommendedSlots = [];
       var unitCloset = store.state.customizedProduct.customizedDimensions.unit;
       var reasonW = store.state.resizeVectorGlobal.width;
-        CustomizedProductRequests.postCustomizedProductMinimumSlots(store.state.customizedProduct.id)
+        CustomizedProductRequests.postCustomizedProductRecommendedSlots(store.state.customizedProduct.id)
         .then(response => {
           this.listRecommendedSlots = response.data.slots;
           for (let i = 0; i < this.listRecommendedSlots.length; i++) {
@@ -298,38 +289,38 @@ export default {
         });
     },
     drawOneSlot(){
-
-      this.sliderValues = [];
-
       var reasonW = store.state.resizeVectorGlobal.width;
-              CustomizedProductRequests.postCustomizedProductSlot(store.state.customizedProduct.id,
+      var customizedProductDimensions = store.getters.customizedProductDimensions;
+      CustomizedProductRequests.postCustomizedProductSlot(store.state.customizedProduct.id,
               {
-                height: store.state.customizedProduct.customizedDimensions.height,
-                depth:  store.state.customizedProduct.customizedDimensions.depth,
+                height: customizedProductDimensions.height,
+                depth:  customizedProductDimensions.depth,
                 width: store.getters.minSlotWidth,
-                unit:  store.state.customizedProduct.customizedDimensions.unit,
+                unit:  customizedProductDimensions.unit,
               }).then(response => {
-                
-                    this.drawCustomizedSlots = response.data.slots
-
-                    store.dispatch(ADD_SLOT_DIMENSIONS);
-             
-             for(let i=0; i<this.drawCustomizedSlots.length; i++){
-               store.dispatch(ADD_SLOT_DIMENSIONS, {
-                  idSlot: this.drawCustomizedSlots[i].id,
-                  width: this.drawCustomizedSlots[i].dimensions.width * reasonW,
-                  height: this.drawCustomizedSlots[i].dimensions.height,
-                  depth: this.drawCustomizedSlots[i].dimensions.depth,
-                  unit: this.drawCustomizedSlots[i].dimensions.unit,
-               })
-             }
-                })
+                this.lines = [];
+                this.sliderValues = [];
+                this.drawCustomizedSlots = response.data.slots
+                store.dispatch(ADD_SLOT_DIMENSIONS);
+                for(let i=0; i<this.drawCustomizedSlots.length; i++){
+                    store.dispatch(ADD_SLOT_DIMENSIONS, {
+                      idSlot: this.drawCustomizedSlots[i].id,
+                      width: this.drawCustomizedSlots[i].dimensions.width * reasonW,
+                      height: this.drawCustomizedSlots[i].dimensions.height,
+                      depth: this.drawCustomizedSlots[i].dimensions.depth,
+                      unit: this.drawCustomizedSlots[i].dimensions.unit,
+                    })
+                    if(i < this.drawCustomizedSlots.length -1){
+                      this.lines.push({
+                        slider: null
+                      })
+                      this.sliderValues[i] = this.drawCustomizedSlots[i].dimensions.width.toFixed(0);
+                    }
+                  }
+              })
               .catch((error_message) => {
-                 this.$toast.open("Imposiivel desehar mais slots");
-
+                 this.$toast.open("Unable to draw more slots");
               });
-             
-                  
     },
     removeOneSlot(){
      var reasonW = store.state.resizeVectorGlobal.width;
@@ -364,43 +355,52 @@ export default {
       });        
     },
     putWidthSlot(index){
-      
-     var reasonW = store.state.resizeVectorGlobal.width;
-     var value = 400;
-
-      var updateSliderValues = this.sliderValues;
-      var custProducSlots = [];//this.drawCustomizedSlots[index].id; 
-       
-
-
-       
-        CustomizedProductRequests.getCustomizedProduct(store.state.customizedProduct.id)
-        .then((response) => {
-          custProducSlots = response.data.slots;
-          CustomizedProductRequests.putCustomizedProductSlot(store.state.customizedProduct.id,custProducSlots[index].id, 
+      var reasonW = store.state.resizeVectorGlobal.width;
+      var customizedProductDimensions = store.getters.customizedProductDimensions;
+      var slot_to_move = store.state.customizedProduct.slots[index].idSlot;
+          CustomizedProductRequests.putCustomizedProductSlot(store.state.customizedProduct.id,slot_to_move, 
           {
             dimensions: {
-              height: custProducSlots[index].dimensions.height,
+              height: customizedProductDimensions.height,
               width: this.sliderValues[index],
-              depth: custProducSlots[index].dimensions.depth,
-              unit: custProducSlots[index].dimensions.unit,
+              depth: customizedProductDimensions.depth,
+              unit: customizedProductDimensions.unit,
             }
           })
-          .then((custProduct) => {
-            value=custProduct.data.slots[index].dimensions.width
-          })
-          .catch((error_message) => {
-            this.lines.splice(index, 1);
-            this.lines.push({
-              slider:value
-            })
-            alert(value)
-            this.sliderValues[index] = value;
-            alert(this.sliderValues[index]);
-          })
-        })
-        .catch((error_message) => {
-        });
+          .then(response => {
+                this.lines = [];
+                this.sliderValues = [];
+                this.custUpdates = [];
+                this.custUpdates.push(...response.data.slots);
+                store.dispatch(ADD_SLOT_DIMENSIONS);
+                for(let i=0; i<this.custUpdates.length; i++){
+                    store.dispatch(ADD_SLOT_DIMENSIONS, {
+                      idSlot: this.custUpdates[i].id,
+                      width: this.custUpdates[i].dimensions.width * reasonW,
+                      height: this.custUpdates[i].dimensions.height,
+                      depth: this.custUpdates[i].dimensions.depth,
+                      unit: this.custUpdates[i].dimensions.unit,
+                    })
+                    if(i < this.custUpdates.length -1){
+                      this.lines.push({
+                        slider: null
+                      })
+                      this.sliderValues[i] = this.custUpdates[i].dimensions.width.toFixed(0);
+                    }
+                  }
+              })
+              .catch((error_message) => {
+                this.lines = [];
+                this.sliderValues = [];
+                for(let k=0; k<this.custUpdates.length; k++){
+                    if(k < this.custUpdates.length -1){
+                      this.lines.push({
+                        slider: null
+                      })
+                      this.sliderValues[k] = this.custUpdates[k].dimensions.width.toFixed(0);
+                    }
+                  }
+              });
     },
   },
   watch: {
@@ -412,7 +412,7 @@ export default {
     if(this.minNumberSlots <= 0){
         this.nextPanel();
     }else{
-      this.createNewSlider = true;
+      this.drawRecommendedSlots()         
       store.dispatch(DEACTIVATE_CAN_MOVE_CLOSET);
     }
   },
@@ -441,7 +441,6 @@ export default {
 .component {
   margin-bottom: 31%;
 }
-
 .icon-div-top .tooltiptext {
   visibility: hidden;
   width: 100px;
@@ -455,11 +454,9 @@ export default {
   left: 0px;
   right: 0px;
 }
-
 .icon-div-top:hover .tooltiptext {
   visibility: visible;
 }
-
 .icon-div-top {
   top: 15px;
   left: 15px;

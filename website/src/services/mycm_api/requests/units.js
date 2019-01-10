@@ -23,7 +23,7 @@ export default {
      * @return {AxiosPromise<any>} Axios Promise representing the converted value.
      */
     convertValue(fromUnit, toUnit, value) {
-        return Axios.get(`${UNITS_URL}/?from=${fromUnit}&to=${toUnit}&value=${value}`);
+        return Axios.get(`${UNITS_URL}/convert/?from=${fromUnit}&to=${toUnit}&value=${value}`);
     }
 
 }

@@ -40,7 +40,6 @@ public final class AuthenticationController {
                 @HeaderParam(value = "Secrete")String secrete,
                 String authenticationDetails){
         try{
-                System.out.println(authenticationDetails);
             AuthenticationMV authenticationDetailsMV=deserializeAuthenticationDetails(authenticationDetails);
             authenticationDetailsMV.userAgent=userAgent;
             authenticationDetailsMV.secreteKey=secrete;
