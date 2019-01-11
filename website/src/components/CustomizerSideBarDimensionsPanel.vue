@@ -430,16 +430,14 @@
               //this.getRecommendedSlots();
               this.$emit("advance");
             })
-            .catch((error_message) => {
-              this.$toast.open("It wasn't possible to save the product dimensions. Please try again.");
+            .catch((error) => {
+              this.$toast.open(error.response.data);
             });
         } else {
           this.$toast.open("Please select an option!");
         }
       },
       previousPanel() {
-  
-        //!TODO DELETE product
         this.$dialog.confirm({
           title: 'Important Information',
           hasIcon: true,
