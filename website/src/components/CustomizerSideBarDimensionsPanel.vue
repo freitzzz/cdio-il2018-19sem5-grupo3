@@ -63,7 +63,9 @@
     ACTIVATE_CAN_MOVE_CLOSET,
     DEACTIVATE_CAN_MOVE_SLOTS,
     SET_ID_CUSTOMIZED_PRODUCT,
-    SET_RESIZE_FACTOR_DIMENSIONS
+    SET_RESIZE_FACTOR_DIMENSIONS,
+    SET_CUSTOMIZED_PRODUCT_REFERENCE,
+    SET_CUSTOMIZED_PRODUCT_DESIGNATION
   } from "./../store/mutation-types.js";
   const MIN_DEFAULT = 1;
   const MAX_DEFAULT = 2;
@@ -446,16 +448,24 @@
           iconPack: 'fa',
           message: 'Do you want to go back? This will remove all selected dimensions!',
           onConfirm: () => {
-            if (this.height == undefined || this.width == undefined || this.depth == undefined || this.unit == undefined) {
-              this.$emit("back")
-            } else {
-              CustomizedProductRequests.deleteCustomizedProduct(store.state.product.id)
-                .then(this.$emit("back"))
-                .catch(this.$toast.open("There was an error, please try again."));
-  
+              const customizedProductId = store.getters.customizedProductId;
+
+              if(customizedProductId == undefined || customizedProductId.length == 0){
+                //clear the previously inserted reference and designation
+                store.dispatch(SET_CUSTOMIZED_PRODUCT_REFERENCE, "");
+                store.dispatch(SET_CUSTOMIZED_PRODUCT_DESIGNATION, "");
+                this.$emit("back");
+              }else{
+                //Only perform the delete operation if the customized product was previously posted
+                CustomizedProductRequests.deleteCustomizedProduct(customizedProductId)
+                .then(() => {
+                  store.dispatch(SET_CUSTOMIZED_PRODUCT_REFERENCE, "");
+                  store.dispatch(SET_CUSTOMIZED_PRODUCT_DESIGNATION, "");
+                  this.$emit("back");
+                  })
+                .catch(() => {this.$toast.open("There was an error, please try again.")});
+              }  
             }
-  
-          }
         })
   
       },
@@ -490,6 +500,7 @@
           });
         }
       },
+
       convert(from, to, value) {
         UnitRequests.convertValue(from, to, value)
           .then(response => (this.valueConvertedSlotsWidth = response.data))
