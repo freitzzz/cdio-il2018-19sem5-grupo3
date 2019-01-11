@@ -25,7 +25,7 @@ const state = {
     product: {},
 
     customizedProduct: {
-        id: "",
+        id: undefined,
         reference: "",
         designation: "",
         components: [],
