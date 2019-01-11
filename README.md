@@ -58,3 +58,15 @@ MYC Components are currently deployed in [**Microsoft Azure**](https://azure.mic
 |[MYCO](http://cdio-myco.westeurope.cloudapp.azure.com/)|VM|Off|
 |[MYCL](http://mycl-api.ukwest.cloudapp.azure.com/)|VM|Off|
 |[MYCA](https://myca-api.azurewebsites.net)|Web API|Off|
+
+## The Team
+
+The whole project was developed by the following soon-to-be software engineers:
+
+- [***Gil Durão***](https://bitbucket.org/RicGD/)
+- [***António Sousa***](https://bitbucket.org/i161371/)
+- [***Rita Gonçalves***](https://bitbucket.org/ritagsoraia/)
+- [***João Moreira***](https://bitbucket.org/JSMoreira/)
+- [***Margarida Guerra***](https://bitbucket.org/MargaridaGuerra)
+- [***Vera Ricardina***](https://bitbucket.org/Ricardina)
+- [***João Freitas***](https://bitbucket.org/joaomagfreitas)
