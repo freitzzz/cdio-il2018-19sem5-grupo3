@@ -3,17 +3,20 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "test": "jest --detectOpenHandles"
+    "start": "node ./executable/www",
+    "debug": "DEBUG=myco:* npm start",
+    "debug-windows": "set DEBUG=myco:* & npm start",
+    "test": "jest --detectOpenHandles -c testapp.js",
+    "integration":"jest -c testapp.js"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "eslint": "^5.7.0",
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
-    "mongodb": "^3.1.8",
-    "mongodb-memory-server": "^2.6.2",
+    "mongodb": "^3.1.10",
     "mongoose": "^5.3.5",
     "morgan": "~1.9.0",
     "pug": "2.0.0-beta11"
@@ -25,6 +28,7 @@
   "jest": {
     "testEnvironment": "./tests/mongo-environment.js",
     "globalSetup": "./tests/setup.js",
-    "globalTeardown": "./tests/teardown.js"
+    "globalTeardown": "./tests/teardown.js",
+    "setupTestFrameworkScriptFile": "./tests/setup.js"
   }
 }

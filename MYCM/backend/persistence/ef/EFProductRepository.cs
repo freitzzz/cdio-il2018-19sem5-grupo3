@@ -1,26 +1,19 @@
 using core.domain;
 using core.dto;
 using core.persistence;
+using Microsoft.EntityFrameworkCore;
 using support.persistence.repositories;
+using support.utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace backend.persistence.ef
 {
     public class EFProductRepository : EFBaseRepository<Product, long, string>, ProductRepository
     {
         public EFProductRepository(MyCContext dbContext) : base(dbContext){}
-        /// <summary>
-        /// Fetches product component by their ids
-        /// </summary>
-        /// <param name="productID">product id</param>
-        /// <param name="componentID">component id</param>
-        /// <returns>product component with respective id</returns>
-        public Component fetchProductComponent(long productID, long componentID) {
-            Product product = find(productID);
-            return product.complementedProducts.SingleOrDefault(c => c.complementedProductId == componentID);
-        }
 
         /// <summary>
         /// Fetches an enumerable of products by their ids
@@ -36,16 +29,11 @@ namespace backend.persistence.ef
                     );
         }
 
-        /// <summary>
-        /// Updates a product
-        /// <br>Returns null if the update affects the entity identifier and the changing entity identifier already exists on the database
-        /// </summary>
-        /// <param name="entity">Product with the product being updated</param>
-        /// <returns>Product with the updated product</returns>
-        public override Product update(Product entity){
-            if(base.find(entity.id()).Id!=entity.Id)
-                return null;
-            return base.update(entity);
+        public IEnumerable<Product> findBaseProducts()
+        {
+            List<long> childrenIdentifiers = dbContext.Set<Component>().Select(c => c.complementaryProduct.Id).ToList();
+
+            return dbContext.Product.Where(p => p.activated).Where(p => !childrenIdentifiers.Contains(p.Id)).Distinct();
         }
     }
 }

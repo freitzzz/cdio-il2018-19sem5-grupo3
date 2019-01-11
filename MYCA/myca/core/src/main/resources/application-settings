@@ -1,0 +1,11 @@
+persistence.context=cdiomyc.persistence.impl.jpa.core.JPARepositoryFactoryImpl
+username.digest.algorithm=SHA-256
+password.digest.algorithm=SHA-384
+username.digest.salt=0101101010kkb10010101in10101001the101010house101010010101
+password.digest.salt=1010011010have101010101you10010101seen10010101sarah100101
+username.operators.algorithm=MULTIPLICATION
+password.operators.algorithm=MULTIPLICATION
+username.operators.value=16
+password.operators.value=16
+authentication.session.secrete.identifier.digest.algorithm=SHA-512
+authentication.session.secrete.identifier.digest.salt=01010110101

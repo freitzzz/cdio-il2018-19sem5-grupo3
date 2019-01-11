@@ -10,8 +10,10 @@ using core.dto;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace core.domain {
-    public class Component : DTOAble<ComponentDTO> {
+namespace core.domain
+{
+    public class Component : Restrictable, DTOAble<ComponentDTO>
+    {
 
         /// <summary>
         /// Constant that represents the message that ocurrs if the Component's product is not valid.
@@ -26,46 +28,35 @@ namespace core.domain {
         /// <summary>
         /// Long with the product which has the complemented product ID
         /// </summary>
-        public long fatherProductId { get; private set; }
+        public long fatherProductId { get; protected set; }
         /// <summary>
         /// Boolean value that dictates whether the component is mandatory or not
         /// </summary>
-        public bool mandatory { get; private set; }
+        public bool mandatory { get; protected set; }
 
         /// <summary>
         /// Product with the product which has the current complemented product
         /// </summary>
         private Product _fatherProduct;             //!private field used for lazy loading, do not use this for storing or fetching data
-        public Product fatherProduct { get => LazyLoader.Load(this, ref _fatherProduct); set => _fatherProduct = value; }
+        public Product fatherProduct { get => LazyLoader.Load(this, ref _fatherProduct); protected set => _fatherProduct = value; }
 
         /// <summary>
         /// Long with the product which has the complemented product ID
         /// </summary>
-        public long complementedProductId { get; private set; }
+        public long complementaryProductId { get; protected set; }
 
         /// <summary>
         /// Product with the complemented product 
         /// </summary>
-        private Product _complementedProduct;       //!private field used for lazy loading, do not use this for storing or fetching data
-        public Product complementedProduct { get => LazyLoader.Load(this, ref _complementedProduct); set => _complementedProduct = value; }
-        /// <summary>
-        /// List with the restrictions which the current component can be have
-        /// </summary>
-        [NotMapped] //!remove this annotation once we figure out how to persist interfaces
-        private List<Restriction> _restrictions;    //!private field used for lazy loading, do not use this for storing or fetching data
-        public List<Restriction> restrictions { get => LazyLoader.Load(this, ref _restrictions); set => _restrictions = value; }
-
-        /// <summary>
-        /// LazyLoader being injected by the Framework.
-        /// </summary>
-        /// <value>Private Gets/Sets the LazyLoader.</value>
-        private ILazyLoader LazyLoader { get; set; }
+        private Product _complementaryProduct;       //!private field used for lazy loading, do not use this for storing or fetching data
+        public Product complementaryProduct { get => LazyLoader.Load(this, ref _complementaryProduct); protected set => _complementaryProduct = value; }
 
         /// <summary>
         /// Private constructor used for injecting a LazyLoader.
         /// </summary>
         /// <param name="lazyLoader">LazyLoader being injected.</param>
-        private Component(ILazyLoader lazyLoader) {
+        private Component(ILazyLoader lazyLoader)
+        {
             this.LazyLoader = lazyLoader;
         }
 
@@ -73,37 +64,42 @@ namespace core.domain {
         /// Empty constructor for ORM.
         /// </summary>
         protected Component() { }
-        /// <summary>
-        /// Builds a new component with its product and list of the restrictions.
-        /// </summary>
-        /// <param name="restricitions">List with the restrictions of the component</param>
-        public Component(Product product, List<Restriction> restrictions) {
-            checkComponentProperties(product, restrictions);
-            this.complementedProduct = product;
-            this.restrictions = restrictions;
-            this.mandatory = false;
-        }
 
         /// <summary>
         /// Builds a new Component with the father and complemented product
         /// </summary>
         /// <param name="fatherProduct">Product with the father product</param>
         /// <param name="complementedProduct">Product with the complemented product</param>
-        public Component(Product fatherProduct, Product complementedProduct) {
+        public Component(Product fatherProduct, Product complementedProduct)
+        {
             checkComponentProduct(complementedProduct);
             checkComponentProduct(fatherProduct);
             this.fatherProduct = fatherProduct;
-            this.complementedProduct = complementedProduct;
+            this.complementaryProduct = complementedProduct;
             this.restrictions = new List<Restriction>();
             this.mandatory = false;
         }
+
+        /// <summary>
+        /// Builds a new component with its product and list of the restrictions.
+        /// </summary>
+        /// <param name="restricitions">List with the restrictions of the component</param>
+        public Component(Product parentProduct, Product childProduct,
+        List<Restriction> restrictions)
+        : this(parentProduct, childProduct)
+        {
+            checkRestrictions(restrictions);
+            this.restrictions = restrictions;
+        }
+
         /// <summary>
         /// Builds a new component with its product ,list of the restrictions and the obligatoriness.
         /// </summary>
         /// <param name="restricitions">List with the restrictions of the component</param>
-        public Component(Product product, List<Restriction> restrictions, bool mandatory) {
-            checkComponentProperties(product, restrictions);
-            this.complementedProduct = product;
+        public Component(Product parentProduct, Product childProduct,
+        List<Restriction> restrictions, bool mandatory) : this(parentProduct, childProduct)
+        {
+            checkRestrictions(restrictions);
             this.restrictions = restrictions;
             this.mandatory = mandatory;
         }
@@ -113,101 +109,52 @@ namespace core.domain {
         /// </summary>
         /// <param name="fatherProduct">Product with the father product</param>
         /// <param name="complementedProduct">Product with the complemented product</param>
-        public Component(Product fatherProduct, Product complementedProduct, bool mandatory) {
-            checkComponentProduct(complementedProduct);
-            checkComponentProduct(fatherProduct);
-            this.fatherProduct = fatherProduct;
-            this.complementedProduct = complementedProduct;
-            this.restrictions = new List<Restriction>();
+        public Component(Product fatherProduct, Product complementedProduct, bool mandatory)
+        : this(fatherProduct, complementedProduct)
+        {
             this.mandatory = mandatory;
         }
 
         /// <summary>
         /// Checks if the Component's properties are valid.
         /// </summary>
-        /// <param name="product">Product with the Material's product</param>
         /// <param name="restrictions">List of the restrictions of the Component.</param>
-        private void checkComponentProperties(Product product, List<Restriction> restrictions) {
-            checkComponentProduct(product);
-            if (Collections.isListNull(restrictions) || Collections.isListEmpty(restrictions)) throw new ArgumentException(INVALID_COMPONENT_RESTRICTIONS);
+        private void checkRestrictions(List<Restriction> restrictions)
+        {
+            if (Collections.isListNull(restrictions) || Collections.isListEmpty(restrictions))
+                throw new ArgumentException(INVALID_COMPONENT_RESTRICTIONS);
         }
 
         /// <summary>
         /// Checks if the Component's product are valid.
         /// </summary>
         /// <param name="product">Product with the Material's product</param>
-        private void checkComponentProduct(Product product) {
+        private void checkComponentProduct(Product product)
+        {
             if (product == null) throw new ArgumentException(INVALID_COMPONENT_PRODUCT);
         }
-        /// <summary>
-        /// Adds a restriction to the list of restrictions
-        /// </summary>
-        /// <param name="restriction">restriction to be added</param>
-        /// <returns>true if restriction was added successfully</returns>
-        public bool addRestriction(Restriction restriction) {
-            if (restriction == null || restrictions.Contains(restriction)) {
-                throw new ArgumentException(INVALID_COMPONENT_RESTRICTIONS);
-            }
-            restrictions.Add(restriction);
-            return true;
-        }
-        /// <summary>
-        /// Returns the component identity
-        /// </summary>
-        /// <returns>Product with the component identity</returns>
-        public Product id() { return complementedProduct; }
-
-        /// <summary>
-        /// Checks if a certain component entity is the same as the current component
-        /// </summary>
-        /// <param name="comparingEntity">Product with the comparing component identity</param>
-        /// <returns>boolean true if both entities identity are the same, false if not</returns>
-        public bool sameAs(Product comparingEntity) { return id().Equals(comparingEntity); }
+        
         /// <summary>
         /// Returns the current component as a DTO
         /// </summary>
         /// <returns>DTO with the current DTO representation of the component</returns>
-        public ComponentDTO toDTO() {
+        public ComponentDTO toDTO()
+        {
             ComponentDTO dto = new ComponentDTO();
-            dto.product = complementedProduct.toDTO();
+            dto.product = complementaryProduct.toDTO();
             dto.mandatory = mandatory;
 
-            if (this.restrictions != null) {
+            if (this.restrictions != null)
+            {
                 List<RestrictionDTO> complementDTOList = new List<RestrictionDTO>();
 
-                foreach (Restriction restriction in restrictions) {
+                foreach (Restriction restriction in restrictions)
+                {
                     complementDTOList.Add(restriction.toDTO());
                 }
                 dto.restrictions = complementDTOList;
             }
             return dto;
         }
-
-        /// <summary>
-        /// Checks if two components are equal
-        /// </summary>
-        /// <param name="comparingComponent">Component with the component being compared to the current one</param>
-        /// <returns>boolean true if both components are equal, false if not</returns>
-        public override bool Equals(object comparingComponent) {
-            if (this == comparingComponent) return true;
-            return comparingComponent is Component && this.id().Equals(((Component)comparingComponent).id());
-        }
-
-        /// <summary>
-        /// Represents the component hashcode
-        /// </summary>
-        /// <returns>Integer with the current component hashcode</returns>
-        public override int GetHashCode() {
-            return id().GetHashCode();
-        }
-        /// <summary>
-        /// Represents the textual information of the Component
-        /// </summary>
-        /// <returns>String with the textual representation of the component</returns>
-        public override string ToString() {
-            //Should ToString List the Component Complemented Component?
-            return String.Format("Component Information\n- List of restrictions: {0}\n", restrictions);
-        }
-
     }
 }

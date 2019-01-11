@@ -37,11 +37,11 @@ var designationValidator={
  * Represents a Factory Schema
  */
 var factorySchema=new Schema({
-    reference:{type: String, validate: referenceValidator, required:true},
+    reference:{type: String, validate: referenceValidator, unique:true, required:true},
     designation:{type: String, validate: designationValidator, required:true},
     location:{type: location.schema, required:true},
     city:{type: city.schema, required:false},
-    _available:{type: Boolean,required:true}
+    available:{type: Boolean,required:true}
 });
 
 /**
@@ -50,6 +50,7 @@ var factorySchema=new Schema({
  */
 factorySchema.methods.changeReference=function(reference){
     grantReferenceIsValidForUpdate(reference);
+    if(this.reference==reference)throw 'Factory reference is the same as the updating one';
     this.reference=reference;
 }
 
@@ -59,6 +60,7 @@ factorySchema.methods.changeReference=function(reference){
  */
 factorySchema.methods.changeDesignation=function(designation){
     grantDesignationIsValidForUpdate(designation);
+    if(this.designation==designation)throw 'Factory designation is the same as the updating one';
     this.designation=designation;
 }
 
@@ -82,16 +84,16 @@ factorySchema.methods.changeLongitude=function(longitude){
  * Enables the current factory
  */
 factorySchema.methods.enable=function(){
-    grantFactoryIsDisabled(this._available);
-    this._available=false;
+    grantFactoryIsDisabled(this.available);
+    this.available=true;
 }
 
 /**
  * Disables the current factory
  */
 factorySchema.methods.disable=function(){
-    grantFactoryIsEnabled(this._available);
-    this._available=true;
+    grantFactoryIsEnabled(this.available);
+    this.available=false;
 }
 
 /**
@@ -116,11 +118,37 @@ factorySchema.statics.createFactory=function (reference,designation,locationLati
         reference:reference,
         designation:designation,
         location:location.createLocation(locationLatitude,locationLongitude),
-        _available:true
+        available:true
     }
     if(city)factory.city=city;
     return factory; 
 }
+
+/**
+ * Validates a factory model as a callback function
+ * @param {Object} factoryModel Object with the factory model being validated 
+ */
+factorySchema.statics.validateFactoryModelAsCallback=function(factoryModel){
+    return new Promise((accept,reject)=>{
+        try{
+            factorySchema.statics.validateFactoryModel(factoryModel);
+            accept();
+        }catch(_error_message){
+            reject(_error_message);
+        }
+    });
+}
+
+/**
+ * Grants that a factory model is valid
+ * @param {Object} factoryModel Object with the factory model being validated
+ */
+factorySchema.statics.validateFactoryModel=function(factoryModel){
+    if(!factoryModel)throw 'Invalid factory details';
+    if(!checkReferenceBusinessRule(factoryModel.reference))throw `${reference} is not a valid reference`;
+    if(!checkDesignationBusinessRule(factoryModel.designation))throw `${designation} is not a valid designation`;
+    location.validateLocationModel({latitude:factoryModel.latitude,longitude:factoryModel.longitude});
+};
 
 /**
  * Grants that a reference is valid for update
@@ -140,18 +168,18 @@ function grantDesignationIsValidForUpdate(designation){
 
 /**
  * Grants that a factory is enabled
- * @param {Boolean} _available Boolean with the factory availability
+ * @param {Boolean} available Boolean with the factory availability
  */
-function grantFactoryIsEnabled(_available){
-    if(!_available)throw `Factory is disabled`;
+function grantFactoryIsEnabled(available){
+    if(!available)throw `Factory is disabled`;
 }
 
 /**
  * Grants that a factory is disabled
- * @param {Boolean} _available Boolean with the factory availability
+ * @param {Boolean} available Boolean with the factory availability
  */
-function grantFactoryIsDisabled(_available){
-    if(_available)throw `Factory is enabled`;
+function grantFactoryIsDisabled(available){
+    if(available)throw `Factory is enabled`;
 }
 
 /**
@@ -159,7 +187,7 @@ function grantFactoryIsDisabled(_available){
  * @param {String} reference String with the reference being checked
  */
 function checkReferenceBusinessRule(reference){
-    return reference.trim().length>0;
+    return reference && reference.trim().length>0;
 }
 
 /**
@@ -167,7 +195,7 @@ function checkReferenceBusinessRule(reference){
  * @param {String} designation String with the designation being checked
  */
 function checkDesignationBusinessRule(designation){
-    return designation.trim().length>0;
+    return designation && designation.trim().length>0;
 }
 
 /**

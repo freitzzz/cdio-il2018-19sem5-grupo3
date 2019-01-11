@@ -3,6 +3,7 @@ using core.dto;
 using support.domain.ddd;
 using support.persistence.repositories;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace core.persistence {
     /// <summary>
@@ -19,11 +20,9 @@ namespace core.persistence {
         /// <returns>IEnumerable with the fetched products</returns>
         IEnumerable<Product> fetchProductsByID(IEnumerable<ProductDTO> productsDTO);
         /// <summary>
-        /// Fetches product component by their ids
+        /// Finds all instances of Product that are not complementary to any other instances of Product.
         /// </summary>
-        /// <param name="productID">product id</param>
-        /// <param name="componentID">component id</param>
-        /// <returns>product component with respective id</returns>
-        Component fetchProductComponent(long productID, long componentID);
+        /// <returns>An IEnumerable of Product containing all base products.</returns>
+        IEnumerable<Product> findBaseProducts();
     }
 }

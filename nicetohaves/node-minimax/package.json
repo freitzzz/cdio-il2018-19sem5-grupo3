@@ -1,0 +1,17 @@
+{
+  "name": "node-minimax",
+  "version": "1.0.0",
+  "description": "A Node.js package for the Minimax algorithm",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "node",
+    "npm",
+    "minimax",
+    "tictactoe"
+  ],
+  "author": "freitzzz",
+  "license": "MIT"
+}

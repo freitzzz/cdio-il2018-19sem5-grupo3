@@ -161,11 +161,73 @@ namespace core_tests.domain
         }
 
         [Fact]
+        public void ensureConstructorDetectsIfMaxValueIsNotMultipleOfIncrement()
+        {
+            Action act = () => new ContinuousDimensionInterval(100, 200, 7);
+
+            Assert.Throws<ArgumentException>(act);
+        }
+
+        [Fact]
         public void ensureInstanceIsCreated()
         {
             ContinuousDimensionInterval instance = new ContinuousDimensionInterval(100.0, 200.0, 1.0);
 
             Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void ensureContinuousDimensionIntervalDoesNotHaveValueLessThanMinValue()
+        {
+            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(100.0, 200.0, 1.0);
+
+            Assert.False(instance.hasValue(99.9));
+        }
+
+        [Fact]
+        public void ensureContinuousDimensionIntervalDoesNotHaveValueGreaterThanMaxValue()
+        {
+            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(100.0, 200.0, 1.0);
+
+            Assert.False(instance.hasValue(200.1));
+        }
+
+        [Fact]
+        public void ensureContinuousDimensionIntervalDoesNotHaveValueNotMultipleOfIncrement()
+        {
+            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(100.0, 200.0, 1.0);
+
+            Assert.False(instance.hasValue(125.6));
+        }
+
+        [Fact]
+        public void ensureContinuousDimensionIntervalHasValue()
+        {
+            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(100.0, 200.0, 0.1);
+
+            Assert.True(instance.hasValue(125.6));
+        }
+
+        [Fact]
+        public void ensureContinuousDimensionIntervalGetMaxValueIsTheSameAsMaxValue()
+        {
+            double minValue = 100.0;
+            double maxValue = 200.0;
+            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(minValue, maxValue, 0.1);
+
+            double obtainedMaxValue = instance.getMaxValue();
+            Assert.Equal(maxValue, obtainedMaxValue, 1);
+        }
+
+        [Fact]
+        public void ensureContinuousDimensionIntervalGetMinValueIsTheSameAsMinValue()
+        {
+            double minValue = 100.0;
+            double maxValue = 200.0;
+            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(minValue, maxValue, 0.1);
+
+            double obtainedMinValue = instance.getMinValue();
+            Assert.Equal(minValue, obtainedMinValue, 1);
         }
 
         [Fact]
@@ -198,8 +260,8 @@ namespace core_tests.domain
         [Fact]
         public void ensureInstancesWithDifferentMaxValuesAreNotEqual()
         {
-            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(1.0, 50.0, 5.0);
-            ContinuousDimensionInterval other = new ContinuousDimensionInterval(1.0, 40.0, 5.0);
+            ContinuousDimensionInterval instance = new ContinuousDimensionInterval(10.0, 50.0, 5.0);
+            ContinuousDimensionInterval other = new ContinuousDimensionInterval(10.0, 40.0, 5.0);
 
             Assert.False(instance.Equals(other));
         }

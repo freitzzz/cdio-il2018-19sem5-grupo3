@@ -6,6 +6,7 @@ using core.persistence;
 using core.dto;
 using core.services;
 using core.modelview.material;
+using core.exceptions;
 
 namespace core.application
 {
@@ -15,6 +16,10 @@ namespace core.application
     /// </summary>
     public class MaterialsController
     {
+        /// <summary>
+        /// Constant representing the message presented when 
+        /// </summary>
+        private const string ERROR_MATERIAL_NOT_FOUND = "Unable to find a material with an identifier of: {0}";
 
         /// <summary>
         /// Builds a new MaterialsController
@@ -55,6 +60,11 @@ namespace core.application
                 updatedWithSuccess &= materialBeingUpdated.changeDesignation(updateMaterialDTO.designation);
                 perfomedAtLeastOneUpdate = true;
             }
+            if (updateMaterialDTO.image != null)
+            {
+                updatedWithSuccess &= materialBeingUpdated.changeImage(updateMaterialDTO.image);
+                perfomedAtLeastOneUpdate = true;
+            }
             if (!perfomedAtLeastOneUpdate || !updatedWithSuccess) return false;
             updatedWithSuccess &= materialRepository.update(materialBeingUpdated) != null;
             return updatedWithSuccess;
@@ -64,22 +74,16 @@ namespace core.application
         /// </summary>
         /// <param name="materialDTO">MaterialDTO with the material data being disabled</param>
         /// <returns>boolean true if the material was disabled with success, false if not</returns>
-        public bool disableMaterial(MaterialDTO materialDTO)
+        public void disableMaterial(MaterialDTO materialDTO)
         {
-            Material materialBeingDisabled = PersistenceContext.repositories().createMaterialRepository().find(materialDTO.id);
-            return materialBeingDisabled != null && materialBeingDisabled.deactivate();
-        }
+            MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository(); 
+            Material materialBeingDisabled = materialRepository.find(materialDTO.id);
 
-        /// <summary>
-        /// Removes (Disables) a material
-        /// </summary>
-        /// <param name="materialDTO">DTO with the material information</param>
-        /// <returns>boolean true if the material was removed (disabled) with success</returns>
-        public bool removeMaterial(MaterialDTO materialDTO)
-        {
-            MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
-            Material materialBeingRemoved = materialRepository.find(materialDTO.id);
-            return materialBeingRemoved != null && materialBeingRemoved.deactivate() && materialRepository.update(materialBeingRemoved) != null;
+            if(materialBeingDisabled == null){
+                throw new ResourceNotFoundException(string.Format(ERROR_MATERIAL_NOT_FOUND, materialDTO.id));
+            }
+
+            materialRepository.remove(materialBeingDisabled);
         }
 
         /// <summary>
@@ -137,6 +141,7 @@ namespace core.application
 
             material.changeReference(materialDTO.reference);
             material.changeDesignation(materialDTO.designation);
+            material.changeImage(materialDTO.image);
 
             foreach (ColorDTO colorDTO in materialDTO.colors)
             {
@@ -150,7 +155,7 @@ namespace core.application
 
             foreach (FinishDTO finishDTO in materialDTO.finishes)
             {
-                material.addFinish(Finish.valueOf(finishDTO.description));
+                material.addFinish(Finish.valueOf(finishDTO.description, finishDTO.shininess));
             }
             Material mat = repository.update(material);
             return mat == null ? null : mat.toDTO();

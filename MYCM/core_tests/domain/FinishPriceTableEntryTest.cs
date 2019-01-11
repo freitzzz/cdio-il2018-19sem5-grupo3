@@ -278,13 +278,13 @@ namespace core_tests.domain
         //!Purpose of this method is to make test code more readable
         private Finish createFinish()
         {
-            return Finish.valueOf("finish");
+            return Finish.valueOf("finish", 12);
         }
 
         //!Purpose of this method is to make test code more readable
         private Finish createOtherFinish()
         {
-            return Finish.valueOf("other finish");
+            return Finish.valueOf("other finish", 50);
         }
 
         //!Purpose of this method is to make test code more readable

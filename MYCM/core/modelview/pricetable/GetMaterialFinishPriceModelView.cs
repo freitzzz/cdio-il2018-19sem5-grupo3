@@ -6,6 +6,13 @@ namespace core.modelview.pricetable{
      /// </summary>
     [DataContract]
     public sealed class GetMaterialFinishPriceModelView{
+
+        /// <summary>
+        /// Long with the finish's ID
+        /// </summary>
+        [DataMember(Name="finishId")]
+        public long finishId{get;set;}
+
         /// <summary>
         /// Long with the price entry ID
         /// </summary>

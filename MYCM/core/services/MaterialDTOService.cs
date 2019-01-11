@@ -21,6 +21,7 @@ namespace core.services
         {
             string reference = materialDTO.reference;
             string designation = materialDTO.designation;
+            string image = materialDTO.image;
             List<Color> listColor = new List<Color>();
             List<Finish> listFinish = new List<Finish>();
             if (materialDTO.colors != null)
@@ -37,8 +38,7 @@ namespace core.services
                     listFinish.Add(finish.toEntity());
                 }
             }
-            return new Material(reference, designation,listColor,listFinish);
+            return new Material(reference, designation, image, listColor, listFinish);
         }
-
     }
 }

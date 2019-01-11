@@ -3,6 +3,7 @@ using core.dto;
 using core.services;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace core.domain
 {
@@ -58,17 +59,22 @@ namespace core.domain
         private const string INCREMENT_GREATER_THAN_MAX_MIN_DIFFERENCE_REFERENCE = "Increment can't be greater than the difference between the max and min values";
 
         /// <summary>
+        /// Constant that represents the message that occurs if the max value is not a multiple of the increment.
+        /// </summary>
+        private const string INTERVAL_NOT_MULTIPLE_OF_INCREMENT = "The maximum value is not a multiple of increment.";
+
+        /// <summary>
         /// Minimum value of the interval
         /// </summary>
-        public double minValue { get; set; }
+        public double minValue { get; protected set; }
         /// <summary>
         /// Maximum value of the interval
         /// </summary>
-        public double maxValue { get; set; }
+        public double maxValue { get; protected set; }
         /// <summary>
         /// Increment value of the interval
         /// </summary>
-        public double increment { get; set; }
+        public double increment { get; protected set; }
 
         private ContinuousDimensionInterval(ILazyLoader lazyLoader) : base(lazyLoader) { }
 
@@ -116,7 +122,7 @@ namespace core.domain
                 throw new ArgumentException(INCREMENT_INFINITY_REFERENCE);
             }
 
-            if (minValue <= 0|| maxValue <= 0 || increment <= 0)
+            if (minValue <= 0 || maxValue <= 0 || increment <= 0)
             {
                 throw new ArgumentException(NEGATIVE_OR_ZERO_VALUES_REFERENCE);
             }
@@ -131,9 +137,56 @@ namespace core.domain
                 throw new ArgumentException(INCREMENT_GREATER_THAN_MAX_MIN_DIFFERENCE_REFERENCE);
             }
 
+            checkIfIntervalIsMultipleOfIncrement(maxValue-minValue, increment);
+
             this.minValue = minValue;
             this.maxValue = maxValue;
             this.increment = increment;
+        }
+
+        /// <summary>
+        /// Method used in constructor used for validating if the maximum value is reachable with a given increment.
+        /// </summary>
+        /// <param name="maxValue">double representing the interval's maximum value.</param>
+        /// <param name="increment">double representing the interval's increment value.</param>
+        private void checkIfIntervalIsMultipleOfIncrement(double interval, double increment)
+        {
+            decimal intervalAsDecimal = (decimal)interval;
+            decimal incrementAsDecimal = (decimal)increment;
+
+            decimal remainder = intervalAsDecimal % incrementAsDecimal;
+
+            if (decimal.Compare(decimal.Zero, remainder) != 0)
+            {
+                throw new ArgumentException(INTERVAL_NOT_MULTIPLE_OF_INCREMENT);
+            }
+        }
+
+        public override bool hasValue(double value)
+        {
+            if (value < minValue || value > maxValue)
+            {
+                return false;
+            }
+
+            decimal valueAsDecimal = (decimal)value;
+            decimal incrementAsDecimal = (decimal)increment;
+
+            decimal remainder = valueAsDecimal % incrementAsDecimal;
+
+            return decimal.Compare(remainder, 0) == 0;
+        }
+
+        //*These methods may seem redundant in instances of this particular class, but these belong to the abstract Dimension 
+
+        public override double getMaxValue()
+        {
+            return maxValue;
+        }
+
+        public override double getMinValue()
+        {
+            return minValue;
         }
 
         /// <summary>
@@ -200,6 +253,11 @@ namespace core.domain
             return dto;
         }
 
+        /// <summary>
+        /// Builds a DimensionDTO out of a ContinuousDimensionInterval instance
+        /// </summary>
+        /// <param name="unit">Desired unit</param>
+        /// <returns>DimensionDTO instance</returns>
         public override DimensionDTO toDTO(string unit)
         {
 

@@ -19,7 +19,7 @@ namespace core.services
         /// </summary>
         /// <param name="customizedProductModelView">ModelView of the customized product being created and added to a slot</param>
         /// <returns>newly created CustomizedProduct</returns>
-        public static CustomizedProduct transform(PostCustomizedProductToSlotModelView customizedProductModelView)
+        /* public static CustomizedProduct transform(PostCustomizedProductToSlotModelView customizedProductModelView)
         {
 
             CustomizedProductRepository customizedProductRepository = PersistenceContext.
@@ -30,11 +30,11 @@ namespace core.services
             //!This find method is causing the following
             //!An exception occurred in the database while iterating the results of a query for context type 'backend.persistence.ef.MyCContext'.
             //!System.InvalidOperationException: A second operation started on this context before a previous operation completed. Any instance members are not guaranteed to be thread safe.
-            /* Slot slot = customizedProductRepository.
-                        findSlot(
-                                customizedProductModelView.baseId,
-                                customizedProductModelView.slotId
-                        ); */
+            /// Slot slot = customizedProductRepository.
+             ///           findSlot(
+              ///                  customizedProductModelView.baseId,
+               ///                 customizedProductModelView.slotId
+                ///        ); 
             CustomizedProduct baseProduct = customizedProductRepository.find(customizedProductModelView.baseId);
 
             if (baseProduct == null)
@@ -102,6 +102,6 @@ namespace core.services
             }
 
             return customizedProductToAddToSlot;
-        }
+        } */
     }
 }

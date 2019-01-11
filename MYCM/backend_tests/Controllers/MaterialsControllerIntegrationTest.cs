@@ -73,6 +73,7 @@ namespace backend_tests.Controllers
             MaterialDTO materialDTO = new MaterialDTO();
             materialDTO.designation = "mdf";
             materialDTO.reference = "bananas" + Guid.NewGuid().ToString("n");
+            materialDTO.image = "image.png";
             ColorDTO colorDTO = new ColorDTO();
             colorDTO.name = "lilxan";
             colorDTO.red = 100;
@@ -99,6 +100,7 @@ namespace backend_tests.Controllers
             Assert.NotNull(response.Content.ReadAsStringAsync());
             Assert.True(materialDTO.id != -1);
             Assert.Equal(materialDTO.reference, materialDTOFromPost.reference);
+            Assert.Equal(materialDTO.image, materialDTOFromPost.image);
             Assert.NotNull(materialDTOFromPost.colors);
             Assert.NotNull(materialDTOFromPost.finishes);
             Assert.Equal(materialDTO.designation, materialDTOFromPost.designation);
@@ -109,7 +111,6 @@ namespace backend_tests.Controllers
         [Fact, TestPriority(3)]
         public async Task ensureGetAllMaterialsSendsOkMessageWithMaterialsCollection()
         {
-
             Task<MaterialDTO> materialDTO = ensurePostMaterialWorks();
             materialDTO.Wait();
 
@@ -158,7 +159,7 @@ namespace backend_tests.Controllers
         {
             var response = await client.DeleteAsync(String.Format(urlBase + "/{0}", -1));
 
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact, TestPriority(8)]
@@ -200,6 +201,7 @@ namespace backend_tests.Controllers
             var updatedDTO = new UpdateMaterialDTO();
             updatedDTO.designation = "new designation";
             updatedDTO.reference = "new reference";
+            updatedDTO.image = "newimg.png";
             var materialDTO = ensurePostMaterialWorks();
             materialDTO.Wait();
 

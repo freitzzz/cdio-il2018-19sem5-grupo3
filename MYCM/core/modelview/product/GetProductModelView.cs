@@ -3,65 +3,78 @@ using core.modelview.dimension;
 using core.modelview.material;
 using core.modelview.measurement;
 using core.modelview.productcategory;
-using core.modelview.slotdimensions;
+using core.modelview.productmaterial;
+using core.modelview.productslotwidths;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace core.modelview.product{
+namespace core.modelview.product
+{
     /// <summary>
-    /// Model View representation for the fetch product information context
+    /// Class representing the ModelView used for retrieving Products' information.
     /// </summary>
     [DataContract]
-    public sealed class GetProductModelView{
+    public class GetProductModelView
+    {
         /// <summary>
-        /// Long with the product ID
+        /// Product's persistence identifier.
         /// </summary>
-        [DataMember(Name="id")]
-        public long id{get;set;}
+        /// <value>Gets/sets the Product's persistence identifier.</value>
+        [DataMember(Name = "id")]
+        public long productId { get; set; }
 
         /// <summary>
-        /// String with the product reference
+        /// Product's reference.
         /// </summary>
-        [DataMember(Name="reference")]
-        public string reference{get;set;}
+        /// <value>Gets/sets the Product's reference.</value>
+        [DataMember]
+        public string reference { get; set; }
 
         /// <summary>
-        /// String with the product designation
+        /// Product's designation.
         /// </summary>
-        [DataMember(Name="designation")]
-        public string designation{get;set;}
+        /// <value>Gets/sets the Product's designation.</value>
+        [DataMember]
+        public string designation { get; set; }
+
+        /// <summary>
+        /// Product's model's filename.
+        /// </summary>
+        /// <value>Gets/sets the model's filename.</value>
+        [DataMember(Name = "model")]
+        public string modelFilename { get; set; }
 
         /// <summary>
         /// GetBasicMaterialModelView with the product category
         /// </summary>
-        [DataMember(Name="category")]
-        public GetBasicProductCategoryModelView category{get;set;}
+        [DataMember]
+        public GetBasicProductCategoryModelView category { get; set; }
 
         /// <summary>
         /// GetBasicMaterialModelView with the product material
         /// </summary>
-        [DataMember(Name="material")]
-        public GetAllMaterialsModelView materials{get;set;}
+        [DataMember]
+        public GetAllProductMaterialsModelView materials { get; set; }
 
         /// <summary>
         /// ModelView containing Product's components' information.
         /// </summary>
         /// <value>Gets/sets the ModelView.</value>
         [DataMember(EmitDefaultValue = false)]  //since this is optional, don't show null values
-        public GetAllComponentsModelView components {get; set;}
+        public GetAllComponentsListModelView components { get; set; }
 
         /// <summary>
         /// List of ModelViews containg the Product's measurements' information.
         /// </summary>
         /// <value>Get/set the list of ModelView.</value>
-        [DataMember(Name="dimensions")]
-        public List<GetMeasurementModelView> measurements {get; set;}
+        [DataMember(Name = "dimensions")]
+        public GetAllMeasurementsModelView measurements { get; set; }
 
         /// <summary>
-        /// ModelView containing Product's slot sizes.
+        /// ModelView containing Product's slot widths.
         /// </summary>
         /// <value>Gets/sets the ModelView.</value>
         [DataMember(EmitDefaultValue = false)]  //since this is optional, don't show null values
-        public GetSlotDimensionsModelView slotSizes {get; set;}
+        public GetProductSlotWidthsModelView slotWidths { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using System;
+using System.Threading;
 
 namespace backend.persistence.ef
 {
@@ -38,6 +39,12 @@ namespace backend.persistence.ef
         public DbSet<ProductCategory> ProductCategory { get; set; }
 
         /// <summary>
+        /// Database set containing the single saved instance of CustomizedProductSerialNumber.
+        /// </summary>
+        /// <value>Gets/sets the database set.</value>
+        public DbSet<CustomizedProductSerialNumber> CustomizedProductSerialNumber { get; set; }
+
+        /// <summary>
         /// Database set containing all of the saved instances of CustomizedProduct.
         /// </summary>
         /// <value>Gets/sets the database set containing all the saved instances of CustomizedProduct.</value>
@@ -53,7 +60,7 @@ namespace backend.persistence.ef
         /// Database set containing all of the saved instances of MaterialPriceTableEntry
         /// </summary>
         /// <value>Gets/Sets the database set containing all the saved instances of MaterialPriceTableEntry</value>
-        public DbSet<MaterialPriceTableEntry> MaterialPriceTable{ get; set; }
+        public DbSet<MaterialPriceTableEntry> MaterialPriceTable { get; set; }
 
         /// <summary>
         /// Database set containing all of the saved instances of FinishPriceTableEntry
@@ -66,7 +73,14 @@ namespace backend.persistence.ef
         /// </summary>
         /// <param name="options">The options for the context.</param>
         /// <returns>New instance of MyCContext.</returns>
-        public MyCContext(DbContextOptions<MyCContext> options) : base(options) { BackendConfiguration.entityFrameworkContext = this; }
+        public MyCContext(DbContextOptions<MyCContext> options) : base(options)
+        {
+            if (BackendConfiguration.entityFrameworkContexts.containsKey(Thread.CurrentThread.ManagedThreadId))
+            {
+                BackendConfiguration.entityFrameworkContexts.removeKey(Thread.CurrentThread.ManagedThreadId);
+            }
+            BackendConfiguration.entityFrameworkContexts.put(Thread.CurrentThread.ManagedThreadId, this);
+        }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -78,6 +92,10 @@ namespace backend.persistence.ef
             builder.Entity<ContinuousDimensionInterval>().HasBaseType<Dimension>();
             builder.Entity<DiscreteDimensionInterval>().HasBaseType<Dimension>();
             builder.Entity<SingleValueDimension>().HasBaseType<Dimension>();
+
+            //Algorithm inheritance mapping
+            builder.Entity<WidthPercentageAlgorithm>().HasBaseType<Algorithm>();
+            builder.Entity<SameMaterialAndFinishAlgorithm>().HasBaseType<Algorithm>();
 
             //PriceTableEntry inheritance mapping
             /* builder.Entity<MaterialPriceTableEntry>().HasBaseType<PriceTableEntry>();
@@ -96,29 +114,27 @@ namespace backend.persistence.ef
             builder.Entity<Material>().HasMany(m => m.Finishes);                //one-to-many relationship
 
             //Configure many-to-many relationship between Product and Material
-            builder.Entity<ProductMaterial>().HasKey(pm => new {pm.productId, pm.materialId});
+            builder.Entity<ProductMaterial>().HasKey(pm => new { pm.productId, pm.materialId });
             builder.Entity<ProductMaterial>().HasOne(pm => pm.product).WithMany(p => p.productMaterials).HasForeignKey(pm => pm.productId);
             builder.Entity<ProductMaterial>().HasOne(pm => pm.material).WithMany().HasForeignKey(pm => pm.materialId);
             builder.Entity<ProductMaterial>().HasMany(pm => pm.restrictions);
 
-             //TODO: remove join class, if possible
+            //TODO: remove join class, if possible
             //NOTE: This "join class" is only here as a workaround for now
-            builder.Entity<ProductMeasurement>().HasKey(pm => new {pm.productId, pm.measurementId});
-            builder.Entity<ProductMeasurement>().HasOne(pm => pm.product).WithMany(p => p.measurements).HasForeignKey(pm => pm.productId);
+            builder.Entity<ProductMeasurement>().HasKey(pm => new { pm.productId, pm.measurementId });
+            builder.Entity<ProductMeasurement>().HasOne(pm => pm.product).WithMany(p => p.productMeasurements).HasForeignKey(pm => pm.productId);
             builder.Entity<ProductMeasurement>().HasOne(pm => pm.measurement);
 
             builder.Entity<Product>().HasOne(p => p.productCategory);           //many-to-one relationship
-            builder.Entity<Product>().OwnsOne(p => p.minSlotSize);              //embedded Dimensions
-            builder.Entity<Product>().OwnsOne(p => p.maxSlotSize);              //embedded Dimensions
-            builder.Entity<Product>().OwnsOne(p => p.recommendedSlotSize);      //embedded Dimensions
+            builder.Entity<Product>().OwnsOne(p => p.slotWidths);               //embedded ProductSlotWidths
 
-            builder.Entity<Component>().HasKey(c => new { c.fatherProductId, c.complementedProductId });
-
-            builder.Entity<Component>().HasOne(c => c.fatherProduct).WithMany(p => p.complementedProducts).HasForeignKey(cp => cp.fatherProductId);
-            //builder.Entity<Component>().HasOne(c => c.complementedProduct).WithMany(p => p.complementedProducts).HasForeignKey(cp => cp.complementedProductId);
+            builder.Entity<Component>().HasKey(c => new { c.fatherProductId, c.complementaryProductId });
+            builder.Entity<Component>().HasOne(c => c.fatherProduct).WithMany(p => p.components).HasForeignKey(cp => cp.fatherProductId);
+            builder.Entity<Component>().HasOne(c => c.complementaryProduct).WithMany().HasForeignKey(cp => cp.complementaryProductId);
+            builder.Entity<Component>().HasMany(c => c.restrictions);
 
             builder.Entity<CustomizedProduct>().HasOne(cp => cp.product);       //one-to-one relationship
-            builder.Entity<CustomizedProduct>().OwnsOne(cp => cp.customizedDimensions); //embedded Dimensions
+            builder.Entity<CustomizedProduct>().HasOne(cp => cp.customizedDimensions); //one-to-one relationship
             builder.Entity<CustomizedProduct>().HasOne(cp => cp.customizedMaterial);
             builder.Entity<CustomizedProduct>().HasMany(cp => cp.slots).WithOne().OnDelete(DeleteBehavior.Cascade);        //one-to-many relationship
 
@@ -127,7 +143,7 @@ namespace backend.persistence.ef
             builder.Entity<CustomizedMaterial>().HasOne(cm => cm.color);
 
 
-            builder.Entity<Slot>().OwnsOne(s => s.slotDimensions);              //embedded Dimensions
+            builder.Entity<Slot>().HasOne(s => s.slotDimensions);              //one-to-one relationship
             builder.Entity<Slot>().HasMany(s => s.customizedProducts).WithOne(cp => cp.insertedInSlot).HasForeignKey(cp => cp.insertedInSlotId).OnDelete(DeleteBehavior.Cascade);          //one-to-many relationship
 
             //Compound key for CollectionProduct
@@ -140,17 +156,19 @@ namespace backend.persistence.ef
 
             //Compound key for CatalogueCollectionProduct
             //Many-to-Many relationship between CatalogueCollection and CustomizedProduct
-            builder.Entity<CatalogueCollectionProduct>().HasKey(ccp => new { ccp.catalogueCollectionId, ccp.customizedProductId });
+            builder.Entity<CatalogueCollectionProduct>().HasKey(ccp => new { ccp.commercialCatalogueId, ccp.customizedProductCollectionId, ccp.customizedProductId });
             builder.Entity<CatalogueCollectionProduct>().HasOne(ccp => ccp.customizedProduct)
                 .WithMany().HasForeignKey(ccp => ccp.customizedProductId);
             builder.Entity<CatalogueCollectionProduct>().HasOne(ccp => ccp.catalogueCollection)
-                .WithMany(cc => cc.catalogueCollectionProducts).HasForeignKey(ccp => ccp.catalogueCollectionId);
+                .WithMany(cc => cc.catalogueCollectionProducts).HasForeignKey(ccp => new { ccp.commercialCatalogueId, ccp.customizedProductCollectionId });
 
-            builder.Entity<CommercialCatalogueCatalogueCollection>().HasKey(cccc => new { cccc.commercialCatalogueId, cccc.catalogueCollectionId });
-            builder.Entity<CommercialCatalogueCatalogueCollection>()
-                .HasOne(cccc => cccc.commercialCatalogue).WithMany(cc => cc.catalogueCollectionList).HasForeignKey(cccc => cccc.commercialCatalogueId);
-            builder.Entity<CommercialCatalogueCatalogueCollection>().HasOne(cccc => cccc.catalogueCollection).WithOne();
+            builder.Entity<CommercialCatalogue>().HasMany(catalogue => catalogue.catalogueCollectionList)
+                .WithOne().HasForeignKey(catalogueCollection => catalogueCollection.commercialCatalogueId);
 
+            builder.Entity<CatalogueCollection>().HasKey(cc => new { cc.commercialCatalogueId, cc.customizedProductCollectionId });
+            builder.Entity<CatalogueCollection>().HasOne(catalogueCollection => catalogueCollection.customizedProductCollection)
+                .WithMany().HasForeignKey(cc => cc.customizedProductCollectionId);
+            builder.Entity<CatalogueCollection>().HasMany(catalogueCollection => catalogueCollection.catalogueCollectionProducts);
 
             //TimePeriod conversion mapping
             var localDateTimeConverter = new ValueConverter<LocalDateTime, DateTime>(v => v.ToDateTimeUnspecified(), v => LocalDateTime.FromDateTime(v));

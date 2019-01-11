@@ -1,35 +1,27 @@
+using core.modelview.product;
 using core.modelview.restriction;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace core.modelview.component{
+namespace core.modelview.component
+{
     /// <summary>
-    /// Model View representation for the fetch component information context
+    /// Class representing the ModelView used for retrieving a Product's component.
     /// </summary>
     [DataContract]
-    public sealed class GetComponentModelView{
+    public class GetComponentModelView : GetProductModelView
+    {
         /// <summary>
-        /// Long with the component ID
+        /// Boolean indicating whether or not a Component is mandatory.
         /// </summary>
-        [DataMember(Name="id")]
-        public long id{get;set;}
-
-        /// <summary>
-        /// Long with the product ID which was complemented by the component
-        /// </summary>
-        [DataMember(Name="productID")]
-        public long fatherProductID{get;set;}
-
-        /// <summary>
-        /// Boolean with the component mandatory
-        /// </summary>
-        [DataMember(Name="mandatory")]
-        public bool mandatory{get;set;}
+        /// <value>Gets/sets the mandatory flag.</value>
+        [DataMember(Order = 9)]
+        public bool mandatory { get; set; }
 
         /// <summary>
         /// GetAllRestrictionsModelView with all component restrictions
         /// </summary>
-        [DataMember(Name="restrictions")]
-        public GetAllRestrictionsModelView restrictions;
+        [DataMember(Name = "restrictions", Order = 10, EmitDefaultValue = false)] //since restrictions are optional, don't serialize if this is null
+        public GetAllRestrictionsModelView restrictions { get; set; }
     }
 }

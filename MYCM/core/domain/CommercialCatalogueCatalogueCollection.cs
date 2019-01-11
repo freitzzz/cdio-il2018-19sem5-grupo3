@@ -6,6 +6,7 @@ namespace core.domain
     /// <summary>
     /// Represents a join class between a CommercialCatalogue and CatalogueCollection.
     /// </summary>
+    [Obsolete]
     public class CommercialCatalogueCatalogueCollection
     {
         /// <summary>

@@ -1,18 +1,22 @@
+###Website JEST Test Coverage Files
+website/coverage/*
+
 ###Configuration JSON File for NodeJS Integration Tests###
 MYCO/tests/globalConfig.json
 
 ###Backend Logs Folder###
-backend/Logs/*
+MYCM/backend/Logs/*
 
 ###SQLite Database###
-*/*.sqlite
+MYCM/backend/*.sqlite
+MYCM/backend/*.sqlite-journal
 
 ###Database Migrations###
-backend/Migrations/*
+MYCM/backend/Migrations/*
 
 ###Coverlet Test Coverage ###
 ## Ignore coverlet test coverage files
-*/lcov.info
+MYCM/*/lcov.info
 
 # Created by https://www.gitignore.io/api/rider,aspnetcore,visualstudio,visualstudiocode
 
@@ -553,5 +557,4 @@ ASALocalRun/
 
 
 # End of https://www.gitignore.io/api/rider,aspnetcore,visualstudio,visualstudiocode
-
-backend/local_myc\.sqlite-journal
+/MYCA/myca/core/nbproject/

@@ -7,6 +7,7 @@ using support.dto;
 using support.utils;
 using System.Linq;
 using support.domain;
+using static core.domain.CustomizedProduct;
 
 namespace core.domain
 {
@@ -28,14 +29,24 @@ namespace core.domain
         private const string INVALID_COLLECTION_CUSTOMIZED_PRODUCTS = "The collection customized products are invalid!";
 
         ///<summary>
-        ///Constant that represents the message that ocurrs if the Customized Product
+        ///Constant that represents the message that ocurrs if the Customized Product isn't valid
         ///</summary>
         private const string INVALID_CUSTOMIZED_PRODUCT = "The Customized Product is invalid!";
 
-        ///<summary>
-        ///Constant that represents the message that ocurrs if a string is invalid.
-        ///</summary>
-        private const string INVALID_STRING = "The String is invalid!";
+        /// <summary>
+        /// Constant that represents the message that occurs if the customized product isn't from the collection
+        /// </summary>
+        private const string CUSTOMIZED_PRODUCT_NOT_FROM_COLLECTION = "The customized product trying to be removed doesn't exist in this collection";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the customized product trying to be added is in PENDING State
+        /// </summary>
+        private const string PENDING_CUSTOMIZED_PRODUCT = "The customized product trying to be added to the collection isn't finished yet!";
+
+        /// <summary>
+        /// Constant that represents the message that occurs if the customized produc trying to be added is already in the collection
+        /// </summary>
+        private const string CUSTOMIZED_PRODUCT_EXISTS_IN_COLLECTION = "This customized product is already in the collection!";
 
         /// <summary>
         /// Persistence identifier of the current CustomizedProductCollection
@@ -79,8 +90,8 @@ namespace core.domain
         /// <param name="name">string with the customized products collection name</param>
         public CustomizedProductCollection(string name)
         {
-            checkCustomizedProductCollectionProperties(name);
-            this.name = name;
+            checkCustomizedProductCollectionName(name);
+            this.name = name.Trim();
             this.collectionProducts = new List<CollectionProduct>();
         }
 
@@ -99,16 +110,62 @@ namespace core.domain
         }
 
         /// <summary>
+        /// Checks if the customized product collection properties are valid
+        /// </summary>
+        /// <param name="name">String with the customized product collection name</param>
+        private void checkCustomizedProductCollectionName(string name)
+        {
+            if (String.IsNullOrWhiteSpace(name)) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_COLLECTION_NAME);
+        }
+
+        /// <summary>
+        /// Checks if the collection customized products are valid
+        /// </summary>
+        /// <param name="enumerableCustomizedProducts">IEnumerable with the collection customized products</param>
+        private void checkCollectionCustomizedProducts(IEnumerable<CustomizedProduct> enumerableCustomizedProducts)
+        {
+            if (Collections.isEnumerableNullOrEmpty(enumerableCustomizedProducts))
+                throw new ArgumentException(INVALID_COLLECTION_CUSTOMIZED_PRODUCTS);
+            checkCustomizedProductsDuplicates(enumerableCustomizedProducts);
+            checkCustomizedProductsState(enumerableCustomizedProducts);
+        }
+
+        /// <summary>
+        /// Checks if an enumerable of customized products have duplicates
+        /// </summary>
+        /// <param name="customizedProducts">IEnumerable with the customized products</param>
+        private void checkCustomizedProductsDuplicates(IEnumerable<CustomizedProduct> customizedProducts)
+        {
+            HashSet<int> customizedProductsHashes = new HashSet<int>();
+            foreach (CustomizedProduct customizedProduct in customizedProducts)
+                if (!customizedProductsHashes.Add(customizedProduct.GetHashCode()))
+                    throw new ArgumentException(INVALID_COLLECTION_CUSTOMIZED_PRODUCTS);
+        }
+
+        /// <summary>
+        /// Checks if any customized product from an enumerable have a PENDING State
+        /// </summary>
+        /// <param name="customizedProducts">IEnumerable with the customized products</param>
+        private void checkCustomizedProductsState(IEnumerable<CustomizedProduct> customizedProducts)
+        {
+            foreach (CustomizedProduct customizedProduct in customizedProducts)
+            {
+                if (customizedProduct.status == CustomizationStatus.PENDING)
+                {
+                    throw new ArgumentException(PENDING_CUSTOMIZED_PRODUCT);
+                }
+            }
+        }
+
+        /// <summary>
         /// Add's a customized product to the current customized products collection
         /// </summary>
         /// <param name="customizedProduct">CustomizedProduct with the customized product being added</param>
         /// <returns>boolean true if the customized product was added with success, false if not</returns>
-        public bool addCustomizedProduct(CustomizedProduct customizedProduct)
+        public void addCustomizedProduct(CustomizedProduct customizedProduct)
         {
-            if (!isCustomizedProductValidForAddition(customizedProduct))
-                return false;
+            checkIfCustomizedProductIsValidForAddition(customizedProduct);
             collectionProducts.Add(new CollectionProduct(this, customizedProduct));
-            return true;
         }
 
         /// <summary>
@@ -116,21 +173,33 @@ namespace core.domain
         /// </summary>
         /// <param name="name">string with the new collection name</param>
         /// <returns>boolean true if the collection name was changed with success, false if not</returns>
-        public bool changeName(string name)
+        public void changeName(string name)
         {
-            if (String.IsNullOrEmpty(name) || this.name.Equals(name)) return false;
+            if (String.IsNullOrWhiteSpace(name) || this.name.Equals(name)) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_COLLECTION_NAME);
             this.name = name;
-            return true;
         }
 
         /// <summary>
         /// Removes a customized product from the current customized products collection
         /// </summary>
-        /// <param name="customizedProduct">CustomizedProduct with the customized product being removed</param>
+        /// <param name="customizedProduct">CustomizedProduct being removed</param>
         /// <returns>boolean true if the customized product was removed with success, false if not</returns>
-        public bool removeCustomizedProduct(CustomizedProduct customizedProduct) {
-            //remove the instace of CollectionProduct with a matching CustomizedProduct     
-            return collectionProducts.Remove(collectionProducts.Where(cc => cc.customizedProduct.Equals(customizedProduct)).FirstOrDefault()); 
+        public void removeCustomizedProduct(CustomizedProduct customizedProduct)
+        {
+            bool removed = collectionProducts.Remove(collectionProducts.Where(cc => cc.customizedProduct.Equals(customizedProduct)).FirstOrDefault());
+            if (!removed) throw new ArgumentException(CUSTOMIZED_PRODUCT_NOT_FROM_COLLECTION);
+        }
+
+        /// <summary>
+        /// Checks if a customized product is valid for addition on the collection
+        /// </summary>
+        /// <param name="customizedProduct">CustomizedProduct with the customized product being validated</param>
+        /// <returns>boolean true if the customized product is valid for addition, false if not</returns>
+        private void checkIfCustomizedProductIsValidForAddition(CustomizedProduct customizedProduct)
+        {
+            if (customizedProduct == null) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT);
+            if (customizedProduct.status == CustomizationStatus.PENDING) throw new ArgumentException(PENDING_CUSTOMIZED_PRODUCT);
+            if (collectionProducts.Select(cc => cc.customizedProduct).Contains(customizedProduct)) throw new ArgumentException(CUSTOMIZED_PRODUCT_EXISTS_IN_COLLECTION);
         }
 
         /// <summary>
@@ -142,7 +211,6 @@ namespace core.domain
         {
             return customizedProduct != null && collectionProducts.Select(cp => cp.customizedProduct).Contains(customizedProduct);
         }
-
 
         /// <summary>
         /// Returns the current collection identity
@@ -163,12 +231,15 @@ namespace core.domain
         /// <returns>CustomizedProductCollectionDTO with the current DTO representation of the customized products collection</returns>
         public CustomizedProductCollectionDTO toDTO()
         {
-            CustomizedProductCollectionDTO dto = new CustomizedProductCollectionDTO();
-            dto.name = this.name;
-            dto.id = this.Id;
-            IEnumerable<CustomizedProduct> customizedProducts = collectionProducts.Select(cc => cc.customizedProduct);
-            dto.customizedProducts = new List<CustomizedProductDTO>(DTOUtils.parseToDTOS(customizedProducts));
-            return dto;
+            throw new NotImplementedException();
+        }
+
+        ///<summary>
+        ///Returns the generated hash code of the Customized Material.
+        ///</summary>
+        public override int GetHashCode()
+        {
+            return id().GetHashCode();
         }
 
         ///<summary>
@@ -183,61 +254,11 @@ namespace core.domain
         }
 
         ///<summary>
-        ///Returns the generated hash code of the Customized Material.
-        ///</summary>
-        public override int GetHashCode()
-        {
-            return id().GetHashCode();
-        }
-
-        ///<summary>
         ///Returns a textual description of the Collection.
         ///</summary>
         public override string ToString()
         {
             return string.Format("Name {0}", name);
-        }
-
-        /// <summary>
-        /// Checks if a customized product is valid for addition on the collection
-        /// </summary>
-        /// <param name="customizedProduct">CustomizedProduct with the customized product being validated</param>
-        /// <returns>boolean true if the customized product is valid for addition, false if not</returns>
-        private bool isCustomizedProductValidForAddition(CustomizedProduct customizedProduct)
-        {
-            return customizedProduct != null && !collectionProducts.Select(cc => cc.customizedProduct).Contains(customizedProduct);
-        }
-
-        /// <summary>
-        /// Checks if the customized product collection properties are valid
-        /// </summary>
-        /// <param name="name">String with the customized product collection name</param>
-        private void checkCustomizedProductCollectionProperties(string name)
-        {
-            if (String.IsNullOrEmpty(name)) throw new ArgumentException(INVALID_CUSTOMIZED_PRODUCT_COLLECTION_NAME);
-        }
-
-        /// <summary>
-        /// Checks if the collection customized products are valid
-        /// </summary>
-        /// <param name="enumerableCustomizedProducts">IEnumerable with the collection customized products</param>
-        private void checkCollectionCustomizedProducts(IEnumerable<CustomizedProduct> enumerableCustomizedProducts)
-        {
-            if (Collections.isEnumerableNullOrEmpty(enumerableCustomizedProducts))
-                throw new ArgumentException(INVALID_COLLECTION_CUSTOMIZED_PRODUCTS);
-            checkCustomizedProductsDuplicates(enumerableCustomizedProducts);
-        }
-
-        /// <summary>
-        /// Checks if an enumerable of customized products have duplicates
-        /// </summary>
-        /// <param name="customizedProducts">IEnumerable with the customized products</param>
-        private void checkCustomizedProductsDuplicates(IEnumerable<CustomizedProduct> customizedProducts)
-        {
-            HashSet<int> customizedProductsHashes = new HashSet<int>();
-            foreach (CustomizedProduct customizedProduct in customizedProducts)
-                if (!customizedProductsHashes.Add(customizedProduct.GetHashCode()))
-                    throw new ArgumentException(INVALID_COLLECTION_CUSTOMIZED_PRODUCTS);
         }
     }
 }

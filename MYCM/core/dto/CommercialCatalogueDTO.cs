@@ -10,8 +10,7 @@ namespace core.dto
     /// Represents a CommercialCatalogue's Data Transfer Object. 
     /// </summary>
     [DataContract]
-    public class CommercialCatalogueDTO : DTO, DTOParseable<CommercialCatalogue, CommercialCatalogueDTO>
-    {
+    public class CommercialCatalogueDTO : DTO{
         /// <summary>
         /// CommercialCatalogue's database identifier.
         /// </summary>
@@ -45,7 +44,7 @@ namespace core.dto
         /// Returns this DTO's equivalent Entity
         /// </summary>
         /// <returns>DTO's equivalent Entity</returns>
-        public CommercialCatalogue toEntity()
+       /*  public CommercialCatalogue toEntity()
         {
             List<CatalogueCollection> custProducts = new List<CatalogueCollection>();
 
@@ -58,6 +57,6 @@ namespace core.dto
             commercialCatalogue.Id = this.id;
 
             return commercialCatalogue;
-        }
+        } */
     }
 }

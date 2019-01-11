@@ -4,6 +4,7 @@ using core.domain;
 using System;
 using System.Linq;
 using core.modelview.productcategory;
+using core.exceptions;
 
 namespace core.application
 {
@@ -132,7 +133,7 @@ namespace core.application
         /// Retrieves all instances of ProductCategory that are currently present within the repository.
         /// </summary>
         /// <returns>Returns a list with ModelViews of all the instances of ProductCategory in the repository. </returns>
-        public List<GetBasicProductCategoryModelView> findAllCategories()
+        public GetAllProductCategoriesModelView findAllCategories()
         {
             IEnumerable<ProductCategory> categories = PersistenceContext.repositories().createProductCategoryRepository().findAll();
 
@@ -171,6 +172,22 @@ namespace core.application
             }
 
             return ProductCategoryModelViewService.fromCollection(subCategories);
+        }
+
+        /// <summary>
+        /// Retrieves all instances of ProductCategory that are leaves.
+        /// </summary>
+        /// <returns>GetAllProductCategoriesModelView with data regarding all of the leaf ProductCategory.</returns>
+        /// <exception cref="ResourceNotFoundException">Throw when no leaf ProductCategory is found.</exception>
+        public GetAllProductCategoriesModelView findLeaves(){
+            
+            IEnumerable<ProductCategory> leaves = PersistenceContext.repositories().createProductCategoryRepository().findLeaves();
+
+            if(!leaves.Any()){
+                throw new ResourceNotFoundException(ERROR_NO_CATEGORIES_FOUND);
+            }
+
+            return ProductCategoryModelViewService.fromCollection(leaves);
         }
 
         /// <summary>
@@ -224,21 +241,17 @@ namespace core.application
 
             string newName = modelView.name;
 
-            //check what attributes are to be updated
-            if (newName != null)
+            if (!category.changeName(newName))
             {
-                if (repository.find(newName) != null)
-                {
-                    throw new ArgumentException(ERROR_DUPLICATE_NAME);
-                }
-
-                if (!category.changeName(newName))
-                {
-                    throw new ArgumentException(ERROR_INVALID_NAME);
-                }
+                throw new ArgumentException(ERROR_INVALID_NAME);
             }
 
             category = repository.update(category);
+
+            if(category == null)
+            {
+                throw new ArgumentException(ERROR_DUPLICATE_NAME);
+            }
 
             return ProductCategoryModelViewService.fromEntity(category);
         }
