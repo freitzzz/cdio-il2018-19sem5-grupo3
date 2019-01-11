@@ -6,6 +6,8 @@
                         </button>
             <div v-if="createNewCityModal">
                 <b-modal :active.sync="createNewCityModal" has-modal-card scroll="keep">
+                    <create-city-modal
+                        :active="createNewCityModal"></create-city-modal>
                 </b-modal>
             </div>
             <button class="btn-primary" @click="fetchRequests()">
@@ -20,6 +22,7 @@
 
 <script>
     import CitiesTable from "./CitiesTable.vue";
+    import CreateCityModal from "./CreateCityModal.vue";
     import CityRequests from "../../../services/myco_api/requests/cities.js"
     export default {
         name: "ListCities",
@@ -32,9 +35,11 @@
             }
         },
         components: {
-            CitiesTable
+            CitiesTable,
+            CreateCityModal
         },
         methods: {
+         
             fetchRequests(){
                 this.refreshCities();
             },
