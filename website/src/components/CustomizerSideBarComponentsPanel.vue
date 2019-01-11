@@ -156,40 +156,84 @@ export default {
         if(this.components[i].model.split(".")[0] + ".png" == newValue.model){
           
           var component = this.components[i];
+          component.slot = newValue.slot;
 
           if(newValue.model.split(".")[0] != "hinged-door" && newValue.model.split(".")[0] != "sliding-door"){
             this.showFinishes = false;
             this.showColors = false;
 
             await this.getComponentData(this.components[i].id);
-            component.slot = newValue.slot;
             this.addedComponents.push(component);
 
-            let requestBody = {
-              productId: this.componentData.id,
-              customizedMaterial: {
-                materialId: store.state.customizedProduct.customizedMaterial.id,
-                color: store.state.customizedProduct.customizedMaterial.color,
-                finish: store.state.customizedProduct.customizedMaterial.finish                 
-              },
-              customizedDimensions: {
-                height: store.state.customizedProduct.slots[newValue.slot - 1].height,
-                width: store.state.customizedProduct.slots[newValue.slot - 1].width,
-                depth: store.state.customizedProduct.slots[newValue.slot - 1].depth,
-                unit: store.state.customizedProduct.slots[newValue.slot - 1].unit
+            let reasonWidth = 404.5/store.getters.customizedProductDimensions.width;
+            let auxWidth = store.state.customizedProduct.slots[newValue.slot - 1].width/reasonWidth;
+            let computedWidth = auxWidth.toFixed(0);
+
+            let auxHeight = store.state.customizedProduct.slots[newValue.slot - 1].height / 2;
+            let computedHeight = auxHeight.toFixed(0);
+
+            var hasColors = store.state.customizedProduct.customizedMaterial.color.name != "None";
+            var hasFinishes = store.state.customizedProduct.customizedMaterial.finish.description != "None";
+
+            let requestBody = {};
+
+            if(hasColors && hasFinishes){
+              requestBody = {
+                productId: this.componentData.id,
+                customizedMaterial: {
+                  materialId: store.state.customizedProduct.customizedMaterial.id,
+                  color: store.state.customizedProduct.customizedMaterial.color,
+                  finish: store.state.customizedProduct.customizedMaterial.finish                 
+                },
+                customizedDimensions: {
+                  height: computedHeight,
+                  width: computedWidth,
+                  depth: store.state.customizedProduct.slots[newValue.slot - 1].depth,
+                  unit: store.state.customizedProduct.slots[newValue.slot - 1].unit
+                }
+              }
+            } else if(hasColors && !hasFinishes){
+              requestBody = {
+                productId: this.componentData.id,
+                customizedMaterial: {
+                  materialId: store.state.customizedProduct.customizedMaterial.id,
+                  color: store.state.customizedProduct.customizedMaterial.color,
+                },
+                customizedDimensions: {
+                  height: computedHeight,
+                  width: computedWidth,
+                  depth: store.state.customizedProduct.slots[newValue.slot - 1].depth,
+                  unit: store.state.customizedProduct.slots[newValue.slot - 1].unit
+                }
+              }
+            } else if(hasFinishes && !hasColors){
+              requestBody = {
+                productId: this.componentData.id,
+                customizedMaterial: {
+                  materialId: store.state.customizedProduct.customizedMaterial.id,
+                  finish: store.state.customizedProduct.customizedMaterial.finish                 
+                },
+                customizedDimensions: {
+                  height: computedHeight,
+                  width: computedWidth,
+                  depth: store.state.customizedProduct.slots[newValue.slot - 1].depth,
+                  unit: store.state.customizedProduct.slots[newValue.slot - 1].unit
+                }
               }
             }
-            
-            CustomizedProductRequests.postCustomizedProduct(requestBody, {customizedProductId: store.state.customizedProduct.id, slotId: component.slot})
+
+            CustomizedProductRequests.postCustomizedProduct(requestBody, {customizedProductId: store.state.customizedProduct.id, slotId: store.state.customizedProduct.slots[newValue.slot - 1].idSlot})
             .then(response => {
               this.closeNav();
               store.dispatch(SET_COMPONENT_TO_ADD);
               store.dispatch(ADD_CUSTOMIZED_PRODUCT_COMPONENT, {
                 component: component
               });
+              this.$toast.open("The component was successfully added to the closet!")
             })
             .catch(error => {
               this.closeNav();
+              this.$toast.open("We're sorry, but this component doesn't match the closet required specifications.");
             })
           } else {
             this.closeNav();
@@ -392,7 +436,6 @@ export default {
       return hex;
     },
     closeNav() {
-      this.$refs.componentsSideCustomizer.style.width = "0";
       store.dispatch(SET_COMPONENT_TO_EDIT);
       this.showSidePanel = false;
       this.showFinishes = false;
