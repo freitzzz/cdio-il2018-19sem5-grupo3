@@ -30,8 +30,8 @@ ordersRoute.route('/orders').get(function (req, res) {
 //Gets an order and its details by its id
 //TODO Handle errors by using the ones available in the mongoose schema
 //TODO add query to route path to know if the order has to be detailed or not
-ordersRoute.route('/orders/:id').get( /*async*/ function (req, res, next) {
-    var id = req.params.id;
+ordersRoute.route('/orders/:id').get(function (req, res, next) {
+    const id = req.params.id;
     //Communicate with MYCM
 
     //Mongoose query
@@ -47,12 +47,18 @@ ordersRoute.route('/orders/:id').get( /*async*/ function (req, res, next) {
         } else {
             var orderContentsList = order.orderContents;
 
-            var result = await fetchOrderContents(orderContentsList);
-            var detailedOrder = {
-                status: order.status,
-                orderContents: result
-            };
-            res.status(200).json(detailedOrder);
+            try{
+                var result = await fetchOrderContents(orderContentsList);
+
+                var detailedOrder = {
+                    status: order.status,
+                    orderContents: result
+                };
+
+                res.status(200).json(detailedOrder);
+            }catch(error){
+                res.status(error.response.status).json(error.response.data)
+            }
         }
     });
 })
@@ -61,43 +67,34 @@ ordersRoute.route('/orders/:id').get( /*async*/ function (req, res, next) {
 async function fetchOrderContents(orderContents) {
 
     var customizedProductArray = [];
-
     var orderContentsSize = orderContents.length;
+    var requests = [];
+    var quantities = [];
 
-    for (var i = 0; i < orderContentsSize; i++) {
+    for (let i = 0; i < orderContentsSize; i++) {
 
         var currentOrderContent = orderContents[i];
         var currentOrderContentCustomizedProductId = currentOrderContent.customizedproduct;
         var currentOrderContentCustomizedProductQuantity = currentOrderContent.quantity;
-        var customizedProduct = await getCustomizedProduct(currentOrderContentCustomizedProductId);
-        customizedProduct.quantity = currentOrderContentCustomizedProductQuantity;
-        customizedProductArray.push(customizedProduct);
+        quantities.push(currentOrderContentCustomizedProductQuantity);
+        const requestUrl = `${config.MYCM_URL}mycm/api/customizedproducts/${currentOrderContentCustomizedProductId}`;
+        requests.push(axios.get(requestUrl));
+    }
+
+    try{
+        const responses = await Promise.all(requests);
+
+        for(let i = 0; i < responses.length; i++){
+            var customizedProduct = responses[i].data;
+            customizedProduct.quantity = quantities[i];
+            customizedProductArray.push(customizedProduct);
+        }
+
+    }catch(error){
+        throw error
     }
 
     return customizedProductArray;
-}
-
-//Fetches a CustomizedProduct DTO by making a GET Request to MYCMs API
-function getCustomizedProduct(customizedProductId) {
-
-    return new Promise((resolve, reject) => {
-
-        var req = http.get('http://localhost:5000/mycm/api/customizedproducts/' + customizedProductId, (resp) => {
-            let data = '';
-
-            resp.on('data', (chunk) => {
-                data += chunk;
-            });
-
-            resp.on('end', () => {
-                resolve(JSON.parse(data));
-            });
-
-        }).on("error", reject);
-
-
-        req.end();
-    })
 }
 
 //Creates a new Order
