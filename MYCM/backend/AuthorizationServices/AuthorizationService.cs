@@ -1,5 +1,5 @@
-using backend.AuthorizationServices.exceptions;
 using backend.AuthorizationServices.modelviews;
+using core.exceptions;
 using System;
 using System.Collections.Generic;
 using System.Net;
