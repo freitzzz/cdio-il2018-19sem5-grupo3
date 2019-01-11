@@ -402,15 +402,14 @@
   
       },
       nextPanel() {
-        //!TODO POST product
         //Post of product
   
         if (this.height != null && this.width != null && this.depth != null && this.dimensionOp != null) {
 
-          var postBody = {
+          var requestBody = {
               productId: store.state.product.id,
-              reference: store.state.customizedProduct.reference,
-              customizedDimensions: {
+              reference: store.getters.customizedProductReference,
+              dimensions: {
                 height: this.height,
                 width: this.width,
                 depth: this.depth,
@@ -421,11 +420,26 @@
           const designation = store.getters.customizedProductDesignation;
 
           //since the designation is optional, only set if it's been defined
-          if(designation != undefined && designation.length > 0){
-            postBody.designation = designation;
+          if(designation != undefined && designation.trim().length > 0){
+            requestBody.designation = designation;
           }
 
-          CustomizedProductRequests.postCustomizedProduct(postBody)
+          const customizedProductId = store.getters.customizedProductId;
+
+          //if the customized product id has been previously set, perform an update
+          if(customizedProductId != undefined){
+
+            CustomizedProductRequests.putCustomizedProduct(customizedProductId, requestBody)
+            .then(() => {
+              this.$emit("advance");
+            })
+            .catch(error => {
+              this.$toast.open(error.response.data);
+            });
+
+          }else{
+
+            CustomizedProductRequests.postCustomizedProduct(requestBody)
             .then(response => {
               this.idCustomizedProduct = response.data.id;
               store.dispatch(SET_ID_CUSTOMIZED_PRODUCT, this.idCustomizedProduct);
@@ -435,6 +449,8 @@
             .catch((error) => {
               this.$toast.open(error.response.data);
             });
+
+          }
         } else {
           this.$toast.open("Please select an option!");
         }
