@@ -2,36 +2,43 @@
     {
         "email":"antonio@myc.com",
         "password":"kerokerobonito",
+        "name":"Antonio Sousa",
         "roles":["Administrator","Content Manager","Logistic Manager"]
     },
     {
         "email":"freitas@myc.com",
         "password":"kerokerobonito",
+        "name":"Joao Freitas",
         "roles":["Administrator","Content Manager","Logistic Manager"]
     },
     {
         "email":"gil@myc.com",
         "password":"kerokerobonito",
+        "name":"Gil Durao",
         "roles":["Administrator","Content Manager","Logistic Manager"]
     },
     {
         "email":"margarida@myc.com",
         "password":"kerokerobonito",
+        "name":"Margarida Guerra",
         "roles":["Administrator","Content Manager","Logistic Manager"]
     },
     {
         "email":"moreira@myc.com",
         "password":"kerokerobonito",
+        "name":"Joao Moreira",
         "roles":["Administrator","Content Manager","Logistic Manager"]
     },
     {
         "email":"rita@myc.com",
         "password":"kerokerobonito",
+        "name":"Rita Goncalves",
         "roles":["Administrator","Content Manager","Logistic Manager"]
     },
     {
         "email":"vera@myc.com",
         "password":"kerokerobonito",
+        "name":"Vera Ricardina",
         "roles":["Administrator","Content Manager","Logistic Manager"]
     }
 ]
