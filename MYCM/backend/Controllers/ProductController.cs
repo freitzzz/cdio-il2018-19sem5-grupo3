@@ -15,8 +15,7 @@ using core.exceptions;
 using core.modelview.productmaterial;
 using core.modelview.productslotwidths;
 
-namespace backend.Controllers
-{
+namespace backend.Controllers {
 
     /// <summary>
     /// Backend ProductController class
@@ -65,7 +64,7 @@ namespace backend.Controllers
         /// <returns></returns>
         [HttpGet]
         public ActionResult find([FromQuery]string reference, [FromQuery]string unit) {
-            if(reference == null){
+            if (reference == null) {
                 return findAll();
             }
 
@@ -81,13 +80,13 @@ namespace backend.Controllers
         /// </summary>
         /// <returns>HTTP Response 404 Not Found if no products are found;
         /// HTTP Response 200 Ok with the info of all products in JSON format </returns>
-        private ActionResult findAll(){
-            try{
+        private ActionResult findAll() {
+            try {
                 GetAllProductsModelView allProductsModelView = new core.application.ProductController().findAllProducts();
                 return Ok(allProductsModelView);
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -97,16 +96,16 @@ namespace backend.Controllers
         /// </summary>
         /// <param name="fetchProductDTO"></param>
         /// <returns></returns>
-        private ActionResult findByReference(FetchProductDTO fetchProductDTO){
-            try{
+        private ActionResult findByReference(FetchProductDTO fetchProductDTO) {
+            try {
                 GetProductModelView getProductModelView = new core.application.ProductController().findProduct(fetchProductDTO);
                 return Ok(getProductModelView);
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(ArgumentException e){
+            } catch (ArgumentException e) {
                 //this exception may occur if the specified unit does not exist
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -116,13 +115,13 @@ namespace backend.Controllers
         /// </summary>
         /// <returns>ActionResult with the 200 HTTP Code or the 404 HTTP Code if no Product was found.</returns>
         [HttpGet("base")]
-        public ActionResult findBaseProducts(){
-            try{
+        public ActionResult findBaseProducts() {
+            try {
                 GetAllProductsModelView allBaseProductsModelView = new core.application.ProductController().findBaseProducts();
                 return Ok(allBaseProductsModelView);
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -142,78 +141,75 @@ namespace backend.Controllers
             try {
                 GetProductModelView getProductModelView = new core.application.ProductController().findProduct(fetchProductDTO);
                 return Ok(getProductModelView);
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(ArgumentException e){
+            } catch (ArgumentException e) {
                 //this exception may occur if the specified unit does not exist
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpGet("{productId}/dimensions")]
-        public ActionResult findProductMeasurements(long productId, [FromQuery] string unit){
-            FetchProductDTO fetchProductDTO = new FetchProductDTO(){id = productId};
+        public ActionResult findProductMeasurements(long productId, [FromQuery] string unit) {
+            FetchProductDTO fetchProductDTO = new FetchProductDTO() { id = productId };
             fetchProductDTO.productDTOOptions.requiredUnit = unit;
-            try{
-                GetAllMeasurementsModelView allMeasurementsModelView = 
+            try {
+                GetAllMeasurementsModelView allMeasurementsModelView =
                     new core.application.ProductController().findProductMeasurements(fetchProductDTO);
                 return Ok(allMeasurementsModelView);
-            }catch(ArgumentException e){
+            } catch (ArgumentException e) {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpGet("{productId}/components")]
-        public ActionResult findProductComponents(long productId, [FromQuery]FindComponentsOptions groupBy){
-            try{
-                    FindComponentsModelView findComponentsModel = new FindComponentsModelView();
-                    findComponentsModel.fatherProductId = productId;
-                    findComponentsModel.option = groupBy;
-                    GetAllComponentsModelView allComponentsByCategory = new core.application.ProductController().findProductComponents(findComponentsModel);
-                    return Ok(allComponentsByCategory);
-            }catch(ResourceNotFoundException e){
+        public ActionResult findProductComponents(long productId, [FromQuery]FindComponentsOptions groupBy) {
+            try {
+                FindComponentsModelView findComponentsModel = new FindComponentsModelView();
+                findComponentsModel.fatherProductId = productId;
+                findComponentsModel.option = groupBy;
+                GetAllComponentsModelView allComponentsByCategory = new core.application.ProductController().findProductComponents(findComponentsModel);
+                return Ok(allComponentsByCategory);
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpGet("{productId}/materials")]
-        public ActionResult findProductMaterials(long productId, [FromQuery] bool pricedMaterialsOnly){
+        public ActionResult findProductMaterials(long productId, [FromQuery] bool pricedMaterialsOnly) {
             FetchProductDTO fetchProductDTO = new FetchProductDTO();
             fetchProductDTO.id = productId;
             fetchProductDTO.pricedMaterialsOnly = pricedMaterialsOnly;
-            try{
+            try {
                 GetAllMaterialsModelView allMaterialsModelView = new core.application.ProductController().findProductMaterials(fetchProductDTO);
                 return Ok(allMaterialsModelView);
-            }
-            catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpGet("{productId}/components/{componentId}")]
-        public ActionResult findProductComponent(long productId, long componentId, [FromQuery]string unit){
-            try{
+        public ActionResult findProductComponent(long productId, long componentId, [FromQuery]string unit) {
+            try {
                 FindComponentModelView findComponentModelView = new FindComponentModelView();
                 findComponentModelView.fatherProductId = productId;
                 findComponentModelView.childProductId = componentId;
                 findComponentModelView.unit = unit;
                 GetComponentModelView componentModelView = new core.application.ProductController().findProductComponent(findComponentModelView);
                 return Ok(componentModelView);
-            }
-            catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }
-            catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -232,18 +228,18 @@ namespace backend.Controllers
         /// ActionResult with th 400 HTTP code and body with an error message, if the Product does not support slots.
         /// </returns>
         [HttpGet("{productId}/slotwidths")]
-        public ActionResult findProductSlotWidths(long productId, [FromQuery] string unit){
+        public ActionResult findProductSlotWidths(long productId, [FromQuery] string unit) {
             FetchProductDTO fetchProductDTO = new FetchProductDTO();
             fetchProductDTO.id = productId;
             fetchProductDTO.productDTOOptions.requiredUnit = unit;
-            try{
+            try {
                 GetProductSlotWidthsModelView productSlotWidthsMV = new core.application.ProductController().findProductSlotWidths(fetchProductDTO);
                 return Ok(productSlotWidthsMV);
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(InvalidOperationException e){
+            } catch (InvalidOperationException e) {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -256,16 +252,16 @@ namespace backend.Controllers
         /// <returns>ActionResult with the 200 HTTP Response Code and the list of Restriction 
         /// or the 404 HTTP Response Code if no Restriction was found.</returns>
         [HttpGet("{productId}/dimensions/{measurementId}/restrictions")]
-        public ActionResult findMeasurementRestrictions(long productId, long measurementId){
+        public ActionResult findMeasurementRestrictions(long productId, long measurementId) {
             FindMeasurementModelView productMeasurementMV = new FindMeasurementModelView();
             productMeasurementMV.productId = productId;
             productMeasurementMV.measurementId = measurementId;
-            try{
+            try {
                 GetAllRestrictionsModelView restrictionModelViews = new core.application.ProductController().findMeasurementRestrictions(productMeasurementMV);
                 return Ok(restrictionModelViews);
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -278,17 +274,17 @@ namespace backend.Controllers
         /// <returns>ActionResult with the 200 HTTP Response Code and the list of Restriction 
         /// or the 404 HTTP Response Code if no Restriction was found.</returns>
         [HttpGet("{parentProductId}/components/{complementaryProductId}/restrictions")]
-        public ActionResult findComponentRestrictions(long parentProductId, long complementaryProductId){
+        public ActionResult findComponentRestrictions(long parentProductId, long complementaryProductId) {
             FindComponentModelView componentModelView = new FindComponentModelView();
             componentModelView.fatherProductId = parentProductId;
             componentModelView.childProductId = complementaryProductId;
 
-            try{
+            try {
                 GetAllRestrictionsModelView restrictionModelViews = new core.application.ProductController().findComponentRestrictions(componentModelView);
                 return Ok(restrictionModelViews);
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -301,17 +297,17 @@ namespace backend.Controllers
         /// <returns>ActionResult with the 200 HTTP Response Code and the list of Restriction 
         /// or the 404 HTTP Response Code if no Restriction was found.</returns>
         [HttpGet("{productId}/materials/{materialId}/restrictions")]
-        public ActionResult findMaterialRestrictions(long productId, long materialId){
+        public ActionResult findMaterialRestrictions(long productId, long materialId) {
             FindProductMaterialModelView productMaterialModelView = new FindProductMaterialModelView();
             productMaterialModelView.productId = productId;
             productMaterialModelView.materialId = materialId;
 
-            try{
+            try {
                 GetAllRestrictionsModelView restrictionModelViews = new core.application.ProductController().findMaterialRestrictions(productMaterialModelView);
                 return Ok(restrictionModelViews);
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -326,16 +322,16 @@ namespace backend.Controllers
         /// </returns>
         [HttpPost]
         public ActionResult addProduct([FromBody] AddProductModelView addProductMV) {
-            if(addProductMV == null){
+            if (addProductMV == null) {
                 return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_DATA));
             }
 
             try {
                 GetProductModelView createdProductMV = new core.application.ProductController().addProduct(addProductMV);
                 return CreatedAtRoute("GetProduct", new { id = createdProductMV.productId }, createdProductMV);
-            }catch(ArgumentException e){
+            } catch (ArgumentException e) {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -348,21 +344,21 @@ namespace backend.Controllers
         /// <returns>ActionResult with the 200 HTTP Response Code and the list of Restriction 
         /// or the 400 HTTP Response Code if the Measurement was not able to be added.</returns>
         [HttpPost("{productId}/dimensions")]
-        public ActionResult addMeasurementToProduct(long productId, [FromBody] AddMeasurementModelView measurementModelView){
-            if(measurementModelView == null){
-                return BadRequest(new SimpleJSONMessageService(INVALID_MEASUREMENT_DATA));    
+        public ActionResult addMeasurementToProduct(long productId, [FromBody] AddMeasurementModelView measurementModelView) {
+            if (measurementModelView == null) {
+                return BadRequest(new SimpleJSONMessageService(INVALID_MEASUREMENT_DATA));
             }
 
             measurementModelView.productId = productId;
 
-            try{
+            try {
                 GetProductModelView productModelView = new core.application.ProductController().addMeasurementToProduct(measurementModelView);
                 return Created(Request.Path, productModelView);
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(ArgumentException e){
+            } catch (ArgumentException e) {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -376,21 +372,21 @@ namespace backend.Controllers
         ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
         /// </returns>
         [HttpPost("{id}/components")]
-        public ActionResult addComponentToProduct(long id,[FromBody]AddComponentModelView addComponentToProductMV){
+        public ActionResult addComponentToProduct(long id, [FromBody]AddComponentModelView addComponentToProductMV) {
 
-            if(addComponentToProductMV == null){
+            if (addComponentToProductMV == null) {
                 return BadRequest(new SimpleJSONMessageService(INVALID_COMPONENT_DATA));
             }
 
             addComponentToProductMV.fatherProductId = id;
-            try{
-                GetProductModelView productModelView=new core.application.ProductController().addComponentToProduct(addComponentToProductMV);
-                return Created(Request.Path,productModelView);
-            }catch(ResourceNotFoundException e){
+            try {
+                GetProductModelView productModelView = new core.application.ProductController().addComponentToProduct(addComponentToProductMV);
+                return Created(Request.Path, productModelView);
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(ArgumentException e){
+            } catch (ArgumentException e) {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -404,45 +400,45 @@ namespace backend.Controllers
         ///      <br>HTTP Response 400; Bad Request if the an error occured during the add operation 
         /// </returns>
         [HttpPost("{id}/materials")]
-        public ActionResult addMaterialToProduct(long id,[FromBody]AddProductMaterialModelView addMaterialToProductMV){
+        public ActionResult addMaterialToProduct(long id, [FromBody]AddProductMaterialModelView addMaterialToProductMV) {
 
-            if(addMaterialToProductMV == null){
+            if (addMaterialToProductMV == null) {
                 return BadRequest(new SimpleJSONMessageService(INVALID_MATERIAL_DATA));
             }
 
-            addMaterialToProductMV.productId=id;
-            try{
-                GetProductModelView productModelView=new core.application.ProductController().addMaterialToProduct(addMaterialToProductMV);
-                return Created(Request.Path,productModelView);
-            }catch(ResourceNotFoundException e){
+            addMaterialToProductMV.productId = id;
+            try {
+                GetProductModelView productModelView = new core.application.ProductController().addMaterialToProduct(addMaterialToProductMV);
+                return Created(Request.Path, productModelView);
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(ArgumentException e){
+            } catch (ArgumentException e) {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpPost("{productId}/dimensions/{measurementId}/restrictions")]
-        public ActionResult addRestrictionToProductMeasurement(long productId, long measurementId, [FromBody]RestrictionDTO restrictionDTO){
+        public ActionResult addRestrictionToProductMeasurement(long productId, long measurementId, [FromBody]AddRestrictionModelView restrictionMV) {
 
-            if(restrictionDTO == null){
+            if (restrictionMV == null) {
                 return BadRequest(new SimpleJSONMessageService(INVALID_RESTRICTION_DATA));
             }
 
             AddMeasurementRestrictionModelView addRestrictionToProductMeasurementMV = new AddMeasurementRestrictionModelView();
             addRestrictionToProductMeasurementMV.productId = productId;
             addRestrictionToProductMeasurementMV.measurementId = measurementId;
-            addRestrictionToProductMeasurementMV.restriction = restrictionDTO;
-        
-            try{
+            addRestrictionToProductMeasurementMV.restriction = restrictionMV;
+
+            try {
                 GetProductModelView productModelView = new core.application.ProductController().addRestrictionToProductMeasurement(addRestrictionToProductMeasurementMV);
                 return Created(Request.Path, productModelView);
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(ArgumentException e){
+            } catch (ArgumentException e) {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
 
@@ -458,29 +454,29 @@ namespace backend.Controllers
         ///      <br>HTTP Response 400; Bad Request if an error occured while adding the restriction to the product component
         /// </returns>
         [HttpPost("{productID}/components/{componentID}/restrictions")]
-        public ActionResult addRestrictionToProductComponent(long productID,long componentID,[FromBody]RestrictionDTO restrictionDTO){
+        public ActionResult addRestrictionToProductComponent(long productID, long componentID, [FromBody]AddRestrictionModelView restrictionMV) {
 
-            if(restrictionDTO == null){
+            if (restrictionMV == null) {
                 return BadRequest(new SimpleJSONMessageService(INVALID_RESTRICTION_DATA));
             }
 
-            AddComponentRestrictionModelView addRestrictionToProductComponentDTO=new AddComponentRestrictionModelView();
-            addRestrictionToProductComponentDTO.fatherProductId=productID;
-            addRestrictionToProductComponentDTO.childProductId=componentID;
-            addRestrictionToProductComponentDTO.restriction=restrictionDTO;
-            try{
-                GetProductModelView appliedRestrictionModelView=new core.application.ProductController().addRestrictionToProductComponent(addRestrictionToProductComponentDTO);
-                return Created(Request.Path,appliedRestrictionModelView);
-            }catch(ResourceNotFoundException e) {
+            AddComponentRestrictionModelView addRestrictionToProductComponentDTO = new AddComponentRestrictionModelView();
+            addRestrictionToProductComponentDTO.fatherProductId = productID;
+            addRestrictionToProductComponentDTO.childProductId = componentID;
+            addRestrictionToProductComponentDTO.restriction = restrictionMV;
+            try {
+                GetProductModelView appliedRestrictionModelView = new core.application.ProductController().addRestrictionToProductComponent(addRestrictionToProductComponentDTO);
+                return Created(Request.Path, appliedRestrictionModelView);
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(ArgumentException e){
+            } catch (ArgumentException e) {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
-    
+
         /// <summary>
         /// Adds an instance of Restriction to the Product's Material's list of Restrictions. 
         /// </summary>
@@ -489,29 +485,29 @@ namespace backend.Controllers
         /// <returns>ActionResult with the 200 HTTP Response Code and the list of Restriction 
         /// or the 400 HTTP Response Code if the Restriction was not able to be added.</returns>
         [HttpPost("{productId}/materials/{materialId}/restrictions")]
-        public ActionResult addRestrictionToProductMaterial(long productId, long materialId, RestrictionDTO restrictionDTO){
+        public ActionResult addRestrictionToProductMaterial(long productId, long materialId, [FromBody] AddRestrictionModelView restrictionMV) {
 
-                if(restrictionDTO == null){
-                    return BadRequest(new SimpleJSONMessageService(INVALID_RESTRICTION_DATA));
-                }
+            if (restrictionMV == null) {
+                return BadRequest(new SimpleJSONMessageService(INVALID_RESTRICTION_DATA));
+            }
 
-                AddProductMaterialRestrictionModelView addRestrictionToProductMaterialMV = new AddProductMaterialRestrictionModelView();
-                addRestrictionToProductMaterialMV.productId = productId;
-                addRestrictionToProductMaterialMV.materialId = materialId;
-                addRestrictionToProductMaterialMV.restriction = restrictionDTO;
+            AddProductMaterialRestrictionModelView addRestrictionToProductMaterialMV = new AddProductMaterialRestrictionModelView();
+            addRestrictionToProductMaterialMV.productId = productId;
+            addRestrictionToProductMaterialMV.materialId = materialId;
+            addRestrictionToProductMaterialMV.restriction = restrictionMV;
 
-                try{
-                    GetProductModelView productModelView = new core.application.ProductController().addRestrictionToProductMaterial(addRestrictionToProductMaterialMV);
-                    return Created(Request.Path,productModelView);
-                }catch(ResourceNotFoundException e){
-                    return NotFound(new SimpleJSONMessageService(e.Message));
-                }catch(ArgumentException e){
-                    return BadRequest(new SimpleJSONMessageService(e.Message));
-                }catch(Exception){
-                    return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
-                }
+            try {
+                GetProductModelView productModelView = new core.application.ProductController().addRestrictionToProductMaterial(addRestrictionToProductMaterialMV);
+                return Created(Request.Path, productModelView);
+            } catch (ResourceNotFoundException e) {
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            } catch (ArgumentException e) {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            } catch (Exception) {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
         }
-        
+
 
         /// <summary>
         /// Updates the properties of a product
@@ -523,19 +519,19 @@ namespace backend.Controllers
         [HttpPut("{id}")]
         public ActionResult updateProductProperties(long id, [FromBody] UpdateProductPropertiesModelView updateProductPropertiesModelView) {
 
-            if(updateProductPropertiesModelView == null){
+            if (updateProductPropertiesModelView == null) {
                 return BadRequest(new SimpleJSONMessageService(INVALID_PRODUCT_DATA));
             }
 
             updateProductPropertiesModelView.id = id;
-            try{
-                GetProductModelView updatedProductMV=new core.application.ProductController().updateProductProperties(updateProductPropertiesModelView);
+            try {
+                GetProductModelView updatedProductMV = new core.application.ProductController().updateProductProperties(updateProductPropertiesModelView);
                 return Ok(updatedProductMV);
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(ArgumentException e){
+            } catch (ArgumentException e) {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -552,33 +548,33 @@ namespace backend.Controllers
         public ActionResult disableProduct(long id) {
             DeleteProductModelView deleteProductMV = new DeleteProductModelView();
             deleteProductMV.productId = id;
-            try{
+            try {
                 new core.application.ProductController().disableProduct(deleteProductMV);
                 return NoContent();
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
-    
+
         [HttpDelete("{productId}/dimensions/{measurementId}")]
-        public ActionResult deleteMeasurementFromProduct(long productId, long measurementId){
+        public ActionResult deleteMeasurementFromProduct(long productId, long measurementId) {
 
             DeleteMeasurementModelView deleteMeasurementFromProductMV = new DeleteMeasurementModelView();
             deleteMeasurementFromProductMV.productId = productId;
             deleteMeasurementFromProductMV.measurementId = measurementId;
 
-            try{
+            try {
                 new core.application.ProductController().deleteMeasurementFromProduct(deleteMeasurementFromProductMV);
                 return NoContent();
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(InvalidOperationException e){
+            } catch (InvalidOperationException e) {
                 //*this exception will occur if the last measurement is attempted to be removed*/
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
 
@@ -593,17 +589,17 @@ namespace backend.Controllers
         ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the component
         /// </returns>
         [HttpDelete("{productID}/components/{componentID}")]
-        public ActionResult deleteComponentFromProduct(long productID,long componentID){
+        public ActionResult deleteComponentFromProduct(long productID, long componentID) {
 
-            DeleteComponentModelView deleteComponentFromProductMV=new DeleteComponentModelView();
-            deleteComponentFromProductMV.fatherProductId=productID;
-            deleteComponentFromProductMV.childProductId=componentID;
-            try{
+            DeleteComponentModelView deleteComponentFromProductMV = new DeleteComponentModelView();
+            deleteComponentFromProductMV.fatherProductId = productID;
+            deleteComponentFromProductMV.childProductId = componentID;
+            try {
                 new core.application.ProductController().deleteComponentFromProduct(deleteComponentFromProductMV);
                 return NoContent();
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -617,37 +613,37 @@ namespace backend.Controllers
         ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the material
         /// </returns>
         [HttpDelete("{productID}/materials/{materialID}")]
-        public ActionResult deleteMaterialFromProduct(long productID,long materialID){
+        public ActionResult deleteMaterialFromProduct(long productID, long materialID) {
 
-            DeleteProductMaterialModelView deleteMaterialFromProductMV=new DeleteProductMaterialModelView();
-            deleteMaterialFromProductMV.productId=productID;
-            deleteMaterialFromProductMV.materialId=materialID;
-            try{
+            DeleteProductMaterialModelView deleteMaterialFromProductMV = new DeleteProductMaterialModelView();
+            deleteMaterialFromProductMV.productId = productID;
+            deleteMaterialFromProductMV.materialId = materialID;
+            try {
                 new core.application.ProductController().deleteMaterialFromProduct(deleteMaterialFromProductMV);
                 return NoContent();
-            }catch(InvalidOperationException e){
+            } catch (InvalidOperationException e) {
                 //*this exception will occur if the last material is attempted to be removed*/
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpDelete("{productId}/dimensions/{measurementId}/restrictions/{restrictionId}")]
-        public ActionResult deleteRestrictionFromProductMeasurement(long productId, long measurementId, long restrictionId){
+        public ActionResult deleteRestrictionFromProductMeasurement(long productId, long measurementId, long restrictionId) {
 
             DeleteMeasurementRestrictionModelView deleteRestrictionFromProductMeasurementMV = new DeleteMeasurementRestrictionModelView();
             deleteRestrictionFromProductMeasurementMV.productId = productId;
             deleteRestrictionFromProductMeasurementMV.measurementId = measurementId;
             deleteRestrictionFromProductMeasurementMV.restrictionId = restrictionId;
-            try{
+            try {
                 new core.application.ProductController().deleteRestrictionFromProductMeasurement(deleteRestrictionFromProductMeasurementMV);
                 return NoContent();
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -662,35 +658,35 @@ namespace backend.Controllers
         ///      <br>HTTP Response 400; Bad Request if an error occured while deleting the restriction from the product component
         /// </returns>
         [HttpDelete("{productID}/components/{componentID}/restrictions/{restrictionID}")]
-        public ActionResult deleteRestrictionFromProductComponent(long productID,long componentID,long restrictionID){
+        public ActionResult deleteRestrictionFromProductComponent(long productID, long componentID, long restrictionID) {
 
-            DeleteComponentRestrictionModelView deleteRestrictionFromProductComponentMV=new DeleteComponentRestrictionModelView();
-            deleteRestrictionFromProductComponentMV.fatherProductId=productID;
-            deleteRestrictionFromProductComponentMV.childProductId=componentID;
-            deleteRestrictionFromProductComponentMV.restrictionId=restrictionID;
-            try{
+            DeleteComponentRestrictionModelView deleteRestrictionFromProductComponentMV = new DeleteComponentRestrictionModelView();
+            deleteRestrictionFromProductComponentMV.fatherProductId = productID;
+            deleteRestrictionFromProductComponentMV.childProductId = componentID;
+            deleteRestrictionFromProductComponentMV.restrictionId = restrictionID;
+            try {
                 new core.application.ProductController().deleteRestrictionFromProductComponent(deleteRestrictionFromProductComponentMV);
                 return NoContent();
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpDelete("{productID}/materials/{materialID}/restrictions/{restrictionId}")]
-        public ActionResult deleteRestrictionFromProductMaterial(long productId, long materialId, long restrictionId){
+        public ActionResult deleteRestrictionFromProductMaterial(long productId, long materialId, long restrictionId) {
 
             DeleteProductMaterialRestrictionModelView deleteRestrictionFromProductMaterialMV = new DeleteProductMaterialRestrictionModelView();
             deleteRestrictionFromProductMaterialMV.productId = productId;
             deleteRestrictionFromProductMaterialMV.materialId = materialId;
             deleteRestrictionFromProductMaterialMV.restrictionId = restrictionId;
-            try{
+            try {
                 new core.application.ProductController().deleteRestrictionFromProductMaterial(deleteRestrictionFromProductMaterialMV);
                 return NoContent();
-            }catch(ResourceNotFoundException e){
+            } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            }catch(Exception){
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }

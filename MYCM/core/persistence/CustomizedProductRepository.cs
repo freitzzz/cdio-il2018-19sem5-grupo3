@@ -38,5 +38,14 @@ namespace core.persistence
         /// <param name="slotId">PID of the Slot</param>
         /// <returns>Slot instance</returns>
         Slot findSlot(long customizedProductId, long slotId);
+
+        /// <summary>
+        /// Fetches all of the base CustomizedProducts made by a user with a given token.
+        /// </summary>
+        /// <param name="userAuthToken">string representing the user's token.</param>
+        /// <returns>
+        /// IEnumerable of CustomizedProduct representing the base CustomizedProducts made by a user with a given token.
+        /// </returns>
+        IEnumerable<CustomizedProduct> findUserCreatedCustomizedProducts(string userAuthToken);
     }
 }

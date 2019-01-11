@@ -61,5 +61,12 @@ namespace backend.persistence.ef
             return fetchedCustomizedProduct.slots.
                     Where(s => s.Id == slotId).SingleOrDefault();
         }
+
+        public IEnumerable<CustomizedProduct> findUserCreatedCustomizedProducts(string userAuthToken)
+        {
+            return dbContext.CustomizedProduct.Where(cp => cp.activated)
+                                        .Where(cp => cp.authToken.Equals(userAuthToken))
+                                        .Where(cp => cp.insertedInSlot == null).ToList();
+        }
     }
 }

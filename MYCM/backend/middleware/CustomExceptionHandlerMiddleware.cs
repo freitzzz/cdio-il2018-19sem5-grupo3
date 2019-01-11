@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using backend.AuthorizationServices.exceptions;
 using backend.utils;
 using core.exceptions;
 using Microsoft.AspNetCore.Builder;

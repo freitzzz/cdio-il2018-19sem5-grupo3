@@ -17,5 +17,11 @@ namespace core.modelview.slot
         /// </summary>
         /// <value>Gets/Sets the Slot's persistence identifier.</value>
         public long slotId { get; set; }
+
+        /// <summary>
+        /// User's authentication token.
+        /// </summary>
+        /// <value>Gets/Sets the authentication token.</value>
+        public string userAuthToken { get; set; }
     }
 }

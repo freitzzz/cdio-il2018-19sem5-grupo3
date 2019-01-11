@@ -186,6 +186,15 @@ export const mutations = {
   },
 
   /**
+   * Sets the state's canvas controls component to edit material
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the material to be applied to the component being edited
+   */
+  [types.SET_COMPONENT_TO_EDIT_MATERIAL](state, payload){
+    state.canvasControls.componentMaterial = payload;
+  },
+
+  /**
    * Changes the flag that controls the doors that can be applied to the customized product
    * @param {*} state The store's state
    */
