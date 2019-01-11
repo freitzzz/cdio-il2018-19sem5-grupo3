@@ -49,7 +49,7 @@ namespace core.modelview.customizedproduct
         /// Updated customized dimensions of the customized product
         /// </summary>
         /// <value>Gets/Sets the customized dimensions</value>
-        [DataMember(Name = "dimensions")]
+        [DataMember(Name = "customizedDimensions")]
         public AddCustomizedDimensionsModelView customizedDimensions { get; set; }
 
         /// <summary>
