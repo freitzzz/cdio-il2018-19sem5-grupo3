@@ -122,8 +122,8 @@ public class User implements AggregateRoot<Auth>,Serializable{
      */
     public Session createNewSession(String secreteIdentifier){
         grantUserIsEnabled();
-        if(hasActiveSession())
-            throw new IllegalArgumentException("User already has an active session!");
+//        if(hasActiveSession())
+//            throw new IllegalArgumentException("User already has an active session!");
         Session createdSession=new Session(LocalDateTime.now().plusMinutes(DEFAULT_SESSION_TIME),auth.id()
                 ,secreteIdentifier); 
         this.sessions.add(createdSession);

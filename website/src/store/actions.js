@@ -157,7 +157,12 @@ export const actions = {
         commit(types.DEACTIVATE_CAN_MOVE_COMPONENTS);
     },
 
-
+    /**
+     * Action used to commit the mutation SET_COMPONENT_TO_EDIT_MATERIAL
+     */
+    [types.SET_COMPONENT_TO_EDIT_MATERIAL]: ({ commit }, payload) => {
+        commit(types.SET_COMPONENT_TO_EDIT_MATERIAL, payload);
+    },
 
     //*Resize actions
     /**
@@ -172,5 +177,26 @@ export const actions = {
      */
     [types.SET_RESIZE_VECTOR_GLOBAL]: ({ commit }, payload) => {
         commit(types.SET_RESIZE_VECTOR_GLOBAL, payload)
+    },
+
+    /**
+     * Action used to commit the mutation SET_USER_NAME
+     */
+    [types.SET_USER_NAME]: ({commit}, payload)=>{
+        commit(types.SET_USER_NAME,payload);
+    },
+
+    /**
+     * Action used to commit the mutation SET_USER_ROLES
+     */
+    [types.SET_USER_ROLES]: ({commit}, payload)=>{
+        commit(types.SET_USER_ROLES,payload);
+    },
+
+    /**
+     * Action used to commit the mutation LOGOUT_USER
+     */
+    [types.LOGOUT_USER]: ({commit})=>{
+        commit(types.LOGOUT_USER);
     }
 }

@@ -2,6 +2,7 @@ import VueRouter from 'vue-router'
 import Home from "./components/Home.vue";
 import Customizer from "./components/Customizer.vue";
 import ManagementTopBar from "./components/ManagementTopBar.vue";
+import RolesTopBar from './components/RolesTopBar';
 import AdministrationTopBar from "./components/administration/AdministrationTopBar.vue";
 import ListOrders from "./components/administration/orders/ListOrders.vue";
 import ListCategories from "./components/management/category/ListCategories.vue";
@@ -17,11 +18,11 @@ import ListShipment from "./components/logistsManagement/ListShipment.vue";
 import ListCities from "./components/logistsManagement/Cities/ListCities.vue";
 
 const routes = [
-    { path: "/", redirect: "/home" },
-    { path: "/home", component: Home },
+    { name:"root", path: "/", redirect: "/home" },
+    { name:"home", path: "/home", component: Home },
     { path: "/customization", component: Customizer },
-    {
-        path: "/management", component: ManagementTopBar, children: [
+    { name:"management",
+        path: "/management", component: RolesTopBar, children: [
             { path: "categories", component: ListCategories },
             { path: "materials", component: ListMaterials },
             { path: "products", component: ListProducts },
@@ -31,7 +32,7 @@ const routes = [
         ]
     },
     {
-        path: "/administration", component: AdministrationTopBar, children: [
+        path: "/administration", component: RolesTopBar, children: [
             { path: "orders", component: ListOrders},
             { path: "prices", component: ListPriceMaterials}
         ]

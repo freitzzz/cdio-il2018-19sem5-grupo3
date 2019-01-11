@@ -14,11 +14,6 @@ const Axios = AxiosDependency.create();
  */
 Axios.defaults.withCredentials=true;
 
-/**
- * Sets all Axios requests with the "Secrete" header with "Secrete" as the value (used on signup)
- */
-//TODO:Deprecate secrete function on future
-Axios.defaults.headers["secrete"]="Secrete";
 
 /**
  * Requires MYCA API url
@@ -64,7 +59,7 @@ export const getUserAuthorizations=()=>{
             contentManager:false,
             logisticManager:false
         };
-        Axios
+        AxiosDependency
             .all([grantUserIsAdministrator(),grantUserIsClient(),grantUserIsContentManager(),grantUserIsLogisticManager()])
             .then(([isAdminstrator,isClient,isContentManager,isLogisticManager])=>{
                 userAuthorizations.administrator=isAdminstrator.status==204;

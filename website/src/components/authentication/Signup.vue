@@ -88,7 +88,22 @@
                         Axios.post(MYCA_API_URL+"/users", authenticationRequestData)
                         .then((authenticationData) => {
                             let signupData=authenticationData.data;
-                            this.successfulSignup.details.activationCode=signupData.activationCode;
+                            console.log(signupData)
+                            if(!(signupData.sentDetailsViaEmail ||signupData.sentDetailsViaSMS)){
+                                this.successfulSignup.details.activationCode=signupData.activationCode;
+                            }else{
+                                let signupMessage="Thank you for signing up on MYC!\nWe have sent an activation code to your ";
+                                if(signupData.sentDetailsViaEmail && signupData.sentDetailsViaSMS){
+                                    signupMessage+="email and phone";
+                                }else if(signupData.sentDetailsViaEmail){
+                                    signupMessage+="email";
+                                }else{
+                                    signupMessage+="phone";
+                                }
+                                signupMessage+="\nPlease provide it during the activation phase";
+                                this.successfulSignup.customMessage=signupMessage;
+                                this.successfulSignup.details.activationCode=null;
+                            }
                             this.successfulSignup.show=true;
                         })
                         .catch((_error_message) => {
