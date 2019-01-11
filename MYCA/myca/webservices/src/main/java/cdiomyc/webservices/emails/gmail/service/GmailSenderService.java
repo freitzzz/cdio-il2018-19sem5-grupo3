@@ -1,5 +1,6 @@
 package cdiomyc.webservices.emails.gmail.service;
 
+import cdiomyc.webservices.emails.exceptions.EmailSendException;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -72,7 +73,7 @@ public class GmailSenderService {
             transport.close();
 
         } catch (MessagingException e) {
-            throw new IllegalStateException("An error occurred when sending the e-mail.");
+            throw new EmailSendException("An error occurred when sending the e-mail.");
         }
     }
 }

@@ -5,7 +5,7 @@
         <i class="material-icons md-12 md-blue btn">help</i>
         <span class="tooltiptext">In this step, you can add a material to the closet.</span>
       </div>
-      <div class="text-entry">Choose material to add:</div>
+      <div class="text-entry">Choose a material to add:</div>
       <div class="padding-div">
         <div class="scrollable-div" style="height: 300px; width: 100%;">
            <a v-if="getMaterialInformationOK" class="sidepanel">
@@ -26,8 +26,8 @@
               </a>
               <div class="dropdown-container" v-if="showColors">
                 <a class="sidepanel-subentry" @click="removeColor()">
-                <swatches value="" :trigger-style="{ width: '10px', height: '10px', position:'absolute', left:'-16px', top:'6px'}"/>
-                None
+                  <swatches value="" :trigger-style="{ width: '10px', height: '10px', position:'absolute', left:'-16px', top:'6px'}"/>
+                  None
                 </a>
                 <div v-for="color in colors" :key="color.name">
                   <a class="sidepanel-subentry" @click="applyColor(color)">
@@ -81,7 +81,8 @@ import Swatches from "vue-swatches";
 import "vue-swatches/dist/vue-swatches.min.css";
 import { SET_CUSTOMIZED_PRODUCT_MATERIAL, SET_CUSTOMIZED_PRODUCT_FINISH,
          SET_CUSTOMIZED_PRODUCT_COLOR, DEACTIVATE_CAN_MOVE_CLOSET,
-         DEACTIVATE_CAN_MOVE_SLOTS
+         DEACTIVATE_CAN_MOVE_SLOTS,
+ADD_SLOT_DIMENSIONS
         } from "./../store/mutation-types.js";
 import { AlwaysDepth } from 'three';
 import customizedproducts from './../services/mycm_api/requests/customizedproducts.js';
@@ -320,6 +321,7 @@ export default {
         });
     },
     deleteSlots(){
+      store.dispatch(ADD_SLOT_DIMENSIONS)
       let slotsToDelete = [];
       let custProducSlots = [];
       let size = -1
@@ -365,42 +367,6 @@ export default {
       })
     }, 
   },
-    /*deleteSlots(){
-      let slotsToDelete = [];
-      var size = store.state.customizedProduct.slots.length;
-      for(let i = 0; i< size-1; i++){
-        alert(store.state.customizedProduct.slots[i].idSlot);
-        slotsToDelete.unshift(store.state.customizedProduct.slots[i].idSlot);
-      }
-      return new Promise((accept,reject)=>{
-        this.deleteSlot(slotsToDelete)
-        .then(() => {
-          accept()})
-        .catch((error_message) => { 
-          reject(error_message)
-      });
-      })
-    },
-    deleteSlot(slotsToDelete){
-      return new Promise((accept, reject) => {
-        let slotToDelete = slotsToDelete.pop();
-        CustomizedProductRequests.deleteCustomizedProductSlot(store.state.customizedProduct.id, slotToDelete)
-        .then(() => {
-          if(slotsToDelete.length > 0 ){
-            return this.deleteSlot(slotsToDelete)
-            .then(()=>{
-              accept()})
-            .catch((error_message) => { reject(error_message)});
-          } else {
-             accept();
-          }
-        })
-        .catch((error_message) => {
-          reject(error_message.response.data.message);
-        });
-      })
-    },
-  }, */
   created() {
     this.getProductMaterials();
     store.dispatch(DEACTIVATE_CAN_MOVE_CLOSET);

@@ -11,13 +11,11 @@ using core.services;
 using core.modelview.productslotwidths;
 using core.modelview.productmaterial;
 
-namespace core.modelview.product
-{
+namespace core.modelview.product {
     /// <summary>
     /// Service for creating model views based on certain product contexts
     /// </summary>
-    public static class ProductModelViewService
-    {
+    public static class ProductModelViewService {
         /// <summary>
         /// Constant representing the error message presented when the provided Product is null.
         /// </summary>
@@ -33,10 +31,8 @@ namespace core.modelview.product
         /// </summary>
         /// <param name="product">Product with the product being created the model view</param>
         /// <returns>GetBasicProductModelView with the product basic information model view</returns>
-        public static GetBasicProductModelView fromEntityAsBasic(Product product)
-        {
-            if (product == null)
-            {
+        public static GetBasicProductModelView fromEntityAsBasic(Product product) {
+            if (product == null) {
                 throw new ArgumentNullException(ERROR_NULL_PRODUCT);
             }
 
@@ -55,8 +51,7 @@ namespace core.modelview.product
         /// </summary>
         /// <param name="product">Product with the product being created the model view.</param>
         /// <returns>GetProductModelView with the product information model view</returns>
-        public static GetProductModelView fromEntity(Product product)
-        {
+        public static GetProductModelView fromEntity(Product product) {
             return fromEntity(product, MeasurementUnitService.getMinimumUnit());
         }
 
@@ -67,10 +62,8 @@ namespace core.modelview.product
         /// <param name="unit">Unit to which all the dimension data will be converted to.</param>
         /// <returns>GetProductModelView with the product information model view</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the provided instance of Product is null.</exception>
-        public static GetProductModelView fromEntity(Product product, string unit)
-        {
-            if (product == null)
-            {
+        public static GetProductModelView fromEntity(Product product, string unit) {
+            if (product == null) {
                 throw new ArgumentNullException(ERROR_NULL_PRODUCT);
             }
 
@@ -80,15 +73,13 @@ namespace core.modelview.product
             productModelView.designation = product.designation;
             productModelView.modelFilename = product.modelFilename;
             productModelView.category = ProductCategoryModelViewService.fromEntityAsBasic(product.productCategory);
-            if (product.components.Any())
-            {
+            if (product.components.Any()) {
                 productModelView.components = ComponentModelViewService.fromCollection(product.components);
             }
             //no need to check if the product has materials and measurements, since they're mandatory
             productModelView.materials = ProductMaterialModelViewService.fromCollection(product.productMaterials);
             productModelView.measurements = MeasurementModelViewService.fromCollection(product.productMeasurements.Select(pm => pm.measurement), unit);
-            if (product.supportsSlots)
-            {
+            if (product.supportsSlots) {
                 productModelView.slotWidths = ProductSlotWidthsModelViewService.fromEntity(product.slotWidths, unit);
             }
             return productModelView;
@@ -99,16 +90,28 @@ namespace core.modelview.product
         /// </summary>
         /// <param name="products">IEnumerable with the collection of products</param>
         /// <returns>GetAllProductsModelView with the collection of products model view</returns>
-        public static GetAllProductsModelView fromCollection(IEnumerable<Product> products)
-        {
-            if (products == null)
-            {
+        public static GetAllProductsModelView fromCollection(IEnumerable<Product> products) {
+            if (products == null) {
                 throw new ArgumentNullException(ERROR_NULL_PRODUCT_COLLECTION);
             }
 
             GetAllProductsModelView allProductsModelView = new GetAllProductsModelView();
             foreach (Product product in products) allProductsModelView.Add(fromEntityAsBasic(product));
             return allProductsModelView;
+        }
+
+        /// <summary>
+        /// Creates a model view with the information about all possible components for a slot
+        /// </summary>
+        /// <param name="products">IEnumerable with the collection of products</param>
+        /// <returns>GetPossibleComponentsModelView with the collection of products model view</returns>
+        public static GetPossibleComponentsModelView possibleComponentsFromCollection(IEnumerable<Product> products) {
+            if (products == null) {
+                throw new ArgumentNullException(ERROR_NULL_PRODUCT_COLLECTION);
+            }
+            GetPossibleComponentsModelView possibleComponentsMV = new GetPossibleComponentsModelView();
+            foreach (Product product in products) possibleComponentsMV.Add(fromEntity(product));
+            return possibleComponentsMV;
         }
     }
 }

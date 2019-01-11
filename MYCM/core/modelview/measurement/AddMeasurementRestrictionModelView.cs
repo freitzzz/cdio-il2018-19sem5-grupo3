@@ -1,5 +1,6 @@
 using System.Runtime.Serialization;
 using core.dto;
+using core.modelview.restriction;
 
 namespace core.modelview.measurement
 {
@@ -23,11 +24,10 @@ namespace core.modelview.measurement
         public long measurementId { get; set; }
 
         /// <summary>
-        /// RestrictionDTO containing the Restriction's information.
+        /// AddRestrictionModelView containing the Restriction's information.
         /// </summary>
-        /// <value>Gets/sets the instance of RestrictionDTO.</value>
+        /// <value>Gets/sets the instance of AddRestrictionModelView.</value>
         [DataMember]
-        public RestrictionDTO restriction { get; set; }
-        //TODO: change to ModelView ASAP
+        public AddRestrictionModelView restriction { get; set; }
     }
 }
