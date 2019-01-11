@@ -279,7 +279,7 @@ namespace backend.Controllers
         /// <returns>ActionResult with the created customized product</returns>
         [HttpPost]
         [HttpPost("{customizedProductId}/slots/{slotId}/customizedproducts")]
-        public ActionResult addCustomizedProduct(long? customizedProductId, long? slotId, [FromHeader]string userAuthToken,
+        public ActionResult addCustomizedProduct(long? customizedProductId, long? slotId, [FromHeader(Name = "UserToken")]string userAuthToken,
             [FromBody]AddCustomizedProductModelView customizedProductModelView)
         {
             if (customizedProductModelView == null)
@@ -298,6 +298,10 @@ namespace backend.Controllers
 
                 return CreatedAtRoute("GetCustomizedProduct", new { id = createdCustomizedProductModelView.customizedProductId }, createdCustomizedProductModelView);
             }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
+            }
             catch (InvalidOperationException invalidOperationException)
             {
                 return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
@@ -313,7 +317,8 @@ namespace backend.Controllers
         }
 
         [HttpPost("{id}/slots")]
-        public ActionResult addSlotToCustomizedProduct(long id, [FromBody] AddCustomizedDimensionsModelView slotDimensions)
+        public ActionResult addSlotToCustomizedProduct(long id, [FromBody] AddCustomizedDimensionsModelView slotDimensions,
+            [FromHeader(Name = "UserToken")] string userAuthToken)
         {
             if (slotDimensions == null)
             {
@@ -325,6 +330,7 @@ namespace backend.Controllers
                 AddSlotModelView addSlotModelView = new AddSlotModelView();
                 addSlotModelView.customizedProductId = id;
                 addSlotModelView.slotDimensions = slotDimensions;
+                addSlotModelView.userAuthToken = userAuthToken;
 
                 GetCustomizedProductModelView customizedProductModelView = new core.application.CustomizedProductController().addSlotToCustomizedProduct(addSlotModelView);
 
@@ -333,6 +339,10 @@ namespace backend.Controllers
             catch (ResourceNotFoundException e)
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
             }
             catch (ArgumentException e)
             {
@@ -349,21 +359,26 @@ namespace backend.Controllers
         }
 
         [HttpPost("{customizedProductId}/recommendedslots")]
-        public ActionResult createRecommendedSlots(long customizedProductId, [FromQuery]string unit)
+        public ActionResult createRecommendedSlots(long customizedProductId, [FromQuery]string unit, [FromHeader(Name = "UserToken")] string userAuthToken)
         {
             try
             {
-                FindCustomizedProductModelView findCustomizedProductModelView = new FindCustomizedProductModelView();
-                findCustomizedProductModelView.customizedProductId = customizedProductId;
-                findCustomizedProductModelView.options.unit = unit;
+                AddSlotLayoutModelView addSlotLayoutModelView = new AddSlotLayoutModelView();
+                addSlotLayoutModelView.customizedProductId = customizedProductId;
+                addSlotLayoutModelView.userAuthToken = userAuthToken;
+                addSlotLayoutModelView.options.unit = unit;
 
-                GetCustomizedProductModelView customizedProductModelView = new core.application.CustomizedProductController().addRecommendedSlots(findCustomizedProductModelView);
+                GetCustomizedProductModelView customizedProductModelView = new core.application.CustomizedProductController().addRecommendedSlots(addSlotLayoutModelView);
 
                 return Ok(customizedProductModelView);
             }
             catch (ResourceNotFoundException e)
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
             }
             catch (InvalidOperationException e)
             {
@@ -377,22 +392,27 @@ namespace backend.Controllers
 
 
         [HttpPost("{customizedProductId}/minimumslots")]
-        public ActionResult createMinimumSlots(long customizedProductId, [FromQuery]string unit)
+        public ActionResult createMinimumSlots(long customizedProductId, [FromQuery]string unit, [FromHeader(Name = "UserToken")] string userAuthToken)
         {
             try
             {
-                FindCustomizedProductModelView findCustomizedProductModelView = new FindCustomizedProductModelView();
-                findCustomizedProductModelView.customizedProductId = customizedProductId;
-                findCustomizedProductModelView.options.unit = unit;
+                AddSlotLayoutModelView addSlotLayoutModelView = new AddSlotLayoutModelView();
+                addSlotLayoutModelView.customizedProductId = customizedProductId;
+                addSlotLayoutModelView.userAuthToken = userAuthToken;
+                addSlotLayoutModelView.options.unit = unit;
 
                 GetCustomizedProductModelView customizedProductModelView =
-                    new core.application.CustomizedProductController().addMinimumSlots(findCustomizedProductModelView);
+                    new core.application.CustomizedProductController().addMinimumSlots(addSlotLayoutModelView);
 
                 return Ok(customizedProductModelView);
             }
             catch (ResourceNotFoundException e)
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
             }
             catch (InvalidOperationException e)
             {
@@ -406,7 +426,7 @@ namespace backend.Controllers
 
 
         [HttpPut("{id}")]
-        public ActionResult updateCustomizedProduct(long id, [FromBody] UpdateCustomizedProductModelView updateCustomizedProductModelView)
+        public ActionResult updateCustomizedProduct(long id, [FromBody] UpdateCustomizedProductModelView updateCustomizedProductModelView, [FromHeader(Name = "UserToken")] string userAuthToken)
         {
             if (updateCustomizedProductModelView == null)
             {
@@ -416,6 +436,7 @@ namespace backend.Controllers
             try
             {
                 updateCustomizedProductModelView.customizedProductId = id;
+                updateCustomizedProductModelView.userAuthToken = userAuthToken;
 
                 GetCustomizedProductModelView customizedProductModelView = new core.application.CustomizedProductController().updateCustomizedProduct(updateCustomizedProductModelView);
 
@@ -424,6 +445,10 @@ namespace backend.Controllers
             catch (ResourceNotFoundException e)
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
             }
             catch (ArgumentException e)
             {
@@ -440,7 +465,8 @@ namespace backend.Controllers
         }
 
         [HttpPut("{customizedProductId}/slots/{slotId}")]
-        public ActionResult updateSlot(long customizedProductId, long slotId, [FromBody] UpdateSlotModelView updateSlotModelView)
+        public ActionResult updateSlot(long customizedProductId, long slotId, [FromBody] UpdateSlotModelView updateSlotModelView,
+            [FromHeader(Name = "UserToken")] string userAuthToken)
         {
             if (updateSlotModelView == null)
             {
@@ -460,6 +486,10 @@ namespace backend.Controllers
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
+            }
             catch (ArgumentException e)
             {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
@@ -475,7 +505,7 @@ namespace backend.Controllers
         }
 
         [HttpDelete("{customizedProductId}")]
-        public ActionResult deleteCustomizedProduct(long customizedProductId)
+        public ActionResult deleteCustomizedProduct(long customizedProductId, [FromHeader(Name = "UserToken")] string userAuthToken)
         {
             try
             {
@@ -489,6 +519,10 @@ namespace backend.Controllers
             catch (ResourceNotFoundException e)
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
             }
             catch (ArgumentException e)
             {
@@ -505,7 +539,7 @@ namespace backend.Controllers
         }
 
         [HttpDelete("{customizedProductId}/slots/{slotId}")]
-        public ActionResult deleteSlot(long customizedProductId, long slotId)
+        public ActionResult deleteSlot(long customizedProductId, long slotId, [FromHeader(Name = "UserToken")] string userAuthToken)
         {
             try
             {
@@ -520,6 +554,10 @@ namespace backend.Controllers
             catch (ResourceNotFoundException e)
             {
                 return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
             }
             catch (ArgumentException e)
             {

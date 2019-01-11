@@ -46,9 +46,9 @@ namespace core.application
         private const string ERROR_NO_UPDATE_PERFORMED = "The request did not perform any update.";
 
         /// <summary>
-        /// Constant that represents the message that occurs when a customized product that already exists in the database is saved again
+        /// Constant representing the message presented when a CustomizedProduct that does not belong to the current user is attempted to be altered.
         /// </summary>
-        private const string INVALID_CUSTOMIZED_PRODUCT_CREATION = "This customized product already exists";
+        private const string UNABLE_TO_ALTER_CUSTOMIZED_PRODUCT = "Unable to alter the customized product.";
 
         /// <summary>
         /// Fetches all available customized products.
@@ -237,6 +237,8 @@ namespace core.application
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, addSlotModelView.customizedProductId));
             }
 
+            checkUserToken(customizedProduct, addSlotModelView.userAuthToken);
+
             CustomizedDimensions customizedDimensions = CustomizedDimensionsModelViewService.fromModelView(addSlotModelView.slotDimensions);
 
             customizedProduct.addSlot(customizedDimensions);
@@ -249,49 +251,53 @@ namespace core.application
         /// <summary>
         /// Adds the recommended slot layout to the CustomizedProduct with the given persistence identifier.
         /// </summary>
-        /// <param name="findCustomizedProductModelView">Instance of FindCustomizedProductModelView.</param>
+        /// <param name="addSlotLayoutModelView">Instance of AddSlotLayoutModelView.</param>
         /// <exception cref="ResourceNotFoundException">Thrown when no CustomizedProduct could be found with the given identifier.</exception>
         /// <returns>Instance of GetCustomizedProductModelView with the recommended Slot layout.</returns>
-        public GetCustomizedProductModelView addRecommendedSlots(FindCustomizedProductModelView findCustomizedProductModelView)
+        public GetCustomizedProductModelView addRecommendedSlots(AddSlotLayoutModelView addSlotLayoutModelView)
         {
             CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
-            CustomizedProduct customizedProduct = customizedProductRepository.find(findCustomizedProductModelView.customizedProductId);
+            CustomizedProduct customizedProduct = customizedProductRepository.find(addSlotLayoutModelView.customizedProductId);
 
             if (customizedProduct == null)
             {
                 throw new ResourceNotFoundException(
-                    string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, findCustomizedProductModelView.customizedProductId)
+                    string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, addSlotLayoutModelView.customizedProductId)
                 );
             }
+
+            checkUserToken(customizedProduct, addSlotLayoutModelView.userAuthToken);
 
             customizedProduct.addRecommendedSlots();
             customizedProduct = customizedProductRepository.update(customizedProduct);
 
-            return CustomizedProductModelViewService.fromEntity(customizedProduct, findCustomizedProductModelView.options.unit);
+            return CustomizedProductModelViewService.fromEntity(customizedProduct, addSlotLayoutModelView.options.unit);
         }
 
         /// <summary>
         /// Adds the minimum slot layout to the CustomizedProduct with the given persistence identifier.
         /// </summary>
-        /// <param name="findCustomizedProductModelView">Instance of FindCustomizedProductModelView.</param>
+        /// <param name="addSlotLayoutModelView">Instance of AddSlotLayoutModelView.</param>
         /// <exception cref="ResourceNotFoundException">Thrown when no CustomizedProduct could be found with the given identifier.</exception>
         /// <returns>Instance of GetCustomizedProductModelView with the recommended Slot layout.</returns>
-        public GetCustomizedProductModelView addMinimumSlots(FindCustomizedProductModelView findCustomizedProductModelView)
+        public GetCustomizedProductModelView addMinimumSlots(AddSlotLayoutModelView addSlotLayoutModelView)
         {
             CustomizedProductRepository customizedProductRepository = PersistenceContext.repositories().createCustomizedProductRepository();
-            CustomizedProduct customizedProduct = customizedProductRepository.find(findCustomizedProductModelView.customizedProductId);
+            CustomizedProduct customizedProduct = customizedProductRepository.find(addSlotLayoutModelView.customizedProductId);
 
             if (customizedProduct == null)
             {
                 throw new ResourceNotFoundException(
-                    string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, findCustomizedProductModelView.customizedProductId)
+                    string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, addSlotLayoutModelView.customizedProductId)
                 );
             }
+
+            checkUserToken(customizedProduct, addSlotLayoutModelView.userAuthToken);
 
             customizedProduct.addMinimumSlots();
             customizedProduct = customizedProductRepository.update(customizedProduct);
 
-            return CustomizedProductModelViewService.fromEntity(customizedProduct, findCustomizedProductModelView.options.unit);
+            return CustomizedProductModelViewService.fromEntity(customizedProduct, addSlotLayoutModelView.options.unit);
         }
 
         /// <summary>
@@ -311,6 +317,8 @@ namespace core.application
             {
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, updateCustomizedProductModelView.customizedProductId));
             }
+
+            checkUserToken(customizedProduct, updateCustomizedProductModelView.userAuthToken);
 
             bool performedAtLeastOneUpdate = false;
 
@@ -380,6 +388,8 @@ namespace core.application
                 throw new ResourceNotFoundException(string.Format(ERROR_UNABLE_TO_FIND_CUSTOMIZED_PRODUCT_BY_ID, updateSlotModelView.customizedProductId));
             }
 
+            checkUserToken(customizedProduct, updateSlotModelView.userAuthToken);
+
             Slot slot = customizedProduct.slots.Where(s => s.Id == updateSlotModelView.slotId).SingleOrDefault();
 
             if (slot == null)
@@ -426,6 +436,8 @@ namespace core.application
                 );
             }
 
+            checkUserToken(customizedProduct, deleteCustomizedProductModelView.userAuthToken);
+
             //check if it's a sub customized product
             if (customizedProduct.insertedInSlotId.HasValue)
             {
@@ -461,6 +473,8 @@ namespace core.application
                 );
             }
 
+            checkUserToken(customizedProduct, deleteSlotModelView.userAuthToken);
+
             Slot slot = customizedProduct.slots.Where(s => s.Id == deleteSlotModelView.slotId).SingleOrDefault();
 
             if (slot == null)
@@ -471,6 +485,22 @@ namespace core.application
             customizedProduct.removeSlot(slot);
 
             customizedProductRepository.update(customizedProduct);
+        }
+
+        /// <summary>
+        /// Checks if the CustomizedProduct's user token matches the provided user token.
+        /// </summary>
+        /// <param name="customizedProduct">Instance of CustomizedProduct.</param>
+        /// <param name="userToken">User's authentication token.</param>
+        /// <exception cref="NotAuthorizedException">
+        /// Thrown when the CustomizedProduct's user token is set and does not match the provided user token.
+        /// </exception>
+        private void checkUserToken(CustomizedProduct customizedProduct, string userToken)
+        {
+            if (customizedProduct.authToken != null && !customizedProduct.authToken.Equals(userToken))
+            {
+                throw new NotAuthorizedException(UNABLE_TO_ALTER_CUSTOMIZED_PRODUCT);
+            }
         }
     }
 }
