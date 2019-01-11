@@ -46,7 +46,7 @@ namespace core_tests.domain
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             CustomizedProduct customizedProduct = CustomizedProductBuilder
-                .createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions)
+                .createCustomizedProduct("reference", product, customizedDimensions)
                 .withMaterial(customizedMaterial).build();
 
             customizedProduct.finalizeCustomization();
@@ -73,7 +73,7 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>();
             colors.Add(color);
 
-            Finish finish = Finish.valueOf("once",1);
+            Finish finish = Finish.valueOf("once", 1);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
@@ -101,7 +101,7 @@ namespace core_tests.domain
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
             CustomizedProduct customizedProduct = CustomizedProductBuilder
-                .createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions)
+                .createCustomizedProduct("reference", product, customizedDimensions)
                 .withMaterial(customizedMaterial).build();
 
             customizedProduct.finalizeCustomization();
@@ -132,7 +132,7 @@ namespace core_tests.domain
             List<Color> colors = new List<Color>();
             colors.Add(color);
 
-            Finish finish = Finish.valueOf("once",1);
+            Finish finish = Finish.valueOf("once", 1);
             List<Finish> finishes = new List<Finish>();
             finishes.Add(finish);
 
@@ -158,8 +158,8 @@ namespace core_tests.domain
 
             CustomizedMaterial customizedMaterial = CustomizedMaterial.valueOf(material, color, finish);
             CustomizedDimensions customizedDimensions = CustomizedDimensions.valueOf(21, 30, 17);
-            CustomizedProduct customizedProduct =CustomizedProductBuilder
-                .createAnonymousUserCustomizedProduct("serial number", product, customizedDimensions)
+            CustomizedProduct customizedProduct = CustomizedProductBuilder
+                .createCustomizedProduct("reference", product, customizedDimensions)
                 .withMaterial(customizedMaterial).build();
 
             customizedProduct.finalizeCustomization();

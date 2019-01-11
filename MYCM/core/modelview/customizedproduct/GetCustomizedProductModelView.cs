@@ -5,6 +5,7 @@ using core.modelview.customizeddimensions;
 using core.modelview.customizedmaterial;
 using core.modelview.product;
 using core.modelview.slot;
+using static core.domain.CustomizedProduct;
 
 namespace core.modelview.customizedproduct
 {
@@ -29,6 +30,13 @@ namespace core.modelview.customizedproduct
         public GetBasicProductModelView product { get; set; }
 
         /// <summary>
+        /// CustomizedProducts reference
+        /// </summary>
+        /// <value>Gets/Sets the reference</value>
+        [DataMember]
+        public string reference { get; set; }
+
+        /// <summary>
         /// CustomizedProducts designation
         /// </summary>
         /// <value>Gets/Sets the designation</value>
@@ -36,18 +44,11 @@ namespace core.modelview.customizedproduct
         public string designation { get; set; }
 
         /// <summary>
-        /// CustomizedProducts reference
+        /// CustomizedProduct's current customization status.
         /// </summary>
-        /// <value>Gets/Sets the reference</value>
-        [DataMember(EmitDefaultValue = false)]  //if serial number is set, reference is null
-        public string reference { get; set; }
-
-        /// <summary>
-        /// CustomizedProduct's serial number.
-        /// </summary>
-        /// <value></value>
-        [DataMember(EmitDefaultValue = false)]  //if reference is set, serial number is null
-        public string serialNumber { get; set; }
+        /// <value>Gets/Sets the status.</value>
+        [DataMember]
+        public CustomizationStatus status { get; set; }
 
         /// <summary>
         /// CustomizedProducts customized dimensions

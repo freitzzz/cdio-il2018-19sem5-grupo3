@@ -11,18 +11,23 @@ Vue.use(Vuex)
  */
 const state = {
     canvasControls: {
+        canMoveComponents: "false",
         canMoveCloset: "false",
         canMoveSlots: "false",
-        canMoveComponents: "false",
-        componentToRemove: {}
+        componentToRemove: {},
+        componentToEdit: {},
+        componentToAdd: {},
+        componentMaterial: {},
+        doorsFlag: "",
+        slostSlider: []
     },
 
     product: {},
 
     customizedProduct: {
-        id: "",
-        designation: "",
+        id: undefined,
         reference: "",
+        designation: "",
         components: [],
         product: {
             id: ""
@@ -44,8 +49,7 @@ const state = {
                 alpha: ""
             }
         },
-        slots: [
-        ],
+        slots: [],
         customizedDimensions: {
             width: "",
             height: "",
@@ -60,10 +64,36 @@ const state = {
         depth: "",
     },
 
-    resizeVectorGlobal:{
+    resizeVectorGlobal: {
         width: "",
         height: "",
         depth: "",
+    },
+    /**
+     * Global User details
+     */
+    user:{
+        /**
+         * User name
+         */
+        name:String,
+        /**
+         * User Roles
+         */
+        roles:{
+            /**
+             * Boolean true if the user is an administrator
+             */
+            isAdministrator:Boolean,
+            /**
+             * Boolean true if the user is a content manager
+             */
+            isContentManager:Boolean,
+            /**
+             * Boolean true if the user is a logistic manager
+             */
+            isLogisticManager:Boolean
+        }
     }
 }
 
@@ -101,10 +131,16 @@ export const getters = {
     customizedProductId: state => {
         return state.customizedProduct.id;
     },
+    customizedProductReference: state => {
+        return state.customizedProduct.reference;
+    },
+    customizedProductDesignation: state => {
+        return state.customizedProduct.designation;
+    },
     customizedProductDimensions: state => {
         return state.customizedProduct.customizedDimensions;
     },
-    customizedProductSlotWidth: state => index => {
+    customizedProductSlot: state => index => {
         return state.customizedProduct.slots[index];
     },
     customizedProductComponents: state => {
@@ -137,8 +173,26 @@ export const getters = {
     canMoveComponents: state => {
         return state.canvasControls.canMoveComponents;
     },
+    doorsFlag: state => {
+        return state.canvasControls.doorsFlag;
+    },
     componentToRemove: state => {
         return state.canvasControls.componentToRemove;
+    },
+    /**
+     * Returns the current user details
+     */
+    userDetails: state=>{
+        return Object.assign({},state.user);
+    },
+    componentToAdd: state => {
+        return state.canvasControls.componentToAdd;
+    },
+    componentToEdit: state => {
+        return state.canvasControls.componentToEdit;
+    },
+    componentToEditMaterial: state => {
+        return state.canvasControls.componentMaterial;
     }
 }
 

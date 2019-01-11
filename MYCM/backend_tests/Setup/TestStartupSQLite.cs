@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using core.persistence;
 using System.Reflection;
 using backend.Controllers;
+using System;
 
 namespace backend_tests.Setup
 {
@@ -30,6 +31,15 @@ namespace backend_tests.Setup
             services.AddScoped<CustomizedProductRepository, EFCustomizedProductRepository>();
             services.AddScoped<CustomizedProductCollectionRepository, EFCustomizedProductCollectionRepository>();
             services.AddScoped<CommercialCatalogueRepository, EFCommercialCatalogueRepository>();
+            services.AddScoped<MaterialPriceTableRepository, EFMaterialPriceTableRepository>();
+            services.AddScoped<FinishPriceTableRepository, EFFinishPriceTableRepository>();
+
+            services.AddHttpClient("CurrencyConversion", client =>
+            {
+                client.BaseAddress = new Uri("http://rate-exchange-1.appspot.com");
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                client.DefaultRequestHeaders.Add("User-Agent", "CurrencyConversionAgent");
+            });
 
             //Due to a bug with the mock test server, the MVC controller assemblies must be specified
             ///<a href="https://stackoverflow.com/questions/43669633/why-is-testserver-not-able-to-find-controllers-when-controller-is-in-separate-as?noredirect=1#comment74386164_43669633"</a>

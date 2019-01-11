@@ -11,6 +11,8 @@ using NodaTime.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using core.exceptions;
+using core.modelview.material;
+using core.modelview.price;
 
 namespace backend.Controllers
 {
@@ -36,126 +38,6 @@ namespace backend.Controllers
         private const string ENTRY_NOT_UPDATED = "The price entry wasn't updated";
 
         /// <summary>
-        /// Constant that represents the message that is logged if a price entry is updated successfully
-        /// </summary>
-        private const string ENTRY_UPDATE_SUCCESSFUL = "The price entry was updated successfully";
-
-        /// <summary>
-        /// Constant that represents the message that is logged if a get all materials price history request starts
-        /// </summary>
-        private const string LOG_GET_ALL_MATERIALS_PRICE_HISTORY_REQUEST_START = "GET ALL Materials Price History Request started";
-
-        /// <summary>
-        /// Constant that represents the message that is logged if a get material price history request starts
-        /// </summary>
-        private const string LOG_GET_MATERIAL_PRICE_HISTORY_REQUEST_START = "GET{id} Material Price History Request started";
-
-        /// <summary>
-        /// Constant that represents the message that is logged if a get finish price history request starts
-        /// </summary>
-        private const string LOG_GET_MATERIAL_FINISH_PRICE_HISTORY_REQUEST_START = "GET Price History of Finish {finishId} of Material{materialId} Request started";
-
-        /// <summary>
-        /// Constant that represents the message that is logged if a get all material finishes price history request starts
-        /// </summary>
-        private const string LOG_GET_ALL_MATERIAL_FINISHES_PRICE_HISTORY_REQUEST_START = "GET ALL Finishes Price History of Material {id} Request started";
-
-        /// <summary>
-        /// Constant that represents the message that is logged everytime this controller receives a POST Request
-        /// </summary>
-        private const string LOG_POST_START = "POST Request started";
-
-        /// <summary>
-        /// Constant that represents the message that is logged everytime this controller receives a PUT Request
-        /// </summary>
-        private const string LOG_PUT_START = "PUT Request started";
-
-        /// <summary>
-        /// Constant that represents the message that is logged everytime a material price entry is created successfully
-        /// </summary>
-        private const string LOG_POST_MATERIAL_ENTRY_SUCCESS = "Price Entry {@entry} for Material {id} created successfully";
-
-        /// <summary>
-        /// Constant that represents the message that is logged everytime a material's finish price entry is created successfully
-        /// </summary>
-        private const string LOG_POST_FINISH_ENTRY_SUCCESS = "Price Entry {@entry} for Finish {id} of Material {materialId} created successfully";
-
-        /// <summary>
-        /// Constant that represents the message that is logged everytime an update for a material's price table entry returns a BadRequest
-        /// </summary>
-        private const string LOG_PUT_MATERIAL_ENTRY_SUCCESS = "Price Table Entry {entryid} of Material {materialId} updated succesfully with {@update}";
-
-        /// <summary>
-        /// Constant that represents the message that is logged everytime an update for a finish's price table entry returns a BadRequest
-        /// </summary>
-        private const string LOG_PUT_FINISH_ENTRY_SUCCESS = "Price Table Entry {entryid} of Finish {finishId} of Material {materialId} updated succesfully with {@update}";
-
-        /// <summary>
-        /// Constant that represents the message that is logged if a get all materials price history request succeeds
-        /// </summary>
-        private const string LOG_GET_ALL_MATERIALS_PRICE_HISTORY_SUCCESS = "GET ALL Materials Price History retrieved {@modelView}";
-
-        /// <summary>
-        /// Constant that represents the message that is logged if a get materials price history request is successful
-        /// </summary>
-        private const string LOG_GET_MATERIAL_PRICE_HISTORY_SUCCESS = "GET{id} Materials Price History retrieved {@modelView}";
-
-        /// <summary>
-        /// Constant that represents the message that is logged if a get material finish price history request is successful
-        /// </summary>
-        private const string LOG_GET_MATERIAL_FINISH_PRICE_HISTORY_SUCCESS = "GET{finishId} Finish Price History of Material {materialId} retrieved {@modelView}";
-
-        /// <summary>
-        /// Constant that represents the message that is logged if a get all material finishes price history request is successful
-        /// </summary>
-        private const string LOG_GET_ALL_MATERIAL_FINISHES_PRICE_HISTORY_SUCCESS = "GET ALL Finishes Price History of Material{id} retrieved {@modelView}";
-
-        /// <summary>
-        /// Constant that represents the message that is logged everytime a material price entry POST returns a BadRequest
-        /// </summary>
-        private const string LOG_POST_MATERIAL_ENTRY_BAD_REQUEST = "POST Price Entry {@entry} for Material {id} BadRequest";
-
-        /// <summary>
-        /// Constant that represents the message that is logged everytime a material price entry POST returns a BadRequest
-        /// </summary>
-        private const string LOG_POST_FINISH_ENTRY_BAD_REQUEST = "POST Price Entry {@entry} for Finish {id} of Material {materialId} BadRequest";
-
-        /// <summary>
-        /// Constant that represents the message that is logged everytime an update for a material's price table entry returns a BadRequest
-        /// </summary>
-        private const string LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST = "PUT {@update} for Price Table Entry {entryid} of Material {materialId} BadRequest";
-
-        /// <summary>
-        /// Constant that represents the message that is logged everytime an update for a finish's price table entry returns a BadRequest
-        /// </summary>
-        private const string LOG_PUT_FINISH_ENTRY_BAD_REQUEST = "PUT {@update} for Price Table Entry {entryid} of Finish {finishId} of Material {materialId} BadRequest";
-
-        /// <summary>
-        /// Constant that represents the message that is logged if a get all materials price history request fails
-        /// </summary>
-        private const string LOG_GET_ALL_MATERIALS_PRICE_HISTORY_NOT_FOUND = "GET ALL Materials Price History NotFound";
-
-        /// <summary>
-        /// Constant that represents the message that is logged if a get materials price history request returns not found
-        /// </summary>
-        private const string LOG_GET_MATERIAL_PRICE_HISTORY_NOT_FOUND = "GET{id} Material Price History NotFound";
-
-        /// <summary>
-        /// Constant that represents the message that is logged if a get material finish price history request returns not found
-        /// </summary>
-        private const string LOG_GET_MATERIAL_FINISH_PRICE_HISTORY_NOT_FOUND = "GET{finishId} Finish Price History of Material {materialId} NotFound";
-
-        /// <summary>
-        /// Constant that represents the message that is logged if a get all material finishes price history request returns not found
-        /// </summary>
-        private const string LOG_GET_ALL_MATERIAL_FINISHES_PRICE_HISTORY_NOT_FOUND = "GET ALL Finishes Price History of Material {id} NotFound";
-
-        /// <summary>
-        /// Constant that represents the message that is logged if a post material price table entry returns not found
-        /// </summary>
-        private const string LOG_POST_MATERIAL_ENTRY_MATERIAL_NOT_FOUND = "POST{@modelView} Material Price Table Entry Material{id} NotFound";
-
-        /// <summary>
         /// Material Price Table Repository
         /// </summary>
         private readonly MaterialPriceTableRepository materialPriceTableRepository;
@@ -164,11 +46,6 @@ namespace backend.Controllers
         /// Finish Price Table Repository
         /// </summary>
         private readonly FinishPriceTableRepository finishPriceTableRepository;
-
-        /// <summary>
-        /// Controller's logger
-        /// </summary>
-        private readonly ILogger<PriceTablesController> logger;
 
         /// <summary>
         /// Injected client factory
@@ -180,60 +57,72 @@ namespace backend.Controllers
         /// </summary>
         /// <param name="materialPriceTableRepository">material price table repository</param>
         /// <param name="finishPriceTableRepository">finish price table repository</param>
-        /// <param name="logger">controller's logger</param>
-        public PriceTablesController(MaterialPriceTableRepository materialPriceTableRepository, FinishPriceTableRepository finishPriceTableRepository, ILogger<PriceTablesController> logger, IHttpClientFactory clientFactory)
+        public PriceTablesController(MaterialPriceTableRepository materialPriceTableRepository, FinishPriceTableRepository finishPriceTableRepository, IHttpClientFactory clientFactory)
         {
             this.materialPriceTableRepository = materialPriceTableRepository;
             this.finishPriceTableRepository = finishPriceTableRepository;
-            this.logger = logger;
             this.clientFactory = clientFactory;
         }
 
         /// <summary>
         /// Fetches price history of all materials
         /// </summary>
+        /// <param name="currency">Query parameter to know the currency in which the price is presented</param>
+        /// <param name="area">Query parameter to know the area in which the price is presented</param>
         /// <returns>HTTP Response 200; OK with the price history of all materials
-        ///          HTTP Response 404; Not Found if there no material has a price history
+        ///          HTTP Response 404; Not Found if no materials have price histories
         /// </returns>
         [HttpGet("materials")]
-        public ActionResult fetchAllMaterialsPriceHistory()
+        public ActionResult fetchAllMaterialsPriceHistory([FromQuery] string currency, [FromQuery] string area)
         {
-            logger.LogInformation(LOG_GET_ALL_MATERIALS_PRICE_HISTORY_REQUEST_START);
             try
             {
-                GetAllMaterialPriceHistoryModelView modelView = new core.application.PriceTablesController().fetchPriceHistoryOfAllMaterials();
-                logger.LogInformation(LOG_GET_ALL_MATERIALS_PRICE_HISTORY_SUCCESS, modelView);
+                GetAllMaterialPriceHistoryModelView modelView = new core.application.PriceTablesController().fetchPriceHistoryOfAllMaterials(currency, area, clientFactory);
                 return Ok(modelView);
             }
             catch (ResourceNotFoundException e)
             {
-                logger.LogWarning(e, LOG_GET_ALL_MATERIALS_PRICE_HISTORY_NOT_FOUND);
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (ArgumentException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception)
             {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
+        /// <summary>
+        /// Fetches price history of all finishes of a material
+        /// </summary>
+        /// <param name="materialID">Material's PID</param>
+        /// <param name="currency">Query parameter to know the currency in which the price is presented</param>
+        /// <param name="area">Query parameter to know the area in which the price is presented</param>
+        /// <returns>Action Result with HTTP Code 200 and the price history of all material finishes
+        ///         Or Action Result with HTTP Code 404 if no material finishes have a price history</returns>
         [HttpGet("materials/{materialID}/finishes")]
-        public ActionResult fetchAllMaterialFinishesPriceHistory(long materialID)
+        public ActionResult fetchAllMaterialFinishesPriceHistory(long materialID, [FromQuery] string currency, [FromQuery] string area)
         {
-            logger.LogInformation(LOG_GET_ALL_MATERIAL_FINISHES_PRICE_HISTORY_REQUEST_START, materialID);
             try
             {
                 FetchMaterialFinishPriceHistoryDTO priceHistoryDTO = new FetchMaterialFinishPriceHistoryDTO();
                 priceHistoryDTO.materialID = materialID;
-                GetAllMaterialFinishPriceHistoryModelView allMaterialFinishesPriceHistoryModelView = new core.application.PriceTablesController().fetchPriceHistoryOfAllMaterialFinishes(priceHistoryDTO);
-                logger.LogInformation(LOG_GET_ALL_MATERIAL_FINISHES_PRICE_HISTORY_SUCCESS, materialID, allMaterialFinishesPriceHistoryModelView);
+                priceHistoryDTO.currency = currency;
+                priceHistoryDTO.area = area;
+                GetAllMaterialFinishPriceHistoryModelView allMaterialFinishesPriceHistoryModelView = new core.application.PriceTablesController().fetchPriceHistoryOfAllMaterialFinishes(priceHistoryDTO, clientFactory);
                 return Ok(allMaterialFinishesPriceHistoryModelView);
             }
             catch (ResourceNotFoundException e)
             {
-                logger.LogWarning(e, LOG_GET_ALL_MATERIAL_FINISHES_PRICE_HISTORY_NOT_FOUND, materialID);
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (ArgumentException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception)
             {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
@@ -243,27 +132,32 @@ namespace backend.Controllers
         /// Fetches the price history of a material
         /// </summary>
         /// <param name="materialID">Long with the resource ID of the material being fetched the price history</param>
+        /// <param name="currency">Query parameter to know the currency in which the price is presented</param>
+        /// <param name="area">Query parameter to know the area in which the price is presented</param>
         /// <returns>HTTP Response 200; OK with the material price history
         ///      <br>HTTP Response 404; Not Found if there is no price history for the given material
         /// </returns>
         [HttpGet("materials/{materialID}")]
-        public ActionResult fetchMaterialPriceHistory(long materialID)
+        public ActionResult fetchMaterialPriceHistory(long materialID, [FromQuery] string currency, [FromQuery] string area)
         {
-            logger.LogInformation(LOG_GET_MATERIAL_PRICE_HISTORY_REQUEST_START, materialID);
             FetchMaterialPriceHistoryDTO fetchMaterialPriceHistoryDTO = new FetchMaterialPriceHistoryDTO();
             fetchMaterialPriceHistoryDTO.materialID = materialID;
+            fetchMaterialPriceHistoryDTO.currency = currency;
+            fetchMaterialPriceHistoryDTO.area = area;
             try
             {
-                GetAllMaterialPriceHistoryModelView materialPriceHistoryModelView = new core.application.PriceTablesController().fetchMaterialPriceHistory(fetchMaterialPriceHistoryDTO);
-                logger.LogInformation(LOG_GET_MATERIAL_PRICE_HISTORY_SUCCESS, materialID, materialPriceHistoryModelView);
+                GetAllMaterialPriceHistoryModelView materialPriceHistoryModelView = new core.application.PriceTablesController().fetchMaterialPriceHistory(fetchMaterialPriceHistoryDTO, clientFactory);
                 return Ok(materialPriceHistoryModelView);
             }
             catch (ResourceNotFoundException e)
             {
-                logger.LogWarning(e, LOG_GET_MATERIAL_PRICE_HISTORY_NOT_FOUND, materialID);
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (ArgumentException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception)
             {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
@@ -274,28 +168,109 @@ namespace backend.Controllers
         /// </summary>
         /// <param name="materialID">Long with the resource ID of the material being fetched the price history</param>
         /// <param name="finishID">Long with the resource ID of the material finish being fetched the price history</param>
+        /// <param name="currency">Query parameter to know the currency in which the price is presented</param>
+        /// <param name="area">Query parameter to know the area in which the price is presented</param>
         /// <returns>HTTP Response 200; OK with the material price history
         ///      <br>HTTP Response 404; Not Found if there is no price history for the given material
         /// </returns>
         [HttpGet("materials/{materialID}/finishes/{finishID}")]
-        public ActionResult fetchMaterialFinishPriceHistory(long materialID, long finishID)
+        public ActionResult fetchMaterialFinishPriceHistory(long materialID, long finishID, [FromQuery] string currency, [FromQuery] string area)
         {
-            logger.LogInformation(LOG_GET_MATERIAL_FINISH_PRICE_HISTORY_REQUEST_START, finishID, materialID);
             FetchMaterialFinishPriceHistoryDTO fetchMaterialFinishPriceHistoryDTO = new FetchMaterialFinishPriceHistoryDTO();
             fetchMaterialFinishPriceHistoryDTO.materialID = materialID;
             fetchMaterialFinishPriceHistoryDTO.finishID = finishID;
+            fetchMaterialFinishPriceHistoryDTO.currency = currency;
+            fetchMaterialFinishPriceHistoryDTO.area = area;
             try
             {
-                GetAllMaterialFinishPriceHistoryModelView materialFinishPriceHistoryModelView = new core.application.PriceTablesController().fetchMaterialFinishPriceHistory(fetchMaterialFinishPriceHistoryDTO);
-                logger.LogInformation(LOG_GET_MATERIAL_FINISH_PRICE_HISTORY_SUCCESS, finishID, materialID, materialFinishPriceHistoryModelView);
+                GetAllMaterialFinishPriceHistoryModelView materialFinishPriceHistoryModelView = new core.application.PriceTablesController().fetchMaterialFinishPriceHistory(fetchMaterialFinishPriceHistoryDTO, clientFactory);
                 return Ok(materialFinishPriceHistoryModelView);
             }
             catch (ResourceNotFoundException e)
             {
-                logger.LogWarning(e, LOG_GET_MATERIAL_FINISH_PRICE_HISTORY_NOT_FOUND, finishID, materialID);
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (ArgumentException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+        /// <summary>
+        /// Fetches the current price of a material
+        /// </summary>
+        /// <param name="materialId">Material's PID</param>
+        /// <param name="currency">Query parameter to know to which currency to convert the price to</param>
+        /// <param name="area">Query parameter to know to which area to convert the price to</param>
+        /// <returns>Action Result with HTTP Code 200 with the material's current price
+        ///         Or Action Result with HTTP Code 404 if the requested material isn't found
+        ///         Or Action Result with HTTP Code 500 if an unexpected error happens </returns>
+        [HttpGet("materials/{materialId}/currentprice")]
+        public ActionResult fetchCurrentMaterialPrice(long materialId, [FromQuery] string currency, [FromQuery] string area)
+        {
+            GetCurrentMaterialPriceModelView fetchCurrentMaterialPrice = new GetCurrentMaterialPriceModelView();
+            fetchCurrentMaterialPrice.material = new GetBasicMaterialModelView();
+            fetchCurrentMaterialPrice.currentPrice = new PriceModelView();
+            fetchCurrentMaterialPrice.material.id = materialId;
+            fetchCurrentMaterialPrice.currentPrice.currency = currency;
+            fetchCurrentMaterialPrice.currentPrice.area = area;
+            try
+            {
+                GetCurrentMaterialPriceModelView currentMaterialPrice = new core.application.PriceTablesController().fetchCurrentMaterialPrice(fetchCurrentMaterialPrice, clientFactory);
+                return Ok(currentMaterialPrice);
+            }
+            catch (ResourceNotFoundException e)
+            {
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+        /// <summary>
+        /// Fetches the current price of a material finish
+        /// </summary>
+        /// <param name="materialId">Material's PID</param>
+        /// <param name="finishId">Finish's PID</param>
+        /// <param name="currency">Query parameter to know in which currency to present the price in</param>
+        /// <param name="area">Query parameter to know in which area to present the price in</param>
+        /// <returns>Action Result with HTTP Code 200 and the material's finish current price
+        ///         Or Action Result with HTTP Code 404 if one of the requested resources isn't found
+        ///         Or Action Result with HTTP Code 500 if an unexpected error happens</returns>
+        [HttpGet("materials/{materialId}/finishes/{finishId}/currentprice")]
+        public ActionResult fetchCurrentMaterialFinishPrice(long materialId, long finishId, [FromQuery] string currency, [FromQuery] string area)
+        {
+            GetCurrentMaterialFinishPriceModelView fetchCurrentMaterialFinishPrice = new GetCurrentMaterialFinishPriceModelView();
+            fetchCurrentMaterialFinishPrice.finish = new GetMaterialFinishModelView();
+            fetchCurrentMaterialFinishPrice.currentPrice = new PriceModelView();
+            fetchCurrentMaterialFinishPrice.finish.materialId = materialId;
+            fetchCurrentMaterialFinishPrice.finish.id = finishId;
+            fetchCurrentMaterialFinishPrice.currentPrice.currency = currency;
+            fetchCurrentMaterialFinishPrice.currentPrice.area = area;
+            try
+            {
+                GetCurrentMaterialFinishPriceModelView currentMaterialFinishPrice = new core.application.PriceTablesController().fetchCurrentMaterialFinishPrice(fetchCurrentMaterialFinishPrice, clientFactory);
+                return Ok(currentMaterialFinishPrice);
+            }
+            catch (ResourceNotFoundException e)
+            {
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception)
             {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
@@ -309,49 +284,40 @@ namespace backend.Controllers
         /// <returns>ActionResult with HTTP Code 201 if the creation is successful
         ///         Or ActionResult with HTTP Code 400 if an error happens</returns>
         [HttpPost("materials/{id}")]
-        public async Task<ActionResult> addMaterialPriceTableEntry(long id, [FromBody] AddPriceTableEntryModelView modelView)
+        public ActionResult addMaterialPriceTableEntry(long id, [FromBody] AddPriceTableEntryModelView modelView)
         {
-            logger.LogInformation(LOG_POST_START);
             try
             {
                 modelView.entityId = id;
-                GetMaterialPriceModelView createdPrice = await new core.application.PriceTablesController().addMaterialPriceTableEntry(modelView, clientFactory);
+                GetMaterialPriceModelView createdPrice = new core.application.PriceTablesController().addMaterialPriceTableEntry(modelView, clientFactory);
                 if (createdPrice == null)
                 {
-                    logger.LogWarning(LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
                     return BadRequest(new SimpleJSONMessageService(PRICE_ENTRY_NOT_CREATED));
                 }
-                logger.LogInformation(LOG_POST_MATERIAL_ENTRY_SUCCESS, createdPrice, createdPrice.id);
                 return Created(Request.Path, createdPrice);
             }
             catch (ResourceNotFoundException e)
             {
-                logger.LogWarning(e, LOG_POST_MATERIAL_ENTRY_MATERIAL_NOT_FOUND, modelView, id);
                 return NotFound(new SimpleJSONMessageService(e.Message));
             }
             catch (NullReferenceException e)
             {
-                logger.LogWarning(e, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (InvalidOperationException e)
             {
-                logger.LogWarning(e, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (UnparsableValueException e)
             {
-                logger.LogWarning(e, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (ArgumentException e)
             {
-                logger.LogWarning(e, LOG_POST_MATERIAL_ENTRY_BAD_REQUEST, modelView, id);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -364,20 +330,17 @@ namespace backend.Controllers
         /// <returns>ActionResult with HTTP Code 201 if the creation is successful
         ///         Or ActionResult with HTTP Code 400 if an error happens</returns>
         [HttpPost("materials/{materialid}/finishes/{finishid}")]
-        public async Task<ActionResult> addFinishPriceTableEntry(long materialid, long finishid, [FromBody] AddFinishPriceTableEntryModelView modelView)
+        public ActionResult addFinishPriceTableEntry(long materialid, long finishid, [FromBody] AddFinishPriceTableEntryModelView modelView)
         {
-            logger.LogInformation(LOG_POST_START);
             try
             {
                 modelView.entityId = materialid;
                 modelView.finishId = finishid;
-                GetMaterialFinishPriceModelView createdPrice = await new core.application.PriceTablesController().addFinishPriceTableEntry(modelView, clientFactory);
+                GetMaterialFinishPriceModelView createdPrice = new core.application.PriceTablesController().addFinishPriceTableEntry(modelView, clientFactory);
                 if (createdPrice == null)
                 {
-                    logger.LogWarning(LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
                     return BadRequest(new SimpleJSONMessageService(PRICE_ENTRY_NOT_CREATED));
                 }
-                logger.LogInformation(LOG_POST_MATERIAL_ENTRY_SUCCESS, createdPrice, createdPrice.finishId, createdPrice.id);
                 return Created(Request.Path, createdPrice);
             }
             catch (ResourceNotFoundException e)
@@ -386,25 +349,21 @@ namespace backend.Controllers
             }
             catch (NullReferenceException e)
             {
-                logger.LogWarning(e, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (InvalidOperationException e)
             {
-                logger.LogWarning(e, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (UnparsableValueException e)
             {
-                logger.LogWarning(e, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (ArgumentException e)
             {
-                logger.LogWarning(e, LOG_POST_FINISH_ENTRY_BAD_REQUEST, modelView, finishid, materialid);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
@@ -419,20 +378,17 @@ namespace backend.Controllers
         /// <returns>ActionResult with HTTP Code 200 if the update is successful
         ///         Or ActionResult with HTTP Code 400 if the update isn't successful</returns>
         [HttpPut("materials/{materialid}/entries/{entryid}")]
-        public async Task<ActionResult> updateMaterialPriceTableEntry(long materialid, long entryid, [FromBody] UpdatePriceTableEntryModelView modelView)
+        public ActionResult updateMaterialPriceTableEntry(long materialid, long entryid, [FromBody] UpdatePriceTableEntryModelView modelView)
         {
-            logger.LogInformation(LOG_PUT_START);
             try
             {
                 modelView.entityId = materialid;
                 modelView.tableEntryId = entryid;
-                GetMaterialPriceModelView updatedEntry = await new core.application.PriceTablesController().updateMaterialPriceTableEntry(modelView, clientFactory);
+                GetMaterialPriceModelView updatedEntry = new core.application.PriceTablesController().updateMaterialPriceTableEntry(modelView, clientFactory);
                 if (updatedEntry == null)
                 {
-                    logger.LogWarning(LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
                     return BadRequest(new SimpleJSONMessageService(ENTRY_NOT_UPDATED));
                 }
-                logger.LogInformation(LOG_PUT_MATERIAL_ENTRY_SUCCESS, entryid, materialid, modelView);
                 return Ok(updatedEntry);
             }
             catch (ResourceNotFoundException e)
@@ -441,25 +397,21 @@ namespace backend.Controllers
             }
             catch (NullReferenceException e)
             {
-                logger.LogWarning(e, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (InvalidOperationException e)
             {
-                logger.LogWarning(e, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (UnparsableValueException e)
             {
-                logger.LogWarning(e, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (ArgumentException e)
             {
-                logger.LogWarning(e, LOG_PUT_MATERIAL_ENTRY_BAD_REQUEST, modelView, entryid, materialid);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
@@ -475,21 +427,18 @@ namespace backend.Controllers
         /// <returns>ActionResult with HTTP Code 200 if the update is successful
         ///         Or ActionResult with HTTP Code 400 if the update isn't successful</returns>
         [HttpPut("materials/{materialid}/finishes/{finishid}/entries/{entryid}")]
-        public async Task<ActionResult> updateFinishPriceTableEntry(long materialid, long finishid, long entryid, [FromBody] UpdateFinishPriceTableEntryModelView modelView)
+        public ActionResult updateFinishPriceTableEntry(long materialid, long finishid, long entryid, [FromBody] UpdateFinishPriceTableEntryModelView modelView)
         {
-            logger.LogInformation(LOG_PUT_START);
             try
             {
                 modelView.entityId = materialid;
                 modelView.finishId = finishid;
                 modelView.tableEntryId = entryid;
-                GetMaterialFinishPriceModelView updatedEntry = await new core.application.PriceTablesController().updateFinishPriceTableEntry(modelView, clientFactory);
+                GetMaterialFinishPriceModelView updatedEntry = new core.application.PriceTablesController().updateFinishPriceTableEntry(modelView, clientFactory);
                 if (updatedEntry == null)
                 {
-                    logger.LogWarning(LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
                     return BadRequest(new { error = ENTRY_NOT_UPDATED });
                 }
-                logger.LogInformation(LOG_PUT_FINISH_ENTRY_SUCCESS, entryid, finishid, materialid, modelView);
                 return Ok(updatedEntry);
             }
             catch (ResourceNotFoundException e)
@@ -498,30 +447,24 @@ namespace backend.Controllers
             }
             catch (NullReferenceException e)
             {
-                logger.LogWarning(e, LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (InvalidOperationException e)
             {
-                logger.LogWarning(e, LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (UnparsableValueException e)
             {
-                logger.LogWarning(e, LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
             catch (ArgumentException e)
             {
-                logger.LogWarning(e, LOG_PUT_FINISH_ENTRY_BAD_REQUEST, modelView, entryid, finishid, materialid);
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
-
-        //TODO GET Current Material Price & GET Current Material Finish Price
     }
 }

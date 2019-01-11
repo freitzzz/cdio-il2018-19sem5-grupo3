@@ -1,14 +1,13 @@
 using System.Runtime.Serialization;
 using core.dto;
+using core.modelview.restriction;
 
-namespace core.modelview.component
-{
+namespace core.modelview.component {
     /// <summary>
     /// Class representing the ModelView used for adding a Restriction to a Component.
     /// </summary>
     [DataContract]
-    public class AddComponentRestrictionModelView
-    {
+    public class AddComponentRestrictionModelView {
         /// <summary>
         /// Father Product's persistence identifier.
         /// </summary>
@@ -26,11 +25,10 @@ namespace core.modelview.component
         public long childProductId { get; set; }
 
         /// <summary>
-        /// RestrictionDTO containing the Restriction's information.
+        /// AddRestrictionModelView containing the Restriction's information.
         /// </summary>
-        /// <value>Gets/sets the instance of RestrictionDTO.</value>
+        /// <value>Gets/sets the instance of AddRestrictionModelView.</value>
         [DataMember]
-        public RestrictionDTO restriction { get; set; }
-        //TODO: change this to ModelView ASAP
+        public AddRestrictionModelView restriction { get; set; }
     }
 }

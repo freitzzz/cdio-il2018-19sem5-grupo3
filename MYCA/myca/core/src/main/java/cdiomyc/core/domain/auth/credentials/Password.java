@@ -5,6 +5,7 @@ import cdiomyc.support.domain.ddd.ValueObject;
 import cdiomyc.support.encryptions.DigestUtils;
 import cdiomyc.support.encryptions.OperatorsEncryption;
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
@@ -25,6 +26,7 @@ public class Password implements Serializable,ValueObject {
     /**
      * String that represents the password value
      */
+    @Column(length = 1<<14)
     protected String password;
     
     /**

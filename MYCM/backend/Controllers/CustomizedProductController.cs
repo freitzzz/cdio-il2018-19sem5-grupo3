@@ -10,6 +10,10 @@ using core.exceptions;
 using backend.utils;
 using core.modelview.slot;
 using core.modelview.customizeddimensions;
+using System.Threading.Tasks;
+using core.modelview.customizedproduct.customizedproductprice;
+using System.Net.Http;
+using core.modelview.product;
 
 namespace backend.Controllers {
     /// <summary>
@@ -23,124 +27,14 @@ namespace backend.Controllers {
         private const string UNEXPECTED_ERROR = "An unexpected error occurred, please try again later.";
 
         /// <summary>
-        /// Constant that represents the message that occurs if there are no customized products available
-        /// </summary>
-        private const string NO_CUSTOMIZED_PRODUCTS_AVAILABLE = "There are no customized products available";
-
-        /// <summary>
-        /// Constant that represents the message that occurs if a slot wasn't deleted successfully from a customized product
-        /// </summary>
-        private const string SLOT_NOT_DELETED = "Slot wasn't deleted from customized product";
-
-        /// <summary>
-        /// Constant that represents the message that occurs if a customized product wasn't deleted from a slot
-        /// </summary>
-        private const string CUSTOMIZED_PRODUCT_NOT_DELETED_FROM_SLOT = "Customized product wasn't deleted from slot";
-
-        /// <summary>
         /// Constant that represents the message that occurs if a client attemps to create a product with an invalid request body
         /// </summary>
         private const string INVALID_REQUEST_BODY_MESSAGE = "The request body is invalid! Check documentation for more information";
 
         /// <summary>
-        /// Constant that represents the message that occurs if a client attemps to fetch a resource which doesn't exist or is not available
+        /// Constant that represents the message presented when no user token is provided while trying to retrieve the CustomizedProducts created by a user.
         /// </summary>
-        private const string RESOURCE_NOT_FOUND_MESSAGE = "The resource being fetched could not be found";
-
-        /// <summary>
-        /// Constant that represents the message that occurs if an update is invalid
-        /// </summary>
-        private const string INVALID_UPDATE_MESSAGE = "An error occurred during the update of the resource";
-
-        /// <summary>
-        /// Constant that represents the message that occurs if an update is valid
-        /// </summary>
-        private const string VALID_UPDATE_MESSAGE = "The resource was updated with success";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET All Request starts
-        /// </summary>
-        private const string LOG_GET_ALL_START = "GET All Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET By ID Request starts
-        /// </summary>
-        private const string LOG_GET_BY_ID_START = "GET By ID Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a POST Request starts
-        /// </summary>
-        private const string LOG_POST_START = "POST Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a PUT Request starts
-        /// </summary>
-        private const string LOG_PUT_START = "PUT Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a DELETE Request starts
-        /// </summary>
-        private const string LOG_DELETE_START = "DELETE Request started";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET All Request is successful
-        /// </summary>
-        private const string LOG_GET_ALL_SUCCESS = "Customized Products {@customizedProducts} retrieved";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET By ID Request is successful
-        /// </summary>
-        private const string LOG_GET_BY_ID_SUCCESS = "Customized Product {@customizedProduct} retrieved";
-
-        /// <summary>
-        /// Constant that represents the log message for when a POST Request is successful
-        /// </summary>
-        private const string LOG_POST_SUCCESS = "Customized Product {@customizedProduct} created";
-
-        /// <summary>
-        /// Constant that represents the log message for when a PUT Request is successful
-        /// </summary>
-        private const string LOG_PUT_SUCCESS = "Customized Product with id {customizedProductId} updated with info {@updateInfo}";
-
-        /// <summary>
-        /// Constant that represents the log message for when a DELETE slot from customized product request is successful
-        /// </summary>
-        private const string LOG_DELETE_SLOT_FROM_CUSTOMIZED_PRODUCT_SUCCESS = "Slot {slotId} removed from CustomizedProduct {customizedProductId} successfully";
-
-        /// <summary>
-        /// Constant that represents the log message for when a DELETE child customized product request is successful
-        /// </summary>
-        private const string LOG_DELETE_CHILD_CUSTOMIZED_PRODUCT_SUCCESS = "CustomizedProduct child {childId} removed from Slot {slotId} with CustomizedProduct parent {customizedProductId}";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET All Request returns a BadRequest
-        /// </summary>
-        private const string LOG_GET_ALL_NOT_FOUND = "GET All NotFound (No Customized Products Found)";
-
-        /// <summary>
-        /// Constant that represents the log message for when a GET By ID Request returns a BadRequest
-        /// </summary>
-        private const string LOG_GET_BY_ID_NOT_FOUND = "GETByID({id}) NotFound";
-
-        /// <summary>
-        /// Constant that represents the log message for when a POST Request returns a BadRequest
-        /// </summary>
-        private const string LOG_POST_BAD_REQUEST = "POST {@customizedProduct} BadRequest";
-
-        /// <summary>
-        /// Constant that represents the log message for when a PUT Request returns a BadRequest
-        /// </summary>
-        private const string LOG_PUT_BAD_REQUEST = "Customized Product {id} PUT {@updateInfo} BadRequest";
-
-        /// <summary>
-        /// Constant that represents the log message for when a DELETE slot from customized product Request returns a BadRequest
-        /// </summary>
-        private const string LOG_DELETE_SLOT_FROM_CUSTOMIZED_PRODUCT_BAD_REQUEST = "DELETE Slot {slotId} from Customized Product {customizedProductId} BadRequest";
-
-        /// <summary>
-        /// Constant that represents the log message for when a DELETE child customized product request returns a BadRequest
-        /// </summary>
-        private const string LOG_DELETE_CHILD_CUSTOMIZED_PRODUCT_BAD_REQUEST = "DELETE Customized Product chil {childId} from Slot {slotId} with Customized Product parent {parentId} BadRequest";
+        private const string MISSING_USER_TOKEN = "No user token was provided. Please, provide a token and try again.";
 
         /// <summary>
         /// This repository attribute is only here due to entity framework injection
@@ -153,20 +47,20 @@ namespace backend.Controllers {
         private readonly CustomizedProductSerialNumberRepository customizedProductSerialNumberRepository;
 
         /// <summary>
-        /// Controllers logger
+        /// Injected client factory
         /// </summary>
-        private readonly ILogger<CustomizedProductController> logger;
+        private readonly IHttpClientFactory clientFactory;
 
         /// <summary>
         /// This constructor is only here due to entity framework injection
         /// </summary>
         /// <param name="customizedProductRepository">Injected repository of customized products</param>
         /// <param name="customizedProductSerialNumberRepository">Injected instance of CustomizedProductSerialNumberRepository.</param>
-        /// <param name="logger">Controllers logger to log any information regarding HTTP Requests and Responses</param>
-        public CustomizedProductController(CustomizedProductRepository customizedProductRepository, CustomizedProductSerialNumberRepository customizedProductSerialNumberRepository, ILogger<CustomizedProductController> logger) {
+        /// <param name="clientFactory">Injected http client factory</param>
+        public CustomizedProductController(CustomizedProductRepository customizedProductRepository, CustomizedProductSerialNumberRepository customizedProductSerialNumberRepository, IHttpClientFactory clientFactory) {
             this.customizedProductRepository = customizedProductRepository;
             this.customizedProductSerialNumberRepository = customizedProductSerialNumberRepository;
-            this.logger = logger;
+            this.clientFactory = clientFactory;
         }
 
         /// <summary>
@@ -174,35 +68,55 @@ namespace backend.Controllers {
         /// </summary>
         /// <returns>ActionResult with all available customized products</returns>
         [HttpGet]
-        public ActionResult findAll() {
-            logger.LogInformation(LOG_GET_ALL_START);
-
-            try {
+        public ActionResult findAll()
+        {
+            try
+            {
                 GetAllCustomizedProductsModelView getAllModelView = new core.application.CustomizedProductController().findAllCustomizedProducts();
-                logger.LogInformation(LOG_GET_ALL_SUCCESS);
                 return Ok(getAllModelView);
             } catch (ResourceNotFoundException e) {
-                logger.LogWarning(LOG_GET_ALL_NOT_FOUND);
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            } catch (Exception e) {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpGet("base")]
         public ActionResult findBaseCustomizedProducts() {
-            logger.LogInformation(LOG_GET_ALL_START);
-
             try {
                 GetAllCustomizedProductsModelView getAllModelView = new core.application.CustomizedProductController().findAllBaseCustomizedProducts();
-                logger.LogInformation(LOG_GET_ALL_SUCCESS);
                 return Ok(getAllModelView);
             } catch (ResourceNotFoundException e) {
-                logger.LogWarning(LOG_GET_ALL_NOT_FOUND);
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            } catch (Exception e) {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
+            } catch (Exception) {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+        [HttpGet("usercreations")]
+        public ActionResult findUserCreatedCustomizedProducts([FromHeader(Name = "UserToken")]string userAuthToken)
+        {
+            if (userAuthToken == null)
+            {
+                return BadRequest(new SimpleJSONMessageService(MISSING_USER_TOKEN));
+            }
+
+            try
+            {
+                FindUserCreatedCustomizedProductsModelView userCreatedCustomizedProductsModelView = new FindUserCreatedCustomizedProductsModelView();
+                userCreatedCustomizedProductsModelView.userAuthToken = userAuthToken;
+
+                GetAllCustomizedProductsModelView allCustomizedProductsCreatedByUser = new core.application.CustomizedProductController()
+                    .findUserCreatedCustomizedProducts(userCreatedCustomizedProductsModelView);
+
+                return Ok(allCustomizedProductsCreatedByUser);
+            }
+            catch (ResourceNotFoundException e)
+            {
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (Exception)
+            {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -211,42 +125,120 @@ namespace backend.Controllers {
         /// Fetches the information of a customized product by its resource id
         /// </summary>
         /// <param name="id">Long with the customized products resource id</param>
+        /// <param name="unit">String representing the unit in which the CustomizedProduct's dimensions will be retrieved in.</param>
         /// <returns>ActionResult with the customized product information</returns>
         [HttpGet("{id}", Name = "GetCustomizedProduct")]
-        public ActionResult findByID(long id) {
-            logger.LogInformation(LOG_GET_BY_ID_START);
+        public ActionResult findByID(long id, [FromQuery]string unit) {
             try {
                 FindCustomizedProductModelView findCustomizedProductModelView = new FindCustomizedProductModelView();
                 findCustomizedProductModelView.customizedProductId = id;
+                findCustomizedProductModelView.options.unit = unit;
+
                 GetCustomizedProductModelView fetchedCustomizedProduct = new core.application.CustomizedProductController().findCustomizedProduct(findCustomizedProductModelView);
-                logger.LogInformation(LOG_GET_BY_ID_SUCCESS);
                 return Ok(fetchedCustomizedProduct);
             } catch (ResourceNotFoundException e) {
-                logger.LogWarning(LOG_GET_BY_ID_NOT_FOUND, id);
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            } catch (Exception e) {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
+            } catch (InvalidOperationException e) {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            } catch (Exception) {
                 return NotFound(new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
-        [HttpGet("{customizedProductId}/slots/{slotId}", Name = "GetSlot")]
-        public ActionResult findSlotById(long customizedProductId, long slotId) {
-            //logger.LogInformation(LOG_GET_SLOT_START);
+        [HttpGet("{customizedProductId}/recommendedslots")]
+        public ActionResult getRecommendedSlots(long customizedProductId, [FromQuery]string unit) {
+            try {
+                FindCustomizedProductModelView findCustomizedProductModelView = new FindCustomizedProductModelView();
+                findCustomizedProductModelView.customizedProductId = customizedProductId;
+                findCustomizedProductModelView.options.unit = unit;
 
+                GetAllCustomizedDimensionsModelView allCustomDimensionsMV = new core.application.CustomizedProductController().getRecommendedSlots(findCustomizedProductModelView);
+                return Ok(allCustomDimensionsMV);
+            } catch (ResourceNotFoundException ex) {
+                return NotFound(new SimpleJSONMessageService(ex.Message));
+            } catch (Exception) {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+        [HttpGet("{customizedProductId}/minimumslots")]
+        public ActionResult getMinSlots(long customizedProductId, [FromQuery]string unit) {
+            try {
+                FindCustomizedProductModelView findCustomizedProductModelView = new FindCustomizedProductModelView();
+                findCustomizedProductModelView.customizedProductId = customizedProductId;
+                findCustomizedProductModelView.options.unit = unit;
+
+                GetAllCustomizedDimensionsModelView allCustomDimensionsMV =
+                    new core.application.CustomizedProductController().getMinSlots(findCustomizedProductModelView);
+
+                return Ok(allCustomDimensionsMV);
+            } catch (ResourceNotFoundException ex) {
+                return NotFound(new SimpleJSONMessageService(ex.Message));
+            } catch (Exception) {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+
+        [HttpGet("{customizedProductId}/slots/{slotId}", Name = "GetSlot")]
+        public ActionResult findSlotById(long customizedProductId, long slotId, [FromQuery]string unit) {
             try {
                 FindSlotModelView findSlotModelView = new FindSlotModelView();
                 findSlotModelView.customizedProductId = customizedProductId;
                 findSlotModelView.slotId = slotId;
+                findSlotModelView.options.unit = unit;
 
                 GetSlotModelView slotModelView = new core.application.CustomizedProductController().findSlot(findSlotModelView);
-                //logger.LogInformation(LOG_GET_SLOT_SUCESS, slotModelView);
                 return Ok(slotModelView);
             } catch (ResourceNotFoundException e) {
-                //logger.LogWarning(e, LOG_GET_SLOT_NOT_FOUND);
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            } catch (Exception e) {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
+            } catch (Exception) {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+        [HttpGet("{customizedProductId}/slots/{slotId}/possiblecomponents")]
+        public ActionResult fetchPossibleComponents(long customizedProductId, long slotId) {
+            try {
+                FindPossibleComponentsModelView findPossibleComponents = new FindPossibleComponentsModelView();
+                findPossibleComponents.customizedProductID = customizedProductId;
+                findPossibleComponents.slotID = slotId;
+                GetPossibleComponentsModelView possibleComponents = new core.application.CustomizedProductController().fetchPossibleComponents(findPossibleComponents);
+                return Ok(possibleComponents);
+            } catch (ResourceNotFoundException e) {
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            } catch (InvalidOperationException ex) {
+                return BadRequest(new SimpleJSONMessageService(ex.Message));
+            } catch (Exception) {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+        /// <summary>
+        /// Calculates and fetches the price of a requested customized product
+        /// </summary>
+        /// <param name="id">Customized Product's PID</param>
+        /// <param name="currency">Requested Currency to present the price in</param>
+        /// <param name="area">Requested Area to present the price in</param>
+        /// <returns>Action Result with HTTP Code 200 and detailed information about the customized product's price
+        ///         Or Action Result with HTTP Code 404 if the requested customized product isn't found
+        ///         Or Action Result with HTTP Code 400 if an error happens
+        ///         Or Action Result with HTTP Code 500 if an unexpected error happens</returns>
+        [HttpGet("{id}/price")]
+        public async Task<ActionResult> fetchPrice(long id, [FromQuery] string currency, [FromQuery] string area) {
+            try {
+                FetchCustomizedProductPriceModelView fetchPrice = new FetchCustomizedProductPriceModelView();
+                fetchPrice.id = id;
+                fetchPrice.currency = currency;
+                fetchPrice.area = area;
+
+                CustomizedProductFinalPriceModelView customizedProductPrice = await new core.application.CustomizedProductController().calculateCustomizedProductPrice(fetchPrice, clientFactory);
+                return Ok(customizedProductPrice);
+            } catch (ResourceNotFoundException e) {
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            } catch (ArgumentException e) {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
@@ -258,12 +250,11 @@ namespace backend.Controllers {
         /// <returns>ActionResult with the created customized product</returns>
         [HttpPost]
         [HttpPost("{customizedProductId}/slots/{slotId}/customizedproducts")]
-        public ActionResult addCustomizedProduct(long? customizedProductId, long? slotId, [FromHeader]string userAuthToken,
-            [FromBody]AddCustomizedProductModelView customizedProductModelView) {
-            logger.LogInformation(LOG_POST_START);
-
-            if (customizedProductModelView == null) {
-                logger.LogWarning(LOG_POST_BAD_REQUEST, customizedProductModelView);
+        public ActionResult addCustomizedProduct(long? customizedProductId, long? slotId, [FromHeader(Name = "UserToken")]string userAuthToken,
+            [FromBody]AddCustomizedProductModelView customizedProductModelView)
+        {
+            if (customizedProductModelView == null)
+            {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
 
@@ -275,26 +266,28 @@ namespace backend.Controllers {
                 GetCustomizedProductModelView createdCustomizedProductModelView = new core.application
                     .CustomizedProductController().addCustomizedProduct(customizedProductModelView);
 
-                logger.LogInformation(LOG_POST_SUCCESS, createdCustomizedProductModelView);
                 return CreatedAtRoute("GetCustomizedProduct", new { id = createdCustomizedProductModelView.customizedProductId }, createdCustomizedProductModelView);
-            } catch (InvalidOperationException invalidOperationException) {
-                logger.LogWarning(invalidOperationException, LOG_POST_BAD_REQUEST, customizedProductModelView);
+            }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
+            }
+            catch (InvalidOperationException invalidOperationException)
+            {
                 return BadRequest(new SimpleJSONMessageService(invalidOperationException.Message));
             } catch (ArgumentException argumentException) {
-                logger.LogWarning(argumentException, LOG_POST_BAD_REQUEST, customizedProductModelView);
                 return BadRequest(new SimpleJSONMessageService(argumentException.Message));
-            } catch (Exception e) {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpPost("{id}/slots")]
-        public ActionResult addSlotToCustomizedProduct(long id, [FromBody] AddCustomizedDimensionsModelView slotDimensions) {
-            //logger.LogInformation(LOG_ADD_SLOT_START);
-
-            if (slotDimensions == null) {
-                //logger.LogWarning(LOG_POST_SLOT_BAD_REQUEST, slotDimensions);
+        public ActionResult addSlotToCustomizedProduct(long id, [FromBody] AddCustomizedDimensionsModelView slotDimensions,
+            [FromHeader(Name = "UserToken")] string userAuthToken)
+        {
+            if (slotDimensions == null)
+            {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
 
@@ -302,53 +295,125 @@ namespace backend.Controllers {
                 AddSlotModelView addSlotModelView = new AddSlotModelView();
                 addSlotModelView.customizedProductId = id;
                 addSlotModelView.slotDimensions = slotDimensions;
+                addSlotModelView.userAuthToken = userAuthToken;
 
                 GetCustomizedProductModelView customizedProductModelView = new core.application.CustomizedProductController().addSlotToCustomizedProduct(addSlotModelView);
 
                 return Created(Request.Path, customizedProductModelView);
             } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            } catch (ArgumentException e) {
+            }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
+            }
+            catch (ArgumentException e)
+            {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             } catch (InvalidOperationException e) {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            } catch (Exception e) {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
+            } catch (Exception) {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+        [HttpPost("{customizedProductId}/recommendedslots")]
+        public ActionResult createRecommendedSlots(long customizedProductId, [FromQuery]string unit, [FromHeader(Name = "UserToken")] string userAuthToken)
+        {
+            try
+            {
+                AddSlotLayoutModelView addSlotLayoutModelView = new AddSlotLayoutModelView();
+                addSlotLayoutModelView.customizedProductId = customizedProductId;
+                addSlotLayoutModelView.userAuthToken = userAuthToken;
+                addSlotLayoutModelView.options.unit = unit;
+
+                GetCustomizedProductModelView customizedProductModelView = new core.application.CustomizedProductController().addRecommendedSlots(addSlotLayoutModelView);
+
+                return Ok(customizedProductModelView);
+            } catch (ResourceNotFoundException e) {
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            } catch (Exception) {
+                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
+            }
+        }
+
+
+        [HttpPost("{customizedProductId}/minimumslots")]
+        public ActionResult createMinimumSlots(long customizedProductId, [FromQuery]string unit, [FromHeader(Name = "UserToken")] string userAuthToken)
+        {
+            try
+            {
+                AddSlotLayoutModelView addSlotLayoutModelView = new AddSlotLayoutModelView();
+                addSlotLayoutModelView.customizedProductId = customizedProductId;
+                addSlotLayoutModelView.userAuthToken = userAuthToken;
+                addSlotLayoutModelView.options.unit = unit;
+
+                GetCustomizedProductModelView customizedProductModelView =
+                    new core.application.CustomizedProductController().addMinimumSlots(addSlotLayoutModelView);
+
+                return Ok(customizedProductModelView);
+            } catch (ResourceNotFoundException e) {
+                return NotFound(new SimpleJSONMessageService(e.Message));
+            }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(new SimpleJSONMessageService(e.Message));
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
 
         [HttpPut("{id}")]
-        public ActionResult updateCustomizedProduct(long id, [FromBody] UpdateCustomizedProductModelView updateCustomizedProductModelView) {
-            if (updateCustomizedProductModelView == null) {
-                //logger.LogWarning(LOG_POST_SLOT_BAD_REQUEST, slotDimensions);
+        public ActionResult updateCustomizedProduct(long id, [FromBody] UpdateCustomizedProductModelView updateCustomizedProductModelView, [FromHeader(Name = "UserToken")] string userAuthToken)
+        {
+            if (updateCustomizedProductModelView == null)
+            {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
 
             try {
                 updateCustomizedProductModelView.customizedProductId = id;
+                updateCustomizedProductModelView.userAuthToken = userAuthToken;
 
                 GetCustomizedProductModelView customizedProductModelView = new core.application.CustomizedProductController().updateCustomizedProduct(updateCustomizedProductModelView);
 
                 return Ok(customizedProductModelView);
             } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            } catch (ArgumentException e) {
+            }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
+            }
+            catch (ArgumentException e)
+            {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             } catch (InvalidOperationException e) {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            } catch (Exception e) {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpPut("{customizedProductId}/slots/{slotId}")]
-        public ActionResult updateSlot(long customizedProductId, long slotId, [FromBody] UpdateSlotModelView updateSlotModelView) {
-
-            if (updateSlotModelView == null) {
-                //logger.LogWarning(LOG_POST_SLOT_BAD_REQUEST, slotDimensions);
+        public ActionResult updateSlot(long customizedProductId, long slotId, [FromBody] UpdateSlotModelView updateSlotModelView,
+            [FromHeader(Name = "UserToken")] string userAuthToken)
+        {
+            if (updateSlotModelView == null)
+            {
                 return BadRequest(new SimpleJSONMessageService(INVALID_REQUEST_BODY_MESSAGE));
             }
 
@@ -361,19 +426,26 @@ namespace backend.Controllers {
                 return Ok(customizedProductModelView);
             } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            } catch (ArgumentException e) {
+            }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
+            }
+            catch (ArgumentException e)
+            {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             } catch (InvalidOperationException e) {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            } catch (Exception e) {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpDelete("{customizedProductId}")]
-        public ActionResult deleteCustomizedProduct(long customizedProductId) {
-            try {
+        public ActionResult deleteCustomizedProduct(long customizedProductId, [FromHeader(Name = "UserToken")] string userAuthToken)
+        {
+            try
+            {
                 DeleteCustomizedProductModelView deleteCustomizedProductModelView = new DeleteCustomizedProductModelView();
                 deleteCustomizedProductModelView.customizedProductId = customizedProductId;
 
@@ -382,19 +454,26 @@ namespace backend.Controllers {
                 return NoContent();
             } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            } catch (ArgumentException e) {
+            }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
+            }
+            catch (ArgumentException e)
+            {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             } catch (InvalidOperationException e) {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            } catch (Exception e) {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }
 
         [HttpDelete("{customizedProductId}/slots/{slotId}")]
-        public ActionResult deleteSlot(long customizedProductId, long slotId) {
-            try {
+        public ActionResult deleteSlot(long customizedProductId, long slotId, [FromHeader(Name = "UserToken")] string userAuthToken)
+        {
+            try
+            {
                 DeleteSlotModelView deleteSlotModelView = new DeleteSlotModelView();
                 deleteSlotModelView.customizedProductId = customizedProductId;
                 deleteSlotModelView.slotId = slotId;
@@ -404,36 +483,17 @@ namespace backend.Controllers {
                 return NoContent();
             } catch (ResourceNotFoundException e) {
                 return NotFound(new SimpleJSONMessageService(e.Message));
-            } catch (ArgumentException e) {
+            }
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                return StatusCode(401, new SimpleJSONMessageService(notAuthorizedException.Message));
+            }
+            catch (ArgumentException e)
+            {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
             } catch (InvalidOperationException e) {
                 return BadRequest(new SimpleJSONMessageService(e.Message));
-            } catch (Exception e) {
-                logger.LogWarning(e, UNEXPECTED_ERROR);
-                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
-            }
-        }
-        [HttpGet("{customizedProductId}/recommendedslots")]
-        public ActionResult getRecommendedSlots(long customizedProductId) {
-            try {
-                GetAllCustomizedDimensionsModelView allCustomDimensionsMV = new core.application.CustomizedProductController().getRecommendedSlots(customizedProductId);
-                return Ok(allCustomDimensionsMV);
-            } catch (ResourceNotFoundException ex) {
-                return NotFound(new SimpleJSONMessageService(ex.Message));
-            } catch (Exception ex) {
-                logger.LogWarning(ex, UNEXPECTED_ERROR);
-                return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
-            }
-        }
-        [HttpGet("{customizedProductId}/minslots")]
-        public ActionResult getMinSlots(long customizedProductId) {
-            try {
-                GetAllCustomizedDimensionsModelView allCustomDimensionsMV = new core.application.CustomizedProductController().getMinSlots(customizedProductId);
-                return Ok(allCustomDimensionsMV);
-            } catch (ResourceNotFoundException ex) {
-                return NotFound(new SimpleJSONMessageService(ex.Message));
-            } catch (Exception ex) {
-                logger.LogWarning(ex, UNEXPECTED_ERROR);
+            } catch (Exception) {
                 return StatusCode(500, new SimpleJSONMessageService(UNEXPECTED_ERROR));
             }
         }

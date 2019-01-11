@@ -12,6 +12,36 @@ const citiesRoute = express.Router();
 const city = require('../models/City');
 
 /**
+ * Routes the GET of all existent cities
+ */
+citiesRoute.route('/cities').get(function(request, response){
+    console.log("???????")
+    city
+    .find()
+    .then(function(cities){
+        console.log("!!!!")
+        if(cities == null || cities.length == 0){
+            response.status(404).json(noAvailableCities());
+        } else {
+            response.status(200).json(schemasToBasicCities(cities))
+        }
+    })
+})
+
+/**
+ * Routes the GET by ID of a city
+ */
+citiesRoute.route('/cities/:id').get(function(request, response){
+    city
+        .findById(request.params.id)
+        .then(function(_city){
+            response.status(200).json(deserializeCity(_city));
+        }).catch(function(_error){
+            response.status(400).json(noCityFound());
+        })
+})
+
+/**
  * Routes the POST of a city
  */
 citiesRoute.route('/cities').post(function(request,response){
@@ -67,6 +97,29 @@ function grantCityDoesntAlreadyExist(cityDetails){
 }
 
 /**
+ * Transforms a collection of city schemas into a collection of basic information city objects
+ * @param {City.Schema} citySchemas List with all city schemas being transformed
+ * @returns {List} List with the transformed collection of basic information city objects
+ */
+function schemasToBasicCities(citySchemas){
+    let basicCities=[];
+    citySchemas.forEach(function(citySchema){basicCities.push(schemaToBasicCity(citySchema))})
+    return basicCities;
+}
+
+/**
+ * Transforms a City Schema into a basic information city object
+ * @param {City.Schema} citySchema City schema being transformed
+ */
+function schemaToBasicCity(citySchema){
+    return {
+        id:citySchema.id,
+        name: citySchema.name,
+        location: citySchema.location
+    }
+}
+
+/**
  * Serializes the request body into a City Object
  * @param {Object} requestBody Object with the request body
  */
@@ -76,6 +129,7 @@ function serializeCity(requestBody){
         ,requestBody.latitude
         ,requestBody.longitude);
 }
+
 /**
  * Deserializes a city schema into an object
  * @param {City.Schema} citySchema City.Schema with the city schema being deserialized
@@ -88,4 +142,15 @@ function deserializeCity(citySchema){
         longitude:citySchema.location.longitude
     }
 }
+
+/**
+ * Provides a message object for justifying that there are no cities
+ */
+function noAvailableCities(){return {message:"There are no cities"}}
+
+/**
+ * Provides a message object for justifying that there is no city being fetched
+ */
+function noCityFound(){return {message:"No city was found"}}
+
 module.exports = citiesRoute;

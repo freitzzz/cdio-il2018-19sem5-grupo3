@@ -47,34 +47,19 @@ namespace core.services
         /// <summary>
         /// Message that occurs if one of the dates of the time period doesn't follow the General ISO format
         /// </summary>
-        private const string DATES_WRONG_FORMAT = "Make sure all dates follow the General ISO Format: ";
+        private const string DATES_WRONG_FORMAT = "Make sure all dates follow the format: ";
 
         /// <summary>
-        /// Message that occurs if the new currency isn't supported
+        /// Message that occurs if the entry trying to be updated is past its time period
         /// </summary>
-        private const string UNSUPPORTED_CURRENCY = "The inserted currency is not being supported at the moment!";
-
-        /// <summary>
-        /// Message to help the user know which currencies to use
-        /// </summary>
-        private const string SUPPORTED_CURRENCIES_MESSAGE = "Please use one of the currencies that are currently being supported";
-
-        /// <summary>
-        /// Message that occurs if the new area isn't supported
-        /// </summary>
-        private const string UNSUPPORTED_AREA = "The inserted area is not being supported at the moment!";
-
-        /// <summary>
-        /// Message to help the user know which areas to use
-        /// </summary>
-        private const string SUPPORTED_AREAS_MESSAGE = "Please use one of the areas that are currently being supported";
+        private const string PAST_DATE = "Unable to edit past dates!";
 
         /// <summary>
         /// Updates a material's price table entry
         /// </summary>
         /// <param name="modelView">model view with the update information</param>
         /// <returns></returns>
-        public static async Task<GetMaterialPriceModelView> update(UpdatePriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public static GetMaterialPriceModelView update(UpdatePriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
             string defaultCurrency = CurrencyPerAreaConversionService.getBaseCurrency();
             string defaultArea = CurrencyPerAreaConversionService.getBaseArea();
@@ -112,34 +97,28 @@ namespace core.services
                 throw new InvalidOperationException(ENTRY_DOESNT_BELONG_TO_MATERIAL);
             }
 
+            LocalDateTime currentTime = NodaTime.LocalDateTime.FromDateTime(SystemClock.Instance.GetCurrentInstant().ToDateTimeUtc());
+
+            if (modelView.priceTableEntry.endingDate != null && !LocalDateTimePattern.GeneralIso.Format(tableEntryToUpdate.timePeriod.startingDate).Equals(modelView.priceTableEntry.startingDate))
+            {
+                if (tableEntryToUpdate.timePeriod.startingDate.CompareTo(currentTime) < 0)
+                {
+                    throw new InvalidOperationException(PAST_DATE);
+                }
+            }
+
+            if (modelView.priceTableEntry.startingDate != null && !LocalDateTimePattern.GeneralIso.Format(tableEntryToUpdate.timePeriod.endingDate).Equals(modelView.priceTableEntry.endingDate))
+            {
+                if (tableEntryToUpdate.timePeriod.endingDate.CompareTo(currentTime) < 0)
+                {
+                    throw new InvalidOperationException(PAST_DATE);
+                }
+            }
+
             if (modelView.priceTableEntry.price != null)
             {
-                List<string> availableCurrencies = (List<string>)CurrenciesService.getAvailableCurrencies();
-                List<string> availableAreas = (List<string>)AreasService.getAvailableAreas();
-
-                if (!availableCurrencies.Contains(modelView.priceTableEntry.price.currency))
-                {
-                    throw new ArgumentException
-                    (
-                        string.Format
-                        (
-                            "{0} {1}: {2}",
-                            UNSUPPORTED_CURRENCY, SUPPORTED_CURRENCIES_MESSAGE, string.Join(", ", availableCurrencies)
-                        )
-                    );
-                }
-
-                if (!availableAreas.Contains(modelView.priceTableEntry.price.area))
-                {
-                    throw new ArgumentException
-                    (
-                        string.Format
-                        (
-                         "{0} {1}: {2}",
-                         UNSUPPORTED_AREA, SUPPORTED_AREAS_MESSAGE, string.Join(", ", availableAreas)
-                        )
-                    );
-                }
+                CurrenciesService.checkCurrencySupport(modelView.priceTableEntry.price.currency);
+                AreasService.checkAreaSupport(modelView.priceTableEntry.price.area);
 
                 Price newPrice = null;
                 try
@@ -150,9 +129,13 @@ namespace core.services
                     }
                     else
                     {
-                        double convertedValue = await new CurrencyPerAreaConversionService(clientFactory)
-                                                        .convertCurrencyToDefaultCurrency(modelView.priceTableEntry.price.currency,
-                                                             modelView.priceTableEntry.price.value);
+                        Task<double> convertedValueTask = new CurrencyPerAreaConversionService(clientFactory)
+                                                        .convertCurrencyPerAreaToDefaultCurrencyPerArea(
+                                                            modelView.priceTableEntry.price.currency,
+                                                            modelView.priceTableEntry.price.area,
+                                                            modelView.priceTableEntry.price.value);
+                        convertedValueTask.Wait();
+                        double convertedValue = convertedValueTask.Result;
                         newPrice = Price.valueOf(convertedValue);
                     }
                 }
@@ -165,22 +148,6 @@ namespace core.services
                 performedAtLeastOneUpdate = true;
             }
 
-            if (modelView.priceTableEntry.startingDate != null)
-            {
-                LocalDateTime newStartingDate;
-                try
-                {
-                    string newStartingDateAsString = modelView.priceTableEntry.startingDate;
-                    newStartingDate = LocalDateTimePattern.GeneralIso.Parse(newStartingDateAsString).GetValueOrThrow();
-                    tableEntryToUpdate.changeTimePeriod(TimePeriod.valueOf(newStartingDate, tableEntryToUpdate.timePeriod.endingDate));
-                    performedAtLeastOneUpdate = true;
-                }
-                catch (UnparsableValueException)
-                {
-                    throw new UnparsableValueException(DATES_WRONG_FORMAT + LocalDateTimePattern.GeneralIso.PatternText);
-                }
-            }
-
             if (modelView.priceTableEntry.endingDate != null)
             {
                 LocalDateTime newEndingDate;
@@ -189,6 +156,22 @@ namespace core.services
                     string newEndingDateAsString = modelView.priceTableEntry.endingDate;
                     newEndingDate = LocalDateTimePattern.GeneralIso.Parse(newEndingDateAsString).GetValueOrThrow();
                     tableEntryToUpdate.changeTimePeriod(TimePeriod.valueOf(tableEntryToUpdate.timePeriod.startingDate, newEndingDate));
+                    performedAtLeastOneUpdate = true;
+                }
+                catch (UnparsableValueException)
+                {
+                    throw new UnparsableValueException(DATES_WRONG_FORMAT + LocalDateTimePattern.GeneralIso.PatternText);
+                }
+            }
+
+            if (modelView.priceTableEntry.startingDate != null)
+            {
+                LocalDateTime newStartingDate;
+                try
+                {
+                    string newStartingDateAsString = modelView.priceTableEntry.startingDate;
+                    newStartingDate = LocalDateTimePattern.GeneralIso.Parse(newStartingDateAsString).GetValueOrThrow();
+                    tableEntryToUpdate.changeTimePeriod(TimePeriod.valueOf(newStartingDate, tableEntryToUpdate.timePeriod.endingDate));
                     performedAtLeastOneUpdate = true;
                 }
                 catch (UnparsableValueException)
@@ -218,7 +201,6 @@ namespace core.services
 
                 return updatedTableEntryModelView;
             }
-
             throw new InvalidOperationException(UPDATE_NOT_SUCCESSFUL);
         }
     }

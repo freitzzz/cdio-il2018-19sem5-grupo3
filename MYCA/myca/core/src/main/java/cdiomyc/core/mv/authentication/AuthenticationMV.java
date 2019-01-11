@@ -13,4 +13,8 @@ public abstract class AuthenticationMV {
      * String with the authentication secrete key
      */
     public String userAgent;
+    /**
+     * String with the authentication type
+     */
+    public String type;
 }

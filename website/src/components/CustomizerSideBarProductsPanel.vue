@@ -37,10 +37,9 @@
 </template>
 
 <script>
-import Axios from "axios";
+import ProductRequests from "./../services/mycm_api/requests/products.js";
 import store from "./../store";
 import { INIT_PRODUCT, SET_CUSTOMIZED_PRODUCT_MATERIAL, SET_CUSTOMIZED_PRODUCT_COLOR, SET_CUSTOMIZED_PRODUCT_FINISH } from "./../store/mutation-types.js";
-import { MYCM_API_URL } from "./../config.js";
 
 export default {
   name: "CustomizerSideBarProductsPanel",
@@ -63,9 +62,9 @@ export default {
      * Propagate an event to a parent component.
      */
     selectProduct(productId) {
-      Axios.get(`${MYCM_API_URL}/products/${productId}`)
-        .then(response => {
-          store.dispatch(INIT_PRODUCT, { product: response.data }); //Dispatches the action INIT_PRODUCT
+
+      ProductRequests.getProductById(productId).then(response => {
+        store.dispatch(INIT_PRODUCT, { product: response.data }); //Dispatches the action INIT_PRODUCT
 
           //Applies initial material by dispatching the actions SET_CUSTOMIZED_PRODUCT_MATERIAL, SET_CUSTOMIZED_PRODUCT_COLOR and SET_CUSTOMIZED_PRODUCT_FINISH
           store.dispatch(SET_CUSTOMIZED_PRODUCT_MATERIAL, {
@@ -90,27 +89,25 @@ export default {
 
           this.httpCode = response.status;
           this.$emit("advance"); //Progresses to the next step (change product dimensions)
-        })
-        .catch(error => {
-          this.httpCode = error.response.status;
-        });
+      }).catch(error => {
+        this.httpCode = error.response.status;
+      });
     },
     /**
      * Fetches products from the MYCM API.
      */
     getBaseProducts() {
-      Axios.get(`${MYCM_API_URL}/products/base`)
-        .then(response => {
-          this.products = response.data;
-          this.httpCode = response.status;
-        })
-        .catch(error => {
-          if(error.response === undefined){
-            this.httpCode = 500;
-          }else{
-            this.httpCode = error.response.status;
-          }
-        });
+
+      ProductRequests.getBaseProducts().then(response => {
+        this.products = response.data;
+        this.httpCode = response.status;
+      }).catch(error => {
+        if(error.response === undefined){
+          this.httpCode = 500;
+        }else{
+          this.httpCode = error.response.status;
+        }
+      });
     },
     findProductImage(filename) {
       return "./src/assets/products/" + filename.split(".")[0] + ".png";

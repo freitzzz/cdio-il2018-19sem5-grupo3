@@ -41,7 +41,7 @@ var factorySchema=new Schema({
     designation:{type: String, validate: designationValidator, required:true},
     location:{type: location.schema, required:true},
     city:{type: city.schema, required:false},
-    available:{type: Boolean,required:true}
+    available:{type: Boolean,required:false}
 });
 
 /**

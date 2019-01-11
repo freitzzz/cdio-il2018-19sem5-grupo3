@@ -1,14 +1,21 @@
-let mycm, myco;
+let mycm, myco, myca, privateMYCSSecreteChallenge;
 if (process.env.NODE_ENV === 'production') {
-    mycm = "https://mycm-api.azurewebsites.net/"
-    myco = "http://cdio-myco.westeurope.cloudapp.azure.com/"
+    mycm = "https://mycm-api.azurewebsites.net";
+    myco = "http://cdio-myco.westeurope.cloudapp.azure.com";
+    myca = "https://myca.azurewebsites.net/myca/api";
+    privateMYCSSecreteChallenge="This secrete is for production only";
 
 } else {
-    mycm = "http://localhost:5000/mycm/api"
-    myco = "http://localhost:4000/myco/api"
+    mycm = "http://localhost:5000/mycm/api";
+    myco = "http://localhost:4001/myco/api";
+    myca = "http://localhost:8081/myca/api";
+    privateMYCSSecreteChallenge="This secrete is for development only";
 }
 
+import Axios from 'axios';
+Axios.defaults.headers['Secrete']=PRIVATE_MYCS_SECRETE_CHALLENGE;
 
-const MYCM_API_URL = mycm;
-const MYCO_API_URL = myco;
-module.exports = { MYCM_API_URL, MYCO_API_URL };
+export const MYCM_API_URL = mycm;
+export const MYCO_API_URL = myco;
+export const MYCA_API_URL = myca;
+export const PRIVATE_MYCS_SECRETE_CHALLENGE=privateMYCSSecreteChallenge;

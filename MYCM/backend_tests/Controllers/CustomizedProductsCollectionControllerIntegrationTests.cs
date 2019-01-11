@@ -240,7 +240,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(-5)]
-        public async void ensureUpdatingCollectionReturnsBadRequestIfNoCollectionsExist()
+        public async void ensureUpdatingCollectionReturnsNotFoundIfNoCollectionsExist()
         {
             string testNumber = "-5";
 
@@ -253,11 +253,11 @@ namespace backend_tests.Controllers
                 modelView
             );
 
-            Assert.Equal(HttpStatusCode.BadRequest, putCollection.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, putCollection.StatusCode);
         }
 
         [Fact, TestPriority(-4)]
-        public async void ensureAddingCustomizedProductToCollectionReturnsBadRequestIfNoCollectionsExist()
+        public async void ensureAddingCustomizedProductToCollectionReturnsNotFoundIfNoCollectionsExist()
         {
             string testNumber = "-4";
 
@@ -297,7 +297,7 @@ namespace backend_tests.Controllers
                 modelView
             );
 
-            Assert.Equal(HttpStatusCode.BadRequest, postCustomizedProductToCollection.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, postCustomizedProductToCollection.StatusCode);
 
             //TODO Compare message
         }
@@ -333,7 +333,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(0)]
-        public async void ensureUpdatingCollectionReturnsBadRequestForNonExistingCollectionId()
+        public async void ensureUpdatingCollectionReturnsNotFoundForNonExistingCollectionId()
         {
             string testNumber = "0";
 
@@ -359,7 +359,7 @@ namespace backend_tests.Controllers
                 modelView
             );
 
-            Assert.Equal(HttpStatusCode.BadRequest, putCollection.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, putCollection.StatusCode);
 
             //TODO Compare message
         }
@@ -487,7 +487,7 @@ namespace backend_tests.Controllers
         }
 
         [Fact, TestPriority(5)]
-        public async void ensureAddingCustomizedProductToCollectionReturnsBadRequestForNonExistingCollectionId()
+        public async void ensureAddingCustomizedProductToCollectionReturnsNotFoundForNonExistingCollectionId()
         {
             string testNumber = "5";
 
@@ -539,7 +539,7 @@ namespace backend_tests.Controllers
                 addCollectionModelView
             );
 
-            Assert.Equal(HttpStatusCode.BadRequest, postCustomizedProductToCollection.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, postCustomizedProductToCollection.StatusCode);
 
             //TODO Compare message
         }
@@ -709,7 +709,6 @@ namespace backend_tests.Controllers
 
             nonExistingCustomizedProductModelView.reference = "nonexisting reference";
             nonExistingCustomizedProductModelView.designation = "nonexisting designation";
-            nonExistingCustomizedProductModelView.serialNumber = "nonexisting serial number";
             nonExistingCustomizedProductModelView.productId = createdCustomizedProductModelView.productId;
             nonExistingCustomizedProductModelView.customizedProductId = createdCustomizedProductModelView.customizedProductId + 1;
 
@@ -1561,7 +1560,6 @@ namespace backend_tests.Controllers
             customizedProductModelView.productId = 1;
             customizedProductModelView.customizedProductId = 1;
             customizedProductModelView.reference = "reference";
-            customizedProductModelView.serialNumber = "serialnumber";
             modelView.customizedProducts = new List<GetBasicCustomizedProductModelView>()
             {
                 customizedProductModelView

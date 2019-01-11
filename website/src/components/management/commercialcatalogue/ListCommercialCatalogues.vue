@@ -8,12 +8,13 @@
         <b-icon icon="refresh"/>
       </button>
     </div>
-    <!--The v-if is used for disabling the modal after clicking on the create button-->
-    <div v-if="modalEnabled">
-      <b-modal :active="modalEnabled" has-modal-card scroll="keep" :onCancel="confirmClose">
-        <create-new-commercial-catalogue @createCatalogue="createCatalogue"/>
-      </b-modal>
-    </div>
+
+    <create-new-commercial-catalogue
+      v-if="modalEnabled"
+      @createCatalogue="createCatalogue"
+      @closeModal="closeCatalogueModal"
+    />
+
     <commercial-catalogues-table :data="data"/>
   </div>
 </template>
@@ -45,6 +46,13 @@ export default {
     },
 
     /**
+     * Disables the catalogue creation modal.
+     */
+    closeCatalogueModal() {
+      this.modalEnabled = false;
+    },
+
+    /**
      * Retrieves all of the available CommercialCatalogues.
      */
     getCatalogues() {
@@ -68,10 +76,20 @@ export default {
             message: "Commercial Catalogue created succesfully!"
           });
 
+          var hasCollections = false;
+
+          if (
+            response.data.commercialCatalogueCollections !== undefined &&
+            response.data.commercialCatalogueCollections.length > 0
+          ) {
+            hasCollections = true;
+          }
+
           var addedCatalogue = {
             id: response.data.id,
             reference: response.data.reference,
-            designation: response.data.designation
+            designation: response.data.designation,
+            hasCollections
           };
           //push added catalogue to data so that tables can be updated
           this.data.push(addedCatalogue);
@@ -79,21 +97,6 @@ export default {
         .catch(error => {
           this.$toast.open(error.response.data);
         });
-    },
-
-    /**
-     * Displays a dialog in order to confirm closing the Commercial Catalogue creation modal.
-     */
-    confirmClose() {
-      this.$dialog.confirm({
-        title: "Confirm Close",
-        message: `Are you sure you want exit?`,
-        cancelText: "Cancel",
-        confirmText: "OK",
-        type: "is-info",
-        onConfirm: () => (this.modalEnabled = false),
-        onCancel: () => (this.modalEnabled = true)
-      });
     }
   },
   created() {

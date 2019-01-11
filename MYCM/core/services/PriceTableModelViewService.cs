@@ -1,10 +1,11 @@
 using core.domain;
+using core.modelview.pricetable;
 using core.services;
 using NodaTime.Text;
 using System;
 using System.Collections.Generic;
 
-namespace core.modelview.pricetable{
+namespace core.services{
     /// <summary>
     /// Service for creating model views based on certain price table contexts
     /// </summary>
@@ -15,13 +16,13 @@ namespace core.modelview.pricetable{
         /// </summary>
         /// <param name="materialPriceTableEntry">MaterialPriceTableEntry with the material price</param>
         /// <returns>GetMaterialPriceModelView with the material price information model view</returns>
-        public static GetMaterialPriceModelView fromMaterialEntity(MaterialPriceTableEntry materialPriceTableEntry){
+        public static GetMaterialPriceModelView fromMaterialEntity(MaterialPriceTableEntry materialPriceTableEntry, string currency, string area){
             GetMaterialPriceModelView getMaterialPriceModelView=new GetMaterialPriceModelView();
             getMaterialPriceModelView.materialId=materialPriceTableEntry.entity.Id;
             getMaterialPriceModelView.id=materialPriceTableEntry.Id;
             getMaterialPriceModelView.value=materialPriceTableEntry.price.value;
-            getMaterialPriceModelView.currency=CurrencyPerAreaConversionService.getBaseCurrency();
-            getMaterialPriceModelView.area=CurrencyPerAreaConversionService.getBaseArea();
+            getMaterialPriceModelView.currency=currency;
+            getMaterialPriceModelView.area=area;
             getMaterialPriceModelView.startingDate=LocalDateTimePattern.GeneralIso.Format(materialPriceTableEntry.timePeriod.startingDate);
             getMaterialPriceModelView.endingDate=LocalDateTimePattern.GeneralIso.Format(materialPriceTableEntry.timePeriod.endingDate);
             return getMaterialPriceModelView;
@@ -32,13 +33,13 @@ namespace core.modelview.pricetable{
         /// </summary>
         /// <param name="materialFinishPriceTableEntry">MaterialFinishPriceTableEntry with the material finish price</param>
         /// <returns>GetMaterialFinishPriceModelView with the material finish price information model view</returns>
-        public static GetMaterialFinishPriceModelView fromMaterialFinishEntity(FinishPriceTableEntry materialFinishPriceTableEntry){
+        public static GetMaterialFinishPriceModelView fromMaterialFinishEntity(FinishPriceTableEntry materialFinishPriceTableEntry, string currency, string area){
             GetMaterialFinishPriceModelView getMaterialFinishPriceModelView=new GetMaterialFinishPriceModelView();
             getMaterialFinishPriceModelView.finishId=materialFinishPriceTableEntry.entity.Id;
             getMaterialFinishPriceModelView.id=materialFinishPriceTableEntry.Id;
             getMaterialFinishPriceModelView.value=materialFinishPriceTableEntry.price.value;
-            getMaterialFinishPriceModelView.currency=CurrencyPerAreaConversionService.getBaseCurrency();
-            getMaterialFinishPriceModelView.area=CurrencyPerAreaConversionService.getBaseArea();
+            getMaterialFinishPriceModelView.currency=currency;
+            getMaterialFinishPriceModelView.area=area;
             getMaterialFinishPriceModelView.startingDate=LocalDateTimePattern.GeneralIso.Format(materialFinishPriceTableEntry.timePeriod.startingDate);
             getMaterialFinishPriceModelView.endingDate=LocalDateTimePattern.GeneralIso.Format(materialFinishPriceTableEntry.timePeriod.endingDate);
             return getMaterialFinishPriceModelView;
@@ -49,9 +50,9 @@ namespace core.modelview.pricetable{
         /// </summary>
         /// <param name="materialPriceTableEntries">IEnumerable with the material prices</param>
         /// <returns>GetAllMaterialPriceHistoryModelView with the material price history information</returns>
-        public static GetAllMaterialPriceHistoryModelView fromMaterialCollection(IEnumerable<MaterialPriceTableEntry> materialPriceTableEntries){
+        public static GetAllMaterialPriceHistoryModelView fromMaterialCollection(IEnumerable<MaterialPriceTableEntry> materialPriceTableEntries, string currency, string area){
             GetAllMaterialPriceHistoryModelView getAllMaterialPrices=new GetAllMaterialPriceHistoryModelView();
-            foreach(MaterialPriceTableEntry materialPriceTableEntry in materialPriceTableEntries)getAllMaterialPrices.Add(fromMaterialEntity(materialPriceTableEntry));
+            foreach(MaterialPriceTableEntry materialPriceTableEntry in materialPriceTableEntries)getAllMaterialPrices.Add(fromMaterialEntity(materialPriceTableEntry, currency, area));
             return getAllMaterialPrices;
         }
 
@@ -60,9 +61,9 @@ namespace core.modelview.pricetable{
         /// </summary>
         /// <param name="materialFinishPriceTableEntries">IEnumerable with the material finish prices</param>
         /// <returns>GetAllMaterialFinishPriceHistoryModelView with the material finish price history information</returns>
-        public static GetAllMaterialFinishPriceHistoryModelView fromMaterialFinishCollection(IEnumerable<FinishPriceTableEntry> materialFinishPriceTableEntries){
+        public static GetAllMaterialFinishPriceHistoryModelView fromMaterialFinishCollection(IEnumerable<FinishPriceTableEntry> materialFinishPriceTableEntries, string currency, string area){
             GetAllMaterialFinishPriceHistoryModelView getAllMaterialFinishPrices=new GetAllMaterialFinishPriceHistoryModelView();
-            foreach(FinishPriceTableEntry materialFinishPriceTableEntry in materialFinishPriceTableEntries)getAllMaterialFinishPrices.Add(fromMaterialFinishEntity(materialFinishPriceTableEntry));
+            foreach(FinishPriceTableEntry materialFinishPriceTableEntry in materialFinishPriceTableEntries)getAllMaterialFinishPrices.Add(fromMaterialFinishEntity(materialFinishPriceTableEntry, currency, area));
             return getAllMaterialFinishPrices;
         }
     }

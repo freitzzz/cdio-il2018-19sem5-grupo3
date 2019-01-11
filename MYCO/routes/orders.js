@@ -6,17 +6,18 @@ const http = require('http');
 const City = require('../models/City');
 const axios = require('axios');
 const config = require('../config');
-const Package = require('../models/Package');
 
 //Get all orders in the database
 //Handle errors by using the ones available in the mongoose schema
 ordersRoute.route('/orders').get(function (req, res) {
-    Order.find((orders) => {
+    Order.find()
+    .then(function(orders) {
         if (orders == null || orders.length == 0) {
             res.status(404).json({
                 Error: 'No orders found'
             });
         } else {
+            res.header("Access-Control-Allow-Origin", "*");
             res.status(200).json(orders); //return all orders
         }
     }).catch(() => {
@@ -81,7 +82,7 @@ function getCustomizedProduct(customizedProductId) {
 
     return new Promise((resolve, reject) => {
 
-        var req = http.get('http://localhost:5000/myc/api/customizedproducts/' + customizedProductId, (resp) => {
+        var req = http.get('http://localhost:5000/mycm/api/customizedproducts/' + customizedProductId, (resp) => {
             let data = '';
 
             resp.on('data', (chunk) => {
@@ -116,7 +117,7 @@ ordersRoute.route('/orders').post(function (req, res, next) {
                                             res.status(201).json(_createdOrder);
                                         }).catch((_error) => {
                                             //TODO: REWORK : )
-                                            res.status(500).json({ message: 'An internal error occurred while creating the order' });
+                                            res.status(500).json({ message: _error });
                                         });
                                 }).catch((message) => {
                                     res.status(404).json({
@@ -348,7 +349,8 @@ function serializeFactory(factory) {
     return {
         name: factory.reference,
         latitude: factory.location.latitude,
-        longitude: factory.location.longitude
+        longitude: factory.location.longitude,
+        available: factory.available
     }
 }
 

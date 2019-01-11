@@ -20,6 +20,16 @@ public final class UserGrants {
     }
     
     /**
+     * Grants that a user is an administrator
+     * @param user User with the user being granted
+     */
+    public static void grantUserIsAdministrator(User user){
+        grantUserIsValid(user);
+        if(!user.hasRole(Role.ADMINISTRATOR))
+            throw new IllegalStateException("User is not an administrator!");
+    }
+    
+    /**
      * Grants that a user is a content manager
      * @param user User with the user being granted
      */
@@ -27,6 +37,16 @@ public final class UserGrants {
         grantUserIsValid(user);
         if(!user.hasRole(Role.CONTENT_MANAGER))
             throw new IllegalStateException("User is not a content manager!");
+    }
+    
+    /**
+     * Grants that a user is a logistic manager
+     * @param user User with the user being granted
+     */
+    public static void grantUserIsLogisticManager(User user){
+        grantUserIsValid(user);
+        if(!user.hasRole(Role.LOGISTIC_MANAGER))
+            throw new IllegalStateException("User is not a logistic manager!");
     }
     
     /**

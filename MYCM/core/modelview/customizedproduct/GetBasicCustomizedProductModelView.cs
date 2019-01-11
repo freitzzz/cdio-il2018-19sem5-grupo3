@@ -23,24 +23,17 @@ namespace core.modelview.customizedproduct
         public long productId { get; set; }
 
         /// <summary>
-        /// CustomizedProducts designation
-        /// </summary>
-        /// <value>Gets/Sets the designation</value>
-        [DataMember(EmitDefaultValue = false)] //since this value is optional, do not display null values
-        public string designation { get; set; }
-
-        /// <summary>
-        /// CustomizedProducts reference
+        /// CustomizedProduct's reference
         /// </summary>
         /// <value>Gets/Sets the reference</value>
         [DataMember(EmitDefaultValue = false)]  //if serial number is set, reference is null
         public string reference { get; set; }
 
         /// <summary>
-        /// CustomizedProduct's serial number.
+        /// CustomizedProduct's designation
         /// </summary>
-        /// <value></value>
-        [DataMember(EmitDefaultValue = false)]  //if reference is set, serial number is null
-        public string serialNumber { get; set; }
+        /// <value>Gets/Sets the designation</value>
+        [DataMember(EmitDefaultValue = false)] //since this value is optional, do not display null values
+        public string designation { get; set; }
     }
 }

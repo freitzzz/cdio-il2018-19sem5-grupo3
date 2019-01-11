@@ -60,17 +60,17 @@ namespace core.domain {
         /// <summary>
         /// Constant that represents the message that ocurrs if the product reference change is invalid
         /// </summary>
-        private const string INVALID_PRODUCT_REFERENCE_CHANGE="The product reference being changed is the same as the actual one";
+        private const string INVALID_PRODUCT_REFERENCE_CHANGE = "The product reference being changed is the same as the actual one";
 
         /// <summary>
         /// Constant that represents the message that ocurrs if the product designation change is invalid
         /// </summary>
-        private const string INVALID_PRODUCT_DESIGNATION_CHANGE="The product designation being changed is the same as the actual one";
+        private const string INVALID_PRODUCT_DESIGNATION_CHANGE = "The product designation being changed is the same as the actual one";
 
         /// <summary>
         /// Constant that represents the message that ocurrs if the product category change is invalid
         /// </summary>
-        private const string INVALID_PRODUCT_CATEGORY_CHANGE="The product category being changed is the same as the actual one";
+        private const string INVALID_PRODUCT_CATEGORY_CHANGE = "The product category being changed is the same as the actual one";
 
         /// <summary>
         /// Constant that represents the message that is presented if a null Material is attempted to be added.
@@ -180,7 +180,7 @@ namespace core.domain {
         /// </summary>
         /// <value>Gets/sets the measurements list value.</value>
         private List<ProductMeasurement> _productMeasurements;
-        public List<ProductMeasurement> productMeasurements {get => LazyLoader.Load(this, ref _productMeasurements); protected set => _productMeasurements = value;}
+        public List<ProductMeasurement> productMeasurements { get => LazyLoader.Load(this, ref _productMeasurements); protected set => _productMeasurements = value; }
 
         /// <summary>
         /// ProductCategory with the category which the product belongs to
@@ -194,7 +194,7 @@ namespace core.domain {
         /// </summary>
         /// <value>Gets/protected sets the Product's slot widths.</value>
         private ProductSlotWidths _slotWidths;
-        public ProductSlotWidths slotWidths {get => LazyLoader.Load(this, ref _slotWidths) ;protected set => _slotWidths = value;}
+        public ProductSlotWidths slotWidths { get => LazyLoader.Load(this, ref _slotWidths); protected set => _slotWidths = value; }
 
         /// <summary>
         /// Boolean that indicates if the product can hold slots
@@ -206,7 +206,7 @@ namespace core.domain {
         /// String representing the Product's model's file name.
         /// </summary>
         /// <value>Gets/protected sets the value of the filename.</value>
-        public string modelFilename {get; protected set; }
+        public string modelFilename { get; protected set; }
 
         /// <summary>
         /// LazyLoader injected by the framework.
@@ -218,8 +218,7 @@ namespace core.domain {
         /// Private constructor used by the framework for injecting an instance of ILazyLoader.
         /// </summary>
         /// <param name="lazyLoader">ILazyLoader being injected.</param>
-        private Product(ILazyLoader lazyLoader) 
-        {
+        private Product(ILazyLoader lazyLoader) {
             this.LazyLoader = lazyLoader;
         }
 
@@ -257,7 +256,7 @@ namespace core.domain {
             }
             this.components = new List<Component>();
             this.productMeasurements = new List<ProductMeasurement>();
-            foreach(Measurement measurement in measurements){
+            foreach (Measurement measurement in measurements) {
                 this.addMeasurement(measurement);
             }
             this.productCategory = productCategory;
@@ -330,9 +329,9 @@ namespace core.domain {
         /// <param name="complementaryProducts">IEnumerable with the product complementary products</param>
         /// <param name="slotWidths">ProductSlotWidths instance with the Product's slots' widths.</param>
         public Product(string reference, string designation, string modelFilename,
-                        ProductCategory productCategory, IEnumerable<Material> materials, 
+                        ProductCategory productCategory, IEnumerable<Material> materials,
                         IEnumerable<Measurement> measurements, IEnumerable<Product> complementaryProducts,
-                        ProductSlotWidths slotWidths) : 
+                        ProductSlotWidths slotWidths) :
                         this(reference, designation, modelFilename, productCategory, materials, measurements, complementaryProducts) {
             checkProductSlotWidths(slotWidths);
             this.supportsSlots = true;
@@ -373,15 +372,15 @@ namespace core.domain {
                 throw new ArgumentNullException(COMPLEMENTARY_PRODUCT_NULL);
             }
 
-            if(restriction == null){
+            if (restriction == null) {
                 throw new ArgumentNullException(RESTRICTION_NULL);
             }
 
             Component comp = this.components.Where(c => c.complementaryProduct.Equals(component)).SingleOrDefault();
-            if(comp == null){
+            if (comp == null) {
                 throw new ArgumentException(COMPLEMENTARY_PRODUCT_NOT_FOUND);
             }
-            
+
             comp.addRestriction(restriction);
         }
 
@@ -402,17 +401,17 @@ namespace core.domain {
         /// <param name="restriction">Restriction being added.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when any of the provided arguments is null.</exception>
         /// <exception cref="System.ArgumentException">Thrown when Restriction could not be added.</exception>
-        public void addMaterialRestriction(Material material, Restriction restriction){
-            if(material == null){
+        public void addMaterialRestriction(Material material, Restriction restriction) {
+            if (material == null) {
                 throw new ArgumentNullException(MATERIAL_NULL);
             }
-            if(restriction == null){
+            if (restriction == null) {
                 throw new ArgumentNullException(RESTRICTION_NULL);
             }
 
             ProductMaterial productMaterial = this.productMaterials.Where(pm => pm.material.Equals(material)).SingleOrDefault();
 
-            if(productMaterial == null){
+            if (productMaterial == null) {
                 throw new ArgumentException(MATERIAL_NOT_FOUND);
             }
 
@@ -424,7 +423,7 @@ namespace core.domain {
         /// </summary>
         /// <param name="measurement">Measurement being added.</param>
         /// <returns>Returns true if the Measurement is not null nor has it been previosuly added; false otherwise.</returns>
-        public void addMeasurement(Measurement measurement){
+        public void addMeasurement(Measurement measurement) {
             checkIfMeasurementIsValidForAddition(measurement);
             this.productMeasurements.Add(new ProductMeasurement(this, measurement));
         }
@@ -437,17 +436,17 @@ namespace core.domain {
         /// <exception cref="System.ArgumentNullException">Thrown when any of the provided arguments is null.</exception>
         /// <exception cref="System.ArgumentException">Thrown when Restriction could not be added.</exception>
 
-        public void addMeasurementRestriction(Measurement measurement, Restriction restriction){
-            if(measurement == null){
+        public void addMeasurementRestriction(Measurement measurement, Restriction restriction) {
+            if (measurement == null) {
                 throw new ArgumentNullException(MEASUREMENT_NULL);
-            }   
-            if(restriction == null){
+            }
+            if (restriction == null) {
                 throw new ArgumentNullException(RESTRICTION_NULL);
             }
 
             Measurement measurementBeingRestricted = productMeasurements.Select(pm => pm.measurement).Where(m => m.Equals(measurement)).SingleOrDefault();
 
-            if(measurementBeingRestricted == null){
+            if (measurementBeingRestricted == null) {
                 throw new ArgumentException(MEASUREMENT_NOT_FOUND);
             }
 
@@ -474,7 +473,7 @@ namespace core.domain {
         /// <param name="designation">String with the designation being updated</param>
         public void changeProductDesignation(string designation) {
             checkIfProductDesignationIsValidForChange(designation);
-            this.designation=designation;
+            this.designation = designation;
         }
 
         /// <summary>
@@ -482,7 +481,7 @@ namespace core.domain {
         /// </summary>
         /// <param name="modelFilename">String with the new model's filename.</param>
         /// <exception cref="System.ArgumentException">Thrown when the provided filename is not valid.</exception>
-        public void changeModelFilename(string modelFilename){
+        public void changeModelFilename(string modelFilename) {
             checkProductModelFilename(modelFilename);
             this.modelFilename = modelFilename;
         }
@@ -506,18 +505,18 @@ namespace core.domain {
         /// <param name="measurement">Measurement being removed.</param>
         /// <exception cref="System.InvalidOperationException">If this instance does not contain more than one Measurement.</exception>
         /// <exception cref="System.ArgumentException">If the given instance of Measurement could not be removed.</exception>
-        public void removeMeasurement(Measurement measurement){
+        public void removeMeasurement(Measurement measurement) {
 
-            if(this.containsMeasurement(measurement) && this.productMeasurements.Count <= 1){
+            if (this.containsMeasurement(measurement) && this.productMeasurements.Count <= 1) {
                 //this operation is not allowed no matter the validity of the argument
                 throw new InvalidOperationException(MEASUREMENT_UNABLE_TO_REMOVE_LAST);
             }
 
-            if(!this.productMeasurements.Remove(
+            if (!this.productMeasurements.Remove(
                 this.productMeasurements.Where(pm => pm.measurement.Equals(measurement)).SingleOrDefault()
-                )){
-                    throw new ArgumentException(MEASUREMENT_UNABLE_TO_REMOVE);
-                }
+                )) {
+                throw new ArgumentException(MEASUREMENT_UNABLE_TO_REMOVE);
+            }
         }
 
         /// <summary>
@@ -529,17 +528,17 @@ namespace core.domain {
         /// <exception cref="System.ArgumentException">
         /// Thrown when the Measurement could not be found in the Product's measurements or when the Restriction could not be removed.
         /// </exception>
-        public void removeMeasurementRestriction(Measurement measurement, Restriction restriction){
-            if(measurement == null){
+        public void removeMeasurementRestriction(Measurement measurement, Restriction restriction) {
+            if (measurement == null) {
                 throw new ArgumentNullException(MEASUREMENT_NULL);
             }
-            if(restriction == null){
+            if (restriction == null) {
                 throw new ArgumentNullException(RESTRICTION_NULL);
             }
 
             Measurement measurementBeingUnrestricted = productMeasurements.Select(pm => pm.measurement).Where(m => m.Equals(measurement)).SingleOrDefault();
 
-            if(measurementBeingUnrestricted == null){
+            if (measurementBeingUnrestricted == null) {
                 throw new ArgumentException(MEASUREMENT_NOT_FOUND);
             }
 
@@ -554,15 +553,15 @@ namespace core.domain {
         /// <exception cref="System.ArgumentException">If the given instance of Material could not be removed.</param>
         public void removeMaterial(Material material) {
 
-            if(this.containsMaterial(material) && this.productMaterials.Count <= 1){
+            if (this.containsMaterial(material) && this.productMaterials.Count <= 1) {
                 //this operation is not valid no matter the validity of the argument
                 throw new InvalidOperationException(MATERIAL_UNABLE_TO_REMOVE_LAST);
             }
 
-            if(!this.productMaterials.Remove(
+            if (!this.productMaterials.Remove(
                 this.productMaterials.Where(pm => pm.material.Equals(material)).SingleOrDefault()
-                )){
-                    throw new ArgumentException(MATERIAL_UNABLE_TO_REMOVE);
+                )) {
+                throw new ArgumentException(MATERIAL_UNABLE_TO_REMOVE);
             }
         }
 
@@ -575,17 +574,17 @@ namespace core.domain {
         /// <exception cref="System.ArgumentException">
         /// Thrown when the Material could not be found in the Product's materials or when the Restriction could not be removed.
         /// </exception>
-        public void removeMaterialRestriction(Material material, Restriction restriction){
-            if(material == null){
+        public void removeMaterialRestriction(Material material, Restriction restriction) {
+            if (material == null) {
                 throw new ArgumentNullException(MATERIAL_NULL);
             }
-            if(restriction == null){
+            if (restriction == null) {
                 throw new ArgumentNullException(RESTRICTION_NULL);
             }
 
             ProductMaterial productMaterial = productMaterials.Where(pm => pm.material.Equals(material)).SingleOrDefault();
 
-            if(productMaterial == null){
+            if (productMaterial == null) {
                 throw new ArgumentException(MATERIAL_NOT_FOUND);
             }
 
@@ -598,11 +597,11 @@ namespace core.domain {
         /// <param name="complementaryProduct">Instance of Product which complements this instance.</param>
         /// <exception cref="System.ArgumentException">If the given instance of Product could not be removed.</exception>
         public void removeComplementaryProduct(Product complementaryProduct) {
-            if(!this.components.Remove(
+            if (!this.components.Remove(
                 this.components.Where(pc => pc.complementaryProduct.Equals(complementaryProduct)).SingleOrDefault()
-                )){
-                    throw new ArgumentException(COMPLEMENTARY_PRODUCT_UNABLE_TO_REMOVE);
-            } 
+                )) {
+                throw new ArgumentException(COMPLEMENTARY_PRODUCT_UNABLE_TO_REMOVE);
+            }
         }
 
         /// <summary>
@@ -614,17 +613,17 @@ namespace core.domain {
         /// <exception cref="System.ArgumentException">
         /// Thrown when the Component could not be found in the Product's components or when the Restriction could not be removed.
         /// </exception>
-        public void removeComplementaryProductRestriction(Product complementaryProduct, Restriction restriction){
-            if(complementaryProduct == null){
+        public void removeComplementaryProductRestriction(Product complementaryProduct, Restriction restriction) {
+            if (complementaryProduct == null) {
                 throw new ArgumentNullException(COMPLEMENTARY_PRODUCT_NULL);
             }
-            if(restriction == null){
+            if (restriction == null) {
                 throw new ArgumentNullException(RESTRICTION_NULL);
             }
 
             Component component = components.Where(c => c.complementaryProduct.Equals(complementaryProduct)).SingleOrDefault();
 
-            if(component == null){
+            if (component == null) {
                 throw new ArgumentException(COMPLEMENTARY_PRODUCT_NOT_FOUND);
             }
 
@@ -654,7 +653,7 @@ namespace core.domain {
         /// </summary>
         /// <param name="complementaryProduct">Instance of Product being checked.</param>
         /// <returns>true if this instance is complemented by the given Product; false, otherwise.</returns>
-        public bool containsComplementaryProduct(Product complementaryProduct){
+        public bool containsComplementaryProduct(Product complementaryProduct) {
             return this.components.Where(comp => comp.complementaryProduct.Equals(complementaryProduct)).Any();
         }
 
@@ -663,11 +662,93 @@ namespace core.domain {
         /// </summary>
         /// <param name="measurement">Instance of Measurement being checked.</param>
         /// <returns>true if this instance has the given Measurement; false, otherwise.</returns>
-        public bool containsMeasurement(Measurement measurement){
+        public bool containsMeasurement(Measurement measurement) {
             return this.productMeasurements.Where(pm => pm.measurement.Equals(measurement)).Any();
         }
 
         //*END OF CONTAINS METHODS */
+
+        //*BEGINNING OF MISC METHODS */
+
+        /// <summary>
+        /// Applies all restrictions of this product to all its components and returns the list of restricted components
+        /// </summary>
+        /// <param name="customizedProduct">customized product to base restrictions on</param>
+        /// <returns>list of restricted components</returns>
+        public IEnumerable<Product> getRestrictedComponents(CustomizedProduct customizedProduct, Slot slot) {
+            List<Product> restrictedComponents = new List<Product>();
+            if (customizedProduct == null || slot == null) {
+                return restrictedComponents;
+            }
+            List<Product> componentAsProduct = getAllComponentsAsProducts();
+            foreach (Product product in componentAsProduct) {
+                Product currentProduct = applyRestrictionsToProduct(customizedProduct, product, slot);
+                if (currentProduct != null) {
+                    restrictedComponents.Add(currentProduct);
+                }
+            }
+            return restrictedComponents;
+        }
+
+        /// <summary>
+        /// Applies all restrictions of this product to another product and returns a restricted copy
+        /// </summary>
+        /// <param name="customizedProduct">customized product to base restrictions on</param>
+        /// <param name="product">product to apply restrictions to</param>
+        /// <returns>restricted copy</returns>
+        public Product applyRestrictionsToProduct(CustomizedProduct customizedProduct, Product product, Slot slot) {
+            if (customizedProduct == null || product == null || slot == null) {
+                return null;
+            }
+
+            Product currentProduct = slot.restrictProductDimensionsToFitInSlot(product);
+            if (currentProduct == null) {
+                return null;
+            }
+            //restrict dimensions to slot dimensions
+            bool flag = true;
+            foreach (ProductMeasurement measurement in productMeasurements) {
+                currentProduct = measurement.measurement.applyAllRestrictions(customizedProduct, currentProduct);
+                if (currentProduct == null) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                foreach (ProductMaterial material in productMaterials) {
+                    currentProduct = material.applyAllRestrictions(customizedProduct, currentProduct);
+                    if (currentProduct == null) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    foreach (Component component in components) {
+                        if (component.complementaryProduct.Equals(currentProduct)) {
+                            currentProduct = component.applyAllRestrictions(customizedProduct, currentProduct);
+                            if (currentProduct == null) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return currentProduct;
+        }
+
+        /// <summary>
+        /// Returns all components as instances of Product
+        /// </summary>
+        /// <returns>List of components as instances of Product</returns>
+        public List<Product> getAllComponentsAsProducts() {
+            List<Product> componentAsProduct = new List<Product>();
+            foreach (Component component in components) {
+                componentAsProduct.Add(component.complementaryProduct);
+            }
+            return componentAsProduct;
+        }
+
+        //*END OF MISC METHODS */
 
         /// <summary>
         /// Returns the product identity
@@ -735,7 +816,7 @@ namespace core.domain {
             } else {
                 dto.dimensions = new List<MeasurementDTO>();
 
-                foreach(ProductMeasurement measurement in this.productMeasurements){
+                foreach (ProductMeasurement measurement in this.productMeasurements) {
                     dto.dimensions.Add(measurement.measurement.toDTO(dtoOptions.requiredUnit));
                 }
             }
@@ -782,7 +863,7 @@ namespace core.domain {
         /// <param name="modelFilename">Model's filename.</param>
         /// <exception cref="System.ArgumentException">Thrown when the given model file name does not match the model file name regular expression.</exception>
         private void checkProductModelFilename(string modelFilename) {
-            if(Strings.isNullOrEmpty(modelFilename) || !Regex.Match(modelFilename, SUPPORTED_FILES_PATTERN, RegexOptions.IgnoreCase).Success) {
+            if (Strings.isNullOrEmpty(modelFilename) || !Regex.Match(modelFilename, SUPPORTED_FILES_PATTERN, RegexOptions.IgnoreCase).Success) {
                 throw new ArgumentException(INVALID_PRODUCT_MODEL_FILENAME);
             }
         }
@@ -812,8 +893,8 @@ namespace core.domain {
         /// </summary>
         /// <param name="measurements">IEnumerable of Measurement being checked.</param>
         /// <exception cref="System.ArgumentException">If the IEnumerable is null, empty or contains duplicates.</exception>
-        private void checkProductMeasurements(IEnumerable<Measurement> measurements){
-            if(Collections.isEnumerableNullOrEmpty(measurements)){
+        private void checkProductMeasurements(IEnumerable<Measurement> measurements) {
+            if (Collections.isEnumerableNullOrEmpty(measurements)) {
                 throw new ArgumentException(INVALID_PRODUCT_DIMENSIONS);
             }
             checkDuplicatedMeasurements(measurements);
@@ -834,8 +915,8 @@ namespace core.domain {
         /// Checks if the product's slot widths are valid.
         /// </summary>
         /// <param name="slotWidths">Instance of ProductSlotWidths being checked.</param>
-        private void checkProductSlotWidths(ProductSlotWidths slotWidths){
-            if(slotWidths == null) {
+        private void checkProductSlotWidths(ProductSlotWidths slotWidths) {
+            if (slotWidths == null) {
                 throw new ArgumentNullException(INVALID_PRODUCT_SLOT_WIDTHS);
             }
         }
@@ -885,10 +966,10 @@ namespace core.domain {
         /// </summary>
         /// <param name="measurements">IEnumerable of Measurement being checked.</param>
         /// <exception cref="System.ArgumentException">Thrown when the IEnumerable has any duplicates.</exception>
-        private void checkDuplicatedMeasurements(IEnumerable<Measurement> measurements){
+        private void checkDuplicatedMeasurements(IEnumerable<Measurement> measurements) {
             HashSet<Measurement> measurementsSet = new HashSet<Measurement>();
-            foreach(Measurement measurement in measurements){
-                if(!measurementsSet.Add(measurement)){
+            foreach (Measurement measurement in measurements) {
+                if (!measurementsSet.Add(measurement)) {
                     throw new ArgumentException(INVALID_PRODUCT_DIMENSIONS);
                 }
             }
@@ -903,7 +984,7 @@ namespace core.domain {
         /// </summary>
         /// <param name="reference">String with the product reference being checked.</param>
         /// <exception cref="System.ArgumentException">Thrown when the given reference is null or empty.</exception>
-        private void checkProductReference(string reference){
+        private void checkProductReference(string reference) {
             if (Strings.isNullOrEmpty(reference)) throw new ArgumentException(INVALID_PRODUCT_REFERENCE);
         }
 
@@ -912,7 +993,7 @@ namespace core.domain {
         /// </summary>
         /// <param name="designation">String with the product designation being checked.</param>
         /// <exception cref="System.ArgumentException">Thrown when the given designation is null or empty.</exception>
-        private void checkProductDesignation(string designation){
+        private void checkProductDesignation(string designation) {
             if (Strings.isNullOrEmpty(designation)) throw new ArgumentException(INVALID_PRODUCT_DESIGNATION);
         }
 
@@ -921,9 +1002,9 @@ namespace core.domain {
         /// </summary>
         /// <param name="designation">String with the product reference being changed.</param>
         /// <exception cref="System.ArgumentException">Throw when the given reference is null, empty or equal to the current reference.</exception>
-        private void checkIfProductReferenceIsValidForChange(string reference){
+        private void checkIfProductReferenceIsValidForChange(string reference) {
             checkProductReference(reference);
-            if(this.reference.Equals(reference))
+            if (this.reference.Equals(reference))
                 throw new ArgumentException(INVALID_PRODUCT_REFERENCE_CHANGE);
         }
 
@@ -932,9 +1013,9 @@ namespace core.domain {
         /// </summary>
         /// <param name="designation">String with the product designation being changed.</param>
         /// <exception cref="System.ArgumentException">Thrown when the given designation is null, empty or equal to the current designation.</exception>
-        private void checkIfProductDesignationIsValidForChange(string designation){
+        private void checkIfProductDesignationIsValidForChange(string designation) {
             checkProductDesignation(designation);
-            if(this.designation.Equals(designation))
+            if (this.designation.Equals(designation))
                 throw new ArgumentException(INVALID_PRODUCT_DESIGNATION_CHANGE);
         }
 
@@ -943,9 +1024,9 @@ namespace core.domain {
         /// </summary>
         /// <param name="category">ProductCategory with the product category being changed</param>
         /// <exception cref="System.ArgumentException">Throw when the given instance of ProductCategory is null or equal to the current instance of ProductCategory.</exception>
-        private void checkIfProductCategoryIsValidForChange(ProductCategory category){
+        private void checkIfProductCategoryIsValidForChange(ProductCategory category) {
             checkProductCategory(category);
-            if(this.productCategory.Equals(category))
+            if (this.productCategory.Equals(category))
                 throw new ArgumentException(INVALID_PRODUCT_CATEGORY_CHANGE);
         }
 
@@ -958,7 +1039,7 @@ namespace core.domain {
             if (productMaterial == null) {
                 throw new ArgumentNullException(MATERIAL_NULL);
             }
-            if(containsMaterial(productMaterial)){
+            if (containsMaterial(productMaterial)) {
                 throw new ArgumentException(MATERIAL_ALREADY_ADDED);
             }
         }
@@ -970,13 +1051,13 @@ namespace core.domain {
         /// <exception cref="System.ArgumentException">Thrown when the given instance of Product is null,
         ///  is equal to this instance of Product or an equal instance of Product has been added previously.</exception>
         private void checkIfComplementaryProductIsValidForAddition(Product complementaryProduct) {
-            if(complementaryProduct == null){
+            if (complementaryProduct == null) {
                 throw new ArgumentNullException(COMPLEMENTARY_PRODUCT_NULL);
             }
-            if(complementaryProduct.Equals(this)){
+            if (complementaryProduct.Equals(this)) {
                 throw new ArgumentException(COMPLEMENTARY_PRODUCT_EQUALS_PRODUCT);
             }
-            if(this.containsComplementaryProduct(complementaryProduct)){
+            if (this.containsComplementaryProduct(complementaryProduct)) {
                 throw new ArgumentException(COMPLEMENTARY_PRODUCT_ALREADY_ADDED);
             }
         }
@@ -986,11 +1067,11 @@ namespace core.domain {
         /// </summary>
         /// <param name="measurement">Measurement being validated.</param>
         /// <exception cref="System.ArgumentException">Thrown when the given instance of Measurement is null or an equal instance of Measurement has been added previously.</exception>
-        private void checkIfMeasurementIsValidForAddition(Measurement measurement){
-            if(measurement == null){
+        private void checkIfMeasurementIsValidForAddition(Measurement measurement) {
+            if (measurement == null) {
                 throw new ArgumentNullException(MEASUREMENT_NULL);
             }
-            if(containsMeasurement(measurement)){
+            if (containsMeasurement(measurement)) {
                 throw new ArgumentException(MEASUREMENT_ALREADY_ADDED);
             }
         }

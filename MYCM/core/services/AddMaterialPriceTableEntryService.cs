@@ -35,38 +35,22 @@ namespace core.services
         private const string PRICE_TABLE_ENTRY_NOT_CREATED = "A price table entry for the requested material with the same values already exists. Please try again";
 
         /// <summary>
-        /// Message that occurs if the new currency isn't supported
+        /// Message that occurs if the price table entry's time period contains past dates
         /// </summary>
-        private const string UNSUPPORTED_CURRENCY = "The inserted currency is not being supported at the moment!";
-
-        /// <summary>
-        /// Message to help the user know which currencies to use
-        /// </summary>
-        private const string SUPPORTED_CURRENCIES_MESSAGE = "Please use one of the currencies that are currently being supported";
-
-        /// <summary>
-        /// Message that occurs if the new area isn't supported
-        /// </summary>
-        private const string UNSUPPORTED_AREA = "The inserted area is not being supported at the moment!";
-
-        /// <summary>
-        /// Message to help the user know which areas to use
-        /// </summary>
-        private const string SUPPORTED_AREAS_MESSAGE = "Please use one of the areas that are currently being supported";
+        private const string PAST_DATE = "Can't create time periods with past dates!";
 
         /// <summary>
         /// Transforms an AddMaterialPriceTableEntry into a MaterialPriceTableEntry and saves it to the database
         /// </summary>
         /// <param name="modelView">material price table entry to transform and persist</param>
         /// <returns>created instance or null in case the creation wasn't successfull</returns>
-        public static async Task<GetMaterialPriceModelView> create(AddPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
+        public static GetMaterialPriceModelView create(AddPriceTableEntryModelView modelView, IHttpClientFactory clientFactory)
         {
             string defaultCurrency = CurrencyPerAreaConversionService.getBaseCurrency();
             string defaultArea = CurrencyPerAreaConversionService.getBaseArea();
-            MaterialRepository materialRepository = PersistenceContext.repositories().createMaterialRepository();
             long materialId = modelView.entityId;
 
-            Material material = materialRepository.find(materialId);
+            Material material = PersistenceContext.repositories().createMaterialRepository().find(materialId);
 
             if (material == null)
             {
@@ -78,45 +62,49 @@ namespace core.services
 
             LocalDateTime startingDate;
             LocalDateTime endingDate;
+            LocalDateTime currentTime = NodaTime.LocalDateTime.FromDateTime(SystemClock.Instance.GetCurrentInstant().ToDateTimeUtc());
 
             try
             {
                 startingDate = LocalDateTimePattern.GeneralIso.Parse(startingDateAsString).GetValueOrThrow();
-                endingDate = LocalDateTimePattern.GeneralIso.Parse(endingDateAsString).GetValueOrThrow();
+
+                if (startingDate.CompareTo(currentTime) < 0)
+                {
+                    throw new InvalidOperationException(PAST_DATE);
+                }
             }
             catch (UnparsableValueException)
             {
                 throw new UnparsableValueException(DATES_WRONG_FORMAT + LocalDateTimePattern.GeneralIso.PatternText);
             }
 
-            TimePeriod timePeriod = TimePeriod.valueOf(startingDate, endingDate);
+            TimePeriod timePeriod = null;
 
-            List<string> availableCurrencies = (List<string>)CurrenciesService.getAvailableCurrencies();
-            List<string> availableAreas = (List<string>)AreasService.getAvailableAreas();
-
-            if (!availableCurrencies.Contains(modelView.priceTableEntry.price.currency))
+            if (endingDateAsString != null)
             {
-                throw new ArgumentException
-                (
-                    string.Format
-                    (
-                        "{0} {1}: {2}",
-                        UNSUPPORTED_CURRENCY, SUPPORTED_CURRENCIES_MESSAGE, string.Join(", ", availableCurrencies)
-                    )
-                );
+                try
+                {
+                    endingDate = LocalDateTimePattern.GeneralIso.Parse(endingDateAsString).GetValueOrThrow();
+
+                    if (endingDate.CompareTo(currentTime) < 0)
+                    {
+                        throw new InvalidOperationException(PAST_DATE);
+                    }
+
+                    timePeriod = TimePeriod.valueOf(startingDate, endingDate);
+                }
+                catch (UnparsableValueException)
+                {
+                    throw new UnparsableValueException(DATES_WRONG_FORMAT + LocalDateTimePattern.GeneralIso.PatternText);
+                }
+            }
+            else
+            {
+                timePeriod = TimePeriod.valueOf(startingDate);
             }
 
-            if (!availableAreas.Contains(modelView.priceTableEntry.price.area))
-            {
-                throw new ArgumentException
-                (
-                    string.Format
-                    (
-                     "{0} {1}: {2}",
-                     UNSUPPORTED_AREA, SUPPORTED_AREAS_MESSAGE, string.Join(", ", availableAreas)
-                    )
-                );
-            }
+            CurrenciesService.checkCurrencySupport(modelView.priceTableEntry.price.currency);
+            AreasService.checkAreaSupport(modelView.priceTableEntry.price.area);
 
             Price price = null;
             try
@@ -127,9 +115,13 @@ namespace core.services
                 }
                 else
                 {
-                    double convertedValue = await new CurrencyPerAreaConversionService(clientFactory)
-                                                    .convertCurrencyToDefaultCurrency(modelView.priceTableEntry.price.currency,
-                                                         modelView.priceTableEntry.price.value);
+                    Task<double> convertedValueTask = new CurrencyPerAreaConversionService(clientFactory)
+                                                    .convertCurrencyPerAreaToDefaultCurrencyPerArea(
+                                                        modelView.priceTableEntry.price.currency,
+                                                        modelView.priceTableEntry.price.area,
+                                                        modelView.priceTableEntry.price.value);
+                    convertedValueTask.Wait();
+                    double convertedValue = convertedValueTask.Result;
                     price = Price.valueOf(convertedValue);
                 }
             }
@@ -153,8 +145,8 @@ namespace core.services
             createdPriceModelView.startingDate = LocalDateTimePattern.GeneralIso.Format(savedMaterialPriceTableEntry.timePeriod.startingDate);
             createdPriceModelView.endingDate = LocalDateTimePattern.GeneralIso.Format(savedMaterialPriceTableEntry.timePeriod.endingDate);
             createdPriceModelView.value = savedMaterialPriceTableEntry.price.value;
-            createdPriceModelView.currency = CurrencyPerAreaConversionService.getBaseCurrency();
-            createdPriceModelView.area = CurrencyPerAreaConversionService.getBaseArea();
+            createdPriceModelView.currency = defaultCurrency;
+            createdPriceModelView.area = defaultArea;
             createdPriceModelView.id = savedMaterialPriceTableEntry.Id;
 
             return createdPriceModelView;

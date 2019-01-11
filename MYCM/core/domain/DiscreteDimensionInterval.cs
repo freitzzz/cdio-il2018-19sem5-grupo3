@@ -8,13 +8,11 @@ using core.services;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace core.domain
-{
+namespace core.domain {
     /// <summary>
     /// Class that represents a discrete dimension interval
     /// </summary>
-    public class DiscreteDimensionInterval : Dimension
-    {
+    public class DiscreteDimensionInterval : Dimension {
 
         /// <summary>
         /// Constant that represents the message that occurs if the list is null
@@ -59,22 +57,18 @@ namespace core.domain
         /// Builds a DiscreteDimensionInterval instance
         /// </summary>
         /// <param name="values">list of values that make up the interval</param>
-        public DiscreteDimensionInterval(List<double> values)
-        {
+        public DiscreteDimensionInterval(List<double> values) {
 
-            if (Collections.isListNull(values))
-            {
+            if (Collections.isListNull(values)) {
                 throw new ArgumentException(NULL_LIST_REFERENCE);
             }
 
-            if (Collections.isListEmpty(values))
-            {
+            if (Collections.isListEmpty(values)) {
                 throw new ArgumentException(EMPTY_LIST_REFERENCE);
             }
 
             List<DoubleValue> doubleValues = new List<DoubleValue>();
-            foreach (double value in values)
-            {
+            foreach (double value in values) {
                 checkValue(value);
                 doubleValues.Add(value);
             }
@@ -86,36 +80,29 @@ namespace core.domain
         /// Checks if a value for the interval is valid
         /// </summary>
         /// <param name="value">value being checked</param>
-        private void checkValue(double value)
-        {
-            if (Double.IsNaN(value))
-            {
+        private void checkValue(double value) {
+            if (Double.IsNaN(value)) {
                 throw new ArgumentException(VALUE_NAN);
             }
 
-            if (Double.IsInfinity(value))
-            {
+            if (Double.IsInfinity(value)) {
                 throw new ArgumentException(VALUE_INFINITY);
             }
 
-            if (Double.IsNegative(value) || value == 0)
-            {
+            if (Double.IsNegative(value) || value == 0) {
                 throw new ArgumentException(NEGATIVE_OR_ZERO_VALUE);
             }
         }
 
-        public override bool hasValue(double value)
-        {
+        public override bool hasValue(double value) {
             bool matchingValueFound = false;
 
-            foreach (double dimensionValue in values)
-            {
+            foreach (double dimensionValue in values) {
 
                 decimal dimensionValueAsDecimal = (decimal)dimensionValue;
                 decimal valueAsDecimal = (decimal)value;
 
-                if (decimal.Compare(dimensionValueAsDecimal, valueAsDecimal) == 0)
-                {
+                if (decimal.Compare(dimensionValueAsDecimal, valueAsDecimal) == 0) {
                     matchingValueFound = true;
                     break;
                 }
@@ -124,14 +111,16 @@ namespace core.domain
             return matchingValueFound;
         }
 
-        public override double getMaxValue()
-        {
+        public override double getMaxValue() {
             return this.values.Max();
         }
 
-        public override double getMinValue()
-        {
+        public override double getMinValue() {
             return this.values.Min();
+        }
+
+        public override double[] getValuesAsArray() {
+            return values.Select(dv => dv.value).ToArray();
         }
 
         /// <summary>
@@ -140,15 +129,12 @@ namespace core.domain
         /// </summary>
         /// <param name="obj">object that is being compared to</param>
         /// <returns>true if the objects are the same, false if otherwise</returns>
-        public override bool Equals(object obj)
-        {
-            if (obj == null || !obj.GetType().ToString().Equals("core.domain.DiscreteDimensionInterval"))
-            {
+        public override bool Equals(object obj) {
+            if (obj == null || !obj.GetType().ToString().Equals("core.domain.DiscreteDimensionInterval")) {
                 return false;
             }
 
-            if (this == obj)
-            {
+            if (this == obj) {
                 return true;
             }
 
@@ -162,14 +148,11 @@ namespace core.domain
         /// Hash code of DiscreteDimensionInterval
         /// </summary>
         /// <returns>hash code of a DiscreteDimensionInterval instance</returns>
-        public override int GetHashCode()
-        {
-            unchecked
-            {
+        public override int GetHashCode() {
+            unchecked {
                 int hash = 19;
 
-                foreach (DoubleValue value in values)
-                {
+                foreach (DoubleValue value in values) {
                     hash = hash * 31 + value.GetHashCode();
                 }
 
@@ -181,8 +164,7 @@ namespace core.domain
         /// ToString of DiscreteDimensionInterval
         /// </summary>
         /// <returns>list of values of the DiscreteDimensionInterval instance</returns>
-        public override string ToString()
-        {
+        public override string ToString() {
             return string.Format("List of values:\n{0}", values);
         }
 
@@ -190,26 +172,22 @@ namespace core.domain
         /// Builds a DimensionDTO out of a DiscreteDimensionInterval instance
         /// </summary>
         /// <returns>DimensionDTO instance</returns>
-        public override DimensionDTO toDTO()
-        {
+        public override DimensionDTO toDTO() {
             DiscreteDimensionIntervalDTO dto = new DiscreteDimensionIntervalDTO();
 
             dto.id = Id;
             dto.values = new List<double>();
             dto.unit = MeasurementUnitService.getMinimumUnit();
 
-            foreach (DoubleValue doubleValue in values)
-            {
+            foreach (DoubleValue doubleValue in values) {
                 dto.values.Add(doubleValue);
             }
 
             return dto;
         }
 
-        public override DimensionDTO toDTO(string unit)
-        {
-            if (unit == null)
-            {
+        public override DimensionDTO toDTO(string unit) {
+            if (unit == null) {
                 return this.toDTO();
             }
             DiscreteDimensionIntervalDTO dto = new DiscreteDimensionIntervalDTO();
@@ -217,8 +195,7 @@ namespace core.domain
             dto.id = Id;
             dto.values = new List<double>();
 
-            foreach (DoubleValue doubleValue in values)
-            {
+            foreach (DoubleValue doubleValue in values) {
                 dto.values.Add(MeasurementUnitService.convertToUnit(doubleValue.value, unit));
             }
             dto.unit = unit;

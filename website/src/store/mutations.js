@@ -1,21 +1,13 @@
 import * as types from './mutation-types'
-import store from '.';
+
+/**
+ * Requires cookie services
+ */
+import {deleteMYCASessionCookie} from '../CookieService';
 
 export const mutations = {
-  [types.SET_RESIZE_VECTOR_GLOBAL](state,payload){
-    if(payload){
-      state.resizeVectorGlobal = payload;
-    }else{
-      state.resizeVectorGlobal =[];
-    }
-  },
 
-  [types.SET_RESIZE_FACTOR_DIMENSIONS](state,payload){
-    if (payload) {
-      state.resizeFactorDimensions=payload;
-    } else { state.resizeFactorDimensions = []; }
-
-  },
+  //*Product mutations
 
   /**
    * Saves the retrieved product from MYCM into the state's product
@@ -25,6 +17,9 @@ export const mutations = {
   [types.INIT_PRODUCT](state, payload) {
     state.product = payload.product;
   },
+
+  //*CustomizedProduct mutations
+
   /**
    * Saves the id of customized product 
    * @param {*} state The store's state
@@ -33,19 +28,29 @@ export const mutations = {
   [types.SET_ID_CUSTOMIZED_PRODUCT](state, payload) {
     state.customizedProduct.id = payload;
   },
+
   /**
-   * Saves the id of slot 
-   * @param {*} state The store's state
-   * @param {*} payload Received payload with the id
+   * Sets the main CustomizedProduct's reference.
+   * @param {*} state - The store's state.
+   * @param {string} payload - CustomizedProduct's reference.
    */
-  [types.SET_ID_SLOT](state, payload) {
-    state.customizedProduct.slots[payload.position].idSlot = payload.idSlot;
+  [types.SET_CUSTOMIZED_PRODUCT_REFERENCE](state, payload) {
+    state.customizedProduct.reference = payload;
   },
 
   /**
-   * Changes the states's customized product's dimension
+   * Sets the main CustomizedProduct's designation.
+   * @param {*} state - The store's state.
+   * @param {string} payload - CustomizedProduct's designation.
+   */
+  [types.SET_CUSTOMIZED_PRODUCT_DESIGNATION](state, payload) {
+    state.customizedProduct.designation = payload;
+  },
+
+  /**
+   * Changes the state's customized product's dimension
    * @param {*} state The store's state
-   * @param {*} payload Payload with the new width
+   * @param {*} payload Payload with the CustomizedProduct's dimensions
    */
   [types.SET_CUSTOMIZED_PRODUCT_DIMENSIONS](state, payload) {
     state.customizedProduct.customizedDimensions = {
@@ -57,26 +62,10 @@ export const mutations = {
   },
 
   /**
-   * Changes the states's customized product's slot width
-   * @param {*} state The store's state
-   * @param {*} payload Payload with the new slot width 
-   */
-  [types.ADD_SLOT_DIMENSIONS](state, payload) {
-    if (payload) {
-      state.customizedProduct.slots.push({
-        idSlot: payload.idSlot,
-        depth: payload.depth,
-        width: payload.width,
-        height: payload.height,
-        unit: payload.unit
-      })
-    } else { state.customizedProduct.slots = []; }
-  },
-  /**
-   * Changes the states's customized product's material 
+   * Changes the state's customized product's material 
    * @param {*} state The store's state
    * @param {*} payload Payload with the new material 
-  */
+   */
   [types.SET_CUSTOMIZED_PRODUCT_MATERIAL](state, payload) {
     state.customizedProduct.customizedMaterial.id = payload.id;
     state.customizedProduct.customizedMaterial.reference = payload.reference;
@@ -85,11 +74,21 @@ export const mutations = {
   },
 
   /**
-   * Changes the states's customized product's color 
+   * Changes the state's customized product's finish 
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the new finish 
+   */
+  [types.SET_CUSTOMIZED_PRODUCT_FINISH](state, payload) {
+    state.customizedProduct.customizedMaterial.finish.description = payload.description;
+    state.customizedProduct.customizedMaterial.finish.shininess = payload.shininess;
+  },
+
+  /**
+   * Changes the state's customized product's color 
    * @param {*} state The store's state
    * @param {*} payload Payload with the new color 
    */
-  [types.SET_CUSTOMIZED_PRODUCT_COLOR](state, payload){
+  [types.SET_CUSTOMIZED_PRODUCT_COLOR](state, payload) {
     state.customizedProduct.customizedMaterial.color.name = payload.name;
     state.customizedProduct.customizedMaterial.color.red = payload.red;
     state.customizedProduct.customizedMaterial.color.green = payload.green;
@@ -98,27 +97,50 @@ export const mutations = {
   },
 
   /**
-   * Changes the states's customized product's finish 
+   * Saves the id of slot 
    * @param {*} state The store's state
-   * @param {*} payload Payload with the new finish 
+   * @param {*} payload Received payload with the id
    */
-  [types.SET_CUSTOMIZED_PRODUCT_FINISH](state, payload){
-    state.customizedProduct.customizedMaterial.finish.description = payload.description;
-    state.customizedProduct.customizedMaterial.finish.shininess = payload.shininess;
+  [types.SET_ID_SLOT](state, payload) {
+    state.customizedProduct.slots[payload.position].idSlot = payload.idSlot;
   },
 
   /**
-   * Adds a component to the state's customized product's
+   * Changes the state's customized product's slot width
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the new slot width 
+   */
+  [types.ADD_SLOT_DIMENSIONS](state, payload) {
+    if (payload) {
+      if (payload.height == 0) {
+        state.customizedProduct.slots[payload.idSlot].idSlot = payload.idSlot,
+          state.customizedProduct.slots[payload.idSlot].depth = payload.depth,
+          state.customizedProduct.slots[payload.idSlot].width = payload.width,
+          state.customizedProduct.slots[payload.idSlot].height = payload.height,
+          state.customizedProduct.slots[payload.idSlot].unit = payload.unit
+      } else {
+        state.customizedProduct.slots.push({
+          idSlot: payload.idSlot,
+          depth: payload.depth,
+          width: payload.width,
+          height: payload.height,
+          unit: payload.unit
+        })
+      }
+    } else { state.customizedProduct.slots = []; }
+  },
+
+  /**
+   * Adds a component to the state's customized product components
    * @param {*} state The store's state
    * @param {*} payload Payload with the component to add
    */
-  [types.SET_CUSTOMIZED_PRODUCT_COMPONENTS](state, payload) {
-    if (payload && state.customizedProduct.slots.length >= payload.component.slot) {
+  [types.ADD_CUSTOMIZED_PRODUCT_COMPONENT](state, payload) {
+    if(!payload) state.customizedProduct.components = [];
+    else if (state.customizedProduct.slots.length >= payload.component.slot) {
       let copiedArray = state.customizedProduct.components.slice(0);
-      copiedArray.push(payload.component);
+      copiedArray.push(payload);
       state.customizedProduct.components = copiedArray;
-    } else if (!payload) {
-      state.customizedProduct.components = [];
     }
   },
 
@@ -128,60 +150,152 @@ export const mutations = {
    * @param {*} payload Payload with the component to remove
    */
   [types.REMOVE_CUSTOMIZED_PRODUCT_COMPONENT](state, payload) {
-    state.canvasControls.componentToRemove = payload.component;
-    let index = state.customizedProduct.components.indexOf(payload.component);
-
     let copiedArray = state.customizedProduct.components.slice(0);
-    copiedArray.splice(index, 1);
+    copiedArray.splice(payload.index, 1);
 
     state.customizedProduct.components = copiedArray;
   },
 
+  //*CanvasControls mutations
+
   /**
-  * Activates the flag that allows the user to move the closet faces
-  * @param {*} state The store's state
-  */
-  [types.ACTIVATE_CAN_MOVE_CLOSET](state) {
-    state.canvasControls.canMoveCloset = true;
+   * Sets the state's canvas controls product to be removed on further confirmation
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the component to be removed if confirmed
+   */
+  [types.SET_COMPONENT_TO_REMOVE](state, payload) {
+    state.canvasControls.componentToRemove = payload;
   },
 
   /**
-  * Activates the flag that allows the user to move the closet slots
-  * @param {*} state The store's state
-  */
+   * Sets the state's canvas controls product to be added 
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the component to be added
+   */
+  [types.SET_COMPONENT_TO_ADD](state, payload){
+    state.canvasControls.componentToAdd = payload;
+  },
+
+  /**
+   * Sets the state's canvas controls product to be edited 
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the component to be edited
+   */
+  [types.SET_COMPONENT_TO_EDIT](state, payload){
+    state.canvasControls.componentToEdit = payload;
+  },
+
+  /**
+   * Sets the state's canvas controls component to edit material
+   * @param {*} state The store's state
+   * @param {*} payload Payload with the material to be applied to the component being edited
+   */
+  [types.SET_COMPONENT_TO_EDIT_MATERIAL](state, payload){
+    state.canvasControls.componentMaterial = payload;
+  },
+
+  /**
+   * Changes the flag that controls the doors that can be applied to the customized product
+   * @param {*} state The store's state
+   */
+  [types.SET_DOORS_FLAG](state, payload) {
+    state.canvasControls.doorsFlag = payload.flag;
+  },
+
+  /**
+   * Activates the flag that allows the user to move the closet slots
+   * @param {*} state The store's state
+   */
   [types.ACTIVATE_CAN_MOVE_SLOTS](state) {
     state.canvasControls.canMoveSlots = true;
   },
 
   /**
-  * Activates the flag that allows the user to move the closet components
-  * @param {*} state The store's state
-  */
-  [types.ACTIVATE_CAN_MOVE_COMPONENTS](state) {
-    state.canvasControls.canMoveComponents = true;
-  },
-
-  /**
- * Deactivates the flag that allows the user to move the closet faces
- * @param {*} state The store's state
- */
-  [types.DEACTIVATE_CAN_MOVE_CLOSET](state) {
-    state.canvasControls.canMoveCloset = false;
-  },
-
-  /**
-  * Deactivates the flag that allows the user to move the closet slots
-  * @param {*} state The store's state
-  */
+   * Deactivates the flag that allows the user to move the closet slots
+   * @param {*} state The store's state
+   */
   [types.DEACTIVATE_CAN_MOVE_SLOTS](state) {
     state.canvasControls.canMoveSlots = false;
   },
 
   /**
-  * Deactivates the flag that allows the user to move the closet components
-  * @param {*} state The store's state
-  */
+   * Activates the flag that allows the user to move the closet faces
+   * @param {*} state The store's state
+   */
+  [types.ACTIVATE_CAN_MOVE_CLOSET](state) {
+    state.canvasControls.canMoveCloset = true;
+  },
+
+  /**
+   * Deactivates the flag that allows the user to move the closet faces
+   * @param {*} state The store's state
+   */
+  [types.DEACTIVATE_CAN_MOVE_CLOSET](state) {
+    state.canvasControls.canMoveCloset = false;
+  },
+
+  /**
+   * Activates the flag that allows the user to move the closet components
+   * @param {*} state The store's state
+   */
+  [types.ACTIVATE_CAN_MOVE_COMPONENTS](state) {
+    state.canvasControls.canMoveComponents = true;
+  },
+
+  /**
+   * Deactivates the flag that allows the user to move the closet components
+   * @param {*} state The store's state
+   */
   [types.DEACTIVATE_CAN_MOVE_COMPONENTS](state) {
     state.canvasControls.canMoveComponents = false;
+  },
+
+  //*Resize mutations
+
+  [types.SET_RESIZE_FACTOR_DIMENSIONS](state, payload) {
+    if (payload) {
+      state.resizeFactorDimensions = payload;
+    } else { state.resizeFactorDimensions = []; }
+
+  },
+
+  [types.SET_RESIZE_VECTOR_GLOBAL](state, payload) {
+    if (payload) {
+      state.resizeVectorGlobal = payload;
+    } else {
+      state.resizeVectorGlobal = [];
+    }
+  },
+
+  /**
+   * Set's a new user name
+   */
+  [types.SET_USER_NAME](state,payload){
+    if(payload){
+      state.user.name=payload;
+    }
+  },
+
+  /**
+   * Set's a new user roles
+   */
+  [types.SET_USER_ROLES](state,payload){
+    if(payload){
+      if(payload.isAdministrator!==undefined)state.user.isAdministrator=payload.isAdministrator;
+      if(payload.isContentManager!==undefined)state.user.isContentManager=payload.isContentManager;
+      if(payload.isLogisticManager!==undefined)state.user.isLogisticManager=payload.isLogisticManager;
+    }
+  },
+
+  /**
+   * Logouts the current user
+   */
+  [types.LOGOUT_USER](state){
+    state.user.name=null;
+    state.user.isAdministrator=false;
+    state.user.isClient=false;
+    state.user.isContentManager=false;
+    state.user.isLogisticManager=false;
+    deleteMYCASessionCookie();
   }
 }

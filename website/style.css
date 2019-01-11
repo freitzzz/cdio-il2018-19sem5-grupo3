@@ -53,6 +53,27 @@
   .material-icons.md-light.md-inactive {
     color: rgba(255, 255, 255, 0.3);
   }
+
+
+  /*Change the scroll bar for webkit compatible browsers */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #0ba2db;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #7eddff;
+  }
+
   body, html {
     font-family: 'Roboto', sans-serif;
     text-rendering: optimizeLegibility !important;
@@ -233,6 +254,23 @@
   font-size: 16px;
   border-radius: 6px;
   transition: all 0.3s;
+}
+
+.btn-primary-disabled{
+  background-color: #243d46 !important;
+  border-color: #243d46 !important;
+  border: 0;
+  padding: 5px 15px;
+  margin: 0;
+  font-size: 16px;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+.btn-primary-disabled :hover{
+  background-color: #243d46 !important;
+  border-color: #243d46 !important;
+  cursor: not-allowed;
 }
 
 .btn-primary:hover {
