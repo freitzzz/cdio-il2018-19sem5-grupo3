@@ -114,6 +114,10 @@ import { REMOVE_CUSTOMIZED_PRODUCT_COMPONENT,
 import "vue-swatches/dist/vue-swatches.min.css";
 import Swatches from "vue-swatches";
 
+const DISCRETE_INTERVAL = 0;
+const CONTINUOUS_INTERVAL = 1;
+const DISCRETE_VALUE = 2;
+
 export default {
   name: "CustomizerSideBarComponentsPanel",
   components: { Swatches }, 
@@ -146,26 +150,54 @@ export default {
     }
   },
   watch: {
-    addComponent: function(newValue) {
+    addComponent: async function(newValue) {
       if(!newValue) return;
       for(let i = 0; i < this.components.length; i++){
         if(this.components[i].model.split(".")[0] + ".png" == newValue.model){
+          
+          var component = this.components[i];
+
           if(newValue.model.split(".")[0] != "hinged-door" && newValue.model.split(".")[0] != "sliding-door"){
-            this.getComponentData(this.components[i].id);
             this.showFinishes = false;
             this.showColors = false;
+
+            await this.getComponentData(this.components[i].id);
+            component.slot = newValue.slot;
+            this.addedComponents.push(component);
+
+            let requestBody = {
+              productId: this.componentData.id,
+              customizedMaterial: {
+                materialId: store.state.customizedProduct.customizedMaterial.id,
+                color: store.state.customizedProduct.customizedMaterial.color,
+                finish: store.state.customizedProduct.customizedMaterial.finish                 
+              },
+              customizedDimensions: {
+                height: store.state.customizedProduct.slots[newValue.slot - 1].height,
+                width: store.state.customizedProduct.slots[newValue.slot - 1].width,
+                depth: store.state.customizedProduct.slots[newValue.slot - 1].depth,
+                unit: store.state.customizedProduct.slots[newValue.slot - 1].unit
+              }
+            }
+            
+            CustomizedProductRequests.postCustomizedProduct(requestBody, {customizedProductId: store.state.customizedProduct.id, slotId: component.slot})
+            .then(response => {
+              this.closeNav();
+              store.dispatch(SET_COMPONENT_TO_ADD);
+              store.dispatch(ADD_CUSTOMIZED_PRODUCT_COMPONENT, {
+                component: component
+              });
+            })
+            .catch(error => {
+              this.closeNav();
+            })
           } else {
             this.closeNav();
+            store.dispatch(SET_COMPONENT_TO_ADD);
+            store.dispatch(ADD_CUSTOMIZED_PRODUCT_COMPONENT, {
+              component: component
+            });
           }
-
-          var component = this.components[i];
-          component.slot = newValue.slot;
-          this.addedComponents.push(component);
-
-          store.dispatch(SET_COMPONENT_TO_ADD);
-          store.dispatch(ADD_CUSTOMIZED_PRODUCT_COMPONENT, {
-            component: component
-          });
         }
       }
     },
@@ -226,8 +258,8 @@ export default {
           }
         });
     },
-    getComponentData(id){
-      ProductRequests.getProductById(id)
+    async getComponentData(id){
+      await ProductRequests.getProductById(id)
       .then(response => {
         this.componentData = response.data;
         this.httpCode = response.status;
@@ -256,6 +288,22 @@ export default {
             this.finishes = [];
           }
         });
+    },
+    identifyDimensionType: function(dimensionObj) {
+      if (dimensionObj.values) {
+        //Discrete interval
+        return DISCRETE_INTERVAL;
+      } else if (dimensionObj.value) {
+        //Single value
+        return DISCRETE_VALUE;
+      } else if (
+        //Continuous interval
+        dimensionObj.minValue &&
+        dimensionObj.maxValue  &&
+        dimensionObj.increment
+      ) {
+        return CONTINUOUS_INTERVAL;
+      }
     },
     hasSlots(){
      return store.state.customizedProduct.slots.length > 0;
