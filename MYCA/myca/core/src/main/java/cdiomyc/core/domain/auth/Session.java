@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -54,10 +55,12 @@ public class Session implements DomainEntity<String>, Serializable {
     /**
      * String with the session token
      */
+    @Column(length = 1<<14)
     private String sessionToken;
     /**
      * String with the session secrete identifier
      */
+    @Column(length = 1<<14)
     private String sessionSecreteIdentifier;
     /**
      * Boolean with the session active
