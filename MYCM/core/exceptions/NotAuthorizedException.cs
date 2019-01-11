@@ -1,9 +1,8 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace backend.AuthorizationServices.exceptions
+namespace core.exceptions
 {
-
     /// <summary>
     /// Class representing the exception throw when a user is not authorized to perform a certain action.
     /// </summary>
