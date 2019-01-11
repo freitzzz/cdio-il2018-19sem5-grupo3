@@ -4,7 +4,7 @@
       <button class="btn-primary" @click="getOrders()">
         <b-icon icon="refresh"/>
       </button>
-    </div>    
+    </div>
     <orders-table :data="data"/>
   </div>
 </template>
@@ -32,75 +32,26 @@ export default {
     getOrders() {
       OrderRequests.getOrders()
         .then(response => {
-          this.data = response.data;
+          this.data = this.generateOrdersTableData(response.data);
         })
         .catch(error => {
-          error.response.data.message;
+          this.$toast.open(error.response.data.message);
         });
-  //     this.data =
-  //   [
-  //     {
-  //         "status": "In Validation",
-  //         "_id": "5bd2310ccdf5656525be34aa",
-  //         "cityToDeliver":"Porto",
-  //         "orderContents": [
-  //             {
-  //                 "customizedproduct": 1,
-  //                 "quantity": 1
-  //             },
-  //             {
-  //                 "customizedproduct": 2,
-  //                 "quantity": 1
-  //             },
-  //             {
-  //                 "customizedproduct": 3,
-  //                 "quantity": 1
-  //             }
-  //         ],
-  //         "__v": 0
-  //     },
-  //     {
-  //         "status": "In Validation",
-  //         "cityToDeliver":"Braga",
-  //         "_id": "5bd23123cdf5656525be34ab",
-  //         "orderContents": [
-  //             {
-  //                 "customizedproduct": 1,
-  //                 "quantity": 10
-  //             },
-  //             {
-  //                 "customizedproduct": 2,
-  //                 "quantity": 10
-  //             },
-  //             {
-  //                 "customizedproduct": 3,
-  //                 "quantity": 10
-  //             }
-  //         ],
-  //         "__v": 0
-  //     },
-  //     {
-  //         "status": "In Validation",
-  //         "cityToDeliver":"Lisboa",
-  //         "_id": "5bd23129cdf5656525be34ac",
-  //         "orderContents": [
-  //             {
-  //                 "customizedproduct": 1,
-  //                 "quantity": 100
-  //             },
-  //             {
-  //                 "customizedproduct": 2,
-  //                 "quantity": 100
-  //             },
-  //             {
-  //                 "customizedproduct": 3,
-  //                 "quantity": 100
-  //             }
-  //         ],
-  //         "__v": 0
-  //     }
-  //  ];
     },
+    /**
+     * Generates the data of a orders table by a given list of orders
+     */
+    generateOrdersTableData(orders) {
+      let ordersTableData = [];
+      orders.forEach(order => {
+        ordersTableData.push({
+          id: order._id,
+          cityToDeliverName: order.cityToDeliver.name,
+          status: order.status
+        });
+      });
+      return ordersTableData;
+    }
   },
   created() {
     this.getOrders();
