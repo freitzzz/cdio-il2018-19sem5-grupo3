@@ -1102,7 +1102,7 @@ namespace core.domain {
             }
 
             if (remainderWidth > 0) {
-                if (remainder > minSlotWidth) {
+                if (remainder >= minSlotWidth) {
                     recommendedSlots.Add(
                         CustomizedDimensions.valueOf(
                             customizedProductHeight,
@@ -1138,36 +1138,35 @@ namespace core.domain {
         /// Returns the min slots
         /// </summary>
         /// <returns>List with the min slots</returns>
-
         public List<CustomizedDimensions> minSlots() {
             List<CustomizedDimensions> minSlots = new List<CustomizedDimensions>();
 
-            double heightCloset = customizedDimensions.height;
-            double widthCloset = customizedDimensions.width;
-            double depthCloset = customizedDimensions.depth;
+            double customizedProductHeight = customizedDimensions.height;
+            double customizedProductWidth = customizedDimensions.width;
+            double customizedProductDepth = customizedDimensions.depth;
 
             double maxSlotWidth = product.slotWidths.maxWidth;
             double minSlotWidth = product.slotWidths.minWidth;
 
-            int maxNumberSlots = (int)(widthCloset / maxSlotWidth);
-            double remainder = widthCloset % maxSlotWidth;
-            double remainderWidth = widthCloset - maxNumberSlots * maxSlotWidth;
+            int maxNumberSlots = (int)(customizedProductWidth / maxSlotWidth);
+            double remainder = customizedProductWidth % maxSlotWidth;
+            double remainderWidth = customizedProductWidth - maxNumberSlots * maxSlotWidth;
 
             for (int i = 0; i < maxNumberSlots; i++) {
                 minSlots.Add(
                     CustomizedDimensions.valueOf(
-                        heightCloset,
+                        customizedProductHeight,
                         maxSlotWidth,
-                        depthCloset));
+                        customizedProductDepth));
             }
 
             if (remainderWidth > 0) {
-                if (remainder > minSlotWidth) {
+                if (remainder >= minSlotWidth) {
                     minSlots.Add(
                         CustomizedDimensions.valueOf(
-                            heightCloset,
+                            customizedProductHeight,
                             remainderWidth,
-                            depthCloset));
+                            customizedProductDepth));
                 } else {
                     double lackToMin = minSlotWidth - remainderWidth;
                     double takeRecommended = lackToMin / maxNumberSlots;
@@ -1178,16 +1177,16 @@ namespace core.domain {
                         for (int i = 0; i < maxNumberSlots; i++) {
                             minSlots.Add(
                                 CustomizedDimensions.valueOf(
-                                heightCloset,
+                                customizedProductHeight,
                                 (maxSlotWidth - takeRecommended),
-                                depthCloset));
+                                customizedProductDepth));
                         }
 
                         minSlots.Add(
                             CustomizedDimensions.valueOf(
-                            heightCloset,
+                            customizedProductHeight,
                             (minSlotWidth),
-                            depthCloset));
+                            customizedProductDepth));
                     }
                 }
             }

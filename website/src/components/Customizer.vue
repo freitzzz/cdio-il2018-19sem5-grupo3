@@ -73,6 +73,9 @@ export default {
     controlDoorsFlag() {
       return Store.getters.doorsFlag;
     },
+    componentToEditMaterial(){
+      return Store.getters.componentToEditMaterial;
+    },
     populateWebsiteDimensions() {
       return Store.getters.resizeFactorDimensions;
     }
@@ -150,6 +153,10 @@ export default {
       if (newValue == "SLOT_HAS_DOOR")
         this.$toast.open("This slot already has a door!");
       Store.dispatch(SET_DOORS_FLAG, { flag: "NONE" });
+    },
+    componentToEditMaterial(newValue){
+      if(!newValue) return;
+      this.productRenderer.applyComponentMaterial(newValue, Store.getters.componentToEdit);
     }
   },
   methods: {

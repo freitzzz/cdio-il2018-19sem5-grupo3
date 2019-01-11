@@ -11,5 +11,11 @@ namespace core.modelview.customizedproduct
         /// </summary>
         /// <value>Gets/sets the CustomizedProduct's persistence identifier.</value>
         public long customizedProductId { get; set; }
+
+        /// <summary>
+        /// User's authentication token.
+        /// </summary>
+        /// <value>Gets/Sets the authentication token.</value>
+        public string userAuthToken { get; set; }
     }
 }

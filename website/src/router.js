@@ -12,6 +12,11 @@ import ListProducts from "./components/management/product/ListProducts.vue";
 import ListCustomizedProductCollections from "./components/management/customizedproductcollections/ListCustomizedProductCollections.vue";
 import ListCommercialCatalogues from "./components/management/commercialcatalogue/ListCommercialCatalogues.vue";
 
+/* Logistics  */
+import LogisticTopBar from "./components/logistsManagement/LogisticsTopBar.vue";
+import ListShipment from "./components/logistsManagement/ListShipment.vue";
+import ListCities from "./components/logistsManagement/Cities/ListCities.vue";
+
 const routes = [
     { name:"root", path: "/", redirect: "/home" },
     { name:"home", path: "/home", component: Home },
@@ -30,6 +35,12 @@ const routes = [
         path: "/administration", component: RolesTopBar, children: [
             { path: "orders", component: ListOrders},
             { path: "prices", component: ListPriceMaterials}
+        ]
+    },
+    {
+        path:"/logistic", component:LogisticTopBar, children:[
+            {path:"cities", component: ListCities},
+            {path:"shipment", component:ListShipment}
         ]
     },
     { path: "*", redirect: "/home" }

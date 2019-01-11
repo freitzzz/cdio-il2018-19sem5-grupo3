@@ -31,7 +31,7 @@ public abstract class Auth implements DomainEntity<String>, Serializable {
     /**
      * String with the authentication token
      */
-    @Column(unique = true)
+    @Column(unique = true,length = 1<<14)
     private String token;
 
     /**

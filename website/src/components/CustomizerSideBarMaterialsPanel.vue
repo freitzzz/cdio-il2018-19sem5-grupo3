@@ -5,7 +5,7 @@
         <i class="material-icons md-12 md-blue btn">help</i>
         <span class="tooltiptext">In this step, you can add a material to the closet.</span>
       </div>
-      <div class="text-entry">Choose material to add:</div>
+      <div class="text-entry">Choose a material to add:</div>
       <div class="padding-div">
         <div class="scrollable-div" style="height: 300px; width: 100%;">
            <a v-if="getMaterialInformationOK" class="sidepanel">
@@ -26,8 +26,8 @@
               </a>
               <div class="dropdown-container" v-if="showColors">
                 <a class="sidepanel-subentry" @click="removeColor()">
-                <swatches value="" :trigger-style="{ width: '10px', height: '10px', position:'absolute', left:'-16px', top:'6px'}"/>
-                None
+                  <swatches value="" :trigger-style="{ width: '10px', height: '10px', position:'absolute', left:'-16px', top:'6px'}"/>
+                  None
                 </a>
                 <div v-for="color in colors" :key="color.name">
                   <a class="sidepanel-subentry" @click="applyColor(color)">

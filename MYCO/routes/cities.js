@@ -15,9 +15,11 @@ const city = require('../models/City');
  * Routes the GET of all existent cities
  */
 citiesRoute.route('/cities').get(function(request, response){
+    console.log("???????")
     city
     .find()
     .then(function(cities){
+        console.log("!!!!")
         if(cities == null || cities.length == 0){
             response.status(404).json(noAvailableCities());
         } else {

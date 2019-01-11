@@ -66,6 +66,7 @@ namespace backend
             //Allow requests from MYC's website
             app.UseCors("Website");
 
+            app.UseAuthorizationMiddleware();
             app.UseMvc();
         }
     }
