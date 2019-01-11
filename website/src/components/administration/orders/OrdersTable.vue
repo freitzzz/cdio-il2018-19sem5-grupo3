@@ -6,7 +6,7 @@
           <button class="btn-primary" @click="enableOrderDetails(props.rowData.id, false)">
             <b-icon icon="magnify"/>
           </button>
-          <button class="btn-primary" @click="enableOrderDetails(props.rowData.id, true)">
+          <button class="btn-primary" v-if="displayEditButton(props.rowData)" @click="enableOrderDetails(props.rowData.id, true)">
             <b-icon icon="pencil"/>
           </button>
         </div>
@@ -28,11 +28,11 @@ export default {
     return {
       columns: [
         {
-          name: "_id",
+          name: "id",
           title: "Order ID"
         },
         {
-          name: "cityToDeliver.name",
+          name: "cityToDeliverName",
           title: "Delivery City"
         },
         {
@@ -67,12 +67,12 @@ export default {
      * @param {string} newStatus
      */
     updateTableEntry(orderId, newStatus) {
-    //   for (let i = 0; i < this.data.length; i++) {
-    //     if (this.data[i].id == orderId) {
-    //       this.data[i].status = newStatus;
-    //     }
-    //   }
-    //   this.displayOrderDetails = false;
+       for (let i = 0; i < this.data.length; i++) {
+         if (this.data[i].id == orderId) {
+           this.data[i].status = newStatus;
+         }
+       }
+       this.displayOrderDetails = false;
     },
 
     /**
@@ -84,6 +84,9 @@ export default {
        this.selectedOrderId = orderId;
        this.editable = editable;
        this.displayOrderDetails = true;
+    },
+    displayEditButton(order){
+      return order.status === 'Producted'
     }
   }
 };

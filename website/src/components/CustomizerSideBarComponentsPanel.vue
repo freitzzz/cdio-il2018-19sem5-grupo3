@@ -169,7 +169,7 @@ export default {
             let auxWidth = store.state.customizedProduct.slots[newValue.slot - 1].width/reasonWidth;
             let computedWidth = auxWidth.toFixed(0);
 
-            let auxHeight = store.state.customizedProduct.slots[newValue.slot - 1].height / 2;
+            let auxHeight = store.state.customizedProduct.slots[newValue.slot - 1].height / 10;
             let computedHeight = auxHeight.toFixed(0);
 
             var hasColors = store.state.customizedProduct.customizedMaterial.color.name != "None";

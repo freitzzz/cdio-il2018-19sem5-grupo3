@@ -2,7 +2,7 @@ let mycm, myco, myca, privateMYCSSecreteChallenge;
 if (process.env.NODE_ENV === 'production') {
     mycm = "https://mycm-api.azurewebsites.net";
     myco = "http://cdio-myco.westeurope.cloudapp.azure.com";
-    myca = "https://myca.azurewebsites.net/myca/api";
+    myca = "http://myca-api.ukwest.cloudapp.azure.com/myca/api";
     privateMYCSSecreteChallenge="This secrete is for production only";
 
 } else {
