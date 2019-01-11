@@ -409,7 +409,7 @@
           var requestBody = {
               productId: store.state.product.id,
               reference: store.getters.customizedProductReference,
-              dimensions: {
+              customizedDimensions: {
                 height: this.height,
                 width: this.width,
                 depth: this.depth,
