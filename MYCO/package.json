@@ -7,7 +7,7 @@
     "debug": "DEBUG=myco:* npm start",
     "debug-windows": "set DEBUG=myco:* & npm start",
     "test": "jest --detectOpenHandles -c testapp.js",
-    "integration":"jest -c testapp.js"
+    "integration": "jest -c testapp.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -15,6 +15,7 @@
     "debug": "~2.6.9",
     "eslint": "^5.7.0",
     "express": "~4.16.0",
+    "har-validator": "^5.1.3",
     "http-errors": "~1.6.2",
     "mongodb": "^3.1.10",
     "mongoose": "^5.3.5",
