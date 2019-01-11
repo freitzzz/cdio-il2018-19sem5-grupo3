@@ -3,8 +3,8 @@
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div id="adminNavBar" class="navbar-menu">
         <div class="navbar-start">
-          <router-link class="navbar-item" tag="li" to="/logistics/cities">Orders</router-link>
-          <router-link class="navbar-item" tag="li" to="/logistics/shipment">Prices</router-link>
+          <router-link class="navbar-item" tag="li" to="/logistic/cities">Cities</router-link>
+          <router-link class="navbar-item" tag="li" to="/logistic/shipment">Shipment</router-link>
         </div>
       </div>
       <div class="navbar-end">
